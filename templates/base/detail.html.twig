@@ -1,6 +1,6 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% block content %}
     <div class="uk-grid">
@@ -25,7 +25,7 @@
                                 <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
                             </div>
                             {{ render(controller(
-                                'App:Annotation:feed',
+                                'App\\Controller\\AnnotationController::feedAction',
                                 { 'roomId': roomId, 'linkedItemId': item.itemId }
                             ))}}
                         </div>

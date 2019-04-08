@@ -1,8 +1,8 @@
-{% extends 'App:base:profile.html.twig' %}
+{% extends 'base/profile.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid">
@@ -42,14 +42,14 @@
 
                                         <!-- user profile image -->
                                         <div class="uk-clearfix uk-cover-background uk-position-relative">
-                                            <img id="profile_form_user_image" class="uk-thumbnail uk-float-right uk-margin-bottom uk-border-circle" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                                            <img id="profile_form_user_image" class="uk-thumbnail uk-float-right uk-margin-bottom uk-border-circle" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                                             <div class="uk-position-cover">
                                                 {{ form_widget(form.image) }}
                                             </div>
                                         </div>
                                         <!-- user initials image -->
                                         <div class="uk-clearfix uk-position-relative">
-                                            <img id="profile_form_user_initials" class="uk-thumbnail uk-float-left uk-margin-bottom uk-border-circle" src="{{ path('commsy_user_initials', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                                            <img id="profile_form_user_initials" class="uk-thumbnail uk-float-left uk-margin-bottom uk-border-circle" src="{{ path('app_user_initials', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                                         </div>
 
                                         <div class="uk-float-right uk-clearfix" style="float: none; margin-top: 240px; width: 200px; text-aling: center;">

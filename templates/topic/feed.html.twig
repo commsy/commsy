@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for topic in topics %}
 
@@ -22,7 +22,7 @@
                         <div>
                            <span class="uk-text-large">
                                {% if is_granted('ITEM_SEE', topic.itemId) %}
-                                   <a href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': topic.itemId}) }}">{{ topic.title|decodeHtmlEntity }}</a>
+                                   <a href="{{ path('app_topic_detail', {'roomId': roomId, 'itemId': topic.itemId}) }}">{{ topic.title|decodeHtmlEntity }}</a>
                                {% else %}
                                    {{ topic.title|decodeHtmlEntity }}
                                {% endif %}

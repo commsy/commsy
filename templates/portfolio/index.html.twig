@@ -1,4 +1,4 @@
-{% extends 'App:base:detail.html.twig' %}
+{% extends 'base/detail.html.twig' %}
 
 {% block content %}
     {% if portfolioId is defined %}
@@ -20,7 +20,7 @@
 
                 {# create new #}
                 <div class="uk-margin-bottom">
-                    <a class="uk-button uk-button-primary" href="{{ path('commsy_portfolio_edit', { 'roomId': roomId, 'portfolioId': 'new' }) }}" data-uk-tooltip title="{{ 'Create new portfolio'|trans({}, 'portfolio') }}">
+                    <a class="uk-button uk-button-primary" href="{{ path('app_portfolio_edit', { 'roomId': roomId, 'portfolioId': 'new' }) }}" data-uk-tooltip title="{{ 'Create new portfolio'|trans({}, 'portfolio') }}">
                         <i class="uk-icon-plus uk-icon-small"></i> {{ 'Create new portfolio'|trans({}, 'portfolio') }}
                     </a>
                 </div>
@@ -36,7 +36,7 @@
                         </div>
                     </div>
 
-                    <div id="portfolio-wrapper" class="uk-width-medium-5-6" data-portfolio-url="{{ path('commsy_portfolio_portfolio', {'roomId': roomId }) }}" data-portfolio-tabs-url="{{ path('commsy_portfolio_tabs', {'roomId': roomId }) }}" data-portfolio-initial-id="1">
+                    <div id="portfolio-wrapper" class="uk-width-medium-5-6" data-portfolio-url="{{ path('app_portfolio_portfolio', {'roomId': roomId }) }}" data-portfolio-tabs-url="{{ path('app_portfolio_tabs', {'roomId': roomId }) }}" data-portfolio-initial-id="1">
                         <div class="uk-grid commsy-sticky-table-wrapper">
                             <div class="uk-width-1-1" style="padding-left: 0px; margin-left: -1px;">
                                 <div id="portfolio-tabs">

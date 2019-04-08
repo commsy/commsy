@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for project in projects %}
     <article class="uk-comment">
@@ -30,7 +30,7 @@
             </div>
             <div>
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_project_detail', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ project.title|decodeHtmlEntity }}</a>
+                    <a href="{{ path('app_project_detail', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ project.title|decodeHtmlEntity }}</a>
                 </h4>
                 
                 <div class="uk-comment-meta">

@@ -1,12 +1,12 @@
-{% extends 'App:base:list.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as utilsMacros %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <ul id="dates-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App:Date:feed', {
+            'App\\Controller\\DateController::feedAction', {
                 'roomId': roomId,
                 'dateFilter': app.request.query.get('date_filter')
             }
@@ -42,7 +42,7 @@
 
                 <li>
                     {% if is_granted('ITEM_EDIT', 'NEW') %}
-                        <a href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                        <a href="{{ path('app_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                         </a>
                     {% else %}
@@ -54,14 +54,14 @@
 
                 {# print #}
                 <li>
-                    <a href="{{ path('commsy_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
+                    <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_date_xhrmarkread', {'roomId': roomId}),
+                        'url': path('app_date_xhrmarkread', {'roomId': roomId}),
                         'action': 'markread',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -73,7 +73,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_date_xhrcopy', {'roomId': roomId}),
+                        'url': path('app_date_xhrcopy', {'roomId': roomId}),
                         'action': 'copy',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -85,7 +85,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_date_download', {'roomId': roomId}),
+                        'url': path('app_date_download', {'roomId': roomId}),
                         'action': 'save',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -138,7 +138,7 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_date_xhrdelete', {'roomId': roomId}),
+                            'url': path('app_date_xhrdelete', {'roomId': roomId}),
                             'action': 'delete',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
@@ -146,7 +146,7 @@
                             'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                             'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                             'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                            'returnUrl': path('commsy_date_list', {'roomId': roomId})
+                            'returnUrl': path('app_date_list', {'roomId': roomId})
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>
@@ -161,7 +161,7 @@
                 {% if is_granted('MODERATOR') %}
                     <li>
                         {% if not isArchived %}
-                            <a href="{{ path('commsy_date_import', {'roomId': roomId}) }}" >
+                            <a href="{{ path('app_date_import', {'roomId': roomId}) }}" >
                                 <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
                             </a>
                         {% else %}
@@ -178,7 +178,7 @@
 
 {% block listAddons %}
     <div class="uk-float-right uk-margin-small-left">
-        <a href="{{ path('commsy_date_calendar', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-calendar uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'calendar view'|trans({}, "date") }}"></i></a>
+        <a href="{{ path('app_date_calendar', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-calendar uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'calendar view'|trans({}, "date") }}"></i></a>
     </div>
     <div class="uk-float-right uk-margin-small-left">
         <i class="uk-icon-list-ul uk-icon-small" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i>

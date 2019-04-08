@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macrosUtils %}
+{% import 'utils/macros.html.twig' as macrosUtils %}
 {% import _self as macros %}
     
 {% macro activityBar(activity, maxActivity) %}
@@ -53,7 +53,7 @@
                     <div>
                         <h4 class="uk-comment-title">
                             {% if 'archived' not in projectsMemberStatus[room.itemId] %}
-                                <a href="{{ path('commsy_room_detail', {'roomId': roomId, 'itemId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
+                                <a href="{{ path('app_room_detail', {'roomId': roomId, 'itemId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
                             {% else %}
                                 <span class="uk-text-muted">{{ room.title|decodeHtmlEntity }}</span>
                             {% endif %}

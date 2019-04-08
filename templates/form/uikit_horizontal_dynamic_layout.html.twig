@@ -1,4 +1,4 @@
-{% extends "App:form:uikit_horizontal_layout.html.twig" %}
+{% extends "form/uikit_horizontal_layout.html.twig" %}
 
 {% macro nestedList(choices, level) %}
     {% import _self as macros %}
@@ -37,7 +37,7 @@
                 {{ 'hashtags'|trans({}, "room") }}
                 
                 {% if is_granted('HASHTAG_EDIT') %}
-                    <a href="{{ path('commsy_hashtag_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
+                    <a href="{{ path('app_hashtag_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
                 {% endif %}
 
                 {% if form.children|length > 0 %}
@@ -87,7 +87,7 @@
                 {{ 'categories'|trans({}, "room") }} 
 
                 {% if is_granted('CATEGORY_EDIT') %}
-                    <a href="{{ path('commsy_category_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
+                    <a href="{{ path('app_category_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
                 {% endif %}
 
                 {% if form.children|length > 0 %}
@@ -185,7 +185,7 @@
             {{ 'calendars'|trans({}, "date") }}
 
             {% if is_granted('CALENDARS_EDIT') %}
-                <a href="{{ path('commsy_calendar_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
+                <a href="{{ path('app_calendar_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
             {% endif %}
 
             {% if form.children|length > 0 %}

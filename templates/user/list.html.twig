@@ -1,13 +1,13 @@
-{% extends 'App:base:list.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as utilsMacros %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     {% if view == 'feedView' %}
         <ul id="user-feed" class="uk-comment-list">
             {{ render(controller(
-                'App:User:feed', {
+                'App\\Controller\\UserController::feedAction', {
                     'roomId': roomId,
                     'userFilter': app.request.query.get('user_filter')
                 }
@@ -20,7 +20,7 @@
     {% elseif view == 'gridView' %}
         <div id="user-feed" class="uk-grid">
             {{ render(controller(
-                'App:User:grid', {
+                'App\\Controller\\UserController::gridAction', {
                     'roomId': roomId,
                     'userFilter': app.request.query.get('user_filter')
                 }
@@ -36,7 +36,7 @@
 {% block taskinfo %}
     {% if isModerator and userTasks|length > 0 %}
         <div class="uk-alert uk-alert-danger">
-            {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('commsy_user_list', {'roomId': roomId,'user_filter[user_status]':1}) }}">
+            {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('app_user_list', {'roomId': roomId,'user_filter[user_status]':1}) }}">
                 {{ 'show user'|trans({},'user') }}
             </a>
         </div>
@@ -50,14 +50,14 @@
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                 <li>
-                    <a href="{{ path('commsy_user_printlist', {'roomId': roomId,'user_filter':app.request.query.get('user_filter')}) }}" target="_blank" id="print">
+                    <a href="{{ path('app_user_printlist', {'roomId': roomId,'user_filter':app.request.query.get('user_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_user_xhrmarkread', {'roomId': roomId}),
+                        'url': path('app_user_xhrmarkread', {'roomId': roomId}),
                         'action': 'markread',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -69,7 +69,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_user_sendmultiple', {'roomId': roomId}),
+                        'url': path('app_user_sendmultiple', {'roomId': roomId}),
                         'action': 'sendmail',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -91,12 +91,12 @@
                     {# delete #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-delete',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-delete'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'user') }}
@@ -106,12 +106,12 @@
                     {# block #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-block',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-block'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
@@ -121,12 +121,12 @@
                     {# confirm #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-confirm',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-confirm'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-sign-in uk-visible-large"></i> {{ 'confirm'|trans({},'user') }}
@@ -136,12 +136,12 @@
                     {# reading #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-status-reading-user',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-status-reading-user'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
@@ -151,12 +151,12 @@
                     {# user #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-status-user',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-status-user'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
@@ -166,12 +166,12 @@
                     {# moderator #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-status-moderator',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-status-moderator'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-wrench uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
@@ -181,12 +181,12 @@
                     {# contact #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-contact',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-contact'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-phone uk-visible-large"></i> {{ 'contact'|trans({},'user') }}
@@ -196,12 +196,12 @@
                     {# remove contact #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'url': path('app_user_changestatus', {'roomId': roomId}),
                             'action': 'user-contact-remove',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-contact-remove'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
@@ -232,7 +232,7 @@
 {% block listAddons %}
     {% if view == 'feedView' %}
         <div class="uk-float-right uk-margin-small-left">
-            <a href="{{ path('commsy_user_list', app.request.query.all|merge({'roomId': roomId, 'view': 'gridView'})) }}" class="uk-text-contrast">
+            <a href="{{ path('app_user_list', app.request.query.all|merge({'roomId': roomId, 'view': 'gridView'})) }}" class="uk-text-contrast">
                 <i class="uk-icon-folder-o uk-icon-small" data-uk-tooltip title="{{ 'tiles'|trans({}, "user") }}"></i>
             </a>
         </div>
@@ -244,7 +244,7 @@
             <i class="uk-icon-folder-o uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'tiles'|trans({}, "user") }}"></i>
         </div>
         <div class="uk-float-right uk-margin-small-left">
-            <a href="{{ path('commsy_user_list', app.request.query.all|merge({'roomId': roomId, 'view': 'feedView'})) }}" class="uk-text-contrast">
+            <a href="{{ path('app_user_list', app.request.query.all|merge({'roomId': roomId, 'view': 'feedView'})) }}" class="uk-text-contrast">
                 <i class="uk-icon-list-ul uk-icon-small" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i>
             </a>
         </div>

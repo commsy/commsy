@@ -1,5 +1,5 @@
 <form name="{{ form.vars.full_name }}" action="{{ form.vars.action }}" method="{{ form.vars.method }}" class="uk-search" data-uk-search="{
-    source:'{{ path('commsy_search_results', { 'roomId': roomId, 'mode': 'json' }) }}',
+    source:'{{ path('app_search_results', { 'roomId': roomId, 'mode': 'json' }) }}',
     delay: 300,
     msgResultsHeader: '{{ 'best matches'|trans({}, 'search') }}',
     msgMoreResults: '{{ 'more results'|trans({}, 'search') }}',
@@ -7,9 +7,9 @@
 }">
 
     <div class="uk-autocomplete" data-uk-autocomplete='{
-        "source": "{{ path('commsy_search_itemsearchresults', { 'roomId': roomId, 'mode': 'json' }) }}"
+        "source": "{{ path('app_search_itemsearchresults', { 'roomId': roomId, 'mode': 'json' }) }}"
     }' data-cs-link-search='{
-        "source": "{{ path('commsy_item_singlearticle', {'roomId': roomId, 'itemId': -1}) }}"
+        "source": "{{ path('app_item_singlearticle', {'roomId': roomId, 'itemId': -1}) }}"
     }'>
         {{ form_widget(form.phrase) }}
         {#{{ form_widget(form.type) }}#}

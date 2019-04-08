@@ -1,17 +1,17 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'topic' %}
-        {% set pathName = 'commsy_topic_edit' %}
+        {% set pathName = 'app_topic_edit' %}
     {% elseif item.itemType == 'section' %}
         <a name="section{{item.ItemID}}"></a>
-        {% set pathName = 'commsy_topic_edit' %}
+        {% set pathName = 'app_topic_edit' %}
     {% endif %}
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
     
-    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
+    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -25,7 +25,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'App:utils:edit_spinner.html.twig' %}
+                        {% include 'utils/edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -161,7 +161,7 @@
 {% endmacro %}
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -175,7 +175,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'App:utils:edit_spinner.html.twig' %}
+                        {% include 'utils/edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -308,7 +308,7 @@
 
 
 {% macro members(item,members) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
 
     {% set preview = '' %}
     {% set content = '' %}
@@ -354,9 +354,9 @@
             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
  
                 <div class="uk-panel-teaser cs-panel-teaser-user">
-                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': member.contextId, 'itemId': member.itemId}) }}" data-uk-tooltip title="{{ member.fullname }}">
+                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('app_user_image', {'roomId': member.contextId, 'itemId': member.itemId}) }}" data-uk-tooltip title="{{ member.fullname }}">
                     <span class="uk-text-large uk-text-middle">
-                        <a href="{{ path('commsy_user_detail', {'roomId': member.contextId, 'itemId': member.itemId}) }}">{{ member.title }} {{member.fullname}}</a>
+                        <a href="{{ path('app_user_detail', {'roomId': member.contextId, 'itemId': member.itemId}) }}">{{ member.title }} {{member.fullname}}</a>
                     </span>
                 </div>
                 <span>
@@ -405,13 +405,13 @@
 {% endmacro %}
 
 {% macro path(item, edit, isLinkedToItems) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
 
     <hr class="uk-width-9-10"/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'App:utils:edit_spinner.html.twig' %}
+        {% include 'utils/edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -450,7 +450,7 @@
                     <div class="uk-flex">
                         {% for linkedItem in item.pathItemList.to_array %}
                             <div>
-                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
+                                <a href="{{ path('app_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
                                     <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
                                 </a>
                             </div>
@@ -469,7 +469,7 @@
                     <div class="uk-grid">
                         {% for linkedItem in item.pathItemList.to_array %}
                             <div class="uk-width-1-1">
-                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
+                                <a href="{{ path('app_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
                                     <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-icon uk-margin-small-right"></i>
                                     {{ linkedItem.title|decodeHtmlEntity }}
                                 </a>

@@ -3,7 +3,7 @@
     {% set type = item.labelType %}
 {% endif %}
 
-{% set link = url('commsy_' ~ type ~ '_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': item.itemId}) %}
+{% set link = url('app_' ~ type ~ '_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': item.itemId}) %}
 
 <br><br>--<br>
 

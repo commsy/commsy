@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for announcement in announcements %}
     {% set entryAllowedActions = '' %}
@@ -41,7 +41,7 @@
             <div class="uk-width-8-10">
                 <h4 class="uk-comment-title">
                     {% if is_granted('ITEM_SEE', announcement.itemId) %}
-                        <a href="{{ path('commsy_announcement_detail', {'roomId': roomId, 'itemId': announcement.itemId}) }}">{{ announcement.title|decodeHtmlEntity }}</a>
+                        <a href="{{ path('app_announcement_detail', {'roomId': roomId, 'itemId': announcement.itemId}) }}">{{ announcement.title|decodeHtmlEntity }}</a>
                     {% else %}
                         {{ announcement.title|decodeHtmlEntity }}
                     {% endif %}

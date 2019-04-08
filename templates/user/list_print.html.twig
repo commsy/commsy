@@ -1,5 +1,5 @@
 </!DOCTYPE html>
-{% import 'App:base:printmacro.html.twig' as macros %}
+{% import 'base/printmacro.html.twig' as macros %}
 
 <html lang="de">
     <head>
@@ -46,7 +46,7 @@
                             
                             {# user icon and modification time #}
                             <div class="uk-width-1-10">
-                                <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) )}}" data-uk-tooltip title="{{ user.fullname }}">
+                                <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ absolute_url(path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) )}}" data-uk-tooltip title="{{ user.fullname }}">
 
                             </div>
 

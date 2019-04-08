@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for todo in todos %}
     {% set entryAllowedActions = '' %}
@@ -41,7 +41,7 @@
             <div class="uk-width-5-10">
                 <h4 class="uk-comment-title uk-text-truncate">
                     {% if is_granted('ITEM_SEE', todo.itemId) %}
-                        <a class="uk-text-break" href="{{ path('commsy_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title|decodeHtmlEntity }}</a>
+                        <a class="uk-text-break" href="{{ path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title|decodeHtmlEntity }}</a>
                     {% else %}
                         {{ todo.title|decodeHtmlEntity }}
                     {% endif %}

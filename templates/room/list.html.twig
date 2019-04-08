@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
         <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">

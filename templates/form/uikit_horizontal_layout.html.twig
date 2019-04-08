@@ -1,4 +1,4 @@
-{% extends "App:form:uikit_layout.html.twig" %}
+{% extends "form/uikit_layout.html.twig" %}
 
 {% macro nestedEditList(choices, level) %}
     {% import _self as nestedMacro %}
@@ -20,7 +20,7 @@
                     <div class="uk-nestable-toggle" data-nestable-action="toggle">
                     </div>
                     {{ child.label -}}
-                    <a class="uk-button uk-button-mini uk-button-primary uk-float-right uk-margin-left" href="{{ path('commsy_category_edit', {
+                    <a class="uk-button uk-button-mini uk-button-primary uk-float-right uk-margin-left" href="{{ path('app_category_edit', {
                         roomId: app.request.attributes.get('roomId'),
                         categoryId: child.data
                     }) }}">
@@ -177,7 +177,7 @@
                         <div class="uk-nestable-toggle" data-nestable-action="toggle">
                         </div>
                         {{ child.label -}}
-                        <a class="uk-button uk-button-mini uk-button-primary uk-float-right uk-margin-left" href="{{ path('commsy_portal_licenses', {
+                        <a class="uk-button uk-button-mini uk-button-primary uk-float-right uk-margin-left" href="{{ path('app_portal_licenses', {
                             roomId: app.request.attributes.get('roomId'),
                             licenseId: child.data.id
                         }) }}">

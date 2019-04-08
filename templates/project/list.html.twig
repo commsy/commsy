@@ -1,12 +1,12 @@
-{% extends 'App:base:list.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as utilsMacros %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <ul id="dates-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App:Project:feed',
+            'App\\Controller\\ProjectController::feedAction',
             { 'roomId': roomId }
         ))}}
     </ul>
@@ -40,7 +40,7 @@
 
                 {% if is_granted('ITEM_EDIT', 'NEW') %}
                 <li>
-                     <a href="{{ path('commsy_project_create', {'roomId': roomId}) }}">
+                     <a href="{{ path('app_project_create', {'roomId': roomId}) }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'New project room'|trans([], 'project') }}
                     </a>
                 </li>

@@ -1,5 +1,5 @@
 {% macro files(item, draft) %}
-    {% import 'App:utils:macros.html.twig' as macrosUtils %}
+    {% import 'utils/macros.html.twig' as macrosUtils %}
 
     {% set fileArray = item.fileList.to_array %}
 
@@ -7,7 +7,7 @@
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'App:utils:edit_spinner.html.twig' %}
+        {% include 'utils/edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -62,10 +62,10 @@
                                      <li>
                                         <div class="uk-panel uk-panel-box-secondary cs-file-panel-box uk-vertical-align">
                                             {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
-                                                <a class="uk-margin-remove" href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
+                                                <a class="uk-margin-remove" href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
                                                     <div class="uk-clearfix">
                                                         <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
-                                                            <img class="cs-align-center cs-slider" style="height:28px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
+                                                            <img class="cs-align-center cs-slider" style="height:28px;" src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
                                                         </div>
                                                     </div>
                                                 </a>
@@ -78,7 +78,7 @@
                                                 <div class="uk-clearfix">
                                                     <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
                                                         <div class="cs-align-center uk-vertical-align-middle">                        
-                                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank"><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
+                                                            <a href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank"><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -108,10 +108,10 @@
                             <div class="uk-width-medium-1-2 uk-width-large-1-4">
                                 <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
                                     {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
-                                        <a class="uk-margin-remove" href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
+                                        <a class="uk-margin-remove" href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
                                             <div class="uk-clearfix">
                                                 <div class="cs-align-center">
-                                                    <img class="cs-align-center cs-slider" style="height:80px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
+                                                    <img class="cs-align-center cs-slider" style="height:80px;" src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
                                                 </div>
                                             </div>
                                         </a>
@@ -125,7 +125,7 @@
                                         </div>
                                     {% endif %}
                                     <div class="uk-vertical-align-middle" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
-                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" target="_blank">{{ file.filename|truncate(20) }}</a><br/>
+                                        <a href="{{ path('app_file_getfile', {'fileId': file.fileId}) }}" target="_blank">{{ file.filename|truncate(20) }}</a><br/>
                                         ({{ file.fileSize }} kb)
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@
 {% endmacro %}
 
 {% macro links(item,withTags,withCategories,roomCategories, draft) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}
     
     {% set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
@@ -161,7 +161,7 @@
         <div class="uk-width-1-3">
             <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
             {{ render(controller(
-                'App:Link:showDetailShort',
+                'App\\Controller\\LinkController::showDetailShortAction',
                 { 'roomId': item.contextId, 'itemId': item.itemId }
             ))}}            
         </div>
@@ -210,7 +210,7 @@
         <div class="uk-width-1-3">
             <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
             {{ render(controller(
-                'App:Link:showDetail',
+                'App\\Controller\\LinkController::showDetailAction',
                 { 'roomId': item.contextId, 'itemId': item.itemId }
             ))}}            
         </div>
@@ -242,7 +242,7 @@
 {% endmacro %}
 
 {% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withValidity, withResubmission) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
 
     {% set preview %}
 
@@ -309,7 +309,7 @@
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
                 {% set counter = 1 %}
                 {% for workflowGroup in workflowGroupArray %}
-                    <a href="{{ path('commsy_group_detail', {'roomId': item.contextId, 'itemId': workflowGroup.iid}) }}">{{workflowGroup.title|decodeHtmlEntity}}</a> ({{workflowGroup.userCount}} {{ 'of'|trans({}, "room") }} {{workflowGroup.userCountComplete}})
+                    <a href="{{ path('app_group_detail', {'roomId': item.contextId, 'itemId': workflowGroup.iid}) }}">{{workflowGroup.title|decodeHtmlEntity}}</a> ({{workflowGroup.userCount}} {{ 'of'|trans({}, "room") }} {{workflowGroup.userCountComplete}})
                     {% if counter != workflowGroupArray|length %}, {% endif %}
                     {% set counter = counter + 1 %}
                 {% endfor %}
@@ -320,7 +320,7 @@
                <strong>{{ 'workflow marked as read by users'|trans({}, "material") }}:</strong><br/>
                {% set counter = 1 %}
                {% for workflowUser in workflowUserArray %}
-                   <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': workflowUser.iid}) }}">{{workflowUser.name}}</a> 
+                   <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': workflowUser.iid}) }}">{{workflowUser.name}}</a>
                     {% if counter != workflowUserArray|length %}, {% endif %}
                     {% set counter = counter + 1 %}
                {% endfor %}
@@ -337,7 +337,7 @@
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'App:utils:edit_spinner.html.twig' %}
+        {% include 'utils/edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">

@@ -1,8 +1,8 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% import 'App:item:macros.html.twig' as macrosItem %}
-{% import 'App:user:macros.html.twig' as macrosUser %}
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'item/macros.html.twig' as macrosItem %}
+{% import 'user/macros.html.twig' as macrosUser %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% set item = user %}
 
@@ -24,12 +24,12 @@
                             {# back navigation #}
                             <div class="uk-margin-right">
                                 {% if firstItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
                                 {% endif %}
                                 {% if prevItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
                                 {% endif %}
@@ -45,7 +45,7 @@
                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                        {% for tempUser in userList %}
                                             {% if tempUser.itemId != user.itemId %}
-                                                <li><a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|truncate(25) }}</a></li>
+                                                <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|truncate(25) }}</a></li>
                                             {% else %}
                                                 <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|truncate(20)  }}</a></li>
                                             {% endif %}
@@ -57,12 +57,12 @@
                             {# forward navigation #}
                             <div>
                                 {% if nextItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
                                 {% endif %}
                                 {% if lastItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
                                 {% endif %}
@@ -84,12 +84,12 @@
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                         {# print #}
                                         <li>
-                                            <a href="{{ path('commsy_user_print', {'roomId': roomId, 'itemId': user.itemId}) }}" target="_blank" id="print">
+                                            <a href="{{ path('app_user_print', {'roomId': roomId, 'itemId': user.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{{ path('commsy_user_send', {'roomId' : roomId, 'itemId': user.itemId}) }}" id="send">
+                                            <a href="{{ path('app_user_send', {'roomId' : roomId, 'itemId': user.itemId}) }}" id="send">
                                                 <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
                                             </a>
                                         </li>
@@ -108,7 +108,7 @@
                                             {% if user.isRequested %}
                                                 {# confirm #}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-sign-in uk-visible-large"></i> {{ 'confirm'|trans({},'user') }}
                                                     </a>
                                                 </li>
@@ -118,28 +118,28 @@
 
                                                 {# delete #}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-delete', 'userDetail': 1}) }}" id="status-delete">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-delete', 'userDetail': 1}) }}" id="status-delete">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                     </a>
                                                 </li>
 
                                                 {# block #}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
                                                     </a>
                                                 </li>
 
                                                 {# reading #}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-reading-user', 'userDetail': 1}) }}" id="status-reading">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-reading-user', 'userDetail': 1}) }}" id="status-reading">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
                                                     </a>
                                                 </li>
 
                                                 {# user #}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-user', 'userDetail': 1}) }}" id="status-user">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-user', 'userDetail': 1}) }}" id="status-user">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
                                                     </a>
                                                 </li>
@@ -178,7 +178,7 @@
                                             {% if not user.isModerator %}
                                                 {# moderator #}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-moderator', 'userDetail': 1}) }}" id="status-moderator">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-moderator', 'userDetail': 1}) }}" id="status-moderator">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-wrench uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
                                                     </a>
                                                 </li>
@@ -187,14 +187,14 @@
                                             {% if user.isContact %}
                                                 {# remove contact#}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact-remove', 'userDetail': 1}) }}" id="status-remove-contact">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact-remove', 'userDetail': 1}) }}" id="status-remove-contact">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
                                                     </a>
                                                 </li>
                                             {% else %}
                                                 {# contact #}
                                                 <li>
-                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact', 'userDetail': 1}) }}" id="status-contact">
+                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact', 'userDetail': 1}) }}" id="status-contact">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-phone uk-visible-large"></i> {{ 'contact'|trans({},'user') }}
                                                     </a>
                                                 </li>
@@ -224,7 +224,7 @@
                     </div>
             
                     {# description #}
-                    <div id="description{{ user.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': user.contextId, 'itemId': user.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': user.contextId, 'itemId': user.itemId}) }}' }">
+                    <div id="description{{ user.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': user.contextId, 'itemId': user.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': user.contextId, 'itemId': user.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', user, isSelf, user.description) }}
                     </div>
                     
@@ -254,18 +254,18 @@
                                                <div class="uk-grid">
                                                     <div class="uk-width-2-3">
                                                        <span class="uk-text-large uk-text-middle">
-                                                           <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
+                                                           <a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
                                                        </span>
                                                     </div>
                                                     {% if group.isGroupRoomActivated %}
                                                         <div class="uk-width-1-3 uk-text-right">
-                                                            <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                                            <a href="{{ path('app_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
                                                         </div>
                                                     {% endif %}
                                                 </div>
                                             </div>
                                             <span>
-                                            <a href="{{ path('commsy_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                            <a href="{{ path('app_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
                                                 {{'send mail to group'|trans({}) }}
                                             </a>
                                             </span><br/>

@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for user in users %}
     {% set entryAllowedActions = '' %}
@@ -36,7 +36,7 @@
             {# name and meta #}
             <div class="uk-width-3-10">
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullName|decodeHtmlEntity }}</a>
+                    <a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullName|decodeHtmlEntity }}</a>
                 </h4>
 
                 <div class="uk-comment-meta">
@@ -80,11 +80,11 @@
             </div>
             <div class="uk-width-2-10">
                 {% if user.status == 1 and is_granted('MODERATOR') and is_granted('ITEM_EDIT', user.itemId) %}
-                    <a class="uk-button uk-button-small uk-button-success uk-border-rounded responsive-icon-only" title="{{'Confirm'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
+                    <a class="uk-button uk-button-small uk-button-success uk-border-rounded responsive-icon-only" title="{{'Confirm'|trans({}, 'user') }}" href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
                         <i class="uk-icon-check uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Confirm'|trans({}, 'user') }}</span>
                     </a>
-                    <a class="uk-button uk-button-small uk-button-danger uk-border-rounded responsive-icon-only" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                    <a class="uk-button uk-button-small uk-button-danger uk-border-rounded responsive-icon-only" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
                         <i class="uk-icon-times uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Reject'|trans({}, 'user') }}</span>
                     </a>

@@ -1,5 +1,5 @@
-{% extends 'App:base:portal.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/portal.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -13,7 +13,7 @@
 
                 <div>
                     <div class="uk-alert">
-                        <a href="{{ path('commsy_portal_roomtermstemplates', { 'roomId': portal.itemId }) }}">{{ 'You can set up templates for room terms here'|trans({}, 'portal') }}</a>
+                        <a href="{{ path('app_portal_roomtermstemplates', { 'roomId': portal.itemId }) }}">{{ 'You can set up templates for room terms here'|trans({}, 'portal') }}</a>
                     </div>
 
                     <div class="uk-grid">

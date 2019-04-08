@@ -1,5 +1,5 @@
 <form name="{{ form.vars.full_name }}" action="{{ form.vars.action }}" method="{{ form.vars.method }}" class="uk-search" data-uk-search="{
-    source:'{{ path('commsy_search_instantresults', { 'roomId': roomId }) }}',
+    source:'{{ path('app_search_instantresults', { 'roomId': roomId }) }}',
     delay: 300,
     msgResultsHeader: '{{ 'best matches'|trans({}, 'search') }}',
     msgMoreResults: '{{ 'more results'|trans({}, 'search') }}',

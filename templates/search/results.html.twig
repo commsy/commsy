@@ -1,6 +1,6 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% form_theme filterForm 'App:form:uikit_horizontal_dynamic_layout.html.twig' %}
+{% form_theme filterForm 'form/uikit_horizontal_dynamic_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -55,7 +55,7 @@
 
                                             <li>
                                                 <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                    'url': path('commsy_search_xhrcopy', {'roomId': roomId}),
+                                                    'url': path('app_search_xhrcopy', {'roomId': roomId}),
                                                     'action': 'copy',
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                     'mode': 'selection',
@@ -68,7 +68,7 @@
                                             <li>
                                                 {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                                                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                        'url': path('commsy_search_xhrdelete', {'roomId': roomId}),
+                                                        'url': path('app_search_xhrdelete', {'roomId': roomId}),
                                                         'action': 'delete',
                                                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                         'mode': 'selection',
@@ -76,7 +76,7 @@
                                                         'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                                                         'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                                                         'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                                                        'returnUrl': path('commsy_search_results', {'roomId': roomId, 'search_filter[query]=': query})
+                                                        'returnUrl': path('app_search_results', {'roomId': roomId, 'search_filter[query]=': query})
                                                     }|json_encode|e('html_attr') }}">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                                                     </a>
@@ -116,7 +116,7 @@
 
                 <div class="feed">
                     <ul id="search-feed" class="uk-comment-list" data-uk-observe>
-                        {% include 'App:search:feed.html.twig' %}
+                        {% include 'search/feed.html.twig' %}
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}

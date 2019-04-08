@@ -1,10 +1,10 @@
-{% extends 'App:base:list.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block feed %}
     <ul id="copies-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App:Copy:feed', {
+            'App\\Controller\\CopyController::feedAction', {
                 'roomId': roomId,
                 'copyFilter': app.request.query.get('copy_filter')
             }
@@ -28,7 +28,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_copy_xhrinsert', {'roomId': roomId}),
+                        'url': path('app_copy_xhrinsert', {'roomId': roomId}),
                         'action': 'insert',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -40,7 +40,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_copy_xhrremove', {'roomId': roomId}),
+                        'url': path('app_copy_xhrremove', {'roomId': roomId}),
                         'action': 'remove',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -48,7 +48,7 @@
                         'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                         'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                         'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                        'returnUrl': path('commsy_copy_list', {'roomId': roomId})
+                        'returnUrl': path('app_copy_list', {'roomId': roomId})
                     }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'remove'|trans({},'rubric') }}
                     </a>
@@ -56,7 +56,7 @@
 
                 {#
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_copy_feedaction', {'roomId': roomId}) }}", "action": "insert"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
+                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('app_copy_feedaction', {'roomId': roomId}) }}", "action": "insert"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-paste uk-visible-large"></i> {{ 'insert stack'|trans({},'rubric') }}
                     </a>
                 </li>

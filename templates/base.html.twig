@@ -7,15 +7,15 @@
 
         <title>{% block title %}{{ pageTitle() }}{% endblock %}</title>
 
-        {% include '::stylesheets.html.twig' %}
+        {% include 'stylesheets.html.twig' %}
 
         <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
     </head>
     <body id="commsy" class="nav-collapsed">
         {# modal message #}
         {{ render(controller(
-        'App:Room:modalMessage',
-        { 'roomId': app.request.attributes.get('roomId') }
+            'App\\Controller\\RoomController::modalMessageAction',
+            { 'roomId': app.request.attributes.get('roomId') }
         ))}}
 
         {# context navigation #}
@@ -23,7 +23,7 @@
 
             {# CommSy Logo #}
             {{ render(controller(
-                'App:Room:logo',
+                'App\\Controller\\RoomController::logoAction',
                 { 'roomId': app.request.attributes.get('roomId') }
             ))}}
 
@@ -47,7 +47,7 @@
                     <div class="uk-navbar-content">
                         {# global search #}
                         {{ render(controller(
-                            'App:Search:searchForm', {
+                            'App\\Controller\\SearchController::searchFormAction', {
                                 'roomId': app.request.attributes.get('roomId'),
                                 'postData': app.request.request.get('search')
                             }
@@ -56,7 +56,7 @@
                     
                     {# global actions #}
                     {{ render(controller(
-                        'App:User:globalNavbar',
+                        'App\\Controller\\UserController::globalNavbarAction',
                         { 'roomId': app.request.attributes.get('roomId') }
                     ))}}
 
@@ -64,12 +64,12 @@
                         <ul class="uk-navbar-nav">
                             <li id="navbar_user_icon" class="uk-parent" data-uk-dropdown>
                                 {{ render(controller(
-                                    'App:Profile:image',
+                                    'App\\Controller\\ProfileController::imageAction',
                                     { 'roomId': app.request.attributes.get('roomId') }
                                 ))}}
 
                                 {{ render(controller(
-                                    'App:Profile:menu',
+                                    'App\\Controller\\ProfileController::menuAction',
                                     { 'roomId': app.request.attributes.get('roomId') }
                                 ))}}
                             </li>
@@ -84,12 +84,12 @@
                 <ul class="uk-navbar-nav">
                     {# All Rooms #}
                     {{ render(controller(
-                        'App:User:allRoomsNavbar'
+                        'App\\Controller\\UserController::allRoomsNavbarAction'
                     ))}}
 
                     {# room navigation #}
                     <li id="room-navigation" data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
-                        source:'{{ path('commsy_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
+                        source:'{{ path('app_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
                         minLength: 0,
                         msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
                     }">

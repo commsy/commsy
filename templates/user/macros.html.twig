@@ -1,17 +1,17 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, isSelf) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'user' %}
-        {% set pathName = 'commsy_user_edit' %}
+        {% set pathName = 'app_user_edit' %}
     {% elseif item.itemType == 'section' %}
         <a name="section{{item.ItemID}}"></a>
-        {% set pathName = 'commsy_user_edit' %}
+        {% set pathName = 'app_user_edit' %}
     {% endif %}
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
     
-    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
+    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -25,7 +25,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) and isSelf %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'App:utils:edit_spinner.html.twig' %}
+                        {% include 'utils/edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -49,7 +49,7 @@
                                 {% if item.isEmailVisible %}
                                     <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
                                 {% else %}
-                                    <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('commsy_user_send', {'roomId': item.contextId, 'itemId': item.itemId}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
+                                    <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('app_user_send', {'roomId': item.contextId, 'itemId': item.itemId}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
                                 {% endif %}
                             </tr>
                             {% endif %}
@@ -306,13 +306,13 @@
 {% endmacro %}
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, draft, isSelf) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'user' %}
-        {% set pathName = 'commsy_user_edit' %}
+        {% set pathName = 'app_user_edit' %}
     {% elseif item.itemType == 'section' %}
         <a name="section{{item.ItemID}}"></a>
-        {% set pathName = 'commsy_user_edit' %}
+        {% set pathName = 'app_user_edit' %}
     {% endif %}
     {% if userCount == 0 %}
         {% set userCount = 1 %}
@@ -331,7 +331,7 @@
                 {# edit #}
                 {% if is_granted('ITEM_EDIT', item.itemId) and isSelf %}
                     {{ macros.actionIcons('title', item, true) }}
-                    {% include 'App:utils:edit_spinner.html.twig' %}
+                    {% include 'utils/edit_spinner.html.twig' %}
                 {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                 {% endif %}

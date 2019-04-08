@@ -1,4 +1,4 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
 {% block cover %}
     <div id="cover" class="uk-cover-background">
@@ -35,7 +35,7 @@
                 <div>
                     <ul id="dashboard-feed" class="uk-comment-list">
                         {{ render(controller(
-                            'App:Dashboard:feed',
+                            'App\\Controller\\DashboardController::feedAction',
                             { 'itemId': user.itemId }
                         ))}}
                     </ul>

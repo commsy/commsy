@@ -26,7 +26,7 @@
     {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|date("d.m.Y") }}
     {{ 'at'|trans({}) }} {{ item.modificationDate|date("H:i") }}
     {{ 'by'|trans({}) }}
-    <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.modificatorItem.itemId}) }}">
+    <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': item.modificatorItem.itemId}) }}">
         {{ item.modificatorItem.fullname }}
     </a>
 {% endmacro %}
@@ -177,7 +177,7 @@
     {% if not fileArray is empty %}
         <ul class="uk-list">
         {% for file in fileArray %}
-            <li><i class="{{ macros.iconClassForFileType(file.extension) }}"></i> <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename }}</a></li>
+            <li><i class="{{ macros.iconClassForFileType(file.extension) }}"></i> <a href="{{ path('app_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename }}</a></li>
         {% endfor %}
         </ul>
     {% endif %}
@@ -198,7 +198,7 @@
                     {% set disposition = 'inline' %}
                 {% endif %}
 
-                <a href="{{ path('commsy_file_getfile', { 'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
+                <a href="{{ path('app_file_getfile', { 'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
             {% endfor %}
         {% else %}
             {% for file in fileArray %}
@@ -218,7 +218,7 @@
                     {% set disposition = 'inline' %}
                 {% endif %}
 
-                <a href="{{ path('commsy_file_getfile', { 'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
+                <a href="{{ path('app_file_getfile', { 'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
             {% endfor %}
         {% else %}
             {% for file in fileArray %}
@@ -232,20 +232,20 @@
     {% set showTooltip = showTooltip ?? true %}
     {% if user.itemId != "" %}
         {% if size == 'small' %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
         {% elseif size matches '/^\\d+$/' %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
         {% else %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+            <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
         {% endif %}
     {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('commsy_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}" style="width: 30px; height: 30px;">
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}" style="width: 30px; height: 30px;">
     {% endif %}
 {% endmacro %}
 
 {% macro userIconLink(user, size) %}
     {% import _self as macros %}
-    <a href="{{ path('commsy_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
+    <a href="{{ path('app_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
         {{  macros.userIcon(user, size) }}
     </a>
 {% endmacro %}
@@ -271,7 +271,7 @@
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'App:utils:edit_spinner.html.twig' %}
+        {% include 'utils/edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -346,7 +346,7 @@
 
 {% macro ratingStatusDetail(item, ratingArray) %}
     {% set rating = 0 %}
-    {% set ratingPath = 'commsy_' ~ item.itemType ~ '_rating' %}
+    {% set ratingPath = 'app_' ~ item.itemType ~ '_rating' %}
     {% if ratingArray.ratingAverageDetail.0 is defined %}
         {% set rating = ratingArray.ratingAverageDetail.0 %}
     {% endif %}
@@ -470,7 +470,7 @@
 {% endmacro %}
 
 {% macro workflowWhoCreator(item) %}
-    <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorItem.itemId}) }}">
+    <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': item.creatorItem.itemId}) }}">
         {{ item.creatorItem.fullname }}
     </a>
 {% endmacro %}
@@ -481,7 +481,7 @@
     {{ macros.workflowWhoCreator(item) }}
     
     {% for modifier in item.modifierList %}
-        <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
+        <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
             {{ modifier.fullname }}
         </a>
     {% endfor %}
@@ -497,13 +497,13 @@
 
         {% if 'enter' in contextMemberStatus %}
             {% if 'archived' in contextMemberStatus %}
-                {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>)
+                {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>)
             {% else %}
-                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
             {% endif %}
         {% else %}
             {% if contextMemberStatus == 'join' %}
-                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
             {% elseif contextMemberStatus == 'locked' %}
                 {{ 'This room is currently locked.'|trans({}, 'room') }}
             {% elseif contextMemberStatus == 'requested' %}
@@ -517,7 +517,7 @@
             {% elseif contextMemberStatus == 'forbidden' %}
                 {{ 'Guests are not allowed to request for membership.'|trans({}, 'room') }}
             {% else %}
-                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
             {% endif %}
         {% endif %}
 
@@ -526,10 +526,10 @@
 
 {% macro contextLinkIcon(roomId, context, contextMemberStatus) %}
     {% if contextMemberStatus == 'enter' %}
-        <a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon-medium" style="width:24px; height:24px;" title="{{ 'enter room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
+        <a href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon-medium" style="width:24px; height:24px;" title="{{ 'enter room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
     {% else %}
         {% if contextMemberStatus == 'join' %}
-            <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
+            <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
         {% elseif contextMemberStatus == 'locked' %}
             <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% elseif contextMemberStatus == 'requested' %}
@@ -539,7 +539,7 @@
         {% elseif 'archived' in contextMemberStatus %}
             <i class="uk-icon-file-archive-o uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Archived room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% else %}
-            <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
+            <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
         {% endif %}
     {% endif %}
 {% endmacro %}
@@ -628,7 +628,7 @@
 {% endmacro %}
 
 {% macro showPath(pathTopicItem, item) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     <div class="uk-alert" uk-alert>
         <div class="uk-flex">
             <div class="uk-margin-right">
@@ -637,7 +637,7 @@
             {% for linkedItem in pathTopicItem.pathItemList.to_array %}
                 <div>
                     {% if linkedItem.itemId != item.itemId %}
-                        <a class="uk-text-muted" href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ pathTopicItem.itemId }}">
+                        <a class="uk-text-muted" href="{{ path('app_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ pathTopicItem.itemId }}">
                             <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
                         </a>
                     {% else  %}

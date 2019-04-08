@@ -1,8 +1,8 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% import 'App:item:macros.html.twig' as macrosItem %}
-{% import 'App:topic:macros.html.twig' as macrosTopic %}
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'item/macros.html.twig' as macrosItem %}
+{% import 'topic/macros.html.twig' as macrosTopic %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% set item = topic %}
 
@@ -24,12 +24,12 @@
                             {# back navigation #}
                             <div class="uk-margin-right">
                                 {% if firstItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_topic_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
                                 {% endif %}
                                 {% if prevItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_topic_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
                                 {% endif %}
@@ -45,7 +45,7 @@
                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                        {% for tempTopic in topicList %}
                                             {% if tempTopic.itemId != topic.itemId %}
-                                                <li><a href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': tempTopic.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempTopic.title|decodeHtmlEntity }}">{{ tempTopic.title|decodeHtmlEntity|truncate(25) }}</a></li>
+                                                <li><a href="{{ path('app_topic_detail', {'roomId': roomId, 'itemId': tempTopic.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempTopic.title|decodeHtmlEntity }}">{{ tempTopic.title|decodeHtmlEntity|truncate(25) }}</a></li>
                                             {% else %}
                                                 <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempTopic.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempTopic.title|decodeHtmlEntity|truncate(20)  }}</a></li>
                                             {% endif %}
@@ -57,12 +57,12 @@
                             {# forward navigation #}
                             <div>
                                 {% if nextItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_topic_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
                                 {% endif %}
                                 {% if lastItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                    <a class="uk-button-primary" href="{{ path('app_topic_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
                                 {% endif %}
@@ -87,7 +87,7 @@
                                         {# new entry #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                <a class="" href="{{ path('commsy_topic_create', {'roomId': roomId}) }}" id="newEntry">
+                                                <a class="" href="{{ path('app_topic_create', {'roomId': roomId}) }}" id="newEntry">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                                 </a>
                                             {% else %}
@@ -99,7 +99,7 @@
 
                                         {# print #}
                                         <li>
-                                            <a class="" href="{{ path('commsy_topic_print', {'roomId': roomId, 'itemId': topic.itemId}) }}" target="_blank" id="print">
+                                            <a class="" href="{{ path('app_topic_print', {'roomId': roomId, 'itemId': topic.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -107,7 +107,7 @@
                                         {# save #}
                                         <li>
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_topic_download', {'roomId': roomId}),
+                                                'url': path('app_topic_download', {'roomId': roomId}),
                                                 'action': 'save',
                                                 'itemId': topic.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -119,7 +119,7 @@
 
                                         {# send #}
                                         <li>
-                                            <a href="{{ path('commsy_item_send', {'roomId': roomId, 'itemId': topic.itemId}) }}">
+                                            <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': topic.itemId}) }}">
                                                 <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
                                             </a>
                                         </li>
@@ -128,7 +128,7 @@
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a  href="#" data-cs-action="{{ {
-                                                    'url': path('commsy_topic_xhrdelete', {'roomId': roomId, 'itemId': topic.itemId}),
+                                                    'url': path('app_topic_xhrdelete', {'roomId': roomId, 'itemId': topic.itemId}),
                                                     'action': 'delete',
                                                     'itemId': topic.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -138,7 +138,7 @@
                                                     'confirmQuestion': 'confirm delete'|trans({},'rubric'),
                                                     'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
                                                     'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                    'returnUrl': path('commsy_topic_list', {'roomId': roomId})
+                                                    'returnUrl': path('app_topic_list', {'roomId': roomId})
                                                 }|json_encode|e('html_attr') }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
@@ -172,25 +172,25 @@
                     </div>
             
                     {# description #}
-                    <div id="description{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                    <div id="description{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', topic, true, topic.description, draft) }}
                     </div>
 
                     {% if not draft %}
                         {# path #}
-                        <div id="path{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_topic_editpath', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                        <div id="path{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_topic_editpath', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
                             {{ macrosTopic.path(topic, isLinkedToItems, isLinkedToItems) }}
                         </div>
                     {% endif %}
             
                     {# files #}
-                    <div id="files{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                    <div id="files{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
                         {{ macrosItem.files(topic, draft) }}
                     </div>
 
                     {% if not draft %}
                         {# links #}
-                        <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                        <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
                             {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft) }}
                         </div>
                     {% endif %}

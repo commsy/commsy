@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% import 'App:base:printmacro.html.twig' as macros %}
+{% import 'base/printmacro.html.twig' as macros %}
 
 <html lang="de">
 <head>
@@ -86,7 +86,7 @@
                             </div>
 
                             {{ render(controller(
-                                'App:Link:showDetailLong',
+                                'App\\Controller\\LinkController::showDetailLongAction',
                                 { 'roomId': item.contextId, 'itemId': item.itemId }
                             ))}}
                         </article>

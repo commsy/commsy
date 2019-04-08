@@ -1,6 +1,6 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% form_theme form 'App:form:uikit_horizontal_dynamic_layout.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_dynamic_layout.html.twig' %}
 
 {% block cover %}
     <div id="cover" class="uk-cover-background uk-position-relative cs-cover-background" aria-hidden="false">
@@ -20,7 +20,7 @@
                             {{ homeInformationEntry.description|commsyMarkup|raw }}
                         </div>
                         <div class="uk-margin-top uk-align-right">
-                        {% set pathName = 'commsy_' ~ homeInformationEntry.type ~ '_detail' %}
+                        {% set pathName = 'app_' ~ homeInformationEntry.type ~ '_detail' %}
                         <a href="{{ path(pathName, {'roomId': roomItem.itemId, 'itemId': homeInformationEntry.itemId}) }}">{{ 'link to entry'|trans({}, "room") }}</a>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}" style="padding-bottom: 0px; padding-top: 0px;">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'App:Announcement:shortfeed',
+                                    'App\\Controller\\AnnouncementController::shortfeedAction',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -48,7 +48,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'App:Announcement:shortfeed',
+                                    'App\\Controller\\AnnouncementController::shortfeedAction',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -150,10 +150,10 @@
                             <div class="uk-width-1-3">{{ 'Moderation:'|trans({}, "room") }}</div>
                             <div class="uk-width-2-3 uk-text-truncate">
                                 {% for roomModerator in roomModerators %}
-                                    <a href="{{ path('commsy_user_detail', {'roomId': roomItem.itemId, 'itemId': roomModerator.itemId}) }}">{{ roomModerator.fullName }}</a>{% if not loop.last %}, {% endif %}
+                                    <a href="{{ path('app_user_detail', {'roomId': roomItem.itemId, 'itemId': roomModerator.itemId}) }}">{{ roomModerator.fullName }}</a>{% if not loop.last %}, {% endif %}
                                 {% endfor %}
                                 <br/>
-                                <a id="cs-moderation-support-link" href="#" data-form-url="{{ path('commsy_room_moderationsupport', {'roomId': roomItem.itemId}) }}">{{ 'moderation support'|trans({}, "room") }}</a>
+                                <a id="cs-moderation-support-link" href="#" data-form-url="{{ path('app_room_moderationsupport', {'roomId': roomItem.itemId}) }}">{{ 'moderation support'|trans({}, "room") }}</a>
                             </div>
                         </div>
                         <div class="uk-flex">
@@ -210,7 +210,7 @@
 
                 {% if isModerator and userTasks|length > 0 %}
                     <div class="uk-alert uk-alert-danger">
-                        {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('commsy_user_list', {'roomId': roomItem.itemId,'user_filter[user_status]':1}) }}">
+                        {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('app_user_list', {'roomId': roomItem.itemId,'user_filter[user_status]':1}) }}">
                             {{ 'show user'|trans({},'user') }}
                         </a>
                     </div>
@@ -219,7 +219,7 @@
                 <div class="feed">
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
-                            'App:Room:feed',
+                            'App\\Controller\\RoomController::feedAction',
                             { 'roomId': roomItem.itemId }
                         ))}}
                     </ul>

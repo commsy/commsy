@@ -1,12 +1,12 @@
-{% extends 'App:base:list.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as utilsMacros %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <ul id="institution-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App:Institution:feed', {
+            'App\\Controller\\InstitutionController::feedAction', {
                 'roomId': roomId,
                 'institutionFilter': app.request.query.get('institution_filter')
             }
@@ -42,21 +42,21 @@
 
                 {% if is_granted('ITEM_EDIT', 'NEW') and createContext %}
                 <li>
-                     <a href="{{ path('commsy_institution_create', {'roomId': roomId}) }}">
+                     <a href="{{ path('app_institution_create', {'roomId': roomId}) }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                     </a>
                 </li>
                 {% endif %}
 
                 <li>
-                    <a href="{{ path('commsy_institution_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
+                    <a href="{{ path('app_institution_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_institution_xhrmarkread', {'roomId': roomId}),
+                        'url': path('app_institution_xhrmarkread', {'roomId': roomId}),
                         'action': 'markread',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -68,7 +68,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_institution_xhrdelete', {'roomId': roomId}),
+                        'url': path('app_institution_xhrdelete', {'roomId': roomId}),
                         'action': 'delete',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -76,7 +76,7 @@
                         'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                         'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                         'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                        'returnUrl': path('commsy_institution_list', {'roomId': roomId})
+                        'returnUrl': path('app_institution_list', {'roomId': roomId})
                     }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                     </a>

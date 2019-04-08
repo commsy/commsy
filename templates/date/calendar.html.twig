@@ -1,6 +1,6 @@
-{% extends 'App:base:list.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
-{% import 'App:utils:macros.html.twig' as macros %}
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% block content %}
 
@@ -40,7 +40,7 @@
 
                                             <li>
                                                 {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                    <a id="create-date" href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                                                    <a id="create-date" href="{{ path('app_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                                                     </a>
                                                 {% else %}
@@ -52,7 +52,7 @@
 
                                             {# print #}
                                             <li>
-                                                <a href="{{ path('commsy_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
+                                                <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
                                                     <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                                 </a>
                                             </li>
@@ -101,7 +101,7 @@
                                                 {# import iCal #}
                                                 <li>
                                                     {% if not isArchived %}
-                                                        <a href="{{ path('commsy_date_import', {'roomId': roomId}) }}" >
+                                                        <a href="{{ path('app_date_import', {'roomId': roomId}) }}" >
                                                             <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
                                                         </a>
                                                     {% else %}
@@ -121,13 +121,13 @@
                                 <i class="uk-icon-calendar uk-icon-small" data-uk-tooltip title="{{ 'calendar view'|trans({}, "date") }}"></i>
                             </div>
                             <div class="uk-float-right uk-margin-small-left">
-                                <a href="{{ path('commsy_date_list', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-list-ul uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i></a>
+                                <a href="{{ path('app_date_list', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-list-ul uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
     
-    <div id='calendar' data-events='{"url": "{{ path('commsy_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('commsy_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}"}' data-options='{"locale": "de" }'></div>
+    <div id='calendar' data-events='{"url": "{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('app_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}"}' data-options='{"locale": "de" }'></div>
     
     </div>
         </div>

@@ -1,18 +1,18 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray, timeSpendSum) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     {% import _self as todoMacros %}
 
     {% if item.type == 'todo' %}
-        {% set pathName = 'commsy_todo_edit' %}
+        {% set pathName = 'app_todo_edit' %}
     {% else %}
-        {% set pathName = 'commsy_todo_editstep' %}
+        {% set pathName = 'app_todo_editstep' %}
     {% endif %}
 
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
     
-    <div id="step{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
+    <div id="step{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -31,7 +31,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'App:utils:edit_spinner.html.twig' %}
+                        {% include 'utils/edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -236,7 +236,7 @@
 {% endmacro %}
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating, ratingArray) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     {% import _self as todoMacros %}
 
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -257,7 +257,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'App:utils:edit_spinner.html.twig' %}
+                        {% include 'utils/edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -439,7 +439,7 @@
 {% endmacro %}
 
 {% macro responsibility(item,participants) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     {% if not participants is empty %}
         {% for participant in participants %}
                     {% if participant.isUser %}
@@ -452,13 +452,13 @@
 {% endmacro %}
 
 {% macro steps(item, stepList) %}
-    {% import 'App:utils:macros.html.twig' as macrosUtils %}
+    {% import 'utils/macros.html.twig' as macrosUtils %}
 
     <hr class="uk-width-9-10"/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'App:utils:edit_spinner.html.twig' %}
+        {% include 'utils/edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">

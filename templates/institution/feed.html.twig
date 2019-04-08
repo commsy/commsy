@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for institution in institutions %}
     {% set entryAllowedActions = '' %}
@@ -34,7 +34,7 @@
             </div>
             <div>
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_institution_detail', {'roomId': roomId, 'itemId': institution.itemId}) }}">{{ institution.title|decodeHtmlEntity }}</a>
+                    <a href="{{ path('app_institution_detail', {'roomId': roomId, 'itemId': institution.itemId}) }}">{{ institution.title|decodeHtmlEntity }}</a>
                 </h4>
 
                 <div class="uk-comment-meta">

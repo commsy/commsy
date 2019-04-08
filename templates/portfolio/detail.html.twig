@@ -1,6 +1,6 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% block content %}
     <div class="uk-grid">
@@ -13,7 +13,7 @@
                     </div>
                 </div>
 
-                {% import 'App:utils:macros.html.twig' as macros %}
+                {% import 'utils/macros.html.twig' as macros %}
                 {% if not feedList is empty %}
                     {% for feedItem in feedList %}
                         <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
@@ -137,7 +137,7 @@
                                     {#{  macros.userIconLink(user) }#}
                                 </div>
                                 <div class="uk-width-8-10">
-                                    {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': portfolioId, 'firstTagId': firstTag.itemId, 'secondTagId': secondTag.itemId}), 'method': 'POST'}) }}
+                                    {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': portfolioId, 'firstTagId': firstTag.itemId, 'secondTagId': secondTag.itemId}), 'method': 'POST'}) }}
                                     <p>
                                         {{ form_label(annotationForm.description) }}
                                     </p>
@@ -148,7 +148,7 @@
                         </article>
 
                     {{ render(controller(
-                        'App:Annotation:feed',
+                        'App\\Controller\\AnnotationController::feedAction',
                         { 'roomId': roomId, 'linkedItemId': portfolioId, 'firstTagId': firstTag.itemId, 'secondTagId': secondTag.itemId }
                     ))}}
 

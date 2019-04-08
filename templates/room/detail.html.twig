@@ -1,8 +1,8 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% import 'App:item:macros.html.twig' as macrosItem %}
-{% import 'App:room:macros.html.twig' as macrosRoom %}
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'item/macros.html.twig' as macrosItem %}
+{% import 'room/macros.html.twig' as macrosRoom %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% set project = item %}
 
@@ -58,7 +58,7 @@
                     </div>
 
                     {# description #}
-                    <div id="description{{ project.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': project.contextId, 'itemId': project.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': project.contextId, 'itemId': project.itemId}) }}' }">
+                    <div id="description{{ project.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': project.contextId, 'itemId': project.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': project.contextId, 'itemId': project.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', project, true, project.description) }}
                     </div>
 

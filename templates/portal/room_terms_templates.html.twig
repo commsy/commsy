@@ -1,5 +1,5 @@
-{% extends 'App:base:portal.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/portal.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -24,7 +24,7 @@
                         <div id="categories" class="uk-width-1-4">
                             {% for term in terms %}
                                 <span>
-                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if termId == term.id %} uk-button-primary{% endif %}" href="{{ path('commsy_portal_roomtermstemplates', {
+                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if termId == term.id %} uk-button-primary{% endif %}" href="{{ path('app_portal_roomtermstemplates', {
                                          'roomId': roomId,
                                          'termId': term.id
                                      }) }}">

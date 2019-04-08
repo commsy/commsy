@@ -1,8 +1,8 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% import 'App:item:macros.html.twig' as macrosItem %}
-{% import 'App:material:macros.html.twig' as macrosMaterial %}
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'item/macros.html.twig' as macrosItem %}
+{% import 'material/macros.html.twig' as macrosMaterial %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% set item = material %}
 
@@ -20,7 +20,7 @@
 
                         {# quick item navigation #}
                         {{ render(controller(
-                            'App:Item:stepper',
+                            'App\\Controller\\ItemController::stepperAction',
                             { 'roomId': roomId, 'itemId': item.itemId }
                         ))}}
 
@@ -40,7 +40,7 @@
                                         {# new entry #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                <a href="{{ path('commsy_material_create', {'roomId': roomId}) }}" id="newEntry">
+                                                <a href="{{ path('app_material_create', {'roomId': roomId}) }}" id="newEntry">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                                 </a>
                                             {% else %}
@@ -52,7 +52,7 @@
 
                                         {# print #}
                                         <li>
-                                            <a href="{{ path('commsy_material_print', {'roomId': roomId, 'itemId': material.itemId}) }}" target="_blank" id="print">
+                                            <a href="{{ path('app_material_print', {'roomId': roomId, 'itemId': material.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -60,7 +60,7 @@
                                         {# save #}
                                         <li>
                                             <a href="#"  data-cs-action="{{ {
-                                                'url': path('commsy_material_download', {'roomId': roomId}),
+                                                'url': path('app_material_download', {'roomId': roomId}),
                                                 'action': 'save',
                                                 'itemId': material.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -73,7 +73,7 @@
                                         {# copy #}
                                         <li>
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_material_xhrcopy', {'roomId': roomId}),
+                                                'url': path('app_material_xhrcopy', {'roomId': roomId}),
                                                 'action': 'copy',
                                                 'itemId': material.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -86,7 +86,7 @@
 
                                         {# send #}
                                         <li>
-                                            <a href="{{ path('commsy_item_send', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                            <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': material.itemId}) }}">
                                                 <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
                                             </a>
                                         </li>
@@ -95,7 +95,7 @@
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a  href="#" data-cs-action="{{ {
-                                                    'url': path('commsy_material_xhrdelete', {'roomId': roomId, 'itemId': material.itemId}),
+                                                    'url': path('app_material_xhrdelete', {'roomId': roomId, 'itemId': material.itemId}),
                                                     'action': 'delete',
                                                     'itemId': material.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -105,7 +105,7 @@
                                                     'confirmQuestion': 'confirm delete'|trans({},'rubric'),
                                                     'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
                                                     'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                    'returnUrl': path('commsy_material_list', {'roomId': roomId})
+                                                    'returnUrl': path('app_material_list', {'roomId': roomId})
                                                 }|json_encode|e('html_attr') }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
@@ -124,7 +124,7 @@
 
                                         <li class="cs-workflow-action{% if not workflowRead %} uk-hidden{% endif %}">
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
+                                                'url': path('app_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
                                                 'action': 'workflow',
                                                 'itemId': material.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -138,7 +138,7 @@
 
                                         <li class="cs-workflow-action{% if not workflowUnread %} uk-hidden{% endif %}">
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
+                                                'url': path('app_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
                                                 'action': 'workflow',
                                                 'itemId': material.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -177,7 +177,7 @@
 
                                             {# new section #}
                                              <li>
-                                                <a class="newSection" href="#" id="newSection" data-section-url="{{ path('commsy_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                 </a>
                                             </li>
@@ -185,7 +185,7 @@
                                             {# new version #}
                                             {% if material.isCurrentVersion %}
                                                  <li>
-                                                    <a class="newVersion" href="{{ path('commsy_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
+                                                    <a class="newVersion" href="{{ path('app_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
                                                         <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
                                                     </a>
                                                 </li>
@@ -232,7 +232,7 @@
                                             {% if version.current %}
                                                 <a href="#" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
                                             {% else %}
-                                                <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
+                                                <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
                                             {% endif %}
                                         </div>
                                     {% endfor %}
@@ -248,24 +248,24 @@
                     </div>
             
                     {# description #}
-                    <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', material, true, material.description, draft) }}
                     </div>
             
                     {# files #}
-                    <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosItem.files(material, draft) }}
                     </div>
 
                     {% if not draft %}
                         {# links #}
-                        <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                        <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             {{ macrosItem.links(material,showHashtags,showCategories,roomCategories, draft) }}
                         </div>
 
                         {# workflow #}
                         {% if showWorkflow and (withTrafficLight or withResubmission or withValidity or withReader) %}
-                            <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                                 {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withResubmission, withValidity) }}
                             </div>
                         {% endif %}
@@ -273,7 +273,7 @@
                         {# sections #}
                         <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle"
                         {% if sectionList|length > 0 %}
-                            data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
+                            data-uk-observe data-cs-edit="{editUrl: '{{ path('app_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
                         {% endif %}
                         >
                             {{ macrosMaterial.sections(material, sectionList) }}
@@ -339,7 +339,7 @@
                                                 {# new section #}
                                                 <li>
                                                     {% if not user.isReadOnlyUser %}
-                                                        <a class="newSection" href="#" id="newSection" data-section-url="{{ path('commsy_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                        <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
                                                             <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                         </a>
                                                     {% else %}
@@ -353,7 +353,7 @@
                                                 <li>
                                                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                         <a  href="#" data-cs-action="{{ {
-                                                            'url': path('commsy_section_xhrdelete', {'roomId': roomId, 'itemId': section.itemId}),
+                                                            'url': path('app_section_xhrdelete', {'roomId': roomId, 'itemId': section.itemId}),
                                                             'action': 'delete',
                                                             'itemId': section.itemId,
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -386,12 +386,12 @@
                             </div>
                             
                             {# description #}
-                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                                 {{ macrosItem.itemDescription('description', section, true, section.description) }}
                             </div>
 
                             {# files #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                                 {{ macrosItem.files(section) }}
                             </div>
                         </article>
@@ -417,7 +417,7 @@
                                 {{  macros.userIconLink(user) }}
                             </div>
                             <div class="uk-width-8-10">
-                                {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId}), 'method': 'POST'}) }}
+                                {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId}), 'method': 'POST'}) }}
                                     <p>
                                         {{ form_label(annotationForm.description) }}
                                     </p>
@@ -429,7 +429,7 @@
                 {% endif %}
 
                 {{ render(controller(
-                    'App:Annotation:feed',
+                    'App\\Controller\\AnnotationController::feedAction',
                     { 'roomId': roomId, 'linkedItemId': item.itemId }
                 ))}}
 

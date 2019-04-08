@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for group in groups %}
 
@@ -22,7 +22,7 @@
                         <div class="uk-width-3-4 uk-text-truncate">
                            <span class="uk-text-large uk-text-middle">
                                {% if is_granted('ITEM_SEE', group.itemId) %}
-                                   <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
+                                   <a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
                                {% else %}
                                    {{ group.title|decodeHtmlEntity }}
                                {% endif %}
@@ -33,9 +33,9 @@
                             <div class="uk-width-1-4 uk-text-right">
                                 {% if memberStatus[group.itemId].groupMember or isRoot %}
                                     {% if memberStatus[group.itemId].groupRoomMember =='enter' or isRoot %}
-                                        <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                        <a href="{{ path('app_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
                                     {% elseif memberStatus[group.itemId].groupRoomMember =='join' %}
-                                        <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'get grouproom access'|trans({}, 'group') }}"></a>
+                                        <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'get grouproom access'|trans({}, 'group') }}"></a>
                                     {% endif %}
                                 {% else %}
                                     <span class="uk-icon-button uk-icon-sign-in uk-text-muted cs-grouproom-sign-in" data-uk-tooltip title="{{'access restricted to group members'|trans({}, 'group') }}"></span>

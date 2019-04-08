@@ -1,4 +1,4 @@
-{% extends 'App:base:list.html.twig' %}
+{% extends 'base/list.html.twig' %}
 
 {% block listTitle %}
     {{ 'Rooms'|trans([], 'room') }}
@@ -7,7 +7,7 @@
 {% block feed %}
     <ul id="room-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App:Room:feedAll', {
+            'App\\Controller\\RoomController::feedAllAction', {
                 'roomId': roomId,
                 'roomFilter': app.request.query.get('room_filter')
             }
@@ -32,7 +32,7 @@
 
                     {% if is_granted('ITEM_EDIT', 'NEW') %}
                         <li>
-                            <a href="{{ path('commsy_room_create', {'roomId': roomId}) }}">
+                            <a href="{{ path('app_room_create', {'roomId': roomId}) }}">
                                 <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'New room'|trans([], 'room') }}
                             </a>
                         </li>

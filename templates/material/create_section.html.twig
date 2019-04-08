@@ -1,6 +1,6 @@
-{% import 'App:utils:macros.html.twig' as macros %}
-{% import 'App:material:macros.html.twig' as macrosMaterial %}
-{% import 'App:item:macros.html.twig' as macrosItem %}
+{% import 'utils/macros.html.twig' as macros %}
+{% import 'material/macros.html.twig' as macrosMaterial %}
+{% import 'item/macros.html.twig' as macrosItem %}
 
 <div class="uk-panel uk-panel-box uk-margin-top">
     <article class="uk-article uk-position-relative">
@@ -27,12 +27,12 @@
         </div>
         
         {# description #}
-        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
             {{ macrosItem.itemDescription('description', section, true, section.description) }}
         </div>
 
         {# files #}
-        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
             {{ macrosItem.files(section) }}
         </div>
     </article>

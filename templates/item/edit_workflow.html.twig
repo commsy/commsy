@@ -1,6 +1,6 @@
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 <hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -17,7 +17,7 @@
 
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     <div class="uk-width-9-10">
-    {% include 'App:utils:save_spinner.html.twig' %}
+    {% include 'utils/save_spinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
 

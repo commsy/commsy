@@ -5,20 +5,20 @@
                 <div class="uk-text-large">{{ 'Rooms'|trans({}, "room") }}</div>
              </div>
         </div>
-        <form action="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal uk-form">
+        <form action="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal uk-form">
             <input type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}" style="min-width:225px;">
             <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
         </form>
         <ul class="uk-list">
             <li>
-                <a class="uk-comment-title cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
+                <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
             </li>
             <li>
-                <a class="uk-comment-title cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
+                <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
             </li>
             {% if userMayCreateContext and is_granted('ITEM_EDIT', 'NEW') %}
                 <li>
-                    <a class="uk-comment-title cs-link-highlight" href="{{ path('commsy_room_create', {'roomId': roomItem.itemId}) }}">{{ 'Create new context'|trans([], 'room') }}</a>
+                    <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_create', {'roomId': roomItem.itemId}) }}">{{ 'Create new context'|trans([], 'room') }}</a>
                 </li>
             {% endif %}
         </ul>
@@ -37,7 +37,7 @@
             <div class="feed">
                 <ul id="dashboard-feed" class="uk-comment-list">
                     {{ render(controller(
-                        'App:Dashboard:feed',
+                        'App\\Controller\\DashboardController::feedAction',
                         { 'roomId': roomItem.itemId }
                     ))}}
                 </ul>
@@ -52,7 +52,7 @@
 {% endmacro %}
 
 {% macro dashboardCalendar(roomItem, calendars, iCal, contextArray) %}
-    {% import 'App:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
 
     {#<li id="dashboard-calendar" class="uk-grid-margin">#}
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -128,7 +128,7 @@
             </div>
 
             {{ render(controller(
-            'App:Date:calendardashboard',
+            'App\\Controller\\DateController::calendardashboardAction',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
@@ -145,7 +145,7 @@
             </div>
 
             {{ render(controller(
-            'App:Dashboard:rss',
+            'App\\Controller\\DashboardController::rssAction',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
@@ -162,7 +162,7 @@
             </div>
 
             {{ render(controller(
-            'App:Dashboard:externalaccess',
+            'App\\Controller\\DashboardController::externalaccessAction',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>

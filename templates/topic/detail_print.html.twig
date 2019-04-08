@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% import 'App:base:printmacro.html.twig' as macros %}
+{% import 'base/printmacro.html.twig' as macros %}
 
 {% if topic is defined %}
     {% set item = topic %}
@@ -89,7 +89,7 @@
                 {# annotations #}             
                     
                         {{ render(controller(
-                            'App:Annotation:feedPrint',
+                            'App\\Controller\\AnnotationController::feedPrintAction',
                             { 'roomId': roomId, 'linkedItemId': item.itemId }
                         ))}}
 

@@ -1,4 +1,4 @@
-{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% for user in users %}
     <div class="uk-width-medium-1-2">
@@ -16,17 +16,17 @@
                         <input type="checkbox" value="{{ user.itemId }}">
                     </form>
                 </div>
-                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
-                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                <a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
+                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                 </a>
 
                 {% if user.status == 1 and is_granted('MODERATOR') and is_granted('ITEM_EDIT', user.itemId) %}
                     <div style="float: right;">
-                        <a class="uk-button uk-button-small uk-button-success uk-border-rounded" title="{{'Confirm'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
+                        <a class="uk-button uk-button-small uk-button-success uk-border-rounded" title="{{'Confirm'|trans({}, 'user') }}" href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
                             <i class="uk-icon-check"></i>
                             <span class="uk-visible-large">{{'Confirm'|trans({}, 'user') }}</span>
                         </a>
-                        <a class="uk-button uk-button-small uk-button-danger uk-border-rounded" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                        <a class="uk-button uk-button-small uk-button-danger uk-border-rounded" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
                             <i class="uk-icon-times"></i>
                             <span class="uk-visible-large">{{'Reject'|trans({}, 'user') }}</span>
                         </a>
@@ -37,7 +37,7 @@
                 {% endif %}
 
                 <div class="uk-text-large uk-text-middle uk-text-truncate uk-link">
-                    <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
+                    <a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
                     <div class="uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %} uk-text-muted">
                         {% if user.isContact %}
                             <i class="uk-text-small uk-icon-phone" data-uk-tooltip title="{{'is contact'|trans({}, 'user') }}"></i>

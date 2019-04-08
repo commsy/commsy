@@ -1,12 +1,12 @@
-{% extends 'App:base:list.html.twig' %}
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
-{% import 'App:utils:macros.html.twig' as utilsMacros %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <ul id="discussions-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App:Discussion:feed', {
+            'App\\Controller\\DiscussionController::feedAction', {
                 'roomId': roomId,
                 'discussionFilter': app.request.query.get('discussion_filter')
             }
@@ -45,7 +45,7 @@
 
                 <li>
                     {% if is_granted('ITEM_EDIT', 'NEW') %}
-                        <a href="{{ path('commsy_discussion_create', {'roomId': roomId}) }}">
+                        <a href="{{ path('app_discussion_create', {'roomId': roomId}) }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                         </a>
                     {% else %}
@@ -57,14 +57,14 @@
 
                 {# print #}
                 <li>
-                    <a href="{{ path('commsy_discussion_printlist', {'roomId': roomId,'discussion_filter':app.request.query.get('discussion_filter')}) }}" target="_blank" id="print">
+                    <a href="{{ path('app_discussion_printlist', {'roomId': roomId,'discussion_filter':app.request.query.get('discussion_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_discussion_xhrmarkread', {'roomId': roomId}),
+                        'url': path('app_discussion_xhrmarkread', {'roomId': roomId}),
                         'action': 'markread',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -76,7 +76,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_discussion_xhrcopy', {'roomId': roomId}),
+                        'url': path('app_discussion_xhrcopy', {'roomId': roomId}),
                         'action': 'copy',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -88,7 +88,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_discussion_download', {'roomId': roomId}),
+                        'url': path('app_discussion_download', {'roomId': roomId}),
                         'action': 'save',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -101,7 +101,7 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_discussion_xhrdelete', {'roomId': roomId}),
+                            'url': path('app_discussion_xhrdelete', {'roomId': roomId}),
                             'action': 'delete',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
@@ -109,7 +109,7 @@
                             'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                             'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                             'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                            'returnUrl': path('commsy_discussion_list', {'roomId': roomId})
+                            'returnUrl': path('app_discussion_list', {'roomId': roomId})
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>

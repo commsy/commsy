@@ -1,6 +1,6 @@
-{% extends 'App:base:room.html.twig' %}
-{% form_theme editForm 'App:form:uikit_horizontal_layout.html.twig' %}
-{% import 'App:utils:macros.html.twig' as macros %}
+{% extends 'base/room.html.twig' %}
+{% form_theme editForm 'form/uikit_horizontal_layout.html.twig' %}
+{% import 'utils/macros.html.twig' as macros %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -24,7 +24,7 @@
                         <div class="uk-width-2-3">
                             {% for calendar in calendars %}
                                 <span>
-                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if calendarId == calendar.id %} uk-button-primary{% endif %}" href="{{ path('commsy_calendar_edit', { 'roomId': roomId, 'calendarId': calendar.id }) }}">
+                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if calendarId == calendar.id %} uk-button-primary{% endif %}" href="{{ path('app_calendar_edit', { 'roomId': roomId, 'calendarId': calendar.id }) }}">
                                         {{ macros.calendarIcon(calendar) }}
                                         <span class="uk-vertical-align-middle">
                                             {{- calendar.title|trans({},'date') -}}

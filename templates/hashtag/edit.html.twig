@@ -1,7 +1,7 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% form_theme editForm 'App:form:uikit_horizontal_layout.html.twig' %}
-{% form_theme mergeForm 'App:form:uikit_horizontal_layout.html.twig' %}
+{% form_theme editForm 'form/uikit_horizontal_layout.html.twig' %}
+{% form_theme mergeForm 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -29,7 +29,7 @@
                         <div class="uk-width-2-3">
                             {% for hashtag in hashtags %}
                                 <span>
-                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if labelId == hashtag.itemId %} uk-button-primary{% endif %}" href="{{ path('commsy_hashtag_edit', { 'roomId': roomId, 'labelId': hashtag.itemId }) }}">
+                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if labelId == hashtag.itemId %} uk-button-primary{% endif %}" href="{{ path('app_hashtag_edit', { 'roomId': roomId, 'labelId': hashtag.itemId }) }}">
                                         {{- hashtag.name -}}
                                     </a>
                                 </span>

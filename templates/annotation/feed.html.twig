@@ -1,5 +1,5 @@
-{% import 'App:utils:macros.html.twig' as utilMacros %}
-{% import 'App:annotation:macros.html.twig' as annotationMacros %}
+{% import 'utils/macros.html.twig' as utilMacros %}
+{% import 'annotation/macros.html.twig' as annotationMacros %}
 
 {% for annotation in annotations %}
     <article class="uk-comment">
@@ -25,7 +25,7 @@
 
             {# content #}
             <div class="uk-width">
-                <div id="description{{ annotation.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_annotation_edit', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}' }">
+                <div id="description{{ annotation.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_annotation_edit', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}' }">
                     {{ annotationMacros.editAnnotationContent('description', annotation, annotation.description) }}
                 </div>
             </div>

@@ -1,9 +1,9 @@
-{% extends '::base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block side_navigation %}
     {{ knp_menu_render('main') }}
 {% endblock %}
 
 {% block breadcrumb %}
-    {{ wo_render_breadcrumbs({ viewTemplate: "App:breadcrumbs:breadcrumbs.html.twig" }) }}
+    {{ wo_render_breadcrumbs({ viewTemplate: "breadcrumbs/breadcrumbs.html.twig" }) }}
 {% endblock %}

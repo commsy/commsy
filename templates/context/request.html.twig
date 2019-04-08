@@ -1,21 +1,21 @@
-{% extends 'App:base:room.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% if form.request is defined %}
-    {% form_theme form.request 'App:form:uikit_layout.html.twig' %}
+    {% form_theme form.request 'form/uikit_layout.html.twig' %}
 {% endif %}
 
 {% if form.cancel is defined %}
-    {% form_theme form.cancel 'App:form:uikit_layout.html.twig' %}
+    {% form_theme form.cancel 'form/uikit_layout.html.twig' %}
 {% endif %}
 
 {% if form.coderequest is defined %}
-    {% form_theme form.coderequest 'App:form:uikit_layout.html.twig' %}
+    {% form_theme form.coderequest 'form/uikit_layout.html.twig' %}
 {% endif %}
 
 {% if form.codecancel is defined %}
-    {% form_theme form.codecancel 'App:form:uikit_layout.html.twig' %}
+    {% form_theme form.codecancel 'form/uikit_layout.html.twig' %}
 {% endif %}
 
 {% block content %}
