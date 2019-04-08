@@ -46,7 +46,7 @@ class FixGroupAll implements DatabaseCheck
 
         $qb = $this->em->createQueryBuilder()
             ->select('r')
-            ->from('CommsyBundle:Room', 'r')
+            ->from('App:Room', 'r')
             ->where('r.deleter IS NULL')
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.type = :roomType')

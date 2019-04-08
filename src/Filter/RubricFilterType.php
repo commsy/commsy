@@ -48,7 +48,7 @@ class RubricFilterType extends AbstractType
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
                             ),
-                            'class' => 'CommsyBundle:Labels',
+                            'class' => 'App:Labels',
                             'query_builder' => function (LabelRepository $er) use ($roomId) {
                                 return $er->createQueryBuilder('l')
                                     ->andWhere('l.contextId = :contextId')
@@ -75,7 +75,7 @@ class RubricFilterType extends AbstractType
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
                             ),
-                            'class' => 'CommsyBundle:Labels',
+                            'class' => 'App:Labels',
                             'query_builder' => function (LabelRepository $er) use ($roomId) {
                                 return $er->createQueryBuilder('l')
                                     ->andWhere('l.contextId = :contextId')
@@ -98,7 +98,7 @@ class RubricFilterType extends AbstractType
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
                             ),
-                            'class' => 'CommsyBundle:Labels',
+                            'class' => 'App:Labels',
                             'query_builder' => function (LabelRepository $er) use ($roomId) {
                                 return $er->createQueryBuilder('l')
                                     ->andWhere('l.contextId = :contextId')
