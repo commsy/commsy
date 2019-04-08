@@ -14,7 +14,7 @@ use App\Validator\Constraints as CommsyAssert;
  *     @ORM\Index(name="creator_id", columns={"creator_id"}),
  *     @ORM\Index(name="type", columns={"type"})
  * })
- * @ORM\Entity(repositoryClass="CommsyBundle\Repository\LabelRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\LabelRepository")
  * @CommsyAssert\UniqueLabelName
  */
 class Labels

@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *     @ORM\Index(name="creator_id", columns={"creator_id"}),
  *     @ORM\Index(name="modifier_id", columns={"modifier_id"})
  * })
- * @ORM\Entity(repositoryClass="CommsyBundle\Repository\MaterialsRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\MaterialsRepository")
  */
 class Materials
 {

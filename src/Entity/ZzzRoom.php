@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ZzzRoom
  *
  * @ORM\Table(name="zzz_room", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="type", columns={"type"}), @ORM\Index(name="activity", columns={"activity"}), @ORM\Index(name="room_description", columns={"room_description"}), @ORM\Index(name="contact_persons", columns={"contact_persons"}), @ORM\Index(name="title", columns={"title"}), @ORM\Index(name="modifier_id", columns={"modifier_id"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="lastlogin", columns={"lastlogin"})})
- * @ORM\Entity(repositoryClass="CommsyBundle\Repository\RoomRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\RoomRepository")
  */
 class ZzzRoom
 {

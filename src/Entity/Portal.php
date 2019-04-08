@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Portal
  *
  * @ORM\Table(name="portal", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity(repositoryClass="CommsyBundle\Repository\PortalRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\PortalRepository")
  */
 class Portal
 {
