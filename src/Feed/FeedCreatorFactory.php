@@ -7,8 +7,8 @@ use App\Feed\Creators\Creator;
 use App\Utils\ItemService;
 use App\Services\LegacyEnvironment;
 
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class FeedCreatorFactory
 {
@@ -20,7 +20,7 @@ class FeedCreatorFactory
     private $translator;
     private $router;
 
-    public function __construct(ItemService $itemService, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator, Router $router)
+    public function __construct(ItemService $itemService, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator, RouterInterface $router)
     {
         $this->itemService = $itemService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

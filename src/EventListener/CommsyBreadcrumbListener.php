@@ -3,10 +3,10 @@
 namespace App\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
@@ -23,7 +23,7 @@ class CommsyBreadcrumbListener
     private $breadcrumbs;
     private $router;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService, TranslatorInterface $translator, Router $router, Breadcrumbs $whiteOctoberBreadcrumbs)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService, TranslatorInterface $translator, RouterInterface $router, Breadcrumbs $whiteOctoberBreadcrumbs)
     {
         $this->legacyEnvironment = $legacyEnvironment;
         $this->roomService = $roomService;

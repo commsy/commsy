@@ -2,11 +2,10 @@
 
 namespace App\EventListener;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 
 class CommsyChangeMailListener
 {
@@ -15,7 +14,7 @@ class CommsyChangeMailListener
 
     private $router;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Router $router)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RouterInterface $router)
     {
         $this->legacyEnvironment = $legacyEnvironment;
         $this->router = $router;

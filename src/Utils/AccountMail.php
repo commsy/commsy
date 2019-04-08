@@ -4,8 +4,8 @@ namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * This is just a helper class to construct mails on any account action.
@@ -16,7 +16,7 @@ class AccountMail
     private $legacyEnvironment;
     private $router;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Router $router)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RouterInterface $router)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->router = $router;
