@@ -1,10 +1,17 @@
 <?php
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Tasks;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class TasksRepository extends EntityRepository
+class TasksRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Tasks::class);
+    }
+
     public function getTasksByContextId($contextId)
     {
         $qb = $this->createQueryBuilder('r');

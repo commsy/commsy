@@ -9,8 +9,14 @@
 namespace App\Repository;
 
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\AuthSource;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class AuthSourceRepository extends EntityRepository
+class AuthSourceRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, AuthSource::class);
+    }
 }

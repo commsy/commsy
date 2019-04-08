@@ -2,11 +2,17 @@
 namespace App\Repository;
 
 use App\Entity\Materials;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class MaterialsRepository extends EntityRepository
+class MaterialsRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Materials::class);
+    }
+
     /**
      * Used by Elastic when populating the index. The join will ensure only the latest version of a material
      * is index. Check the answer at StackOverflow for details on the greatest-n-per-group query.

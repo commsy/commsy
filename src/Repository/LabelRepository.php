@@ -1,10 +1,17 @@
 <?php
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Labels;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class LabelRepository extends EntityRepository
+class LabelRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Labels::class);
+    }
+
     public function findRoomHashtags($roomId)
     {
         $query = $this->createQueryBuilder('l')

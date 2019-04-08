@@ -1,10 +1,17 @@
 <?php
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Room;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class RoomRepository extends EntityRepository
+class RoomRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Room::class);
+    }
+
     public function getMainRoomQueryBuilder($portalId)
     {
         $qb = $this->createQueryBuilder('r');
