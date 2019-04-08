@@ -7,6 +7,9 @@ parameters:
     locale: 'en'
 
     legacy.site_index: "%kernel.project_dir%/public/commsy_legacy.php"
+    files_directory: '%kernel.project_dir%/files'
+    themes_directory: '%kernel.project_dir%/public/css/themes'
+
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
     commsy.mediawiki.consumerKey: ''
