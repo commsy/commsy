@@ -2,13 +2,11 @@
 
 namespace App\DataFixtures;
 
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\Finder\Finder;
-
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LoadInitialData extends AbstractFixture implements OrderedFixtureInterface
+class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
@@ -22,10 +20,5 @@ class LoadInitialData extends AbstractFixture implements OrderedFixtureInterface
 
             $manager->flush();
         }
-    }
-
-    public function getOrder()
-    {
-        return 1;
     }
 }
