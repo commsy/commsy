@@ -1,5 +1,5 @@
 <?php
-namespace Commsy\LegacyBundle\Form\DataTransformer;
+namespace App\Form\DataTransformer;
 
 use App\Utils\RoomService;
 use App\Utils\UserService;

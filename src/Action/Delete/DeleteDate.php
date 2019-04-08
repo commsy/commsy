@@ -10,7 +10,7 @@ namespace App\Action\Delete;
 
 
 use App\Services\LegacyEnvironment;
-use CommsyBundle\Services\CalendarsService;
+use App\Services\CalendarsService;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteDate extends DeleteGeneric

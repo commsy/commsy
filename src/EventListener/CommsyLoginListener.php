@@ -3,11 +3,6 @@
 namespace App\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-
-use Liip\ThemeBundle\ActiveTheme;
-
-use Commsy\LegacyBundle\Utils\RoomService;
 use App\Services\LegacyEnvironment;
 
 class CommsyLoginListener

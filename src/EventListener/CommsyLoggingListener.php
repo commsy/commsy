@@ -3,7 +3,6 @@
 namespace App\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 use Liip\ThemeBundle\ActiveTheme;
 
@@ -14,17 +13,11 @@ class CommsyLoggingListener
 {
     private $roomService;
 
-    private $activeTheme;
-
-    private $themeArray;
-
     private $legacyEnvironment;
 
-    public function __construct(RoomService $roomService, ActiveTheme $activeTheme, $themeArray, LegacyEnvironment $legacyEnvironment)
+    public function __construct(RoomService $roomService, LegacyEnvironment $legacyEnvironment)
     {
         $this->roomService = $roomService;
-        $this->activeTheme = $activeTheme;
-        $this->themeArray = $themeArray;
         $this->legacyEnvironment = $legacyEnvironment;
     }
 

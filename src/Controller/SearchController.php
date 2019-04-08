@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
@@ -78,10 +79,9 @@ class SearchController extends BaseController
      * @param $roomId
      * @param Request $request
      */
-    public function itemSearchResultsAction($roomId, Request $request)
+    public function itemSearchResultsAction($roomId, Request $request, SearchManager $searchManager)
     {
         $query = $request->get('search', '');
-        $searchManager = $this->get('commsy.search.manager');
         $searchManager->setQuery($query);
         $searchManager->setContext($roomId);
 
@@ -99,11 +99,10 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/instantresults")
      * @param $roomId int The context id
      */
-    public function instantResultsAction($roomId, Request $request)
+    public function instantResultsAction($roomId, Request $request, SearchManager $searchManager)
     {
         $query = $request->get('search', '');
 
-        $searchManager = $this->get('commsy.search.manager');
         $searchManager->setQuery($query);
         $searchManager->setContext($roomId);
 
@@ -210,7 +209,7 @@ class SearchController extends BaseController
      * @param  int $roomId The current room id
      * @return JsonResponse The JSON result
      */
-    public function roomNavigationAction($roomId, Request $request)
+    public function roomNavigationAction($roomId, Request $request, SearchManager $searchManager)
     {
         $results = [];
 
@@ -219,7 +218,6 @@ class SearchController extends BaseController
         $router = $this->container->get('router');
         $translator = $this->container->get('translator');
 
-        $searchManager = $this->get('commsy.search.manager');
         $searchManager->setQuery($query);
 
         $roomResults = $searchManager->getRoomResults();

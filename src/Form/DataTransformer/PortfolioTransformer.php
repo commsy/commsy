@@ -1,8 +1,7 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class PortfolioTransformer implements DataTransformerInterface

@@ -10,7 +10,7 @@ namespace App\Action\Delete;
 
 
 use App\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Utils\ItemService;
 use App\Utils\UserService;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;

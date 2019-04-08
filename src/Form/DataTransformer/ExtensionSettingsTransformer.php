@@ -2,9 +2,7 @@
 namespace App\Form\DataTransformer;
 
 use App\Utils\RoomService;
-use App\Utils\UserService;
 use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
 
 use App\Services\MediawikiService;
 

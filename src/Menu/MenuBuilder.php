@@ -5,10 +5,9 @@ namespace App\Menu;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Utils\RoomService;
-use Symfony\Component\Translation\Translator;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use App\Services\InvitationsService;
 
 class MenuBuilder
@@ -31,7 +30,13 @@ class MenuBuilder
     /**
     * @param FactoryInterface $factory
     */
-    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment, UserService $userService, AuthorizationChecker $authorizationChecker, InvitationsService $invitationsService )
+    public function __construct(
+        FactoryInterface $factory,
+        RoomService $roomService,
+        LegacyEnvironment $legacyEnvironment,
+        UserService $userService,
+        AuthorizationCheckerInterface $authorizationChecker,
+        InvitationsService $invitationsService)
     {
         $this->factory = $factory;
         $this->roomService = $roomService;

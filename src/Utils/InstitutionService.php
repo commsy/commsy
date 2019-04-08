@@ -1,8 +1,6 @@
 <?php
 
-namespace Commsy\LegacyBundle\Utils;
-
-use Symfony\Component\Form\Form;
+namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\FormInterface;

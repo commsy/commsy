@@ -3,12 +3,10 @@
 namespace App\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 use Liip\ThemeBundle\ActiveTheme;
 
 use App\Utils\RoomService;
-use App\Services\LegacyEnvironment;
 
 use Psr\Log\LoggerInterface;
 
@@ -23,8 +21,6 @@ class CommsyRequestListener
     private $preDefinedTheme;
 
     private $logger;
-
-    private $legacyEnvironment;
 
     public function __construct(RoomService $roomService, ActiveTheme $activeTheme, $themeArray, $preDefinedTheme, LoggerInterface $logger)
     {

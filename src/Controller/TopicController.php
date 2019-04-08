@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Action\Download\DownloadAction;
 use App\Event\CommsyEditEvent;
-use CommsyBundle\Filter\TopicFilterType;
+use App\Filter\TopicFilterType;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
