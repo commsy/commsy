@@ -253,7 +253,7 @@ class SearchController extends BaseController
             }
 
             // construct target url
-            $routeName = 'commsy_room_home';
+            $routeName = 'app_room_home';
             if ($router->getRouteCollection()->get($routeName)) {
                 $url = $this->generateUrl(
                     $routeName,
@@ -361,7 +361,7 @@ class SearchController extends BaseController
                     $roomId = $searchResult->getContextId();
                 }
 
-                $routeName = 'commsy_' . $type . '_detail';
+                $routeName = 'app_' . $type . '_detail';
                 if ($router->getRouteCollection()->get($routeName)) {
                     $url = $this->generateUrl($routeName, [
                         'roomId' => $roomId,
@@ -395,7 +395,7 @@ class SearchController extends BaseController
                 $results[] = [
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
-                    'routeName' => 'commsy_' . $type . '_detail',
+                    'routeName' => 'app_' . $type . '_detail',
                     'files' => $itemService->getItemFileList($searchResult->getItemId()),
                     'type' => $type,
                 ];
