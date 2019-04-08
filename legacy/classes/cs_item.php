@@ -2838,9 +2838,9 @@ function getExternalViewerArray(){
           CS_GROUP_TYPE,
           CS_TODO_TYPE,
           CS_TOPIC_TYPE,
-          CS_STEP_TYPE,
-          CS_DISCARTICLE_TYPE,
-          CS_SECTION_TYPE,
+//          CS_STEP_TYPE,
+//          CS_DISCARTICLE_TYPE,
+//          CS_SECTION_TYPE,
       ));
    }
 
