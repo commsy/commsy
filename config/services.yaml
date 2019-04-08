@@ -501,7 +501,7 @@ services:
             - { name: kernel.event_subscriber }
 
     # Search
-    commsy.seaarch.manager:
+    commsy.search.manager:
         alias: App\Search\SearchManager
 
     App\Search\SearchManager:
