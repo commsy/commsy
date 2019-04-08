@@ -79,7 +79,7 @@ class DashboardController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $repository = $em->getRepository('App:Calendars');
         $calendars = $repository->findBy(array('context_id' => $contextIds, 'external_url' => array('', NULL)));
 
         $itemService = $this->get('commsy_legacy.item_service');

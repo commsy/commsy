@@ -168,7 +168,7 @@ class DateController extends BaseController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $repository = $em->getRepository('App:Calendars');
         $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', NULL)));
 
         return [
@@ -311,7 +311,7 @@ class DateController extends BaseController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $repository = $em->getRepository('App:Calendars');
         $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', NULL)));
 
         return [
@@ -930,7 +930,7 @@ class DateController extends BaseController
         $formData['draft'] = $isDraft;
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $repository = $em->getRepository('App:Calendars');
         $calendars = $repository->findBy(array('context_id' => $roomId));
         $calendarsOptions = [];
         $calendarsOptionsAttr = [];
@@ -1580,7 +1580,7 @@ class DateController extends BaseController
 
         $formData = [];
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $repository = $em->getRepository('App:Calendars');
         $calendars = $repository->findBy(array('context_id' => $roomId));
         $calendarsOptions = [$translator->trans('new calendar', [], 'date') => 'new'];
         $calendarsOptionsAttr = [['title' => $translator->trans('new calendar'), 'color' => '#ffffff', 'hasLightColor' => true]];

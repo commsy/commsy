@@ -25,7 +25,7 @@ class HashtagMergeType extends AbstractType
     {
         $builder
             ->add('first', EntityType::class, array(
-                    'class' => 'CommsyBundle:Labels',
+                    'class' => 'App:Labels',
                     'query_builder' => function (EntityRepository $er) use ($options) {
                         return $er->createQueryBuilder('l')
                                 ->andWhere('l.contextId = :roomId')
@@ -41,7 +41,7 @@ class HashtagMergeType extends AbstractType
                 ))
 
             ->add('second', EntityType::class, array(
-                    'class' => 'CommsyBundle:Labels',
+                    'class' => 'App:Labels',
                     'query_builder' => function (EntityRepository $er) use ($options){
                         return $er->createQueryBuilder('l')
                                 ->andWhere('l.contextId = :roomId')

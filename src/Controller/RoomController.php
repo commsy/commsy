@@ -342,7 +342,7 @@ class RoomController extends Controller
         $countAll = 0;
 
         // ***** Active rooms *****
-        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
+        $repository = $this->getDoctrine()->getRepository('App:Room');
         $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
@@ -363,7 +363,7 @@ class RoomController extends Controller
         // This is not the best solution, but works for now. It would be better
         // to use the form validation below, instead of manually checking for a
         // specific value
-        $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
+        $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
         $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
         $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
@@ -437,7 +437,7 @@ class RoomController extends Controller
         }
 
         // ***** Active rooms *****
-        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
+        $repository = $this->getDoctrine()->getRepository('App:Room');
         $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
@@ -460,7 +460,7 @@ class RoomController extends Controller
         // ***** Archived rooms *****
         if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
-            $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
+            $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
             $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);

@@ -38,7 +38,7 @@ class CalendarController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $repository = $em->getRepository('App:Calendars');
 
         if ($calendarId) {
             $calendar = $repository->findOneById($calendarId);

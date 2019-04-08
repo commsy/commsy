@@ -100,7 +100,7 @@ class CategoryController extends Controller
         $categoryService = $this->get('commsy_legacy.category_service');
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Tag');
+        $repository = $em->getRepository('App:Tag');
 
         // create new form
         $category = new Tag();

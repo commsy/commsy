@@ -25,7 +25,7 @@ class CalendarsService
     public function getListCalendars ($contextId) {
         $result = array();
 
-        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $repository = $this->em->getRepository('App:Calendars');
         $query = $repository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.context_id = :context_id')
@@ -43,7 +43,7 @@ class CalendarsService
     public function getListExternalCalendars () {
         $result = array();
 
-        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $repository = $this->em->getRepository('App:Calendars');
         $query = $repository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.external_url <> \'\'')
@@ -58,7 +58,7 @@ class CalendarsService
     }
 
     public function getCalendar ($calendarId) {
-        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $repository = $this->em->getRepository('App:Calendars');
         $query = $repository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.id = :calendarId')
@@ -69,7 +69,7 @@ class CalendarsService
     }
 
     public function getDefaultCalendar ($contextId) {
-        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $repository = $this->em->getRepository('App:Calendars');
         $query = $repository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.context_id = :context_id AND calendars.default_calendar = 1')
@@ -126,7 +126,7 @@ class CalendarsService
         $calendar = $this->getCalendar($calendarId);
 
         if (isset($calendar[0])) {
-            $repository = $this->em->getRepository('CommsyBundle:Calendars');
+            $repository = $this->em->getRepository('App:Calendars');
             $query = $repository->createQueryBuilder('calendars')
                 ->update()
                 ->set('calendars.synctoken', ($calendar[0]->getSynctoken() + 1))

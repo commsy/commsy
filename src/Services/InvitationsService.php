@@ -40,7 +40,7 @@ class InvitationsService
     }
 
     public function existsInvitationForEmailAddress ($authSourceItem, $email) {
-        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->select()
             ->where('invitations.authSourceId = :authSourceId AND invitations.email = :email')
@@ -74,7 +74,7 @@ class InvitationsService
     }
 
     public function confirmInvitationCode($authSourceItem, $invitationCode) {
-        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->select()
             ->where('invitations.authSourceId = :authSourceId AND invitations.hash = :invitationCode AND invitations.expirationDate >= :expirationDate AND invitations.redeemed = :redeemed')
@@ -93,7 +93,7 @@ class InvitationsService
     }
 
     public function redeemInvitation($authSourceItem, $invitationCode, $email){
-        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->update()
             ->set('invitations.redeemed', true)
@@ -108,7 +108,7 @@ class InvitationsService
     public function getInvitedEmailAdressesByContextId ($authSourceItem, $contextId) {
         $result = array();
 
-        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->select()
             ->where('invitations.authSourceId = :authSourceId AND invitations.contextId = :contextId')
@@ -127,7 +127,7 @@ class InvitationsService
     }
 
     public function removeInvitedEmailAdresses ($authSourceItem, $email) {
-        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->delete()
             ->where('invitations.authSourceId = :authSourceId AND invitations.email = :email')

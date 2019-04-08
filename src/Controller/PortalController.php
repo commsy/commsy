@@ -52,7 +52,7 @@ class PortalController extends Controller
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:RoomCategories');
+        $repository = $em->getRepository('App:RoomCategories');
 
         if ($roomCategoryId) {
             $roomCategory = $repository->findOneById($roomCategoryId);
@@ -317,7 +317,7 @@ class PortalController extends Controller
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Translation');
+        $repository = $em->getRepository('App:Translation');
 
         $form = null;
 

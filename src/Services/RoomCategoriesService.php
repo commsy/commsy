@@ -24,7 +24,7 @@ class RoomCategoriesService
     public function getListRoomCategories ($contextId) {
         $result = array();
 
-        $repository = $this->em->getRepository('CommsyBundle:RoomCategories');
+        $repository = $this->em->getRepository('App:RoomCategories');
         $query = $repository->createQueryBuilder('room_categories')
             ->select()
             ->where('room_categories.context_id = :context_id')
@@ -40,7 +40,7 @@ class RoomCategoriesService
     }
 
     public function getRoomCategory ($roomCategoryId) {
-        $repository = $this->em->getRepository('CommsyBundle:RoomCategories');
+        $repository = $this->em->getRepository('App:RoomCategories');
         $query = $repository->createQueryBuilder('room_categories')
             ->select()
             ->where('room_categories.id = :roomCategoryId')
@@ -51,7 +51,7 @@ class RoomCategoriesService
     }
 
     public function getRoomCategoriesLinkedToContext ($contextId) {
-        $repository = $this->em->getRepository('CommsyBundle:RoomCategoriesLinks');
+        $repository = $this->em->getRepository('App:RoomCategoriesLinks');
         $query = $repository->createQueryBuilder('room_categories_links')
             ->select()
             ->where('room_categories_links.context_id = :context_id')
@@ -88,7 +88,7 @@ class RoomCategoriesService
     }
 
     public function removeRoomCategory ($roomCategory) {
-        $repository = $this->em->getRepository('CommsyBundle:RoomCategoriesLinks');
+        $repository = $this->em->getRepository('App:RoomCategoriesLinks');
 
         $query = $repository->createQueryBuilder('room_categories_links')
             ->select()

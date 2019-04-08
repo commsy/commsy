@@ -26,7 +26,7 @@ class UniqueLabelNameValidator extends ConstraintValidator
             throw new ConstraintDefinitionException('Entity must have a type before validation.');
         }
 
-        $repository = $this->em->getRepository('CommsyBundle:Labels');
+        $repository = $this->em->getRepository('App:Labels');
 
         $labels = $repository->findLabelsByContextIdAndNameAndType(
             $entity->getContextId(),

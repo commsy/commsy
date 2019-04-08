@@ -23,7 +23,7 @@ class CalDAVService
     public function setCalDAVHash ($userId, $password, $realm) {
         $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
 
-        $repository = $this->em->getRepository('CommsyBundle:User');
+        $repository = $this->em->getRepository('App:User');
         $query = $repository->createQueryBuilder('user')
             ->select()
             ->where('user.contextId = :portalId AND user.userId = :userId')

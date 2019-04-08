@@ -23,7 +23,7 @@ class HashtagController extends Controller
     public function showAction($roomId, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $hashtags = $em->getRepository('CommsyBundle:Labels')
+        $hashtags = $em->getRepository('App:Labels')
             ->findRoomHashtags($roomId);
 
         return array(
@@ -37,7 +37,7 @@ class HashtagController extends Controller
     public function showDetailAction($roomId, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $hashtags = $em->getRepository('CommsyBundle:Labels')
+        $hashtags = $em->getRepository('App:Labels')
             ->findRoomHashtags($roomId);
 
         return array(
@@ -51,7 +51,7 @@ class HashtagController extends Controller
     public function showDetailShortAction($roomId, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $hashtags = $em->getRepository('CommsyBundle:Labels')
+        $hashtags = $em->getRepository('App:Labels')
             ->findRoomHashtags($roomId);
 
         return array(
@@ -119,7 +119,7 @@ class HashtagController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Labels');
+        $repository = $em->getRepository('App:Labels');
 
         if ($labelId) {
             $hashtag = $repository->findOneByItemId($labelId);

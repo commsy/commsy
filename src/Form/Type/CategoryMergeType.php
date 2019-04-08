@@ -22,7 +22,7 @@ class CategoryMergeType extends AbstractType
     {
         $builder
             ->add('first', EntityType::class, [
-                'class' => 'CommsyBundle:Tag',
+                'class' => 'App:Tag',
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('l')
                             ->andWhere('l.contextId = :roomId')
@@ -37,7 +37,7 @@ class CategoryMergeType extends AbstractType
 
             ])
             ->add('second', EntityType::class, [
-                'class' => 'CommsyBundle:Tag',
+                'class' => 'App:Tag',
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('l')
                             ->andWhere('l.contextId = :roomId')

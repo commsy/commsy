@@ -45,7 +45,7 @@ class HashTagFilterType extends AbstractType
 
                 $builder
                     ->add('hashtag', HashtagType::class, array(
-                        'class' => 'CommsyBundle:Labels',
+                        'class' => 'App:Labels',
                         'query_builder' => function (EntityRepository $er) use ($roomId) {
                             return $er->createQueryBuilder('l')
                                 ->andWhere('l.contextId = :roomId')
