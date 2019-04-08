@@ -11,6 +11,7 @@ namespace App\Twig\Extension;
 
 use App\Services\LegacyEnvironment;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 class PageTitleExtension extends AbstractExtension
 {
@@ -27,7 +28,7 @@ class PageTitleExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('pageTitle', [$this, 'pageTitle']),
+            new TwigFunction('pageTitle', [$this, 'pageTitle']),
         ];
     }
 

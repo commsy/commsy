@@ -8,6 +8,9 @@
 
 namespace App\Twig\Extension;
 
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+
 /**
  * Class DecodeHtmlEntityExtension
  *
@@ -15,22 +18,17 @@ namespace App\Twig\Extension;
  *
  * @package App\Twig\Extension
  */
-class DecodeHtmlEntityExtension extends \Twig_Extension
+class DecodeHtmlEntityExtension extends AbstractExtension
 {
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('decodeHtmlEntity', [$this, 'decodeHtmlEntity']),
+            new TwigFilter('decodeHtmlEntity', [$this, 'decodeHtmlEntity']),
         ];
     }
 
     public function decodeHtmlEntity($arg)
     {
         return html_entity_decode($arg);
-    }
-
-    public function getName()
-    {
-        return 'decodeHtmlEntity_extension';
     }
 }

@@ -2,8 +2,11 @@
 namespace App\Twig\Extension;
 
 use App\Services\LegacyEnvironment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
-class RoomExtension extends \Twig_Extension
+class RoomExtension extends AbstractExtension
 {
     private $legacyEnvironment;
 
@@ -15,15 +18,15 @@ class RoomExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('roomTitle', [$this, 'roomTitle']),
+            new TwigFilter('roomTitle', [$this, 'roomTitle']),
         ];
     }
 
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('roomExpandedHashtags', [$this, 'roomExpandedHashtags']),
-            new \Twig_SimpleFunction('roomExpandedCategories', [$this, 'roomExpandedCategories']),
+            new TwigFunction('roomExpandedHashtags', [$this, 'roomExpandedHashtags']),
+            new TwigFunction('roomExpandedCategories', [$this, 'roomExpandedCategories']),
         ];
     }
 
@@ -65,10 +68,5 @@ class RoomExtension extends \Twig_Extension
         }
 
         return false;
-    }
-
-    public function getName()
-    {
-        return 'RoomExtension';
     }
 }

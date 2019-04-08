@@ -4,15 +4,17 @@ namespace App\Twig\Extension;
 
 use App\Services\LegacyMarkup;
 use App\Utils\ItemService;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-class MarkupExtension extends \Twig_Extension
+class MarkupExtension extends AbstractExtension
 {
     private $router;
     private $itemService;
     private $legacyMarkup;
 
-    public function __construct(Router $router, ItemService $itemService, LegacyMarkup $legacyMarkup)
+    public function __construct(RouterInterface $router, ItemService $itemService, LegacyMarkup $legacyMarkup)
     {
         $this->router = $router;
         $this->itemService = $itemService;
@@ -22,7 +24,7 @@ class MarkupExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('commsyMarkup', array($this, 'commsyMarkup')),
+            new TwigFilter('commsyMarkup', array($this, 'commsyMarkup')),
         );
     }
 
@@ -54,11 +56,6 @@ class MarkupExtension extends \Twig_Extension
         $text = $this->interpreteLinks($text);
 
         return $text;
-    }
-
-    public function getName()
-    {
-        return 'text_extension';
     }
 
     private function interpreteLinks($text)
