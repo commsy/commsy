@@ -38,10 +38,10 @@ class DashboardController extends Controller
         // iCal
         $iCal = [
             'show' => false,
-            'aboUrl' => $this->generateUrl('commsy_ical_getcontent', [
+            'aboUrl' => $this->generateUrl('app_ical_getcontent', [
                 'contextId' => $roomId,
             ], UrlGeneratorInterface::ABSOLUTE_URL),
-            'exportUrl' => $this->generateUrl('commsy_ical_getcontent', [
+            'exportUrl' => $this->generateUrl('app_ical_getcontent', [
                 'contextId' => $roomId,
                 'export' => true,
             ], UrlGeneratorInterface::ABSOLUTE_URL),
@@ -58,12 +58,12 @@ class DashboardController extends Controller
                 $hashManager = $legacyEnvironment->getHashManager();
                 $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
 
-                $iCal['aboUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
                     'hid' => $iCalHash,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                $iCal['exportUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
                     'hid' => $iCalHash,
                     'export' => true,

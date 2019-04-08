@@ -32,12 +32,12 @@ class GotoController extends Controller
 
         if (in_array($item['type'], ['project', 'community'])) {
             // redirect to room
-            return $this->redirectToRoute('commsy_room_home', [
+            return $this->redirectToRoute('app_room_home', [
                 'roomId' => $item['item_id']
             ]);
         } else {
             // redirect to detail
-            return $this->redirectToRoute('commsy_' . $item['type'] . '_detail', [
+            return $this->redirectToRoute('app_' . $item['type'] . '_detail', [
                 'roomId' => $item['context_id'],
                 'itemId' => $item['item_id'],
             ]);

@@ -144,9 +144,9 @@ class InstitutionController extends BaseController
             $institutionItem->setDraftStatus(1);
             $institutionItem->setPrivateEditing(1);
             $institutionItem->save();
-            return $this->redirectToRoute('commsy_institution_detail', array('roomId' => $roomId, 'itemId' => $institutionItem->getItemId()));
+            return $this->redirectToRoute('app_institution_detail', array('roomId' => $roomId, 'itemId' => $institutionItem->getItemId()));
         } else {
-            return $this->redirectToRoute('commsy_institution_list', array('roomId' => $roomId));
+            return $this->redirectToRoute('app_institution_list', array('roomId' => $roomId));
         }
     }
 
@@ -220,7 +220,7 @@ class InstitutionController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('App:institution:detail_print.html.twig', [
+        $html = $this->renderView('institution/detail_print.html.twig', [
             'roomId' => $roomId,
             'institution' => $infoArray['institution'],
             'readerList' => $infoArray['readerList'],
@@ -438,7 +438,7 @@ class InstitutionController extends BaseController
         $formData['draft'] = $item->isDraft();
         $translator = $this->get('translator');
         $form = $this->createForm(GroupType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_institution_edit', array(
+            'action' => $this->generateUrl('app_institution_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -449,7 +449,7 @@ class InstitutionController extends BaseController
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
 
@@ -470,7 +470,7 @@ class InstitutionController extends BaseController
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_institution_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_institution_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -573,7 +573,7 @@ class InstitutionController extends BaseController
         }
 
         $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_institution_list', array(
+            'action' => $this->generateUrl('app_institution_list', array(
                 'roomId' => $roomId,
             )),
             'hasHashtags' => false,
@@ -611,7 +611,7 @@ class InstitutionController extends BaseController
         // get institution list from manager service
         $itemsCountArray = $institutionService->getCountArray($roomId);
 
-        $html = $this->renderView('App:institution:list_print.html.twig', [
+        $html = $this->renderView('institution/list_print.html.twig', [
             'roomId' => $roomId,
             'institutions' => $institutions,
             'readerList' => $readerList,
@@ -712,7 +712,7 @@ class InstitutionController extends BaseController
         ];
 
         return $this->createForm(InstitutionFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_institution_list', [
+            'action' => $this->generateUrl('app_institution_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => $room->withBuzzwords(),

@@ -62,7 +62,7 @@ class CommsyBreadcrumbListener
 
             $portal = $this->legacyEnvironment->getEnvironment()->getCurrentPortalItem();
 
-            $this->breadcrumbs->addRouteItem($this->translator->trans('settings', [], 'portal'), "commsy_portal_legacysettings", ["roomId" => $portal->getItemId()]);
+            $this->breadcrumbs->addRouteItem($this->translator->trans('settings', [], 'portal'), "app_portal_legacysettings", ["roomId" => $portal->getItemId()]);
 
             $this->breadcrumbs->addItem($this->translator->trans($action, [], 'portal'));
 
@@ -113,7 +113,7 @@ class CommsyBreadcrumbListener
                     }
                 }
                 catch (RouteNotFoundException $e) {
-                    // we don't need breadcrumbs for routes like commsy_item_editdetails etc. to ajax controller actions
+                    // we don't need breadcrumbs for routes like app_item_editdetails etc. to ajax controller actions
                 }
 
                 // entry title
@@ -161,7 +161,7 @@ class CommsyBreadcrumbListener
 
     private function addDashboard($roomItem, $asLink)
     {
-        $this->breadcrumbs->addRouteItem($this->translator->trans('dashboard', [], 'menu'), "commsy_dashboard_overview", ["roomId" => $roomItem->getItemId()]);
+        $this->breadcrumbs->addRouteItem($this->translator->trans('dashboard', [], 'menu'), "app_dashboard_overview", ["roomId" => $roomItem->getItemId()]);
     }
 
     private function addCommunityRoom($roomItem, $asLink)
@@ -190,7 +190,7 @@ class CommsyBreadcrumbListener
                 // "Groups" rubric in project room
                 $this->addChildRoomListCrumb($projectRoom, 'group');
                 // Group (with name)
-                $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "commsy_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
+                $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "app_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
                 // Grouproom
                 $this->addRoomCrumb($roomItem, $asLink);
             }
@@ -206,7 +206,7 @@ class CommsyBreadcrumbListener
         }
 
         if ($asZelda == true) {
-            $this->breadcrumbs->addRouteItem($title, "commsy_room_home", [
+            $this->breadcrumbs->addRouteItem($title, "app_room_home", [
                 'roomId' => $roomItem->getItemID(),
             ]);
         }
@@ -219,10 +219,10 @@ class CommsyBreadcrumbListener
     {
         if($action == 'general' || $action == 'address' || $action == 'contact' || $action == 'deleteroomprofile' || $action == 'notifications') {
             $this->addRoom($roomItem, true);
-            $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'menu'), "commsy_profile_" . $action, $routeParameters);
+            $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'menu'), "app_profile_" . $action, $routeParameters);
         }
         else {
-            $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'menu'), "commsy_profile_" . $action, $routeParameters);
+            $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'menu'), "app_profile_" . $action, $routeParameters);
         }
         
     }
@@ -230,7 +230,7 @@ class CommsyBreadcrumbListener
     private function addChildRoomListCrumb($roomItem, $childRoomClass)
     {
         if ($childRoomClass == 'project' || $childRoomClass == 'group') {
-            $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans($childRoomClass, [], 'menu')), "commsy_" . $childRoomClass . "_list", ['roomId' => $roomItem->getItemId()]);
+            $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans($childRoomClass, [], 'menu')), "app_" . $childRoomClass . "_list", ['roomId' => $roomItem->getItemId()]);
         }
    }
 }

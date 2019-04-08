@@ -207,7 +207,7 @@ class CronCommand extends ContainerAwareCommand
 
                     $translator = $legacyEnvironment->getTranslationObject();
 
-                    $path = $container->get('router')->generate('commsy_material_detail', [
+                    $path = $container->get('router')->generate('app_material_detail', [
                         'roomId' => $room->getItemID(),
                         'itemId' => $material->getItemID(),
                         'versionId' => $material->getVersionID(),
@@ -271,7 +271,7 @@ class CronCommand extends ContainerAwareCommand
 
                     $translator = $legacyEnvironment->getTranslationObject();
 
-                    $path = $container->get('router')->generate('commsy_material_detail', [
+                    $path = $container->get('router')->generate('app_material_detail', [
                         'roomId' => $room->getItemID(),
                         'itemId' => $material->getItemID(),
                         'versionId' => $material->getVersionID(),

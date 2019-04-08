@@ -30,7 +30,7 @@ class StepCreator extends Creator
     {
         $linkedItem = $item->getLinkedItem();
 
-        return $this->router->generate('commsy_todo_detail', [
+        return $this->router->generate('app_todo_detail', [
             'roomId' => $linkedItem->getContextId(),
             'itemId' => $linkedItem->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

@@ -16,7 +16,7 @@ use App\Entity\Tag;
 class CategoryController extends Controller
 {
     /**
-     * @Template("CommsyBundle:category:show.html.twig")
+     * @Template("category/show.html.twig")
      */
     public function showAction($roomId, Request $request)
     {
@@ -28,7 +28,7 @@ class CategoryController extends Controller
             'roomId' => $roomId,
         );
         $form = $this->createForm(Types\TagType::class, $defaultData, array(
-            'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
+            'action' => $this->generateUrl('app_category_new', array('roomId' => $roomId)),
         ));
 
         return array(
@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
 
     /**
-     * @Template("CommsyBundle:category:showDetail.html.twig")
+     * @Template("category/showDetail.html.twig")
      */
     public function showDetailAction($roomId, Request $request)
     {
@@ -51,7 +51,7 @@ class CategoryController extends Controller
             'roomId' => $roomId,
         );
         $form = $this->createForm(Types\TagType::class, $defaultData, array(
-            'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
+            'action' => $this->generateUrl('app_category_new', array('roomId' => $roomId)),
         ));
 
         return array(
@@ -79,7 +79,7 @@ class CategoryController extends Controller
             $tagManager = $this->get('commsy_legacy.category_service');
             $tagManager->addTag($data['title'], $roomId);
 
-            return $this->redirectToRoute('commsy_room_home', array('roomId' => $roomId));
+            return $this->redirectToRoute('app_room_home', array('roomId' => $roomId));
         }
     }
 
@@ -129,7 +129,7 @@ class CategoryController extends Controller
                 $categoryService->updateTag($category->getItemId(), $category->getTitle());
             }
             
-            return $this->redirectToRoute('commsy_category_edit', [
+            return $this->redirectToRoute('app_category_edit', [
                 'roomId' => $roomId,
                 'editTitle' => $categoryEditTitle,
             ]);
@@ -161,7 +161,7 @@ class CategoryController extends Controller
                 $categoryService->updateStructure($structure, $roomId);
             }
 
-            return $this->redirectToRoute('commsy_category_edit', [
+            return $this->redirectToRoute('app_category_edit', [
                 'roomId' => $roomId,
                 'editTitle' => $categoryEditTitle,
             ]);
@@ -197,7 +197,7 @@ class CategoryController extends Controller
             // merge them
             $tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
 
-            return $this->redirectToRoute('commsy_category_edit', [
+            return $this->redirectToRoute('app_category_edit', [
                 'roomId' => $roomId,
             ]);
         }

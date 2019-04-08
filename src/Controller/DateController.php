@@ -134,10 +134,10 @@ class DateController extends BaseController
         // iCal
         $iCal = [
             'show' => false,
-            'aboUrl' => $this->generateUrl('commsy_ical_getcontent', [
+            'aboUrl' => $this->generateUrl('app_ical_getcontent', [
                 'contextId' => $roomId,
             ], UrlGeneratorInterface::ABSOLUTE_URL),
-            'exportUrl' => $this->generateUrl('commsy_ical_getcontent', [
+            'exportUrl' => $this->generateUrl('app_ical_getcontent', [
                 'contextId' => $roomId,
                 'export' => true,
             ], UrlGeneratorInterface::ABSOLUTE_URL),
@@ -154,12 +154,12 @@ class DateController extends BaseController
                 $hashManager = $legacyEnvironment->getHashManager();
                 $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
 
-                $iCal['aboUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
                     'hid' => $iCalHash,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                $iCal['exportUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
                     'hid' => $iCalHash,
                     'export' => true,
@@ -232,7 +232,7 @@ class DateController extends BaseController
 
         $itemsCountArray = $dateService->getCountArray($roomId);
 
-        $html = $this->renderView('App:date:list_print.html.twig', [
+        $html = $this->renderView('date/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'date',
             'itemsCountArray' => $itemsCountArray,
@@ -277,10 +277,10 @@ class DateController extends BaseController
         // iCal
         $iCal = [
             'show' => false,
-            'aboUrl' => $this->generateUrl('commsy_ical_getcontent', [
+            'aboUrl' => $this->generateUrl('app_ical_getcontent', [
                 'contextId' => $roomId,
             ], UrlGeneratorInterface::ABSOLUTE_URL),
-            'exportUrl' => $this->generateUrl('commsy_ical_getcontent', [
+            'exportUrl' => $this->generateUrl('app_ical_getcontent', [
                 'contextId' => $roomId,
                 'export' => true,
             ], UrlGeneratorInterface::ABSOLUTE_URL),
@@ -297,12 +297,12 @@ class DateController extends BaseController
                 $hashManager = $legacyEnvironment->getHashManager();
                 $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
 
-                $iCal['aboUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
                     'hid' => $iCalHash,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                $iCal['exportUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
                     'hid' => $iCalHash,
                     'export' => true,
@@ -801,7 +801,7 @@ class DateController extends BaseController
 
         $dateItem->save();
 
-        return $this->redirectToRoute('commsy_date_detail', array('roomId' => $roomId, 'itemId' => $dateItem->getItemId()));
+        return $this->redirectToRoute('app_date_detail', array('roomId' => $roomId, 'itemId' => $dateItem->getItemId()));
     }
 
     /**
@@ -944,7 +944,7 @@ class DateController extends BaseController
         $formData['calendarsAttr'] = $calendarsOptionsAttr;
 
         $formOptions = array(
-            'action' => $this->generateUrl('commsy_date_edit', array(
+            'action' => $this->generateUrl('app_date_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -957,7 +957,7 @@ class DateController extends BaseController
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         );
         if ($dateItem->getRecurrencePattern() != '') {
@@ -1061,7 +1061,7 @@ class DateController extends BaseController
                     $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
                 }
             }
-            return $this->redirectToRoute('commsy_date_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_date_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($dateItem));
@@ -1530,7 +1530,7 @@ class DateController extends BaseController
             $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
         }
 
-        $html = $this->renderView('App:date:detail_print.html.twig', [
+        $html = $this->renderView('date/detail_print.html.twig', [
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
             'readerList' => $readerList,
@@ -1566,7 +1566,7 @@ class DateController extends BaseController
             $date->removeParticipant($currentUser);
         }
 
-        return $this->redirectToRoute('commsy_date_detail', array('roomId' => $roomId, 'itemId' => $itemId));
+        return $this->redirectToRoute('app_date_detail', array('roomId' => $roomId, 'itemId' => $itemId));
     }
 
     /**
@@ -1595,12 +1595,12 @@ class DateController extends BaseController
         $formData['files'] = [];
 
         $formOptions = array(
-            'action' => $this->generateUrl('commsy_date_import', array(
+            'action' => $this->generateUrl('app_date_import', array(
                 'roomId' => $roomId,
             )),
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
-            'uploadUrl' => $this->generateUrl('commsy_date_importupload', [
+            'uploadUrl' => $this->generateUrl('app_date_importupload', [
                 'roomId' => $roomId,
                 'itemId' => null
             ]),
@@ -1658,7 +1658,7 @@ class DateController extends BaseController
                     $calendarsService->importEvents($fileData, $calendar);
                 }
 
-                return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));
+                return $this->redirectToRoute('app_date_list', array('roomId' => $roomId));
             }
         }
 
@@ -1778,7 +1778,7 @@ class DateController extends BaseController
         ];
 
         return $this->createForm(DateFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_date_list', [
+            'action' => $this->generateUrl('app_date_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => $room->withBuzzwords(),

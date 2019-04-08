@@ -54,7 +54,7 @@ class MenuBuilder
         if ($currentUser->getItemId() != '') {
 
             $menu->addChild('personal', [
-                'route' => 'commsy_profile_personal',
+                'route' => 'app_profile_personal',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -68,7 +68,7 @@ class MenuBuilder
 
             if((isset($authSourceItem) && $authSourceItem->allowChangePassword()) || $currentUser->isRoot()) {
                 $menu->addChild('changePassword', [
-                    'route' => 'commsy_profile_changepassword',
+                    'route' => 'app_profile_changepassword',
                     'routeParameters' => [
                         'roomId' => $currentStack->attributes->get('roomId'),
                         'itemId' => $currentUser->getItemId(),
@@ -84,7 +84,7 @@ class MenuBuilder
             if(!$currentUser->isRoot()) {
                 $menu->addChild('mergeAccounts', [
                     'label' => 'combineAccount',
-                    'route' => 'commsy_profile_mergeaccounts',
+                    'route' => 'app_profile_mergeaccounts',
                     'routeParameters' => [
                         'roomId' => $currentStack->attributes->get('roomId'),
                         'itemId' => $currentUser->getItemId(),
@@ -98,7 +98,7 @@ class MenuBuilder
             }
 
             $menu->addChild('newsletter', [
-                'route' => 'commsy_profile_newsletter',
+                'route' => 'app_profile_newsletter',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -112,7 +112,7 @@ class MenuBuilder
 
             if ($currentUser->getRelatedPortalUserItem()->isAllowedToUseCalDAV()) {
                 $menu->addChild('calendars', [
-                    'route' => 'commsy_profile_calendars',
+                    'route' => 'app_profile_calendars',
                     'routeParameters' => [
                         'roomId' => $currentStack->attributes->get('roomId'),
                         'itemId' => $currentUser->getItemId(),
@@ -126,7 +126,7 @@ class MenuBuilder
             }
 
             $menu->addChild('additional', [
-                'route' => 'commsy_profile_additional',
+                'route' => 'app_profile_additional',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -139,7 +139,7 @@ class MenuBuilder
             ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('deleteAccount', [
-                'route' => 'commsy_profile_deleteaccount',
+                'route' => 'app_profile_deleteaccount',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -175,7 +175,7 @@ class MenuBuilder
         if ($currentUser->getItemId() != '') {
 
             $menu->addChild('general', [
-                'route' => 'commsy_profile_general',
+                'route' => 'app_profile_general',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -188,7 +188,7 @@ class MenuBuilder
             ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('address', [
-                'route' => 'commsy_profile_address',
+                'route' => 'app_profile_address',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -201,7 +201,7 @@ class MenuBuilder
             ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('contact', [
-                'route' => 'commsy_profile_contact',
+                'route' => 'app_profile_contact',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -215,7 +215,7 @@ class MenuBuilder
 
             if ($this->authorizationChecker->isGranted('MODERATOR')) {
                 $menu->addChild('notifications', [
-                    'route' => 'commsy_profile_notifications',
+                    'route' => 'app_profile_notifications',
                     'routeParameters' => [
                         'roomId' => $currentStack->attributes->get('roomId'),
                         'itemId' => $currentUser->getItemId(),
@@ -229,7 +229,7 @@ class MenuBuilder
             }
 
             $menu->addChild('cancelMembership', [
-                'route' => 'commsy_profile_deleteroomprofile',
+                'route' => 'app_profile_deleteroomprofile',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -261,7 +261,7 @@ class MenuBuilder
             // general settings
             $menu->addChild('General', array(
                 'label' => 'General',
-                'route' => 'commsy_settings_general',
+                'route' => 'app_settings_general',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-server uk-icon-small uk-icon-justify'),
             ))
@@ -270,7 +270,7 @@ class MenuBuilder
             // moderation
             $menu->addChild('Moderation', array(
                 'label' => 'Moderation',
-                'route' => 'commsy_settings_moderation',
+                'route' => 'app_settings_moderation',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify'),
             ))
@@ -279,7 +279,7 @@ class MenuBuilder
             // additional settings
             $menu->addChild('Additional', array(
                 'label' => 'Additional',
-                'route' => 'commsy_settings_additional',
+                'route' => 'app_settings_additional',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-plus uk-icon-small uk-icon-justify'),
             ))
@@ -288,7 +288,7 @@ class MenuBuilder
             // appearance
             $menu->addChild('Appearance', array(
                 'label' => 'appearance',
-                'route' => 'commsy_settings_appearance',
+                'route' => 'app_settings_appearance',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-paint-brush uk-icon-small uk-icon-justify'),
             ))
@@ -297,7 +297,7 @@ class MenuBuilder
             // extensions
             $menu->addChild('Extensions', array(
                 'label' => 'extensions',
-                'route' => 'commsy_settings_extensions',
+                'route' => 'app_settings_extensions',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-gears uk-icon-small uk-icon-justify'),
             ))
@@ -308,7 +308,7 @@ class MenuBuilder
             if ($this->invitationsService->invitationsEnabled()) {
                 $menu->addChild('Invitations', array(
                     'label' => 'invitations',
-                    'route' => 'commsy_settings_invitations',
+                    'route' => 'app_settings_invitations',
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify'),
                 ))
@@ -318,7 +318,7 @@ class MenuBuilder
             // delete
             $menu->addChild('Delete', [
                 'label' => 'delete',
-                'route' => 'commsy_settings_delete',
+                'route' => 'app_settings_delete',
                 'routeParameters' => [
                     'roomId' => $roomId,
                 ],
@@ -334,7 +334,7 @@ class MenuBuilder
             $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
                 'label' => 'Back to room',
-                'route' => 'commsy_room_home',
+                'route' => 'app_room_home',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
             ))
@@ -385,7 +385,7 @@ class MenuBuilder
             $rubrics = [];
             $label = "home";
             $icon = "uk-icon-home";
-            $route = "commsy_room_home";
+            $route = "app_room_home";
 
             if (!$inPrivateRoom) {
                 // rubric room information
@@ -408,7 +408,7 @@ class MenuBuilder
                 ];
                 $label = "overview";
                 $icon = "uk-icon-justify uk-icon-qrcode";
-                $route = "commsy_dashboard_overview";
+                $route = "app_dashboard_overview";
             }
 
             list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
@@ -428,11 +428,11 @@ class MenuBuilder
 
                 // loop through rubrics to build the menu
                 foreach ($rubrics as $value) {
-                    $route = 'commsy_'.$value.'_list';
+                    $route = 'app_'.$value.'_list';
                     if ($value == 'date') {
                         $room = $this->roomService->getRoomItem($roomId);
                         if ($room->getDatesPresentationStatus() != 'normal') {
-                            $route = 'commsy_date_calendar';
+                            $route = 'app_date_calendar';
                         }
                     }
 
@@ -454,7 +454,7 @@ class MenuBuilder
                         $menu->addChild(' ', ['uri' => '#']);
                         $menu->addChild('room_configuration', array(
                             'label' => 'settings',
-                            'route' => 'commsy_settings_general',
+                            'route' => 'app_settings_general',
                             'routeParameters' => array('roomId' => $roomId),
                             'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
                         ))
@@ -465,42 +465,42 @@ class MenuBuilder
         } else {
             $menu->addChild('portal_configuration_room_categories', array(
                 'label' => 'Room categories',
-                'route' => 'commsy_portal_roomcategories',
+                'route' => 'app_portal_roomcategories',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_announcements', array(
                 'label' => 'announcements',
-                'route' => 'commsy_portal_announcements',
+                'route' => 'app_portal_announcements',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-bullhorn uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_terms', array(
                 'label' => 'terms',
-                'route' => 'commsy_portal_terms',
+                'route' => 'app_portal_terms',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_help', array(
                 'label' => 'help',
-                'route' => 'commsy_portal_help',
+                'route' => 'app_portal_help',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-question-circle uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_translations', array(
                 'label' => 'Translations',
-                'route' => 'commsy_portal_translations',
+                'route' => 'app_portal_translations',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-columns uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_licenses', array(
                 'label' => 'Licenses',
-                'route' => 'commsy_portal_licenses',
+                'route' => 'app_portal_licenses',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-copyright uk-icon-small')
             ))
@@ -509,7 +509,7 @@ class MenuBuilder
             // CSV-Import
             $menu->addChild('portal_configuration_csv_import', [
                 'label' => 'CSV-Import',
-                'route' => 'commsy_portal_csvimport',
+                'route' => 'app_portal_csvimport',
                 'routeParameters' => [
                     'roomId' => $roomId,
                 ],
@@ -522,7 +522,7 @@ class MenuBuilder
             $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
                 'label' => 'settings',
-                'route' => 'commsy_portal_legacysettings',
+                'route' => 'app_portal_legacysettings',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
             ))

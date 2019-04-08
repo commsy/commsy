@@ -200,7 +200,7 @@ class UserController extends BaseController
         $itemsCountArray = $userService->getCountArray($roomId);
 
         
-        $html = $this->renderView('App:user:list_print.html.twig', [
+        $html = $this->renderView('user/list_print.html.twig', [
             'roomId' => $roomId,
             'users' => $users,
             'readerList' => $readerList,
@@ -349,13 +349,13 @@ class UserController extends BaseController
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
                     }
                     if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
-                        return $this->redirectToRoute('commsy_user_detail', [
+                        return $this->redirectToRoute('app_user_detail', [
                             'roomId' => $roomId,
                             'itemId' => array_values($request->query->get('userIds'))[0],
                         ]);
                     }
                     else {
-                        return $this->redirectToRoute('commsy_user_list', [
+                        return $this->redirectToRoute('app_user_list', [
                             'roomId' => $roomId,
                         ]);
                     }
@@ -363,13 +363,13 @@ class UserController extends BaseController
             }
             elseif ($form->get('cancel')->isClicked()) {
                 if($request->query->has('userDetail')) {
-                    return $this->redirectToRoute('commsy_user_detail', [
+                    return $this->redirectToRoute('app_user_detail', [
                         'roomId' => $roomId,
                         'itemId' => array_values($request->query->get('userIds'))[0],
                     ]);
                 }
                 else {
-                    return $this->redirectToRoute('commsy_user_list', [
+                    return $this->redirectToRoute('app_user_list', [
                         'roomId' => $roomId,
                     ]);
                 }
@@ -636,7 +636,7 @@ class UserController extends BaseController
         $userItem->save();
 
  
-        return $this->redirectToRoute('commsy_user_detail', array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
+        return $this->redirectToRoute('app_user_detail', array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
     }
 
 
@@ -664,11 +664,11 @@ class UserController extends BaseController
         }
         $formData = $transformer->transform($userItem);
         $formOptions = array(
-            'action' => $this->generateUrl('commsy_user_edit', array(
+            'action' => $this->generateUrl('app_user_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+            'uploadUrl' => $this->generateUrl('app_upload_upload', array(
                 'roomId' => $roomId,
             )),
         );
@@ -692,7 +692,7 @@ class UserController extends BaseController
             } else {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_user_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_user_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
         
         return array(
@@ -856,13 +856,13 @@ class UserController extends BaseController
                 $this->get('mailer')->send($message);
 
                 // redirect to success page
-                return $this->redirectToRoute('commsy_user_sendsuccess', [
+                return $this->redirectToRoute('app_user_sendsuccess', [
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 ]);
             } else {
                 // redirect to user detail view
-                return $this->redirectToRoute('commsy_user_detail', [
+                return $this->redirectToRoute('app_user_detail', [
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 ]);
@@ -889,7 +889,7 @@ class UserController extends BaseController
         }
 
         return [
-            'link' => $this->generateUrl('commsy_user_detail', [
+            'link' => $this->generateUrl('app_user_detail', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
@@ -990,7 +990,7 @@ class UserController extends BaseController
     
     /**
      * @Route("/room/{roomId}/user/rooms/{start}")
-     * @Template("CommsyBundle:menu:room_list.html.twig")
+     * @Template("menu/room_list.html.twig")
      */
     public function roomsAction($roomId, $max = 10, $start = 0)
     {
@@ -1090,7 +1090,7 @@ class UserController extends BaseController
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('App:user:detail_print.html.twig', [
+        $html = $this->renderView('user/detail_print.html.twig', [
             'roomId' => $roomId,
             'user' => $infoArray['user'],
             'readerList' => $infoArray['readerList'],
@@ -1411,12 +1411,12 @@ class UserController extends BaseController
                 }
 
                 // redirect to success page
-                return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
+                return $this->redirectToRoute('app_user_sendmultiplesuccess', [
                     'roomId' => $roomId,
                 ]);
             } else {
                 // redirect to user feed
-                return $this->redirectToRoute('commsy_user_list', [
+                return $this->redirectToRoute('app_user_list', [
                     'roomId' => $roomId,
                 ]);
             }
@@ -1434,7 +1434,7 @@ class UserController extends BaseController
     public function sendMultipleSuccessAction($roomId)
     {
         return [
-            'link' => $this->generateUrl('commsy_user_list', [
+            'link' => $this->generateUrl('app_user_list', [
                 'roomId' => $roomId,
             ]),
         ];
@@ -1488,7 +1488,7 @@ class UserController extends BaseController
         $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         return $this->createForm(UserFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_user_list', [
+            'action' => $this->generateUrl('app_user_list', [
                 'roomId' => $room->getItemID(),
                 'view' => $view,
             ]),

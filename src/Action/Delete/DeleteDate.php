@@ -108,12 +108,12 @@ class DeleteDate extends DeleteGeneric
         $date = $item;
 
         if ($this->dateMode == 'normal') {
-            return $this->router->generate('commsy_date_list', [
+            return $this->router->generate('app_date_list', [
                 'roomId' => $date->getContextID(),
             ]);
         }
 
-        return $this->router->generate('commsy_date_calendar', [
+        return $this->router->generate('app_date_calendar', [
             'roomId' => $date->getContextID(),
         ]);
     }

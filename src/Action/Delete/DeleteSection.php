@@ -44,7 +44,7 @@ class DeleteSection implements DeleteInterface
         /** @var \cs_section_item $section */
         $section = $item;
 
-        return $this->router->generate('commsy_material_detail', [
+        return $this->router->generate('app_material_detail', [
             'roomId' => $section->getContextID(),
             'itemId' => $section->getLinkedItemID(),
         ]);

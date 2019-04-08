@@ -23,7 +23,7 @@ class GroupCreator extends Creator
 
     public function getLink($item)
     {
-        return $this->router->generate('commsy_group_detail', [
+        return $this->router->generate('app_group_detail', [
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

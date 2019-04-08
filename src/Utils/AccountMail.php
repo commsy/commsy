@@ -82,7 +82,7 @@ class AccountMail
 
         $moderator = $this->legacyEnvironment->getCurrentUserItem();
 
-        $absoluteRoomUrl = $this->router->generate('commsy_room_home', [
+        $absoluteRoomUrl = $this->router->generate('app_room_home', [
             'roomId' => $this->legacyEnvironment->getCurrentContextID(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 

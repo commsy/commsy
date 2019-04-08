@@ -77,7 +77,7 @@ class CalendarController extends Controller
             // actually executes the queries (i.e. the INSERT query)
             $em->flush();
 
-            return $this->redirectToRoute('commsy_calendar_edit', [
+            return $this->redirectToRoute('app_calendar_edit', [
                 'roomId' => $roomId,
             ]);
         }

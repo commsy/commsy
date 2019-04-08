@@ -23,7 +23,7 @@ class TopicCreator extends Creator
 
     public function getLink($item)
     {
-        return $this->router->generate('commsy_topic_detail', [
+        return $this->router->generate('app_topic_detail', [
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

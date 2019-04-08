@@ -88,7 +88,7 @@ class SettingsController extends Controller
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
-            return $this->redirectToRoute('commsy_settings_general', ["roomId" => $roomId]);
+            return $this->redirectToRoute('app_settings_general', ["roomId" => $roomId]);
         }
 
         return array(
@@ -223,7 +223,7 @@ class SettingsController extends Controller
         $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'themes' => $themeArray,
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+            'uploadUrl' => $this->generateUrl('app_upload_upload', array(
                 'roomId' => $roomId,
             )),
             'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
@@ -309,7 +309,7 @@ class SettingsController extends Controller
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
-            return $this->redirectToRoute('commsy_settings_appearance', ["roomId" => $roomId]);
+            return $this->redirectToRoute('app_settings_appearance', ["roomId" => $roomId]);
         }
 
         $backgroundImageCustom = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
@@ -476,7 +476,7 @@ class SettingsController extends Controller
                 $invitationsService->removeInvitedEmailAdresses($authSourceItem, $removeInvitee);
             }
 
-            return $this->redirectToRoute('commsy_settings_invitations', ["roomId" => $roomId]);
+            return $this->redirectToRoute('app_settings_invitations', ["roomId" => $roomId]);
         }
 
         return array(

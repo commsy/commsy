@@ -274,7 +274,7 @@ class CopyController extends BaseController
         }
 
         return $this->createForm(CopyFilterType::class, [], [
-            'action' => $this->generateUrl('commsy_copy_list', [
+            'action' => $this->generateUrl('app_copy_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'rubrics' => $rubrics,

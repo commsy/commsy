@@ -118,7 +118,7 @@ class UploadController extends Controller
                         $userItem->save();
 
                         $response->setData([
-                            'userImage' => $this->generateUrl('commsy_user_image', [
+                            'userImage' => $this->generateUrl('app_user_image', [
                                 'roomId' => $roomId,
                                 'itemId' => $itemId,
                             ])
@@ -193,7 +193,7 @@ class UploadController extends Controller
         }
 
         $form = $this->createForm(UploadType::class, $assignedFiles, [
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', [
+            'uploadUrl' => $this->generateUrl('app_upload_upload', [
                 'roomId' => $roomId,
                 'itemId' => $itemId
             ]),
@@ -235,7 +235,7 @@ class UploadController extends Controller
                 }
             }
             
-            return $this->redirectToRoute('commsy_upload_uploadsave', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_upload_uploadsave', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return [
@@ -345,7 +345,7 @@ class UploadController extends Controller
                 $item->save();
 
                 // generate file url
-                $fileUrl = $this->generateUrl('commsy_file_getfile', [
+                $fileUrl = $this->generateUrl('app_file_getfile', [
                     'fileId' => $fileItem->getFileID()
                 ]);
 

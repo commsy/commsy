@@ -73,7 +73,7 @@ class SoapController extends Controller
 //    $soap_functions_array = array_merge($soap_functions_array,$soap_functions_array_from_class);
 // }
 // }
-        $uri = $this->generateUrl('commsy_soap_soap', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $uri = $this->generateUrl('app_soap_soap', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         // auto discover
         $autoDiscover = new Soap\AutoDiscover();
@@ -114,7 +114,7 @@ class SoapController extends Controller
 //    }
 // }
 
-        $uri = $this->generateUrl('commsy_soap_soap', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $uri = $this->generateUrl('app_soap_soap', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $soapServer = new Soap\Server(null, [
             'location' => $uri,

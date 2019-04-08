@@ -30,7 +30,7 @@ class HelperController extends Controller
             $privateUserItem = $currentUser->getRelatedPrivateRoomUserItem();
 
             if ($privateUserItem) {
-                return $this->redirectToRoute('commsy_room_listall', [
+                return $this->redirectToRoute('app_room_listall', [
                     'roomId' => $privateUserItem->getContextID(),
                 ]);
             }

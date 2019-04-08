@@ -30,7 +30,7 @@ class DiscussionArticleCreator extends Creator
     {
         $linkedItem = $item->getLinkedItem();
 
-        return $this->router->generate('commsy_discussion_detail', [
+        return $this->router->generate('app_discussion_detail', [
             'roomId' => $linkedItem->getContextId(),
             'itemId' => $linkedItem->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

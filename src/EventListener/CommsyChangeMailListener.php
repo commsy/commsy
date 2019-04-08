@@ -40,7 +40,7 @@ class CommsyChangeMailListener
                         if ($portalUser) {
                             if ($portalUser->hasToChangeEmail()) {
                                 // generate route to profile
-                                $route = $this->router->generate('commsy_profile_personal', [
+                                $route = $this->router->generate('app_profile_personal', [
                                     'roomId' => $privateRoom->getItemId(),
                                     'itemId' => $privateRoomUser->getItemId()
                                 ]);

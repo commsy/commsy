@@ -40,7 +40,7 @@ class DeleteStep implements DeleteInterface
         /** @var \cs_step_item $step */
         $step = $item;
 
-        return $this->router->generate('commsy_todo_detail', [
+        return $this->router->generate('app_todo_detail', [
             'roomId' => $step->getContextID(),
             'itemId' => $step->getTodoID(),
         ]);

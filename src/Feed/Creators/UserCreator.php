@@ -33,7 +33,7 @@ class UserCreator extends Creator
 
     public function getLink($item)
     {
-        return $this->router->generate('commsy_user_detail', [
+        return $this->router->generate('app_user_detail', [
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

@@ -209,7 +209,7 @@ class PortfolioController extends Controller
         if ($portfolioId === 'new') {
             $portfolioItem = $portfolioService->getNewItem();
             $portfolioItem->save();
-            return $this->redirectToRoute('commsy_portfolio_edit', [
+            return $this->redirectToRoute('app_portfolio_edit', [
                 'roomId' => $roomId,
                 'portfolioId' => $portfolioItem->getItemId(),
             ]);
@@ -247,17 +247,17 @@ class PortfolioController extends Controller
                     }
                 }
 
-                return $this->redirectToRoute('commsy_portfolio_index', [
+                return $this->redirectToRoute('app_portfolio_index', [
                     'roomId' => $roomId,
                     'portfolioId' => $portfolioId,
                 ]);
             }  else if ($form->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('commsy_portfolio_index', [
+                return $this->redirectToRoute('app_portfolio_index', [
                     'roomId' => $roomId,
                 ]);
             } else if ($form->has('delete') && $form->get('delete')->isClicked()) {
                 $portfolioManager->delete($portfolioId);
-                return $this->redirectToRoute('commsy_portfolio_index', [
+                return $this->redirectToRoute('app_portfolio_index', [
                     'roomId' => $roomId,
                 ]);
             }
@@ -364,7 +364,7 @@ class PortfolioController extends Controller
                 }
             }
 
-            return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
+            return $this->redirectToRoute('app_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
         }
 
         return [

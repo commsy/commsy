@@ -23,7 +23,7 @@ class DiscussionCreator extends Creator
 
     public function getLink($item)
     {
-        return $this->router->generate('commsy_discussion_detail', [
+        return $this->router->generate('app_discussion_detail', [
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

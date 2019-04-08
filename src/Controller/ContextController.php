@@ -35,7 +35,7 @@ class ContextController extends Controller
             'activated' => true
         );
         $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_project_list', array('roomId' => $roomId)),
+            'action' => $this->generateUrl('app_project_list', array('roomId' => $roomId)),
         ));
 
         // get the material manager service
@@ -272,14 +272,14 @@ class ContextController extends Controller
 
                         if ($isRequest) {
                             $body .= $translator->getMessage('MAIL_USER_FREE_LINK') . "\n";
-                            $body .= $this->generateUrl('commsy_user_list', [
+                            $body .= $this->generateUrl('app_user_list', [
                                 'roomId' => $roomItem->getItemID(),
                                 'user_filter' => [
                                     'user_status' => 1,
                                 ],
                             ], UrlGeneratorInterface::ABSOLUTE_URL);
                         } else {
-                            $body .= $this->generateUrl('commsy_room_home', [
+                            $body .= $this->generateUrl('app_room_home', [
                                 'roomId' => $roomItem->getItemID(),
                             ], UrlGeneratorInterface::ABSOLUTE_URL);
                         }
@@ -345,7 +345,7 @@ class ContextController extends Controller
                     $body .= "\n\n";
                     $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $modFullName, $roomItem->getTitle());
                     $body .= "\n\n";
-                    $body .= $this->generateUrl('commsy_room_home', [
+                    $body .= $this->generateUrl('app_room_home', [
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
@@ -367,7 +367,7 @@ class ContextController extends Controller
 
             // redirect to detail page
             if ($roomItem->isGroupRoom()) {
-                $route = $this->redirectToRoute('commsy_group_detail', [
+                $route = $this->redirectToRoute('app_group_detail', [
                     'roomId' => $roomId,
                     'itemId' => $roomItem->getLinkedGroupItemID(),
                 ]);
@@ -375,13 +375,13 @@ class ContextController extends Controller
             else {
                 if ($roomManager->getItem($roomId)) {
                     // in community-context -> redirect to detail view in project rubric.
-                    $route = $this->redirectToRoute('commsy_project_detail', [
+                    $route = $this->redirectToRoute('app_project_detail', [
                         'roomId' => $roomId,
                         'itemId' => $itemId,
                     ]);
                 } else {
                     // in private room context -> redirect to detail view of all rooms list.
-                    $route = $this->redirectToRoute('commsy_room_detail', [
+                    $route = $this->redirectToRoute('app_room_detail', [
                         'roomId' => $roomId,
                         'itemId' => $itemId,
                     ]);

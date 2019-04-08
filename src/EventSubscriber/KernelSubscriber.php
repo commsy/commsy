@@ -103,7 +103,7 @@ class KernelSubscriber implements EventSubscriberInterface
                 $cid = $currentRequest->query->get('cid');
                 $contextItem = $this->itemService->getTypedItem($cid);
                 if ($contextItem instanceof \cs_room_item) {
-                    $event->setResponse(new RedirectResponse($this->urlGenerator->generate('commsy_room_home', [
+                    $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_room_home', [
                         'roomId' => $cid,
                     ])));
                 } else {
@@ -199,12 +199,12 @@ class KernelSubscriber implements EventSubscriberInterface
                             }
 
                             if ($groupID) {
-                                $url = $this->urlGenerator->generate('commsy_group_detail', [
+                                $url = $this->urlGenerator->generate('app_group_detail', [
                                     'roomId' => $roomContextID,
                                     'itemId' => $groupID,
                                 ]);
                             } else {
-                                $url = $this->urlGenerator->generate('commsy_room_detail', [
+                                $url = $this->urlGenerator->generate('app_room_detail', [
                                     'roomId' => $roomContextID,
                                     'itemId' => $roomID,
                                 ]);

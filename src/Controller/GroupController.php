@@ -137,7 +137,7 @@ class GroupController extends BaseController
         $itemsCountArray = $groupService->getCountArray($roomId);
 
 
-        $html = $this->renderView('App:group:list_print.html.twig', [
+        $html = $this->renderView('group/list_print.html.twig', [
             'roomId' => $roomId,
             'groups' => $groups,
             'readerList' => $readerList,
@@ -344,7 +344,7 @@ class GroupController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('App:group:detail_print.html.twig', [
+        $html = $this->renderView('group/detail_print.html.twig', [
             'roomId' => $roomId,
             'group' => $infoArray['group'],
             'readerList' => $infoArray['readerList'],
@@ -593,7 +593,7 @@ class GroupController extends BaseController
         // add current user to new group
         $groupItem->addMember($legacyEnvironment->getCurrentUser());
 
-        return $this->redirectToRoute('commsy_group_detail', array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
+        return $this->redirectToRoute('app_group_detail', array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
     }
 
 
@@ -644,7 +644,7 @@ class GroupController extends BaseController
         $formData['draft'] = $isDraft;
         $translator = $this->get('translator');
         $form = $this->createForm(GroupType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_group_edit', array(
+            'action' => $this->generateUrl('app_group_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -655,7 +655,7 @@ class GroupController extends BaseController
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
 
@@ -685,7 +685,7 @@ class GroupController extends BaseController
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_group_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_group_save', array('roomId' => $roomId, 'itemId' => $itemId));
 
             // persist
             // $em = $this->getDoctrine()->getManager();
@@ -814,7 +814,7 @@ class GroupController extends BaseController
         }
         $formData = $transformer->transform($groupItem);
         $form = $this->createForm(GrouproomType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_group_editgrouproom', array(
+            'action' => $this->generateUrl('app_group_editgrouproom', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -868,7 +868,7 @@ class GroupController extends BaseController
             } else {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
@@ -994,7 +994,7 @@ class GroupController extends BaseController
                 $userService = $this->get('commsy_legacy.user_service');
                 $memberStatus = $userService->getMemberStatus($grouproomItem, $legacyEnvironment->getCurrentUser());
                 if ($memberStatus == 'join') {
-                    return $this->redirectToRoute('commsy_context_request', [
+                    return $this->redirectToRoute('app_context_request', [
                         'roomId' => $roomId,
                         'itemId' => $grouproomItem->getItemId(),
                     ]);
@@ -1259,12 +1259,12 @@ class GroupController extends BaseController
                 }
 
                 // redirect to success page
-                return $this->redirectToRoute('commsy_group_sendmultiplesuccess', [
+                return $this->redirectToRoute('app_group_sendmultiplesuccess', [
                     'roomId' => $roomId,
                 ]);
             } else {
                 // redirect to group feed
-                return $this->redirectToRoute('commsy_group_list', [
+                return $this->redirectToRoute('app_group_list', [
                     'roomId' => $roomId,
                 ]);
             }
@@ -1282,7 +1282,7 @@ class GroupController extends BaseController
     public function sendMultipleSuccessAction($roomId)
     {
         return [
-            'link' => $this->generateUrl('commsy_group_list', [
+            'link' => $this->generateUrl('app_group_list', [
                 'roomId' => $roomId,
             ]),
         ];
@@ -1427,12 +1427,12 @@ class GroupController extends BaseController
                 }
 
                 // redirect to success page
-                return $this->redirectToRoute('commsy_group_sendmultiplesuccess', [
+                return $this->redirectToRoute('app_group_sendmultiplesuccess', [
                     'roomId' => $roomId,
                 ]);
             } else {
                 // redirect to group feed
-                return $this->redirectToRoute('commsy_group_list', [
+                return $this->redirectToRoute('app_group_list', [
                     'roomId' => $roomId,
                 ]);
             }
@@ -1613,7 +1613,7 @@ class GroupController extends BaseController
         ];
 
         return $this->createForm(GroupFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_group_list', [
+            'action' => $this->generateUrl('app_group_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => false,

@@ -123,7 +123,7 @@ class AnnotationController extends Controller
                 $noticedManager->markNoticed($itemId, 0);
             }
 
-            return $this->redirectToRoute('commsy_annotation_success', [
+            return $this->redirectToRoute('app_annotation_success', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]);
@@ -191,10 +191,10 @@ class AnnotationController extends Controller
                     }
                 }
 
-                return $this->redirectToRoute('commsy_'.$itemType.'_detail', $routeArray);
+                return $this->redirectToRoute('app_'.$itemType.'_detail', $routeArray);
             }
         }
-        return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
+        return $this->redirectToRoute('app_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
     }
 
     /**

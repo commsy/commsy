@@ -384,7 +384,7 @@ class TopicController extends BaseController
         $topicItem->setDraftStatus(1);
         $topicItem->save();
 
-        return $this->redirectToRoute('commsy_topic_detail', array('roomId' => $roomId, 'itemId' => $topicItem->getItemId()));
+        return $this->redirectToRoute('app_topic_detail', array('roomId' => $roomId, 'itemId' => $topicItem->getItemId()));
     }
 
 
@@ -433,7 +433,7 @@ class TopicController extends BaseController
         $formData['draft'] = $isDraft;
         $translator = $this->get('translator');
         $form = $this->createForm(TopicType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_date_edit', array(
+            'action' => $this->generateUrl('app_date_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -444,7 +444,7 @@ class TopicController extends BaseController
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
         
@@ -474,7 +474,7 @@ class TopicController extends BaseController
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($topicItem));
@@ -578,7 +578,7 @@ class TopicController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('App:todo:detail_print.html.twig', [
+        $html = $this->renderView('todo/detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['topic'],
             'readerList' => $infoArray['readerList'],
@@ -655,7 +655,7 @@ class TopicController extends BaseController
         // get announcement list from manager service 
         $itemsCountArray = $topicService->getCountArray($roomId);
 
-        $html = $this->renderView('App:topic:list_print.html.twig', [
+        $html = $this->renderView('topic/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'topic',
             'announcements' => $topics,
@@ -721,7 +721,7 @@ class TopicController extends BaseController
 
 
         $form = $this->createForm(TopicPathType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_topic_editpath', array(
+            'action' => $this->generateUrl('app_topic_editpath', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -773,7 +773,7 @@ class TopicController extends BaseController
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($item));
@@ -892,7 +892,7 @@ class TopicController extends BaseController
         ];
 
         return $this->createForm(TopicFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_topic_list', [
+            'action' => $this->generateUrl('app_topic_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => $room->withBuzzwords(),

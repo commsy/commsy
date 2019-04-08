@@ -222,7 +222,7 @@ class MaterialController extends BaseController
         // get material list from manager service 
         $itemsCountArray = $materialService->getCountArray($roomId);
 
-        $html = $this->renderView('App:material:list_print.html.twig', [
+        $html = $this->renderView('material/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'material',
             'materials' => $materials,
@@ -383,7 +383,7 @@ class MaterialController extends BaseController
             }
         }
 
-        return new JsonRedirectResponse($this->generateUrl('commsy_material_detail', [
+        return new JsonRedirectResponse($this->generateUrl('app_material_detail', [
             'roomId' => $roomId,
             'itemId' => $itemId
         ]));
@@ -942,7 +942,7 @@ class MaterialController extends BaseController
             }
 
             $form = $this->createForm(MaterialType::class, $formData, array(
-                'action' => $this->generateUrl('commsy_material_edit', array(
+                'action' => $this->generateUrl('app_material_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
@@ -953,7 +953,7 @@ class MaterialController extends BaseController
                 'hashtagMappingOptions' => [
                     'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                     'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
                 'licenses' => $licenses,
             ));
@@ -1008,7 +1008,7 @@ class MaterialController extends BaseController
                     $linkedMaterialItem->save();
                 }
 
-                return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
+                return $this->redirectToRoute('app_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
             }
         }
 
@@ -1090,7 +1090,7 @@ class MaterialController extends BaseController
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('App:material:detail_print.html.twig', [
+        $html = $this->renderView('material/detail_print.html.twig', [
             'roomId' => $roomId,
             'material' => $infoArray['material'],
             'sectionList' => $infoArray['sectionList'],
@@ -1146,7 +1146,7 @@ class MaterialController extends BaseController
         }
         $materialItem->save();
 
-        return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
+        return $this->redirectToRoute('app_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
     }
 
     /**
@@ -1175,7 +1175,7 @@ class MaterialController extends BaseController
 
         $formData = $transformer->transform($section);
         $form = $this->createForm(SectionType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
+            'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
             'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
@@ -1212,7 +1212,7 @@ class MaterialController extends BaseController
         $formData = $transformer->transform($section);
 
         $form = $this->createForm(SectionType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
+            'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
             'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
@@ -1245,7 +1245,7 @@ class MaterialController extends BaseController
             }
         }
 
-        return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+        return $this->redirectToRoute('app_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
     }
 
     /**
@@ -1304,7 +1304,7 @@ class MaterialController extends BaseController
         $formData = $transformer->transform($material);
 
         $formOptions = array(
-            'action' => $this->generateUrl('commsy_material_editsections', array(
+            'action' => $this->generateUrl('app_material_editsections', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -1332,9 +1332,9 @@ class MaterialController extends BaseController
                     $item->saveAsItem();
                 }
             } else if ($form->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $itemId));
+                return $this->redirectToRoute('app_material_detail', array('roomId' => $roomId, 'itemId' => $itemId));
             }
-            return $this->redirectToRoute('commsy_material_savesections', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_material_savesections', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -1388,7 +1388,7 @@ class MaterialController extends BaseController
         
         $newMaterial->save();
 
-        return $this->redirectToRoute('commsy_material_detail', [
+        return $this->redirectToRoute('app_material_detail', [
             'roomId' => $roomId,
             'itemId' => $itemId,
             'versionId' => $newVersionId
@@ -1464,7 +1464,7 @@ class MaterialController extends BaseController
         ];
 
         return $this->createForm(MaterialFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_material_list', [
+            'action' => $this->generateUrl('app_material_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => $room->withBuzzwords(),

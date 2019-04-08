@@ -77,7 +77,7 @@ class PortalController extends Controller
             // actually executes the queries (i.e. the INSERT query)
             $em->flush();
 
-            return $this->redirectToRoute('commsy_portal_roomcategories', [
+            return $this->redirectToRoute('app_portal_roomcategories', [
                 'roomId' => $roomId,
             ]);
         }
@@ -240,7 +240,7 @@ class PortalController extends Controller
             // actually executes the queries (i.e. the INSERT query)
             $em->flush();
 
-            return $this->redirectToRoute('commsy_portal_roomtermstemplates', [
+            return $this->redirectToRoute('app_portal_roomtermstemplates', [
                 'roomId' => $roomId,
             ]);
         }
@@ -335,7 +335,7 @@ class PortalController extends Controller
                 // actually executes the queries (i.e. the INSERT query)
                 $em->flush();
 
-                return $this->redirectToRoute('commsy_portal_translations', [
+                return $this->redirectToRoute('app_portal_translations', [
                     'roomId' => $roomId,
                 ]);
             }
@@ -406,7 +406,7 @@ class PortalController extends Controller
                 $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
             }
 
-            return $this->redirectToRoute('commsy_portal_licenses', [
+            return $this->redirectToRoute('app_portal_licenses', [
                 'roomId' => $roomId,
             ]);
         }
@@ -443,7 +443,7 @@ class PortalController extends Controller
                 $repository->updatePositions($structure, $roomId);
             }
 
-            return $this->redirectToRoute('commsy_portal_licenses', [
+            return $this->redirectToRoute('app_portal_licenses', [
                 'roomId' => $roomId,
             ]);
         }
@@ -475,7 +475,7 @@ class PortalController extends Controller
         }
 
         $importForm = $this->createForm(CsvImportType::class, [], [
-            'uploadUrl' => $this->generateUrl('commsy_upload_base64upload', [
+            'uploadUrl' => $this->generateUrl('app_upload_base64upload', [
                 'roomId' => $roomId,
             ]),
             'portal' => $portal,

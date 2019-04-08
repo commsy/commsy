@@ -47,7 +47,7 @@ class RoomController extends Controller
 
         // setup filter form
         $filterForm = $this->createForm(HomeFilterType::class, null, array(
-            'action' => $this->generateUrl('commsy_room_home', array(
+            'action' => $this->generateUrl('app_room_home', array(
                 'roomId' => $roomId,
             )),
             'hasHashtags' => $roomItem->withBuzzwords(),
@@ -113,7 +113,7 @@ class RoomController extends Controller
         // RSS-Feed / iCal / Wiki
         $rss = [
             'show' => false,
-            'url' => $this->generateUrl('commsy_rss', [
+            'url' => $this->generateUrl('app_rss', [
                 'contextId' => $roomId,
             ]),
         ];
@@ -138,7 +138,7 @@ class RoomController extends Controller
                 if ($currentUserItem->isUser()) {
                     $hashManager = $legacyEnvironment->getHashManager();
 
-                    $rss['url'] = $this->generateUrl('commsy_rss', [
+                    $rss['url'] = $this->generateUrl('app_rss', [
                         'contextId' => $roomId,
                         'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
                     ]);
@@ -197,7 +197,7 @@ class RoomController extends Controller
      * @Route("/room/{roomId}/feed/{start}/{sort}", requirements={
      *     "roomId": "\d+"
      * })
-     * @Template("CommsyBundle:room:list.html.twig")
+     * @Template("room/list.html.twig")
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
@@ -213,7 +213,7 @@ class RoomController extends Controller
 
         // setup filter form
         $filterForm = $this->createForm(HomeFilterType::class, null, array(
-            'action' => $this->generateUrl('commsy_room_home', array(
+            'action' => $this->generateUrl('app_room_home', array(
                 'roomId' => $roomId,
             )),
             'hasHashtags' => $roomItem->withBuzzwords(),
@@ -264,7 +264,7 @@ class RoomController extends Controller
     {
         $moderationsupportData = array();
         $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, array(
-            'action' => $this->generateUrl('commsy_room_moderationsupport', array(
+            'action' => $this->generateUrl('app_room_moderationsupport', array(
                 'roomId' => $roomId,
             ))
         ));
@@ -534,8 +534,8 @@ class RoomController extends Controller
                     $show = true;
                     $modalTitle = $translator->trans('AGB', [], 'room');
                     $modalMessage = $currentContext->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
-                    $modalConfirm = $this->generateUrl('commsy_room_acceptagb', array('roomId' => $roomId));
-                    $modalCancel = $this->generateUrl('commsy_dashboard_overview', array('roomId' => $currentUser->getOwnRoom()->getItemId()));
+                    $modalConfirm = $this->generateUrl('app_room_acceptagb', array('roomId' => $roomId));
+                    $modalCancel = $this->generateUrl('app_dashboard_overview', array('roomId' => $currentUser->getOwnRoom()->getItemId()));
                 }
             }
         }
@@ -862,14 +862,14 @@ class RoomController extends Controller
 
                         if ($isRequest) {
                             $body .= $translator->getMessage('MAIL_USER_FREE_LINK') . "\n";
-                            $body .= $this->generateUrl('commsy_user_list', [
+                            $body .= $this->generateUrl('app_user_list', [
                                 'roomId' => $roomItem->getItemID(),
                                 'user_filter' => [
                                     'user_status' => 1,
                                 ],
                             ], UrlGeneratorInterface::ABSOLUTE_URL);
                         } else {
-                            $body .= $this->generateUrl('commsy_room_home', [
+                            $body .= $this->generateUrl('app_room_home', [
                                 'roomId' => $roomItem->getItemID(),
                             ], UrlGeneratorInterface::ABSOLUTE_URL);
                         }
@@ -925,7 +925,7 @@ class RoomController extends Controller
                     $body .= "\n\n";
                     $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $contactModerator->getFullname(), $roomItem->getTitle());
                     $body .= "\n\n";
-                    $body .= $this->generateUrl('commsy_room_home', [
+                    $body .= $this->generateUrl('app_room_home', [
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
@@ -945,13 +945,13 @@ class RoomController extends Controller
             // redirect to detail page
             $route = "";
             if ($roomItem->isGroupRoom()) {
-                $route = $this->redirectToRoute('commsy_group_detail', [
+                $route = $this->redirectToRoute('app_group_detail', [
                     'roomId' => $roomId,
                     'itemId' => $roomItem->getLinkedGroupItemID(),
                 ]);
             }
             else {
-                $route = $this->redirectToRoute('commsy_project_detail', [
+                $route = $this->redirectToRoute('app_project_detail', [
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 ]);
@@ -1138,12 +1138,12 @@ class RoomController extends Controller
                 }
 
                 // redirect to the project detail page
-                return $this->redirectToRoute('commsy_room_detail', [
+                return $this->redirectToRoute('app_room_detail', [
                     'roomId' => $roomId,
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
             } else {
-                return $this->redirectToRoute('commsy_room_listall', [
+                return $this->redirectToRoute('app_room_listall', [
                     'roomId' => $roomId,
                 ]);
             }

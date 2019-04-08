@@ -346,7 +346,7 @@ class LegacyMarkup
                             mb_stristr($lowerFilename, 'jpeg') ||
                             mb_stristr($lowerFilename, 'gif')) {
 
-                            $src = $this->router->generate('commsy_file_getfile', [
+                            $src = $this->router->generate('app_file_getfile', [
                                 'fileId' => $file->getFileID(),
                                 'disposition' => 'inline',
                             ]);
@@ -410,7 +410,7 @@ class LegacyMarkup
                 $word = $itemId;
             }
 
-            $url = $this->router->generate('commsy_goto_goto', [
+            $url = $this->router->generate('app_goto_goto', [
                 'itemId' => $itemId,
             ]);
 
@@ -491,7 +491,7 @@ class LegacyMarkup
                 $name = $args['text'];
             }
 
-            $src = $this->router->generate('commsy_file_getfile', [
+            $src = $this->router->generate('app_file_getfile', [
                 'fileId' => $file->getFileId(),
             ]);
 
@@ -576,7 +576,7 @@ class LegacyMarkup
 
     private function formatCS8Video($text, $fileId)
     {
-        $src = $this->router->generate('commsy_file_getfile', [
+        $src = $this->router->generate('app_file_getfile', [
             'fileId' => $fileId,
             'disposition' => 'inline',
         ]);
@@ -590,7 +590,7 @@ class LegacyMarkup
 
     private function formatCS8Image($text, $fileId)
     {
-        $src = $this->router->generate('commsy_file_getfile', [
+        $src = $this->router->generate('app_file_getfile', [
             'fileId' => $fileId,
             'disposition' => 'inline',
         ]);

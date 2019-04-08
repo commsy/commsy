@@ -23,7 +23,7 @@ class AnnouncementCreator extends Creator
 
     public function getLink($item)
     {
-        return $this->router->generate('commsy_announcement_detail', [
+        return $this->router->generate('app_announcement_detail', [
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

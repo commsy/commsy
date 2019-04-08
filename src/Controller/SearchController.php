@@ -39,7 +39,7 @@ class SearchController extends BaseController
         $globalSearch = new GlobalSearch();
 
         $form = $this->createForm(SearchType::class, $globalSearch, [
-            'action' => $this->generateUrl('commsy_search_results', [
+            'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId
             ])
         ]);
@@ -62,7 +62,7 @@ class SearchController extends BaseController
     public function itemSearchFormAction($roomId)
     {
         $form = $this->createForm(SearchItemType::class, [], [
-            'action' => $this->generateUrl('commsy_search_results', [
+            'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId
             ])
         ]);
@@ -141,7 +141,7 @@ class SearchController extends BaseController
         ];
 
         $topForm = $this->createForm(SearchType::class, $globalSearch, [
-            'action' => $this->generateUrl('commsy_search_results', [
+            'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId,
             ])
         ]);

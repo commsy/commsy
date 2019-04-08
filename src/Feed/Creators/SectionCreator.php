@@ -30,7 +30,7 @@ class SectionCreator extends Creator
     {
         $linkedItem = $item->getLinkedItem();
 
-        return $this->router->generate('commsy_material_detail', [
+        return $this->router->generate('app_material_detail', [
             'roomId' => $linkedItem->getContextId(),
             'itemId' => $linkedItem->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

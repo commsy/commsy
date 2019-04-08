@@ -214,7 +214,7 @@ class DiscussionController extends BaseController
         $itemsCountArray = $discussionService->getCountArray($roomId);
 
 
-        $html = $this->renderView('App:discussion:list_print.html.twig', [
+        $html = $this->renderView('discussion/list_print.html.twig', [
             'roomId' => $roomId,
             'discussions' => $discussions,
             'readerList' => $readerList,
@@ -534,7 +534,7 @@ class DiscussionController extends BaseController
         $discussionItem->setPrivateEditing('1');
         $discussionItem->save();
 
-        return $this->redirectToRoute('commsy_discussion_detail', [
+        return $this->redirectToRoute('app_discussion_detail', [
             'roomId' => $roomId,
             'itemId' => $discussionItem->getItemId(),
         ]);
@@ -547,7 +547,7 @@ class DiscussionController extends BaseController
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('App:discussion:detail_print.html.twig', [
+        $html = $this->renderView('discussion/detail_print.html.twig', [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
             'articleList' => $infoArray['articleList'],
@@ -658,7 +658,7 @@ class DiscussionController extends BaseController
 
         $formData = $transformer->transform($article);
         $form = $this->createForm(DiscussionArticleType::class, $formData, [
-            'action' => $this->generateUrl('commsy_discussion_savearticle', [
+            'action' => $this->generateUrl('app_discussion_savearticle', [
                 'roomId' => $roomId,
                 'itemId' => $article->getItemID()
             ]),
@@ -745,7 +745,7 @@ class DiscussionController extends BaseController
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $formData['draft'] = $isDraft;
             $form = $this->createForm(DiscussionType::class, $formData, array(
-                'action' => $this->generateUrl('commsy_discussion_edit', array(
+                'action' => $this->generateUrl('app_discussion_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
@@ -756,7 +756,7 @@ class DiscussionController extends BaseController
                 'hashtagMappingOptions' => [
                     'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                     'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
 
             ));
@@ -772,7 +772,7 @@ class DiscussionController extends BaseController
                 'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service')),
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             ));
         }
         
@@ -808,7 +808,7 @@ class DiscussionController extends BaseController
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_discussion_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_discussion_save', array('roomId' => $roomId, 'itemId' => $itemId));
             
             // persist
             // $em = $this->getDoctrine()->getManager();
@@ -973,7 +973,7 @@ class DiscussionController extends BaseController
         $formData = $transformer->transform($article);
 
         $form = $this->createForm(DiscussionArticleType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID())),
+            'action' => $this->generateUrl('app_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID())),
             'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
@@ -1005,7 +1005,7 @@ class DiscussionController extends BaseController
 
                 $article->save();
             }
-            return $this->redirectToRoute('commsy_discussion_detail', array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
+            return $this->redirectToRoute('app_discussion_detail', array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
         }
     }
 
@@ -1078,7 +1078,7 @@ class DiscussionController extends BaseController
         ];
 
         return $this->createForm(DiscussionFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_discussion_list', [
+            'action' => $this->generateUrl('app_discussion_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => $room->withBuzzwords(),

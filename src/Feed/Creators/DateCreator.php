@@ -23,7 +23,7 @@ class DateCreator extends Creator
 
     public function getLink($item)
     {
-        return $this->router->generate('commsy_date_detail', [
+        return $this->router->generate('app_date_detail', [
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

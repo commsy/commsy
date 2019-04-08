@@ -18,7 +18,7 @@ use App\Event\CommsyEditEvent;
 class HashtagController extends Controller
 {
     /**
-     * @Template("CommsyBundle:hashtag:show.html.twig")
+     * @Template("hashtag/show.html.twig")
      */
     public function showAction($roomId, Request $request)
     {
@@ -32,7 +32,7 @@ class HashtagController extends Controller
     }
 
     /**
-     * @Template("CommsyBundle:hashtag:showDetail.html.twig")
+     * @Template("hashtag/showDetail.html.twig")
      */
     public function showDetailAction($roomId, Request $request)
     {
@@ -46,7 +46,7 @@ class HashtagController extends Controller
     }
 
     /**
-     * @Template("CommsyBundle:hashtag:showDetailShort.html.twig")
+     * @Template("hashtag/showDetailShort.html.twig")
      */
     public function showDetailShortAction($roomId, Request $request)
     {
@@ -162,7 +162,7 @@ class HashtagController extends Controller
                 $buzzwordItem->save();
             }
 
-            return $this->redirectToRoute('commsy_hashtag_edit', [
+            return $this->redirectToRoute('app_hashtag_edit', [
                 'roomId' => $roomId,
             ]);
         }
@@ -197,7 +197,7 @@ class HashtagController extends Controller
             $buzzwordItemOne->save();
             $buzzwordItemTwo->delete();
 
-            return $this->redirectToRoute('commsy_hashtag_edit', [
+            return $this->redirectToRoute('app_hashtag_edit', [
                 'roomId' => $roomId,
             ]);
         }

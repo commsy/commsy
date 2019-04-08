@@ -283,7 +283,7 @@ class AnnouncementController extends BaseController
         // get announcement list from manager service 
         $itemsCountArray = $announcementService->getCountArray($roomId);
 
-        $html = $this->renderView('App:announcement:list_print.html.twig', [
+        $html = $this->renderView('announcement/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'announcement',
             'announcements' => $announcements,
@@ -372,7 +372,7 @@ class AnnouncementController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('App:announcement:detail_print.html.twig', [
+        $html = $this->renderView('announcement/detail_print.html.twig', [
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
             'readerList' => $infoArray['readerList'],
@@ -422,7 +422,7 @@ class AnnouncementController extends BaseController
         $announcementItem->setPrivateEditing(1);
         $announcementItem->save();
 
-        return $this->redirectToRoute('commsy_announcement_detail', array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
+        return $this->redirectToRoute('app_announcement_detail', array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
     }
 
     /**
@@ -465,7 +465,7 @@ class AnnouncementController extends BaseController
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $translator = $this->get('translator');
             $form = $this->createForm(AnnouncementType::class, $formData, array(
-                'action' => $this->generateUrl('commsy_announcement_edit', array(
+                'action' => $this->generateUrl('app_announcement_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
@@ -476,7 +476,7 @@ class AnnouncementController extends BaseController
                 'hashtagMappingOptions' => [
                     'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                     'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
+                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
                 ],
             ));
         }
@@ -508,7 +508,7 @@ class AnnouncementController extends BaseController
                 }
             }
 
-            return $this->redirectToRoute('commsy_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
@@ -694,7 +694,7 @@ class AnnouncementController extends BaseController
         ];
 
         return $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_announcement_list', [
+            'action' => $this->generateUrl('app_announcement_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => $room->withBuzzwords(),

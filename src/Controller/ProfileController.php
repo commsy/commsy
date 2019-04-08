@@ -55,7 +55,7 @@ class ProfileController extends Controller
 
         $form = $this->createForm(RoomProfileGeneralType::class, $userData, array(
             'itemId' => $itemId,
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+            'uploadUrl' => $this->generateUrl('app_upload_upload', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
             )),
@@ -122,7 +122,7 @@ class ProfileController extends Controller
                 }
             }
             
-            return $this->redirectToRoute('commsy_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $roomService = $this->get('commsy_legacy.room_service');
@@ -192,7 +192,7 @@ class ProfileController extends Controller
                 $tempUserItem = $userList->getNext();
             }
 
-            return $this->redirectToRoute('commsy_profile_address', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_address', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -259,7 +259,7 @@ class ProfileController extends Controller
                 $tempUserItem = $userList->getNext();
             }
 
-            return $this->redirectToRoute('commsy_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -338,7 +338,7 @@ class ProfileController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
-            return $this->redirectToRoute('commsy_profile_personal', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_personal', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -375,7 +375,7 @@ class ProfileController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
-            return $this->redirectToRoute('commsy_profile_account', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_account', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -473,7 +473,7 @@ class ProfileController extends Controller
             if($form->isSubmitted() && $form->isValid()) {
                 $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
 
-                return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
+                return $this->redirectToRoute('app_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
             }
         }
 
@@ -839,7 +839,7 @@ class ProfileController extends Controller
         }
         $caldavUrl = $protocoll . $_SERVER['HTTP_HOST'];
 
-        $caldavPath = $this->generateUrl('commsy_caldav_caldavprincipal', array(
+        $caldavPath = $this->generateUrl('app_caldav_caldavprincipal', array(
             'portalId' => $legacyEnvironment->getCurrentPortalId(),
             'userId' => $legacyEnvironment->getCurrentUser()->getUserId(),
         ));

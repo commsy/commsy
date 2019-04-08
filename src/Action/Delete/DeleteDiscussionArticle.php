@@ -40,7 +40,7 @@ class DeleteDiscussionArticle implements DeleteInterface
         /** @var \cs_discussionarticle_item $discussionArticle */
         $discussionArticle = $item;
 
-        return $this->router->generate('commsy_discussion_detail', [
+        return $this->router->generate('app_discussion_detail', [
             'roomId' => $discussionArticle->getContextID(),
             'itemId' => $discussionArticle->getLinkedItem()->getItemID(),
         ]);

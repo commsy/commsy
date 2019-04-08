@@ -195,7 +195,7 @@ class ICalController extends Controller
             }
 
             // url
-            $url = $this->generateUrl('commsy_date_detail', [
+            $url = $this->generateUrl('app_date_detail', [
                 'roomId' => $item->getContextID(),
                 'itemId' => $item->getItemID(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);

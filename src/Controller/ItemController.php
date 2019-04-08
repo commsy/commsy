@@ -48,11 +48,11 @@ class ItemController extends Controller
         $formData = $transformer->transform($item);
         $formOptions = array(
             'itemId' => $itemId,
-            'uploadUrl' => $this->generateUrl('commsy_upload_ckupload', array(
+            'uploadUrl' => $this->generateUrl('app_upload_ckupload', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
             )),
-            'filelistUrl' => $this->generateUrl('commsy_item_filelist', array(
+            'filelistUrl' => $this->generateUrl('app_item_filelist', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
             )),
@@ -102,7 +102,7 @@ class ItemController extends Controller
                 throw new \UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
 
-            return $this->redirectToRoute('commsy_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         // etherpad
@@ -190,7 +190,7 @@ class ItemController extends Controller
                 $tempItem->save();
             }
             
-            return $this->redirectToRoute('commsy_material_saveworkflow', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_material_saveworkflow', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $workflowData['textGreen'] = $room->getWorkflowTrafficLightTextGreen();
@@ -339,7 +339,7 @@ class ItemController extends Controller
             'categoryConstraints' => $categoryConstraints,
             'hashtags' => $optionsData['hashtags'],
             'hashtagConstraints' => $hashtagConstraints,
-            'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
+            'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);
 
@@ -368,7 +368,7 @@ class ItemController extends Controller
                 $item->save();
             }
 
-            return $this->redirectToRoute('commsy_item_savelinks', [
+            return $this->redirectToRoute('app_item_savelinks', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]);
@@ -463,7 +463,7 @@ class ItemController extends Controller
                     $itemType = $item->getLabelType();
                 }
 
-                return $this->redirectToRoute('commsy_' . $itemType . '_detail', [
+                return $this->redirectToRoute('app_' . $itemType . '_detail', [
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 ]);
@@ -477,7 +477,7 @@ class ItemController extends Controller
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
-            return $this->redirectToRoute('commsy_item_sendsuccess', [
+            return $this->redirectToRoute('app_item_sendsuccess', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]);
@@ -508,7 +508,7 @@ class ItemController extends Controller
         }
 
         return [
-            'link' => $this->generateUrl('commsy_' . $itemType . '_detail', [
+            'link' => $this->generateUrl('app_' . $itemType . '_detail', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
@@ -630,7 +630,7 @@ class ItemController extends Controller
         // prepare form
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
-        $formMessage = $this->renderView('App:email:item_list_template.txt.twig',array('user' => $currentUser, 'room' => $room));
+        $formMessage = $this->renderView('email/item_list_template.txt.twig',array('user' => $currentUser, 'room' => $room));
 
         $formData = [
             'message' => $formMessage,
@@ -660,7 +660,7 @@ class ItemController extends Controller
                 ->setTo($toArray)
                 ->setBody(
                     $this->renderView(
-                        'App:email:item_list.txt.twig',
+                        'email/item_list.txt.twig',
                         array('message' => strip_tags($data['message']))
                     ),
                     'text/plain'
@@ -704,7 +704,7 @@ class ItemController extends Controller
         foreach ($files as $key => $file) {
             $fileArray[] = array (
                 'name' => $file->getFileName(),
-                'path' => $this->generateUrl('commsy_file_getfile', [
+                'path' => $this->generateUrl('app_file_getfile', [
                     'fileId' => $file->getFileID(),
                 ], UrlGeneratorInterface::ABSOLUTE_PATH),
                 'id' => $file->getFileID(),

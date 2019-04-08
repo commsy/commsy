@@ -31,7 +31,7 @@ class ProjectController extends Controller
             'activated' => true
         );
         $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_project_list', array('roomId' => $roomId)),
+            'action' => $this->generateUrl('app_project_list', array('roomId' => $roomId)),
         ));
 
         // get the project manager service
@@ -86,7 +86,7 @@ class ProjectController extends Controller
             'activated' => true
         );
         $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_project_list', array('roomId' => $roomId)),
+            'action' => $this->generateUrl('app_project_list', array('roomId' => $roomId)),
         ));
 
         // get the material manager service
@@ -230,7 +230,7 @@ class ProjectController extends Controller
             $linkModifierItemManager->markEdited($legacyRoom->getItemID());
 
             // redirect to the project detail page
-            return $this->redirectToRoute('commsy_project_detail', [
+            return $this->redirectToRoute('app_project_detail', [
                 'roomId' => $roomId,
                 'itemId' => $legacyRoom->getItemId(),
             ]);
@@ -279,7 +279,7 @@ class ProjectController extends Controller
             // redirect back to portal
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-            return $this->redirectToRoute('commsy_project_list', ['roomId' => $roomId]);
+            return $this->redirectToRoute('app_project_list', ['roomId' => $roomId]);
         }
 
         return [

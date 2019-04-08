@@ -97,7 +97,7 @@ class TodoController extends BaseController
         $todoItem->setPrivateEditing('1');
         $todoItem->save();
 
-        return $this->redirectToRoute('commsy_todo_detail', array('roomId' => $roomId, 'itemId' => $todoItem->getItemId()));
+        return $this->redirectToRoute('app_todo_detail', array('roomId' => $roomId, 'itemId' => $todoItem->getItemId()));
     }
     
     /**
@@ -376,7 +376,7 @@ class TodoController extends BaseController
 
         $formData = $transformer->transform($step);
         $form = $this->createForm(StepType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_todo_editstep', [
+            'action' => $this->generateUrl('app_todo_editstep', [
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
@@ -412,7 +412,7 @@ class TodoController extends BaseController
         $formData = $transformer->transform($step);
 
         $form = $this->createForm(StepType::class, $formData, [
-            'action' => $this->generateUrl('commsy_todo_editstep', [
+            'action' => $this->generateUrl('app_todo_editstep', [
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
@@ -451,7 +451,7 @@ class TodoController extends BaseController
 
                     $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($step->getLinkedItem()));
 
-                    return $this->redirectToRoute('commsy_todo_detail', [
+                    return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,
                         'itemId' => $step->getTodoID(),
                         '_fragment' => 'step' . $itemId,
@@ -463,7 +463,7 @@ class TodoController extends BaseController
                     $step->delete();
                     $step->save();
 
-                    return $this->redirectToRoute('commsy_todo_detail', [
+                    return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,
                         'itemId' => $step->getTodoID(),
                     ]);
@@ -520,7 +520,7 @@ class TodoController extends BaseController
         $itemController = $this->get('commsy.item_controller');
 
         $formOptions = array(
-            'action' => $this->generateUrl('commsy_todo_edit', array(
+            'action' => $this->generateUrl('app_todo_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
@@ -532,7 +532,7 @@ class TodoController extends BaseController
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         );
 
@@ -575,7 +575,7 @@ class TodoController extends BaseController
                 }
             }
 
-            return $this->redirectToRoute('commsy_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($todoItem));
@@ -721,7 +721,7 @@ class TodoController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('App:todo:detail_print.html.twig', [
+        $html = $this->renderView('todo/detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['todo'],
             'readerList' => $infoArray['readerList'],
@@ -810,7 +810,7 @@ class TodoController extends BaseController
         // get announcement list from manager service 
         $itemsCountArray = $todoService->getCountArray($roomId);
 
-        $html = $this->renderView('App:todo:list_print.html.twig', [
+        $html = $this->renderView('todo/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'todo',
             'announcements' => $todos,
@@ -843,7 +843,7 @@ class TodoController extends BaseController
             $todo->removeProcessor($currentUser);
         }
 
-        return $this->redirectToRoute('commsy_todo_detail', [
+        return $this->redirectToRoute('app_todo_detail', [
             'roomId' => $roomId,
             'itemId' => $itemId,
         ]);
@@ -976,7 +976,7 @@ class TodoController extends BaseController
         ];
 
         return $this->createForm(TodoFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_todo_list', [
+            'action' => $this->generateUrl('app_todo_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'hasHashtags' => $room->withBuzzwords(),

@@ -23,7 +23,7 @@ class InstitutionCreator extends Creator
 
     public function getLink($item)
     {
-        return $this->router->generate('commsy_institution_detail', [
+        return $this->router->generate('app_institution_detail', [
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
