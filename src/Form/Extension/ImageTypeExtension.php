@@ -11,13 +11,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ImageTypeExtension extends AbstractTypeExtension
 {
     /**
-     * Returns the name of the type being extended.
+     * Returns the class of the type being extended.
      *
-     * @return string The name of the type being extended
+     * @return string The class of the type being extended.
      */
-    public function getExtendedType()
+    public static function getExtendedTypes(): iterable
     {
-        return FileType::class;
+        return [FileType::class];
     }
 
     /**
