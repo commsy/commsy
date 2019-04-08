@@ -1,14 +1,12 @@
 <?php
 namespace App\Form\Type\Profile;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
-use Doctrine\ORM\EntityManager;
 
 use App\Services\LegacyEnvironment;
 
@@ -19,7 +17,7 @@ class ProfileCalendarsType extends AbstractType
 
     private $userItem;
 
-    public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

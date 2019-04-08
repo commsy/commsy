@@ -1,17 +1,16 @@
 <?php
 namespace App\Validator\Constraints;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
-
-use Doctrine\ORM\EntityManager;
 
 class UniqueLabelNameValidator extends ConstraintValidator
 {
     private $em;
 
-    public function __construct(EntityManager $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager) {
         $this->em = $entityManager;
     }
 

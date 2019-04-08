@@ -3,21 +3,20 @@
 namespace App\Services;
 
 use App\Entity\Calendars;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Sabre\VObject;
 
 class CalendarsService
 {
-
     /**
-     * @var EntityManager $em
+     * @var EntityManagerInterface $em
      */
     private $em;
 
     private $serviceContainer;
 
-    public function __construct(EntityManager $entityManager, Container $container)
+    public function __construct(EntityManagerInterface $entityManager, Container $container)
     {
         $this->em = $entityManager;
         $this->serviceContainer = $container;

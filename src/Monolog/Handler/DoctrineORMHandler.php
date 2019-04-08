@@ -2,6 +2,7 @@
 
 namespace App\Monolog\Handler;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Processor\WebProcessor;
@@ -20,7 +21,7 @@ class DoctrineORMHandler extends AbstractProcessingHandler
      */
     private $em;
 
-    public function __construct(EntityManager $entityManager, $level = Logger::DEBUG, $bubble = true)
+    public function __construct(EntityManagerInterface $entityManager, $level = Logger::DEBUG, $bubble = true)
     {
         $this->em = $entityManager;
 

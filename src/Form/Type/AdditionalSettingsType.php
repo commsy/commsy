@@ -1,11 +1,9 @@
 <?php
 namespace App\Form\Type;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
@@ -28,9 +26,7 @@ class AdditionalSettingsType extends AbstractType
     private $em;
     private $legacyEnvironment;
 
-    private $roomItem;
-
-    public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

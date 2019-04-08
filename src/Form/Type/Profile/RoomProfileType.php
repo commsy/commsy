@@ -1,9 +1,9 @@
 <?php
 namespace App\Form\Type\Profile;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -12,10 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-
-use App\Form\Type\Custom\DateSelectType;
-
-use Doctrine\ORM\EntityManager;
 
 use App\Services\LegacyEnvironment;
 
@@ -26,7 +22,7 @@ class RoomProfileType extends AbstractType
 
     private $userItem;
 
-    public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

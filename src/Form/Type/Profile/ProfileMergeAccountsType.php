@@ -1,12 +1,12 @@
 <?php
 namespace App\Form\Type\Profile;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -22,7 +22,7 @@ class ProfileMergeAccountsType extends AbstractType
 
     private $userItem;
 
-    public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
