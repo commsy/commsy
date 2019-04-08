@@ -508,8 +508,8 @@ services:
         autowire: false
         arguments:
             $commsyFinder: '@fos_elastica.finder.commsy'
-            $userService: App\Utils\UserService
-            $itemService: App\Utils\ItemService
+            $userService: '@App\Utils\UserService'
+            $itemService: '@App\Utils\ItemService'
 
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker
