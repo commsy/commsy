@@ -2,7 +2,7 @@
 
 twig:
     form_themes:
-        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+        - 'form/ckeditor_widget.html.twig'
 
 fos_ck_editor:
     inline: true

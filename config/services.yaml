@@ -6,7 +6,24 @@
 parameters:
     locale: 'en'
 
-    legacy.site_index: "%kernel.root_dir%/../web/commsy_legacy.php"
+    legacy.site_index: "%kernel.project_dir%/public/commsy_legacy.php"
+    commsy.mediawiki.enabled: false
+    commsy.mediawiki.apiUrl: ''
+    commsy.mediawiki.consumerKey: ''
+    commsy.mediawiki.consumerSecret: ''
+    commsy.mediawiki.accessToken: ''
+    commsy.mediawiki.accessSecret: ''
+    commsy.email.from: ''
+    commsy.settings.proxy_ip: ''
+    commsy.settings.proxy_port: ''
+    commsy.login.shibboleth_deactivate_direct_login_by_portal_id: false
+    commsy.db.backup_prefix: zzz
+    commsy.settings.session_lifetime": 6
+    commsy.mediawiki.roomWikiUrl: ''
+    commsy.etherpad.enabled: false
+    commsy.settings.item_locking: true
+    commsy.settings.session_lifetime: 3600
+    commsy.limesurvey.enabled: false
 
 services:
     # default configuration for services in *this* file
@@ -38,9 +55,12 @@ services:
 ## Commsy\LegacyBundle
 ###############################
     # Legacy kernel
-    commsy_legacy.legacy_kernel:
-        class: App\Kernel\LegacyKernel
-        arguments: ['%legacy.site_index%', '@service_container']
+    commsy_legacy.kernel:
+        alias: App\Kernel\LegacyKernel
+
+    App\Kernel\LegacyKernel:
+        arguments:
+            $legacyAppPath: '%legacy.site_index%'
 
     # Legacy authentication
     commsy_legacy.legacy_authentication:
@@ -48,15 +68,10 @@ services:
         arguments: ['@commsy_legacy.environment']
 
     # Event subscriber
-    commsy_legacy.subscriber.KernelSubscriber:
-        class: App\EventSubscriber\KernelSubscriber
+    App\EventSubscriber\KernelSubscriber:
         arguments:
-            - '@commsy_legacy.legacy_kernel'
-            - '@commsy_legacy.legacy_authentication'
-            - '@commsy_legacy.item_service'
-            - '@commsy_legacy.file_service'
-            - '@router'
-            - '@commsy_legacy.environment'
+            $legacyKernel: '@commsy_legacy.kernel'
+            $legacyAuthentication: '@commsy_legacy.legacy_authentication'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -64,7 +79,7 @@ services:
     commsy_legacy.environment:
         alias: App\Services\LegacyEnvironment
 
-    Commsy\LegacyBundle\Services\LegacyEnvironment:
+    App\Services\LegacyEnvironment:
         public: true
         autowire: true
         arguments: ['%legacy.site_index%', '@service_container']
@@ -76,31 +91,31 @@ services:
     commsy_legacy.material_service:
         alias: App\Utils\MaterialService
 
-    Commsy\LegacyBundle\Utils\MaterialService:
+    App\Utils\MaterialService:
         autowire: true
 
     commsy_legacy.room_service:
         alias: App\Utils\RoomService
 
-    Commsy\LegacyBundle\Utils\RoomService:
+    App\Utils\RoomService:
         autowire: true
 
     commsy_legacy.file_service:
         alias: App\Utils\FileService
 
-    Commsy\LegacyBundle\Utils\FileService:
+    App\Utils\FileService:
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.user_service:
         alias: App\Utils\UserService
 
-    Commsy\LegacyBundle\Utils\UserService:
+    App\Utils\UserService:
         autowire: true
 
     commsy_legacy.item_service:
         alias: App\Utils\ItemService
 
-    Commsy\LegacyBundle\Utils\ItemService:
+    App\Utils\ItemService:
         autowire: true
 
     commsy_legacy.label_service:
@@ -147,7 +162,7 @@ services:
     commsy_legacy.todo_service:
         alias: App\Utils\TodoService
 
-    Commsy\LegacyBundle\Utils\TodoService:
+    App\Utils\TodoService:
         autowire: true
 
     commsy_legacy.disc_service:
@@ -158,19 +173,11 @@ services:
         class: App\Utils\AssessmentService
         arguments: ['@commsy_legacy.environment']
 
-    commsy_legacy.download_service:
-        alias: App\Utils\DownloadService
-
-    Commsy\LegacyBundle\Utils\DownloadService:
-        autowire: true
-        arguments:
-            $printService: '@commsy.print_service'
-
     commsy_legacy.project_service:
         class: App\Utils\ProjectService
         arguments: ['@commsy_legacy.environment']
 
-    Commsy\LegacyBundle\Utils\PortfolioService:
+    App\Utils\PortfolioService:
         autowire: true
         autoconfigure: true
 
@@ -199,13 +206,9 @@ services:
         class: App\Form\DataTransformer\AppearanceSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
-    commsy_legacy.transformer.extension_settings:
-        class: App\Form\DataTransformer\ExtensionSettingsTransformer
+    App\Form\DataTransformer\ExtensionSettingsTransformer:
         arguments:
-            - '@commsy_legacy.environment'
-            - '@commsy_legacy.room_service'
-            - '@commsy_mediawiki.mediawiki'
-            - '%commsy.mediawiki.enabled%'
+            $mediawikiEnabled: '%commsy.mediawiki.enabled%'
 
     commsy_legacy.transformer.material:
         class: App\Form\DataTransformer\MaterialTransformer
@@ -334,13 +337,6 @@ services:
         tags:
             - { name: knp_menu.menu, alias: settings }
 
-    commsy.menu.breadcrumb:
-        class: Knp\Menu\MenuItem
-        factory: ['@commsy.menu.builder', createBreadcrumbMenu]
-        arguments: ['@request_stack']
-        tags:
-            - { name: knp_menu.menu, alias: breadcrumb }
-
     commsy.menu.account:
         class: Knp\Menu\MenuItem
         factory: ['@commsy.menu.builder', createAccountMenu]
@@ -418,9 +414,12 @@ services:
         arguments: ['@commsy_legacy.environment']
 
     # EventListener
-    kernel.listener.comsy_request:
-        class: App\EventListener\CommsyRequestListener
-        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '%liip_theme_pre_configuration.active_theme%', '@logger']
+    Liip\ThemeBundle\ActiveTheme: '@liip_theme.active_theme'
+
+    App\EventListener\CommsyRequestListener:
+        arguments:
+            $themeArray: '%liip_theme.themes%'
+            $preDefinedTheme: '%liip_theme_pre_configuration.active_theme%'
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
@@ -439,7 +438,7 @@ services:
 
     kernel.listener.commsy_logging:
         class: App\EventListener\CommsyLoggingListener
-        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
@@ -499,9 +498,15 @@ services:
             - { name: kernel.event_subscriber }
 
     # Search
-    commsy.search.manager:
-        class: App\Search\SearchManager
-        arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service', '@commsy_legacy.item_service']
+    commsy.seaarch.manager:
+        alias: App\Search\SearchManager
+
+    App\Search\SearchManager:
+        autowire: false
+        arguments:
+            $commsyFinder: '@fos_elastica.finder.commsy'
+            $userService: App\Utils\UserService
+            $itemService: App\Utils\ItemService
 
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker
@@ -570,11 +575,9 @@ services:
         tags:
             - { name: form.type }
 
-    commsy.form.type.settings.extension:
-        class: App\Form\Type\ExtensionSettingsType
+    App\Form\Type\ExtensionSettingsType:
         arguments:
-            - '@commsy_legacy.environment'
-            - '%commsy.mediawiki.enabled%'
+            $mediaWikiEnabled: '%commsy.mediawiki.enabled%'
         tags:
             - { name: form.type }
 
@@ -822,46 +825,18 @@ services:
         tags:
             - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
 
-    # Twig
-    twig.extension.room:
-        class: App\Twig\Extension\RoomExtension
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: twig.extension }
-
-    App\Twig\Extension\PageTitleExtension:
-        autowire: true
-        autoconfigure: true
-
-    twig.extension.log:
-        class: App\Twig\Extension\LogarithmExtension
-        public: false
-        tags:
-            - { name: twig.extension }
-
-    twig.extension.decode_html_entity:
-        class: App\Twig\Extension\DecodeHtmlEntityExtension
-        public: false
-        tags:
-            - { name: twig.extension }
-
-    twig.extension.commsy_markup:
-        class: App\Twig\Extension\MarkupExtension
-        tags:
-            - { name: twig.extension }
-        arguments:
-            - '@router'
-            - '@commsy_legacy.item_service'
-            - '@commsy_legacy.markup'
-
     # Controller
     commsy.item_controller:
         class: App\Controller\ItemController
 
     # Utils
     commsy.utils.mail_assistant:
-        class: App\Utils\MailAssistant
-        arguments: ['@commsy_legacy.environment', '@translator', '@twig', '%commsy.email.from%']
+        alias: App\Utils\MailAssistant
+
+    App\Utils\MailAssistant:
+        arguments:
+            $twig: '@twig'
+            $from: '%commsy.email.from%'
 
     commsy.utils.mail_account:
         class: App\Utils\AccountMail
@@ -935,6 +910,18 @@ services:
     #            - '@commsy_legacy.environment'
     #        tags:
     #            - commsy.database.check
+
+    App\Database\DatabaseProblem:
+        autowire: false
+
+    App\Database\Resolve\AddMemberToGroupResolution:
+        autowire: false
+
+    App\Database\Resolve\CreateGroupAllResolution:
+        autowire: false
+
+    App\Database\Resolve\DeleteDatabaseFilesResolution:
+        autowire: false
 
     # API
     commsy.api.soap:
@@ -1010,16 +997,17 @@ services:
 
     # Services
     commsy.avatar_service:
-        class: App\Services\AvatarService
-        arguments: ['@commsy_legacy.user_service', '%kernel.root_dir%']
+        alias: App\Services\AvatarService
 
-    commsy.print_service:
-        class: App\Services\PrintService
+    App\Services\AvatarService:
         arguments:
-            - '@commsy_legacy.environment'
-            - '@knp_snappy.pdf'
-            - '%commsy.settings.proxy_ip%'
-            - '%commsy.settings.proxy_port%'
+            $kernelRootDir: '%kernel.root_dir%'
+
+    App\Services\PrintService:
+        arguments:
+            $pdf: '@knp_snappy.pdf'
+            $proxyIp: '%commsy.settings.proxy_ip%'
+            $proxyPort: '%commsy.settings.proxy_port%'
 
     commsy.copy_service:
         alias: App\Services\CopyService
@@ -1151,18 +1139,52 @@ services:
     App\User\UserBuilder:
         autowire: true
 
+    # CalDAV
+    App\CalDAV\AuthPDO:
+        autowire: false
+
+    App\CalDAV\CalendarPDO:
+        autowire: false
+
+    App\CalDAV\Digest:
+        autowire: false
+
+    App\CalDAV\PrincipalPDO:
+        autowire: false
+
+    # Events
+    App\Event\CommsyEditEvent:
+        autowire: false
+
+    # Response
+    App\Http\JsonDataResponse:
+        autowire: false
+
+    App\Http\JsonErrorResponse:
+        autowire: false
+
+    App\Http\JsonHTMLResponse:
+        autowire: false
+
+    App\Http\JsonRedirectResponse:
+        autowire: false
+
+    # Twig
+    twig.extension.text:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
+
 ###############################
 ## CommsyMediawikiBundle
 ###############################
-    commsy_mediawiki.mediawiki:
-        class: App\Services\MediawikiService
+    App\Services\MediawikiService:
         arguments:
-            - '@commsy_legacy.environment'
-            - '%commsy.mediawiki.apiUrl%'
-            - '%commsy.mediawiki.consumerKey%'
-            - '%commsy.mediawiki.consumerSecret%'
-            - '%commsy.mediawiki.accessToken%'
-            - '%commsy.mediawiki.accessSecret%'
+            $apiUrl: '%commsy.mediawiki.apiUrl%'
+            $consumerKey: '%commsy.mediawiki.consumerKey%'
+            $consumerSecret: '%commsy.mediawiki.consumerSecret%'
+            $accessToken: '%commsy.mediawiki.accessToken%'
+            $accessSecret: '%commsy.mediawiki.accessSecret%'
 
 ###############################
 ## EtherpadBundle

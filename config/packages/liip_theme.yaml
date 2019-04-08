@@ -1,3 +1,7 @@
+parameters:
+    liip_theme_pre_configuration.active_theme: ~
+#    %env(MAILER_URL)%
+
 liip_theme:
     themes:
         - default
