@@ -14,5 +14,8 @@ CKEDITOR.plugins.setLang('commsyvideo', 'de', {
 	urlcode: 'Aus URL einfügen / Video Tag',
 	emptyUrl: 'Bitte eine URL hinzufügen',
 	width: 'Breite',
-	height: 'Höhe'
+	height: 'Höhe',
+	scaling: 'Skalierung',
+	chained: 'Zusammen',
+	freestyle: 'Freihand'
 });

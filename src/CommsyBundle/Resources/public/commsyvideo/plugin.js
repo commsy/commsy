@@ -31,8 +31,8 @@
                 init: function () {
                     var src = '';
 
-                    var width = 400;
-                    var height = 300;
+                    var width = '100%';
+                    var height = '400';
 
                     var type = '';
 
