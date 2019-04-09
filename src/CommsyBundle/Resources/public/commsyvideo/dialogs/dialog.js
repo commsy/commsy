@@ -30,6 +30,9 @@
             return ( url.match(p) ) ? RegExp.$1 : false;
         };
 
+        var origHeight;
+        var origWidth;
+
         return {
             title: editor.lang.commsyvideo.title,
             minWidth: 500,
@@ -176,7 +179,7 @@
                                     type: 'text',
                                     id: 'width',
                                     label: editor.lang.commsyvideo.width,
-                                    'default': '400',
+                                    'default': '100%',
 
                                     commit: function (widget) {
                                         widget.setData('width', this.getValue());
@@ -186,21 +189,118 @@
                                         if (widget.data.width) {
                                             this.setValue(widget.data.width);
                                         }
-                                    }
+                                    },
+                                    onLoad: function(){
+                                        origWidth = this.getDialog().getContentElement('videoTab', 'width').getValue();
+                                    },
+                                    onBlur: function () {
+                                        var dialog = this.getDialog();
+                                        var selection = dialog.getContentElement('videoTab', 'scaling');
+                                        var width = this.getDialog().getContentElement('videoTab', 'width').getValue();
+                                        var height = this.getDialog().getContentElement('videoTab', 'height').getValue();
+                                        var heightPercent = height.includes('%');
+
+                                        width = width.replace('%', '');
+                                        height = height.replace('%', '');
+                                        origHeight = origHeight.replace('%', '');
+                                        origWidth = origWidth.replace('%', '');
+
+                                        if(selection.getValue().includes(editor.lang.commsyvideo.chained)){
+                                            var factor = width / origWidth;
+                                            var factoredWidth = height * factor;
+                                            factoredWidth = factoredWidth.toFixed(2);
+                                            if(heightPercent){
+                                                factoredWidth = factoredWidth + "%";
+                                            }
+                                            this.getDialog().getContentElement('videoTab', 'height').setValue(factoredWidth);
+                                        }
+                                        if(selection.getValue().includes('16:9')){
+                                            var factor = 9/16;
+                                            var factoredWidth = width * factor;
+                                            factoredWidth = factoredWidth.toFixed(2);
+                                            if(heightPercent){
+                                                factoredWidth = factoredWidth + "%";
+                                            }
+                                            this.getDialog().getContentElement('videoTab', 'height').setValue(factoredWidth);
+                                        }
+
+                                        origHeight = this.getDialog().getContentElement('videoTab', 'height').getValue();
+                                        origWidth = this.getDialog().getContentElement('videoTab', 'width').getValue();
+
+                                        }
                                 },
                                 {
                                     type: 'text',
                                     id: 'height',
                                     label: editor.lang.commsyvideo.height,
-                                    'default': '300',
+                                    'default': '400',
 
                                     commit: function (widget) {
                                         widget.setData('height', this.getValue());
                                     },
-
+                                    onLoad : function(){
+                                        origHeight = this.getDialog().getContentElement('videoTab', 'height').getValue();
+                                    },
                                     setup: function (widget) {
+                                       this.setValue(Math.trunc($(window).width() * 0.4));
                                         if (widget.data.height) {
                                             this.setValue(widget.data.height);
+                                        }
+                                    },
+                                    onBlur: function () {
+                                        var dialog = this.getDialog();
+                                        var selection = dialog.getContentElement('videoTab', 'scaling');
+                                        var height = this.getDialog().getContentElement('videoTab', 'height').getValue();
+                                        var width = this.getDialog().getContentElement('videoTab', 'width').getValue();
+                                        var widthPercent = width.includes('%');
+
+                                        height = height.replace('%','');
+                                        width = width.replace('%','');
+                                        origHeight = origHeight.replace('%', '');
+                                        origWidth = origWidth.replace('%', '');
+
+                                        if(selection.getValue().includes(editor.lang.commsyvideo.chained)){
+                                            var factor = height / origHeight;
+                                            var factoredHeight = width * factor;
+                                            factoredHeight = factoredHeight.toFixed(2);
+                                            if(widthPercent){
+                                                factoredHeight = factoredHeight + "%";
+                                            }
+                                            this.getDialog().getContentElement('videoTab', 'width').setValue(factoredHeight);
+                                        }
+                                        if(selection.getValue().includes('16:9')){
+                                            var factor =  16/9;
+                                            var factoredHeight = height * factor;
+                                            factoredHeight = factoredHeight.toFixed(2);
+                                            if(widthPercent){
+                                                factoredHeight = factoredHeight + "%";
+                                            }
+                                            this.getDialog().getContentElement('videoTab', 'width').setValue(factoredHeight);
+                                        }
+
+                                        origHeight = this.getDialog().getContentElement('videoTab', 'height').getValue();
+                                        origWidth = this.getDialog().getContentElement('videoTab', 'width').getValue();
+
+                                    }
+                                },
+                                {
+                                    type: 'select',
+                                    id: 'scaling',
+                                    label: editor.lang.commsyvideo.scaling,
+                                    items: [ [ editor.lang.commsyvideo.chained ], [ '16:9' ], [ editor.lang.commsyvideo.freestyle ] ],
+                                    'default': editor.lang.commsyvideo.freestyle,
+                                    onChange: function() {
+                                        if(this.getValue().includes('16:9')){
+                                            var factor = 16/9;
+                                            var currentHeight = this.getDialog().getContentElement('videoTab', 'height').getValue();
+                                            var heightPercent = currentHeight.includes('%');
+                                            currentHeight = currentHeight.replace('%', '');
+                                            var resized = currentHeight * factor;
+                                            resized = resized.toFixed(2);
+                                            if(heightPercent){
+                                                resized = resized + '%';
+                                            }
+                                            this.getDialog().getContentElement('videoTab', 'width').setValue(resized);
                                         }
                                     }
                                 }
