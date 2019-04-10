@@ -50,7 +50,7 @@
             </trans-unit>
             <trans-unit id="7">
                 <source>User preferences</source>
-                <target>Benutzerereinstellungen</target>
+                <target>Persönliche Systemsprache</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>German</source>
@@ -66,7 +66,7 @@
             </trans-unit>
             <trans-unit id="11">
                 <source>Language</source>
-                <target>Sprache</target>
+                <target>Systemsprache</target>
             </trans-unit>
             <trans-unit id="12">
                 <source>Room image</source>
@@ -170,11 +170,15 @@
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>
-                <target>Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "Anzeigen" bedeutet, dass diese Rubrik in der Navigation erscheint. Die Option "Verbergen" bedeutet, dass die Einträge dieser Rubrik nicht im Bereich "Die neuesten Einträge in diesem Raum" auf der Einsteigsseite erscheinen. Die Option "Deaktiviert" bedeutet, dass diese Rubrik in dem CommSy-Raum nicht zur Verfügung steht. Die Reihenfolge der Rubriken im Navigationsmenü können Sie per Drag &amp; Drop konfigurieren.</target>
+                <target>Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "Anzeigen" bedeutet, dass diese Rubrik in der Navigation erscheint. Die Option "Verbergen" bedeutet, dass die Einträge dieser Rubrik nicht im Bereich "Die neuesten Einträge in diesem Raum" auf der Einstiegsseite erscheinen. Die Option "Deaktiviert" bedeutet, dass diese Rubrik in dem CommSy-Raum nicht zur Verfügung steht. Die Reihenfolge der Rubriken im Navigationsmenü können Sie per Drag &amp; Drop konfigurieren.</target>
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Rubric selection tip</source>
                 <target>RaummoderatorInnen bekommen die Rubrik "<![CDATA[<span class='uk-text-bold'>]]>Personen<![CDATA[</span>]]>" zur Verwaltung der Raummitglieder immer angezeigt.</target>
+            </trans-unit>
+            <trans-unit id="room_language_tip">
+                <source>Room language tip</source>
+                <target>Wählen Sie, ob eine raumspezifische Systemsprache oder die persönliche Systemsprache der einzelnen Raummitglieder genutzt werden soll.</target>
             </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
@@ -679,7 +683,7 @@
             </trans-unit>
             <trans-unit id="Remove invitation">
                 <source>Remove invitation</source>
-                <target>Einadungen löschen</target>
+                <target>Einladungen löschen</target>
             </trans-unit>
             <trans-unit id="Remove invitation text">
                 <source>Remove invitation text</source>
