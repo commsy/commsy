@@ -46,10 +46,10 @@
                             
                             {# user icon and modification time #}
                             <div class="uk-width-1-10">
-                                {% if date.creator.isUser %}
-                                    {{  macros.userIconLink(date.creator) }}
+                                {% if not date.creator.isDeleted and date.creator.isUser %}
+                                    {{ macros.userIconLink(date.creator) }}
                                 {% else %}
-                                    {{  macros.userIcon(date.creator) }}
+                                    {{ macros.userIcon(date.creator) }}
                                 {% endif %}
                                 <div class="uk-comment-meta">
                                     {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}

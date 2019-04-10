@@ -38,10 +38,10 @@
                                     <div class="uk-width-1-1">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
-                                                {% if item.modificatorItem.isUser %}
-                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                                                    {{ macros.userIconLink(item.modificatorItem) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                    {{ macros.userIcon(item.modificatorItem) }}
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
@@ -50,7 +50,7 @@
                                                 {% else %}
                                                     {{ 'last changed'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}<br/>
                                                 {% endif %}
-                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}
+                                                {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
                                     </div>
@@ -63,15 +63,15 @@
                                     <li class="uk-grid-width-4-10">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
-                                                {% if item.modificatorItem.isUser %}
-                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                                                    {{ macros.userIconLink(item.modificatorItem) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                    {{ macros.userIcon(item.modificatorItem) }}
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
                                                 {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
-                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}<br/>
+                                                {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
                                         </div>
@@ -79,10 +79,10 @@
                                     <li class="uk-grid-width-2-10">
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
-                                                {% if item.creator.isUser %}
-                                                    {{  macros.userIconLink(item.creator) }}
+                                                {% if not item.creator.isDeleted and item.creator.isUser %}
+                                                    {{ macros.userIconLink(item.creator) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.creator) }}
+                                                    {{ macros.userIcon(item.creator) }}
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -98,10 +98,10 @@
                                                         <div class="uk-flex">
                                                             {% for modifier in modifierList[item.itemId] %}
                                                                 <div class="">
-                                                                    {% if modifier.isUser %}
-                                                                        {{  macros.userIconLink(modifier) }}
+                                                                    {% if not modifier.isDeleted and modifier.isUser %}
+                                                                        {{ macros.userIconLink(modifier) }}
                                                                     {% else %}
-                                                                        {{  macros.userIcon(modifier) }}
+                                                                        {{ macros.userIcon(modifier) }}
                                                                     {% endif %}
                                                                 </div>
                                                             {% endfor %}
@@ -244,15 +244,15 @@
                                     <div class="uk-width-1-1">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
-                                                {% if item.modificatorItem.isUser %}
-                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                                                    {{ macros.userIconLink(item.modificatorItem) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                    {{ macros.userIcon(item.modificatorItem) }}
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
                                                 {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
-                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}
+                                                {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
                                     </div>
@@ -265,15 +265,15 @@
                                     <div class="uk-width-2-5">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
-                                                {% if item.modificatorItem.isUser %}
-                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                                                    {{ macros.userIconLink(item.modificatorItem) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                    {{ macros.userIcon(item.modificatorItem) }}
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
                                                 {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
-                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}<br/>
+                                                {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
                                         </div>
@@ -281,10 +281,10 @@
                                     <div class="uk-width-1-5">
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
-                                                {% if item.creator.isUser %}
-                                                    {{  macros.userIconLink(item.creator) }}
+                                                {% if not item.creator.isDeleted and item.creator.isUser %}
+                                                    {{ macros.userIconLink(item.creator) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.creator) }}
+                                                    {{ macros.userIcon(item.creator) }}
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -300,10 +300,10 @@
                                                         <div class="uk-flex">
                                                             {% for modifier in modifierList[item.itemId] %}
                                                                 <div class="">
-                                                                    {% if modifier.isUser %}
-                                                                        {{  macros.userIconLink(modifier) }}
+                                                                    {% if not modifier.isDeleted and modifier.isUser %}
+                                                                        {{ macros.userIconLink(modifier) }}
                                                                     {% else %}
-                                                                        {{  macros.userIcon(modifier) }}
+                                                                        {{ macros.userIcon(modifier) }}
                                                                     {% endif %}
                                                                 </div>
                                                             {% endfor %}
@@ -570,10 +570,10 @@
     {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
     {% if not participants is empty %}
         {% for participant in participants %}
-                    {% if participant.isUser %}
-                        {{  macros.userIconLink(participant) }}
+                    {% if not participant.isDeleted and participant.isUser %}
+                        {{ macros.userIconLink(participant) }}
                     {% else %}
-                        {{  macros.userIcon(participant) }}
+                        {{ macros.userIcon(participant) }}
                     {% endif %}
         {% endfor %}
     {% endif %}

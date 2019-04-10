@@ -16,10 +16,10 @@
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if entry.modificatorItem.isUser %}
-                    {{  macros.userIconLink(entry.modificatorItem) }}
+                {% if not entry.modificatorItem.isDeleted and entry.modificatorItem.isUser %}
+                    {{ macros.userIconLink(entry.modificatorItem) }}
                 {% else %}
-                    {{  macros.userIcon(entry.modificatorItem) }}
+                    {{ macros.userIcon(entry.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
                     {% if entry.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -41,7 +41,7 @@
                 </div>
                
                 <div class="uk-comment-meta">
-                    {{  macros.fileListShort(entry) }}
+                    {{ macros.fileListShort(entry) }}
                 </div>
             </div>
             
