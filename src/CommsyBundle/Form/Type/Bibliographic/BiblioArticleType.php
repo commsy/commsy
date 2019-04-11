@@ -50,6 +50,7 @@ class BiblioArticleType extends AbstractType
             ->add('edition', TextType::class, array(
                 'label' => 'edition',
                 'translation_domain' => $translationDomain,
+                'required' => false,
             ))
             ->add('series', TextType::class, array(
                 'label' => 'series',
