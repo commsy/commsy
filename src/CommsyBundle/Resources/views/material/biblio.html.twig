@@ -8,7 +8,7 @@
     {% elseif material.bibKind == 'website' %}
         {% set biblio = biblio ~ material.author ~ ", " %}
     {% elseif material.bibKind == 'document' %}
-    {% elseif material.bibKind == 'thesis' %}
+    {% elseif material.bibKind == 'thesis' or material.bibKind == 'collection' %}
         {% set biblio = biblio ~ material.editor ~ " (" ~ material.publishingDate ~ "). " %}
     {% else %}
         {% set biblio = biblio ~ material.author ~ " (" ~ material.publishingDate ~ "). " %}
