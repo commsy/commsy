@@ -35,10 +35,12 @@ class BiblioJournalType extends AbstractType
             ->add('publisher', TextType::class, array(
                 'label' => 'publisher',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('address', TextType::class, array(
                 'label' => 'address',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('pages', TextType::class, array(
                 'label' => 'pages',
