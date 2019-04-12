@@ -188,7 +188,7 @@
             </trans-unit>
             <trans-unit id="commsyBar">
                 <source>commsyBar</source>
-                <target>Commsy bar</target>
+                <target>CommSy bar</target>
             </trans-unit>
             <trans-unit id="contactData">
                 <source>contactData</source>
@@ -232,7 +232,7 @@
             </trans-unit>
             <trans-unit id="profile_label_emailToCommsy">
                 <source>emailToCommsy</source>
-                <target>Email to Commsy</target>
+                <target>Email to CommSy</target>
             </trans-unit>
             <trans-unit id="profile_label_emailToCommsySecret">
                 <source>emailToCommsySecret</source>
@@ -290,7 +290,7 @@
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
-                <target>With this option you can set the language in which the menus, settings and explanations in CommSy will be displayed. Choosing the option "Browser" will configure the language according to your browser settings. If a rooms moderation explicitly set a specfic system language it will be used instead of your personal one.</target>
+                <target>With this option you can set the language in which the menus, settings and explanations in CommSy will be displayed. Choosing the option "Browser" will configure the language according to your browser settings. If a room's moderation explicitly set a specific system language it will be used instead of your personal one.</target>
             </trans-unit>
             <trans-unit id="auto_save_description">
                 <source>autoSaveDescription</source>
@@ -340,11 +340,11 @@
 
             <trans-unit id="lock_account_text">
                 <source>lockAccountText</source>
-                <target>Use this option to to deavtivate your account in this portal. This will remove your access to all rooms in this portal, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your account. Your account can be reactivated in the future.</target>
+                <target>Use this option to deactivate your account in this portal. This will remove your access to all rooms in this portal, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your account. Your account can be reactivated in the future.</target>
             </trans-unit>
             <trans-unit id="delete_account_text">
                 <source>deleteAccountText</source>
-                <target>Use this option to delete your account and all of your posts and comments in every room in this portal. To be able to use this portal again, you will have to registrate again.</target>
+                <target>Use this option to delete your account and all of your posts and comments in every room in this portal. To be able to use this portal again, you will have to register again.</target>
             </trans-unit>
 
             <trans-unit id="email_choice_text">

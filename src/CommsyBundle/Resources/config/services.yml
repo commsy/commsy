@@ -662,9 +662,14 @@ services:
         arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Feed
-    debril.provider.default:
+    debril.rss_atom.provider:
         class: CommsyBundle\Feed\CommsyFeedContentProvider
-        arguments: ['@commsy_legacy.environment', '@request_stack', '@translator', '@commsy.feed.creator_factory']
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@request_stack'
+            - '@translator'
+            - '@commsy.feed.creator_factory'
+            - '@feedio'
 
     commsy.feed.creator_factory:
         class: CommsyBundle\Feed\FeedCreatorFactory
