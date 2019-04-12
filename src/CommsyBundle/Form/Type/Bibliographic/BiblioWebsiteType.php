@@ -20,9 +20,14 @@ class BiblioWebsiteType extends AbstractType
         $translationDomain = 'form';
 
         $builder
+            ->add('author', TextType::class, array(
+                'label' => 'author',
+                'translation_domain' => $translationDomain,
+                ))
             ->add('editor', TextType::class, array(
                 'label' => 'editor',
                 'translation_domain' => $translationDomain,
+                'required' => false,
             ))
             ->add('url', TextType::class, array(
                 'label' => 'url',
