@@ -31,21 +31,23 @@ class BiblioArticleType extends AbstractType
                 'label' => 'publishing date',
                 'translation_domain' => $translationDomain,
             ))
-            ->add('editor', TextType::class, array(
-                'label' => 'editor',
-                'translation_domain' => $translationDomain,
-            ))
             ->add('booktitle', TextType::class, array(
                 'label' => 'booktitle',
+                'translation_domain' => $translationDomain,
+            ))
+            ->add('editor', TextType::class, array(
+                'label' => 'editor',
                 'translation_domain' => $translationDomain,
             ))
             ->add('publisher', TextType::class, array(
                 'label' => 'publisher',
                 'translation_domain' => $translationDomain,
+                'required' => false,
             ))
             ->add('address', TextType::class, array(
                 'label' => 'address',
                 'translation_domain' => $translationDomain,
+                'required' => false,
             ))
             ->add('edition', TextType::class, array(
                 'label' => 'edition',
