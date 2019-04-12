@@ -32,20 +32,6 @@ class BiblioJournalType extends AbstractType
                 'label' => 'journal',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('publisher', TextType::class, array(
-                'label' => 'publisher',
-                'translation_domain' => $translationDomain,
-                'required' => false,
-                ))
-            ->add('address', TextType::class, array(
-                'label' => 'address',
-                'translation_domain' => $translationDomain,
-                'required' => false,
-                ))
-            ->add('pages', TextType::class, array(
-                'label' => 'pages',
-                'translation_domain' => $translationDomain,
-                ))
             ->add('issue', TextType::class, array(
                 'label' => 'issue',
                 'translation_domain' => $translationDomain,
@@ -56,8 +42,22 @@ class BiblioJournalType extends AbstractType
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 ))
+            ->add('pages', TextType::class, array(
+                'label' => 'pages',
+                'translation_domain' => $translationDomain,
+                ))
             ->add('issn', TextType::class, array(
                 'label' => 'issn',
+                'translation_domain' => $translationDomain,
+                'required' => false,
+                ))
+            ->add('publisher', TextType::class, array(
+                'label' => 'publisher',
+                'translation_domain' => $translationDomain,
+                'required' => false,
+                ))
+            ->add('address', TextType::class, array(
+                'label' => 'address',
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 ))
