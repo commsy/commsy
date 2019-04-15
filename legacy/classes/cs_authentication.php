@@ -1104,6 +1104,22 @@ class cs_authentication {
                     $portal = $this->_environment->getCurrentPortalItem();
                     $translator = $this->_environment->getTranslationObject();
 
+                    if ($context->isPrivateRoom() && $this->_environment->getCurrentModule() === 'file') {
+                       $portfolioManager = $this->_environment->getPortfolioManager();
+
+                       if (preg_match('/file\/(\d+)/', $_SERVER['REQUEST_URI'], $fileIdMatch)) {
+                          $fileId = $fileIdMatch[1];
+
+                          $fileManager = $this->_environment->getFileManager();
+                          $file = $fileManager->getItem($fileId);
+
+                          if ($file->mayPortfolioSeeLinkedItem($portal_user)) {
+                             $this->_environment->setCurrentUser($portal_user);
+                             return true;
+                          }
+                       }
+                    }
+
                     if ( !$context->isClosed() ) {
                         $params = array();
                         $params['cs_modus'] = 'become_member';

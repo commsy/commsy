@@ -131,6 +131,7 @@ class KernelSubscriber implements EventSubscriberInterface
                         // but since this currently isn't honored by the legacy environment, we set it explicitly here
                         $fileContextId = $file->getContextID();
                         $this->legacyEnvironment->setCurrentContextID($fileContextId);
+                        $this->legacyEnvironment->setCurrentModule("file");
                     }
                 }
 
