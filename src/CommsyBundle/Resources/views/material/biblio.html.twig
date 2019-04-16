@@ -18,7 +18,15 @@
     {% endif %}
     {% if material.bibKind != 'common' %}
         {% if material.bibKind == 'book' or material.bibKind == 'collection' %}
-            {% set biblio = biblio ~ material.address ~ ": " ~ material.publisher %}
+            {% if material.address %}
+                {% set biblio = biblio ~ material.address %}
+                {% if material.publisher %}
+                    {% set biblio = biblio ~ ": " %}
+                {% endif %}
+            {% endif %}
+            {% if material.publisher %}
+                {% set biblio = biblio ~ material.publisher %}
+            {% endif %}
     		{% if material.edition %}
     		    {% set biblio = biblio ~ ", " ~ "#{'%edition% edition'|trans({'%edition%': material.edition}) }" %}
     		{% endif %}
