@@ -7,9 +7,12 @@
         {% set biblio = biblio ~ "#{'Bibl. reference'|trans({}) }" ~ ": " ~ material.bibliographicValues ~ "<br/>" %}
     {% elseif material.bibKind == 'website' %}
         {% set biblio = biblio ~ material.author ~ ", " %}
-    {% elseif material.bibKind == 'document' %}
     {% elseif material.bibKind == 'thesis' or material.bibKind == 'collection' %}
         {% set biblio = biblio ~ material.editor ~ " (" ~ material.publishingDate ~ "). " %}
+    {% elseif material.bibKind == 'document' or material.bibKind == 'docmanagement' %}
+        {# handled below #}
+    {% elseif material.bibKind == 'picture' %}
+        {# handled below #}
     {% else %}
         {% set biblio = biblio ~ material.author ~ " (" ~ material.publishingDate ~ "). " %}
     {% endif %}
@@ -193,8 +196,7 @@
     		{% if material.documentReleaseDate %}
     		    {% set biblio = biblio ~ "#{'Version date'|trans({}, 'material') }" ~ ": " ~ material.documentReleaseDate ~ "<br/>" %}
     		{% endif %}
-        {% elseif material.bibKind == 'foto' %}
-            {% set biblio = biblio ~ "<br/>" %}
+        {% elseif material.bibKind == 'foto' or material.bibKind == 'picture' %}
             {% if material.fotoCopyright %}
     		    {% set biblio = biblio ~ "#{'Copyright'|trans({}) }" ~ ": " ~ material.fotoCopyright ~ "<br/>" %}
     		{% endif %}
