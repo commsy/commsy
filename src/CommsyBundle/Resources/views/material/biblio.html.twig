@@ -7,7 +7,7 @@
         {% set biblio = biblio ~ "#{'Bibl. reference'|trans({}) }" ~ ": " ~ material.bibliographicValues ~ "<br/>" %}
     {% elseif material.bibKind == 'website' %}
         {% set biblio = biblio ~ material.author ~ ", " %}
-    {% elseif material.bibKind == 'thesis' or material.bibKind == 'collection' %}
+    {% elseif material.bibKind == 'collection' %}
         {% set biblio = biblio ~ material.editor ~ " (" ~ material.publishingDate ~ "). " %}
     {% elseif material.bibKind == 'document' or material.bibKind == 'docmanagement' %}
         {# handled below #}
@@ -156,6 +156,9 @@
             {% set biblio = biblio ~ material.address ~ ": " ~ material.university %}
             {% if material.faculty %}
                 {% set biblio = biblio ~ ", " ~ material.faculty %}
+            {% endif %}
+            {% if material.editor %}
+                {% set biblio = biblio ~ ". " ~ "#{'%editor% (ed.)'|trans({'%editor%': material.editor}) }" %}
             {% endif %}
             {% set biblio = biblio ~ ". " %}
             {% if material.url %}
