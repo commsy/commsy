@@ -1,3 +1,18 @@
+{# comparison of bibliographic types in CommSy8 & CommSy9:
+   (esp. note the incompatible incollection->article & article->journal mappings!)
+   CommSy8        CommSy9
+   -------        -------
+   common         plain
+   book           book
+   collection     collection
+   incollection   article
+   article        journal
+   inpaper        newspaper
+   thesis         thesis
+   manuscript     manuscript
+   website        website
+   document(?)    docmanagement
+   foto(?)        picture #}
 {% trans_default_domain "material" %}
 {% set biblio = '' %}
 {% if material.bibKind != 'none' %}
