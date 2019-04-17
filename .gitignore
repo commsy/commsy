@@ -122,6 +122,8 @@ web/css/external_portal_styles/[0-9]*
 !.gitlab-ci.yml
 !.travis.yml
 !.babelrc
+!.env.dist
+!.env.test
 
 wikis/*
 web/commsy
