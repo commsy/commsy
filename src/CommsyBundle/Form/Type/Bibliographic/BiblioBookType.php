@@ -31,10 +31,12 @@ class BiblioBookType extends AbstractType
             ->add('publisher', TextType::class, array(
                 'label' => 'publisher',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('address', TextType::class, array(
                 'label' => 'address',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('edition', TextType::class, array(
                 'label' => 'edition',

@@ -64,10 +64,14 @@
                         ({{ material.publishingdate|decodeHtmlEntity|raw }})
                     {% endif %}
                 {% elseif material.editor != '' %}
-                    {{ 'editor'|trans({}, 'form') }}: {{material.editor}}
+                    {{ 'editor'|trans({}, 'form') }}: {{ material.editor }}
                     {% if material.publishingdate != '0' %}
-                        ({{material.publishingdate}})
+                        ({{ material.publishingdate }})
                     {% endif %}
+                {% elseif material.documentEditor != '' %}
+                    {{ 'Document editor'|trans({}, 'material') }}: {{ material.documentEditor }}
+                {% elseif material.fotoCopyright != '' %}
+                    {{ 'picture copyright'|trans({}, 'form') }}: {{ material.fotoCopyright }}
                 {% endif %}
             </div>
 
