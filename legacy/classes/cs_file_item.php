@@ -792,7 +792,23 @@ class cs_file_item extends cs_item {
       return false;
    }
 
-   public function isImage () {
+   public function mayPortfolioSeeLinkedItem(\cs_user_item $userItem)
+   {
+       $itemCollection = $this->getLinkedItems();
+       if (!isset($itemCollection) or $itemCollection->isEmpty()) {
+           return false;
+       }
+
+       foreach ($itemCollection as $item) {
+           if ($item->mayPortfolioSee($userItem)) {
+               return true;
+           }
+       }
+
+       return false;
+   }
+
+    public function isImage () {
       $retour = false;
       $mime = $this->getMime();
       if ( mb_stristr($mime,'image') ) {
