@@ -15,8 +15,8 @@ class RoomService
 
     /**
      * returns the rubrics for the room with the $roomId
-     * @param  Integer $roomId room id
-     * @param  Boolean $includeModifier include or remove "_show" and "_hide" modifier
+     * @param Integer $roomId room id
+     * @param Boolean $includeModifier include or remove "_show" and "_hide" modifier
      * @return array            Array with rubric strings
      */
     public function getRubricInformation($roomId, $includeModifier = false)
@@ -45,7 +45,7 @@ class RoomService
 
     /**
      * returns a user list for the room with the $roomId
-     * @param  Integer $roomId room id
+     * @param Integer $roomId room id
      * @return Array         Array with legacy user items
      */
     public function getUserList($roomId)
@@ -76,7 +76,7 @@ class RoomService
     public function getCurrentRoomItem()
     {
         $currentContextId = $this->legacyEnvironment->getCurrentContextId();
-        
+
         return $this->getRoomItem($currentContextId);
     }
 
@@ -119,7 +119,7 @@ class RoomService
         $activeRubrics = $this->getRubricInformation($roomId);
 
         // filter rubrics, only group, topic and institution type is filterable
-        $filterableRubrics = array_filter($activeRubrics, function($rubric) {
+        $filterableRubrics = array_filter($activeRubrics, function ($rubric) {
             return in_array($rubric, array('group', 'topic', 'institution'));
         });
 
@@ -136,7 +136,7 @@ class RoomService
 
     public function getRoomFileDirectory($roomId)
     {
-        $roomDir = implode( "/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen') );
+        $roomDir = implode("/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen'));
         return $this->legacyEnvironment->getCurrentPortalID() . "/" . $roomDir . "_";
     }
 
@@ -152,24 +152,37 @@ class RoomService
 
     }
 
-    public function getTimePulses()
+    /**
+     * Returns the array of time pulses specified for the current portal
+     * @param bool $reverseOrder whether the list of time pulses shall be returned in reverse
+     * order (true) or not (false); defaults to false
+     * @return array list of time pulses
+     */
+    public function getTimePulses($reverseOrder = false)
     {
-        $timePulses = [];
-
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
-        $translator = $this->legacyEnvironment->getTranslationObject();
+        if (!$portalItem->showTime()) {
+            return [];
+        }
 
-        if ($portalItem->showTime()) {
-            $timeList = $portalItem->getTimeList();
+        $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
 
-            $timeItem = $timeList->getFirst();
-            while ($timeItem) {
-                $translatedTitle = $translator->getTimeMessage($timeItem->getTitle());
-                $timePulses[$translatedTitle] = $timeItem->getItemID();
+        $timePulses = [];
+        if ($reverseOrder) {
+            $timePulses['continuous'] = 'cont';
+        }
 
-                $timeItem = $timeList->getNext();
-            }
+        $timeList = ($reverseOrder) ? $portalItem->getTimeListRev() : $portalItem->getTimeList();
 
+        $timeItem = $timeList->getFirst();
+        while ($timeItem) {
+            $translatedTitle = $legacyTranslator->getTimeMessage($timeItem->getName());
+            $timePulses[$translatedTitle] = $timeItem->getItemID();
+
+            $timeItem = $timeList->getNext();
+        }
+
+        if (!$reverseOrder) {
             $timePulses['continuous'] = 'cont';
         }
 
