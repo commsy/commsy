@@ -150,11 +150,19 @@ class SearchController extends BaseController
             $filterData['query'] = $globalSearch->getPhrase();
         }
 
-        $filterForm = $this->createForm(SearchFilterType::class, $filterData, []);
-        $filterForm->handleRequest($request);
-        if ($filterForm->isSubmitted()) {
-            $filterData = $filterForm->getData();
+        $filterForm = $this->createForm(SearchFilterType::class, $filterData, [
+            'contextId' => $roomId,
+        ]);
+        if ($request->query->has($filterForm->getName())) {
+            // manually bind values from the request
+            $filterData = $request->query->get($filterForm->getName());
+            $filterForm->submit($filterData);
         }
+
+//        $filterForm->handleRequest($request);
+//        if ($filterForm->isSubmitted()) {
+//            $filterData = $filterForm->getData();
+//        }
 
         $searchManager = $this->getSearchManager($roomId, $filterData);
 

@@ -60,6 +60,11 @@ class SearchManager
 
         $query->setQuery($boolQuery);
 
+        // aggregation
+        $typeAggregation = new Aggregations\Terms('rubric');
+        $typeAggregation->setField('_type');
+        $query->addAggregation($typeAggregation);
+
         // aggregations
 //        $filterAggregation = new Aggregations\Filter('filterContext');
 //        $filterAggregation->setFilter($contextFilter);

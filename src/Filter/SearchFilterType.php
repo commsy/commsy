@@ -1,8 +1,12 @@
 <?php
 namespace App\Filter;
 
+use App\Form\EventListener\AddRubricSearchListener;
+use App\Search\SearchManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 
@@ -10,6 +14,13 @@ use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 
 class SearchFilterType extends AbstractType
 {
+    private $searchManager;
+
+    public function __construct(SearchManager $searchManager)
+    {
+        $this->searchManager = $searchManager;
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -34,6 +45,7 @@ class SearchFilterType extends AbstractType
                     'class' => 'uk-form-label',
                 ],
             ])
+            ->addEventSubscriber(new AddRubricSearchListener($this->searchManager))
         ;
     }
 
@@ -56,7 +68,9 @@ class SearchFilterType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver
+            ->setRequired(['contextId'])
+            ->setDefaults([
             'csrf_protection'   => false,
             'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
             'method'            => 'get',
