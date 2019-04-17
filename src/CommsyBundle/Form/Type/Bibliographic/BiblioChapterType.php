@@ -32,6 +32,11 @@ class BiblioChapterType extends AbstractType
                 'label' => 'pages',
                 'translation_domain' => $translationDomain,
                 ))
+            ->add('booktitle', TextType::class, array(
+                'label' => 'booktitle',
+                'translation_domain' => $translationDomain,
+                'required' => false,
+            ))
             ->add('editor', TextType::class, array(
                 'label' => 'editor',
                 'translation_domain' => $translationDomain,
