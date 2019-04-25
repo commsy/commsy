@@ -101,7 +101,6 @@
                     if (!divElement.getChild(0)) {
                         var videoElement = new CKEDITOR.dom.element('video');
                         videoElement.setAttribute('controls', true);
-                        videoElement.addClass('video-js');
                         videoElement.addClass('vjs-default-skin');
 
                         divElement.append(videoElement);
