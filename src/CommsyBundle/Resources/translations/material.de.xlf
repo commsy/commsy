@@ -34,6 +34,10 @@
                 <source>ISBN: %isbn%</source>
                 <target>ISBN: %isbn%</target>
             </trans-unit>
+            <trans-unit id="biblio-issn">
+                <source>ISSN: %issn%</source>
+                <target>ISSN: %issn%</target>
+            </trans-unit>
             <trans-unit id="biblio-url">
                 <source>Internet: %url%</source>
                 <target>Internet: %url%</target>
