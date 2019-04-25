@@ -16,13 +16,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
 {
     private $searchManager;
 
-    public function __construct(SearchManager $searchManager)
+    public function __construct(TranslatorInterface $translator, SearchManager $searchManager)
     {
+        $this->translator = $translator;
         $this->searchManager = $searchManager;
     }
 
@@ -54,7 +56,7 @@ class SearchFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ],
                 'label' => 'Search in all my rooms',
-                'translation_domain' => 'search',
+                'required' => false,
                 'label_attr' => [
                     'class' => 'uk-form-label',
                 ],
@@ -64,18 +66,25 @@ class SearchFilterType extends AbstractType
                     // TODO: Translation needed!
                     return array_combine($searchData->getCreators() ?: [], $searchData->getCreators() ?: []);
                 }),
+                'label' => 'Creators',
                 'expanded' => false,
                 'multiple' => true,
+                'required' => false,
             ])
-            ->add('creation_date_range', Types\TextType::class)
-            ->add('modification_date_range', Types\TextType::class)
+            ->add('creation_date_range', Types\TextType::class, [
+                'required' => false,
+            ])
+            ->add('modification_date_range', Types\TextType::class, [
+                'required' => false,
+            ])
             ->add('selectedRubric', Types\ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    // TODO: Translation needed!
-                    return array_merge(['all' => 'all'], array_combine($searchData->getRubrics() ?: [], $searchData->getRubrics() ?: []));
+                    // TODO: Translation needed for 'all', and figure out why there's now an additional empty choice option
+                    return array_merge(['all' => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
                 }),
-            ])
-        ;
+                'label' => 'Rubric',
+                'required' => false,
+            ]);
     }
 
     /**
@@ -100,9 +109,30 @@ class SearchFilterType extends AbstractType
         $resolver
             ->setRequired(['contextId', 'parameters'])
             ->setDefaults([
-            'csrf_protection'   => false,
-            'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
-            'method'            => 'get',
-        ]);
+                'csrf_protection'    => false,
+                'validation_groups'  => array('filtering'), // avoid NotBlank() constraint-related message
+                'method'             => 'get',
+                'translation_domain' => 'search',
+            ]);
+    }
+
+    /**
+     * Builds the array of choices for the rubric filter field.
+     *
+     * @param string[] $rubrics The array of rubric names
+     */
+    private function buildRubricsChoices($rubrics): array
+    {
+        if (!isset($rubrics) || empty($rubrics)) {
+            return [];
+        }
+
+        $choices = [];
+        foreach ($rubrics as $rubric) {
+            $translatedTitle = $this->translator->transChoice(ucfirst($rubric), 0, [], 'rubric');
+            $choices[$translatedTitle] = $rubric;
+        }
+
+        return $choices;
     }
 }
