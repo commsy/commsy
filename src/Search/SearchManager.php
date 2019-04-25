@@ -1,6 +1,7 @@
 <?php
 namespace App\Search;
 
+use App\Search\FilterConditions\FilterConditionInterface;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 
 use App\Utils\UserService;
@@ -16,8 +17,11 @@ class SearchManager
     private $itemService;
 
     private $query;
-    private $rubric;
-    private $context;
+
+    /**
+     * @var array FilterConditionInterface
+     */
+    private $filterConditions = [];
 
     public function __construct(TransformedFinder $commsyFinder, UserService $userService, ItemService $itemService)
     {
@@ -26,19 +30,14 @@ class SearchManager
         $this->itemService = $itemService;
     }
 
+    public function addFilterCondition(FilterConditionInterface $filterCondition)
+    {
+        $this->filterConditions[] = $filterCondition;
+    }
+
     public function setQuery($query)
     {
         $this->query = $query;
-    }
-
-    public function setRubric($rubric)
-    {
-        $this->rubric = $rubric;
-    }
-
-    public function setContext($context)
-    {
-        $this->context = $context;
     }
 
     public function getResults()
@@ -61,9 +60,13 @@ class SearchManager
         $query->setQuery($boolQuery);
 
         // aggregation
-        $typeAggregation = new Aggregations\Terms('rubric');
+        $typeAggregation = new Aggregations\Terms('rubrics');
         $typeAggregation->setField('_type');
         $query->addAggregation($typeAggregation);
+
+        $creatorAggergation = new Aggregations\Terms('creators');
+        $creatorAggergation->setField('creator.fullName.raw');
+        $query->addAggregation($creatorAggergation);
 
         // aggregations
 //        $filterAggregation = new Aggregations\Filter('filterContext');
@@ -179,25 +182,19 @@ class SearchManager
     {
         $bool = new Queries\BoolQuery();
 
-        if ($this->context) {
-            $contextFilter = new Queries\Terms();
-            $contextFilter->setTerms('contextId', [$this->context]);
-            $bool->addShould($contextFilter);
-
-            $parentIdFilter = new Queries\Terms();
-            $parentIdFilter->setTerms('parentId', [$this->context]);
-            $bool->addShould($parentIdFilter);
-        } else {
-            $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
-
-            $contextIds = [];
-            foreach ($searchableRooms as $searchableRoom) {
-                $contextIds[] = $searchableRoom->getItemId();
+        foreach ($this->filterConditions as $filterCondition) {
+            /** @var FilterConditionInterface $filterCondition */
+            $conditions = $filterCondition->getConditions();
+            foreach ($conditions as $condition) {
+                switch ($filterCondition->getOperator()) {
+                    case FilterConditionInterface::BOOL_MUST:
+                        $bool->addMust($condition);
+                        break;
+                    case FilterConditionInterface::BOOL_SHOULD:
+                        $bool->addShould($condition);
+                        break;
+                };
             }
-
-            $contextFilter = new Queries\Terms();
-            $contextFilter->setTerms('contextId', $contextIds);
-            $bool->addMust($contextFilter);
         }
 
         return $bool;

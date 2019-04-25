@@ -2,11 +2,16 @@
 namespace App\Filter;
 
 use App\Form\EventListener\AddRubricSearchListener;
+use App\Form\Type\Custom\Select2ChoiceType;
+use App\Model\SearchData;
+use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\SearchManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 
@@ -31,8 +36,17 @@ class SearchFilterType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $searchParams = $options['parameters']->get('search_filter');
+
+        /** @var SearchData $searchData */
+        $searchData = $builder->getData();
+
         $builder
-            ->add('query', Types\HiddenType::class, [
+            /**
+             * Since this form uses the same data class as the global search form, it is important to keep the field
+             * name of the search query phrase identical
+             */
+            ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])
             ->add('all_rooms', Filters\CheckboxFilterType::class, [
@@ -45,7 +59,22 @@ class SearchFilterType extends AbstractType
                     'class' => 'uk-form-label',
                 ],
             ])
-            ->addEventSubscriber(new AddRubricSearchListener($this->searchManager))
+            ->add('selectedCreators', Select2ChoiceType::class, [
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    // TODO: Translation needed!
+                    return array_combine($searchData->getCreators() ?: [], $searchData->getCreators() ?: []);
+                }),
+                'expanded' => false,
+                'multiple' => true,
+            ])
+            ->add('creation_date_range', Types\TextType::class)
+            ->add('modification_date_range', Types\TextType::class)
+            ->add('selectedRubric', Types\ChoiceType::class, [
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    // TODO: Translation needed!
+                    return array_merge(['all' => 'all'], array_combine($searchData->getRubrics() ?: [], $searchData->getRubrics() ?: []));
+                }),
+            ])
         ;
     }
 
@@ -69,7 +98,7 @@ class SearchFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['contextId'])
+            ->setRequired(['contextId', 'parameters'])
             ->setDefaults([
             'csrf_protection'   => false,
             'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
