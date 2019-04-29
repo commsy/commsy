@@ -8,6 +8,6 @@ modules:
         - Db
     config:
         Symfony:
-            app_path: 'app'
+            app_path: 'src'
             var_path: 'var'
             environment: testsuite
