@@ -92,8 +92,8 @@ class SearchFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    // TODO: Translation needed for 'all'
-                    return array_merge(['all' => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
+                    $translatedTitleAny = $this->translator->trans('any', [], 'form');
+                    return array_merge([$translatedTitleAny => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
                 }),
                 'label' => 'Rubric',
                 'required' => false,
