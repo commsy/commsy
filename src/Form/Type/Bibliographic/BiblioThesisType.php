@@ -21,8 +21,8 @@ class BiblioThesisType extends AbstractType
         $translationDomain = 'form';
 
         $builder
-            ->add('editor', TextType::class, array(
-                'label' => 'editor',
+            ->add('author', TextType::class, array(
+                'label' => 'author',
                 'translation_domain' => $translationDomain,
             ))
             ->add('publishing_date', TextType::class, array(
@@ -53,6 +53,11 @@ class BiblioThesisType extends AbstractType
             ))
             ->add('faculty', TextType::class, array(
                 'label' => 'faculty',
+                'translation_domain' => $translationDomain,
+                'required' => false,
+            ))
+            ->add('editor', TextType::class, array(
+                'label' => 'editor',
                 'translation_domain' => $translationDomain,
                 'required' => false,
             ))

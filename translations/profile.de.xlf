@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
-                <target>Sprache</target>
+                <target>Persönliche Systemsprache</target>
             </trans-unit>
             <trans-unit id="autoSaveStatus">
                 <source>autoSaveStatus</source>
@@ -188,7 +188,7 @@
             </trans-unit>
             <trans-unit id="commsyBar">
                 <source>commsyBar</source>
-                <target>Commsy Bar</target>
+                <target>CommSy Bar</target>
             </trans-unit>
             <trans-unit id="contactData">
                 <source>contactData</source>
@@ -232,7 +232,7 @@
             </trans-unit>
             <trans-unit id="profile_label_emailToCommsy">
                 <source>emailToCommsy</source>
-                <target>E-Mail an Commsy</target>
+                <target>E-Mail an CommSy</target>
             </trans-unit>
             <trans-unit id="profile_label_emailToCommsySecret">
                 <source>emailToCommsySecret</source>
@@ -290,7 +290,7 @@
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
-                <target>Falls der Moderator diesen Raum entsprechend konfiguriert hat, können Sie über die Option "Sprache" einstellen, ob die Menüs in Englisch oder Deutsch angezeigt werden sollen. Die Option "Browser" bewirkt, dass die Spracheinstellungen Ihres Browsers übernommen werden.</target>
+                <target>Sie können die Rubriken, Einstellungen und Erklärungen im CommSy auf Deutsch oder Englisch angezeigt bekommen. Bei der Option "Browser" wird die Spracheinstellung Ihres Browsers übernommen. Falls die Moderation eines Raumes eine raumspezifische Systemsprache ausgewählt hat, wird diese statt Ihrer persönlichen Systemsprache genutzt.</target>
             </trans-unit>
             <trans-unit id="auto_save_description">
                 <source>autoSaveDescription</source>
@@ -392,7 +392,7 @@
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
-                <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindesauflösung von 200x200 Pixeln!</target>
+                <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindestauflösung von 200x200 Pixeln!</target>
             </trans-unit>
             <trans-unit id="use_profile_image">
                 <source>Use profile image</source>
@@ -412,7 +412,7 @@
             </trans-unit>
             <trans-unit id="email_to_commsy_description">
                 <source>email_to_commsy_description</source>
-                <target>Diese Funktion erlaubt es Ihnen, Materialien in Ihrer Ablage mittles E-Mail-Versandes anzulegen. Schicken Sie hierzu eine E-Mail von Ihrer Account-E-Mail-Adresse <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> an <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>. Die Betreffzeile der E-Mail wird als Titel und der Nachrichtentext als Beschreibungdes Materials übernommen.</target>
+                <target>Diese Funktion erlaubt es Ihnen, Materialien in Ihrer Ablage mittles E-Mail-Versandes anzulegen. Schicken Sie hierzu eine E-Mail von Ihrer Account-E-Mail-Adresse <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> an <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>. Die Betreffzeile der E-Mail wird als Titel und der Nachrichtentext als Beschreibung des Materials übernommen.</target>
             </trans-unit>
             <trans-unit id="has_to_change_mail">
                 <source>has to change mail</source>

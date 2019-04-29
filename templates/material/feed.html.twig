@@ -19,10 +19,10 @@
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if material.modificatorItem.isUser %}
-                    {{  macros.userIconLink(material.modificatorItem) }}
+                {% if not material.modificatorItem.isDeleted and material.modificatorItem.isUser %}
+                    {{ macros.userIconLink(material.modificatorItem) }}
                 {% else %}
-                    {{  macros.userIcon(material.modificatorItem) }}
+                    {{ macros.userIcon(material.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
                     {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -48,11 +48,11 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{material.getCreator.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(material.getCreator) }} ({{material.getCreationDate|date("d.m.Y")}})
                 </div>
                
                 <div class="uk-comment-meta">
-                    {{  macros.fileListShort(material) }}
+                    {{ macros.fileListShort(material) }}
                 </div>
             </div>
 
@@ -64,22 +64,26 @@
                         ({{ material.publishingdate|decodeHtmlEntity|raw }})
                     {% endif %}
                 {% elseif material.editor != '' %}
-                    {{ 'editor'|trans({}, 'form') }}: {{material.editor}}
+                    {{ 'editor'|trans({}, 'form') }}: {{ material.editor }}
                     {% if material.publishingdate != '0' %}
-                        ({{material.publishingdate}})
+                        ({{ material.publishingdate }})
                     {% endif %}
+                {% elseif material.documentEditor != '' %}
+                    {{ 'Document editor'|trans({}, 'material') }}: {{ material.documentEditor }}
+                {% elseif material.fotoCopyright != '' %}
+                    {{ 'picture copyright'|trans({}, 'form') }}: {{ material.fotoCopyright }}
                 {% endif %}
             </div>
 
             {% if showRating or showWorkflow %}
                 <div class="uk-width-2-10 uk-text-right">
                     {% if showRating %}
-                        {{  macros.ratingStatus(material, ratingList) }}
+                        {{ macros.ratingStatus(material, ratingList) }}
                     {% endif %}
                     {% if showWorkflow %}
-                        {{  macros.workflowTrafficLight(material, workflowTitles) }}
+                        {{ macros.workflowTrafficLight(material, workflowTitles) }}
                     {% endif %}
-                    {{  macros.license(material) }}
+                    {{ macros.license(material) }}
                 </div>
             {% endif %}
         </header>

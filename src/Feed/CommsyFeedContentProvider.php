@@ -32,7 +32,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
      *
      * @throws FeedNotFoundException
      *
-     * @return FeedOutInterface
+     * @return FeedInterface
      */
     public function getFeedContent(array $options): FeedInterface
     {

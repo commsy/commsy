@@ -9,17 +9,17 @@
 
             {# user icon #}
             <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }}">
-                {% if annotation.creator.isUser %}
-                    {{  utilMacros.userIconLink(annotation.creator) }}
+                {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
+                    {{ utilMacros.userIconLink(annotation.creator) }}
                 {% else %}
-                    {{  utilMacros.userIcon(annotation.creator) }}
+                    {{ utilMacros.userIcon(annotation.creator) }}
                 {% endif %}
             </div>
 
             {# user link #}
             <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }} uk-hidden">
-                {% if annotation.creator.isUser %}
-                    {{  utilMacros.userIconLink(annotation.creator) }}
+                {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
+                    {{ utilMacros.userIconLink(annotation.creator) }}
                 {% endif %}
             </div>
 

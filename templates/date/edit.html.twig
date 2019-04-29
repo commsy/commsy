@@ -128,11 +128,11 @@
                 {% if date.creator.itemId == currentUser.itemId or currentUser.isModerator %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">
-                        <span data-uk-tooltip title="{{ date.creator.fullname }}">{{ 'permission'|trans({}, "form") }}</span>
+                        <span data-uk-tooltip title="{{ macros.userFullname(date.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
                     </label>
                     <div>
                         {{ form_widget(form.permission) }}
-                        <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': date.creator.fullname}, 'form') }}"></i>
+                        <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(date.creator)}, 'form') }}"></i>
                     </div>
                 </div>
                 <div class="uk-form-row">

@@ -3,15 +3,15 @@
 <article class="uk-article uk-position-relative cs-send">
     {{ form_start(form) }}
 
-        {{ form_row(form.subject) }}
-        {{ form_row(form.message) }}
-        {{ form_row(form.copy_to_sender) }}
-        {{ form_row(form.entries) }}
+    {{ form_row(form.subject) }}
+    {{ form_row(form.message) }}
+    {{ form_row(form.copy_to_sender) }}
+    {{ form_row(form.entries) }}
 
-        <div class="uk-form-row">
-            {{ form_widget(form.save) }}
-            {{ form_widget(form.cancel) }}
-        </div>
+    <div class="uk-form-row">
+        {{ form_widget(form.save) }}
+        {{ form_widget(form.cancel) }}
+    </div>
     {{ form_end(form) }}
 </article>
 

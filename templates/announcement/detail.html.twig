@@ -185,7 +185,11 @@
                         <article class="uk-comment">
                             <header class="uk-comment-header uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">
-                                    {{  macros.userIconLink(user) }}
+                                    {% if not user.isDeleted and user.isUser %}
+                                        {{ macros.userIconLink(user) }}
+                                    {% else %}
+                                        {{ macros.userIcon(user) }}
+                                    {% endif %}
                                 </div>
                                 <div class="uk-width-8-10">
                                     {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': announcement.itemId}), 'method': 'POST'}) }}

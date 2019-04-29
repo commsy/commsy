@@ -20,8 +20,8 @@ class BiblioManuscriptType extends AbstractType
         $translationDomain = 'form';
 
         $builder
-            ->add('editor', TextType::class, array(
-                'label' => 'editor',
+            ->add('author', TextType::class, array(
+                'label' => 'author',
                 'translation_domain' => $translationDomain,
                 ))
             ->add('publishing_date', TextType::class, array(
@@ -31,6 +31,12 @@ class BiblioManuscriptType extends AbstractType
             ->add('address', TextType::class, array(
                 'label' => 'address',
                 'translation_domain' => $translationDomain,
+                'required' => false,
+                ))
+            ->add('editor', TextType::class, array(
+                'label' => 'editor',
+                'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url', TextType::class, array(
                 'label' => 'url',

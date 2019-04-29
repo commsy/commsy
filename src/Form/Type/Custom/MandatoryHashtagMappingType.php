@@ -7,9 +7,12 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Count;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class MandatoryHashtagMappingType extends AbstractType
 {
@@ -24,7 +27,18 @@ class MandatoryHashtagMappingType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'constraints' => array(
-                    new Count(array('min' => 1, 'minMessage' => "Please select at least one hashtag")),
+                    new Callback([
+                        'callback' => function ($object, ExecutionContextInterface $context) use ($builder) {
+                            /** @var FormInterface $form */
+                            $form = $context->getObject();
+                            $data = $form->getParent()->get('newHashtag')->getData();
+
+                            if (!$object && !$data) {
+                                $context->buildViolation('Please select at least one hashtag')
+                                    ->addViolation();
+                            }
+                        }
+                    ]),
                 ),
             ))
             ->add('newHashtag', TextType::class, array(

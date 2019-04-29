@@ -991,9 +991,27 @@ class MaterialController extends BaseController
                     }
                 }
                 if ($hashtagsMandatory) {
+                    $hashtagaIds = [];
                     if (isset($formData['hashtag_mapping']['hashtags'])) {
-                        $typedItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                        $hashtagaIds = $formData['hashtag_mapping']['hashtags'];
                     }
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+
+                        $labelManager = $legacyEnvironment->getLabelManager();
+                        $buzzwordItem = $labelManager->getNewItem();
+
+                        $buzzwordItem->setLabelType('buzzword');
+                        $buzzwordItem->setContextID($roomId);
+                        $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
+                        $buzzwordItem->setName($newHashtagTitle);
+
+                        $buzzwordItem->save();
+                        $hashtagaIds[] = $buzzwordItem->getItemID();
+                    }
+
+                    $typedItem->setBuzzwordListByID($hashtagaIds);
                 }
 
                 $typedItem->save();

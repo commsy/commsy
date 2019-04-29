@@ -20,8 +20,8 @@ class BiblioNewspaperType extends AbstractType
         $translationDomain = 'form';
 
         $builder
-            ->add('editor', TextType::class, array(
-                'label' => 'editor',
+            ->add('author', TextType::class, array(
+                'label' => 'author',
                 'translation_domain' => $translationDomain,
                 ))
             ->add('publishing_date', TextType::class, array(
@@ -32,22 +32,28 @@ class BiblioNewspaperType extends AbstractType
                 'label' => 'journal',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('pages', TextType::class, array(
-                'label' => 'pages',
-                'translation_domain' => $translationDomain,
-                ))
-            ->add('number', TextType::class, array(
-                'label' => 'number',
+            ->add('issue', TextType::class, array(
+                'label' => 'issue',
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 ))
-            ->add('address', TextType::class, array(
-                'label' => 'address',
+            ->add('pages', TextType::class, array(
+                'label' => 'pages',
+                'translation_domain' => $translationDomain,
+                'required' => false,
+                ))
+            ->add('editor', TextType::class, array(
+                'label' => 'editor',
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 ))
             ->add('publisher', TextType::class, array(
                 'label' => 'publisher',
+                'translation_domain' => $translationDomain,
+                'required' => false,
+                ))
+            ->add('address', TextType::class, array(
+                'label' => 'address',
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 ))

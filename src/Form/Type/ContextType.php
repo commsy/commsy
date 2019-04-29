@@ -38,12 +38,16 @@ class ContextType extends AbstractType
             ->addEventSubscriber(new AddContextFieldListener())
             ->add('language', ChoiceType::class, array(
                 'placeholder' => false,
-                'choices' => ['de' => 'de', 'en' => 'en'],
-                'label' => 'language',
+                'choices' => array(
+                    'User preferences' => 'user',
+                    'German' => 'de',
+                    'English' => 'en',
+                ),
                 'required' => true,
                 'expanded' => false,
                 'multiple' => false,
-                'translation_domain' => 'room',
+                'translation_domain' => 'settings',
+                'choice_translation_domain' => 'settings',
             ))
             ->add('room_description', TextareaType::class, [
                 'attr' => [

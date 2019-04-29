@@ -14,11 +14,11 @@
             {% if topic.creator.itemId == currentUser.itemId or currentUser.isModerator %}
             <div class="uk-margin-small-left uk-flex">
                 <label class="uk-form-label">
-                    <span data-uk-tooltip title="{{ topic.creator.fullname }}">{{ 'permission'|trans({}, "form") }}</span>
+                    <span data-uk-tooltip title="{{ macros.userFullname(topic.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
                 </label>
                 <div>
                     {{ form_widget(form.permission) }}
-                    <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': topic.creator.fullname}, 'form') }}"></i>
+                    <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(topic.creator) }, 'form') }}"></i>
                 </div>
             </div>
             <div class="uk-margin-small-left uk-flex">

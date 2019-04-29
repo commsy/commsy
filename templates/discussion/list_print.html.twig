@@ -1,5 +1,6 @@
 </!DOCTYPE html>
 {% import 'base/printmacro.html.twig' as macros %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 <html lang="de">
     <head>
@@ -46,10 +47,10 @@
                             
                             {# user icon and modification time #}
                             <div class="uk-width-1-10">
-                                {% if discussion.modificatorItem.isUser %}
-                                    {{  macros.userIconLink(discussion.modificatorItem) }}
+                                {% if not discussion.modificatorItem.isDeleted and discussion.modificatorItem.isUser %}
+                                    {{ macros.userIconLink(discussion.modificatorItem) }}
                                 {% else %}
-                                    {{  macros.userIcon(discussion.modificatorItem) }}
+                                    {{ macros.userIcon(discussion.modificatorItem) }}
                                 {% endif %}
                                 <div class="uk-comment-meta">
                                     {% if discussion.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -68,21 +69,21 @@
 
                                 <div class="uk-comment-meta">
 
-                                        {{ 'by'|trans({})|capitalize }}: {{discussion.modificatorItem.fullname}} ({{discussion.getCreationDate|date("d.m.Y")}})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(discussion.modificatorItem) }} ({{discussion.getCreationDate|date("d.m.Y")}})
 
                                 </div>
                                
                                 <div class="uk-comment-meta">
-                                    {{  macros.fileListShort(discussion) }}
+                                    {{ macros.fileListShort(discussion) }}
                                 </div>
                             </div>
                             {% if showRating or showWorkflow %}
                                 <div class="uk-width-2-10 uk-text-right">
                                 {%if showRating%}
-                                    {{  macros.ratingStatus(discussion, ratingList) }}
+                                    {{ macros.ratingStatus(discussion, ratingList) }}
                                 {% endif %}
                                 {%if showWorkflow%}
-                                    {{  macros.workflowTrafficLight(discussion) }}
+                                    {{ macros.workflowTrafficLight(discussion) }}
                                 {% endif %}
                             </div>
                             {% endif %}
