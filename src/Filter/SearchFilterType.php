@@ -62,6 +62,9 @@ class SearchFilterType extends AbstractType
                 ],
             ])
             ->add('selectedCreators', Select2ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     // TODO: Translation needed!
                     return array_combine($searchData->getCreators() ?: [], $searchData->getCreators() ?: []);
@@ -71,13 +74,23 @@ class SearchFilterType extends AbstractType
                 'multiple' => true,
                 'required' => false,
             ])
+            // TODO: for each of the date range form options, provide two date fields with date pickers to describe a date range?
             ->add('creation_date_range', Types\TextType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
                 'required' => false,
             ])
             ->add('modification_date_range', Types\TextType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
                 'required' => false,
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     // TODO: Translation needed for 'all'
                     return array_merge(['all' => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
