@@ -555,6 +555,9 @@ class LegacyMarkup
         $src = 'https://lecture2go.uni-hamburg.de/lecture2go-portlet/player/iframe/?v=' . $array[1];
 
         $args = [];
+        $heightSet = false;
+        $widthSet = false;
+
         if (!empty($array[2])) {
             $args = $this->parseArgs($array[2]);
         }
@@ -563,10 +566,17 @@ class LegacyMarkup
 
         if (isset($args['width']) && is_numeric($args['width'])) {
             $lecture2GoHTML .= ' width="' . $args['width'] . '"';
+            $heightSet = !$heightSet;
         }
 
         if (isset($args['height']) && is_numeric($args['height'])) {
             $lecture2GoHTML .= ' height="' . $args['height'] . '"';
+            $widthSet = !$widthSet;
+        }
+
+        if(!$heightSet or !$widthSet){
+            $lecture2GoHTML .= ' height="500"';
+            $lecture2GoHTML .= ' width="100%';
         }
 
         $lecture2GoHTML .= '></iframe></div>';
