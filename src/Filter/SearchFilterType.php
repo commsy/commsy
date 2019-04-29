@@ -79,11 +79,12 @@ class SearchFilterType extends AbstractType
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    // TODO: Translation needed for 'all', and figure out why there's now an additional empty choice option
+                    // TODO: Translation needed for 'all'
                     return array_merge(['all' => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
                 }),
                 'label' => 'Rubric',
                 'required' => false,
+                'placeholder' => false,
             ]);
     }
 
