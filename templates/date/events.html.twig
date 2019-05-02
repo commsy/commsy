@@ -17,10 +17,10 @@
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if date.creator.isUser %}
-                        {{  macros.userIconLink(date.creator) }}
+                    {% if not date.creator.isDeleted and date.creator.isUser %}
+                        {{ macros.userIconLink(date.creator) }}
                     {% else %}
-                        {{  macros.userIcon(date.creator) }}
+                        {{ macros.userIcon(date.creator) }}
                     {% endif %}
                     <div class="uk-comment-meta">
                         {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -38,7 +38,7 @@
                 <div class="uk-comment-meta">{{date.getDateListDescription}}{% if date.getPlace != '' %}, {{date.getPlace}}{% endif %}</div>
                 
                 <div class="uk-comment-meta">
-                    {{  macros.fileListShort(date) }}
+                    {{ macros.fileListShort(date) }}
                 </div>
             </div>
         </header>

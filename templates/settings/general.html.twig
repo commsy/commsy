@@ -21,7 +21,12 @@
                             <h1 class='uk-panel-title'>{{ 'Basic settings'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Basic settings text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.title) }}
+
+                            <div style="margin-top: 10px;">
+                                {{ 'Room language tip'|trans({}, 'settings') }}
+                            </div>
                             {{ form_row(form.language) }}
+
                             <div class="uk-form-row">
                                 {{ form_label(form.access_check) }}
                                 <div class="uk-form-controls">

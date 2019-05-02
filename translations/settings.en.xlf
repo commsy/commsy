@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="useful_info">
                 <source>Useful information</source>
-                <target>Some usefull text...</target>
+                <target>Some useful text...</target>
             </trans-unit>
 
             <!-- General settings -->
@@ -66,7 +66,7 @@
             </trans-unit>
             <trans-unit id="11">
                 <source>Language</source>
-                <target>Language</target>
+                <target>System language</target>
             </trans-unit>
             <trans-unit id="12">
                 <source>Room image</source>
@@ -162,7 +162,7 @@
             </trans-unit>
             <trans-unit id="repeatbgimagex">
                 <source>Repeat x</source>
-                <target>Repeat image horizontically</target>
+                <target>Repeat image horizontally</target>
             </trans-unit>
             <trans-unit id="basic_settings_text">
                 <source>Basic settings text</source>
@@ -175,6 +175,10 @@
             <trans-unit id="profile_image_tip">
                 <source>Rubric selection tip</source>
                 <target>In order to be able to manage the room membership of individual users, room moderators like yourself will always see the rubric "<![CDATA[<span class='uk-text-bold'>]]>Users<![CDATA[</span>]]>", even if it is deactivated for normal users.</target>
+            </trans-unit>
+            <trans-unit id="room_language_tip">
+                <source>Room language tip</source>
+                <target>Use a room specific system language or fall back to the user's preferences.</target>
             </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
@@ -224,7 +228,7 @@
             </trans-unit>
             <trans-unit id="allcommsyusers">
                 <source>All commsy users</source>
-                <target>All commsy users</target>
+                <target>All CommSy users</target>
             </trans-unit>
             <trans-unit id="allworkspaceusers">
                 <source>All workspace users</source>
@@ -472,7 +476,7 @@
             </trans-unit>
             <trans-unit id="homenotice_text">
                 <source>Homenotice text</source>
-                <target>By entering the correct content ID number above, you can highlight a material, a task, an event or an announcement on top of the Home / noticeboard with an abbreviated feature text. To get the refering content ID number, view the piece of content you want to highlight in your browser, and click on the arrow icon toggling information about the date of the "Last edit" and versioning. You can simply copy and paste the content ID number here.</target>
+                <target>By entering the correct content ID number above, you can highlight a material, a task, an event or an announcement on top of the Home / noticeboard with an abbreviated feature text. To get the referring content ID number, view the piece of content you want to highlight in your browser, and click on the arrow icon toggling information about the date of the "Last edit" and versioning. You can simply copy and paste the content ID number here.</target>
             </trans-unit>
             <trans-unit id="usernotice_text">
                 <source>Usage notes text</source>
@@ -599,7 +603,7 @@
             </trans-unit>
             <trans-unit id="workflow_text">
                 <source>Workflow text</source>
-                <target>The Workflow settings are additional features to manage the editorial prozess in materials.</target>
+                <target>The Workflow settings are additional features to manage the editorial process in materials.</target>
             </trans-unit> 
             <trans-unit id="wiki_Text">
                 <source>wiki text</source>
@@ -676,7 +680,7 @@
             </trans-unit>
             <trans-unit id="New invitation text">
                 <source>New invitation text</source>
-                <target>Plase give the email-adress you want to send the invitation to. The invitee will receive an email with a one time usable invitation code.</target>
+                <target>Please give the email address you want to send the invitation to. The invitee will receive an email with a one time usable invitation code.</target>
             </trans-unit>
             <trans-unit id="Remove invitation">
                 <source>Remove invitation</source>
@@ -688,11 +692,11 @@
             </trans-unit>
             <trans-unit id="Email-adrress of new invitee">
                 <source>Email-adrress of new invitee</source>
-                <target>Email-adrress of new invitee</target>
+                <target>Email address of new invitee</target>
             </trans-unit>
             <trans-unit id="An invitation for this email-address already exists in this portal">
                 <source>An invitation for this email-address already exists in this portal</source>
-                <target>An invitation for this email-address already exists in this portal</target>
+                <target>An invitation for this email address already exists in this portal</target>
             </trans-unit>
             <trans-unit id="settings_time_context">
                 <source>Time context</source>

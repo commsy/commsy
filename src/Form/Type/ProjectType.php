@@ -2,6 +2,7 @@
 
 namespace App\Form\Type;
 
+use CommsyBundle\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -46,7 +47,32 @@ class ProjectType extends AbstractType
                 'label_attr' => [
                     'style' => 'display: none;',
                 ]
-            ])
+            ]);
+            if (!empty($options['times'])) {
+                $builder->add('time_interval', Select2ChoiceType::class, [
+                    'choices' => $options['times'],
+                    'required' => false,
+                    'mapped' => false,
+                    'expanded' => false,
+                    'multiple' => true,
+                    'label' => $options['timesDisplay'],
+                    'translation_domain' => 'room',
+                ]);
+            }
+            $builder->add('language', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => array(
+                    'User preferences' => 'user',
+                    'German' => 'de',
+                    'English' => 'en',
+                ),
+                'label' => 'language',
+                'required' => true,
+                'expanded' => false,
+                'multiple' => false,
+                'translation_domain' => 'room',
+                'choice_translation_domain' => 'settings',
+            ))
             ->add('room_description', TextareaType::class, [
                 'attr' => [
                     'rows' => 10,
@@ -54,6 +80,7 @@ class ProjectType extends AbstractType
                     'placeholder' => 'Room description...',
                 ],
                 'required' => false,
+                'translation_domain' => 'room',
             ])
             ->add('save', SubmitType::class, [
                 'attr' => [
@@ -61,7 +88,15 @@ class ProjectType extends AbstractType
                 ],
                 'label' => 'save',
                 'translation_domain' => 'form',
-            ]);
+            ])
+            ->add('cancel', SubmitType::class, array(
+                'attr' => array(
+                    'formnovalidate' => '',
+                ),
+                'label' => 'cancel',
+                'translation_domain' => 'form',
+                'validation_groups' => false,
+            ));
     }
 
     /**
@@ -76,6 +111,8 @@ class ProjectType extends AbstractType
                 'templates',
                 'descriptions',
                 'preferredChoices',
+                'timesDisplay',
+                'times',
             ])
             ->setDefaults([
                 'data_class' => Room::class,

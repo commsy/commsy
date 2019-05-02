@@ -19,15 +19,18 @@
         uk-icon-home
     {% elseif type == 'topic' %}
         uk-icon-book
+    {% elseif type == 'room' %}
+        uk-icon-sitemap
     {% endif %}
 {% endmacro %}
 
 {% macro lastModified(item) %}
+    {% import _self as macros %}
     {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|date("d.m.Y") }}
     {{ 'at'|trans({}) }} {{ item.modificationDate|date("H:i") }}
     {{ 'by'|trans({}) }}
     <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': item.modificatorItem.itemId}) }}">
-        {{ item.modificatorItem.fullname }}
+        {{ macros.userFullname(item.modificatorItem) }}
     </a>
 {% endmacro %}
 
@@ -53,10 +56,10 @@
     <div class="uk-margin-bottom">
         <div class="toggle-{{ item.itemId }} uk-vertical-align">
             <div class="uk-margin-right uk-vertical-align-middle">
-                {% if item.modificatorItem.isUser %}
-                    {{  macros.userIconLink(item.modificatorItem, 'small') }}
+                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                    {{ macros.userIconLink(item.modificatorItem, 'small') }}
                 {% else %}
-                    {{  macros.userIcon(item.modificatorItem, 'small') }}
+                    {{ macros.userIcon(item.modificatorItem, 'small') }}
                 {% endif %}
             </div>
             <div class="uk-vertical-align-middle uk-margin-remove">
@@ -65,15 +68,15 @@
         </div>
         <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
             <div class="uk-margin-right">
-                {% if item.modificatorItem.isUser %}
-                    {{  macros.userIconLink(item.modificatorItem) }}
+                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                    {{ macros.userIconLink(item.modificatorItem) }}
                 {% else %}
-                    {{  macros.userIcon(item.modificatorItem) }}
+                    {{ macros.userIcon(item.modificatorItem) }}
                 {% endif %}
             </div>
             <div class="uk-margin-right">
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{item.modificatorItem.fullname}}
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                 </div>
                 <div class="uk-comment-meta">
                     {{ 'created'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}
@@ -92,10 +95,10 @@
                     </div>
                     {% for modifier in modifierList[item.itemId] %}
                         <div class="uk-margin-small-right">
-                            {% if modifier.isUser %}
-                                {{  macros.userIconLink(modifier, 'small') }}
+                            {% if not modifier.isDeleted and modifier.isUser %}
+                                {{ macros.userIconLink(modifier, 'small') }}
                             {% else %}
-                                {{  macros.userIcon(modifier, 'small') }}
+                                {{ macros.userIcon(modifier, 'small') }}
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -230,24 +233,39 @@
 
 {% macro userIcon(user, size, showTooltip) %}
     {% set showTooltip = showTooltip ?? true %}
-    {% if user.itemId != "" %}
-        {% if size == 'small' %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
-        {% elseif size matches '/^\\d+$/' %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
-        {% else %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
-        {% endif %}
+    {% set styleAttribute = '' %}
+    {% set additionalClasses = '' %}
+
+    {% if size == 'small' %}
+        {% set styleAttribute = ' style="height:30px; width:30px;"' %}
+    {% elseif size matches '/^\\d+$/' %}
+        {% set styleAttribute = ' style="height:' ~ size ~ 'px; width:' ~ size ~ 'px;"' %}
     {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}" style="width: 30px; height: 30px;">
+        {% set additionalClasses = ' cs-comment-thumbnail' %}
+    {% endif %}
+
+    {% if user.isDeleted %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
+    {% elseif user.itemId != "" %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+    {% else %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
     {% endif %}
 {% endmacro %}
 
 {% macro userIconLink(user, size) %}
     {% import _self as macros %}
     <a href="{{ path('app_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
-        {{  macros.userIcon(user, size) }}
+        {{ macros.userIcon(user, size) }}
     </a>
+{% endmacro %}
+
+{% macro userFullname(user) %}
+    {% if not user.isDeleted %}
+        {{user.Fullname}}
+    {% else %}
+        {{ "deleted person"|trans({}, 'user')}}
+    {% endif %}
 {% endmacro %}
 
 {% macro actionIcons(title, item, edit, draft) %}
@@ -470,8 +488,9 @@
 {% endmacro %}
 
 {% macro workflowWhoCreator(item) %}
+    {% import _self as macros %}
     <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': item.creatorItem.itemId}) }}">
-        {{ item.creatorItem.fullname }}
+        {{ macros.userFullname(item.creatorItem) }}
     </a>
 {% endmacro %}
 
@@ -482,7 +501,7 @@
     
     {% for modifier in item.modifierList %}
         <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
-            {{ modifier.fullname }}
+            {{ macros.userFullname(modifier) }}
         </a>
     {% endfor %}
 {% endmacro %}

@@ -92,7 +92,7 @@
             </trans-unit>
             <trans-unit id="21">
                 <source>links</source>
-                <target>Linked Entries</target>
+                <target>Linked entries</target>
             </trans-unit>
             <trans-unit id="22">
                 <source>workflow</source>

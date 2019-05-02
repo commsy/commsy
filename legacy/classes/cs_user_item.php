@@ -2105,7 +2105,7 @@ class cs_user_item extends cs_item
             $step_manager = $this->_environment->getStepManager();
 
 
-            // replace users entries with the standart message for deleted entries
+            // replace users entries with the standard message for deleted entries
             $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
             $dates_manager->deleteDatesOfUser($this->getItemID());
             $discussion_manager->deleteDiscussionsOfUser($this->getItemID());
@@ -2113,9 +2113,17 @@ class cs_user_item extends cs_item
             $material_manager->deleteMaterialsOfUser($this->getItemID());
             $section_manager->deleteSectionsOfUser($this->getItemID());
             $annotation_manager->deleteAnnotationsOfUser($this->getItemID());
-            $label_manager->deleteLabelsOfUser($this->getItemID());
-            $tag_manager->deleteTagsOfUser($this->getItemID());
+            $todo_manager->deleteTodosOfUser($this->getItemID());
             $step_manager->deleteStepsOfUser($this->getItemID());
+
+
+            // NOTE: we don't replace hashtags (aka buzzwords) and categories (aka tags) with the standard message for
+            // deleted entries since these are structural elements benefitting all room users, and which have no direct
+            // association in the UI to the user who created them.
+            // However note that, even with these lines uncommented, buzzwords currently won't get overwritten in the UI
+            // if the server option `security.privacy_disable_overwriting` (in parameters.yml) is set to `flag`.
+//          $label_manager->deleteLabelsOfUser($this->getItemID());
+//          $tag_manager->deleteTagsOfUser($this->getItemID());
         }
     }
 

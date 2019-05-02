@@ -978,6 +978,7 @@ class RoomController extends Controller
     public function createAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $type = null;
@@ -999,16 +1000,7 @@ class RoomController extends Controller
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
         $timesDisplay = $currentPortalItem->getCurrentTimeName();
-
-        $times = [];
-        if ($currentPortalItem->showTime()) {
-            $translator = $this->get('translator');
-            $legacyTranslator = $legacyEnvironment->getTranslationObject();
-            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
-            foreach ($currentPortalItem->getTimeListRev()->to_array() as $timeItem) {
-                $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
-            }
-        }
+        $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
         $community_list = $currentPortalItem->getCommunityList();
@@ -1034,7 +1026,6 @@ class RoomController extends Controller
         if ($portalUser->isModerator()) {
             $types = ['project' => 'project', 'community' => 'community'];
         } else {
-            $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getRoomItem($roomId);
 
             if ($currentPortalItem->getProjectRoomCreationStatus() == 'portal') {
@@ -1104,7 +1095,6 @@ class RoomController extends Controller
                 // fill in form values from the new entity object
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
-                $legacyRoom->setLanguage($context['language']);
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
@@ -1123,11 +1113,16 @@ class RoomController extends Controller
 
                 // take values from a template?
                 if (isset($context['type_sub']['master_template'])) {
-                    $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($context['type_sub']['master_template']);
+                    $masterRoom = $roomService->getRoomItem($context['type_sub']['master_template']);
                     if ($masterRoom) {
                         $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
                     }
                 }
+
+                // NOTE: we can only set the language after copying settings from any room template, otherwise the language
+                // would get overwritten by the room template's language setting
+                $legacyRoom->setLanguage($context['language']);
+                $legacyRoom->save();
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();

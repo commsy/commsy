@@ -142,6 +142,10 @@
                 <source>Edit Licenses</source>
                 <target>Edit Licenses</target>
             </trans-unit>
+            <trans-unit id="No licenses created yet">
+                <source>No licenses have been created yet.</source>
+                <target>No licenses have been created yet.</target>
+            </trans-unit>
             <trans-unit id="Content">
                 <source>Content</source>
                 <target>Content</target>
