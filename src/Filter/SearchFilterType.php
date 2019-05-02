@@ -143,7 +143,7 @@ class SearchFilterType extends AbstractType
 
         $choices = [];
         foreach ($rubrics as $rubric) {
-            $translatedTitle = $this->translator->transChoice(ucfirst($rubric), 0, [], 'rubric');
+            $translatedTitle = $this->translator->transChoice(ucfirst($rubric), 1, [], 'rubric');
             $choices[$translatedTitle] = $rubric;
         }
 
