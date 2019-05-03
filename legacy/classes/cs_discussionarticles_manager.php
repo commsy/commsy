@@ -491,7 +491,7 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+        if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
             // create backup of item
             $this->backupItem($uid, array(
                 'subject'=> 'title',
@@ -508,13 +508,13 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
                     $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('discussionarticles') . ' SET';
 
                     /* flag */
-                    if ($disableOverwrite === 'flag') {
+                    if ($disableOverwrite === 'FLAG') {
                         $updateQuery .= ' public = "-1",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
                     }
 
                     /* disabled */
-                    if ($disableOverwrite === false) {
+                    if ($disableOverwrite === 'FALSE') {
                         $updateQuery .= ' subject = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
                         $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
