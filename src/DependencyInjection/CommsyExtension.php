@@ -32,12 +32,6 @@ class CommsyExtension extends Extension
         $container->setParameter('commsy.mediawiki.accessToken', $config['mediawiki']['accessToken']);
         $container->setParameter('commsy.mediawiki.accessSecret', $config['mediawiki']['accessSecret']);
 
-        // etherpad
-        $container->setParameter('commsy.etherpad.enabled', $config['etherpad']['enabled']);
-        $container->setParameter('commsy.etherpad.api_key', $config['etherpad']['api_key']);
-        $container->setParameter('commsy.etherpad.api_url', $config['etherpad']['api_url']);
-        $container->setParameter('commsy.etherpad.base_url', $config['etherpad']['base_url']);
-
         // dates
         $container->setParameter('commsy.dates.timezone', $config['dates']['timezone']);
 

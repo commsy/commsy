@@ -107,6 +107,12 @@ parameters:
     # Limesurvey
     commsy.limesurvey.enabled: false        # et the following variable to activate limesurvey extension
 
+    # Etherpad
+    commsy.etherpad.enabled: '%env(bool:ETHERPAD_ENABLED)%'
+    commsy.etherpad.api_key: '%env(ETHERPAD_API_KEY)%'
+    commsy.etherpad.api_url: '%env(ETHERPAD_API_URL)%'
+    commsy.etherpad.base_url: '%env(ETHERPAD_BASE_URL)%'
+
 
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
@@ -116,7 +122,6 @@ parameters:
     commsy.mediawiki.accessSecret: ''
 
     commsy.mediawiki.roomWikiUrl: ''
-    commsy.etherpad.enabled: false
 
 services:
     # default configuration for services in *this* file

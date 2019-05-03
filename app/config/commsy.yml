@@ -1,11 +1,4 @@
 commsy:
-
-    # Etherpad
-    etherpad:
-        enabled: '%extensions.etherpad.enabled%'
-        api_key: '%extensions.etherpad.api_key%'
-        api_url: '%extensions.etherpad.api_url%'
-        base_url: '%extensions.etherpad.base_url%'
         
     # mediawiki
     mediawiki:
