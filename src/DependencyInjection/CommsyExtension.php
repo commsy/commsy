@@ -22,10 +22,6 @@ class CommsyExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // cookie
-        $container->setParameter('commsy.cookie.path', $config['cookie']['path']);
-        $container->setParameter('commsy.cookie.domain', $config['cookie']['domain']);
-
         // db
         $container->setParameter('commsy.db.backup_prefix', $config['db']['backup_prefix']);
 

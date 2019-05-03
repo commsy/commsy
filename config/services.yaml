@@ -61,6 +61,11 @@ parameters:
     commsy.clamscan.virus_scan_path: '/usr/bin'
     commsy.clamscan.virus_scan_bin: 'clamscan'
 
+    # Cookie management
+    commsy.cookie.domain: ~
+    commsy.cookie.path: ~
+
+
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
     commsy.mediawiki.consumerKey: ''

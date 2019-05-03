@@ -1,8 +1,4 @@
 commsy:
-    # Cookie management
-    cookie:
-        domain: ~
-        path: ~
 
     # Database
     db:

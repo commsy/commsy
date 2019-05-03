@@ -22,16 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('cookie')
-                    ->children()
-                        ->scalarNode('domain')
-                            ->defaultValue(null)
-                        ->end()
-                        ->scalarNode('path')
-                            ->defaultValue(null)
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('db')
                     ->children()
                         ->scalarNode('backup_prefix')
