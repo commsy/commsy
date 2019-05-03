@@ -22,11 +22,6 @@ class CommsyExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // login
-        $container->setParameter('commsy.login.shibboleth_direct_login', $config['login']['shibboleth_direct_login']);
-        $container->setParameter('commsy.login.shibboleth_redirect_url', $config['login']['shibboleth_redirect_url']);
-        $container->setParameter('commsy.login.shibboleth_deactivate_direct_login_by_portal_id', $config['login']['shibboleth_deactivate_direct_login_by_portal_id']);
-
         // security
         $container->setParameter('commsy.security.privacy_disable_overwriting', $config['security']['privacy_disable_overwriting']);
         $container->setParameter('commsy.security.allow_moderator_takeover', $config['security']['allow_moderator_takeover']);

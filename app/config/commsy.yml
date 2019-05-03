@@ -1,11 +1,5 @@
 commsy:
 
-    # Login
-    login:
-        shibboleth_direct_login: false
-        shibboleth_redirect_url: ''
-        shibboleth_deactivate_direct_login_by_portal_id: ''
-
     # Security
     security:
         # overwrite entries with "overwritten because of data security" when deleting a user
