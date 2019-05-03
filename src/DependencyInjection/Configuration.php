@@ -22,13 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('limesurvey')
-                    ->children()
-                        ->booleanNode('enabled')
-                            ->defaultFalse()
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('etherpad')
                     ->children()
                         ->booleanNode('enabled')

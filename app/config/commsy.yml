@@ -1,10 +1,5 @@
 commsy:
 
-    # Limesurvey
-    limesurvey:
-        # set the following variable to activate limesurvey extension
-        enabled: false
-
     # Etherpad
     etherpad:
         enabled: '%extensions.etherpad.enabled%'

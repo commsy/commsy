@@ -22,9 +22,6 @@ class CommsyExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // limesurvey
-        $container->setParameter('commsy.limesurvey.enabled', $config['limesurvey']['enabled']);
-        
         // mediawiki
         $container->setParameter('commsy.mediawiki.enabled', $config['mediawiki']['enabled']);
         $container->setParameter('commsy.mediawiki.url', $config['mediawiki']['url']);

@@ -104,6 +104,8 @@ parameters:
     # Wordpress
     commsy.wordpress.enabled: false     # For activating wordpress please set the following variable on true
 
+    # Limesurvey
+    commsy.limesurvey.enabled: false        # et the following variable to activate limesurvey extension
 
 
     commsy.mediawiki.enabled: false
@@ -115,7 +117,6 @@ parameters:
 
     commsy.mediawiki.roomWikiUrl: ''
     commsy.etherpad.enabled: false
-    commsy.limesurvey.enabled: false
 
 services:
     # default configuration for services in *this* file
