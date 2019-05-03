@@ -113,15 +113,14 @@ parameters:
     commsy.etherpad.api_url: '%env(ETHERPAD_API_URL)%'
     commsy.etherpad.base_url: '%env(ETHERPAD_BASE_URL)%'
 
-
-    commsy.mediawiki.enabled: false
-    commsy.mediawiki.apiUrl: ''
-    commsy.mediawiki.consumerKey: ''
-    commsy.mediawiki.consumerSecret: ''
-    commsy.mediawiki.accessToken: ''
-    commsy.mediawiki.accessSecret: ''
-
-    commsy.mediawiki.roomWikiUrl: ''
+    # MediaWiki
+    commsy.mediawiki.enabled: '%env(bool:MEDIAWIKI_ENABLED)%'      # set the following variable to activate mediawiki extension
+    commsy.mediawiki.roomWikiUrl: '%env(MEDIAWIKI_ROOM_WIKI_URL)%'
+    commsy.mediawiki.apiUrl: '%env(MEDIAWIKI_API_URL)%'
+    commsy.mediawiki.consumerKey: '%env(MEDIAWIKI_CONSUMER_KEY)%'
+    commsy.mediawiki.consumerSecret: '%env(MEDIAWIKI_CONSUMER_SECRET)%'
+    commsy.mediawiki.accessToken: '%env(MEDIAWIKI_ACCESS_TOKEN)%'
+    commsy.mediawiki.accessSecret: '%env(MEDIAWIKI_ACCESS_SECRET)%'
 
 services:
     # default configuration for services in *this* file
