@@ -14,6 +14,53 @@ parameters:
     commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
     commsy.autosave.limit: 6        # limit in minutes
 
+    # Use virus scanning at uploading files
+    # ----------------------------------------------------
+    # OPTION 1: there are performance lacks
+    # scan file on upload
+    # 1. installation
+    #    on debian linux
+    #    # apt-get install php5-clamavlib
+    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+    #    # /etc/init.d/apache2 restart
+    # 2. enable virus scan at uploading files
+    #    virus_scan = true;
+    # 3. enable virus scan by php clamav library
+    #    virus_use_php = true;
+    #
+    # if you want to use another viren scanning tool
+    # you must set the following variables
+    # - only testet with clamav on linux
+    #    virus_scan = true;
+    #    virus_use_php = false;
+    #    virus_scan_path = '/usr/bin';
+    #    virus_scan_bin  = 'clamscan';
+    # ----------------------------------------------------
+    # OPTION 2: scan files with commsy cron
+    # scan files every 24 hours
+    # 1. installation
+    #    on debian linux
+    #    # apt-get install php5-clamavlib
+    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+    #    # /etc/init.d/apache2 restart
+    # 2. enable virus scan at uploading files
+    #    virus_scan_cron = true;
+    # 3. enable virus scan by php clamav library
+    #    virus_use_php = true;
+    #
+    # if you want to use another viren scanning tool
+    # you must set the following variables
+    # - only testet with clamav on linux
+    #    virus_scan_cron = true;
+    #    virus_use_php = false;
+    #    virus_scan_path = '/usr/bin';
+    #    virus_scan_bin  = 'clamscan';
+    commsy.clamscan.virus_scan: false
+    commsy.clamscan.virus_use_php: false
+    commsy.clamscan.virus_scan_cron: false
+    commsy.clamscan.virus_scan_path: '/usr/bin'
+    commsy.clamscan.virus_scan_bin: 'clamscan'
+
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
     commsy.mediawiki.consumerKey: ''

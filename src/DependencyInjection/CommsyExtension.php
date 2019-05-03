@@ -22,13 +22,6 @@ class CommsyExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // clamscan
-        $container->setParameter('commsy.clamscan.virus_scan', $config['clamscan']['virus_scan']);
-        $container->setParameter('commsy.clamscan.virus_use_php', $config['clamscan']['virus_use_php']);
-        $container->setParameter('commsy.clamscan.virus_scan_cron', $config['clamscan']['virus_scan_cron']);
-        $container->setParameter('commsy.clamscan.virus_scan_path', $config['clamscan']['virus_scan_path']);
-        $container->setParameter('commsy.clamscan.virus_scan_bin', $config['clamscan']['virus_scan_bin']);
-
         // cookie
         $container->setParameter('commsy.cookie.path', $config['cookie']['path']);
         $container->setParameter('commsy.cookie.domain', $config['cookie']['domain']);
