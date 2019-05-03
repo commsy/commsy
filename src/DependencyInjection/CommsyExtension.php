@@ -26,10 +26,6 @@ class CommsyExtension extends Extension
         $container->setParameter('commsy.autosave.mode', $config['autosave']['mode']);
         $container->setParameter('commsy.autosave.limit', $config['autosave']['limit']);
 
-        // expose beluge
-        $container->setParameter('commsy.beluga.url_for_beluga_system', $config['beluga']['url_for_beluga_system']);
-        $container->setParameter('commsy.beluga.url_for_beluga_upload', $config['beluga']['url_for_beluga_upload']);
-
         // clamscan
         $container->setParameter('commsy.clamscan.virus_scan', $config['clamscan']['virus_scan']);
         $container->setParameter('commsy.clamscan.virus_use_php', $config['clamscan']['virus_use_php']);

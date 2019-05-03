@@ -67,20 +67,6 @@ class cs_material_ims_import_form extends cs_rubric_form {
       $this->_form->combine('vertical');
       $this->_form->addText('ims_upload_description','',$this->_translator->getMessage('IMS_UPLOAD_DESCRIPTION'));
 
-      if ($this->_environment->withBelugaConnection()){
-         $this->_form->addEmptyLine();
-         $link = $this->_environment->getBelugaConnectionLink();
-
-         $this->_form->addText('import',$this->_translator->getMessage('MATERIAL_IMS_UPLOADLINK'),'<a style="font-weight:bold;" href="'.$link.'">'.$this->_translator->getMessage('MATERIAL_IMS_UPLOAD_LINK_HEADER').'</a>');
-         $this->_form->combine('vertical');
-         $this->_form->addText('import_description','',$this->_translator->getMessage('BELUGA_IMPORT_DESCRIPTION').BR);
-      }
-
-      // link to insert material
-      #$this->_form->addEmptyLine();
-      #$link = ahref_curl($this->_environment->getCurrentContextID(),'material','edit',array('iid'=>'NEW'),$this->_translator->getMessage('MATERIAL_INSERT_NEW_LINK'));
-      #$this->_form->addText('new_material',$this->_translator->getMessage('MATERIAL_INSERT_NEW_LABEL'),$this->_translator->getMessage('MATERIAL_INSERT_NEW_TEXT',$link));
-
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('MATERIAL_IMS_IMPORT_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }

@@ -11,12 +11,6 @@ commsy:
         # #    $c_autosave_limit = $c_session_lifetime-0.2;
         # # }
 
-    # Connection to Beluga, the library system of the university of hamburg
-    # Configuration needs with_ims_content_connection and ims_content_connection_temp_folder
-    beluga:
-        url_for_beluga_system: ~
-        url_for_beluga_upload: ~
-
     # Use virus scanning at uploading files
     # ----------------------------------------------------
     # OPTION 1: there are performance lacks
