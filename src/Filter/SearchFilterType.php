@@ -66,8 +66,7 @@ class SearchFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    // TODO: Translation needed!
-                    return array_combine($searchData->getCreators() ?: [], $searchData->getCreators() ?: []);
+                    return $this->buildCreatorChoices($searchData->getCreators());
                 }),
                 'label' => 'Creators',
                 'expanded' => false,
@@ -133,7 +132,7 @@ class SearchFilterType extends AbstractType
     /**
      * Builds the array of choices for the rubric filter field.
      *
-     * @param string[] $rubrics The array of rubric names
+     * @param array|null $rubrics associative array of rubrics (key: rubric name, value: count)
      */
     private function buildRubricsChoices($rubrics): array
     {
@@ -142,9 +141,30 @@ class SearchFilterType extends AbstractType
         }
 
         $choices = [];
-        foreach ($rubrics as $rubric) {
-            $translatedTitle = $this->translator->transChoice(ucfirst($rubric), 1, [], 'rubric');
-            $choices[$translatedTitle] = $rubric;
+        foreach ($rubrics as $name => $count) {
+            $translatedTitle = $this->translator->transChoice(ucfirst($name), 1, [], 'rubric');
+            $rubric = $translatedTitle . " (" . $count . ")";
+            $choices[$rubric] = $name;
+        }
+
+        return $choices;
+    }
+
+    /**
+     * Builds the array of choices for the creators filter field.
+     *
+     * @param array|null $creators associative array of creators (key: creator name, value: count)
+     */
+    private function buildCreatorChoices($creators): array
+    {
+        if (!isset($creators) || empty($creators)) {
+            return [];
+        }
+
+        $choices = [];
+        foreach ($creators as $name => $count) {
+            $creator = $name . " (" . $count . ")";
+            $choices[$creator] = $name;
         }
 
         return $choices;

@@ -3,96 +3,117 @@ namespace App\Model;
 
 class SearchData
 {
+    /**
+     * @var string|null
+     */
     private $phrase;
 
+    /**
+     * @var boolean|null
+     */
     private $allRooms;
 
+    /**
+     * @var array|null associative array of rubrics (key: rubric name, value: count)
+     */
     private $rubrics;
 
+    /**
+     * @var string|null
+     */
     private $selectedRubric;
 
     /**
-     * @var string[] $creators
+     * @var array|null associative array of creators (key: creator name, value: count)
      */
     private $creators;
 
     /**
-     * @var string[] $selectedCreators
+     * @var string[]|null $selectedCreators
      */
     private $selectedCreators;
 
     /**
-     * @var \DateInterval $creationDateRange
+     * @var \DateInterval|null $creationDateRange
      */
     private $creationDateRange;
 
     /**
-     * @var \DateInterval $modificationDateRange
+     * @var \DateInterval|null $modificationDateRange
      */
     private $modificationDateRange;
 
-    public function setPhrase($phrase)
-    {
-        $this->phrase = $phrase;
 
-        return $this;
-    }
-
-    public function getPhrase()
+    /**
+     * @return string|null
+     */
+    public function getPhrase(): ?string
     {
         return $this->phrase;
     }
 
     /**
-     * @return mixed
+     * @param string|null $phrase
+     * @return SearchData
      */
-    public function getAllRooms()
+    public function setPhrase(?string $phrase): SearchData
+    {
+        $this->phrase = $phrase;
+        return $this;
+    }
+
+    /**
+     * @return boolean|null
+     */
+    public function getAllRooms(): bool
     {
         return $this->allRooms;
     }
 
     /**
-     * @param mixed $allRooms
+     * @param boolean $allRooms
      * @return SearchData
      */
-    public function setAllRooms($allRooms)
+    public function setAllRooms(bool $allRooms): SearchData
     {
         $this->allRooms = $allRooms;
         return $this;
     }
 
     /**
-     * @return array
+     * @return array|null associative array of rubrics (key: rubric name, value: count)
      */
-    public function getRubrics()
+    public function getRubrics(): ?array
     {
         return $this->rubrics;
     }
 
     /**
-     * @param array $rubrics
+     * @param array $rubrics associative array of rubrics (key: rubric name, value: count)
      * @return SearchData
      */
-    public function setRubrics($rubrics)
+    public function setRubrics(array $rubrics): SearchData
     {
         $this->rubrics = $rubrics;
         return $this;
     }
 
     /**
-     * @param string $rubric
-     * @return $this
+     * @param array $rubrics associative array of rubrics (key: rubric name, value: count)
+     * @return SearchData
      */
-    public function addRubric($rubric)
+    public function addRubrics(array $rubrics): SearchData
     {
-        $this->rubrics[] = $rubric;
+        foreach ($rubrics as $name => $count) {
+            $this->rubrics[$name] = $count;
+        }
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSelectedRubric()
+    public function getSelectedRubric(): ?string
     {
         return $this->selectedRubric;
     }
@@ -101,14 +122,14 @@ class SearchData
      * @param string $selectedRubric
      * @return SearchData
      */
-    public function setSelectedRubric($selectedRubric)
+    public function setSelectedRubric(string $selectedRubric): SearchData
     {
         $this->selectedRubric = $selectedRubric;
         return $this;
     }
 
     /**
-     * @return string[]
+     * @return array|null associative array of creators (key: creator name, value: count)
      */
     public function getCreators(): ?array
     {
@@ -116,7 +137,7 @@ class SearchData
     }
 
     /**
-     * @param string[] $creators
+     * @param array $creators associative array of creators (key: creator name, value: count)
      * @return SearchData
      */
     public function setCreators(array $creators): SearchData
@@ -126,17 +147,19 @@ class SearchData
     }
 
     /**
-     * @param string $creator
+     * @param array $creators associative array of creators (key: creator name, value: count)
      * @return SearchData
      */
-    public function addCreator(string $creator): SearchData
+    public function addCreators(array $creators): SearchData
     {
-        $this->creators[] = $creator;
+        foreach ($creators as $name => $count) {
+            $this->creators[$name] = $count;
+        }
         return $this;
     }
 
     /**
-     * @return string[]
+     * @return string[]|null
      */
     public function getSelectedCreators(): ?array
     {

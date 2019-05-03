@@ -144,14 +144,9 @@ class SearchController extends BaseController
         }
 
         $searchData = new SearchData();
+        $searchData = $this->populateSearchData($searchData, $request);
 
-        /**/
-
-        /**
-         * Populate initial search data
-         *
-         * If the top form submits a POST request it will call setPhrase() on SearchData.
-         */
+        // if the top form submits a POST request it will call setPhrase() on SearchData
         $topForm = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId,
@@ -164,25 +159,7 @@ class SearchController extends BaseController
          * according to the current query parameters.
          */
 
-        // search phrase parameter
-        if (!$searchData->getPhrase()) {
-            if ($request->query->has('search_filter')) {
-                $searchFilterParams = $request->query->get('search_filter');
-                if (isset($searchFilterParams['phrase'])) {
-                    $searchData->setPhrase($searchFilterParams['phrase']);
-                }
-            }
-        }
-        $searchManager->setQuery($searchData->getPhrase());
-
         // search in all contexts parameter
-        $searchData->setAllRooms(false);
-        if ($request->query->has('search_filter')) {
-            $searchFilterParams = $request->query->get('search_filter');
-            if (isset($searchFilterParams['all_rooms'])) {
-                $searchData->setAllRooms($searchFilterParams['all_rooms'] ? true : false);
-            }
-        }
         if ($searchData->getAllRooms()) {
             $searchManager->addFilterCondition($multipleContextFilterCondition);
         } else {
@@ -192,13 +169,6 @@ class SearchController extends BaseController
         }
 
         // rubric parameter
-        $searchData->setSelectedRubric('all');
-        if ($request->query->has('search_filter')) {
-            $searchFilterParams = $request->query->get('search_filter');
-            if (isset($searchFilterParams['selectedRubric'])) {
-                $searchData->setSelectedRubric($searchFilterParams['selectedRubric']);
-            }
-        }
         if ($searchData->getSelectedRubric()) {
             $rubricFilterCondition = new RubricFilterCondition();
             $rubricFilterCondition->setRubric($searchData->getSelectedRubric());
@@ -206,41 +176,29 @@ class SearchController extends BaseController
         }
 
         // creator parameter
-        if ($request->query->has('search_filter')) {
-            $searchFilterParams = $request->query->get('search_filter');
-            if (isset($searchFilterParams['selectedCreators'])) {
-                $searchData->setSelectedCreators($searchFilterParams['selectedCreators']);
-            }
-        }
         if ($searchData->getSelectedCreators()) {
             $multipleCreatorFilterConditio = new MultipleCreatorFilterCondition();
             $multipleCreatorFilterConditio->setCreators($searchData->getSelectedCreators());
             $searchManager->addFilterCondition($multipleCreatorFilterConditio);
         }
 
+        $searchManager->setQuery($searchData->getPhrase());
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
 
-        foreach ($aggregations['rubrics']['buckets'] as $bucket) {
-            $searchData->addRubric($bucket['key']);
-        }
+        $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
+        $searchData->addRubrics($countsByRubric);
 
-        foreach ($aggregations['creators']['buckets'] as $bucket) {
-            $searchData->addCreator($bucket['key']);
-        }
-        /**/
+        $countsByCreator = $searchManager->countsByKeyFromAggregation($aggregations['creators']);
+        $searchData->addCreators($countsByCreator);
 
-        /**
-         * If the filter form is submitted by a GET request we use the same data object here to populate the data.
-         */
+        // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
             'parameters' => $request->query,
         ]);
-        $filterForm->handleRequest($request);;
+        $filterForm->handleRequest($request);
 
-
-        /**/
         $totalHits = $searchResults->getTotalHits();
         $results = $this->prepareResults($searchResults, $roomId);
 
@@ -249,7 +207,7 @@ class SearchController extends BaseController
             'roomId' => $roomId,
             'totalHits' => $totalHits,
             'results' => $results,
-            'query' => $searchData->getPhrase(),
+            'searchData' => $searchData,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getEnvironment()->getCurrentUserItem(),
         ];
@@ -261,29 +219,113 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/searchmore/{start}/{sort}")
      * @Template
      */
-    public function moreResultsAction($roomId, $start = 0, $sort = 'date', Request $request)
+    public function moreResultsAction($roomId,
+                                      $start = 0,
+                                      $sort = 'date',
+                                      Request $request,
+                                      SearchManager $searchManager,
+                                      MultipleContextFilterCondition $multipleContextFilterCondition)
     {
-//        $filterData = [
-//            'query' => $request->query->get('search', ''),
-//        ];
-//        $filterForm = $this->createForm(SearchFilterType::class, [], []);
-//        $filterForm->handleRequest($request);
-//        if ($filterForm->isSubmitted()) {
-//            $filterData = $filterForm->getData();
-//        }
-//
-//        $searchManager = $this->getSearchManager($roomId, $filterData);
-//
-//        $searchResults = $searchManager->getResults();
-//        $results = $this->prepareResults($searchResults, $roomId, $start);
-//
-//        return [
-//            'roomId' => $roomId,
-//            'results' => $results,
-//        ];
+        // TODO: to have the "load more" functionality work with any applied filters, we need to add all SearchFilterType form fields to the "load more" query dictionary in results.html.twig!
+
+        $searchData = new SearchData();
+        $searchData = $this->populateSearchData($searchData, $request);
+
+        /**
+         * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
+         * according to the current query parameters.
+         */
+
+        // search in all contexts parameter
+        if ($searchData->getAllRooms()) {
+            $searchManager->addFilterCondition($multipleContextFilterCondition);
+        } else {
+            $singleFilterCondition = new SingleContextFilterCondition();
+            $singleFilterCondition->setContextId($roomId);
+            $searchManager->addFilterCondition($singleFilterCondition);
+        }
+
+        // rubric parameter
+        if ($searchData->getSelectedRubric()) {
+            $rubricFilterCondition = new RubricFilterCondition();
+            $rubricFilterCondition->setRubric($searchData->getSelectedRubric());
+            $searchManager->addFilterCondition($rubricFilterCondition);
+        }
+
+        // creator parameter
+        if ($searchData->getSelectedCreators()) {
+            $multipleCreatorFilterConditio = new MultipleCreatorFilterCondition();
+            $multipleCreatorFilterConditio->setCreators($searchData->getSelectedCreators());
+            $searchManager->addFilterCondition($multipleCreatorFilterConditio);
+        }
+
+        $searchManager->setQuery($searchData->getPhrase());
+        $searchResults = $searchManager->getResults();
+        $aggregations = $searchResults->getAggregations();
+
+        $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
+        $searchData->addRubrics($countsByRubric);
+
+        $countsByCreator = $searchManager->countsByKeyFromAggregation($aggregations['creators']);
+        $searchData->addCreators($countsByCreator);
+
+        // if the filter form is submitted by a GET request we use the same data object here to populate the data
+        $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
+            'contextId' => $roomId,
+            'parameters' => $request->query,
+        ]);
+        $filterForm->handleRequest($request);
+
+        $results = $this->prepareResults($searchResults, $roomId, $start);
+
+        return [
+            'roomId' => $roomId,
+            'results' => $results,
+        ];
     }
 
     /**
+     * Populates the given SearchData object with relevant data from the request, and returns it.
+     *
+     * @param SearchData $searchData
+     * @param Request $request
+     * @return SearchData
+     */
+    private function populateSearchData(SearchData $searchData, Request $request): SearchData
+    {
+        // TODO: should we better move this method to SearchData.php?
+
+        if (!isset($request)) {
+            return $searchData;
+        }
+
+        $requestParams = $request->query->all();
+        if (empty($requestParams)) {
+            $requestParams = $request->request->all();
+        }
+        if (empty($requestParams)) {
+            return $searchData;
+        }
+
+        // search phrase parameter
+        if (!$searchData->getPhrase()) {
+            $searchParams = $requestParams['search'] ?? $requestParams['search_filter'] ?? null;
+            $searchData->setPhrase($searchParams['phrase'] ?? null);
+        }
+
+        // search in all contexts parameter
+        $searchData->setAllRooms((!empty($searchParams['all_rooms'])) ? true : false);
+
+        // rubric parameter
+        $searchData->setSelectedRubric($searchParams['selectedRubric'] ?? 'all');
+
+        // creator parameter
+        $searchData->setSelectedCreators($searchParams['selectedCreators'] ?? []);
+
+        return $searchData;
+    }
+
+     /**
      * Generates JSON results for the room navigation search-as-you-type form
      *
      * @Route("/room/{roomId}/search/rooms")
