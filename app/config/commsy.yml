@@ -1,5 +1,2 @@
 commsy:
 
-    # dates
-    dates:
-        timezone: '%dates.timezone%'

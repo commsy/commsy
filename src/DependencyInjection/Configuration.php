@@ -22,12 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('dates')
-                    ->children()
-                        ->scalarNode('timezone')
-                        ->defaultValue('UTC')
-                    ->end()
-                ->end()
             ->end()
         ;
 

@@ -122,6 +122,9 @@ parameters:
     commsy.mediawiki.accessToken: '%env(MEDIAWIKI_ACCESS_TOKEN)%'
     commsy.mediawiki.accessSecret: '%env(MEDIAWIKI_ACCESS_SECRET)%'
 
+    # Dates
+    commsy.dates.timezone: '%env(TIMEZONE)%'
+
 services:
     # default configuration for services in *this* file
     _defaults:
