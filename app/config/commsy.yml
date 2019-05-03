@@ -1,26 +1,5 @@
 commsy:
 
-    # Settings
-    settings:
-        # where to store the temporary export files
-        export_temp_folder: 'var/temp/zip_export'
-
-        # delete entries in database marked as deleted delete_days old
-        delete_days: 182
-
-        # session lifetime in hours
-        session_lifetime: 6
-
-        # proxy settings
-        proxy_ip: '%proxy.ip%'
-        proxy_port: '%proxy.port%'
-
-        # single selection for categories
-        single_cat_selection: false
-
-        # temporary protect items from beeing editet by different users simultaneous
-        item_locking: false
-
         # return path of emails
         # - "SENDER" will use sender email address as return path
         # - "mailreturn@your-domain.net" use the given email address

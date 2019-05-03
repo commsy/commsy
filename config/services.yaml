@@ -92,6 +92,15 @@ parameters:
     commsy.security.privacy_disable_overwriting: '%security.privacy_disable_overwriting%'
     commsy.security.allow_moderator_takeover: true      # allows all moderators to take over another user by default
 
+    # Settings
+    commsy.settings.export_temp_folder: 'var/temp/zip_export'       # Where to store the temporary export files
+    commsy.settings.delete_days: 182        # Delete entries in database marked as deleted delete_days old
+    commsy.settings.session_lifetime: 6     # Session lifetime in hours
+    commsy.settings.proxy_ip: '%env(PROXY_IP)%'      # Proxy Ip
+    commsy.settings.proxy_port: '%env(PROXY_PORT)%'      # Propxy Port
+    commsy.settings.single_cat_selection: false     # Single selection for categories
+    commsy.settings.item_locking: true     # Temporary protect items from beeing edited by different users simultaneously
+
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
     commsy.mediawiki.consumerKey: ''
@@ -99,13 +108,8 @@ parameters:
     commsy.mediawiki.accessToken: ''
     commsy.mediawiki.accessSecret: ''
 
-    commsy.settings.proxy_ip: ''
-    commsy.settings.proxy_port: ''
-    commsy.settings.session_lifetime": 6
     commsy.mediawiki.roomWikiUrl: ''
     commsy.etherpad.enabled: false
-    commsy.settings.item_locking: true
-    commsy.settings.session_lifetime: 3600
     commsy.limesurvey.enabled: false
 
 services:
