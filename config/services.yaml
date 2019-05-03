@@ -72,7 +72,7 @@ parameters:
     commsy.email.from: '%env(EMAIL_FROM)%'
 
     # E-Mail Upload
-    commsy.upload.enabled: '%env(EMAIL_UPLOAD_ENABLED)%'
+    commsy.upload.enabled: '%env(bool:EMAIL_UPLOAD_ENABLED)%'
     commsy.upload.server: '%env(EMAIL_UPLOAD_SERVER)%'
     commsy.upload.port: '%env(EMAIL_UPLOAD_PORT)%'
     commsy.upload.options: '%env(EMAIL_UPLOAD_OPTIONS)%'
