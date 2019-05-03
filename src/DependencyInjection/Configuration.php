@@ -22,13 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('wordpress')
-                    ->children()
-                        ->booleanNode('enabled')
-                            ->defaultFalse()
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('limesurvey')
                     ->children()
                         ->booleanNode('enabled')

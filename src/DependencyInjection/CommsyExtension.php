@@ -21,9 +21,6 @@ class CommsyExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        
-        // wordpress
-        $container->setParameter('commsy.wordpress.enabled', $config['wordpress']['enabled']);
 
         // limesurvey
         $container->setParameter('commsy.limesurvey.enabled', $config['limesurvey']['enabled']);

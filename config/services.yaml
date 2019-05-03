@@ -101,6 +101,11 @@ parameters:
     commsy.settings.single_cat_selection: false     # Single selection for categories
     commsy.settings.item_locking: true     # Temporary protect items from beeing edited by different users simultaneously
 
+    # Wordpress
+    commsy.wordpress.enabled: false     # For activating wordpress please set the following variable on true
+
+
+
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
     commsy.mediawiki.consumerKey: ''
