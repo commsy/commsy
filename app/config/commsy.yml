@@ -1,27 +1,5 @@
 commsy:
 
-        # return path of emails
-        # - "SENDER" will use sender email address as return path
-        # - "mailreturn@your-domain.net" use the given email address
-        # - "" do not use a return path
-        return_path_mail_address: ''
-
-    # Theming
-    themes:
-        # Default theme
-        default: 'default'
-        cs-date-color-no-color: ''
-        cs-date-color-01: '#999999;'
-        cs-date-color-02: '#CC0000;'
-        cs-date-color-03: '#FF6600;'
-        cs-date-color-04: '#FFCC00;'
-        cs-date-color-05: '#FFFF66;'
-        cs-date-color-06: '#33CC00;'
-        cs-date-color-07: '#00CCCC;'
-        cs-date-color-08: '#3366FF;'
-        cs-date-color-09: '#6633FF;'
-        cs-date-color-10: '#CC33CC;'
-
     # Wordpress
     wordpress:
         # for activating wordpress please set the following variable on true

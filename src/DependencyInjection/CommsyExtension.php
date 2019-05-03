@@ -21,21 +21,7 @@ class CommsyExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
-        // themes
-        $container->setParameter('commsy.themes.default', $config['themes']['default']);
-        $container->setParameter('commsy.themes.cs_date_color_no_color', $config['themes']['cs_date_color_no_color']);
-        $container->setParameter('commsy.themes.cs_date_color_01', $config['themes']['cs_date_color_01']);
-        $container->setParameter('commsy.themes.cs_date_color_02', $config['themes']['cs_date_color_02']);
-        $container->setParameter('commsy.themes.cs_date_color_03', $config['themes']['cs_date_color_03']);
-        $container->setParameter('commsy.themes.cs_date_color_04', $config['themes']['cs_date_color_04']);
-        $container->setParameter('commsy.themes.cs_date_color_05', $config['themes']['cs_date_color_05']);
-        $container->setParameter('commsy.themes.cs_date_color_06', $config['themes']['cs_date_color_06']);
-        $container->setParameter('commsy.themes.cs_date_color_07', $config['themes']['cs_date_color_07']);
-        $container->setParameter('commsy.themes.cs_date_color_08', $config['themes']['cs_date_color_08']);
-        $container->setParameter('commsy.themes.cs_date_color_09', $config['themes']['cs_date_color_09']);
-        $container->setParameter('commsy.themes.cs_date_color_10', $config['themes']['cs_date_color_10']);
-
+        
         // wordpress
         $container->setParameter('commsy.wordpress.enabled', $config['wordpress']['enabled']);
 
