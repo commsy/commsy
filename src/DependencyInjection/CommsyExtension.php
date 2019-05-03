@@ -22,9 +22,6 @@ class CommsyExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // db
-        $container->setParameter('commsy.db.backup_prefix', $config['db']['backup_prefix']);
-
         // email
         $container->setParameter('commsy.email.from', $config['email']['from']);
         $container->setParameter('commsy.email.upload.enabled', $config['upload']['enabled']);

@@ -22,13 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('db')
-                    ->children()
-                        ->scalarNode('backup_prefix')
-                            ->defaultValue('zzz')
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('email')
                     ->children()
                         ->scalarNode('from')

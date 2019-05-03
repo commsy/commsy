@@ -1,9 +1,5 @@
 commsy:
 
-    # Database
-    db:
-        backup_prefix: 'zzz'
-
     # E-Mail
     email:
         from: '%email.from%'
