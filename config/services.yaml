@@ -10,6 +10,10 @@ parameters:
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
+    # Autosaving
+    commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
+    commsy.autosave.limit: 6        # limit in minutes
+
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
     commsy.mediawiki.consumerKey: ''

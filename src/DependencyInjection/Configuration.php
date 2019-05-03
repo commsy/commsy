@@ -22,16 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('autosave')
-                    ->children()
-                        ->integerNode('mode')
-                            ->defaultValue(0)
-                        ->end()
-                        ->integerNode('limit')
-                            ->defaultValue(6)
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('clamscan')
                     ->children()
                         ->booleanNode('virus_scan')

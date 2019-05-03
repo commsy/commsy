@@ -1,15 +1,6 @@
 commsy:
-    # Autosaving
-    autosave:
-        # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
-        mode: 0
 
-        # limit in minutes
-        limit: 6
 
-        # # if ( !empty($c_session_lifetime) ) {
-        # #    $c_autosave_limit = $c_session_lifetime-0.2;
-        # # }
 
     # Use virus scanning at uploading files
     # ----------------------------------------------------
