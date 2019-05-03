@@ -22,10 +22,6 @@ class CommsyExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // security
-        $container->setParameter('commsy.security.privacy_disable_overwriting', $config['security']['privacy_disable_overwriting']);
-        $container->setParameter('commsy.security.allow_moderator_takeover', $config['security']['allow_moderator_takeover']);
-
         // settings
         $container->setParameter('commsy.settings.export_temp_folder', $config['settings']['export_temp_folder']);
         $container->setParameter('commsy.settings.delete_days', $config['settings']['delete_days']);

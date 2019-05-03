@@ -22,16 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('security')
-                    ->children()
-                        ->scalarNode('privacy_disable_overwriting')
-                            ->defaultFalse()
-                        ->end()
-                        ->booleanNode('allow_moderator_takeover')
-                            ->defaultTrue()
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('settings')
                     ->children()
                         ->scalarNode('export_temp_folder')

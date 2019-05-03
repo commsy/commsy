@@ -1,16 +1,5 @@
 commsy:
 
-    # Security
-    security:
-        # overwrite entries with "overwritten because of data security" when deleting a user
-        # default = false
-        # do nothing = true
-        # set flag = flag
-        privacy_disable_overwriting: '%security.privacy_disable_overwriting%'
-
-        # allows all moderators to take over another user by default
-        allow_moderator_takeover: true
-
     # Settings
     settings:
         # where to store the temporary export files
