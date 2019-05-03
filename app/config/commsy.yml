@@ -1,14 +1,5 @@
 commsy:
 
-    # E-Mail Upload
-    upload:
-        enabled: '%email.upload.enabled%'
-        server: '%email.upload.server%'
-        port: '%email.upload.port%'
-        options: '%email.upload.options%'
-        account: '%email.upload.account%'
-        password: '%email.upload.password%'
-
     # Login
     login:
         shibboleth_direct_login: false

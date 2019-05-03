@@ -22,14 +22,6 @@ class CommsyExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // email
-        $container->setParameter('commsy.email.upload.enabled', $config['upload']['enabled']);
-        $container->setParameter('commsy.email.upload.server', $config['upload']['server']);
-        $container->setParameter('commsy.email.upload.port', $config['upload']['port']);
-        $container->setParameter('commsy.email.upload.options', $config['upload']['options']);
-        $container->setParameter('commsy.email.upload.account', $config['upload']['account']);
-        $container->setParameter('commsy.email.upload.password', $config['upload']['password']);
-
         // login
         $container->setParameter('commsy.login.shibboleth_direct_login', $config['login']['shibboleth_direct_login']);
         $container->setParameter('commsy.login.shibboleth_redirect_url', $config['login']['shibboleth_redirect_url']);
