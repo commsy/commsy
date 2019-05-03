@@ -68,13 +68,16 @@ parameters:
     # Database
     commsy.db.backup_prefix: 'zzz'
 
+    # E-Mail
+    commsy.email.from: '%env(EMAIL_FROM)%'
+
     commsy.mediawiki.enabled: false
     commsy.mediawiki.apiUrl: ''
     commsy.mediawiki.consumerKey: ''
     commsy.mediawiki.consumerSecret: ''
     commsy.mediawiki.accessToken: ''
     commsy.mediawiki.accessSecret: ''
-    commsy.email.from: ''
+
     commsy.settings.proxy_ip: ''
     commsy.settings.proxy_port: ''
     commsy.login.shibboleth_deactivate_direct_login_by_portal_id: false

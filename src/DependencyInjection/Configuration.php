@@ -22,13 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('email')
-                    ->children()
-                        ->scalarNode('from')
-                            ->defaultValue('example@example.com')
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('upload')
                     ->children()
                         ->booleanNode('enabled')

@@ -1,9 +1,5 @@
 commsy:
 
-    # E-Mail
-    email:
-        from: '%email.from%'
-
     # E-Mail Upload
     upload:
         enabled: '%email.upload.enabled%'

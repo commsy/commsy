@@ -23,7 +23,6 @@ class CommsyExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         // email
-        $container->setParameter('commsy.email.from', $config['email']['from']);
         $container->setParameter('commsy.email.upload.enabled', $config['upload']['enabled']);
         $container->setParameter('commsy.email.upload.server', $config['upload']['server']);
         $container->setParameter('commsy.email.upload.port', $config['upload']['port']);
