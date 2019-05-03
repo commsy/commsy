@@ -34,16 +34,17 @@ class SearchController extends BaseController
     /**
      * Generates the search form and search field for embedding them into
      * a template.
-     * Post data needs to be passed directly, since we can not handle data
+     * Request data needs to be passed directly, since we can not handle data
      * from the main request here.
      *
      * @Template
      */
-    public function searchFormAction($roomId, $postData)
+    public function searchFormAction($roomId, $requestData)
     {
-        $globalSearch = new SearchData();
+        $searchData = new SearchData();
+        $searchData->setPhrase($requestData['phrase'] ?? null);
 
-        $form = $this->createForm(SearchType::class, $globalSearch, [
+        $form = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId
             ])
