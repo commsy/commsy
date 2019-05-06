@@ -2,13 +2,53 @@
 
 namespace App\Command;
 
+use App\Services\LegacyEnvironment;
 use PhpImap\Mailbox;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EmailUploadCommand extends ContainerAwareCommand
+class EmailUploadCommand extends Command
 {
+    private $legacyEnvironment;
+    private $mailer;
+
+    private $projectDir;
+    private $uploadEnabled;
+    private $uploadServer;
+    private $uploadPort;
+    private $uploadOptions;
+    private $uploadAccount;
+    private $uploadPassword;
+    private $emailFrom;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        \Swift_Mailer $mailer,
+        $projectDir,
+        $uploadEnabled,
+        $uploadServer,
+        $uploadPort,
+        $uploadOptions,
+        $uploadAccount,
+        $uploadPassword,
+        $emailFrom
+    ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->mailer = $mailer;
+
+        $this->projectDir = $projectDir;
+        $this->uploadEnabled = $uploadEnabled;
+        $this->uploadServer = $uploadServer;
+        $this->uploadPort = $uploadPort;
+        $this->uploadOptions = $uploadOptions;
+        $this->uploadAccount = $uploadAccount;
+        $this->uploadPassword = $uploadPassword;
+        $this->emailFrom = $emailFrom;
+
+        parent::__construct();
+    }
+
     protected function configure()
     {
         $this
@@ -19,28 +59,21 @@ class EmailUploadCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // get dependencies
-        $container = $this->getContainer();
-        $kernelRootDir = $container->getParameter('kernel.root_dir');
-        $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
+        chdir($this->projectDir . '/legacy/');
+        $this->legacyEnvironment->setCacheOff();
 
-        chdir($kernelRootDir.'/../legacy/');
-        $legacyEnvironment->setCacheOff();
-
-        $uploadEnabled = $container->getParameter('commsy.email.upload.enabled');
-        if (!$uploadEnabled) {
+        if (!$this->uploadEnabled) {
             $output->writeln('<info>Upload is disabled</info>');
             return;
         }
 
-        $server = $container->getParameter('commsy.email.upload.server');
-        $port = $container->getParameter('commsy.email.upload.port');
-        $options = $container->getParameter('commsy.email.upload.options');
-        $account = $container->getParameter('commsy.email.upload.account');
-        $password = $container->getParameter('commsy.email.upload.password');
-
         $output->writeln('<info>Connecting to mailbox</info>');
-        $mailbox = new Mailbox('{'.$server.':'.$port.$options.'}INBOX', $account, $password, $kernelRootDir . '/../var/temp/');
+        $mailbox = new Mailbox(
+            '{' . $this->uploadServer . ':' . $this->uploadPort . $this->uploadOptions . '}INBOX',
+            $this->uploadAccount,
+            $this->uploadPassword,
+            $this->projectDir . '/var/temp/'
+        );
 
         // read all messages
         $mailIds = $mailbox->searchMailbox('ALL');
@@ -59,9 +92,7 @@ class EmailUploadCommand extends ContainerAwareCommand
 
     private function emailToCommsy($mail)
     {
-        $container = $this->getContainer();
-        $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
-        $translator = $legacyEnvironment->getTranslationObject();
+        $translator = $this->legacyEnvironment->getTranslationObject();
 
         // split the plain text part
         $bodyLines = preg_split('/\\r\\n|\\r|\\n/', $mail->textPlain);
@@ -167,7 +198,7 @@ class EmailUploadCommand extends ContainerAwareCommand
 
                     $message = (new \Swift_Message())
                         ->setTo([$mail->fromAddress => $mail->fromName])
-                        ->setFrom([$container->getParameter('commsy.email.from') => $legacyEnvironment->getCurrentPortalItem()->getTitle()]);
+                        ->setFrom([$this->emailFrom => $legacyEnvironment->getCurrentPortalItem()->getTitle()]);
 
                     if ($secret == $privateSecret) {
                         $privateRoomId = $privateRoom->getItemID();
@@ -247,7 +278,7 @@ class EmailUploadCommand extends ContainerAwareCommand
                             ->setBody($body);
                     }
 
-                    $container->get('mailer')->send($message);
+                    $this->mailer->send($message);
                 }
             }
         }

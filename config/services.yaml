@@ -946,35 +946,30 @@ services:
         arguments: ['@commsy_legacy.environment', '@router']
 
     # Commands
-    commsy.command.cron_command:
-        class: App\Command\CronCommand
-        tags:
-            - { name: console.command }
+    App\Command\CronCommand:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $emailFrom: '%commsy.email.from%'
 
-    commsy.command.email_upload:
-        class: App\Command\EmailUploadCommand
-        tags:
-            - { name: console.command }
+    App\Command\EmailUploadCommand:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $uploadEnabled: '%commsy.upload.enabled%'
+            $uploadServer: '%commsy.upload.server%'
+            $uploadPort: '%commsy.upload.port%'
+            $uploadOptions: '%commsy.upload.options%'
+            $uploadAccount: '%commsy.upload.account%'
+            $uploadPassword: '%commsy.upload.password%'
+            $emailFrom: '%commsy.email.from%'
 
     commsy.command.db_check:
         class: App\Command\DBCheckCommand
         arguments:
             - '@commsy.database.checks'
-        tags:
-            - { name: console.command }
-
-    commsy.command.setup_dev:
-        class: App\Command\SetupDevCommand
-        tags:
-            - { name: console.command }
-
-    commsy.command.setup_prod:
-        class: App\Command\SetupProdCommand
-        tags:
-            - { name: console.command }
-
-    commsy.command.external_calendars:
-        class: App\Command\ExternalCalendarsCommand
         tags:
             - { name: console.command }
 
