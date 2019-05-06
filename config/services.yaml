@@ -10,6 +10,9 @@ parameters:
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
+    router.request_context.host: "%env(HOST)%"
+    router.request_context.scheme: "%env(SCHEME)%"
+
     # Autosaving
     commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
     commsy.autosave.limit: 6        # limit in minutes
