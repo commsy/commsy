@@ -61,16 +61,15 @@ class SearchFilterType extends AbstractType
                     'class' => 'uk-form-label',
                 ],
             ])
-            ->add('selectedCreators', Select2ChoiceType::class, [
+            ->add('selectedCreator', Select2ChoiceType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    return $this->buildCreatorChoices($searchData->getCreators());
+                    $translatedTitleAny = $this->translator->trans('any', [], 'form');
+                    return array_merge([$translatedTitleAny => 'all'], $this->buildCreatorChoices($searchData->getCreators()));
                 }),
-                'label' => 'Creators',
-                'expanded' => false,
-                'multiple' => true,
+                'label' => 'Creator',
                 'required' => false,
             ])
             // TODO: for each of the date range form options, provide two date fields with date pickers to describe a date range?

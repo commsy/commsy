@@ -42,9 +42,9 @@
                 <source>Search in all my rooms</source>
                 <target>Suche in allen meinen Räumen</target>
             </trans-unit>
-            <trans-unit id="search-filter-creators">
-                <source>Creators</source>
-                <target>ErstellerInnen</target>
+            <trans-unit id="search-filter-creator">
+                <source>Creator</source>
+                <target>ErstellerIn</target>
             </trans-unit>
             <trans-unit id="search-filter-rubric">
                 <source>Rubric</source>

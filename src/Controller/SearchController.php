@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Search\FilterConditions\MultipleContextFilterCondition;
-use App\Search\FilterConditions\MultipleCreatorFilterCondition;
+use App\Search\FilterConditions\SingleCreatorFilterCondition;
 use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\FilterConditions\SingleContextFilterCondition;
 use App\Search\SearchManager;
@@ -176,10 +176,10 @@ class SearchController extends BaseController
         }
 
         // creator parameter
-        if ($searchData->getSelectedCreators()) {
-            $multipleCreatorFilterConditio = new MultipleCreatorFilterCondition();
-            $multipleCreatorFilterConditio->setCreators($searchData->getSelectedCreators());
-            $searchManager->addFilterCondition($multipleCreatorFilterConditio);
+        if ($searchData->getSelectedCreator()) {
+            $singleCreatorFilterCondition = new SingleCreatorFilterCondition();
+            $singleCreatorFilterCondition->setCreator($searchData->getSelectedCreator());
+            $searchManager->addFilterCondition($singleCreatorFilterCondition);
         }
 
         $searchManager->setQuery($searchData->getPhrase());
@@ -253,10 +253,10 @@ class SearchController extends BaseController
         }
 
         // creator parameter
-        if ($searchData->getSelectedCreators()) {
-            $multipleCreatorFilterConditio = new MultipleCreatorFilterCondition();
-            $multipleCreatorFilterConditio->setCreators($searchData->getSelectedCreators());
-            $searchManager->addFilterCondition($multipleCreatorFilterConditio);
+        if ($searchData->getSelectedCreator()) {
+            $singleCreatorFilterCondition = new SingleCreatorFilterCondition();
+            $singleCreatorFilterCondition->setCreator($searchData->getSelectedCreator());
+            $searchManager->addFilterCondition($singleCreatorFilterCondition);
         }
 
         $searchManager->setQuery($searchData->getPhrase());
@@ -320,7 +320,7 @@ class SearchController extends BaseController
         $searchData->setSelectedRubric($searchParams['selectedRubric'] ?? 'all');
 
         // creator parameter
-        $searchData->setSelectedCreators($searchParams['selectedCreators'] ?? []);
+        $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? "all");
 
         return $searchData;
     }

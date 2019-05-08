@@ -29,9 +29,9 @@ class SearchData
     private $creators;
 
     /**
-     * @var string[]|null $selectedCreators
+     * @var string|null $selectedCreator
      */
-    private $selectedCreators;
+    private $selectedCreator;
 
     /**
      * @var \DateInterval|null $creationDateRange
@@ -159,20 +159,20 @@ class SearchData
     }
 
     /**
-     * @return string[]|null
+     * @return string|null
      */
-    public function getSelectedCreators(): ?array
+    public function getSelectedCreator(): ?string
     {
-        return $this->selectedCreators;
+        return $this->selectedCreator;
     }
 
     /**
-     * @param string[] $selectedCreators
+     * @param string $selectedCreator
      * @return SearchData
      */
-    public function setSelectedCreators(array $selectedCreators): SearchData
+    public function setSelectedCreator(string $selectedCreator): SearchData
     {
-        $this->selectedCreators = $selectedCreators;
+        $this->selectedCreator = $selectedCreator;
         return $this;
     }
 
