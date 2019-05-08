@@ -1315,7 +1315,7 @@ class cs_page_room_view extends cs_page_view {
    	   $overwrite = true;
    	   global $symfonyContainer;
        $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-   	   if ( !empty($disable_overwrite) and $disable_overwrite ) {
+   	   if ( !empty($disable_overwrite) and $disable_overwrite === 'TRUE') {
    		   $overwrite = false;
    	   }
    	   if ($overwrite) {

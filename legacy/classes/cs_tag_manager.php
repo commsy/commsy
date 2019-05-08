@@ -780,7 +780,7 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+        if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
             // create backup of item
             $this->backupItem($uid, array(
                 'title' => 'title',
@@ -796,13 +796,13 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
                     $updateQuery = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
 
                     /* flag */
-                    if ($disableOverwrite === 'flag') {
+                    if ($disableOverwrite === 'FLAG') {
                         $updateQuery .= ' public = "-1",';
                         $updateQuery .= ' modification_date = "' . $current_datetime . '"';
                     }
 
                     /* disabled */
-                    if ($disableOverwrite === false) {
+                    if ($disableOverwrite === 'FALSE') {
                         $updateQuery .= ' modification_date = "'.$current_datetime.'",';
                         $updateQuery .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
                         $updateQuery .= ' public = "1"';

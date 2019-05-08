@@ -1,17 +1,44 @@
 <?php
 namespace App\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class CronCommand extends ContainerAwareCommand
+class CronCommand extends Command
 {
     private $stopwatch;
+
+    private $legacyEnvironment;
+    private $router;
+    private $itemService;
+    private $mailer;
+    private $projectDir;
+    private $emailFrom;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        RouterInterface $router,
+        ItemService $itemService,
+        \Swift_Mailer $mailer,
+        $projectDir,
+        $emailFrom
+    ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->router = $router;
+        $this->itemService = $itemService;
+        $this->mailer = $mailer;
+        $this->projectDir = $projectDir;
+        $this->emailFrom = $emailFrom;
+
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -28,14 +55,8 @@ class CronCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // get dependencies
-        $container = $this->getContainer();
-        $kernelRootDir = $container->getParameter('kernel.root_dir');
-        $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
-        $logger = $container->get('logger');
-
-        chdir($kernelRootDir.'/../legacy/');
-        $legacyEnvironment->setCacheOff();
+        chdir($this->projectDir . '/legacy/');
+        $this->legacyEnvironment->setCacheOff();
 
         $this->stopwatch = new Stopwatch();
 
@@ -47,22 +68,19 @@ class CronCommand extends ContainerAwareCommand
         } else {
             $output->writeln('<info>No explicit Cron context given - running full stack (Portals + Server)</info>');
 
-            $serverItem = $legacyEnvironment->getServerItem();
+            $serverItem = $this->legacyEnvironment->getServerItem();
             $portalIds = $serverItem->getPortalIDArray();
 
             foreach ($portalIds as $portalId) {
                 $this->performCronTasks($portalId, $output);
             }
-            $this->performCronTasks($legacyEnvironment->getServerID(), $output);
+            $this->performCronTasks($this->legacyEnvironment->getServerID(), $output);
         }
     }
 
     private function performCronTasks($contextId, $output)
     {
-        $container = $this->getContainer();
-        $itemService = $container->get('commsy_legacy.item_service');
-
-        $item = $itemService->getTypedItem($contextId);
+        $item = $this->itemService->getTypedItem($contextId);
         if (!$item || $item->isDeleted()) {
             $output->writeln('<info>Skipping context ' . $contextId . ' - item is deleted</info>');
             return;
@@ -123,13 +141,10 @@ class CronCommand extends ContainerAwareCommand
 
     private function performRoomTasks($roomIds, $privateRooms = false)
     {
-        $container = $this->getContainer();
-        $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
-
         if ($privateRooms) {
-            $roomManager = $legacyEnvironment->getPrivateRoomManager();
+            $roomManager = $this->legacyEnvironment->getPrivateRoomManager();
         } else {
-            $roomManager = $legacyEnvironment->getRoomManager();
+            $roomManager = $this->legacyEnvironment->getRoomManager();
         }
 
         $roomManager->setCacheOff();
@@ -166,12 +181,7 @@ class CronCommand extends ContainerAwareCommand
 
     private function performWorkflowTasks($portalItem)
     {
-        $container = $this->getContainer();
-        $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
-
-//        global $cs_special_language_tags;
-
-        $materialManager = $legacyEnvironment->getMaterialManager();
+        $materialManager = $this->legacyEnvironment->getMaterialManager();
 
         $resubmissionItems = $materialManager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
         foreach ($resubmissionItems as $resubmissionItemInfo) {
@@ -179,7 +189,7 @@ class CronCommand extends ContainerAwareCommand
             $latestMaterialVersionId = $materialManager->getLatestVersionID($resubmissionItemInfo['item_id']);
 
             if (isset($material) && !$material->isDeleted() && ($resubmissionItemInfo['item_id'] == $latestMaterialVersionId)) {
-                $roomManager = $legacyEnvironment->getRoomManager();
+                $roomManager = $this->legacyEnvironment->getRoomManager();
                 $room = $roomManager->getItem($material->getContextId());
 
                 // check if context of room is current portal
@@ -205,9 +215,9 @@ class CronCommand extends ContainerAwareCommand
                         $to = array_merge($to, explode(',', $additionalReceiver));
                     }
 
-                    $translator = $legacyEnvironment->getTranslationObject();
+                    $translator = $this->legacyEnvironment->getTranslationObject();
 
-                    $path = $container->get('router')->generate('app_material_detail', [
+                    $path = $this->router->generate('app_material_detail', [
                         'roomId' => $room->getItemID(),
                         'itemId' => $material->getItemID(),
                         'versionId' => $material->getVersionID(),
@@ -215,21 +225,15 @@ class CronCommand extends ContainerAwareCommand
 
                     $link = '<a href="' . $path . '">' . $material->getTitle() . '</a>';
 
-//                    if (isset($cs_special_language_tags) and !empty($cs_special_language_tags)){
-//                        $mail->set_message($translator->getMessage($cs_special_language_tags.'_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-//                    } else {
-//                        $mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-//                    }
-
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $room->getTitle(), $material->getTitle(), $link);
 
                     $message = (new \Swift_Message())
                         ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portalItem->getTitle()))
                         ->setBody($body, 'text/html')
-                        ->setFrom([$container->getParameter('commsy.email.from') => $portalItem->getTitle()])
+                        ->setFrom([$this->emailFrom => $portalItem->getTitle()])
                         ->setTo($to);
 
-                    $container->get('mailer')->send($message);
+                    $this->mailer->send($message);
 
                     // change material status
                     $materialManager->setWorkflowStatus($material->getItemID(), $material->getWorkflowResubmissionTrafficLight(), $material->getVersionID());
@@ -243,7 +247,7 @@ class CronCommand extends ContainerAwareCommand
             $latestMaterialVersionId = $materialManager->getLatestVersionID($validityItemInfo['item_id']);
 
             if (isset($material) && !$material->isDeleted() && ($validityItemInfo['item_id'] == $latestMaterialVersionId)) {
-                $roomManager = $legacyEnvironment->getRoomManager();
+                $roomManager = $this->legacyEnvironment->getRoomManager();
                 $room = $roomManager->getItem($material->getContextId());
 
                 // check if context of room is current portal
@@ -269,9 +273,9 @@ class CronCommand extends ContainerAwareCommand
                         $to = array_merge($to, explode(',', $additionalReceiver));
                     }
 
-                    $translator = $legacyEnvironment->getTranslationObject();
+                    $translator = $this->legacyEnvironment->getTranslationObject();
 
-                    $path = $container->get('router')->generate('app_material_detail', [
+                    $path = $this->router->generate('app_material_detail', [
                         'roomId' => $room->getItemID(),
                         'itemId' => $material->getItemID(),
                         'versionId' => $material->getVersionID(),
@@ -279,21 +283,15 @@ class CronCommand extends ContainerAwareCommand
 
                     $link = '<a href="' . $path . '">' . $material->getTitle() . '</a>';
 
-//                    if (isset($cs_special_language_tags) and !empty($cs_special_language_tags)){
-//                        $mail->set_message($translator->getMessage($cs_special_language_tags.'_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-//                    } else {
-//                        $mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-//                    }
-
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $room->getTitle(), $material->getTitle(), $link);
 
                     $message = (new \Swift_Message())
                         ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY', $portalItem->getTitle()))
                         ->setBody($body, 'text/html')
-                        ->setFrom([$container->getParameter('commsy.email.from') => $portalItem->getTitle()])
+                        ->setFrom([$this->emailFrom => $portalItem->getTitle()])
                         ->setTo($to);
 
-                    $container->get('mailer')->send($message);
+                    $this->mailer->send($message);
 
                     // change material status
                     $materialManager->setWorkflowStatus($material->getItemID(), $material->getWorkflowValidityTrafficLight(), $material->getVersionID());
@@ -301,68 +299,4 @@ class CronCommand extends ContainerAwareCommand
             }
         }
     }
-
-//    function displayCronResults ( $array ) {
-//        global $file;
-//        $html = '';
-//        foreach ($array as $cron_status => $crons) {
-//            $html .= '<table border="0" summary="Layout">'.LF;
-//            $html .= '<tr>'.LF;
-//            $html .= '<td style="vertical-align:top; width: 4em;">'.LF;
-//            $html .= '<span style="font-weight: bold;">'.$cron_status.'</span>'.LF;
-//            $html .= '</td>'.LF;
-//            $html .= '<td>'.LF;
-//            if ( !empty($crons) ) {
-//                foreach ($crons as $cron) {
-//                    $html .= '<div>'.LF;
-//                    $html .= '<span style="font-weight: bold;">'.$cron['title'].'</span>'.BRLF;
-//                    if (!empty($cron['description'])) {
-//                        $html .= $cron['description'];
-//                        if (isset($cron['success'])) {
-//                            if ($cron['success']) {
-//                                $html .= ' [<font color="#00ff00">done</font>]'.BRLF;
-//                            } else {
-//                                $html .= ' [<font color="#ff0000>failed</font>]'.BRLF;
-//                            }
-//                        } else {
-//                            $html .= ' [<font color="#ff0000>failed</font>]'.BRLF;
-//                        }
-//                    }
-//                    if ( !empty($cron['success_text']) ) {
-//                        $html .= $cron['success_text'].BRLF;
-//                    }
-//                    if ( !empty($cron['time']) ) {
-//                        $time = $cron['time'];
-//                        if ( $time < 60 ) {
-//                            $time_text = 'Total execution time: '.$time.' seconds';
-//                        } elseif ( $time < 3600 ) {
-//                            $time2 = floor($time / 60);
-//                            $sec2 = $time % 60;
-//                            $time_text = 'Total execution time: '.$time2.' minutes '.$sec2.' seconds';
-//                        } else {
-//                            $hour = floor($time / 3600);
-//                            $sec = $time % 3660;
-//                            if ( $sec > 60 ) {
-//                                $minutes = floor($sec / 60);
-//                                $sec = $sec % 60;
-//                            }
-//                            $time_text = 'Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds';
-//                        }
-//                        $html .= $time_text.BRLF;
-//                    } elseif ( isset($cron['time']) ) {
-//                        $time_text = 'Total execution time: 0 seconds';
-//                        $html .= $time_text.BRLF;
-//                    }
-//                    $html .= '</div>'.LF;
-//                }
-//            } else {
-//                $html .= 'no crons defined';
-//            }
-//            $html .= '</td>'.LF;
-//            $html .= '</tr>'.LF;
-//            $html .= '</table>'.LF;
-//        }
-//        fwrite($file, $html);
-//        unset($html);
-//    }
 }

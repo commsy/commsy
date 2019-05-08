@@ -134,7 +134,7 @@ class cs_account_action_form extends cs_rubric_form {
             $overwrite = true;
             global $symfonyContainer;
             $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-            if ( !empty($disable_overwrite) and $disable_overwrite ) {
+            if ( !empty($disable_overwrite) and $disable_overwrite === 'TRUE' ) {
             	$overwrite = false;
             }            
             if ($overwrite) {

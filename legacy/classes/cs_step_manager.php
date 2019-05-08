@@ -531,7 +531,7 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+        if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query  = 'SELECT ' . $this->addDatabasePrefix('step').'.* FROM ' . $this->addDatabasePrefix('step').' WHERE ' . $this->addDatabasePrefix('step') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
             $result = $this->_db_connector->performQuery($query);
@@ -541,13 +541,13 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
                     $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('step') . ' SET';
 
                     /* flag */
-                    if ($disableOverwrite === 'flag') {
+                    if ($disableOverwrite === 'FLAG') {
                         $updateQuery .= ' public = "-1",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
                     }
 
                     /* disabled */
-                    if ($disableOverwrite === false) {
+                    if ($disableOverwrite === 'FALSE') {
                         $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
                         $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '"';

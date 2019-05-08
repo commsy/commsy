@@ -867,7 +867,6 @@ class cs_room_manager extends cs_context_manager
     {
         // create backup of item
         global $symfonyContainer;
-        $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
         $current_datetime = getCurrentDateTimeInMySQL();
 
         // list of rooms where user is member
