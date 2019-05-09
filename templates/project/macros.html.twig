@@ -20,7 +20,7 @@
                     {# edit #}
                     {#{% if is_granted('ITEM_EDIT', item.itemId) %}#}
                     {#{{ macros.actionIcons('title', item, true) }}#}
-                    {#{% include 'CommsyBundle:utils:editSpinner.html.twig' %}#}
+                    {#{% include 'utils/edit_spinner.html.twig' %}#}
                     {#{% else %}#}
                     {#{{ macros.actionIcons('title', item, false) }}#}
                     {#{% endif %}#}
@@ -170,7 +170,7 @@
                 {# edit #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                     {{ macros.actionIcons('title', item, true) }}
-                    {% include 'utils/editSpinner.html.twig' %}
+                    {% include 'utils/edit_spinner.html.twig' %}
                 {% else %}
                     {{ macros.actionIcons('title', item, false) }}
                 {% endif %}
