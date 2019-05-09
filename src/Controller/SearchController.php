@@ -109,7 +109,10 @@ class SearchController extends BaseController
         $query = $request->get('search', '');
 
         $searchManager->setQuery($query);
-        $searchManager->setContext($roomId);
+
+        $singleFilterCondition = new SingleContextFilterCondition();
+        $singleFilterCondition->setContextId($roomId);
+        $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getResults();
         $results = $this->prepareResults($searchResults, $roomId, 0, true);
