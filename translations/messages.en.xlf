@@ -274,6 +274,10 @@
                 <source>topic path not activated</source>
                 <target>not activated</target>
             </trans-unit>
+            <trans-unit id="catsAndBuzz">
+                <source>categoriesAndBuzzwords</source>
+                <target>Categories and buzzwords</target>
+            </trans-unit>
             <trans-unit id="Entries">
                 <source>Entries</source>
                 <target>Entries</target>

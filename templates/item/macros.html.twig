@@ -154,24 +154,17 @@
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}
     
-    {% set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
+    {% set countEntries = item.buzzwordArray|length + item.tagsArray|length %}
 
     {% set preview %}
     <div class="uk-grid">
-        <div class="uk-width-1-3">
-            <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
-            {{ render(controller(
-                'App\\Controller\\LinkController::showDetailShortAction',
-                { 'roomId': item.contextId, 'itemId': item.itemId }
-            ))}}            
-        </div>
         {% if withCategories %}
             <div class="uk-width-1-3">
                 <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
                 {% set count = 1 %}
                 {% if (item.tagsArray|length) < 4 %}
                     {% if (item.tagsArray|length) == 0 %}
-                        {{ 'no linked items'|trans({}, "room")}}    
+                        {{ 'no linked items'|trans({}, "room")}}
                     {% else %}
                         {% for tag in item.tagsArray %}
                             {{tag.title|decodeHtmlEntity}}{% if count < item.tagsArray|length %}, {% endif %}
@@ -208,13 +201,6 @@
 
     <div class="uk-grid">
         <div class="uk-width-1-3">
-            <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
-            {{ render(controller(
-                'App\\Controller\\LinkController::showDetailAction',
-                { 'roomId': item.contextId, 'itemId': item.itemId }
-            ))}}            
-        </div>
-        <div class="uk-width-1-3">
             <strong>{{ 'categories'|trans({}, "room") }}:</strong>
             {% if (item.tagsArray|length) > 0 %}
                 <div class="cs-tree-plain">
@@ -238,6 +224,44 @@
     </div>
     {% endset %}
     
+    {{ macros.editContent('categoriesAndBuzzwords', item, true, content, preview, true, true, countEntries, draft) }}
+{% endmacro %}
+
+{% macro linksAssociations(item,withTags,withCategories,roomCategories, draft) %}
+    {% import 'utils/macros.html.twig' as macros %}
+    {% import _self as itemMacros %}
+
+    {% set countEntries = item.AllLinkeditemIDArray|length  %}
+
+    {% set preview %}
+        <div class="uk-grid">
+            <div class="uk-width-1-3">
+                <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
+                {{ render(controller(
+                    'App\\Controller\\LinkController::showDetailShortAction',
+                    { 'roomId': item.contextId, 'itemId': item.itemId }
+                ))}}
+            </div>
+        </div>
+    {% endset %}
+
+    {% set content %}
+
+        <div class="uk-grid">
+            <div class="uk-width-1-3">
+                <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
+                {{ render(controller(
+                    'App\\Controller\\LinkController::showDetailAction',
+                    { 'roomId': item.contextId, 'itemId': item.itemId }
+                ))}}
+            </div>
+            <div class="uk-width-1-3">
+            </div>
+            <div class="uk-width-1-3">
+            </div>
+        </div>
+    {% endset %}
+
     {{ macros.editContent('links', item, true, content, preview, true, true, countEntries, draft) }}
 {% endmacro %}
 
