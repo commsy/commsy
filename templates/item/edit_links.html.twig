@@ -31,12 +31,7 @@
 
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
                 <li><a href="">{{ 'Entries'|trans({}) }}</a></li>
-                {% if showCategories %}
-                    <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
-                {% endif %}
-                {% if showHashtags %}
-                    <li><a href="">{{ 'hashtags'|trans({}, 'room')|capitalize }}</a></li>
-                {% endif %}
+
             </ul>
             <!-- This is the container of the content items -->
             <ul id="linksForm" class="uk-switcher uk-margin">

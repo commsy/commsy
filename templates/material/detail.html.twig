@@ -260,6 +260,9 @@
                     {% if not draft %}
                         {# links #}
                         <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macrosItem.linksAssociations(material,showHashtags,showCategories,roomCategories, draft) }}
+                        </div>
+                        <div id="categoriesAndBuzzwords{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             {{ macrosItem.links(material,showHashtags,showCategories,roomCategories, draft) }}
                         </div>
 
@@ -452,6 +455,7 @@
                         <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
+                        <li><a href="#categoriesAndBuzzwords{{ material.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
                         {%if showWorkflow %}
                             <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
                         {% endif %}
