@@ -1,0 +1,165 @@
+{% form_theme form 'form/uikit_layout.html.twig' %}
+
+{% import 'utils/macros.html.twig' as macros %}
+
+<hr class="uk-width-9-10"/>
+<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+    <div class="uk-grid uk-margin-small-bottom">
+        <div class="uk-width-9-10">
+            <h4>{{ 'categoriesAndBuzzwords'|trans({})}}</h4>
+        </div>
+    </div>
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="uk-grid uk-margin-top-remove">
+        <div class="uk-width-9-10">
+            {% include 'utils/save_spinner.html.twig' %}
+
+            <ul class='form-errors'>
+            {% if form.categories is defined %}
+                {% if form.categories.vars.errors|length %}
+                    <li>{{ 'categories'|trans({})|capitalize }}: {{ form.categories.vars.errors[0].message }}</li>
+                {% endif %}
+            {% endif %}
+            {% if form.hashtags is defined %}
+                {% if form.hashtags.vars.errors|length %}
+                    <li>{{ 'hashtags'|trans({}, 'room')|capitalize }}: {{ form.hashtags.vars.errors[0].message }}</li>
+                {% endif %}
+            {% endif %}
+            </ul>
+
+            <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
+
+                {% if showCategories %}
+                    <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
+                {% endif %}
+                {% if showHashtags %}
+                    <li><a href="">{{ 'hashtags'|trans({}, 'room')|capitalize }}</a></li>
+                {% endif %}
+            </ul>
+            <!-- This is the container of the content items -->
+            <ul id="linksForm" class="uk-switcher uk-margin">
+
+                {% if showCategories %}
+                <li>
+                    {{ form_widget(form.categories) }}
+                </li>
+                {% else %}
+                    {% do form.categories.setRendered %}
+                {% endif %}
+
+                {% if showHashtags %}
+                {% do form.hashtags.setRendered %}
+                <li>
+                    <div class="uk-grid-width-small-1-4 hashtag-form" data-uk-grid data-uk-check-display>
+                        {% for hashtag in form.hashtags %}
+                            <div>
+                            {{ form_widget(hashtag) }}
+                            {{ form_label(hashtag) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="uk-margin-top uk-flex">
+                        <div class="uk-margin-small-left">
+                            {{ form_widget(form.newHashtag) }}
+                        </div>
+                        <div class="uk-margin-small-left">
+                            {{ form_widget(form.newHashtagAdd) }}
+                        </div>
+                    </div>
+                </li>
+                {% else %}
+                    {% for hashtag in form.hashtags %}
+                        {% do hashtag.setRendered %}
+                    {% endfor %}
+                    {% do form.newHashtag.setRendered %}
+                    {% do form.newHashtagAdd.setRendered %}
+                {% endif %}
+            </ul>
+            
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_row(form.save) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ form_row(form.cancel) }}
+                </div>
+            </div>
+            
+            {{ form_end(form) }} 
+        </div>
+    </div>
+</div>
+
+<script>
+    var feedAmount = 40;
+    var scrolledToEnd = false;
+
+//$("input[id^='itemLinks_rubricFilter_']").each(function() {
+    $('#itemLinks_filterRubric').change(function(){
+        filterItems($(this));
+    });
+    
+    $('#itemLinks_filterPublic').change(function(){
+        filterItems($(this));
+    });
+
+    $('#itemLinks_filterSearch').change(function(){
+        filterItems($(this));
+    });
+    
+    function filterItems(element) {
+        var article = element.parents('.cs-edit-section');
+        $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
+        $data = $("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked"));
+        $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="20" />'));
+        $data = $data.add($('input[id^=itemLinks_filterSearch]'));
+
+        var $form = element.closest('form');
+        $.ajax({
+            url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
+            type: $form.attr('method'),
+            data : $data,
+            success: function(html) {
+                $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
+                
+                $('#itemsList').replaceWith(
+                    $(html).find('#itemsList')
+                );
+            }
+        });
+    }
+    
+    $('.form-load-more').bind('scroll', function() {
+        if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            if (!scrolledToEnd) {
+                scrolledToEnd = true;
+                
+                var article = $(this).parents('.cs-edit-section');
+                $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
+                
+                var $form = $(this).closest('form');
+                $.ajax({
+                    url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks/'+feedAmount,
+                    type: $form.attr('method'),
+                    success: function(html) {
+                        $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
+                        
+                        /* $('#itemsLinkedList').replaceWith(
+                            $(html).find('#itemsLinkedList')
+                        ); */
+                        
+                        $('#itemsList').replaceWith(
+                            $(html).find('#itemsList')
+                        );
+                        
+                        scrolledToEnd = false;
+                        feedAmount += 20;
+                    }
+                });
+            }
+        }
+    });
+//});
+</script>
