@@ -227,7 +227,7 @@
     {{ macros.editContent('categoriesAndBuzzwords', item, true, content, preview, true, true, countEntries, draft) }}
 {% endmacro %}
 
-{% macro linksAssociations(item,withTags,withCategories,roomCategories, draft) %}
+{% macro linksAssociations(item,withTags,withCategories,roomCategories, draft, showAssociations) %}
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}
 
@@ -235,7 +235,7 @@
 
     {% set preview %}
         <div class="uk-grid">
-            <div class="uk-width-1-3">
+            <div class="uk-width-9-10">
                 {{ render(controller(
                     'App\\Controller\\LinkController::showDetailShortAction',
                     { 'roomId': item.contextId, 'itemId': item.itemId }
@@ -245,13 +245,19 @@
     {% endset %}
 
     {% set content %}
-
         <div class="uk-grid">
             <div class="uk-width-9-10">
+                {% if showAssociations %}
                 {{ render(controller(
-                    'App\\Controller\\LinkController::showDetailLongAction',
+                    'App\\Controller\\LinkController::showDetailLongToggleAction',
                     { 'roomId': item.contextId, 'itemId': item.itemId }
                 ))}}
+                {% else %}
+                    {{ render(controller(
+                        'App\\Controller\\LinkController::showDetailLongAction',
+                        { 'roomId': item.contextId, 'itemId': item.itemId }
+                    ))}}
+                {% endif %}
             </div>
         </div>
     {% endset %}
@@ -278,14 +284,14 @@
             <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                    {{ workflowValidityDate|craue_date }}       
+                    {{ workflowValidityDate|craue_date }}
                 </div>
             </div>
         {% endif %}
         {% if workflowResubmissionDate != '0000-00-00 00:00:00' and withResubmission %}
              <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
-                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
+                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/>
                     {{ workflowResubmissionDate|craue_date }}
                 </div>
             </div>

@@ -1,0 +1,26 @@
+
+{% import 'utils/macros.html.twig' as macros %}
+
+<div class="">
+ 
+    <div class="uk-overflow-container uk-width-9-10">
+       {% if not linkedItemsByRubric is empty %} 
+            <div class="uk-accordion" data-uk-accordion="{showfirst: true, collapse:false}">
+                {% for type,rubric in linkedItemsByRubric %}
+                    <div class="uk-accordion-title cs-accordion-detail uk-margin-remove">
+                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|capitalize|transchoice(1,{},"rubric") }} ({{ rubric|length }})</a>
+                    </div>
+                    <div class="uk-accordion-content uk-padding-remove">
+                        <ul class="uk-list uk-margin-bottom">
+                        {% for linkedItem in rubric %}
+                            <li><a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title|decodeHtmlEntity }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ 'no linked items'|trans({}, "room")}}    
+        {% endif %}  
+    </div>
+</div>
