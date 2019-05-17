@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Tests;
 
 /**
  * Inherited Methods
@@ -20,21 +20,24 @@ class UnitTester extends \Codeception\Actor
 {
     use _generated\UnitTesterActions;
 
+   /**
+    * Define custom actions here
+    */
     public function createPortal($title, \cs_user_item $creator)
     {
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $this->grabService('commsy_legacy.environment')->getEnvironment();
 
         $portalManager = $legacyEnvironment->getPortalManager();
-        $this->assertInstanceOf(cs_portal_manager::class, $portalManager);
+        $this->assertInstanceOf(\cs_portal_manager::class, $portalManager);
 
         /** @var \cs_portal_item $portalItem */
         $portalItem = $portalManager->getNewItem();
-        $this->assertInstanceOf(cs_portal_item::class, $portalItem);
+        $this->assertInstanceOf(\cs_portal_item::class, $portalItem);
 
         $portalItem->setTitle($title);
 
-        $now = new DateTimeImmutable();
+        $now = new \DateTimeImmutable();
 
         $portalItem->setCreatorItem($creator);
         $portalItem->setCreationDate($now->format('Y-m-d H:i:s'));
@@ -46,11 +49,11 @@ class UnitTester extends \Codeception\Actor
         $this->seeInDatabase('commsy.portal', ['title' => $title]);
 
         $authSourceManager = $legacyEnvironment->getAuthSourceManager();
-        $this->assertInstanceOf(cs_auth_source_manager::class, $authSourceManager);
+        $this->assertInstanceOf(\cs_auth_source_manager::class, $authSourceManager);
 
         /** @var \cs_auth_source_item $authSourceItem */
         $authSourceItem = $authSourceManager->getNewItem();
-        $this->assertInstanceOf(cs_auth_source_item::class, $authSourceItem);
+        $this->assertInstanceOf(\cs_auth_source_item::class, $authSourceItem);
 
         $authSourceItem->setContextID($portalItem->getItemID());
         $authSourceItem->setTitle('CommSy');
@@ -79,7 +82,7 @@ class UnitTester extends \Codeception\Actor
 
         /** @var \cs_authentication $authentication */
         $authentication = $legacyEnvironment->getAuthenticationObject();
-        $this->assertInstanceOf(cs_authentication::class, $authentication);
+        $this->assertInstanceOf(\cs_authentication::class, $authentication);
 
         /** @var \cs_auth_item $newAuthentication */
         $newAuthentication = $authentication->getNewItem();
@@ -114,13 +117,13 @@ class UnitTester extends \Codeception\Actor
         $legacyEnvironment = $this->grabService('commsy_legacy.environment')->getEnvironment();
 
         $projectRoomManager = $legacyEnvironment->getProjectManager();
-        $this->assertInstanceOf(cs_project_manager::class, $projectRoomManager);
+        $this->assertInstanceOf(\cs_project_manager::class, $projectRoomManager);
 
         /** @var \cs_project_item $projectRoom */
         $projectRoom = $projectRoomManager->getNewItem();
-        $this->assertInstanceOf(cs_project_item::class, $projectRoom);
+        $this->assertInstanceOf(\cs_project_item::class, $projectRoom);
 
-        $now = new DateTimeImmutable();
+        $now = new \DateTimeImmutable();
 
         $projectRoom->setTitle($title);
         $projectRoom->setCreatorItem($creator);
@@ -145,13 +148,13 @@ class UnitTester extends \Codeception\Actor
         $legacyEnvironment = $this->grabService('commsy_legacy.environment')->getEnvironment();
 
         $communityRoomManager = $legacyEnvironment->getCommunityManager();
-        $this->assertInstanceOf(cs_community_manager::class, $communityRoomManager);
+        $this->assertInstanceOf(\cs_community_manager::class, $communityRoomManager);
 
         /** @var \cs_project_item $communityRoom */
         $communityRoom = $communityRoomManager->getNewItem();
-        $this->assertInstanceOf(cs_community_item::class, $communityRoom);
+        $this->assertInstanceOf(\cs_community_item::class, $communityRoom);
 
-        $now = new DateTimeImmutable();
+        $now = new \DateTimeImmutable();
 
         $communityRoom->setTitle($title);
         $communityRoom->setCreatorItem($creator);
