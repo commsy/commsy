@@ -259,16 +259,9 @@
 
                     {% if not draft %}
                         {# links #}
-
-                        {% if showAssociations %}
-                            <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                                {{ macrosItem.linksAssociations(material,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
-                            </div>
-                        {% else %}
-                            <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                                {{ macrosItem.linksAssociations(material,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
-                            </div>
-                        {% endif %}
+                        <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macrosItem.linksAssociations(material,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
+                        </div>
                         <div id="categoriesAndBuzzwords{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             {{ macrosItem.links(material,showHashtags,showCategories,roomCategories, draft) }}
                         </div>
