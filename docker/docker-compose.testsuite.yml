@@ -18,12 +18,12 @@ services:
         - "MYSQL_PASSWORD=test"
 
   commsy_selenium_hub:
-    image: selenium/hub:3.11.0-antimony
+    image: selenium/hub:latest
     ports:
       - "4444:4444"
 
   commsy_selenium_chrome:
-    image: selenium/node-chrome:3.11.0-antimony
+    image: selenium/node-chrome:latest
     volumes:
       - /dev/shm:/dev/shm
     depends_on:

@@ -1,9 +1,15 @@
 <?php
 
+namespace App\Tests;
+
+use App\Tests\AcceptanceTester;
+use App\Tests\Page\Login;
+use App\Tests\Page\PortalCreate;
+
 
 class PortalCest
 {
-    public function login(AcceptanceTester $I, \Page\Login $loginPage)
+    public function login(AcceptanceTester $I, Login $loginPage)
     {
         $loginPage->login('root', 'root');
 
@@ -11,7 +17,7 @@ class PortalCest
         $I->see('Portal initialisieren');
     }
 
-    public function createPortal(AcceptanceTester $I, \Page\Login $loginPage, \Page\PortalCreate $portalCreatePage)
+    public function createPortal(AcceptanceTester $I, Login $loginPage, PortalCreate $portalCreatePage)
     {
         $loginPage->login('root', 'root');
         $portalCreatePage->create('Mein Portal', 'Meine Beschreibung');
