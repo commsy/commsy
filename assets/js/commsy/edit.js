@@ -118,6 +118,11 @@
 
                 $this.handleFormSubmit(article);
 
+                // Trigger an resize event. This is a workaround for the data-uk-grid component for example used
+                // by hashtags. There is some odd behaviour after replacing the content with ajax. Sometimes labels
+                // which are too long become truncated. However data-uk-grid-match will now adjust the height of all
+                // columns in a row.
+                UI.trigger('resize');
             });
         },
 
