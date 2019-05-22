@@ -170,6 +170,7 @@ class cs_tag_item extends cs_item {
    public function setTitle ($value) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
+   	  $value = htmlentities($value);
    	  $value = $converter->sanitizeHTML($value);
       $this->_setValue('title', $value);
    }
