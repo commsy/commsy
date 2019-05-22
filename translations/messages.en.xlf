@@ -430,14 +430,19 @@
             <trans-unit id="invitation body">
                 <source>invitation body %portal% %link% %sender%</source>
                 <target>
-                    You have been invited to join the CommSy-portal "%portal%". To redeem this invitation, please follow this link:
+You have received an invitation to the project room “%room%” on the CommSy portal %portal%.
 
-                    %link%
+Please click the following link to register a username on the portal %portal%:
+%link%
+The link will remain valid for 14 days.
 
-                    This link will expire in 14 days.
+Once you have registered a username, use the following link to access the project room:
+                    %roomLink%
 
-                    Gruß ...
-                    %sender%
+There are three ways of applying for room membership. You can either enter your motivation into the free-text field, enter a membership code or click “Become member ”, depending on which method the room moderator has chosen. If you need a membership code, request it directly from the room moderator or the person who has invited you.
+
+Regards,
+%sender%
                 </target>
             </trans-unit>
             <trans-unit id="calendar">
