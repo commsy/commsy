@@ -103,7 +103,7 @@
             "allow-contrib": false,
             "require": "4.2.*"
         },
-        "ckeditor-tag": "4.6.2",
+        "ckeditor-tag": "4.11.4",
         "ckeditor-clear": "drop"
     }
 }
