@@ -1,0 +1,166 @@
+{% import 'utils/macros.html.twig' as macros %}
+
+<div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
+    {% include 'utils/save_spinner.html.twig' %}
+    <div class="uk-form-horizontal">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="uk-flex">
+            <div class="uk-width-9-10">
+                {{ form_widget(form.title) }}
+                {{ form_errors(form.title) }}
+            </div>
+        </div>
+        {% if form.vars.name != "section"  %}
+            <div class="uk-margin-small-left uk-margin-small-top">
+                {% if form.editor_switch is defined %}
+                    <div class="uk-form-row">
+                        {{ form_label(form.editor_switch) }}
+                        <div class="uk-margin-left">
+                            {{ form_widget(form.editor_switch) }}
+                            <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'etherpadText' | trans({}, 'form') }}"></i>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if material.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+                <div class="uk-form-row">
+                    <label class="uk-form-label">
+                        <span data-uk-tooltip title="{{ macros.userFullname(material.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
+                    </label>
+                    <div>
+                        {{ form_widget(form.permission) }}
+                        <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(material.creator)}, 'form') }}"></i>
+                    </div>
+                </div>
+                <div class="uk-form-row">
+                    <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+                    <div>
+                        {{ form_widget(form.hidden) }}
+                    </div>
+                </div>
+                <div class="uk-form-row">
+                    <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+                    <div class="uk-margin-small-top">
+                        {{ form_widget(form.hiddendate) }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if form.external_viewer is defined %}
+                    <div class="uk-form-row">
+                        {{ form_row(form.external_viewer) }}
+                        <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
+                    </div>
+                {%  endif %}
+
+                {% if isDraft and (showHashtags or showCategories) %}
+                    {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+                {% endif %}
+
+                <div class="uk-form-row">
+                    {{ form_label(form.biblio_select) }}
+                    {{ form_widget(form.biblio_select) }}
+                </div>
+                {% if form.biblio_sub is defined %}
+                    <div class="uk-margin-small-top">
+                        <div id="material_biblio_sub">
+                            {% for subField in form.biblio_sub %}
+                                <div class="uk-flex uk-margin-small-top">
+                                    <div>
+                                        {{ form_row(subField) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="uk-form-row">
+                    {{ form_label(form.license_id) }}
+                    {{ form_widget(form.license_id) }}
+                    <div id="licensesContents" class="uk-hidden">
+                        {% for id, content in licensesContent %}
+                            <span id="licensesContents_{{ id }}" class="uk-hidden">{{ content|raw }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left">
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
+    </div>
+</div>
+
+<script>
+window.onload = function(){
+    var linkLabels = document.querySelectorAll('#mandatoryLinksForm .uk-form-label');
+    for (i = 0; i < linkLabels.length; i++) {
+        linkLabels[i].classList.add('uk-text-truncate');
+    }
+}
+var $biblio = $('#material_biblio_select');
+// When sport gets selected ...
+$biblio.change(function() {
+    // ... retrieve the corresponding form.
+    var $form = $(this).closest('form');
+    // Simulate form data, but only include the selected sport value.
+    var data = {};
+
+    data[$(this).attr('name')] = $(this).val();
+    // Submit data via AJAX to the form's action path.
+    $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        success: function(html) {
+            // Replace current position field ...
+            // add field
+            if (!$('#material_biblio_sub').length) {
+                $('#material_biblio_select').after(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#material_biblio_sub')
+                // html
+                );
+            } else {
+                $('#material_biblio_sub').replaceWith(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#material_biblio_sub')
+                // html
+                );
+            }
+            // console.log(html);
+            // Position field now displays the appropriate positions.
+        }
+    });
+});
+
+if ($('#material_license_id').val() !== '') {
+    $('#licensesContents').removeClass('uk-hidden');
+    $('#licensesContents_'+$('#material_license_id').val()).removeClass('uk-hidden');
+}
+
+$('#material_license_id').on('change', function(){
+    var $this = $(this);
+
+    if ($this.val() === '') {
+        $('#licensesContents').addClass('uk-hidden');
+    } else {
+        $('#licensesContents').removeClass('uk-hidden');
+    }
+
+    $('#licensesContents').find('span').each(function() {
+        $(this).addClass('uk-hidden');
+    });
+    $('#licensesContents_'+$this.val()).removeClass('uk-hidden');
+});
+</script>

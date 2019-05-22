@@ -1,0 +1,7 @@
+#rss_atom_bundle:
+#    resource: "@DebrilRssAtomBundle/Resources/config/routing.yml"
+
+app_rss:
+    path:     /rss/{contextId}/
+    defaults: { _controller: DebrilRssAtomBundle:Stream:index, format: rss }
+    prefix:   /

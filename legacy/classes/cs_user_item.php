@@ -1387,7 +1387,7 @@ class cs_user_item extends cs_item
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:User');
+        $repository = $em->getRepository('App:User');
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -1468,7 +1468,7 @@ class cs_user_item extends cs_item
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:User');
+        $repository = $em->getRepository('App:User');
 
         $this->deleteElasticItem($objectPersister, $repository);
     }
@@ -2087,7 +2087,7 @@ class cs_user_item extends cs_item
         $overwrite = true;
         global $symfonyContainer;
         $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-        if (!empty($disable_overwrite) and $disable_overwrite == 'true') {
+        if (!empty($disable_overwrite) and $disable_overwrite === 'TRUE') {
             $overwrite = false;
         }
 

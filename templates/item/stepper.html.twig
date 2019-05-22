@@ -1,0 +1,51 @@
+<div class="uk-flex-inline uk-width-2-5 ">
+
+    {% set detailPath = 'app_' ~ rubric ~ '_detail' %}
+
+    {# back navigation #}
+    <div class="uk-margin-right">
+        {% if firstItemId %}
+            <a class="uk-button-primary" href="{{ path(detailPath, {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+        {% else %}
+            <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
+        {% endif %}
+        {% if prevItemId %}
+            <a class="uk-button-primary" href="{{ path(detailPath, {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+        {% else %}
+            <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
+        {% endif %}
+    </div>
+
+    {# item dropdown #}
+    <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
+        <button class="uk-button uk-button-mini">
+            {{ rubric|capitalize|transchoice(0, {}, "rubric")}} {{ counterPosition }} / {{ count }}
+            <i class="uk-icon-caret-down"></i>
+        </button>
+        <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
+           <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+               {% for tempItem in itemList %}
+                    {% if tempItem.itemId != item.itemId %}
+                        <li><a href="{{ path(detailPath, {'roomId': roomId, 'itemId': tempItem.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempItem.title|decodeHtmlEntity }}">{{ tempItem.title|decodeHtmlEntity|truncate(25) }}</a></li>
+                    {% else %}
+                        <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempItem.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempItem.title|decodeHtmlEntity|truncate(20)  }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {# forward navigation #}
+    <div>
+        {% if nextItemId %}
+            <a class="uk-button-primary" href="{{ path(detailPath, {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+        {% else %}
+            <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
+        {% endif %}
+        {% if lastItemId %}
+            <a class="uk-button-primary" href="{{ path(detailPath, {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+        {% else %}
+            <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
+        {% endif %}
+    </div>
+</div>

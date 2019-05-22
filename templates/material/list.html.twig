@@ -1,0 +1,130 @@
+{% extends 'base/list.html.twig' %}
+
+{% import 'utils/macros.html.twig' as utilsMacros %}
+
+{% block feed %}
+    <ul id="materials-feed" class="uk-comment-list" data-uk-observe>
+        {{ render(controller(
+            'App\\Controller\\MaterialController::feedAction', {
+                'roomId': roomId,
+                'materialFilter': app.request.query.get('material_filter')
+            }
+        ))}}
+    </ul>
+
+    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/material/feed/", "target": "#materials-feed"}'>
+        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+        <div class="cs-toggle-class"></div>
+    </div>
+{% endblock %}
+
+{% block sortbox %}
+        {# sort dropdown #}
+        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+            <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                    {# sorting options #}
+                    {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', '') }}
+                    {{ utilsMacros.sortActor('creator', 'creator', 'messages', 'creator', 'creator_rev', '') }}
+                    {{ utilsMacros.sortActor('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', '') }}
+                    {{ utilsMacros.sortActor('date', 'modification_date', 'rubric', 'date_rev', 'date', 'desc') }}
+
+                    {% if showRating %}
+                        {{ utilsMacros.sortActor('assessment', 'rating', 'rubric', 'assessment', 'assessment_rev', '') }}
+                    {% endif %}
+                    {% if showWorkflow %}
+                        {{ utilsMacros.sortActor('workflow_status', 'Workflow (status)', 'rubric', 'workflow_status', 'workflow_status_rev', '') }}
+                    {% endif %}
+               </ul>
+            </div>
+        </div>
+{% endblock %}
+
+{% block editbox %}
+    <div id="material-list-action-dropdown" class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                {# new entry #}
+                <li>
+                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                        <a href="{{ path('app_material_create', {'roomId': roomId}) }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({}) }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                {# print #}
+                <li>
+                    <a href="{{ path('app_material_printlist', {'roomId': roomId,'material_filter':app.request.query.get('material_filter')}) }}" target="_blank" id="print">
+                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_material_xhrmarkread', {'roomId': roomId}),
+                        'action': 'markread',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_material_xhrcopy', {'roomId': roomId}),
+                        'action': 'copy',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_material_download', {'roomId': roomId}),
+                        'action': 'save',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                    </a>
+                </li>
+
+                <li>
+                    {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_material_xhrdelete', {'roomId': roomId}),
+                            'action': 'delete',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                            'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
+                            'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
+                            'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
+                            'returnUrl': path('app_material_list', {'roomId': roomId})
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                        </span>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

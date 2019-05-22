@@ -484,7 +484,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
                 if ($check_message == 'YES') {
                     $url = $router->generate(
-                        'commsy_user_list', [
+                        'app_user_list', [
                             'roomId' => $room_item->getItemID(),
                             'user_filter' => [
                                 'user_status' => 1,
@@ -495,7 +495,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                     $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
                 } else {
                     $url = $router->generate(
-                        'commsy_room_home', [
+                        'app_room_home', [
                             'roomId' => $room_item->getItemID(),
                         ]
                     );
@@ -591,7 +591,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
         global $symfonyContainer;
 
         $mailer = $symfonyContainer->get('mailer');
-        $transport = $symfonyContainer->get('swiftmailer.transport.real');
+        $transport = $symfonyContainer->get('swiftmailer.mailer.default.transport.real');
 
         $spool = $mailer->getTransport()->getSpool();
         $spool->flushQueue($transport);
@@ -601,7 +601,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
         $router = $symfonyContainer->get('router');
 
         $url = $router->generate(
-            'commsy_room_home', [
+            'app_room_home', [
                 'roomId' => $room_item->getItemID(),
             ]
         );

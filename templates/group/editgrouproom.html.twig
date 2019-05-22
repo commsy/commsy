@@ -1,0 +1,53 @@
+{% form_theme form 'form/uikit_stacked_layout_date.html.twig' %}
+{% import 'date/macros.html.twig' as macrosDate %}
+
+<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+    <a name="description"></a>
+    <div class="uk-grid uk-margin-small-bottom">
+        <div class="uk-width-9-10">
+            <h4 class="cs-detail-section-header">
+                <span class="cs-detail-section-header-background">{{ 'edit grouproom'|trans({},'group')}}
+                 </span>
+            </h4>
+        </div>
+    </div>
+<div>
+
+<div class="uk-margin-left uk-margin-bottom uk-position-relative uk-padding-remove cs-description-inline">
+    {% include 'utils/save_spinner.html.twig' %}
+    <div class="uk-form-horizontal">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="uk-flex">
+            <div class="uk-grid">
+                <div class="uk-width-2-10">
+                    {{ form_label(form.activate) }}
+                </div>
+                <div class="uk-width-8-10">
+                    {{ form_widget(form.activate) }}
+                </div>
+            </div>
+        </div>
+        <div class="uk-flex">
+            <div class="uk-grid">
+                <div class="uk-width-1-10">
+                    {{ form_label(form.master_template) }}
+                </div>
+                <div class="uk-width-9-10">
+                    {{ form_widget(form.master_template) }}
+                </div>
+            </div>
+        </div>
+        <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left">
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
+        {{ form_row(form._token) }}
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </div>
+</div>

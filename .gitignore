@@ -122,17 +122,40 @@ web/css/external_portal_styles/[0-9]*
 !.gitlab-ci.yml
 !.travis.yml
 !.babelrc
+!.env
+!.env.test
 
 wikis/*
 web/commsy
 
-web/js/build/*
-web/css/build/*
-web/build
+public/build
 
 node_modules
-src/CommsyBundle/Resources/public/components
+src/App/Resources/public/components
 
 legacy/var/temp
 
 mediawiki/*
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

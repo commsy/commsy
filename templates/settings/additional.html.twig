@@ -1,0 +1,243 @@
+{% extends 'base/settings.html.twig' %}
+
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-4-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'Additional Configuration'|trans({}, 'settings') }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    {{ form_start(form) }}
+                        {# Structural auxiliaries #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Structural auxiliaries'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;"></div>
+                            {{ form_widget(form.structural_auxilaries) }}
+                        </div>
+
+                        {# tasks configuration #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Tasks'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">{{ 'Tasks text'|trans({}, 'settings') }}</div>
+                            {{ form_widget(form.tasks.status) }}
+                            {{ form_widget(form.tasks.status_option) }}
+                            <ul style="list-style-type:none" id='additional_status_list' data-prototype="{{ form_widget(form.tasks.additional_status.vars.prototype)|e('html_attr')}}">
+                                {% for status in form.tasks.additional_status %}
+                                    <li class='uk-form-row'>{{ form_widget(status) }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        {# rss #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'RSS-Feed'|trans({}, 'settings') }}</h1>
+                            {{ form_widget(form.rss) }}
+                        </div>
+
+                        {# template #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
+                            <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
+                            <div class='uk-form-row'>
+                                <div class='uk-form-label'>{{ 'Status' | trans({} , 'settings') }}</div>
+                                <div class='uk-form-controls'>
+                                    {{ form_widget(form.template.status) }} {{ 'Template status'|trans({}, 'settings') }}
+                                </div>
+                            </div>
+                            {{ form_rest(form.template) }}
+                        </div>
+
+                        {# archived #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Archive room'|trans({}, 'settings') }}</h1>
+                            {% set generalArchiveText = 'Archive text'|trans({}, 'settings') %}
+                            {% if not deletesRoomIfUnused %}
+                                <div style="margin-bottom: 25px;">{{ generalArchiveText }} {{ 'Archive text permanently archived'|trans({}, 'settings') }}</div>
+                            {% else %}
+                                <div>{{ generalArchiveText }}</div>
+                                <div class="uk-alert uk-alert-danger" style="margin-bottom: 25px; border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                                    <p><strong>{{ 'warning'|trans({}, "menu") }}</strong> {{ 'Archive text deletion warning'|trans({'%days%': daysUnusedBeforeRoomDeletion}, "settings") }}</p>
+                                </div>
+                            {% endif %}
+                            {{ form_row(form.archived.active) }}
+                            {{ form_rest(form.archived) }}
+                        </div>
+
+                        {# terms #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Terms'|trans({}, 'settings') }}</h1> 
+                            <div style="margin-bottom: 25px;">{{ 'Terms text'|trans({}, 'settings') }}</div>
+                            {{ form_widget(form.terms) }}
+                        </div>
+                        {{ form_row(form._token) }}
+                        {{ form_row(form.save) }}
+                    {{ form_end(form, {'render_rest': false}) }}
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+    <script>
+
+    window.onload = function(){
+        var savedStatusTexts = [];
+        var statusList = document.getElementById('additional_status_list');
+        var statusInputFields = statusList.getElementsByTagName('input');
+
+        for(var i = 0; i < statusInputFields.length; i++){
+            addRemoveLink(statusInputFields[i]);
+        }
+
+        var categoryCheckboxes = document.getElementById('additional_settings_structural_auxilaries_categories').querySelectorAll('input');
+        var hashtagCheckboxes = document.getElementById('additional_settings_structural_auxilaries_buzzwords').querySelectorAll('input');
+
+        toggleFieldsetState(categoryCheckboxes);
+        toggleFieldsetState(hashtagCheckboxes);
+
+        categoryCheckboxes[0].onchange = function() { toggleFieldsetState(categoryCheckboxes); }
+        hashtagCheckboxes[0].onchange = function() {toggleFieldsetState(hashtagCheckboxes); }
+
+        var statusCount = statusInputFields.length + 3;      // "+3" for three default status ('done', 'in progress', 'pending')
+
+        var maxFieldNumber = Math.max.apply(null, $.map(statusInputFields, function(element){  return( parseInt(element.name.match(/\d+/)) );  }  ));
+
+        var newStatusTextField = document.getElementById('additional_settings_tasks_status');
+        var newStatusButton = document.getElementById('additional_settings_tasks_status_option');
+        newStatusButton.parentNode.className = "";
+        newStatusButton.parentNode.style.display = 'inline';
+        newStatusButton.disabled = newStatusTextField.value.length < 1;
+        newStatusButton.onclick = function(){
+            if(savedStatusTexts.indexOf(newStatusTextField.value) < 0){
+                statusCount++;
+                addStatus(statusList, statusCount, newStatusTextField.value);
+                savedStatusTexts.push(newStatusTextField.value);
+                newStatusTextField.value = '';
+            }
+            else{
+                alert("Der Status '"+newStatusTextField.value+"' existiert bereits. Bitte wählen Sie einen anderen Namen aus.");
+            }
+        }
+        newStatusTextField.oninput = function(){
+            newStatusButton.disabled = newStatusTextField.value.length < 1;
+        }
+
+        initChangeTerms();
+    }
+
+    function toggleFieldsetState(fieldSet) {
+        for (i = 1; i < fieldSet.length; i++) {
+            fieldSet[i].disabled = !fieldSet[0].checked;
+        }
+    }
+
+    function addStatus(listElement, currentCount, statusText){
+
+        var prototype = listElement.getAttribute('data-prototype');
+        var newInput = prototype.replace(/__name__/g, currentCount);
+        newInput = newInput.replace(/input/g, 'input value="'+statusText+'"');
+
+        var newListItem= document.createElement('li');
+        newListItem.innerHTML = newInput;
+
+        var newLabel = newListItem.getElementsByTagName('label')[0];
+        var newInput = newListItem.getElementsByTagName('input')[0];
+
+        var newInputCopy = newInput.cloneNode(true);
+        var superfluousDiv = newInput.parentNode;
+        var containerDiv = superfluousDiv.parentNode; 
+
+        containerDiv.removeChild(superfluousDiv); 
+        containerDiv.appendChild(newInputCopy);
+
+        addRemoveLink(newInputCopy);
+
+        if(newLabel){
+            newLabel.className = "uk-form-label";
+        }
+        containerDiv.className = 'uk-form-row';
+
+        newListItem.innerHTML = newListItem.innerHTML.replace('<br>', '');
+
+        listElement.appendChild(newListItem);
+
+        document.getElementById('additional_settings_tasks_status_option').disabled = true;
+    }
+
+    function addRemoveLink(element){
+
+        var removeSpan = document.createElement('span');
+        removeSpan.className = 'uk-icon-remove uk-icon-small';
+        removeSpan.style.marginLeft = '10px';
+
+        var p = element.parentNode;
+        p.appendChild(removeSpan);
+        p.onclick = function(e){
+            e.preventDefault();
+            var container = p.parentNode;
+            container.removeChild(p);
+        }
+    }
+
+    initLanguageSelection();
+
+    function initLanguageSelection () {
+        var languageSelection = document.getElementById('additional_settings_terms_language');
+        var ckeditor = CKEDITOR.instances['additional_settings_terms_agb_text_editor'];
+
+        // similar ckeditor events: 'loaded', 'instanceCreated'
+        ckeditor.on('instanceReady', function(e){
+
+            this.on('blur', function(e){
+                document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value = this.getData();
+            });
+
+            // This is just a workaround needed because the blur event above apparently does not fire when directly clicking the submit button after typing text into the CKEdtor
+            document.getElementsByClassName('uk-form-horizontal')[0].onsubmit=function(){
+                document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value = ckeditor.getData();
+            }
+
+            languageSelection.onchange=function(e){
+                ckeditor.setData(document.getElementById('additional_settings_terms_agb_text_' + this.value).value);
+            };
+
+            // initially display data from DB once the CKEditor is ready
+            ckeditor.setData(document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value);
+
+        });
+    }
+
+    function initChangeTerms () {
+        $('#additional_settings_terms_portalTerms').on('change', function(){
+            // ... retrieve the corresponding form.
+            var $form = $(this).closest('form');
+            // Simulate form data, but only include the selected sport value.
+            var data = {};
+
+            data['terms'] = $(this).val();
+            // Submit data via AJAX to the form's action path.
+            $.ajax({
+                url : $form.attr('action'),
+                type: $form.attr('method'),
+                data : data,
+                success: function(html) {
+                    $('#additional_settings_terms').replaceWith(
+                        $(html).find('#additional_settings_terms')
+                    );
+                    initChangeTerms();
+                    initLanguageSelection();
+                }
+            });
+        });
+    }
+
+    </script>
+{% endblock content %}

@@ -90,7 +90,7 @@ class cs_popup_userParticipation_controller implements cs_popup_controller {
 		$datenschutz['overwrite'] = true;
 		global $symfonyContainer;
 		$disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-		if ( !empty($disable_overwrite) and $disable_overwrite ) {
+		if ( !empty($disable_overwrite) and $disable_overwrite === 'TRUE' ) {
 			$datenschutz['overwrite'] = false;
 		}
 		$this->_popup_controller->assign('popup', 'datenschutz', $datenschutz);

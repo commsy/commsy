@@ -1,14 +1,17 @@
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
 actor: AcceptanceTester
-error_level: "E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_USER_DEPRECATED"
 modules:
     enabled:
-        - WebDriver
-        - Db
-        - \Helper\Acceptance
-        - Asserts
-    config:
-        WebDriver:
-            url: http://commsy_nginx/app_testsuite.php
+        - WebDriver:
+            url: http://commsy_nginx/
             browser: chrome
             host: commsy_selenium_hub
             port: 4444
+        - Db
+        - Asserts
+        - \App\Tests\Helper\Acceptance

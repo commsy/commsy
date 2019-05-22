@@ -1,0 +1,93 @@
+{% import 'utils/macros.html.twig' as macros %}
+
+{% for material in materials %}
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[material.itemId] is defined %}
+        {% set entryAllowedActions = allowedActions[material.itemId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
+    
+        {# item change information #}
+            {{ macros.statusColor(readerList, material.itemId) }}
+ 
+        <header class="uk-comment-header uk-flex">
+            <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
+                <form class="uk-form">
+                    <input type="checkbox" value="{{ material.itemId }}">
+                </form>
+            </div>
+
+            {# user icon and modification time #}
+            <div class="uk-margin-right uk-flex-item-none">
+                {% if not material.modificatorItem.isDeleted and material.modificatorItem.isUser %}
+                    {{ macros.userIconLink(material.modificatorItem) }}
+                {% else %}
+                    {{ macros.userIcon(material.modificatorItem) }}
+                {% endif %}
+                <div class="uk-comment-meta">
+                    {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{material.getModificationDate|date("H:i")}}
+                    {% else %}
+                        {% if '9999-00-00' not in material.getModificationDate %}
+                            {{material.getModificationDate|date("d.m.Y")}}
+                        {% else %}
+                            {{material.getCreationDate|date("d.m.Y")}}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            {# title and meta #}
+            <div class="uk-width-6-10">
+                <h4 class="uk-comment-title uk-text-truncate">
+                    {% if is_granted('ITEM_SEE', material.itemId) %}
+                        <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title|decodeHtmlEntity }}</a>
+                    {% else %}
+                        {{ material.title|decodeHtmlEntity }}
+                    {% endif %}
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(material.getCreator) }} ({{material.getCreationDate|date("d.m.Y")}})
+                </div>
+               
+                <div class="uk-comment-meta">
+                    {{ macros.fileListShort(material) }}
+                </div>
+            </div>
+
+            {# author and publishing date #}
+            <div class="uk-width-2-10 uk-text-right uk-text-muted">
+                {% if material.author != '' %}
+                    {{ 'author'|trans({}, 'form') }}: {{ material.author|decodeHtmlEntity|raw }}
+                    {% if material.publishingdate != '0' %}
+                        ({{ material.publishingdate|decodeHtmlEntity|raw }})
+                    {% endif %}
+                {% elseif material.editor != '' %}
+                    {{ 'editor'|trans({}, 'form') }}: {{ material.editor }}
+                    {% if material.publishingdate != '0' %}
+                        ({{ material.publishingdate }})
+                    {% endif %}
+                {% elseif material.documentEditor != '' %}
+                    {{ 'Document editor'|trans({}, 'material') }}: {{ material.documentEditor }}
+                {% elseif material.fotoCopyright != '' %}
+                    {{ 'picture copyright'|trans({}, 'form') }}: {{ material.fotoCopyright }}
+                {% endif %}
+            </div>
+
+            {% if showRating or showWorkflow %}
+                <div class="uk-width-2-10 uk-text-right">
+                    {% if showRating %}
+                        {{ macros.ratingStatus(material, ratingList) }}
+                    {% endif %}
+                    {% if showWorkflow %}
+                        {{ macros.workflowTrafficLight(material, workflowTitles) }}
+                    {% endif %}
+                    {{ macros.license(material) }}
+                </div>
+            {% endif %}
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

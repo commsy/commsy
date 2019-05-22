@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Tests;
+
+use App\Tests\UnitTester;
+
 
 class UserCest
 {

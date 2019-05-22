@@ -583,26 +583,15 @@ class cs_page_view extends cs_view {
    	switch ($mode) {
    		
    		default:
-   			$html .= '<script src="js/src/sourceConfig.js"></script>';
-   			
    			$html .= "
    				<script>
    					var from_php  = '" . json_encode($to_javascript) . "';
    					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
    				</script>
    			";
-   			
-   			$html .= '<script src="js/src/dojo/dojo.js"></script>';
-   			$html .= '<script src="js/src/commsy/main.js"></script>';
    	}
    	
    	$html .= '
-   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dijit/themes/tundra/tundra.css" />
-   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/cbtree/themes/tundra/tundra.css" />
-   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/form/resources/UploaderFileList.css" />
-   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/image/resources/Lightbox.css" />
-   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/widget/ColorPicker/ColorPicker.css" />
-   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/calendar/themes/tundra/Calendar.css" />
    		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles.css" />
    		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles_addon.css" />
    	';
@@ -772,7 +761,7 @@ class cs_page_view extends cs_view {
       unset($current_user_item);
       unset($current_context_item);
 
-      $retour .= '   <link rel="SHORTCUT ICON" href="images/favicon.ico"/>'.LF;
+      $retour .= '   <link rel="icon" type="image/x-icon" href="favicon.ico"/>'.LF;
 
       $between = '';
       if ( !empty($this->_name_room) and !empty($this->_name_page)) {

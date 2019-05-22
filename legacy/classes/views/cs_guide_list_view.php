@@ -323,7 +323,7 @@ class cs_guide_list_view extends cs_list_view_plain {
             $router = $symfonyContainer->get('router');
 
             $url = $router->generate(
-                'commsy_room_home',
+                'app_room_home',
                 array('roomId' => $item->getItemID())
             );
 
@@ -530,7 +530,7 @@ class cs_guide_list_view extends cs_list_view_plain {
                     $ownRoom = $current_user->getOwnRoom();
                     if (isset($ownRoom)) {
                         $url = $router->generate(
-                            'commsy_room_create', [
+                            'app_room_create', [
                                 'roomId' => $ownRoom->getItemId(),
                             ]
                         );

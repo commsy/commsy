@@ -252,7 +252,7 @@ if ( empty($command)) {
 
    						if ($check_message == 'YES') {
    							$url = $router->generate(
-   								'commsy_user_list', [
+   								'app_user_list', [
    									'roomId' => $current_item_id,
    									'user_filter' => [
    										'user_status' => 1,
@@ -263,7 +263,7 @@ if ( empty($command)) {
    							$body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
    						} else {
    							$url = $router->generate(
-   								'commsy_room_home', [
+   								'app_room_home', [
    									'roomId' => $current_item_id,
    								]
    							);

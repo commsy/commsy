@@ -674,7 +674,7 @@ class cs_page_guide_view extends cs_page_view {
                 $router = $symfonyContainer->get('router');
 
                 $actionCurl = $router->generate(
-                    'commsy_room_home',
+                    'app_room_home',
                     array('roomId' => $item->getItemID())
                 );
 
@@ -692,7 +692,7 @@ class cs_page_guide_view extends cs_page_view {
                 $router = $symfonyContainer->get('router');
 
                 $actionCurl = $router->generate(
-                    'commsy_room_home',
+                    'app_room_home',
                     array('roomId' => $item->getItemID())
                 );
 
@@ -762,7 +762,7 @@ class cs_page_guide_view extends cs_page_view {
 
                 $privateRoom = $current_user->getOwnRoom();
                 if ($privateRoom) {
-                    $actionCurl = $router->generate('commsy_context_request', [
+                    $actionCurl = $router->generate('app_context_request', [
                         'roomId' => $privateRoom->getItemID(),
                         'itemId' => $item->getItemID(),
                     ]);
@@ -1605,7 +1605,7 @@ class cs_page_guide_view extends cs_page_view {
    	   $overwrite = true;
    	   global $symfonyContainer;
        $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-   	   if ( !empty($disable_overwrite) and $disable_overwrite ) {
+   	   if ( !empty($disable_overwrite) and $disable_overwrite === 'TRUE') {
    		   $overwrite = false;
    	   }
    	   if ($overwrite) {

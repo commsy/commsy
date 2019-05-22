@@ -1,0 +1,154 @@
+{% import 'utils/macros.html.twig' as macros %}
+
+<ul class="uk-tab" data-uk-tab="{connect:'#external-access-contet'}">
+    <li><a href="">{{ 'external access to my entries'|trans({}, "dashboard") }}</a></li>
+    <li><a href="">{{ 'external access to other entries'|trans({}, "dashboard") }}</a></li>
+</ul>
+
+<!-- This is the container of the content items -->
+<ul id="external-access-contet" class="uk-switcher uk-margin">
+    <li>
+        {% if not releaseItems is empty %}
+            {% for releaseItem in releaseItems %}
+                <article class="uk-comment">
+                    <i class="{{ macros.iconClassForItemType(releaseItem.itemType) }} uk-icon-small"></i>
+                    {#{ macros.statusColor(readerList, releaseItem.itemId) }#}
+                    <header class="uk-comment-header uk-flex">
+                        <div class="uk-margin-right">
+                            {% if releaseItem.itemType != 'user' %}
+                                {% if not releaseItem.creator.isDeleted and releaseItem.creator.isUser %}
+                                    {{ macros.userIconLink(releaseItem.creator) }}
+                                {% else %}
+                                    {{ macros.userIcon(releaseItem.creator) }}
+                                {% endif %}
+                            {% else %}
+                                {% if not releaseItem.isDeleted and releaseItem.isUser %}
+                                    {{ macros.userIconLink(releaseItem) }}
+                                {% else %}
+                                    {{ macros.userIcon(releaseItem) }}
+                                {% endif %}
+                            {% endif %}
+                            <div class="uk-comment-meta">
+                                {% if releaseItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                    {{ 'today'|trans({})|capitalize }}, {{releaseItem.getModificationDate|date("H:i")}}
+                                {% else %}
+                                    {{releaseItem.getModificationDate|date("d.m.Y")}}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/dashboard/{{ releaseItem.contextItem.itemId }}">{{releaseItem.contextItem.title|decodeHtmlEntity}}</a></div>
+                            <h4 class="uk-comment-title">
+                                <a href="{{ app.request.baseURL }}/dashboard/{{ app.request.attributes.get('roomId') }}/{{ releaseItem.type }}/{{ releaseItem.itemID }}">
+                                {% if releaseItem.itemType != 'user' %}
+                                    {{ releaseItem.title|decodeHtmlEntity }}
+                                {% else %}
+                                    {{ macros.userFullname(releaseItem) }}
+                                {% endif %}
+                                </a>
+                            </h4>
+                            {% if releaseItem.itemType == 'announcement' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
+                            {% elseif releaseItem.itemType == 'date' %}
+                                <div class="uk-comment-meta">{{releaseItem.getDateListDescription}}{% if releaseItem.getPlace != '' %}, {{releaseItem.getPlace}}{% endif %}</div>
+                            {% elseif releaseItem.itemType == 'material' %}
+                                <div class="uk-comment-meta">
+                                    {% if releaseItem.author != '' %}
+                                            {{ 'by'|trans({})|capitalize }}: {{releaseItem.author}} ({{releaseItem.publishingdate}})
+                                        {% else %}
+                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }} ({{releaseItem.getCreationDate|date("d.m.Y")}})
+                                    {% endif %}                        
+                                </div>
+                            {% elseif releaseItem.itemType == 'discussion' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
+                            {% elseif releaseItem.itemType == 'user' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem) }}</div>
+                            {% elseif releaseItem.itemType == 'group' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
+                            {% elseif releaseItem.itemType == 'todo' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
+                            {% elseif releaseItem.itemType == 'task' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
+                            {% endif %}
+                            <div class="uk-comment-meta">{{ macros.fileListShort(releaseItem) }}</div>
+                        </div>
+                    </header>
+                </article>
+            {% endfor %}
+        {% else %}
+            {{ 'no items'|trans({}, "dashboard") }}
+        {% endif %}
+    </li>
+    <li>
+        {% if not viewableItems is empty %}
+            {% for viewableItem in viewableItems %}
+                <article class="uk-comment">
+                    <i class="{{ macros.iconClassForItemType(viewableItem.itemType) }} uk-icon-small"></i>
+                    {#{ macros.statusColor(readerList, viewableItem.itemId) }#}
+                    <header class="uk-comment-header uk-flex">
+                        <div class="uk-margin-right">
+                            {% if viewableItem.itemType != 'user' %}
+                                {% if not viewableItem.creator.isDeleted and viewableItem.creator.isUser %}
+                                    {{ macros.userIconLink(viewableItem.creator) }}
+                                {% else %}
+                                    {{ macros.userIcon(viewableItem.creator) }}
+                                {% endif %}
+                            {% else %}
+                                {% if not viewableItem.isDeleted and viewableItem.isUser %}
+                                    {{ macros.userIconLink(viewableItem) }}
+                                {% else %}
+                                    {{ macros.userIcon(viewableItem) }}
+                                {% endif %}
+                            {% endif %}
+                            <div class="uk-comment-meta">
+                                {% if viewableItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                    {{ 'today'|trans({})|capitalize }}, {{viewableItem.getModificationDate|date("H:i")}}
+                                {% else %}
+                                    {{viewableItem.getModificationDate|date("d.m.Y")}}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/dashboard/{{ viewableItem.contextItem.itemId }}">{{viewableItem.contextItem.title|decodeHtmlEntity}}</a></div>
+                            <h4 class="uk-comment-title">
+                                <a href="{{ app.request.baseURL }}/dashboard/{{ app.request.attributes.get('roomId') }}/{{ viewableItem.type }}/{{ viewableItem.itemID }}">
+                                {% if viewableItem.itemType != 'user' %}
+                                    {{ viewableItem.title|decodeHtmlEntity }}
+                                {% else %}
+                                    {{ macros.userFullname(viewableItem) }}
+                                {% endif %}
+                                </a>
+                            </h4>
+                            {% if viewableItem.itemType == 'announcement' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
+                            {% elseif viewableItem.itemType == 'date' %}
+                                <div class="uk-comment-meta">{{viewableItem.getDateListDescription}}{% if viewableItem.getPlace != '' %}, {{viewableItem.getPlace}}{% endif %}</div>
+                            {% elseif viewableItem.itemType == 'material' %}
+                                <div class="uk-comment-meta">
+                                    {% if viewableItem.author != '' %}
+                                            {{ 'by'|trans({})|capitalize }}: {{viewableItem.author}} ({{viewableItem.publishingdate}})
+                                        {% else %}
+                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }} ({{viewableItem.getCreationDate|date("d.m.Y")}})
+                                    {% endif %}                        
+                                </div>
+                            {% elseif viewableItem.itemType == 'discussion' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
+                            {% elseif viewableItem.itemType == 'user' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem) }}</div>
+                            {% elseif viewableItem.itemType == 'group' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
+                            {% elseif viewableItem.itemType == 'todo' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
+                            {% elseif viewableItem.itemType == 'task' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
+                            {% endif %}
+                            <div class="uk-comment-meta">{{ macros.fileListShort(viewableItem) }}</div>
+                        </div>
+                    </header>
+                </article>
+            {% endfor %}
+        {% else %}
+            {{ 'no items'|trans({}, "dashboard") }}
+        {% endif %}
+    </li>
+</ul>

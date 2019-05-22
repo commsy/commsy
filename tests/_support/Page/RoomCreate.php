@@ -1,5 +1,7 @@
 <?php
-namespace Page;
+namespace App\Tests\Page;
+
+use App\Tests\AcceptanceTester;
 
 class RoomCreate
 {
@@ -23,7 +25,7 @@ class RoomCreate
      */
     protected $tester;
 
-    public function __construct(\AcceptanceTester $I)
+    public function __construct(AcceptanceTester $I)
     {
         $this->tester = $I;
     }

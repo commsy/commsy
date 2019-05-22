@@ -1,0 +1,64 @@
+{% import 'utils/macros.html.twig' as macros %}
+
+<div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
+    {% include 'utils/save_spinner.html.twig' %}
+    <div class="uk-form-horizontal">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="uk-flex">
+            <div class="uk-width-9-10">
+                    {{ form_widget(form.title) }}
+            </div>
+        </div>
+
+        {% if discussion.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+        <div class="uk-margin-small-left uk-flex">
+            <label class="uk-form-label">
+                <span data-uk-tooltip title="{{ macros.userFullname(discussion.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
+            </label>
+            <div>
+                {{ form_widget(form.permission) }}
+                <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(discussion.creator)}, 'form') }}"></i>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if form.vars.name == "discussion"  %}
+            {% if discussion.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+            <div class="uk-margin-small-left uk-flex">
+                <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+                <div>
+                    {{ form_widget(form.hidden) }}
+                </div>
+            </div>
+            <div class="uk-margin-small-left uk-flex">
+                <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+                <div class="uk-margin-small-top">
+                    {{ form_widget(form.hiddendate) }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if isDraft and (showHashtags or showCategories) %}
+                {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+            {% endif %}
+
+            {% if form.external_viewer is defined %}
+                <div class="uk-form-row">
+                    {{ form_row(form.external_viewer) }}
+                    <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
+                </div>
+            {%  endif %}
+        {% endif %}
+        <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left">
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
+    </div>
+</div>

@@ -1,0 +1,54 @@
+{% import 'utils/macros.html.twig' as macros %}
+{% import 'discussion/macros.html.twig' as macrosDiscussion %}
+{% import 'item/macros.html.twig' as macrosItem %}
+
+<div class="uk-panel uk-panel-box uk-margin-top" data-parentId="{{ parentId }}">
+    <article class="uk-article uk-position-relative">
+        {# title #}
+        <div class="cs-toggle" data-uk-observe>
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            <div class="uk-flex">
+                <div id="remove-on-click" class="uk-width-9-10">
+                    {{ form_widget(form.title) }}
+                </div>
+            </div>
+
+            {% if article.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+            <div class="uk-flex uk-margin-bottom uk-margin-small-top">
+                <div>
+                    <label class="">
+                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                    </label>
+                </div>
+                <div class="uk-margin-left">
+                    {{ form_widget(form.permission) }}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="uk-flex uk-margin-small-top">
+                <div class="uk-margin-small-left">
+                    {{ form_row(form.save) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ form_row(form.cancel) }}
+                </div>
+            </div>
+
+            {{ form_row(form._token) }}
+            {{ form_end(form, {'render_rest': false}) }}
+            {#{ macrosDiscussion.title(section, modifierList, userCount, readCount, readSinceModificationCount) }#}
+        </div>
+        
+        {# description #}
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
+            {{ macrosItem.itemDescription('description', article, true, article.description, article.draft) }}
+        </div>
+
+        {# files #}
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
+            {{ macrosItem.files(article, article.draft) }}
+        </div>
+    </article>
+</div>

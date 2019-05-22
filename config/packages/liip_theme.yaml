@@ -1,0 +1,20 @@
+parameters:
+    liip_theme_pre_configuration.active_theme: ~
+#    %env(MAILER_URL)%
+
+liip_theme:
+    themes:
+        - default
+        - football
+        - stars
+        - sun
+        - ocean
+        - schulcommsyhh
+        - confetti
+        - grey
+        - darkblue
+        - red
+        - redgrey
+        - uhh
+    active_theme: 'default'
+    assetic_integration: false

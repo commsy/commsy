@@ -662,14 +662,9 @@ services:
         arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Feed
-    debril.rss_atom.provider:
+    debril.provider.default:
         class: CommsyBundle\Feed\CommsyFeedContentProvider
-        arguments:
-            - '@commsy_legacy.environment'
-            - '@request_stack'
-            - '@translator'
-            - '@commsy.feed.creator_factory'
-            - '@feedio'
+        arguments: ['@commsy_legacy.environment', '@request_stack', '@translator', '@commsy.feed.creator_factory']
 
     commsy.feed.creator_factory:
         class: CommsyBundle\Feed\FeedCreatorFactory
@@ -737,7 +732,6 @@ services:
     commsy.avatar_service:
         class: CommsyBundle\Services\AvatarService
         arguments: ['@commsy_legacy.user_service', '%kernel.root_dir%']
-        public: true
         
     commsy.print_service:
         class: CommsyBundle\Services\PrintService
@@ -758,7 +752,6 @@ services:
     commsy.calendars_service:
         class: CommsyBundle\Services\CalendarsService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
-        public: true
 
     commsy.caldav_service:
         class: CommsyBundle\Services\CalDAVService

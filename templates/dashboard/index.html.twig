@@ -1,0 +1,89 @@
+{% extends 'base/room.html.twig' %}
+{% import 'utils/macros.html.twig' as macros %}
+
+{% block cover %}
+    <div id="cover" class="uk-cover-background">
+        <img class="uk-invisible" src="" width="" height="" alt="">
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-3-5">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>Neueste Aktivitäten(TODO) {{ macros.userFullname(user) }}</div>
+                        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                            <button class="uk-button">{{ 'filter'|trans({})|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                            <div class="uk-dropdown uk-dropdown-small">
+                                <ul class="uk-nav uk-nav-dropdown">
+                                    <li><a href="#">{{ 'date'|trans({})|capitalize }}</a></li>
+                                    <li><a href="#">{{ 'material'|trans({})|capitalize }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#dashboard-feed', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <ul id="dashboard-feed" class="uk-comment-list">
+                        {{ render(controller(
+                            'App\\Controller\\DashboardController::feedAction',
+                            { 'itemId': user.itemId }
+                        ))}}
+                    </ul>
+                    <div class="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true, topoffset: 0}" data-feed='{"url": "{{ app.request.baseURL }}/dashboard/{{ user.itemId }}/feed/", "target": "#dashboard-feed"}'>
+                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-2-5">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#dashboard-top-box', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'todo'|trans({}) }}
+                        </div>
+                    </div>
+                </div>
+                <div id="dashboard-top-box" class="uk-overflow-container">
+                    ...
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser cs-panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#dashboard-bottom-box', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'todo'|trans({}) }}
+                        </div>
+                    </div>
+                </div>
+                <div id="dashboard-bottom-box" class="uk-overflow-container">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

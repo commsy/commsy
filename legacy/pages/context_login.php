@@ -246,7 +246,7 @@ if (!$shib_direct_login) {
                         global $symfonyContainer;
                         $router = $symfonyContainer->get('router');
 
-                        $dashboardUrl = $router->generate('commsy_dashboard_overview', [
+                        $dashboardUrl = $router->generate('app_dashboard_overview', [
                             'roomId' => $userItem->getOwnRoom()->getItemId(),
                         ]);
 

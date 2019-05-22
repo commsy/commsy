@@ -633,7 +633,7 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+        if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
             // create backup of item
             $this->backupItem($uid, array(
                 'title' => 'title',
@@ -651,12 +651,12 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
                     $updateQuery = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET';
 
                     /* flag */
-                    if ($disableOverwrite === 'flag') {
+                    if ($disableOverwrite === 'FLAG') {
                         $updateQuery .= ' public = "-1",';
                     }
 
                     /* disabled */
-                    if ($disableOverwrite === false) {
+                    if ($disableOverwrite === 'FALSE') {
                         $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
                         $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
                         

@@ -2305,33 +2305,6 @@ class cs_environment {
         return true;
    }
 
-   public function withBelugaConnection(){
-      global $symfonyContainer;
-      $url_for_beluga_system = $symfonyContainer->getParameter('commsy.beluga.url_for_beluga_system');
-
-      $retour = false;
-      if (isset($url_for_beluga_system) and !empty($url_for_beluga_system)){
-         $retour = true;
-      }
-      return $retour;
-   }
-
-   public function getBelugaConnectionLink(){
-      global $symfonyContainer;
-      $url_for_beluga_system = $symfonyContainer->getParameter('commsy.beluga.url_for_beluga_system');
-      
-      $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-      if (!stristr($commsy_link,'SID')) {
-         $session = $this->getSessionItem();
-         $commsy_link .='&SID='.$session->getSessionID();
-      }
-      $commsy_link .= '&import_type=url';
-      $link = $url_for_beluga_system;
-      $link .='?export_system=commsy';
-      $link .= '&export_url='.urlencode($commsy_link);
-      return $link;
-   }
-
    public function setCacheOff () {
       $this->_cache_on = false;
    }

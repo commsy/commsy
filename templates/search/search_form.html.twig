@@ -1,0 +1,17 @@
+<form name="{{ form.vars.full_name }}" action="{{ form.vars.action }}" method="{{ form.vars.method }}" class="uk-search" data-uk-search="{
+    source:'{{ path('app_search_instantresults', { 'roomId': roomId }) }}',
+    delay: 300,
+    msgResultsHeader: '{{ 'best matches'|trans({}, 'search') }}',
+    msgMoreResults: '{{ 'more results'|trans({}, 'search') }}',
+    msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
+}">
+    
+    {{ form_widget(form.phrase) }}
+    {{ form_widget(form.submit) }}
+
+    <!-- This is the dropdown, which is injected through JavaScript -->
+    <div class="uk-dropdown uk-dropdown-search">
+        <ul class="uk-nav uk-nav-search">...</ul>
+    </div>
+
+{{ form_end(form) }}

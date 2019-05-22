@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Tests;
+
+use App\Tests\UnitTester;
+
 
 class NewestEntriesCest
 {
@@ -28,7 +32,7 @@ class NewestEntriesCest
 
         $projectRoom = $I->createProjectRoom('Room', $portalUser, $portalItem);
 
-        /** @var \CommsyBundle\RoomFeed\RoomFeedGenerator $roomFeedGenerator */
+        /** @var \App\RoomFeed\RoomFeedGenerator $roomFeedGenerator */
         $roomFeedGenerator = $I->grabService('commsy.room_feed_generator');
         $roomFeedEntries = $roomFeedGenerator->getRoomFeedList($projectRoom->getItemId(), 10, null);
         $I->assertEquals(1, sizeof($roomFeedEntries));
@@ -56,7 +60,7 @@ class NewestEntriesCest
 
         $lastFeedItem = $projectUserList->getFirst();
 
-        /** @var \CommsyBundle\RoomFeed\RoomFeedGenerator $roomFeedGenerator */
+        /** @var \App\RoomFeed\RoomFeedGenerator $roomFeedGenerator */
         $roomFeedGenerator = $I->grabService('commsy.room_feed_generator');
 
         // ensure user entry in items and user table have the same creation and modification date

@@ -1,0 +1,194 @@
+{% extends 'base/profile.html.twig' %}
+
+{% import 'utils/macros.html.twig' as macros %}
+
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-4-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'general'|trans({}, 'menu') }}</div>
+                    </div>
+                </div>
+                <div class="uk-margin-left uk-margin-right">
+                    {{ form_start(form) }}
+                        {{ form_errors(form) }}
+                        <div class="uk-panel uk-margin-large-bottom">
+                            <table class="uk-table">
+                                <tr>
+                                    <td>
+                                        <h1 class="uk-panel-title">{{ 'profileimage'|trans({},'profile')|capitalize }}</h1>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="uk-margin-small-bottom">
+                                            {{ 'profileImageDescription'|trans({}, "profile")|format(roomTitle)|raw }}
+                                        </div>
+                                        <div>
+                                            <em>{{ 'tip'| trans({}, 'messages') }}:</em> {{ 'Profile image tip'|trans({}, 'profile') }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="uk-float-right uk-clearfix" style="float: none; width: 200px; text-aling: center;">
+                                            {{ form_row(form.useProfileImage) }}
+                                        </div>
+
+                                        <!-- user profile image -->
+                                        <div class="uk-clearfix uk-cover-background uk-position-relative">
+                                            <img id="profile_form_user_image" class="uk-thumbnail uk-float-right uk-margin-bottom uk-border-circle" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                                            <div class="uk-position-cover">
+                                                {{ form_widget(form.image) }}
+                                            </div>
+                                        </div>
+                                        <!-- user initials image -->
+                                        <div class="uk-clearfix uk-position-relative">
+                                            <img id="profile_form_user_initials" class="uk-thumbnail uk-float-left uk-margin-bottom uk-border-circle" src="{{ path('app_user_initials', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                                        </div>
+
+                                        <div class="uk-float-right uk-clearfix" style="float: none; margin-top: 240px; width: 200px; text-aling: center;">
+                                            {{ form_row(form.imageChangeInAllContexts) }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="uk-panel uk-margin-large-bottom">
+                            <table class="uk-table">
+                                <tr>
+                                    <td>{{ form_widget(form.save) }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <canvas id="profile_image_hidden_data" width="200px" height="200px" style="border: 1px solid black;" class="uk-hidden"></canvas>
+                        {{ form_row(form.image_data) }}
+                        {{ form_row(form._token) }}
+                    {{ form_end(form, {'render_rest': false}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    window.onload = function(){
+
+        var positionCover = document.querySelector('.uk-position-cover');
+        var coverFormControls = positionCover.getElementsByClassName('uk-form-controls')[0];
+
+        coverFormControls.style.marginLeft = "0px";
+        coverFormControls.style.height = "100%";
+
+        document.querySelector('form.uk-form-horizontal').onsubmit = function(event){
+            this.querySelector('input[type="file"]').disabled = true;
+        }
+
+        var profileUpload = document.querySelector('.cs-upload-form');
+
+        profileUpload.style.height = "100%";
+        profileUpload.style.padding = "0";
+
+        var useProfileImageSwitch = document.querySelector('#room_profile_general_useProfileImage');
+        useProfileImageSwitch.onchange = function(e) {
+            toggleProfileImage(useProfileImageSwitch);
+        }
+
+        toggleProfileImage(useProfileImageSwitch);
+
+        profileUpload.onmouseover = function(e){
+            e.preventDefault();
+            positionCover.style.opacity = "0.7";
+            return false;
+        };
+
+        profileUpload.onmouseleave = function(e){
+            e.preventDefault();
+            positionCover.style.opacity = "0.0";
+            return false;
+        };
+
+        profileUpload.ondragover = function(e){
+            e.preventDefault();
+            this.style.border = "1px solid black";
+            positionCover.style.opacity = "0.7";
+            return false;
+        };
+        profileUpload.ondragleave = function(e){
+            e.preventDefault();
+            this.style.border = "";
+            positionCover.style.opacity = "0.0";
+            return false;
+        };
+        profileUpload.ondragend = function(e){
+            e.preventDefault();
+            positionCover.style.opacity = "0.0";
+            return false;
+        };
+        profileUpload.ondrop = function(e){
+            e.preventDefault();
+            this.style.border = "";
+            positionCover.style.opacity = "0.0";
+            setProfileImage(e.dataTransfer.files[0], document.querySelector('#profile_form_user_image'));
+        };
+
+        profileUpload.querySelector('input[type="file"]').onchange = function(e){
+            setProfileImage(e.target.files[0], document.querySelector('#profile_form_user_image'));
+        };
+    };
+
+    function toggleProfileImage(profileImageSwitch) {
+        var userImage = document.querySelector('#profile_form_user_image');
+        var userInitials = document.querySelector('#profile_form_user_initials');
+
+        userImage.parentElement.style.display = profileImageSwitch.checked ? 'block' : 'none';
+        userInitials.parentElement.style.display = profileImageSwitch.checked ? 'none' : 'block';
+    }
+
+    function setProfileImage(f, previewImage){
+        // TODO: set threshold to sensible value (e.g. the real upload size limit of the server)!
+        if(f.size > 2000000){
+            alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
+            return false;
+        }
+        else if(f.type.substring(0, 5) != 'image'){
+            alert("Files of type '"+f.type+"' can not be used as profile images!");
+            return false;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function(event){
+            previewImage.onload = function(e){
+                this.onload = null;
+
+                var edgeLength = 200;
+                var offset = Math.abs(previewImage.naturalWidth - previewImage.naturalHeight) / 2;
+                var minDim = Math.min(previewImage.naturalWidth, previewImage.naturalHeight);
+
+                var x = 0, y = 0;
+                if(previewImage.naturalWidth > previewImage.naturalHeight){
+                    x = offset;
+                }
+                else{
+                    y = offset;
+                }
+
+                var c = document.querySelector("#profile_image_hidden_data");
+                var ctx = c.getContext("2d");
+
+                ctx.clearRect(0, 0, edgeLength, edgeLength);
+                ctx.drawImage(previewImage, x, y, minDim, minDim, 0, 0, edgeLength, edgeLength);
+
+                previewImage.src = c.toDataURL(f.type);
+            }
+            previewImage.src = event.target.result;
+            document.querySelector('#room_profile_general_image_data').value = f.name + ";" + event.target.result;
+        }
+        reader.readAsDataURL(f);
+    }
+    </script>
+{% endblock content %}

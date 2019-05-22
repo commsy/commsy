@@ -1,0 +1,26 @@
+
+{% import 'base/printmacro.html.twig' as macros %}
+
+<div class="">
+
+    <div>
+       {% if not linkedItemsByRubric is empty %}
+            <div >
+                {% for type,rubric in linkedItemsByRubric %}
+                    <div class="">
+                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|transchoice(1,{},"rubric")|capitalize }} ({{ rubric|length }})
+                    </div>
+                    <div>
+                        <ul class="uk-list uk-margin-bottom-remove">
+                        {% for linkedItem in rubric [0:10] %}
+                            <li>{{ linkedItem.title|raw }}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ 'no linked items'|trans({}, "room")}}
+        {% endif %}
+    </div>
+</div>

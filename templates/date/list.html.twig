@@ -1,0 +1,186 @@
+{% extends 'base/list.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+
+{% import 'utils/macros.html.twig' as utilsMacros %}
+
+{% block feed %}
+    <ul id="dates-feed" class="uk-comment-list" data-uk-observe>
+        {{ render(controller(
+            'App\\Controller\\DateController::feedAction', {
+                'roomId': roomId,
+                'dateFilter': app.request.query.get('date_filter')
+            }
+        ))}}
+    </ul>
+
+    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/date/feed/", "target": "#dates-feed"}'>
+        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+        <div class="cs-toggle-class"></div>
+    </div>
+{% endblock %}
+
+{% block sortbox %}
+        {# sort dropdown #}
+        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+            <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                    {# sorting options #}
+                    {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', '') }}
+                    {{ utilsMacros.sortActor('sort', 'time', 'rubric', 'time', 'time_rev', 'asc') }}
+                    {{ utilsMacros.sortActor('place', 'place', 'rubric', 'place', 'place_rev', '') }}
+               </ul>
+            </div>
+        </div>
+{% endblock %}
+
+{% block editbox %}
+    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
+
+                <li>
+                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                        <a href="{{ path('app_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                        </span>
+                    {% endif %}
+                </li>
+
+                {# print #}
+                <li>
+                    <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
+                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_date_xhrmarkread', {'roomId': roomId}),
+                        'action': 'markread',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_date_xhrcopy', {'roomId': roomId}),
+                        'action': 'copy',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_date_download', {'roomId': roomId}),
+                        'action': 'save',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                    </a>
+                </li>
+
+                {% if iCal.show %}
+                    {# date export #}
+                    <li class="uk-parent">
+                        <a href="#">
+                            <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
+                        </a>
+                        <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                            {% for calendar in calendars  %}
+                                <li>
+                                    <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                        {{ utilsMacros.calendarIcon(calendar) }}
+                                        <span class="uk-vertical-align-middle">
+                                            {{ calendar.title|trans({}, 'date') }}
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    {# date abo#}
+                    <li class="uk-parent">
+                        <a href="#">
+                            <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
+                        </a>
+                        <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                            {% for calendar in calendars  %}
+                                <li>
+                                    <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                        {{ utilsMacros.calendarIcon(calendar) }}
+                                        <span class="uk-vertical-align-middle">
+                                            {{ calendar.title|trans({}, 'date') }}
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                <li>
+                    {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_date_xhrdelete', {'roomId': roomId}),
+                            'action': 'delete',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                            'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
+                            'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
+                            'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
+                            'returnUrl': path('app_date_list', {'roomId': roomId})
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                {# import iCal #}
+                {% if is_granted('MODERATOR') %}
+                    <li>
+                        {% if not isArchived %}
+                            <a href="{{ path('app_date_import', {'roomId': roomId}) }}" >
+                                <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                            </a>
+                        {% else %}
+                            <span class="uk-text-muted">
+                                <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                            </span>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+{% endblock%}
+
+{% block listAddons %}
+    <div class="uk-float-right uk-margin-small-left">
+        <a href="{{ path('app_date_calendar', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-calendar uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'calendar view'|trans({}, "date") }}"></i></a>
+    </div>
+    <div class="uk-float-right uk-margin-small-left">
+        <i class="uk-icon-list-ul uk-icon-small" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i>
+    </div>
+{% endblock %}

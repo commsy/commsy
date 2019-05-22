@@ -1,8 +1,16 @@
 <?php
 
+namespace App\Tests;
+
+use App\Tests\UnitTester;
+
 
 class ActionsCest
 {
+    public function _before(UnitTester $I)
+    {
+    }
+
     public function deleteUser(UnitTester $I)
     {
         /** @var \cs_environment $legacyEnvironment */
@@ -54,7 +62,7 @@ class ActionsCest
             $roomUser2->getItemID(),
         ];
 
-        /** @var \Commsy\LegacyBundle\Utils\UserService $userService */
+        /** @var \App\Utils\UserService $userService */
         $userService = $I->grabService('commsy_legacy.user_service');
         $users = $userService->getUsersById($projectRoom->getItemID(), $itemIds);
 
@@ -98,7 +106,7 @@ class ActionsCest
         $legacyEnvironment->setCurrentContextID($projectRoom->getItemID());
         $legacyEnvironment->setCurrentUser($roomModerator);
 
-        /** @var \Commsy\LegacyBundle\Utils\GroupService $groupService */
+        /** @var \App\Utils\GroupService $groupService */
         $groupService = $I->grabService('commsy_legacy.group_service');
         $group = $groupService->getNewGroup();
         $group->save();
@@ -128,7 +136,7 @@ class ActionsCest
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
 
-        /** @var \CommsyBundle\Action\Delete\DeleteAction $action */
+        /** @var \App\Action\Delete\DeleteAction $action */
         $action = $I->grabService('commsy.action.delete.generic');
         $response = $action->execute(new \cs_room_item($legacyEnvironment), []);
 

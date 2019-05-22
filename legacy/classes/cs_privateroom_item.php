@@ -460,7 +460,7 @@ class cs_privateroom_item extends cs_room_item
                         global $symfonyContainer;
                         $router = $symfonyContainer->get('router');
 
-                        $homeUrl = $router->generate('commsy_room_home', [
+                        $homeUrl = $router->generate('app_room_home', [
                             'roomId' => $roomItem->getItemID(),
                         ], 0);
 
@@ -596,7 +596,7 @@ class cs_privateroom_item extends cs_room_item
                                                     $urlParameters['versionId'] = 0;
                                                 }
 
-                                                $detailUrl = $router->generate('commsy_' . $mod . '_detail', $urlParameters, 0);
+                                                $detailUrl = $router->generate('app_' . $mod . '_detail', $urlParameters, 0);
 
                                                 $ahref_curl = '<a href="' . $detailUrl . '">' . $title . '</a>';
 
@@ -651,7 +651,7 @@ class cs_privateroom_item extends cs_room_item
                                 }
 
                                 if ($count_entries == 1) {
-                                    $listUrl = $router->generate('commsy_' . $rubric_array[0] . '_list', [
+                                    $listUrl = $router->generate('app_' . $rubric_array[0] . '_list', [
                                         'roomId' => $roomItem->getItemID(),
                                     ], 0);
 
@@ -659,7 +659,7 @@ class cs_privateroom_item extends cs_room_item
                                     $body2 .= '&nbsp;&nbsp;' . $ahref_curl;
                                     $body2 .= ' <span style="font-size:8pt;">(' . $count_entries . ' ' . $translator->getMessage('NEWSLETTER_NEW_SINGLE_ENTRY') . ')</span>';
                                 } elseif ($count_entries > 1) {
-                                    $listUrl = $router->generate('commsy_' . $rubric_array[0] . '_list', [
+                                    $listUrl = $router->generate('app_' . $rubric_array[0] . '_list', [
                                         'roomId' => $roomItem->getItemID(),
                                     ], 0);
 
@@ -698,7 +698,7 @@ class cs_privateroom_item extends cs_room_item
                                     $annotationTitle = ' (' . $annotationStillToSend->getTitle() . ')';
                                 }
 
-                                $annotatedItemUrl = $router->generate('commsy_' . $annotatedItem->getItemType() . '_detail', [
+                                $annotatedItemUrl = $router->generate('app_' . $annotatedItem->getItemType() . '_detail', [
                                     'roomId' => $roomItem->getItemID(),
                                     'itemId' => $annotatedItem->getItemId(),
                                 ], 0);
@@ -775,7 +775,7 @@ class cs_privateroom_item extends cs_room_item
 
                     // flush queue manually
                     $mailer = $symfonyContainer->get('mailer');
-                    $transport = $symfonyContainer->get('swiftmailer.transport.real');
+                    $transport = $symfonyContainer->get('swiftmailer.mailer.default.transport.real');
 
                     $spool = $mailer->getTransport()->getSpool();
                     $spool->flushQueue($transport);

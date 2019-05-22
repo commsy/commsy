@@ -1,0 +1,1303 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: '%env(LOCALE)%'
+
+    legacy.site_index: "%kernel.project_dir%/public/commsy_legacy.php"
+    files_directory: '%kernel.project_dir%/files'
+    themes_directory: '%kernel.project_dir%/public/css/themes'
+
+    router.request_context.host: "%env(HOST)%"
+    router.request_context.scheme: "%env(SCHEME)%"
+
+    # Autosaving
+    commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
+    commsy.autosave.limit: 6        # limit in minutes
+
+    # Use virus scanning at uploading files
+    # ----------------------------------------------------
+    # OPTION 1: there are performance lacks
+    # scan file on upload
+    # 1. installation
+    #    on debian linux
+    #    # apt-get install php5-clamavlib
+    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+    #    # /etc/init.d/apache2 restart
+    # 2. enable virus scan at uploading files
+    #    virus_scan = true;
+    # 3. enable virus scan by php clamav library
+    #    virus_use_php = true;
+    #
+    # if you want to use another viren scanning tool
+    # you must set the following variables
+    # - only testet with clamav on linux
+    #    virus_scan = true;
+    #    virus_use_php = false;
+    #    virus_scan_path = '/usr/bin';
+    #    virus_scan_bin  = 'clamscan';
+    # ----------------------------------------------------
+    # OPTION 2: scan files with commsy cron
+    # scan files every 24 hours
+    # 1. installation
+    #    on debian linux
+    #    # apt-get install php5-clamavlib
+    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+    #    # /etc/init.d/apache2 restart
+    # 2. enable virus scan at uploading files
+    #    virus_scan_cron = true;
+    # 3. enable virus scan by php clamav library
+    #    virus_use_php = true;
+    #
+    # if you want to use another viren scanning tool
+    # you must set the following variables
+    # - only testet with clamav on linux
+    #    virus_scan_cron = true;
+    #    virus_use_php = false;
+    #    virus_scan_path = '/usr/bin';
+    #    virus_scan_bin  = 'clamscan';
+    commsy.clamscan.virus_scan: false
+    commsy.clamscan.virus_use_php: false
+    commsy.clamscan.virus_scan_cron: false
+    commsy.clamscan.virus_scan_path: '/usr/bin'
+    commsy.clamscan.virus_scan_bin: 'clamscan'
+
+    # Cookie management
+    commsy.cookie.domain: ~
+    commsy.cookie.path: ~
+
+    # Database
+    commsy.db.backup_prefix: 'zzz'
+
+    # E-Mail
+    commsy.email.from: '%env(EMAIL_FROM)%'
+
+    # E-Mail Upload
+    commsy.upload.enabled: '%env(bool:EMAIL_UPLOAD_ENABLED)%'
+    commsy.upload.server: '%env(EMAIL_UPLOAD_SERVER)%'
+    commsy.upload.port: '%env(EMAIL_UPLOAD_PORT)%'
+    commsy.upload.options: '%env(EMAIL_UPLOAD_OPTIONS)%'
+    commsy.upload.account: '%env(EMAIL_UPLOAD_ACCOUNT)%'
+    commsy.upload.password: '%env(EMAIL_UPLOAD_PASSWORD)%'
+
+    # Login
+    commsy.login.shibboleth_direct_login: false
+    commsy.login.shibboleth_redirect_url: ''
+    commsy.login.shibboleth_deactivate_direct_login_by_portal_id: ''
+
+    # Security / Data Privacy
+    # Overwrite entries with "overwritten because of data security" when deleting a user
+    # default = false
+    # do nothing = true
+    # set flag = flag
+    commsy.security.privacy_disable_overwriting: '%env(DATA_PRIVACY_OVERWRITING)%'
+    commsy.security.allow_moderator_takeover: true      # allows all moderators to take over another user by default
+
+    # Settings
+    commsy.settings.export_temp_folder: 'var/temp/zip_export'       # Where to store the temporary export files
+    commsy.settings.delete_days: 182        # Delete entries in database marked as deleted delete_days old
+    commsy.settings.session_lifetime: 6     # Session lifetime in hours
+    commsy.settings.proxy_ip: '%env(PROXY_IP)%'      # Proxy Ip
+    commsy.settings.proxy_port: '%env(PROXY_PORT)%'      # Propxy Port
+    commsy.settings.single_cat_selection: false     # Single selection for categories
+    commsy.settings.item_locking: true     # Temporary protect items from beeing edited by different users simultaneously
+
+    # Wordpress
+    commsy.wordpress.enabled: false     # For activating wordpress please set the following variable on true
+
+    # Limesurvey
+    commsy.limesurvey.enabled: false        # et the following variable to activate limesurvey extension
+
+    # Etherpad
+    commsy.etherpad.enabled: '%env(bool:ETHERPAD_ENABLED)%'
+    commsy.etherpad.api_key: '%env(ETHERPAD_API_KEY)%'
+    commsy.etherpad.api_url: '%env(ETHERPAD_API_URL)%'
+    commsy.etherpad.base_url: '%env(ETHERPAD_BASE_URL)%'
+
+    # MediaWiki
+    commsy.mediawiki.enabled: '%env(bool:MEDIAWIKI_ENABLED)%'      # set the following variable to activate mediawiki extension
+    commsy.mediawiki.roomWikiUrl: '%env(MEDIAWIKI_ROOM_WIKI_URL)%'
+    commsy.mediawiki.apiUrl: '%env(MEDIAWIKI_API_URL)%'
+    commsy.mediawiki.consumerKey: '%env(MEDIAWIKI_CONSUMER_KEY)%'
+    commsy.mediawiki.consumerSecret: '%env(MEDIAWIKI_CONSUMER_SECRET)%'
+    commsy.mediawiki.accessToken: '%env(MEDIAWIKI_ACCESS_TOKEN)%'
+    commsy.mediawiki.accessSecret: '%env(MEDIAWIKI_ACCESS_SECRET)%'
+
+    # Dates
+    commsy.dates.timezone: '%env(TIMEZONE)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: true
+        #public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+
+###############################
+## Commsy\LegacyBundle
+###############################
+    # Legacy kernel
+    commsy_legacy.kernel:
+        alias: App\Kernel\LegacyKernel
+
+    App\Kernel\LegacyKernel:
+        arguments:
+            $legacyAppPath: '%legacy.site_index%'
+
+    # Legacy authentication
+    commsy_legacy.legacy_authentication:
+        class: App\Authentication\LegacyAuthentication
+        arguments: ['@commsy_legacy.environment']
+
+    # Event subscriber
+    App\EventSubscriber\KernelSubscriber:
+        arguments:
+            $legacyKernel: '@commsy_legacy.kernel'
+            $legacyAuthentication: '@commsy_legacy.legacy_authentication'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # Legacy Environment
+    commsy_legacy.environment:
+        alias: App\Services\LegacyEnvironment
+
+    App\Services\LegacyEnvironment:
+        public: true
+        autowire: true
+        arguments: ['%legacy.site_index%', '@service_container']
+
+    commsy_legacy.category_service:
+        class: App\Utils\CategoryService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.material_service:
+        alias: App\Utils\MaterialService
+
+    App\Utils\MaterialService:
+        autowire: true
+
+    commsy_legacy.room_service:
+        alias: App\Utils\RoomService
+
+    App\Utils\RoomService:
+        autowire: true
+
+    commsy_legacy.file_service:
+        alias: App\Utils\FileService
+
+    App\Utils\FileService:
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.user_service:
+        alias: App\Utils\UserService
+
+    App\Utils\UserService:
+        autowire: true
+
+    commsy_legacy.item_service:
+        alias: App\Utils\ItemService
+
+    App\Utils\ItemService:
+        autowire: true
+
+    commsy_legacy.label_service:
+        class: App\Utils\LabelService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.group_service:
+        class: App\Utils\GroupService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.institution_service:
+        class: App\Utils\InstitutionService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.topic_service:
+        class: App\Utils\TopicService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.noticed_service:
+        class: App\Utils\NoticedService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.reader_service:
+        class: App\Utils\ReaderService
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service']
+
+    commsy_legacy.date_service:
+        class: App\Utils\DateService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.annotation_service:
+        class: App\Utils\AnnotationService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.announcement_service:
+        class: App\Utils\AnnouncementService
+        arguments:
+            - '@commsy_legacy.environment'
+
+    commsy_legacy.discussion_service:
+        class: App\Utils\DiscussionService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.todo_service:
+        alias: App\Utils\TodoService
+
+    App\Utils\TodoService:
+        autowire: true
+
+    commsy_legacy.disc_service:
+        class: App\Utils\DiscService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.assessment_service:
+        class: App\Utils\AssessmentService
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.project_service:
+        class: App\Utils\ProjectService
+        arguments: ['@commsy_legacy.environment']
+
+    App\Utils\PortfolioService:
+        autowire: true
+        autoconfigure: true
+
+    # Markup
+    commsy_legacy.markup:
+        class: App\Services\LegacyMarkup
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@router'
+            - '@translator'
+
+    # Transformer
+    commsy_legacy.transformer.general_settings:
+        class: App\Form\DataTransformer\GeneralSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    commsy_legacy.transformer.moderation_settings:
+        class: App\Form\DataTransformer\ModerationSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    commsy_legacy.transformer.additional_settings:
+        class: App\Form\DataTransformer\AdditionalSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    commsy_legacy.transformer.appearance_settings:
+        class: App\Form\DataTransformer\AppearanceSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    App\Form\DataTransformer\ExtensionSettingsTransformer:
+        arguments:
+            $mediawikiEnabled: '%commsy.mediawiki.enabled%'
+
+    commsy_legacy.transformer.material:
+        class: App\Form\DataTransformer\MaterialTransformer
+        arguments:
+            - '@commsy_legacy.environment'
+
+    commsy_legacy.transformer.section:
+        class: App\Form\DataTransformer\SectionTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.user:
+        class: App\Form\DataTransformer\UserTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.privateroom:
+        class: App\Form\DataTransformer\PrivateRoomTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.item:
+        class: App\Form\DataTransformer\ItemTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.annotation:
+        class: App\Form\DataTransformer\AnnotationTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.announcement:
+        class: App\Form\DataTransformer\AnnouncementTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.date:
+        class: App\Form\DataTransformer\DateTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.todo:
+        class: App\Form\DataTransformer\TodoTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.step:
+        class: App\Form\DataTransformer\StepTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.discussion:
+        class: App\Form\DataTransformer\DiscussionTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.discarticle:
+        class: App\Form\DataTransformer\DiscussionarticleTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.group:
+        class: App\Form\DataTransformer\GroupTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.institution:
+        class: App\Form\DataTransformer\InstitutionTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.topic:
+        class: App\Form\DataTransformer\TopicTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.project:
+        class: App\Form\DataTransformer\ProjectTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.portfolio:
+        class: App\Form\DataTransformer\PortfolioTransformer
+        arguments: ['@commsy_legacy.environment']
+
+###############################
+## CommsyBundle
+###############################
+    # Filter types
+    commsy.filter.rubric:
+        class: App\Filter\RubricFilterType
+        arguments: ['@commsy_legacy.room_service', '@request_stack']
+        tags:
+            - { name: form.type }
+
+    commsy.filter.hashtag:
+        class: App\Filter\HashTagFilterType
+        arguments: ['@request_stack', '@commsy_legacy.room_service']
+        tags:
+            - { name: form.type }
+
+    commsy.filter.category:
+        class: App\Filter\CategoryFilterType
+        arguments: ['@request_stack', '@commsy_legacy.category_service', '@commsy_legacy.room_service']
+        tags:
+            - { name: form.type }
+
+    commsy.filter.participant:
+        class: App\Filter\ParticipantFilterType
+        arguments: ['@request_stack', '@commsy_legacy.user_service']
+        tags:
+            - { name: form.type }
+
+    commsy.filter.calendar:
+        class: App\Filter\CalendarFilterType
+        arguments: ['@request_stack', '@commsy.calendars_service']
+        tags:
+            - { name: form.type }
+
+    # Menu
+    commsy.menu.builder:
+        class: App\Menu\MenuBuilder
+        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker', '@commsy.invitations_service']
+        # tags:
+        #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
+        #     - { name: knp_menu.menu_builder, method: createSettingsMenu, alias: settings }
+        #     - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
+        #     - { name: knp_menu.menu_builder, method: createBreadcrumbMenu, alias: breadcrumb }
+
+    commsy.menu.main:
+        class: Knp\Menu\MenuItem # the service definition requires setting the class
+        factory: ['@commsy.menu.builder', createMainMenu]
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.menu, alias: main } # The alias is what is used to retrieve the menu
+
+    commsy.menu.settings:
+        class: Knp\Menu\MenuItem
+        factory: ['@commsy.menu.builder', createSettingsMenu]
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.menu, alias: settings }
+
+    commsy.menu.account:
+        class: Knp\Menu\MenuItem
+        factory: ['@commsy.menu.builder', createAccountMenu]
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.menu, alias: account }
+
+    commsy.menu.profile:
+        class: Knp\Menu\MenuItem
+        factory: ['@commsy.menu.builder', createProfileMenu]
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.menu, alias: profile }
+
+    commsy.menu.voter.request:
+        class: App\Menu\Voter\CommsyVoter
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.voter }
+
+    # Voter
+    commsy.security.category_voter:
+        class: App\Security\Authorization\Voter\CategoryVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
+    commsy.security.hashtag_voter:
+        class: App\Security\Authorization\Voter\HashtagVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
+    commsy.security.item_voter:
+        class: App\Security\Authorization\Voter\ItemVoter
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service', '@request_stack']
+        public: false
+        tags:
+            - { name: security.voter }
+
+    commsy.security.user_voter:
+        class: App\Security\Authorization\Voter\UserVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
+    commsy.security.calendars_voter:
+        class: App\Security\Authorization\Voter\CalendarsVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
+    commsy.security.rubric_voter:
+        class: App\Security\Authorization\Voter\RubricVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
+    App\Security\Authorization\Voter\FileVoter:
+        autowire: true
+        autoconfigure: true
+
+    # Exporter
+    commsy.export.wordpress:
+        class: App\Export\WordpressExporter
+        arguments: ['@commsy_legacy.environment']
+
+    commsy.export.wiki:
+        class: App\Export\WikiExporter
+        arguments: ['@commsy_legacy.environment']
+
+    # EventListener
+    Liip\ThemeBundle\ActiveTheme: '@liip_theme.active_theme'
+
+    App\EventListener\CommsyRequestListener:
+        arguments:
+            $themeArray: '%liip_theme.themes%'
+            $preDefinedTheme: '%liip_theme_pre_configuration.active_theme%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    kernel.listener.commsy_breadcrumb:
+        class: App\EventListener\CommsyBreadcrumbListener
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service', '@translator', '@router', '@white_october_breadcrumbs']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+
+    kernel.listener.commsy_login:
+        class: App\EventListener\CommsyLoginListener
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    kernel.listener.commsy_logging:
+        class: App\EventListener\CommsyLoggingListener
+        arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    kernel.listener.commsy_activity:
+        class: App\EventListener\CommsyActivityListener
+        arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    kernel.listener.commsy_changemail:
+        class: App\EventListener\CommsyChangeMailListener
+        arguments: ['@commsy_legacy.environment', '@router']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    commsy.listener.get_room_membership_filter:
+        class: App\EventListener\RoomMembershipFilterConditionListener
+        arguments: ['@commsy_legacy.user_service']
+        tags:
+            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
+
+    commsy.listener.get_room_time_pulses_filter:
+        class: App\EventListener\RoomTimePulsesFilterConditionListener
+        arguments: ['@commsy_legacy.room_service']
+        tags:
+            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.timePulses , method: onGetFilterCondition }
+
+    commsy.listener.command_error:
+        class: App\EventListener\ConsoleErrorListener
+        arguments: ['@logger']
+        tags:
+            - { name: kernel.event_listener, event: console.terminate }
+
+    commsy.listener.command_exception:
+        class: App\EventListener\ConsoleExceptionListener
+        arguments: ['@logger']
+        tags:
+            - { name: kernel.event_listener, event: console.exception }
+
+    commsy.etherpad_form_listener:
+        class: App\Form\Type\Event\AddEtherpadFormListener
+        arguments: ["@service_container"]
+        tags:
+            - { name: form.event_subscriber }
+
+    commsy.listener.elastic.custom_property:
+        class: App\EventListener\ElasticCustomPropertyListener
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # EventSubscribers
+    commsy.subscriber.edit:
+        class: App\EventSubscriber\CommsyEditSubscriber
+        arguments: ["@service_container"]
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # Search
+    commsy.search.manager:
+        alias: App\Search\SearchManager
+
+    App\Search\SearchManager:
+        autowire: false
+        arguments:
+            $commsyFinder: '@fos_elastica.finder.commsy'
+            $userService: '@App\Utils\UserService'
+            $itemService: '@App\Utils\ItemService'
+
+    commsy.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    App\Search\IndexableChecker:
+        autowire: true
+        autoconfigure: true
+
+    # Validator
+    commsy.validator.unique_label_name:
+        class: App\Validator\Constraints\UniqueLabelNameValidator
+        arguments: [ '@doctrine.orm.entity_manager' ]
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
+    commsy.validator.password_criteria_constraint:
+        class: App\Validator\Constraints\PasswordCriteriaConstraintValidator
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
+    commsy.validator.user_password_constraint:
+        class: App\Validator\Constraints\UserPasswordConstraintValidator
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
+    commsy.validator.send_recipients_constraint:
+        class: App\Validator\Constraints\SendRecipientsConstraintValidator
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
+    commsy.validator.home_notice_constraint:
+        class: App\Validator\Constraints\HomeNoticeConstraintValidator
+        arguments: ['@service_container', '@translator']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
+    App\Validator\Constraints\UniquePortfolioCategoryValidator:
+        autowire: true
+        autoconfigure: true
+
+    # Form types
+    commsy.form.type.general_settings:
+        class: App\Form\Type\GeneralSettingsType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.settings.moderation:
+        class: App\Form\Type\ModerationSettingsType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.settings.additional:
+        class: App\Form\Type\AdditionalSettingsType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.settings.appearance:
+        class: App\Form\Type\AppearanceSettingsType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    App\Form\Type\ExtensionSettingsType:
+        arguments:
+            $mediaWikiEnabled: '%commsy.mediawiki.enabled%'
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.settings.invitations:
+        class: App\Form\Type\InvitationsSettingsType
+        arguments:
+            - '@commsy_legacy.environment'
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.material:
+        class: App\Form\Type\MaterialType
+        arguments: ['@commsy.etherpad_form_listener']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.announcement:
+        class: App\Form\Type\AnnouncementType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.itemDescription:
+        class: App\Form\Type\ItemDescriptionType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.itemWorkflow:
+        class: App\Form\Type\ItemWorkflowType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.itemLinks:
+        class: App\Form\Type\ItemLinksType
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.section:
+        class: App\Form\Type\SectionType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.room_profile:
+        class: App\Form\Type\Profile\RoomProfileType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.room_profile_general:
+        class: App\Form\Type\Profile\RoomProfileGeneralType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.room_profile_address:
+        class: App\Form\Type\Profile\RoomProfileAddressType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.room_profile_contact:
+        class: App\Form\Type\Profile\RoomProfileContactType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_personalinformation:
+        class: App\Form\Type\Profile\ProfilePersonalInformationType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_account:
+        class: App\Form\Type\Profile\ProfileAccountType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_changepassword:
+        class: App\Form\Type\Profile\ProfileChangePasswordType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_mergeaccounts:
+        class: App\Form\Type\Profile\ProfileMergeAccountsType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_newsletter:
+        class: App\Form\Type\Profile\ProfileNewsletterType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_notifications:
+        class: App\Form\Type\Profile\RoomProfileNotificationsType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_calendars:
+        class: App\Form\Type\Profile\ProfileCalendarsType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_additional:
+        class: App\Form\Type\Profile\ProfileAdditionalType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_deleteroomprofile:
+        class: App\Form\Type\Profile\DeleteRoomProfileType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.upload:
+        class: App\Form\Type\UploadType
+        arguments: ['@translator']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.treechoice:
+        class: App\Form\Type\TreeChoiceType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.hashtag:
+        class: App\Form\Type\HashtagType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.category:
+        class: App\Form\Type\CategoryType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.annotation:
+        class: App\Form\Type\AnnotationType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.send:
+        class: App\Form\Type\SendType
+        arguments: ['@commsy.utils.mail_assistant']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.user_send:
+        class: App\Form\Type\UserSendType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.sendList:
+        class: App\Form\Type\SendListType
+        arguments: ['@commsy.utils.mail_assistant']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.date:
+        class: App\Form\Type\DateType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.datedetails:
+        class: App\Form\Type\DateDetailsType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.dateimport:
+        class: App\Form\Type\DateImportType
+        arguments: ['@translator']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.group:
+        class: App\Form\Type\GroupType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.topic:
+        class: App\Form\Type\TopicType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.topicpath:
+        class: App\Form\Type\TopicPathType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.discussion:
+        class: App\Form\Type\DiscussionType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.discussionarticle:
+        class: App\Form\Type\DiscussionArticleType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.todo:
+        class: App\Form\Type\TodoType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.step:
+        class: App\Form\Type\StepType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.moderationsupport:
+        class: App\Form\Type\ModerationSupportType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.participant:
+        class: App\Form\Type\ParticipantType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.calendar:
+        class: App\Form\Type\CalendarType
+        tags:
+            - { name: form.type }
+
+    App\Form\Type\CheckedBase64CsvUserImportFileType:
+        autowire: true
+        autoconfigure: true
+
+    App\Form\Type\PortfolioType:
+        autowire: true
+        autoconfigure: true
+
+    App\Form\Type\PortfolioEditCategoryType:
+        autowire: true
+        autoconfigure: true
+
+    # Form type extension
+    commsy.form.extension.image_type:
+        class: App\Form\Extension\ImageTypeExtension
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
+
+    # Controller
+    commsy.item_controller:
+        class: App\Controller\ItemController
+
+    # Utils
+    commsy.utils.mail_assistant:
+        alias: App\Utils\MailAssistant
+
+    App\Utils\MailAssistant:
+        arguments:
+            $twig: '@twig'
+            $from: '%commsy.email.from%'
+
+    commsy.utils.mail_account:
+        class: App\Utils\AccountMail
+        arguments: ['@commsy_legacy.environment', '@router']
+
+    # Commands
+    App\Command\CronCommand:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $emailFrom: '%commsy.email.from%'
+
+    App\Command\EmailUploadCommand:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $uploadEnabled: '%commsy.upload.enabled%'
+            $uploadServer: '%commsy.upload.server%'
+            $uploadPort: '%commsy.upload.port%'
+            $uploadOptions: '%commsy.upload.options%'
+            $uploadAccount: '%commsy.upload.account%'
+            $uploadPassword: '%commsy.upload.password%'
+            $emailFrom: '%commsy.email.from%'
+
+    commsy.command.db_check:
+        class: App\Command\DBCheckCommand
+        arguments:
+            - '@commsy.database.checks'
+        tags:
+            - { name: console.command }
+
+    # Database checks
+    commsy.database.checks:
+        class: App\Database\DatabaseChecks
+
+    commsy.database.checks.group_all_user_relation:
+        class: App\Database\FixGroupAllUserRelation
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
+
+    commsy.database.checks.group_all:
+        class: App\Database\FixGroupAll
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
+
+    commsy.database.checks.user_relation:
+        class: App\Database\FixUserRelations
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
+
+    #    commsy.database.checks.files:
+    #        class: App\Database\FixDBFiles
+    #        arguments:
+    #            - '@doctrine.orm.entity_manager'
+    #            - '@commsy_legacy.environment'
+    #        tags:
+    #            - commsy.database.check
+
+    App\Database\DatabaseProblem:
+        autowire: false
+
+    App\Database\Resolve\AddMemberToGroupResolution:
+        autowire: false
+
+    App\Database\Resolve\CreateGroupAllResolution:
+        autowire: false
+
+    App\Database\Resolve\DeleteDatabaseFilesResolution:
+        autowire: false
+
+    # API
+    commsy.api.soap:
+        class: App\Services\SoapService
+        arguments: ['@commsy_legacy.environment', '@service_container']
+
+    # Feed
+    debril.rss_atom.provider:
+        class: App\Feed\CommsyFeedContentProvider
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@request_stack'
+            - '@translator'
+            - '@commsy.feed.creator_factory'
+            - '@feedio'
+
+    commsy.feed.creator_factory:
+        class: App\Feed\FeedCreatorFactory
+        arguments: ['@commsy_legacy.item_service', '@commsy_legacy.environment', '@translator', '@router']
+        calls:
+            - [addCreator, ['@commsy.feed.creator.material']]
+            - [addCreator, ['@commsy.feed.creator.section']]
+            - [addCreator, ['@commsy.feed.creator.annotation']]
+            - [addCreator, ['@commsy.feed.creator.group']]
+            - [addCreator, ['@commsy.feed.creator.institution']]
+            - [addCreator, ['@commsy.feed.creator.topic']]
+            - [addCreator, ['@commsy.feed.creator.date']]
+            - [addCreator, ['@commsy.feed.creator.user']]
+            - [addCreator, ['@commsy.feed.creator.announcement']]
+            - [addCreator, ['@commsy.feed.creator.todo']]
+            - [addCreator, ['@commsy.feed.creator.step']]
+            - [addCreator, ['@commsy.feed.creator.discussion']]
+            - [addCreator, ['@commsy.feed.creator.discussion_article']]
+
+    commsy.feed.creator.material:
+        class: App\Feed\Creators\MaterialCreator
+
+    commsy.feed.creator.section:
+        class: App\Feed\Creators\SectionCreator
+
+    commsy.feed.creator.annotation:
+        class: App\Feed\Creators\AnnotationCreator
+
+    commsy.feed.creator.group:
+        class: App\Feed\Creators\GroupCreator
+
+    commsy.feed.creator.institution:
+        class: App\Feed\Creators\InstitutionCreator
+
+    commsy.feed.creator.topic:
+        class: App\Feed\Creators\TopicCreator
+
+    commsy.feed.creator.date:
+        class: App\Feed\Creators\DateCreator
+
+    commsy.feed.creator.user:
+        class: App\Feed\Creators\UserCreator
+
+    commsy.feed.creator.announcement:
+        class: App\Feed\Creators\AnnouncementCreator
+
+    commsy.feed.creator.todo:
+        class: App\Feed\Creators\TodoCreator
+
+    commsy.feed.creator.step:
+        class: App\Feed\Creators\StepCreator
+
+    commsy.feed.creator.discussion:
+        class: App\Feed\Creators\DiscussionCreator
+
+    commsy.feed.creator.discussion_article:
+        class: App\Feed\Creators\DiscussionArticleCreator
+
+    # Monolog
+    commsy.monolog.handler.doctrine_orm:
+        class: App\Monolog\Handler\DoctrineORMHandler
+        arguments: ['@doctrine.orm.entity_manager']
+
+    # Services
+    commsy.avatar_service:
+        alias: App\Services\AvatarService
+
+    App\Services\AvatarService:
+        arguments:
+            $kernelRootDir: '%kernel.root_dir%'
+
+    App\Services\PrintService:
+        arguments:
+            $pdf: '@knp_snappy.pdf'
+            $proxyIp: '%commsy.settings.proxy_ip%'
+            $proxyPort: '%commsy.settings.proxy_port%'
+
+    commsy.copy_service:
+        alias: App\Services\CopyService
+
+    App\Services\CopyService:
+        autowire: true
+
+    commsy.invitations_service:
+        class: App\Services\InvitationsService
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    commsy.calendars_service:
+        class: App\Services\CalendarsService
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    commsy.caldav_service:
+        class: App\Services\CalDAVService
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    commsy.roomcategories_service:
+        class: App\Services\RoomCategoriesService
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    commsy.room_feed_generator:
+        class: App\RoomFeed\RoomFeedGenerator
+        public: true
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@commsy_legacy.room_service'
+            - '@commsy_legacy.item_service'
+
+    # actions
+
+    App\Action\MarkRead\MarkReadGeneric:
+        autowire: true
+    App\Action\MarkRead\MarkReadMaterial:
+        autowire: true
+    App\Action\MarkRead\MarkReadTodo:
+        autowire: true
+
+    commsy.action.mark_read.generic:
+        class: App\Action\MarkRead\MarkReadAction
+        autowire: true
+        arguments:
+            $markReadStrategy: '@App\Action\MarkRead\MarkReadGeneric'
+
+    commsy.action.mark_read.material:
+        class: App\Action\MarkRead\MarkReadAction
+        autowire: true
+        arguments:
+            $markReadStrategy: '@App\Action\MarkRead\MarkReadMaterial'
+
+    commsy.action.mark_read.todo:
+        class: App\Action\MarkRead\MarkReadAction
+        autowire: true
+        arguments:
+            $markReadStrategy: '@App\Action\MarkRead\MarkReadTodo'
+
+    App\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
+
+    App\Action\Copy\CopyAction:
+        autowire: true
+
+    App\Action\Copy\InsertAction:
+        autowire: true
+
+    App\Action\Copy\RemoveAction:
+        autowire: true
+
+    App\Action\Download\DownloadAction:
+        autowire: true
+
+    App\Action\TodoStatus\TodoStatusAction:
+        autowire: true
+
+    App\Action\UserStatus\UserStatusAction:
+        autowire: true
+
+    App\Action\Delete\DeleteGeneric:
+        autowire: true
+    App\Action\Delete\DeleteStep:
+        autowire: true
+    App\Action\Delete\DeleteSection:
+        autowire: true
+    App\Action\Delete\DeleteDiscussionArticle:
+        autowire: true
+    App\Action\Delete\DeleteDate:
+        autowire: true
+        arguments:
+            $calendarsService: '@commsy.calendars_service'
+
+    commsy.action.delete.generic:
+        class: App\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@App\Action\Delete\DeleteGeneric'
+
+    commsy.action.delete.step:
+        class: App\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@App\Action\Delete\DeleteStep'
+
+    commsy.action.delete.section:
+        class: App\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@App\Action\Delete\DeleteSection'
+
+    commsy.action.delete.discussion_article:
+        class: App\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@App\Action\Delete\DeleteDiscussionArticle'
+
+    commsy.action.delete.date:
+        class: App\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@App\Action\Delete\DeleteDate'
+
+    App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
+
+    # DataTransformer
+    App\Form\DataTransformer\Base64ToCsvDatasetTransformer:
+        autowire: true
+
+    # User
+    App\User\UserBuilder:
+        autowire: true
+
+    # CalDAV
+    App\CalDAV\AuthPDO:
+        autowire: false
+
+    App\CalDAV\CalendarPDO:
+        autowire: false
+
+    App\CalDAV\Digest:
+        autowire: false
+
+    App\CalDAV\PrincipalPDO:
+        autowire: false
+
+    # Events
+    App\Event\CommsyEditEvent:
+        autowire: false
+
+    # Response
+    App\Http\JsonDataResponse:
+        autowire: false
+
+    App\Http\JsonErrorResponse:
+        autowire: false
+
+    App\Http\JsonHTMLResponse:
+        autowire: false
+
+    App\Http\JsonRedirectResponse:
+        autowire: false
+
+    # Twig
+    twig.extension.text:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
+
+###############################
+## CommsyMediawikiBundle
+###############################
+    App\Services\MediawikiService:
+        arguments:
+            $apiUrl: '%commsy.mediawiki.apiUrl%'
+            $consumerKey: '%commsy.mediawiki.consumerKey%'
+            $consumerSecret: '%commsy.mediawiki.consumerSecret%'
+            $accessToken: '%commsy.mediawiki.accessToken%'
+            $accessSecret: '%commsy.mediawiki.accessSecret%'
+
+###############################
+## EtherpadBundle
+###############################
+    commsy.etherpad_service:
+        class: App\Services\EtherpadService
+        arguments: ["@service_container"]
+
+    etherpad.etherpad_edit_subscriber:
+        class: App\EventSubscriber\EtherpadEditSubscriber
+        arguments: ["@service_container", "@commsy_legacy.material_service"]
+        tags:
+            - { name: kernel.event_subscriber }

@@ -1255,7 +1255,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+        if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
             // create backup of item
             $this->backupItem($uid, array(
                 'title' => 'title',
@@ -1275,13 +1275,13 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                     $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('materials') . ' SET';
 
                     /* flag */
-                    if ($disableOverwrite === 'flag') {
+                    if ($disableOverwrite === 'FLAG') {
                         $updateQuery .= ' public = "-1",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
                     }
 
                     /* disabled */
-                    if ($disableOverwrite === false) {
+                    if ($disableOverwrite === 'FALSE') {
                         $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
                         $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '",';
@@ -1320,10 +1320,10 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
     /**
      * Resets license links to null
      * 
-     * @param \CommsyBundle\Entity\License $license
+     * @param \App\Entity\License $license
      * @return mixed
      */
-	public function unsetLicenses(\CommsyBundle\Entity\License $license)
+	public function unsetLicenses(\App\Entity\License $license)
     {
         $query = '
             UPDATE

@@ -1,0 +1,50 @@
+
+{% import 'utils/macros.html.twig' as macros %}
+
+<div class="uk-panel uk-panel-box uk-panel-box-secondary">
+    <div class="uk-panel-teaser cs-panel-teaser-secondary">
+        <div class="uk-clearfix">
+            <div class="uk-float-right">
+                <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-sub', animation: 'uk-animation-fade'}">
+                    <i class="uk-icon-chevron-up"></i>
+                </a>
+            </div>
+            <div class="uk-float-left">
+                {{ 'linked entries'|trans({}, "room")|capitalize }}
+                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-external-link"></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="user-sub" class="uk-overflow-container">
+        {% if not linkedItemsByRubric is empty %}
+            <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+                {% for type,rubric in linkedItemsByRubric %}
+                    <h3 class="uk-accordion-title">
+                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|capitalize|trans({}) }} ({{ rubric|length }})</a>
+                    </h3>
+                    <div class="uk-accordion-content">
+                        <ul class="uk-list uk-margin-bottom-remove">
+                        {% for linkedItem in rubric [0:10] %}
+                            <li><i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-text-primary"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title|decodeHtmlEntity }}</a></li>
+                        {% endfor %}
+                        </ul>
+                        {% if rubric|length > 10 %}
+                            <div class="show-more-{{ type }} uk-hidden">
+                                <ul class="uk-list">
+                                {% for linkedItem in rubric [10:rubric|length-10] %}
+                                    <li><i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-text-primary"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title|decodeHtmlEntity }}</a></li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="uk-margin-small">
+                                <a class="show-more-{{ type }}" data-uk-toggle="{target:'.show-more-{{ type }}', animation:'uk-animation-fade'}">{{ 'show all'|trans({}) }}</a>
+                                <a class="show-more-{{ type }} uk-hidden" data-uk-toggle="{target:'.show-more-{{ type }}', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>

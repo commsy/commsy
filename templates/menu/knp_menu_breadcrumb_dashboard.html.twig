@@ -1,0 +1,22 @@
+{% extends 'menu/knp_menu_breadcrumb.html.twig' %}
+
+{% block list %}
+{% if item.hasChildren and options.depth is not sameas(0) and item.displayChildren %}
+    {% from 'menu/knp_menu_breadcrumb.html.twig' import attributes %}
+    <div class="cs-panel-teaser-primary uk-padding-remove cs-remove-border cs-max-width">
+        <div>
+            <ul id="breadcrumb-nav" class="uk-breadcrumb"{{ attributes(listAttributes) }}>
+                {{ block('children') }}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block dashboardEdit %}
+<div class="uk-float-right cs-padding-10 uk-hidden">
+    <a href="#" class="button-toggle uk-button-mini uk-button-primary">
+        <i class="uk-icon-gears"></i>
+    </a>
+</div>
+{% endblock %}

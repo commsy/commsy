@@ -1,0 +1,44 @@
+{% extends 'base/room.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-1-1">
+
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Send mail'|trans({}, "mail") }}</div>
+                    </div>
+                </div>
+
+                {% set failedRecipients = app.flashes('failedRecipients') %}
+                {% set recipientCount = app.flashes('recipientCount')|first %}
+
+                {% if failedRecipients is empty %}
+                    <div class="uk-alert uk-alert-success">
+                        <i class="uk-icon-check-square-o uk-icon-medium"></i>
+                        {{ 'Your email has been successfully sent to multiple users'|trans({'%user_count%': recipientCount}, "mail") }}
+                    </div>
+                {% else %}
+                    <div class="uk-alert uk-alert-warning">
+                        <i class="uk-icon-exclamation-triangle uk-icon-medium"></i>
+                        {{ 'Your email may only have been partially sent.'|trans({}, "mail") }}
+
+                        <ul class="uk-list">
+                            {% for message in failedRecipients %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div>
+                    {{ 'Back to'|trans({}, "mail") }} <a href="{{ link }}">{{ 'user'|trans({}, 'menu') }}</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

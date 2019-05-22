@@ -1,0 +1,36 @@
+{% import 'utils/macros.html.twig' as utilMacros %}
+{% import 'annotation/macros.html.twig' as annotationMacros %}
+
+{% for annotation in annotations %}
+    <article class="uk-comment">
+        {{ utilMacros.statusColor(readerList, annotation.itemId) }}
+
+        <header class="uk-comment-header uk-flex">
+
+            {# user icon #}
+            <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }}">
+                {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
+                    {{ utilMacros.userIconLink(annotation.creator) }}
+                {% else %}
+                    {{ utilMacros.userIcon(annotation.creator) }}
+                {% endif %}
+            </div>
+
+            {# user link #}
+            <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }} uk-hidden">
+                {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
+                    {{ utilMacros.userIconLink(annotation.creator) }}
+                {% endif %}
+            </div>
+
+            {# content #}
+            <div class="uk-width">
+                <div id="description{{ annotation.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_annotation_edit', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}' }">
+                    {{ annotationMacros.editAnnotationContent('description', annotation, annotation.description) }}
+                </div>
+            </div>
+        </header>
+    </article>
+{% endfor %}
+
+

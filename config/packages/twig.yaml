@@ -1,0 +1,9 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'form/uikit_layout.html.twig'
+        - '@LexikFormFilter/Form/form_div_layout.html.twig'
+    globals:
+        pre_definition: '%liip_theme_pre_configuration.active_theme%'

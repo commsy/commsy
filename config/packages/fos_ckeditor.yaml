@@ -1,0 +1,83 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - 'form/ckeditor_widget.html.twig'
+
+fos_ck_editor:
+    inline: true
+    default_config: cs_item_config
+    input_sync: true
+
+    plugins:
+        menubutton:
+            path:     "/ckeditor/menubutton/"
+            filename: "plugin.js"
+        language:
+            path:     "/ckeditor/language/"
+            filename: "plugin.js"
+        bidi:
+            path:     "/ckeditor/bidi/"
+            filename: "plugin.js"
+        commsyhelp:
+            path:     "/ckeditor/commsyhelp/"
+            filename: "plugin.js"
+        commsyimage:
+            path:     "/ckeditor/commsyimage/"
+            filename: "plugin.js"
+        commsyaudio:
+            path:     "/ckeditor/commsyaudio/"
+            filename: "plugin.js"
+        commsyvideo:
+            path:     "/ckeditor/commsyvideo/"
+            filename: "plugin.js"
+        commsydocument:
+            path:     "/ckeditor/commsydocument/"
+            filename: "plugin.js"
+        tableresize:
+            path:     "/ckeditor/tableresize/"
+            filename: "plugin.js"
+        sharedspace:
+            path:     "/ckeditor/sharedspace/"
+            filename: "plugin.js"
+        widget:
+            path:     "/ckeditor/widget/"
+            filename: "plugin.js"
+        lineutils:
+            path:     "/ckeditor/lineutils/"
+            filename: "plugin.js"
+        widgetselection:
+            path:     "/ckeditor/widgetselection/"
+            filename: "plugin.js"
+        sourcedialog:
+            path:     "/ckeditor/sourcedialog/"
+            filename: "plugin.js"
+
+    toolbars:
+        configs:
+            simpleToolbar: [ "@clipboard", "@basicstyles" ]
+            fullToolbar: [ [ "html5audio" ], "@clipboard", "@basicstyles" , "@paragraph", "@justify", "@misc", "/", "@format", "@style", "@content", "@language", "@commsy" ]
+        items:
+            clipboard: [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ]
+            basicstyles: [ "Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript" ]
+            paragraph: [ "NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote" ]
+            justify: [ "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ]
+            misc: [ "Sourcedialog" ]
+            format: [ "Format", "Font", "FontSize" ]
+            style: [ "TextColor", "BGColor", "RemoveFormat" ]
+            content: [ "Link", "Unlink", "Table", "HorizontalRule" ]
+            language: [ "Language", "BidiLtr", "BidiRtl" ]
+            commsy: [ "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument", "Commsyhelp" ]
+
+    configs:
+        cs_item_config:
+            toolbar: "fullToolbar"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,sharedspace,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
+            language_list: ['de:German', 'en:English']
+            removePlugins: 'floatingspace,maximize,resize'
+            sharedSpaces:
+                top: 'cke_top'
+                bottom: 'cke_bottom'
+
+        cs_annotation_config:
+            toolbar: "simpleToolbar"

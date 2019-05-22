@@ -304,7 +304,7 @@ class cs_todo_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.todo');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:Todos');
+        $repository = $em->getRepository('App:Todos');
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -331,7 +331,7 @@ class cs_todo_item extends cs_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.todo');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Todos');
+      $repository = $em->getRepository('App:Todos');
 
       $this->deleteElasticItem($objectPersister, $repository);
    }

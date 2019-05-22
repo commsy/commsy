@@ -1,0 +1,34 @@
+{% import 'utils/macros.html.twig' as macros %}
+
+<article class="uk-comment selectable" data-cs-linked-items>
+    <header class="uk-comment-header uk-flex">
+        <div class="items-checkbox uk-margin-right uk-margin-top">
+            <input type="checkbox" name="itemLinks[itemsLinked][{{ item.itemId }}]" value="1" checked="checked">
+        </div>
+        <div class="uk-margin-right uk-flex-item-none">
+            {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                {{ macros.userIconLink(item.modificatorItem) }}
+            {% else %}
+                {{ macros.userIcon(item.modificatorItem) }}
+            {% endif %}
+            <div class="uk-comment-meta">
+                {% if item.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                    {{ 'today'|trans({})|capitalize }}, {{item.getModificationDate|date("H:i")}}
+                {% else %}
+                    {{item.getModificationDate|date("d.m.Y")}}
+                {% endif %}
+            </div>
+        </div>
+        <div class="uk-width-8-10">
+            <h4 class="uk-comment-title">
+                <a href="">{{ item.title|decodeHtmlEntity }}</a>
+            </h4>
+            <div class="uk-comment-meta">
+                {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }} ({{item.getCreationDate|date("d.m.Y")}})
+            </div>
+        </div>
+        <div class="uk-width-2-10 uk-text-right">
+            <i class="{{ macros.iconClassForItemType(item.type) }} uk-icon-small"></i>{##}
+        </div>
+    </header>
+</article>

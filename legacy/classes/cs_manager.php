@@ -779,7 +779,7 @@ class cs_manager {
       $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
       
       if ($checkLocking && $item->hasLocking()) {
-         $this->clearLocking($item->getItemId());
+          $item->unlock();
       }
 
       unset($item);

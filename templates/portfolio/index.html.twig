@@ -1,0 +1,56 @@
+{% extends 'base/detail.html.twig' %}
+
+{% block content %}
+    {% if portfolioId is defined %}
+        <script>
+            var portfolioId = "{{ portfolioId }}";
+        </script>
+    {% endif %}
+
+    <div class="uk-grid">
+        <div class="uk-width-medium-1-1">
+            <div class="uk-panel uk-panel-box uk-margin-bottom">
+
+                {# panel title bar #}
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'Portfolios'|trans({}, "portfolio") }}</div>
+                    </div>
+                </div>
+
+                {# create new #}
+                <div class="uk-margin-bottom">
+                    <a class="uk-button uk-button-primary" href="{{ path('app_portfolio_edit', { 'roomId': roomId, 'portfolioId': 'new' }) }}" data-uk-tooltip title="{{ 'Create new portfolio'|trans({}, 'portfolio') }}">
+                        <i class="uk-icon-plus uk-icon-small"></i> {{ 'Create new portfolio'|trans({}, 'portfolio') }}
+                    </a>
+                </div>
+
+                {# content #}
+                <div class="uk-grid">
+                    <div class="uk-margin-large-top" style="padding-top: 0px; z-index:1;">
+                        <div id="portfolio-source">
+                            <ul id="portfolioSourceTabs" class="uk-tab uk-tab-left" data-uk-tab>
+                                <li class="uk-active" data-portfolio-source-id="my-portfolios"><a href="" data-uk-tooltip title="{{ 'my portfolios'|trans({}, 'portfolio') }}"><i class="uk-icon-archive"></i></a></li>
+                                <li data-portfolio-source-id="activated-portfolios"><a href="" data-uk-tooltip title="{{ 'activated portfolios'|trans({}, 'portfolio') }}"><i class="uk-icon-share-alt"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="portfolio-wrapper" class="uk-width-medium-5-6" data-portfolio-url="{{ path('app_portfolio_portfolio', {'roomId': roomId }) }}" data-portfolio-tabs-url="{{ path('app_portfolio_tabs', {'roomId': roomId }) }}" data-portfolio-initial-id="1">
+                        <div class="uk-grid commsy-sticky-table-wrapper">
+                            <div class="uk-width-1-1" style="padding-left: 0px; margin-left: -1px;">
+                                <div id="portfolio-tabs">
+
+                                </div>
+                            </div>
+                            <div class="uk-width-1-1 uk-overflow-container" style="border:1px solid #dddddd; margin-top:-1px; margin-left:-1px; padding:10px;">
+                                <div id="portfolio-table">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
