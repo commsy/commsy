@@ -465,6 +465,7 @@ class DateController extends BaseController
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'showAssociations' => $current_context->withAssociations(),
             'roomCategories' => $categories,
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
@@ -1542,6 +1543,7 @@ class DateController extends BaseController
             'readSinceModificationCount' => $read_since_modification_count,
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
+            'showAssociations' => $current_context->withAssociations(),
             'showHashtags' => $current_context->withBuzzwords(),
             'roomCategories' => $categories,
         ]);

@@ -527,13 +527,13 @@ class ItemController extends Controller
             if ($form->get('save')->isClicked()) {
                 $data = $form->getData();
 
-                $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
+                // $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
 
                 // update modifier
                 $item->setModificatorItem($environment->getCurrentUserItem());
 
                 // save links
-                $item->setLinkedItemsByIDArray($itemData);
+                //$item->setLinkedItemsByIDArray($itemData);
                 $item->setTagListByID($data['categories']);
                 $item->setBuzzwordListByID($data['hashtags']);
 

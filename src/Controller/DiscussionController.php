@@ -144,6 +144,7 @@ class DiscussionController extends BaseController
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
@@ -224,6 +225,7 @@ class DiscussionController extends BaseController
             'module' => 'discussion',
             'itemsCountArray' => $itemsCountArray,
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
         ]);
 
@@ -275,6 +277,7 @@ class DiscussionController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
@@ -477,6 +480,7 @@ class DiscussionController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['showAssociations'] = $current_context->withAssociations();
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
             'ratingAverageDetail' => $ratingAverageDetail,
@@ -566,6 +570,7 @@ class DiscussionController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],

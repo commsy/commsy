@@ -163,6 +163,9 @@
                     {% if not draft %}
                         {# links #}
                         <div id="links{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
+                            {{ macrosItem.linksAssociations(todo,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
+                        </div>
+                        <div id="categoriesAndBuzzwords{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
                             {{ macrosItem.links(todo,showHashtags,showCategories,roomCategories, draft) }}
                         </div>
 
@@ -338,6 +341,7 @@
                         <li><a href="#description{{ todo.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ todo.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ todo.itemId }}">{{ 'links'|trans({})}}</a></li>
+                        <li><a href="#categoriesAndBuzzwords{{ todo.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
                         {% if not stepList is empty %}
                             <li class="uk-parent">
                                 <a href="#steps{{ todo.itemId }}">{{ 'steps'|trans({})|capitalize }}</a>
