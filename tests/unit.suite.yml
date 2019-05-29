@@ -1,13 +1,12 @@
+# Codeception Test Suite Configuration
+#
+# Suite for unit or integration tests.
+
 actor: UnitTester
-error_level: "E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_USER_DEPRECATED"
 modules:
     enabled:
-        - \Helper\Unit
         - Asserts
+        - \App\Tests\Helper\Unit
         - Symfony
         - Db
-    config:
-        Symfony:
-            app_path: 'src'
-            var_path: 'var'
-            environment: testsuite
+

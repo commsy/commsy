@@ -36,7 +36,7 @@
         "version": "7.7.1"
     },
     "codeception/stub": {
-        "version": "2.0.4"
+        "version": "2.1.0"
     },
     "container-interop/container-interop": {
         "version": "1.2.0"
@@ -220,6 +220,33 @@
     "guzzlehttp/streams": {
         "version": "3.0.0"
     },
+    "hoa/consistency": {
+        "version": "1.17.05.02"
+    },
+    "hoa/console": {
+        "version": "3.17.05.02"
+    },
+    "hoa/event": {
+        "version": "1.17.01.13"
+    },
+    "hoa/exception": {
+        "version": "1.17.01.16"
+    },
+    "hoa/file": {
+        "version": "1.17.07.11"
+    },
+    "hoa/iterator": {
+        "version": "2.17.01.10"
+    },
+    "hoa/protocol": {
+        "version": "1.17.01.14"
+    },
+    "hoa/stream": {
+        "version": "1.17.02.21"
+    },
+    "hoa/ustring": {
+        "version": "4.17.01.16"
+    },
     "idci/color-scheme-bundle": {
         "version": "dev-master"
     },
@@ -279,7 +306,7 @@
         "version": "1.24.0"
     },
     "myclabs/deep-copy": {
-        "version": "1.8.1"
+        "version": "1.9.1"
     },
     "nategood/httpful": {
         "version": "0.2.20"
@@ -315,7 +342,7 @@
         "version": "1.0.1"
     },
     "phpdocumentor/reflection-docblock": {
-        "version": "4.3.0"
+        "version": "4.3.1"
     },
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
@@ -408,7 +435,7 @@
         "version": "3.0.2"
     },
     "sebastian/environment": {
-        "version": "4.1.0"
+        "version": "4.2.2"
     },
     "sebastian/exporter": {
         "version": "3.1.0"
@@ -450,7 +477,7 @@
         "version": "v4.2.4"
     },
     "symfony/browser-kit": {
-        "version": "v4.2.4"
+        "version": "v4.2.8"
     },
     "symfony/cache": {
         "version": "v4.2.4"
@@ -475,7 +502,7 @@
         "version": "v1.0.2"
     },
     "symfony/css-selector": {
-        "version": "v4.2.4"
+        "version": "v4.2.8"
     },
     "symfony/debug": {
         "version": "v4.2.4"
@@ -487,7 +514,7 @@
         "version": "v4.2.4"
     },
     "symfony/dom-crawler": {
-        "version": "v4.2.4"
+        "version": "v4.2.8"
     },
     "symfony/dotenv": {
         "version": "v4.2.4"
@@ -759,7 +786,7 @@
         "version": "v4.2.4"
     },
     "theseer/tokenizer": {
-        "version": "1.1.0"
+        "version": "1.1.2"
     },
     "tomnomnom/etherpad-lite-client": {
         "version": "0.1.2"

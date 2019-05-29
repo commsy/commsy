@@ -1,5 +1,7 @@
 <?php
-namespace Page\Acceptance;
+namespace App\Tests\Page\Acceptance;
+
+use App\Tests\AcceptanceTester;
 
 class GroupFeed
 {
@@ -27,7 +29,7 @@ class GroupFeed
      */
     protected $acceptanceTester;
 
-    public function __construct(\AcceptanceTester $I)
+    public function __construct(AcceptanceTester $I)
     {
         $this->acceptanceTester = $I;
     }

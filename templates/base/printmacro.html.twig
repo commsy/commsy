@@ -324,7 +324,7 @@
 
 
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+    {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'material' %}
@@ -644,7 +644,7 @@
 
 
 {% macro editAnnotationContent(title, item, content) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'utils/macros.html.twig' as macros %}
     <div class="uk-grid uk-margin-top-remove">
 
         {# content #}
@@ -734,7 +734,7 @@
 {% endmacro %}
 
 {% macro participants(item,participants) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+    {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
     {% if not participants is empty %}
         {% for participant in participants %}
@@ -754,7 +754,7 @@
 {% endmacro %}
 
 {% macro titleUser(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+    {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'user' %}
@@ -896,7 +896,7 @@
 
 {% macro members(item,members) %}
     {% import _self as macros %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+    {% import 'utils/macros.html.twig' as utilsMacros %}
 
     {% set preview = '' %}
     {% set content = '' %}

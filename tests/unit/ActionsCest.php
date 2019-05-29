@@ -1,8 +1,16 @@
 <?php
 
+namespace App\Tests;
+
+use App\Tests\UnitTester;
+
 
 class ActionsCest
 {
+    public function _before(UnitTester $I)
+    {
+    }
+
     public function deleteUser(UnitTester $I)
     {
         /** @var \cs_environment $legacyEnvironment */

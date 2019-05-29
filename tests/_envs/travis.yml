@@ -2,7 +2,7 @@
 modules:
     config:
         WebDriver:
-            url: http://localhost:8080/app_testsuite.php
+            url: http://localhost:8080/
             browser: chrome
             host: 127.0.0.1
             port: 9515
