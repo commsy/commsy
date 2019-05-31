@@ -8,13 +8,24 @@ use Elastica\Query\Terms;
 
 class RubricFilterCondition implements FilterConditionInterface
 {
+    /**
+     * @var string|null $rubric
+     */
     private $rubric;
 
-    public function setRubric($rubric)
+    /**
+     * @param string $rubric
+     * @return RubricFilterCondition
+     */
+    public function setRubric($rubric): RubricFilterCondition
     {
         $this->rubric = $rubric;
+        return $this;
     }
 
+    /**
+     * @return Terms[]
+     */
     public function getConditions(): array
     {
         if ($this->rubric === 'all') {
@@ -26,6 +37,9 @@ class RubricFilterCondition implements FilterConditionInterface
         return [$rubricTerms];
     }
 
+    /**
+     * @return string
+     */
     public function getOperator(): string
     {
         return FilterConditionInterface::BOOL_MUST;

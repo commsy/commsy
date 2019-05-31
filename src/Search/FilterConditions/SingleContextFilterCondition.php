@@ -31,6 +31,9 @@ class SingleContextFilterCondition implements FilterConditionInterface
         return $this;
     }
 
+    /**
+     * @return Terms[]
+     */
     public function getConditions(): array
     {
         $contextTerm = new Terms();
@@ -42,6 +45,9 @@ class SingleContextFilterCondition implements FilterConditionInterface
         return [$contextTerm, $parentTerm];
     }
 
+    /**
+     * @return string
+     */
     public function getOperator(): string
     {
         return FilterConditionInterface::BOOL_SHOULD;

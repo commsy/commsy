@@ -19,6 +19,9 @@ class MultipleContextFilterCondition implements FilterConditionInterface
         $this->userService = $userService;
     }
 
+    /**
+     * @return Terms[]
+     */
     public function getConditions(): array
     {
         $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
@@ -34,6 +37,9 @@ class MultipleContextFilterCondition implements FilterConditionInterface
         return [$contextFilter];
     }
 
+    /**
+     * @return string
+     */
     public function getOperator(): string
     {
         return FilterConditionInterface::BOOL_MUST;

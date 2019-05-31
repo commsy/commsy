@@ -12,7 +12,7 @@ interface FilterConditionInterface
     public const BOOL_SHOULD = 'should';
 
     /**
-     * @return Terms[]
+     * @return Terms[]|Range[]
      */
     public function getConditions(): array;
 
