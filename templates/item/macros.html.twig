@@ -200,6 +200,7 @@
     {% set content %}
 
     <div class="uk-grid">
+        {% if withCategories %}
         <div class="uk-width-1-3">
             <strong>{{ 'categories'|trans({}, "room") }}:</strong>
             {% if (item.tagsArray|length) > 0 %}
@@ -210,6 +211,8 @@
                 <br/>{{ 'no linked items'|trans({}, "room")}}
             {% endif %}
         </div>
+        {% endif %}
+        {% if withTags %}
         <div class="uk-width-1-3">
             <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
             {% set tagArray = item.buzzwordList.to_array() %} 
@@ -221,6 +224,7 @@
                 {{ 'no linked items'|trans({}, "room")}}
             {% endif %}
         </div>
+        {% endif %}
     </div>
     {% endset %}
     
