@@ -46,6 +46,14 @@ class AdditionalSettingsType extends AbstractType
             ->add(
                 $builder->create('structural_auxilaries', FormType::class, array('required' => false))
                 ->add(
+                    $builder->create('associations', FormType::class, array())
+                        ->add('show_expanded', CheckboxType::class, array(
+                            'required' => false,
+                            'label_attr' => array('class' => 'uk-form-label'),
+                            'value' => 'yes',
+                        ))
+                )
+                ->add(
                     $builder->create('buzzwords', FormType::class, array())
                     ->add('activate', CheckboxType::class, array(
                         'required' => false,
