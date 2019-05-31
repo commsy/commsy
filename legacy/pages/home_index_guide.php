@@ -591,7 +591,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
         global $symfonyContainer;
 
         $mailer = $symfonyContainer->get('mailer');
-        $transport = $symfonyContainer->get('swiftmailer.transport.real');
+        $transport = $symfonyContainer->get('swiftmailer.mailer.default.transport.real');
 
         $spool = $mailer->getTransport()->getSpool();
         $spool->flushQueue($transport);

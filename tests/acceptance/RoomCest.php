@@ -1,9 +1,17 @@
 <?php
 
+namespace App\Tests;
+
+use App\Tests\AcceptanceTester;
+use App\Tests\Page\Acceptance\GroupFeed;
+use App\Tests\Page\Login;
+use App\Tests\Page\PortalCreate;
+use App\Tests\Page\RoomCreate;
+
 
 class RoomCest
 {
-    public function createRoom(AcceptanceTester $I, \Page\Login $loginPage, \Page\PortalCreate $portalCreatePage, \Page\RoomCreate $roomCreatePage)
+    public function createRoom(AcceptanceTester $I, Login $loginPage, PortalCreate $portalCreatePage, RoomCreate $roomCreatePage)
     {
         $loginPage->login('root', 'root');
         $portalCreatePage->create('Mein Portal', 'Meine Beschreibung');
@@ -16,7 +24,7 @@ class RoomCest
 //        $I->see('Mein Projektraum');
     }
 
-    public function actionLinks(AcceptanceTester $I, \Page\Login $loginPage, \Page\PortalCreate $portalCreatePage, \Page\RoomCreate $roomCreatePage, \Page\Acceptance\GroupFeed $groupFeedPage)
+    public function actionLinks(AcceptanceTester $I, Login $loginPage, PortalCreate $portalCreatePage, RoomCreate $roomCreatePage, GroupFeed $groupFeedPage)
     {
         $loginPage->login('root', 'root');
         $portalCreatePage->create('Mein Portal', 'Meine Beschreibung');

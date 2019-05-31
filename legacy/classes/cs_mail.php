@@ -241,7 +241,7 @@ class cs_mail
 
         global $symfonyContainer;
         $mailer = $symfonyContainer->get('mailer');
-        $transport = $symfonyContainer->get('swiftmailer.transport.real');
+        $transport = $symfonyContainer->get('swiftmailer.mailer.default.transport.real');
 
         $success = $mailer->send($message);
 

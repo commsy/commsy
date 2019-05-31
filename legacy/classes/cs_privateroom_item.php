@@ -775,7 +775,7 @@ class cs_privateroom_item extends cs_room_item
 
                     // flush queue manually
                     $mailer = $symfonyContainer->get('mailer');
-                    $transport = $symfonyContainer->get('swiftmailer.transport.real');
+                    $transport = $symfonyContainer->get('swiftmailer.mailer.default.transport.real');
 
                     $spool = $mailer->getTransport()->getSpool();
                     $spool->flushQueue($transport);
