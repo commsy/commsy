@@ -308,9 +308,10 @@ class SearchController extends BaseController
             return $searchData;
         }
 
+        $searchParams = $requestParams['search'] ?? $requestParams['search_filter'] ?? null;
+
         // search phrase parameter
         if (!$searchData->getPhrase()) {
-            $searchParams = $requestParams['search'] ?? $requestParams['search_filter'] ?? null;
             $searchData->setPhrase($searchParams['phrase'] ?? null);
         }
 
