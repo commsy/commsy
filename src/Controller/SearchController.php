@@ -166,9 +166,9 @@ class SearchController extends BaseController
         if ($searchData->getAllRooms()) {
             $searchManager->addFilterCondition($multipleContextFilterCondition);
         } else {
-            $singleFilterCondition = new SingleContextFilterCondition();
-            $singleFilterCondition->setContextId($roomId);
-            $searchManager->addFilterCondition($singleFilterCondition);
+            $singleContextFilterCondition = new SingleContextFilterCondition();
+            $singleContextFilterCondition->setContextId($roomId);
+            $searchManager->addFilterCondition($singleContextFilterCondition);
         }
 
         // rubric parameter
@@ -242,9 +242,9 @@ class SearchController extends BaseController
         if ($searchData->getAllRooms()) {
             $searchManager->addFilterCondition($multipleContextFilterCondition);
         } else {
-            $singleFilterCondition = new SingleContextFilterCondition();
-            $singleFilterCondition->setContextId($roomId);
-            $searchManager->addFilterCondition($singleFilterCondition);
+            $singleContextFilterCondition = new SingleContextFilterCondition();
+            $singleContextFilterCondition->setContextId($roomId);
+            $searchManager->addFilterCondition($singleContextFilterCondition);
         }
 
         // rubric parameter
