@@ -4,14 +4,10 @@ namespace App\Filter;
 use App\Form\EventListener\AddRubricSearchListener;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
-use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\SearchManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 
@@ -38,8 +34,6 @@ class SearchFilterType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $searchParams = $options['parameters']->get('search_filter');
-
         /** @var SearchData $searchData */
         $searchData = $builder->getData();
 
@@ -119,7 +113,7 @@ class SearchFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['contextId', 'parameters'])
+            ->setRequired(['contextId'])
             ->setDefaults([
                 'csrf_protection'    => false,
                 'validation_groups'  => array('filtering'), // avoid NotBlank() constraint-related message

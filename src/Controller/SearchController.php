@@ -198,7 +198,6 @@ class SearchController extends BaseController
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
-            'parameters' => $request->query,
         ]);
         $filterForm->handleRequest($request);
 
@@ -275,7 +274,6 @@ class SearchController extends BaseController
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
-            'parameters' => $request->query,
         ]);
         $filterForm->handleRequest($request);
 
