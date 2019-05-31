@@ -262,9 +262,11 @@
                         <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             {{ macrosItem.linksAssociations(material,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
                         </div>
-                        <div id="categoriesAndBuzzwords{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                            {{ macrosItem.links(material,showHashtags,showCategories,roomCategories, draft) }}
-                        </div>
+                        {% if (showCategories or showCategories) %}
+                            <div id="categoriesAndBuzzwords{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                                {{ macrosItem.links(material,showHashtags,showCategories,roomCategories, draft) }}
+                            </div>
+                        {% endif %}
 
                         {# workflow #}
                         {% if showWorkflow and (withTrafficLight or withResubmission or withValidity or withReader) %}
@@ -455,7 +457,9 @@
                         <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        <li><a href="#categoriesAndBuzzwords{{ material.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                        {% if (showCategories or showCategories) %}
+                            <li><a href="#categoriesAndBuzzwords{{ material.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                        {% endif %}
                         {%if showWorkflow %}
                             <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
                         {% endif %}

@@ -154,9 +154,11 @@
                         <div id="links{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
                             {{ macrosItem.linksAssociations(announcement,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
                         </div>
-                        <div id="categoriesAndBuzzwords{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
-                            {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories) }}
-                        </div>
+                        {% if (showCategories or showCategories) %}
+                            <div id="categoriesAndBuzzwords{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
+                                {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories) }}
+                            </div>
+                        {% endif %}
                     {% endif %}
 
                     {% if draft %}
@@ -228,7 +230,9 @@
                         <li><a href="#description{{ announcement.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ announcement.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ announcement.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        <li><a href="#categoriesAndBuzzwords{{ announcement.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                        {% if (showCategories or showCategories) %}
+                            <li><a href="#categoriesAndBuzzwords{{ announcement.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                        {% endif %}
                         <li><a href="#annotations{{ announcement.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
                     </ul>
                 </div>
