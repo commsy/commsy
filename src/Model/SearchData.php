@@ -65,7 +65,7 @@ class SearchData
     /**
      * @return boolean|null
      */
-    public function getAllRooms(): bool
+    public function getAllRooms(): ?bool
     {
         return $this->allRooms;
     }
