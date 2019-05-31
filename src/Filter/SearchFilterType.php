@@ -66,18 +66,41 @@ class SearchFilterType extends AbstractType
                 'label' => 'Creator',
                 'required' => false,
             ])
-            // TODO: for each of the date range form options, provide two date fields with date pickers to describe a date range?
-            ->add('creation_date_range', Types\TextType::class, [
+            ->add('creation_date_from', Filters\DateFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
+                'label' => 'Created from',
                 'required' => false,
+                'input'  => 'datetime',
+                'widget' => 'single_text',
             ])
-            ->add('modification_date_range', Types\TextType::class, [
+            ->add('creation_date_until', Filters\DateFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
+                'label' => 'Created until',
                 'required' => false,
+                'input'  => 'datetime',
+                'widget' => 'single_text',
+            ])
+            ->add('modification_date_from', Filters\DateFilterType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'label' => 'Modified from',
+                'required' => false,
+                'input'  => 'datetime',
+                'widget' => 'single_text',
+            ])
+            ->add('modification_date_until', Filters\DateFilterType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'label' => 'Modified until',
+                'required' => false,
+                'input'  => 'datetime',
+                'widget' => 'single_text',
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [
                 'attr' => [

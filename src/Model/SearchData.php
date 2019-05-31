@@ -34,15 +34,24 @@ class SearchData
     private $selectedCreator;
 
     /**
-     * @var \DateInterval|null $creationDateRange
+     * @var \DateTime|null $creationDateFrom
      */
-    private $creationDateRange;
+    private $creationDateFrom;
 
     /**
-     * @var \DateInterval|null $modificationDateRange
+     * @var \DateTime|null $creationDateUntil
      */
-    private $modificationDateRange;
+    private $creationDateUntil;
 
+    /**
+     * @var \DateTime|null $modificationDateFrom
+     */
+    private $modificationDateFrom;
+
+    /**
+     * @var \DateTime|null $modificationDateUntil
+     */
+    private $modificationDateUntil;
 
     /**
      * @return string|null
@@ -177,38 +186,74 @@ class SearchData
     }
 
     /**
-     * @return \DateInterval
+     * @return \DateTime|null
      */
-    public function getCreationDateRange(): ?\DateInterval
+    public function getCreationDateFrom(): ?\DateTime
     {
-        return $this->creationDateRange;
+        return $this->creationDateFrom;
     }
 
     /**
-     * @param \DateInterval $creationDateRange
+     * @param \DateTime|null $creationDateFrom
      * @return SearchData
      */
-    public function setCreationDateRange(\DateInterval $creationDateRange): SearchData
+    public function setCreationDateFrom(?\DateTime $creationDateFrom): SearchData
     {
-        $this->creationDateRange = $creationDateRange;
+        $this->creationDateFrom = $creationDateFrom;
         return $this;
     }
 
     /**
-     * @return \DateInterval
+     * @return \DateTime|null
      */
-    public function getModificationDateRange(): ?\DateInterval
+    public function getCreationDateUntil(): ?\DateTime
     {
-        return $this->modificationDateRange;
+        return $this->creationDateUntil;
     }
 
     /**
-     * @param \DateInterval $modificationDateRange
+     * @param \DateTime|null $creationDateUntil
      * @return SearchData
      */
-    public function setModificationDateRange(\DateInterval $modificationDateRange): SearchData
+    public function setCreationDateUntil(?\DateTime $creationDateUntil): SearchData
     {
-        $this->modificationDateRange = $modificationDateRange;
+        $this->creationDateUntil = $creationDateUntil;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getModificationDateFrom(): ?\DateTime
+    {
+        return $this->modificationDateFrom;
+    }
+
+    /**
+     * @param \DateTime|null $modificationDateFrom
+     * @return SearchData
+     */
+    public function setModificationDateFrom(?\DateTime $modificationDateFrom): SearchData
+    {
+        $this->modificationDateFrom = $modificationDateFrom;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getModificationDateUntil(): ?\DateTime
+    {
+        return $this->modificationDateUntil;
+    }
+
+    /**
+     * @param \DateTime|null $modificationDateUntil
+     * @return SearchData
+     */
+    public function setModificationDateUntil(?\DateTime $modificationDateUntil): SearchData
+    {
+        $this->modificationDateUntil = $modificationDateUntil;
         return $this;
     }
 }

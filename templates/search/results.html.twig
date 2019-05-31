@@ -129,6 +129,10 @@
                                     "search[phrase]": "{{ searchData.phrase }}",
                                     "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",
+                                    "search[creation_date_from]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('Y-m-d') : '' }}",
+                                    "search[creation_date_until]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('Y-m-d') : '' }}",
+                                    "search[modification_date_from]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('Y-m-d') : '' }}",
+                                    "search[modification_date_until]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('Y-m-d') : '' }}",
                                     "search[selectedRubric]": "{{ searchData.selectedRubric }}"
                                 }
                         }'>

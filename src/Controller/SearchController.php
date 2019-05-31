@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Search\FilterConditions\CreationDateFilterCondition;
+use App\Search\FilterConditions\ModificationDateFilterCondition;
 use App\Search\FilterConditions\MultipleContextFilterCondition;
 use App\Search\FilterConditions\SingleCreatorFilterCondition;
 use App\Search\FilterConditions\RubricFilterCondition;
@@ -185,6 +187,22 @@ class SearchController extends BaseController
             $searchManager->addFilterCondition($singleCreatorFilterCondition);
         }
 
+        // creation date range parameter
+        if ($searchData->getCreationDateFrom() || $searchData->getCreationDateUntil()) {
+            $creationDateFilterCondition = new CreationDateFilterCondition();
+            $creationDateFilterCondition->setStartDate($searchData->getCreationDateFrom());
+            $creationDateFilterCondition->setEndDate($searchData->getCreationDateUntil());
+            $searchManager->addFilterCondition($creationDateFilterCondition);
+        }
+
+        // modification date range parameter
+        if ($searchData->getModificationDateFrom() || $searchData->getModificationDateUntil()) {
+            $modificationDateFilterCondition = new ModificationDateFilterCondition();
+            $modificationDateFilterCondition->setStartDate($searchData->getModificationDateFrom());
+            $modificationDateFilterCondition->setEndDate($searchData->getModificationDateUntil());
+            $searchManager->addFilterCondition($modificationDateFilterCondition);
+        }
+
         $searchManager->setQuery($searchData->getPhrase());
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
@@ -261,6 +279,22 @@ class SearchController extends BaseController
             $searchManager->addFilterCondition($singleCreatorFilterCondition);
         }
 
+        // creation date range parameter
+        if ($searchData->getCreationDateFrom() || $searchData->getCreationDateUntil()) {
+            $creationDateFilterCondition = new CreationDateFilterCondition();
+            $creationDateFilterCondition->setStartDate($searchData->getCreationDateFrom());
+            $creationDateFilterCondition->setEndDate($searchData->getCreationDateUntil());
+            $searchManager->addFilterCondition($creationDateFilterCondition);
+        }
+
+        // modification date range parameter
+        if ($searchData->getModificationDateFrom() || $searchData->getModificationDateUntil()) {
+            $modificationDateFilterCondition = new ModificationDateFilterCondition();
+            $modificationDateFilterCondition->setStartDate($searchData->getModificationDateFrom());
+            $modificationDateFilterCondition->setEndDate($searchData->getModificationDateUntil());
+            $searchManager->addFilterCondition($modificationDateFilterCondition);
+        }
+
         $searchManager->setQuery($searchData->getPhrase());
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
@@ -323,6 +357,30 @@ class SearchController extends BaseController
 
         // creator parameter
         $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? "all");
+
+        // creation_date_from parameter
+        if (!empty($searchParams['creation_date_from'])) {
+            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_from'])->setTime(0, 0, 0);
+            $searchData->setCreationDateFrom($date);
+        }
+
+        // creation_date_until parameter
+        if (!empty($searchParams['creation_date_until'])) {
+            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_until'])->setTime(23, 59, 59);
+            $searchData->setCreationDateUntil($date);
+        }
+
+        // modification_date_from parameter
+        if (!empty($searchParams['modification_date_from'])) {
+            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_from'])->setTime(0, 0, 0);
+            $searchData->setModificationDateFrom($date);
+        }
+
+        // modification_date_until parameter
+        if (!empty($searchParams['modification_date_until'])) {
+            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_until'])->setTime(23, 59, 59);
+            $searchData->setModificationDateUntil($date);
+        }
 
         return $searchData;
     }
