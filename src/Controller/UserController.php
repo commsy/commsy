@@ -7,6 +7,7 @@ use App\Filter\UserFilterType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
+use App\Services\PrintService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Component\Routing\Annotation\Route;
@@ -149,7 +150,7 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/print/{sort}", defaults={"sort" = "none"})
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
-    public function printlistAction($roomId, Request $request, $sort)
+    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -211,7 +212,7 @@ class UserController extends BaseController
             'showCategories' => false,
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
     /**
@@ -1085,7 +1086,7 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/{itemId}/print")
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, PrintService $printService)
     {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -1113,7 +1114,7 @@ class UserController extends BaseController
             'linkedGroups' => $infoArray['linkedGroups'],
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
     private function sendUserInfoMail($userIds, $action)
