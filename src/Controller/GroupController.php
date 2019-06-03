@@ -80,6 +80,7 @@ class GroupController extends BaseController
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
+            'showAssociations' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
@@ -314,11 +315,13 @@ class GroupController extends BaseController
             'lastItemId' => $infoArray['lastItemId'],
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'showAssociations' => $infoArray['showAssociations'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'roomCategories' => $infoArray['roomCategories'],
             'members' => $infoArray['members'],
@@ -364,6 +367,7 @@ class GroupController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'members' => $infoArray['members'],
             'user' => $infoArray['user'],
@@ -532,6 +536,7 @@ class GroupController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
         $infoArray['roomCategories'] = $categories;
         $infoArray['members'] = $members;
         $infoArray['userIsMember'] = $membersList->inList($infoArray['user']);

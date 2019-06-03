@@ -154,8 +154,10 @@ class MaterialController extends BaseController
             'module' => 'material',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
@@ -336,6 +338,7 @@ class MaterialController extends BaseController
             'withValidity' => $roomItem->withWorkflowValidity(),
             'withReader' => $roomItem->withWorkflowReader(),
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
@@ -780,6 +783,7 @@ class MaterialController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
             'ratingAverageDetail' => $ratingAverageDetail,
@@ -1136,6 +1140,7 @@ class MaterialController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],

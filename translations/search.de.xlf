@@ -42,6 +42,30 @@
                 <source>Search in all my rooms</source>
                 <target>Suche in allen meinen Räumen</target>
             </trans-unit>
+            <trans-unit id="search-filter-creator">
+                <source>Creator</source>
+                <target>ErstellerIn</target>
+            </trans-unit>
+            <trans-unit id="search-filter-created-from">
+                <source>Created from</source>
+                <target>Erstellt von</target>
+            </trans-unit>
+            <trans-unit id="search-filter-created-until">
+                <source>Created until</source>
+                <target>Erstellt bis</target>
+            </trans-unit>
+            <trans-unit id="search-filter-modified-from">
+                <source>Modified from</source>
+                <target>Geändert von</target>
+            </trans-unit>
+            <trans-unit id="search-filter-modified-until">
+                <source>Modified until</source>
+                <target>Geändert bis</target>
+            </trans-unit>
+            <trans-unit id="search-filter-rubric">
+                <source>Rubric</source>
+                <target>Rubrik</target>
+            </trans-unit>
             <trans-unit id="room-search">
                 <source>Room search</source>
                 <target>Raumsuche</target>

@@ -322,6 +322,10 @@
                 <source>all</source>
                 <target>Alle</target>
             </trans-unit>
+            <trans-unit id="any">
+                <source>any</source>
+                <target>Alle</target>
+            </trans-unit>
             <trans-unit id="public">
                 <source>public</source>
                 <target>Freigeschaltete Einträge</target>

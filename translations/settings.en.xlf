@@ -164,6 +164,10 @@
                 <source>Repeat x</source>
                 <target>Repeat image horizontally</target>
             </trans-unit>
+            <trans-unit id="associations">
+                <source>Associations</source>
+                <target>Associations</target>
+            </trans-unit>
             <trans-unit id="basic_settings_text">
                 <source>Basic settings text</source>
                 <target>Please define workspace basics, i.e. title, access checks, language.</target>

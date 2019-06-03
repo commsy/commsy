@@ -71,10 +71,12 @@ class TopicController extends BaseController
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
             'showHashTags' => false,
+            'showAssociations' => false,
             'showCategories' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
+            'showAssociations' => false,
         );
     }
     
@@ -209,6 +211,7 @@ class TopicController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'roomCategories' => $categories,
             'user' => $infoArray['user'],
@@ -367,8 +370,9 @@ class TopicController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
 
-        
+
         return $infoArray;
     }
 
@@ -596,6 +600,7 @@ class TopicController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
@@ -664,6 +669,7 @@ class TopicController extends BaseController
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssocations(),
             'showCategories' => $roomItem->withTags(),
             'ratingList' => $ratingList,
             'showWorkflow' => $current_context->withWorkflow(),

@@ -276,7 +276,7 @@
             </trans-unit>
             <trans-unit id="catsAndBuzz">
                 <source>categoriesAndBuzzwords</source>
-                <target>Kategorien und Schlagworte</target>
+                <target>Struktur</target>
             </trans-unit>
             <trans-unit id="Entries">
                 <source>Entries</source>
