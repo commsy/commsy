@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\TodoStatus\TodoStatusAction;
+use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -713,7 +714,7 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo/{itemId}/print")
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, PrintService $printService)
     {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -746,13 +747,13 @@ class TodoController extends BaseController
             'roomCategories' => 'roomCategories',
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
     
     /**
      * @Route("/room/{roomId}/todo/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request, $sort)
+    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -823,7 +824,7 @@ class TodoController extends BaseController
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
     
     /**
