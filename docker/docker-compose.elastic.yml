@@ -2,11 +2,11 @@ version: "3.4"
 
 services:
   elastic:
-    build: elasticsearch
+    build: ./docker/elasticsearch
     ports:
       - "9200:9200"
     volumes:
-      - elastic-deta:/usr/share/elasticsearch/data
+      - elastic-data:/usr/share/elasticsearch/data
     environment:
       - "xpack.security.enabled=false"
       - "cluster.routing.allocation.disk.threshold_enabled=false"

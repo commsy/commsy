@@ -3,7 +3,7 @@ version: "3.4"
 services:
   ldap:
     image: osixia/openldap
-    build: ./ldap
+    build: ./docker/ldap
     volumes:
       - ldap-data:/var/lib/ldap
       - ldap-config:/etc/ldap/slap.d

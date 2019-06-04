@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   mediawiki:
-    build: wiki
+    build: ./docker/wiki
     depends_on:
       - mediawiki_db
     ports:
