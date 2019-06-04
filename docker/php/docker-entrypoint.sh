@@ -12,6 +12,7 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'bin/console' ]; then
 #	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
     chown -R www-data:www-data var/cache
     chown -R www-data:www-data var/log
+    chown -R www-data:www-data files/
 
 
 #	if [ "$APP_ENV" != 'prod' ]; then
