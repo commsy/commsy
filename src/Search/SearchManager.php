@@ -90,8 +90,7 @@ class SearchManager
 
         // query context
         $contextQuery = $this->createContextQuery();
-        $contextQuery->setFields(['id', 'title', 'firstName', 'lastName']);
-
+        
         $boolQuery->addMust($contextQuery);
 
         // filter context
