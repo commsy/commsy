@@ -292,7 +292,7 @@
             </trans-unit>
             <trans-unit id="todo">
                 <source>todo</source>
-                <target>Todos</target>
+                <target>Tasks</target>
             </trans-unit>
             <trans-unit id="material">
                 <source>material</source>
