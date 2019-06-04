@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Form\Model\File;
+use App\Utils\ItemService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -154,15 +155,24 @@ class UploadController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/upload/{itemId}/form")
+     * @Route("/room/{roomId}/upload/{itemId}/form/{versionId}", requirements={
+     *     "itemId": "\d+",
+     *     "versionId": "\d+"
+     * }, defaults={
+     *     "versionId" = -1
+     * }))
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function uploadFormAction($roomId, $itemId, Request $request)
+    public function uploadFormAction($roomId, $itemId, $versionId = null, Request $request, ItemService $itemService)
     {
-        // get material from MaterialService
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getTypedItem($itemId);
+        /**
+         * Setting the default value of versionId to 0 does not seem to work and will always cut off the versionId from
+         * routes. Instead we default to -1.
+         */
+
+        // get item
+        $item = $itemService->getTypedItem($itemId, $versionId === -1 ? null : $versionId);
 
         if (!$item) {
             throw $this->createNotFoundException('No item found for id ' . $itemId);
