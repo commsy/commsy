@@ -15,6 +15,9 @@ cache:
   directories:
     - $HOME/.composer/cache
 
+env:
+  - APP_ENV=test
+
 services:
   - elasticsearch
 
@@ -30,7 +33,7 @@ addons:
 before_install:
   - export PATH="$TRAVIS_BUILD_DIR/tests/_data/travis/bin:$PATH"
   - export TPL_DIR="$TRAVIS_BUILD_DIR/tests/_data/travis/tpl"
-  - export WEB_DIR="$TRAVIS_BUILD_DIR/web"
+  - export WEB_DIR="$TRAVIS_BUILD_DIR/public"
 
   # nginx / php-fpm
   - "sudo chmod u+x tests/_data/travis/bin/install_nginx"
@@ -64,6 +67,7 @@ install:
 before_script:
   - "sudo chown root /opt/google/chrome/chrome-sandbox"
   - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
+  - cp .env.test .env.local
 
 script:
   - php vendor/bin/codecept run --env travis -vvv

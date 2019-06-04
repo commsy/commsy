@@ -16,6 +16,18 @@ services:
         - MYSQL_USER=test
         - MYSQL_PASSWORD=test
 
+  test_nginx:
+    build:
+      context: ./
+      target: commsy_test_nginx
+    depends_on:
+      - php
+    volumes:
+      # Use only in development
+      - ./public/:/var/www/html/public:cached
+    ports:
+      - "82:80"
+
   commsy_selenium_hub:
     image: selenium/hub:latest
     ports:
