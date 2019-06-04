@@ -8,7 +8,7 @@ actor: AcceptanceTester
 modules:
     enabled:
         - WebDriver:
-            url: http://nginx/
+            url: http://test_nginx/
             browser: chrome
             host: commsy_selenium_hub
             port: 4444

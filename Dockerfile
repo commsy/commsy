@@ -113,10 +113,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
 
-
-
-
-
+##############################################################################
 
 FROM nginx:${NGINX_VERSION}-alpine AS commsy_nginx
 
@@ -125,3 +122,13 @@ COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 WORKDIR /var/www/html
 
 COPY --from=commsy_php /var/www/html/public public/
+
+##############################################################################
+
+FROM nginx:${NGINX_VERSION}-alpine AS commsy_test_nginx
+
+COPY docker/nginx/conf.d/test.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /var/www/html
+
+#COPY --from=commsy_php /var/www/html/public public/
