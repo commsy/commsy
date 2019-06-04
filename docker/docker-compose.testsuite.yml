@@ -1,21 +1,20 @@
-version: "3"
+version: "3.4"
 
 services:
-  commsy_php:
-    links:
+  php:
+    depends_on:
       - commsy_selenium_hub
       - commsy_test_db
 
   commsy_test_db:
       image: mariadb:10.1
-      container_name: commsy_test_db
       ports:
-        - "3307:3306"
+        - "3107:3306"
       environment:
-        - "MYSQL_ROOT_PASSWORD=root"
-        - "MYSQL_DATABASE=commsy"
-        - "MYSQL_USER=test"
-        - "MYSQL_PASSWORD=test"
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=commsy
+        - MYSQL_USER=test
+        - MYSQL_PASSWORD=test
 
   commsy_selenium_hub:
     image: selenium/hub:latest

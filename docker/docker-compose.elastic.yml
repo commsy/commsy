@@ -1,13 +1,12 @@
-version: "3"
+version: "3.4"
 
 services:
-  commsy_elastic:
-    build: ./elasticsearch
-    container_name: commsy_elastic
+  elastic:
+    build: elasticsearch
     ports:
       - "9200:9200"
     volumes:
-      - "./.data/elastic:/usr/share/elasticsearch/data"
+      - elastic-deta:/usr/share/elasticsearch/data
     environment:
       - "xpack.security.enabled=false"
       - "cluster.routing.allocation.disk.threshold_enabled=false"
@@ -21,6 +20,9 @@ services:
         soft: -1
         hard: -1
 
-  commsy_php:
-    links:
-      - commsy_elastic
+  php:
+    depends_on:
+      - elastic
+
+volumes:
+  elastic-data:
