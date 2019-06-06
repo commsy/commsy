@@ -46,21 +46,13 @@
                 <source>Creator</source>
                 <target>Creator</target>
             </trans-unit>
-            <trans-unit id="search-filter-created-from">
-                <source>Created from</source>
-                <target>Created from</target>
+            <trans-unit id="search-filter-created-range">
+                <source>Created from/until</source>
+                <target>Created from/until</target>
             </trans-unit>
-            <trans-unit id="search-filter-created-until">
-                <source>Created until</source>
-                <target>Created until</target>
-            </trans-unit>
-            <trans-unit id="search-filter-modified-from">
-                <source>Modified from</source>
-                <target>Modified from</target>
-            </trans-unit>
-            <trans-unit id="search-filter-modified-until">
-                <source>Modified until</source>
-                <target>Modified until</target>
+            <trans-unit id="search-filter-modified-range">
+                <source>Modified from/until</source>
+                <target>Modified from/until</target>
             </trans-unit>
             <trans-unit id="search-filter-rubric">
                 <source>Rubric</source>

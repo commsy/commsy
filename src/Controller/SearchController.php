@@ -213,6 +213,18 @@ class SearchController extends BaseController
         $countsByCreator = $searchManager->countsByKeyFromAggregation($aggregations['creators']);
         $searchData->addCreators($countsByCreator);
 
+        // if a rubric/creator is selected that isn't part of the results anymore, we keep displaying it in the respective
+        // search filter form field; this also avoids a form validation error ("this value is not valid")
+        $selectedRubric = $searchData->getSelectedRubric();
+        if (!empty($selectedRubric) && $selectedRubric !== 'all' && !array_key_exists($selectedRubric, $countsByRubric)) {
+            $searchData->addRubrics([$selectedRubric => 0]);
+        }
+
+        $selectedCreator = $searchData->getSelectedCreator();
+        if (!empty($selectedCreator) && $selectedCreator !== 'all' && !array_key_exists($selectedCreator, $countsByCreator)) {
+            $searchData->addCreators([$selectedCreator => 0]);
+        }
+
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
@@ -358,28 +370,33 @@ class SearchController extends BaseController
         // creator parameter
         $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? "all");
 
-        // creation_date_from parameter
-        if (!empty($searchParams['creation_date_from'])) {
-            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_from'])->setTime(0, 0, 0);
-            $searchData->setCreationDateFrom($date);
+        // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType
+        // creation_date_range parameter
+        if (!empty($searchParams['creation_date_range'])) {
+            $creationDateRange = [];
+            if (!empty($searchParams['creation_date_range']['left_date'])) {
+                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_range']['left_date'])->setTime(0, 0, 0);
+                $creationDateRange[0] = $date;
+            }
+            if (!empty($searchParams['creation_date_range']['right_date'])) {
+                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_range']['right_date'])->setTime(23, 59, 59);
+                $creationDateRange[1] = $date;
+            }
+            $searchData->setCreationDateRange($creationDateRange);
         }
 
-        // creation_date_until parameter
-        if (!empty($searchParams['creation_date_until'])) {
-            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_until'])->setTime(23, 59, 59);
-            $searchData->setCreationDateUntil($date);
-        }
-
-        // modification_date_from parameter
-        if (!empty($searchParams['modification_date_from'])) {
-            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_from'])->setTime(0, 0, 0);
-            $searchData->setModificationDateFrom($date);
-        }
-
-        // modification_date_until parameter
-        if (!empty($searchParams['modification_date_until'])) {
-            $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_until'])->setTime(23, 59, 59);
-            $searchData->setModificationDateUntil($date);
+        // modification_date_range parameter
+        if (!empty($searchParams['modification_date_range'])) {
+            $modificationDateRange = [];
+            if (!empty($searchParams['modification_date_range']['left_date'])) {
+                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_range']['left_date'])->setTime(0, 0, 0);
+                $modificationDateRange[0] = $date;
+            }
+            if (!empty($searchParams['modification_date_range']['right_date'])) {
+                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_range']['right_date'])->setTime(23, 59, 59);
+                $modificationDateRange[1] = $date;
+            }
+            $searchData->setModificationDateRange($modificationDateRange);
         }
 
         return $searchData;
