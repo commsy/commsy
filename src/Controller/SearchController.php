@@ -367,7 +367,7 @@ class SearchController extends BaseController
                 $creationDateRange[0] = $date;
             }
             if (!empty($searchParams['creation_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_range']['right_date'])->setTime(0, 0, 0);
+                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_range']['right_date'])->setTime(23, 59, 59);
                 $creationDateRange[1] = $date;
             }
             $searchData->setCreationDateRange($creationDateRange);
@@ -381,7 +381,7 @@ class SearchController extends BaseController
                 $modificationDateRange[0] = $date;
             }
             if (!empty($searchParams['modification_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_range']['right_date'])->setTime(0, 0, 0);
+                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_range']['right_date'])->setTime(23, 59, 59);
                 $modificationDateRange[1] = $date;
             }
             $searchData->setModificationDateRange($modificationDateRange);
