@@ -46,21 +46,13 @@
                 <source>Creator</source>
                 <target>ErstellerIn</target>
             </trans-unit>
-            <trans-unit id="search-filter-created-from">
-                <source>Created from</source>
-                <target>Erstellt von</target>
+            <trans-unit id="search-filter-created-range">
+                <source>Created from/until</source>
+                <target>Erstellt von/bis</target>
             </trans-unit>
-            <trans-unit id="search-filter-created-until">
-                <source>Created until</source>
-                <target>Erstellt bis</target>
-            </trans-unit>
-            <trans-unit id="search-filter-modified-from">
-                <source>Modified from</source>
-                <target>Geändert von</target>
-            </trans-unit>
-            <trans-unit id="search-filter-modified-until">
-                <source>Modified until</source>
-                <target>Geändert bis</target>
+            <trans-unit id="search-filter-modified-range">
+                <source>Modified from/until</source>
+                <target>Geändert von/bis</target>
             </trans-unit>
             <trans-unit id="search-filter-rubric">
                 <source>Rubric</source>

@@ -66,41 +66,39 @@ class SearchFilterType extends AbstractType
                 'label' => 'Creator',
                 'required' => false,
             ])
-            ->add('creation_date_from', Filters\DateFilterType::class, [
+            ->add('creation_date_range', Filters\DateRangeFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
-                'label' => 'Created from',
+                'label' => 'Created from/until',
+                'left_date_options' => [
+                    'label' => 'from',
+                    'input'  => 'datetime',
+                    'widget' => 'single_text',
+                ],
+                'right_date_options' => [
+                    'label' => 'until',
+                    'input'  => 'datetime',
+                    'widget' => 'single_text',
+                ],
                 'required' => false,
-                'input'  => 'datetime',
-                'widget' => 'single_text',
             ])
-            ->add('creation_date_until', Filters\DateFilterType::class, [
+            ->add('modification_date_range', Filters\DateRangeFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
-                'label' => 'Created until',
-                'required' => false,
-                'input'  => 'datetime',
-                'widget' => 'single_text',
-            ])
-            ->add('modification_date_from', Filters\DateFilterType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
+                'label' => 'Modified from/until',
+                'left_date_options' => [
+                    'label' => 'from',
+                    'input'  => 'datetime',
+                    'widget' => 'single_text',
                 ],
-                'label' => 'Modified from',
-                'required' => false,
-                'input'  => 'datetime',
-                'widget' => 'single_text',
-            ])
-            ->add('modification_date_until', Filters\DateFilterType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
+                'right_date_options' => [
+                    'label' => 'until',
+                    'input'  => 'datetime',
+                    'widget' => 'single_text',
                 ],
-                'label' => 'Modified until',
                 'required' => false,
-                'input'  => 'datetime',
-                'widget' => 'single_text',
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [
                 'attr' => [

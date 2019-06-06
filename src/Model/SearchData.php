@@ -186,6 +186,58 @@ class SearchData
     }
 
     /**
+     * @return array|null an array of two items, start & end date, which may be \DateTime objects or null
+     */
+    public function getCreationDateRange(): ?array
+    {
+        return [
+            $this->getCreationDateFrom(),
+            $this->getCreationDateUntil(),
+            ];
+    }
+
+    /**
+     * @param array|null $creationDateRange an array of two items, start & end date, which may be \DateTime objects or null
+     * @return SearchData
+     */
+    public function setCreationDateRange(?array $creationDateRange): SearchData
+    {
+        if (isset($creationDateRange[0]) && $creationDateRange[0] instanceof \DateTime) {
+            $this->setCreationDateFrom($creationDateRange[0]);
+        }
+        if (isset($creationDateRange[1]) && $creationDateRange[1] instanceof \DateTime) {
+            $this->setCreationDateUntil($creationDateRange[1]);
+        }
+        return $this;
+    }
+
+    /**
+     * @return array|null an array of two items, start & end date, which may be \DateTime objects or null
+     */
+    public function getModificationDateRange(): ?array
+    {
+        return [
+            $this->getModificationDateFrom(),
+            $this->getModificationDateUntil(),
+            ];
+    }
+
+    /**
+     * @param array|null $modificationDateRange an array of two items, start & end date, which may be \DateTime objects or null
+     * @return SearchData
+     */
+    public function setModificationDateRange(?array $modificationDateRange): SearchData
+    {
+        if (isset($modificationDateRange[0]) && $modificationDateRange[0] instanceof \DateTime) {
+            $this->setModificationDateFrom($modificationDateRange[0]);
+        }
+        if (isset($modificationDateRange[1]) && $modificationDateRange[1] instanceof \DateTime) {
+            $this->setModificationDateUntil($modificationDateRange[1]);
+        }
+        return $this;
+    }
+
+    /**
      * @return \DateTime|null
      */
     public function getCreationDateFrom(): ?\DateTime
