@@ -38,14 +38,14 @@ class Translation
     /**
      * @var string
      *
-     * @ORM\Column(name="translation_de", type="string", length=255)
+     * @ORM\Column(name="translation_de", type="string", length=2000)
      */
     private $translationDe;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="translation_en", type="string", length=255)
+     * @ORM\Column(name="translation_en", type="string", length=2000)
      */
     private $translationEn;
 
