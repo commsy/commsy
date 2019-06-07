@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
+use App\Services\PrintService;
 use DateTime;
 
 use Symfony\Component\Routing\Annotation\Route;
@@ -187,7 +188,7 @@ class DateController extends BaseController
        /**
      * @Route("/room/{roomId}/date/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request, $sort)
+    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -240,7 +241,7 @@ class DateController extends BaseController
             'readerList' => $readerList,
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
     
     /**
@@ -1446,7 +1447,7 @@ class DateController extends BaseController
     /**
      * @Route("/room/{roomId}/date/{itemId}/print")
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, PrintService $printService)
     {
         $dateService = $this->get('commsy_legacy.date_service');
         $itemService = $this->get('commsy_legacy.item_service');
@@ -1546,7 +1547,7 @@ class DateController extends BaseController
             'roomCategories' => $categories,
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
     
     /**
