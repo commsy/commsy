@@ -134,7 +134,7 @@
             </trans-unit>
             <trans-unit id="todo">
                 <source>Todo</source>
-                <target>Todo</target>
+                <target>Task</target>
             </trans-unit>
             <trans-unit id="task">
                 <source>Task</source>
@@ -296,7 +296,7 @@
             </trans-unit>
             <trans-unit id="tasks_text">
                 <source>Tasks text</source>
-                <target>For todos there exist three progress status: "not started", "in progress" an "done". Here you can add additional status.</target>
+                <target>For tasks there exist three progress status: "not started", "in progress" an "done". Here you can add additional status.</target>
             </trans-unit>   
             <trans-unit id="template_text">
                 <source>Template text</source>
