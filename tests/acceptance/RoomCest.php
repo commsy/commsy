@@ -34,10 +34,10 @@ class RoomCest
 
 //        $I->amOnPage('?cid=' . $portalId);
 
-        $I->amOnPage('/app_testsuite.php/room/103');
+        $I->amOnPage('/room/103');
         $I->see('Die neuesten Einträge in diesem Raum');
 
-        $I->amOnPage('/app_testsuite.php/room/103/group');
+        $I->amOnPage('/room/103/group');
         $actionData = $I->grabAttributeFrom('(//a[@class="commsy-select-action"])[last()]', 'data-cs-action');
         $dataArray = json_decode($actionData, true);
         $url = $dataArray['url'];

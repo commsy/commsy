@@ -1,12 +1,11 @@
-version: "3"
+version: "3.4"
 
 services:
-  commsy_php:
-    links:
-      - commsy_mailhog
+  php:
+    depends_on:
+      - mailhog
 
-  commsy_mailhog:
+  mailhog:
     image: mailhog/mailhog:latest
-    container_name: commsy_mailhog
     ports:
       - "8025:8025"
