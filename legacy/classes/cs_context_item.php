@@ -255,6 +255,7 @@ class cs_context_item extends cs_item {
   function setTitle ($value) {
   	// sanitize title
   	$converter = $this->_environment->getTextConverter();
+    $value = htmlentities($value);
   	$value = $converter->sanitizeHTML($value);
     $this->_setValue('title', $value, TRUE);
   }

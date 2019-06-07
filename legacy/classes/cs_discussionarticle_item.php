@@ -95,6 +95,7 @@ class cs_discussionarticle_item extends cs_item {
    function setTitle ($value) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
+      $value = htmlentities($value);
    	  $value = $converter->sanitizeHTML($value);
       $this->setSubject($value);
    }
