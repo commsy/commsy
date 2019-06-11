@@ -28,7 +28,7 @@
             </trans-unit>
             <trans-unit id="todo">
                 <source>Todo</source>
-                <target>{0}Todo|{1}Todos</target>
+                <target>{0}Task|{1}Tasks</target>
             </trans-unit>
             <trans-unit id="task">
                 <source>Task</source>
