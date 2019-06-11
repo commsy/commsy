@@ -15,12 +15,14 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Entity\Room;
+use App\Form\DataTransformer\ExtensionSettingsTransformer;
 use App\Form\Type\GeneralSettingsType;
 use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\AdditionalSettingsType;
 use App\Form\Type\AppearanceSettingsType;
 use App\Form\Type\ExtensionSettingsType;
 use App\Form\Type\InvitationsSettingsType;
+use App\Utils\RoomService;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -36,12 +38,11 @@ class SettingsController extends Controller
     * @Template
     * @Security("is_granted('MODERATOR')")
     */
-    public function generalAction($roomId, Request $request)
+    public function generalAction($roomId, Request $request, RoomService $roomService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 	
         // $room = $this->getDoctrine()
@@ -103,11 +104,9 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function moderationAction($roomId, Request $request)
+    public function moderationAction($roomId, Request $request, RoomService $roomService)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -143,9 +142,8 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function additionalAction($roomId, Request $request)
+    public function additionalAction($roomId, Request $request, RoomService $roomService)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -202,12 +200,10 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function appearanceAction($roomId, Request $request)
+    public function appearanceAction($roomId, Request $request, RoomService $roomService)
     {
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -331,18 +327,15 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function extensionsAction($roomId, Request $request)
+    public function extensionsAction($roomId, Request $request, RoomService $roomService, ExtensionSettingsTransformer $extensionSettingsTransformer)
     {
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.extension_settings');
-        $roomData = $transformer->transform($roomItem);
+        $roomData = $extensionSettingsTransformer->transform($roomItem);
 
         $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
             'roomId' => $roomId,
@@ -350,7 +343,7 @@ class SettingsController extends Controller
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $transformer->applyTransformation($roomItem, $form->getData());
+            $extensionSettingsTransformer->applyTransformation($roomItem, $form->getData());
         }
 
         return [
@@ -363,16 +356,14 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function deleteAction($roomId, Request $request)
+    public function deleteAction($roomId, Request $request, RoomService $roomService)
     {
         $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // get room from RoomService
-            $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getRoomItem($roomId);
-
             if (!$roomItem) {
                 throw $this->createNotFoundException('No room found for id ' . $roomId);
             }
@@ -399,15 +390,13 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function invitationsAction($roomId, RouterInterface $router, Request $request)
+    public function invitationsAction($roomId, RouterInterface $router, Request $request, RoomService $roomService)
     {
         $invitationsService = $this->get('commsy.invitations_service');
         $translator = $this->get('translator');
 
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
