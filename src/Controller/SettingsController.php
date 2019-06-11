@@ -36,12 +36,11 @@ class SettingsController extends Controller
     * @Template
     * @Security("is_granted('MODERATOR')")
     */
-    public function generalAction($roomId, Request $request)
+    public function generalAction($roomId, Request $request, RoomService $roomService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 	
         // $room = $this->getDoctrine()
@@ -103,11 +102,9 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function moderationAction($roomId, Request $request)
+    public function moderationAction($roomId, Request $request, RoomService $roomService)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -143,9 +140,8 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function additionalAction($roomId, Request $request)
+    public function additionalAction($roomId, Request $request, RoomService $roomService)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -202,12 +198,10 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function appearanceAction($roomId, Request $request)
+    public function appearanceAction($roomId, Request $request, RoomService $roomService)
     {
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -335,7 +329,6 @@ class SettingsController extends Controller
     {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -361,16 +354,14 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function deleteAction($roomId, Request $request)
+    public function deleteAction($roomId, Request $request, RoomService $roomService)
     {
         $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // get room from RoomService
-            $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getRoomItem($roomId);
-
             if (!$roomItem) {
                 throw $this->createNotFoundException('No room found for id ' . $roomId);
             }
@@ -397,15 +388,13 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function invitationsAction($roomId, Request $request)
+    public function invitationsAction($roomId, Request $request, RoomService $roomService)
     {
         $invitationsService = $this->get('commsy.invitations_service');
         $translator = $this->get('translator');
 
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
