@@ -520,8 +520,8 @@
                 <target>Change status: contact person</target>
             </trans-unit>
             <trans-unit id="email_change_status_no_contact_person">
-                <source>Change status: contact person</source>
-                <target>Change status: contact person</target>
+                <source>Change status: no contact person</source>
+                <target>Remove status: contact person</target>
             </trans-unit>
             <trans-unit id="email_change_status_read_only_user">
                 <source>Change status: read only user</source>
