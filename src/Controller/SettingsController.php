@@ -13,12 +13,14 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Entity\Room;
+use App\Form\DataTransformer\ExtensionSettingsTransformer;
 use App\Form\Type\GeneralSettingsType;
 use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\AdditionalSettingsType;
 use App\Form\Type\AppearanceSettingsType;
 use App\Form\Type\ExtensionSettingsType;
 use App\Form\Type\InvitationsSettingsType;
+use App\Utils\RoomService;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -329,18 +331,16 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function extensionsAction($roomId, Request $request)
+    public function extensionsAction($roomId, Request $request, RoomService $roomService, ExtensionSettingsTransformer $extensionSettingsTransformer)
     {
         // get room from RoomService
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.extension_settings');
-        $roomData = $transformer->transform($roomItem);
+        $roomData = $extensionSettingsTransformer->transform($roomItem);
 
         $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
             'roomId' => $roomId,
@@ -348,7 +348,7 @@ class SettingsController extends Controller
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $transformer->applyTransformation($roomItem, $form->getData());
+            $extensionSettingsTransformer->applyTransformation($roomItem, $form->getData());
         }
 
         return [
