@@ -58,6 +58,10 @@
                 <source>Rubric</source>
                 <target>Rubrik</target>
             </trans-unit>
+            <trans-unit id="search-filter-rubric-labels">
+                <source>Groups, Topics and Institutions</source>
+                <target>Groupen, Themen &amp; Institutionen</target>
+            </trans-unit>
             <trans-unit id="room-search">
                 <source>Room search</source>
                 <target>Raumsuche</target>

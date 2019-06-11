@@ -202,6 +202,10 @@
                 <source>Rubrics</source>
                 <target>Rubrics</target>
             </trans-unit>
+            <trans-unit id="room">
+                <source>Room</source>
+                <target>{0}Room|{1}Rooms</target>
+            </trans-unit>
             <trans-unit id="project">
                 <source>Project</source>
                 <target>{0}Project room|{1}Project rooms</target>
