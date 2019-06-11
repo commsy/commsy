@@ -187,7 +187,7 @@ class GeneralSettingsType extends AbstractType
             {
                 $form
                     ->add('time_pulses', Select2ChoiceType::class, [
-                        'label' => $this->getTimeIntervalsDisplayName(),
+                        'label' => ucfirst($this->getTimeIntervalsDisplayName()),
                         'required' => false,
                         'choices' => $this->getTimeChoices(),
                         'multiple' => true,

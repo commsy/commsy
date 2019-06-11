@@ -13,7 +13,7 @@
 
             <!-- General settings -->
             <trans-unit id="general_configuration">
-                <source>General Configuration</source>
+                <source>General configuration</source>
                 <target>Allgemeine Einstellungen</target>
             </trans-unit>
             <trans-unit id="basic_settings">
@@ -62,7 +62,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>Title</source>
-                <target>Titel:</target>
+                <target>Titel</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>Language</source>
@@ -187,7 +187,7 @@
             
             <!-- Additional settings -->
             <trans-unit id="additional_configuration">
-                <source>Additional Configuration</source>
+                <source>Additional configuration</source>
                 <target>Zusätzliche Einstellungen</target>
             </trans-unit>
             <trans-unit id="tags">
@@ -240,15 +240,15 @@
             </trans-unit>
             <trans-unit id="activate">
                 <source>Activate</source>
-                <target>aktivieren</target>
+                <target>Aktivieren</target>
             </trans-unit>
             <trans-unit id="mandatoryassignment">
                 <source>Mandatory</source>
-                <target>zwingende Zuordnung</target>
+                <target>Zwingende Zuordnung</target>
             </trans-unit>
             <trans-unit id="ShowExpanded">
                 <source>Show expanded</source>
-                <target>ausgeklappte Darstellung</target>
+                <target>Ausgeklappte Darstellung</target>
             </trans-unit>
             <trans-unit id="access">
                 <source>Edit</source>
@@ -284,14 +284,14 @@
             </trans-unit>
             <trans-unit id="switchon">
                 <source>Switch on</source>
-                <target>einschalten (RSS-Abo für diesen Raum möglich)</target>
+                <target>Einschalten (RSS-Abo für diesen Raum möglich)</target>
             </trans-unit>
             <trans-unit id="switchoff">
                 <source>Switch off</source>
-                <target>ausschalten (kein RSS-Abo für diesen Raum)</target>
+                <target>Ausschalten (kein RSS-Abo für diesen Raum)</target>
             </trans-unit>
             <trans-unit id="rss">
-                <source>Rss</source>
+                <source>RSS feed</source>
                 <target>RSS-Feed</target>
             </trans-unit>
             <trans-unit id="tasks_text">
@@ -321,7 +321,7 @@
 
             <!-- Appearance settings -->
             <trans-unit id="appearance_configuration">
-                <source>Appearance Configuration</source>
+                <source>Appearance configuration</source>
                 <target>Darstellung</target>
             </trans-unit>            
             <trans-unit id="configure_events">
@@ -427,40 +427,40 @@
 
             <!-- Moderation settings -->
             <trans-unit id="moderation_configuration">
-                <source>Moderation support Configuration</source>
+                <source>Moderation support configuration</source>
                 <target>Moderationsunterstützung</target>
             </trans-unit>            
             <trans-unit id="contentid">
                 <source>Content ID</source>
-                <target>Referenznummer:</target>
+                <target>Referenznummer</target>
             </trans-unit>
             <trans-unit id="arrayrubric">
                 <source>Array info text rubric</source>
-                <target>Rubrik:</target>
+                <target>Rubrik</target>
             </trans-unit>
             <trans-unit id="rubric_message">
                 <source>Message</source>
-                <target>Text:</target>
+                <target>Text</target>
             </trans-unit>
             <trans-unit id="arrayrubricmail">
                 <source>Array mail text rubric</source>
-                <target>E-Mail-Texte:</target>
+                <target>E-Mail-Texte</target>
             </trans-unit>
             <trans-unit id="showinfo">
                 <source>Show info</source>
-                <target>anzeigen</target>
+                <target>Anzeigen</target>
             </trans-unit>
             <trans-unit id="donotshowinfo">
                 <source>Do not show info</source>
-                <target>ausblenden</target>
+                <target>Ausblenden</target>
             </trans-unit>
             <trans-unit id="mailbodyde">
                 <source>body_de</source>
-                <target>Inhalt (Deutsch):</target>
+                <target>Inhalt (Deutsch)</target>
             </trans-unit>
             <trans-unit id="mailbodyen">
                 <source>body_en</source>
-                <target>Inhalt (Englisch):</target>
+                <target>Inhalt (Englisch)</target>
             </trans-unit>
             <trans-unit id="homenotice">
                 <source>Homenotice</source>
@@ -530,7 +530,7 @@
 
             <!-- Extension settings -->
             <trans-unit id="extensions_configuration">
-                <source>Extensions Configuration</source>
+                <source>Extensions configuration</source>
                 <target>Erweiterungen</target>
             </trans-unit>
             <trans-unit id="assessment">
@@ -543,15 +543,15 @@
             </trans-unit>            
             <trans-unit id="workflow_resubmission">
                 <source>Resubmission</source>
-                <target>Wiedervorlage:</target>
+                <target>Wiedervorlage</target>
             </trans-unit>
             <trans-unit id="workflow_validity">
                 <source>Validity</source>
-                <target>Gültigkeitsdatum:</target>
+                <target>Gültigkeitsdatum</target>
             </trans-unit>
             <trans-unit id="workflow_trafic_light">
                 <source>Status view</source>
-                <target>Status-Anzeige:</target>
+                <target>Status-Anzeige</target>
             </trans-unit>
             <trans-unit id="workflow_green_text">
                 <source>Traffic light green text</source>
@@ -567,7 +567,7 @@
             </trans-unit>
             <trans-unit id="reader">
                 <source>Reader</source>
-                <target>in diesem Raum verwenden</target>
+                <target>In diesem Raum verwenden</target>
             </trans-unit>
             <trans-unit id="reader_group">
                 <source>Reader group</source>
@@ -579,14 +579,14 @@
             </trans-unit>
             <trans-unit id="reader_view">
                 <source>Reader view</source>
-                <target>Leseranzeige:</target>
+                <target>Leseranzeige</target>
             </trans-unit>
             <trans-unit id="mods_only">
-                <source>Moderators</source>
+                <source>Moderators only</source>
                 <target>Leseranzeige nur für Moderatoren</target>
             </trans-unit>            
             <trans-unit id="all_users">
-                <source>Users</source>
+                <source>All users</source>
                 <target>Leseranzeige für alle Benutzer</target>
             </trans-unit>
             <trans-unit id="wiki">
@@ -611,15 +611,15 @@
             </trans-unit>
             <trans-unit id="default_state">
                 <source>Default status</source>
-                <target>Default-Status:</target>
+                <target>Standard-Status</target>
             </trans-unit>
             <trans-unit id="no_default_state">
                 <source>No default status</source>
-                <target>Kein default-Status</target>
+                <target>Kein Standard-Status</target>
             </trans-unit>
             <trans-unit id="status_description">
                 <source>Status description</source>
-                <target>Status-Beschreibung:</target>
+                <target>Status-Beschreibung</target>
             </trans-unit>
             <trans-unit id="open_for_guest">
                 <source>Is this room open for guests?</source>
@@ -719,11 +719,11 @@
             </trans-unit>
             <trans-unit id="rss_enabled">
                 <source>rss_enabled</source>
-                <target>einschalten (RSS-Abo für diesen Raum möglich)</target>
+                <target>Einschalten (RSS-Abo für diesen Raum möglich)</target>
             </trans-unit>
             <trans-unit id="rss_disabled">
                 <source>rss_disabled</source>
-                <target>ausschalten (kein RSS-Abo für diesen Raum)</target>
+                <target>Ausschalten (kein RSS-Abo für diesen Raum)</target>
             </trans-unit>
             <trans-unit id="Portal terms">
                 <source>Portal terms</source>
