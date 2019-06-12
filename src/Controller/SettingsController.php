@@ -10,6 +10,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Entity\Room;
@@ -388,7 +390,7 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function invitationsAction($roomId, Request $request, RoomService $roomService)
+    public function invitationsAction($roomId, Request $request, RoomService $roomService, RouterInterface $router)
     {
         $invitationsService = $this->get('commsy.invitations_service');
         $translator = $this->get('translator');
@@ -452,7 +454,15 @@ class SettingsController extends Controller
                 $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
                 $subject = $translator->trans('invitation subject %portal%', array('%portal%' => $portal->getTitle()));
-                $body = $translator->trans('invitation body %portal% %link% %sender%', array('%portal%' => $portal->getTitle(), '%link%' => $invitationLink, '%sender%' => $user->getFullName()));
+                $body = $translator->trans('invitation body %portal% %link% %sender%', [
+                    '%room%' => $roomItem->getTitle(),
+                    '%portal%' => $portal->getTitle(),
+                    '%link%' => $invitationLink,
+                    '%roomLink%' => $router->generate('commsy_room_home', [
+                        'roomId' => $roomItem->getItemID(),
+                    ], UrlGeneratorInterface::ABSOLUTE_URL),
+                    '%sender%' => $user->getFullName()
+                ]);
                 $mailMessage = (new \Swift_Message())
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
