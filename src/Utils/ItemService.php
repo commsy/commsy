@@ -29,7 +29,12 @@ class ItemService
         return $item;
     }
 
-    public function getTypedItem($itemId)
+    /**
+     * @param int $itemId
+     * @param int (optional) $versionId
+     * @return \cs_item|null
+     */
+    public function getTypedItem($itemId, $versionId = null)
     {
         $item = $this->getItem($itemId);
 
@@ -44,8 +49,13 @@ class ItemService
             
             $manager = $this->legacyEnvironment->getManager($type);
 
-            $item = $manager->getItem($item->getItemID());
-            return $item;
+            if ($versionId === null) {
+                return $manager->getItem($item->getItemID());
+            } else {
+                if (method_exists($manager, 'getItemByVersion')) {
+                    return $manager->getItemByVersion($itemId, $versionId);
+                }
+            }
         }
 
         return null;
