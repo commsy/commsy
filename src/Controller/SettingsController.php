@@ -458,7 +458,7 @@ class SettingsController extends Controller
                     '%room%' => $roomItem->getTitle(),
                     '%portal%' => $portal->getTitle(),
                     '%link%' => $invitationLink,
-                    '%roomLink%' => $router->generate('commsy_room_home', [
+                    '%roomLink%' => $router->generate('app_room_home', [
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL),
                     '%sender%' => $user->getFullName()
