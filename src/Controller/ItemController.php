@@ -304,7 +304,13 @@ class ItemController extends Controller
         while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                if ($tempTypedItem->getType() != "discarticle" && $tempTypedItem->getType() != "task" && $tempTypedItem->getType() != 'link_item' && $tempTypedItem->getType() != 'tag') {
+                if (
+                    $tempTypedItem->getType() != "discarticle" &&
+                    $tempTypedItem->getType() != "task" &&
+                    $tempTypedItem->getType() != 'link_item' &&
+                    $tempTypedItem->getType() != 'tag' &&
+                    $tempTypedItem->getType() != 'step'
+                ) {
                     $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
                     $i++;
                 }

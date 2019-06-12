@@ -9,6 +9,7 @@ use App\Event\CommsyEditEvent;
 use App\Filter\AnnouncementFilterType;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
+use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -223,7 +224,7 @@ class AnnouncementController extends BaseController
     /**
      * @Route("/room/{roomId}/announcement/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request, $sort)
+    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -296,7 +297,7 @@ class AnnouncementController extends BaseController
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
     /**
@@ -364,7 +365,7 @@ class AnnouncementController extends BaseController
     /**
      * @Route("/room/{roomId}/announcement/{itemId}/print")
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, PrintService $printService)
     {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -396,7 +397,7 @@ class AnnouncementController extends BaseController
             'annotationForm' => $form->createView(),
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
     /**

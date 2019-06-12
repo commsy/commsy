@@ -1,4 +1,7 @@
-FROM php:7.1-fpm-jessie
+ARG PHP_VERSION=7.1
+ARG NGINX_VERSION=1.15
+
+FROM php:7.1-fpm-jessie AS commsy_php
 
 # install additinal packages and PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -34,14 +37,25 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) ldap
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-RUN apt-get install -yqq nodejs
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
+
+# Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN set -eux; \
+	composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
+	composer clear-cache
+ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 # yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install -y yarn
 
+# xdebug
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
@@ -58,10 +72,6 @@ RUN { \
         echo 'xdebug.profiler_output_dir=/tmp'; \
     } > /usr/local/etc/php/conf.d/xdebug.ini
 
-# copy configurations
-COPY conf/commsy.ini /usr/local/etc/php/conf.d/
-COPY conf/commsy.pool.conf /usr/local/etc/php-fpm.d/
-
 # wkhtmltopdf
 RUN apt-get update && apt-get install -y \
         xfonts-base \
@@ -73,4 +83,52 @@ RUN apt-get update && apt-get install -y \
 RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.2.1/wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
         && dpkg -i /usr/src/wkhtmltopdf.deb
 
+# copy configurations
+COPY docker/php/commsy.ini /usr/local/etc/php/conf.d/
+COPY docker/php/commsy.pool.conf /usr/local/etc/php-fpm.d/
+
+WORKDIR /var/www/html
+
+# build for production
+ARG APP_ENV=prod
+
+# prevent the reinstallation of vendors at every changes in the source code
+COPY composer.json composer.lock ./
+RUN set -eux; \
+	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --no-suggest; \
+	composer clear-cache
+
+COPY . ./
+
+RUN set -eux; \
+	mkdir -p var/cache var/log; \
+	composer dump-autoload --classmap-authoritative --no-dev; \
+	composer run-script --no-dev post-install-cmd; \
+	chmod +x bin/console; sync
+#VOLUME /srv/api/var
+
+COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
+
+ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
+
+##############################################################################
+
+FROM nginx:${NGINX_VERSION}-alpine AS commsy_nginx
+
+COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /var/www/html
+
+COPY --from=commsy_php /var/www/html/public public/
+
+##############################################################################
+
+FROM nginx:${NGINX_VERSION}-alpine AS commsy_test_nginx
+
+COPY docker/nginx/conf.d/test.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /var/www/html
+
+#COPY --from=commsy_php /var/www/html/public public/

@@ -2,6 +2,9 @@
 namespace App\Controller;
 
 use App\Form\Model\File;
+use App\Services\LegacyEnvironment;
+use App\Utils\FileService;
+use App\Utils\ItemService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -154,15 +157,31 @@ class UploadController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/upload/{itemId}/form")
+     * @Route("/room/{roomId}/upload/{itemId}/form/{versionId}", requirements={
+     *     "itemId": "\d+",
+     *     "versionId": "\d+"
+     * }, defaults={
+     *     "versionId" = -1
+     * }))
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function uploadFormAction($roomId, $itemId, Request $request)
+    public function uploadFormAction(
+        $roomId,
+        $itemId,
+        $versionId = null,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        ItemService $itemService,
+        FileService $fileService)
     {
-        // get material from MaterialService
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getTypedItem($itemId);
+        /**
+         * Setting the default value of versionId to 0 does not seem to work and will always cut off the versionId from
+         * routes. Instead we default to -1.
+         */
+
+        // get item
+        $item = $itemService->getTypedItem($itemId, $versionId === -1 ? null : $versionId);
 
         if (!$item) {
             throw $this->createNotFoundException('No item found for id ' . $itemId);
@@ -171,7 +190,6 @@ class UploadController extends Controller
         // collect currently assigned files
         $assignedFiles = [];
 
-        $fileService = $this->get('commsy_legacy.file_service');
         $currentFileIds = $item->getFileIDArray();
         foreach ($currentFileIds as $currentFileId) {
             $currentFile = $fileService->getFile($currentFileId);
@@ -217,7 +235,7 @@ class UploadController extends Controller
                 }
 
                 // update item
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $legacyEnvironment = $legacyEnvironment->getEnvironment();
                 $item->setFileIDArray($checkedFileIds);
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
@@ -229,9 +247,36 @@ class UploadController extends Controller
                 }
 
                 // delete unchecked files
+                $linkItemManager = $legacyEnvironment->getLinkItemFileManager();
                 foreach ($uncheckedFileIds as $uncheckedFileId) {
                     $tempFile = $fileService->getFile($uncheckedFileId);
-                    $tempFile->delete();
+
+                    // Check if the unchecked file is linked to any other item and only delete it, if this is
+                    // not the case.
+                    $linkItemManager->resetLimits();
+                    $linkItemManager->setFileIDLimit($tempFile->getFileID());
+                    $linkItemManager->select();
+
+                    /** @var \cs_list $linkItemList */
+                    $linkItemList = $linkItemManager->get();
+
+                    $delete = true;
+                    if ($linkItemList->isNotEmpty()) {
+                        /** @var \cs_link_item $linkItem */
+                        $linkItem = $linkItemList->getFirst();
+                        while ($linkItem) {
+                            if (!$linkItem->isDeleted()) {
+                                $delete = false;
+                                break;
+                            }
+
+                            $linkItem = $linkItemList->getNext();
+                        }
+                    }
+
+                    if ($delete) {
+                        $tempFile->delete();
+                    }
                 }
             }
             

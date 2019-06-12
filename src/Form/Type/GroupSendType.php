@@ -44,6 +44,7 @@ class GroupSendType extends AbstractType
                 'label' => false,
                 'translation_domain' => 'form',
                 'required' => false,
+                'config_name' => 'cs_mail_config',
             ])
             ->add('copy_to_sender', ChoiceType::class, [
                 'label' => 'Copy to sender',

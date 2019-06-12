@@ -1,27 +1,28 @@
-version: "3"
+version: "3.4"
 
 services:
-  commsy_mediawiki:
-    build: ./wiki
-    container_name: commsy_mediawiki
-    links:
-      - commsy_mediawiki_db
+  mediawiki:
+    build: ./docker/wiki
+    depends_on:
+      - mediawiki_db
     ports:
-      - "8082:80"
+      - "82:80"
 
-  commsy_mediawiki_db:
+  mediawiki_db:
     image: mariadb:10.1
-    container_name: commsy_mediawiki_db
     ports:
-      - "3307:3306"
+      - "3108:3306"
     volumes:
-      - "./.data/db_wiki:/var/lib/mysql"
+      - wiki-db-data:/var/lib/mysql
     environment:
-      - "MYSQL_ROOT_PASSWORD=root"
-      - "MYSQL_DATABASE=mediawiki"
-      - "MYSQL_USER=mediawiki"
-      - "MYSQL_PASSWORD=mediawiki"
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mediawiki
+      - MYSQL_USER=mediawiki
+      - MYSQL_PASSWORD=mediawiki
 
-  commsy_php:
-    links:
-     - commsy_mediawiki
+  php:
+    depends_on:
+     - mediawiki
+
+volumes:
+  wiki-db-data:

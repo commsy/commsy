@@ -155,10 +155,10 @@ for the commsy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has now the status &quot;us
    %1
 
 for the commsy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has now the status &quot;read only user&quot;.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["en"] = "your status for the CommSy group workspace &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["en"] = "your status for the CommSy group workspace &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.";
 $message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO"]["en"] = "your status for the CommSy portal &quot;%2&quot; has changed: You are not a contact person anymore.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.";
 $message["MAIL_CHOICE_CHOOSE_TEXT"]["en"] = "Select e-mail text";
 $message["MAIL_CHOICE_CIAO"]["en"] = "Salutation";
 $message["MAIL_CHOICE_HELLO"]["en"] = "Address";

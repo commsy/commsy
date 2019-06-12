@@ -55,6 +55,7 @@ fos_ck_editor:
 
     toolbars:
         configs:
+            nonHtml: [ "@clipboard" ]
             simpleToolbar: [ "@clipboard", "@basicstyles" ]
             fullToolbar: [ [ "html5audio" ], "@clipboard", "@basicstyles" , "@paragraph", "@justify", "@misc", "/", "@format", "@style", "@content", "@language", "@commsy" ]
         items:
@@ -81,3 +82,6 @@ fos_ck_editor:
 
         cs_annotation_config:
             toolbar: "simpleToolbar"
+
+        cs_mail_config:
+            toolbar: "nonHtml"
