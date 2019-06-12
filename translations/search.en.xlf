@@ -8,11 +8,11 @@
             </trans-unit>
             <trans-unit id="search-form-placeholder">
                 <source>Search in room...</source>
-                <target>Search in room...</target>
+                <target>Search in workspace...</target>
             </trans-unit>
             <trans-unit id="search-no-results-room">
                 <source>no rooms found</source>
-                <target>No rooms found</target>
+                <target>No workspaces found</target>
             </trans-unit>
             <trans-unit id="search-instant-header">
                 <source>best matches</source>
@@ -40,11 +40,11 @@
             </trans-unit>
             <trans-unit id="search-filter-all-my-rooms">
                 <source>Search in all my rooms</source>
-                <target>Search in all my rooms</target>
+                <target>Search in all my workspaces</target>
             </trans-unit>
             <trans-unit id="room-search">
                 <source>Room search</source>
-                <target>Room search</target>
+                <target>Workspace search</target>
             </trans-unit>
         </body>
     </file>

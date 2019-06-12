@@ -216,7 +216,7 @@
             </trans-unit>
             <trans-unit id="52">
                 <source>user status</source>
-                <target>User role in this room</target>
+                <target>User role in this workspace</target>
             </trans-unit>
             <trans-unit id="53">
                 <source>email</source>
@@ -236,7 +236,7 @@
             </trans-unit>
             <trans-unit id="57">
                 <source>enter grouproom</source>
-                <target>Enter group room</target>
+                <target>Enter group workspace</target>
             </trans-unit>
             <trans-unit id="58">
                 <source>show all</source>
@@ -376,7 +376,7 @@
            </trans-unit>
            <trans-unit id="entriesInserted">
                 <source>inserted %count% entries in this room</source>
-                <target>{0} No entry inserted.|{1} Inserted one entry into this room.|]1,Inf[ Inserted %count% entries into this room.</target>
+                <target>{0} No entry inserted.|{1} Inserted one entry into this workspace.|]1,Inf[ Inserted %count% entries into this workspace.</target>
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>
@@ -401,7 +401,7 @@
             </trans-unit>
             <trans-unit id="withGrouproom">
                 <source>withGrouproom</source>
-                <target>(incl. group room)</target>
+                <target>(incl. group workspace)</target>
             </trans-unit>
             <trans-unit id="groupJoined">
                 <source>Joined group %s</source>

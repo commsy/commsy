@@ -68,11 +68,11 @@
             </trans-unit>
              <trans-unit id="16">
                 <source>roomlist</source>
-                <target>Change room</target>
+                <target>Change workspace</target>
             </trans-unit>
              <trans-unit id="17">
                 <source>find rooms</source>
-                <target>Search rooms</target>
+                <target>Search workspaces</target>
             </trans-unit>            
              <trans-unit id="18">
                 <source>days</source>
@@ -88,7 +88,7 @@
             </trans-unit>            
              <trans-unit id="21">
                 <source>own rooms</source>
-                <target>My own rooms</target>
+                <target>My own workspaces</target>
             </trans-unit>            
              <trans-unit id="22">
                 <source>room search text</source>
@@ -204,7 +204,7 @@
             </trans-unit>
             <trans-unit id="project">
                 <source>Project</source>
-                <target>{0}Project room|{1}Project rooms</target>
+                <target>{0}Project workspace|{1}Project workspaces</target>
             </trans-unit>
             <trans-unit id="institution">
                 <source>Institution</source>
