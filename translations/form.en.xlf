@@ -48,7 +48,7 @@
             </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
-                <target>The ideal aspect ratio for room images is 4&#58;1 (Width&#58;Height).</target>
+                <target>The ideal aspect ratio for workspace images is 4&#58;1 (Width&#58;Height).</target>
             </trans-unit>
             <trans-unit id="form-edit-files">
                 <source>edit files</source>
@@ -300,7 +300,7 @@
             </trans-unit>
             <trans-unit id="project">
                 <source>project</source>
-                <target>Project rooms</target>
+                <target>Project workspaces</target>
             </trans-unit>
             <trans-unit id="discussion">
                 <source>discussion</source>
