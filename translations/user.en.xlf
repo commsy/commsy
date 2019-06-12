@@ -156,7 +156,7 @@
             </trans-unit>
             <trans-unit id="contact remove">
                 <source>contact remove</source>
-                <target>Change status: contact person</target>
+                <target>Remove status: contact person</target>
             </trans-unit>
             <trans-unit id="is contact">
                 <source>is contact</source>
