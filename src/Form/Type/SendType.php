@@ -55,6 +55,7 @@ class SendType extends AbstractType
                 'label' => false,
                 'translation_domain' => 'form',
                 'required' => true,
+                'config_name' => 'cs_mail_config',
             ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options, $mailAssistant) {
                 $form = $event->getForm();
