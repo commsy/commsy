@@ -28,7 +28,7 @@
             </trans-unit>
             <trans-unit id="hideEmailInThisRoom">
                 <source>hideEmailInThisRoom</source>
-                <target>Hide mail in this room</target>
+                <target>Hide mail in this workspace</target>
             </trans-unit>
             <trans-unit id="phone">
                 <source>phone</source>
@@ -52,7 +52,7 @@
             </trans-unit>
             <trans-unit id="room">
                 <source>room</source>
-                <target>Room</target>
+                <target>Workspace</target>
             </trans-unit>
             <trans-unit id="organisation">
                 <source>organisation</source>
@@ -180,7 +180,7 @@
             </trans-unit>
             <trans-unit id="no moderators left">
                 <source>no moderators left</source>
-                <target>Action would leave no moderators in this room. Please change selection of users!</target>
+                <target>Action would leave no moderators in this workspace. Please change selection of users!</target>
             </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
