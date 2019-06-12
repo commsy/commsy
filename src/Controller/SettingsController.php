@@ -390,7 +390,7 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function invitationsAction($roomId, RouterInterface $router, Request $request, RoomService $roomService)
+    public function invitationsAction($roomId, Request $request, RoomService $roomService, RouterInterface $router)
     {
         $invitationsService = $this->get('commsy.invitations_service');
         $translator = $this->get('translator');
