@@ -8,15 +8,15 @@
             </trans-unit>
             <trans-unit id="mailFromProjectRoom">
                 <source>This email has been sent by ... from project room ...</source>
-                <target>This email has been sent by %sender_name% from project room "%room_name%".</target>
+                <target>This email has been sent by %sender_name% from project workspace "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailFromGroupRoom">
                 <source>This email has been sent by ... from group room ...</source>
-                <target>This email has been sent by %sender_name% from group room "%room_name%".</target>
+                <target>This email has been sent by %sender_name% from group workspace "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailFromCommunityRoom">
                 <source>This email has been sent by ... from community room ...</source>
-                <target>This email has been sent by %sender_name% from community room "%room_name%".</target>
+                <target>This email has been sent by %sender_name% from community workspace "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailCopyToSender">
                 <source>Copy to sender</source>
@@ -40,11 +40,11 @@
             </trans-unit>
             <trans-unit id="mailSendToAll">
                 <source>Send to all room members</source>
-                <target>Send to all room members</target>
+                <target>Send to all workspace members</target>
             </trans-unit>
             <trans-unit id="mailSendSelectedAll">
                 <source>Send to selected room members</source>
-                <target>Send to selected room members</target>
+                <target>Send to selected workspace members</target>
             </trans-unit>
             <trans-unit id="mailAdditionalRecipients">
                 <source>Additional recipients</source>
@@ -76,11 +76,11 @@
             </trans-unit>
             <trans-unit id="mailSendMultipleBody">
                 <source>This email has been sent to multiple users of this room</source>
-                <target>This email has been sent by %sender_name% to %user_count% members of room "%room_name%".</target>
+                <target>This email has been sent by %sender_name% to %user_count% members of workspace "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailSendMultipleBodyGroup">
                 <source>This email has been sent to all users of this group</source>
-                <target>This email has been sent by %sender_name% to members of group "%group_name%" (room "%room_name%").</target>
+                <target>This email has been sent by %sender_name% to members of group "%group_name%" (workspace "%room_name%").</target>
             </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>

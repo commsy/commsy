@@ -4,7 +4,7 @@
         <body>
             <trans-unit id="Edit room categories">
                 <source>Edit room categories</source>
-                <target>Edit room categories</target>
+                <target>Edit workspace categories</target>
             </trans-unit>
             <trans-unit id="Title">
                 <source>Title</source>
@@ -28,7 +28,7 @@
             </trans-unit>
             <trans-unit id="Room categories">
                 <source>Room categories</source>
-                <target>Room categories</target>
+                <target>Workspace categories</target>
             </trans-unit>
 
             <trans-unit id="Portal settings">
@@ -67,7 +67,7 @@
             <!-- portal terms templates -->
             <trans-unit id="portal_terms_templates_reference">
                 <source>You can set up templates for room terms here</source>
-                <target>You can set up templates for room terms here</target>
+                <target>You can set up templates for workspace terms here</target>
             </trans-unit>
 
             <trans-unit id="portal_terms_templates_breadcrumb">
@@ -112,7 +112,7 @@
 
             <trans-unit id="roomcategories">
                 <source>roomcategories</source>
-                <target>Room categories</target>
+                <target>Workspace categories</target>
             </trans-unit>
 
             <!-- portal translations -->
