@@ -1,0 +1,44 @@
+version: "3.4"
+
+services:
+
+  db:
+    image: mariadb:10.1
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=commsy
+      - MYSQL_USER=commsy
+      - MYSQL_PASSWORD=commsy
+    volumes:
+      - db-data:/var/lib/mysql:rw
+    ports:
+      - "3106:3306"
+
+  nginx:
+    image: commsy/nginx
+    build:
+      context: ./
+      target: commsy_nginx
+    depends_on:
+      - php
+    volumes:
+      # Use only in development
+      - ./public/:/var/www/html/public:cached
+    ports:
+      - "81:80"
+
+  php:
+    image: commsy/php
+    build:
+      context: .
+      target: commsy_php
+    depends_on:
+      - db
+    volumes:
+      - commsy-data:/var/www/html/files
+      # Use only in development
+      - ./:/var/www/html:cached
+
+volumes:
+  db-data:
+  commsy-data:

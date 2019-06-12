@@ -104,7 +104,7 @@
             </trans-unit>
             <trans-unit id="room">
                 <source>room</source>
-                <target>room</target>
+                <target>workspace</target>
             </trans-unit>
             <trans-unit id="organisation">
                 <source>organisation</source>
@@ -164,7 +164,7 @@
             </trans-unit>
             <trans-unit id="switchRoomStatus">
                 <source>switchRoomStatus</source>
-                <target>switch room</target>
+                <target>switch workspace</target>
             </trans-unit>
             <trans-unit id="changeInAllContexts">
                 <source>changeInAllContexts</source>
@@ -224,7 +224,7 @@
             </trans-unit>
             <trans-unit id="roomProfile">
                 <source>Room profile</source>
-                <target>Room profile</target>
+                <target>Workspace profile</target>
             </trans-unit>
             <trans-unit id="profile_header_emailToCommsy">
                 <source>E-Mail to CommSy</source>
@@ -282,15 +282,15 @@
             <!-- description texts general room profile settings -->
             <trans-unit id="general_description">
                 <source>generalDescription</source>
-                <target>General settings about your profile in room %s can be configured here.</target>
+                <target>General settings about your profile in workspace %s can be configured here.</target>
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Your profile picture is displayed next to your comments in room "<![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>". For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally. If you do not upload a custom profile image your initials will be shown instead.</target>
+                <target>Your profile picture is displayed next to your comments in workspace "<![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>". For every workspace that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all workspaces" option to set your profile picture globally. If you do not upload a custom profile image your initials will be shown instead.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
-                <target>With this option you can set the language in which the menus, settings and explanations in CommSy will be displayed. Choosing the option "Browser" will configure the language according to your browser settings. If a room's moderation explicitly set a specific system language it will be used instead of your personal one.</target>
+                <target>With this option you can set the language in which the menus, settings and explanations in CommSy will be displayed. Choosing the option "Browser" will configure the language according to your browser settings. If a workspace's moderation explicitly set a specific system language it will be used instead of your personal one.</target>
             </trans-unit>
             <trans-unit id="auto_save_description">
                 <source>autoSaveDescription</source>
@@ -307,26 +307,26 @@
             </trans-unit>
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>
-                <target>Here you can configure how often you want to receive the Newsletter of this room. The newsletter will be send to you account e-mail address <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>.</target>
+                <target>Here you can configure how often you want to receive the Newsletter of this workspace. The newsletter will be send to you account e-mail address <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>.</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->
             <trans-unit id="lock_room_membership_title">
                 <source>lockRoomMembership</source>
-                <target>Lock room membership</target>
+                <target>Lock workspace membership</target>
             </trans-unit>
             <trans-unit id="delete_room_membership_title">
                 <source>deleteRoomMembership</source>
-                <target>Delete room membership</target>
+                <target>Delete workspace membership</target>
             </trans-unit>
 
             <trans-unit id="lock_room_membership_text">
                 <source>lockRoomMembershipText</source>
-                <target>Use this option to cancel your membership in this room. This will remove your access to this room, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your membership. Your room membership can be reactivated in the future.</target>
+                <target>Use this option to cancel your membership in this workspace. This will remove your access to this workspace, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your membership. Your workspace membership can be reactivated in the future.</target>
             </trans-unit>
             <trans-unit id="delete_room_membership_text">
                 <source>deleteRoomMembershipText</source>
-                <target>Use this option to delete your room membership and all of your posts and comments in this room. This will remove your access to this room.</target>
+                <target>Use this option to delete your workspace membership and all of your posts and comments in this workspace. This will remove your access to this workspace.</target>
             </trans-unit>
 
             <trans-unit id="lock_account_title">
@@ -340,16 +340,16 @@
 
             <trans-unit id="lock_account_text">
                 <source>lockAccountText</source>
-                <target>Use this option to deactivate your account in this portal. This will remove your access to all rooms in this portal, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your account. Your account can be reactivated in the future.</target>
+                <target>Use this option to deactivate your account in this portal. This will remove your access to all workspaces in this portal, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your account. Your account can be reactivated in the future.</target>
             </trans-unit>
             <trans-unit id="delete_account_text">
                 <source>deleteAccountText</source>
-                <target>Use this option to delete your account and all of your posts and comments in every room in this portal. To be able to use this portal again, you will have to register again.</target>
+                <target>Use this option to delete your account and all of your posts and comments in every workspace in this portal. To be able to use this portal again, you will have to register again.</target>
             </trans-unit>
 
             <trans-unit id="email_choice_text">
                 <source>Email choice text</source>
-                <target>Here you can choose the email address for communication in this room. You can either use your account email address or configure a new email address specifically for this room.</target>
+                <target>Here you can choose the email address for communication in this workspace. You can either use your account email address or configure a new email address specifically for this workspace.</target>
             </trans-unit>
 
             <trans-unit id="calendarsStatus">

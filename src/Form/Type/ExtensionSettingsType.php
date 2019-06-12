@@ -97,8 +97,8 @@ class ExtensionSettingsType extends AbstractType
                     'expanded' => true,
                     'multiple' => false,
                     'choices' => array(
-                        'Moderators' => 'moderator',
-                        'Users' => 'all',
+                        'Moderators only' => 'moderator',
+                        'All users' => 'all',
                     ),
                 ))
             )

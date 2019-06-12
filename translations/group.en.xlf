@@ -4,7 +4,7 @@
         <body>
             <trans-unit id="grouproom_description_text">
                 <source>grouproom description text</source>
-                <target>This room can be used as a workspace for this group.</target>
+                <target>This workspace can be used for the collaborative exchange of this group.</target>
             </trans-unit>
             <trans-unit id="grouproom_access">
                 <source>grouproom access</source>
@@ -12,35 +12,35 @@
             </trans-unit>
            <trans-unit id="2">
                 <source>grouproom</source>
-                <target>Group room</target>
+                <target>Group workspace</target>
             </trans-unit>
            <trans-unit id="3">
                 <source>grouproom information</source>
-                <target>Room information</target>
+                <target>Workspace information</target>
             </trans-unit>
            <trans-unit id="4">
                 <source>grouproom moderators</source>
-                <target>Group room moderators</target>
+                <target>Group workspace moderators</target>
             </trans-unit>
            <trans-unit id="5">
                 <source>no grouproom</source>
-                <target>No group room</target>
+                <target>No group workspace</target>
             </trans-unit>
            <trans-unit id="6">
                 <source>no grouproom description text</source>
-                <target>There is no active room for this group.</target>
+                <target>There is no active workspace for this group.</target>
             </trans-unit>
             <trans-unit id="7">
                 <source>edit grouproom</source>
-                <target>Edit group room</target>
+                <target>Edit group workspace</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>activate grouproom</source>
-                <target>Activate group room</target>
+                <target>Activate group workspace</target>
             </trans-unit>
             <trans-unit id="getGroupRoomAccess">
                 <source>get grouproom access</source>
-                <target>Get group room access</target>
+                <target>Get group workspace access</target>
             </trans-unit>
             <trans-unit id="restrictedToGroupMembers">
                 <source>access restricted to group members</source>
@@ -56,11 +56,11 @@
             </trans-unit>
             <trans-unit id="joinGroupBeforeGrouproom">
                 <source>join group before grouproom</source>
-                <target>Please join the group before applying for membership in this group room.</target>
+                <target>Please join the group before applying for membership in this group workspace.</target>
             </trans-unit>
             <trans-unit id="leaveGrouproomBeforeGroup">
                 <source>leave grouproom before group</source>
-                <target>Please cancel your group room membership before leaving the group.</target>
+                <target>Please cancel your group workspace membership before leaving the group.</target>
             </trans-unit>
         </body>
     </file>

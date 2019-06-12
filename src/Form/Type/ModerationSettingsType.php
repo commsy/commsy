@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Translation\TranslatorInterface;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -28,8 +29,9 @@ class ModerationSettingsType extends AbstractType
 
     private $roomItem;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
     {
+        $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -46,7 +48,11 @@ class ModerationSettingsType extends AbstractType
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $this->roomItem = $roomManager->getItem($options['roomId']);
         $availableRubrics = array_merge(['home'], $this->roomItem->getAvailableRubrics());
-        $rubricOptions = array_combine(array_map("ucfirst", array_values($availableRubrics)), array_values($availableRubrics));
+        $rubricOptions = [];
+        foreach ($availableRubrics as $rubric) {
+            $translatedTitle = $this->translator->transChoice(ucfirst($rubric), 1, [], 'rubric');
+            $rubricOptions[$translatedTitle] = $rubric;
+        }
 
         $builder
             ->add(

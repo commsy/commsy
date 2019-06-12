@@ -1,10 +1,9 @@
-version: "3"
+version: "3.4"
 
 services:
-  commsy_etherpad:
-    build: ./etherpad
-    container_name: commsy_etherpad
+  etherpad:
+    build: ./docker/etherpad
 
   commsy_php:
-    links:
-      - commsy_etherpad
+    depends_on:
+      - etherpad

@@ -70,6 +70,7 @@ class cs_section_item extends cs_item {
    function setTitle($title) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
+   	  $title = htmlentities($title);
    	  $title = $converter->sanitizeHTML($title);
       $this->_setValue('title', $title);
 

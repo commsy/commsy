@@ -4,11 +4,11 @@
         <body>
             <trans-unit id="new-project-room">
                 <source>New project room</source>
-                <target>New project room</target>
+                <target>New project workspace</target>
             </trans-unit>
             <trans-unit id="project-create-title">
                 <source>Create new project room</source>
-                <target>Create new project room</target>
+                <target>Create new project workspace</target>
             </trans-unit>
             <trans-unit id="project-form-title-label">
                 <source>Title</source>
@@ -28,15 +28,15 @@
             </trans-unit>
             <trans-unit id="project-form-description-label">
                 <source>Room description</source>
-                <target>Room description</target>
+                <target>Workspace description</target>
             </trans-unit>
             <trans-unit id="project-form-description-placeholder">
                 <source>Room description...</source>
-                <target>Room description...</target>
+                <target>Workspace description...</target>
             </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
-                <target>Delete project room</target>
+                <target>Delete project workspace</target>
             </trans-unit>
         </body>
     </file>
