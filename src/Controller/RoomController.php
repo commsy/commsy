@@ -1227,7 +1227,7 @@ class RoomController extends Controller
                 }
 
                 if ($add) {
-                    $label = $template->getTitle() . ' s(ID: ' . $template->getItemID() . ')';
+                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
                     $templates[$label] = $template->getItemID();
                 }
 
