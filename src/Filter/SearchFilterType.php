@@ -70,6 +70,7 @@ class SearchFilterType extends AbstractType
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                    'autocomplete' => 'off',
                 ],
                 'label' => 'Created from/until',
                 'required' => false,
@@ -91,6 +92,7 @@ class SearchFilterType extends AbstractType
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                    'autocomplete' => 'off',
                 ],
                 'label' => 'Last modified from/until',
                 'required' => false,
