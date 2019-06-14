@@ -50,9 +50,9 @@
                 <source>Created from/until</source>
                 <target>Erstellt von/bis</target>
             </trans-unit>
-            <trans-unit id="search-filter-modified-range">
-                <source>Modified from/until</source>
-                <target>Geändert von/bis</target>
+            <trans-unit id="search-filter-last-modified-range">
+                <source>Last modified from/until</source>
+                <target>Zuletzt geändert von/bis</target>
             </trans-unit>
             <trans-unit id="search-filter-rubric">
                 <source>Rubric</source>

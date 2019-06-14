@@ -89,8 +89,12 @@ class SearchController extends BaseController
     public function itemSearchResultsAction($roomId, Request $request, SearchManager $searchManager)
     {
         $query = $request->get('search', '');
+
         $searchManager->setQuery($query);
-        $searchManager->setContext($roomId);
+
+        $singleFilterCondition = new SingleContextFilterCondition();
+        $singleFilterCondition->setContextId($roomId);
+        $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
         $results = $this->prepareResults($searchResults, $roomId, 0, true);
@@ -370,16 +374,16 @@ class SearchController extends BaseController
         // creator parameter
         $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? "all");
 
-        // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType
+        // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
         if (!empty($searchParams['creation_date_range'])) {
             $creationDateRange = [];
             if (!empty($searchParams['creation_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_range']['left_date'])->setTime(0, 0, 0);
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date'])->setTime(0, 0, 0);
                 $creationDateRange[0] = $date;
             }
             if (!empty($searchParams['creation_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['creation_date_range']['right_date'])->setTime(23, 59, 59);
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date'])->setTime(23, 59, 59);
                 $creationDateRange[1] = $date;
             }
             $searchData->setCreationDateRange($creationDateRange);
@@ -389,11 +393,11 @@ class SearchController extends BaseController
         if (!empty($searchParams['modification_date_range'])) {
             $modificationDateRange = [];
             if (!empty($searchParams['modification_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_range']['left_date'])->setTime(0, 0, 0);
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date'])->setTime(0, 0, 0);
                 $modificationDateRange[0] = $date;
             }
             if (!empty($searchParams['modification_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('Y-m-d', $searchParams['modification_date_range']['right_date'])->setTime(23, 59, 59);
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date'])->setTime(23, 59, 59);
                 $modificationDateRange[1] = $date;
             }
             $searchData->setModificationDateRange($modificationDateRange);

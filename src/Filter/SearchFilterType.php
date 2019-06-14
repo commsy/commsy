@@ -69,36 +69,44 @@ class SearchFilterType extends AbstractType
             ->add('creation_date_range', Filters\DateRangeFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 ],
                 'label' => 'Created from/until',
+                'required' => false,
+                // NOTE: while the left/right date labels won't display, specifying them helps with proper formatting
                 'left_date_options' => [
-                    'label' => 'from',
+                    'label'  => 'from',
                     'input'  => 'datetime',
                     'widget' => 'single_text',
+                    'format' => 'dd.MM.yyyy',
                 ],
                 'right_date_options' => [
-                    'label' => 'until',
+                    'label'  => 'until',
                     'input'  => 'datetime',
                     'widget' => 'single_text',
+                    'format' => 'dd.MM.yyyy',
                 ],
-                'required' => false,
             ])
             ->add('modification_date_range', Filters\DateRangeFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 ],
-                'label' => 'Modified from/until',
+                'label' => 'Last modified from/until',
+                'required' => false,
+                // NOTE: while the left/right date labels won't display, specifying them helps with proper formatting
                 'left_date_options' => [
-                    'label' => 'from',
+                    'label'  => 'from',
                     'input'  => 'datetime',
                     'widget' => 'single_text',
+                    'format' => 'dd.MM.yyyy',
                 ],
                 'right_date_options' => [
-                    'label' => 'until',
+                    'label'  => 'until',
                     'input'  => 'datetime',
                     'widget' => 'single_text',
+                    'format' => 'dd.MM.yyyy',
                 ],
-                'required' => false,
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [
                 'attr' => [
