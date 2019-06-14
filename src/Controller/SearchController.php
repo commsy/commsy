@@ -89,8 +89,12 @@ class SearchController extends BaseController
     public function itemSearchResultsAction($roomId, Request $request, SearchManager $searchManager)
     {
         $query = $request->get('search', '');
+
         $searchManager->setQuery($query);
-        $searchManager->setContext($roomId);
+
+        $singleFilterCondition = new SingleContextFilterCondition();
+        $singleFilterCondition->setContextId($roomId);
+        $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
         $results = $this->prepareResults($searchResults, $roomId, 0, true);
