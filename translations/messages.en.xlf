@@ -216,7 +216,7 @@
             </trans-unit>
             <trans-unit id="52">
                 <source>user status</source>
-                <target>User role in this room</target>
+                <target>User role in this workspace</target>
             </trans-unit>
             <trans-unit id="53">
                 <source>email</source>
@@ -236,7 +236,7 @@
             </trans-unit>
             <trans-unit id="57">
                 <source>enter grouproom</source>
-                <target>Enter group room</target>
+                <target>Enter group workspace</target>
             </trans-unit>
             <trans-unit id="58">
                 <source>show all</source>
@@ -273,6 +273,10 @@
              <trans-unit id="62">
                 <source>topic path not activated</source>
                 <target>not activated</target>
+            </trans-unit>
+            <trans-unit id="catsAndBuzz">
+                <source>categoriesAndBuzzwords</source>
+                <target>Categories and buzzwords</target>
             </trans-unit>
             <trans-unit id="Entries">
                 <source>Entries</source>
@@ -376,7 +380,7 @@
            </trans-unit>
            <trans-unit id="entriesInserted">
                 <source>inserted %count% entries in this room</source>
-                <target>{0} No entry inserted.|{1} Inserted one entry into this room.|]1,Inf[ Inserted %count% entries into this room.</target>
+                <target>{0} No entry inserted.|{1} Inserted one entry into this workspace.|]1,Inf[ Inserted %count% entries into this workspace.</target>
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>
@@ -401,7 +405,7 @@
             </trans-unit>
             <trans-unit id="withGrouproom">
                 <source>withGrouproom</source>
-                <target>(incl. group room)</target>
+                <target>(incl. group workspace)</target>
             </trans-unit>
             <trans-unit id="groupJoined">
                 <source>Joined group %s</source>
@@ -426,14 +430,19 @@
             <trans-unit id="invitation body">
                 <source>invitation body %portal% %link% %sender%</source>
                 <target>
-                    You have been invited to join the CommSy-portal "%portal%". To redeem this invitation, please follow this link:
+You have received an invitation to the project room “%room%” on the CommSy portal %portal%.
 
-                    %link%
+Please click the following link to register a username on the portal %portal%:
+%link%
+The link will remain valid for 14 days.
 
-                    This link will expire in 14 days.
+Once you have registered a username, use the following link to access the project room:
+                    %roomLink%
 
-                    Gruß ...
-                    %sender%
+There are three ways of applying for room membership. You can either enter your motivation into the free-text field, enter a membership code or click “Become member ”, depending on which method the room moderator has chosen. If you need a membership code, request it directly from the room moderator or the person who has invited you.
+
+Regards,
+%sender%
                 </target>
             </trans-unit>
             <trans-unit id="calendar">

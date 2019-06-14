@@ -6,6 +6,7 @@
             let editor = evt.editor;
             let data = $('.ckeditor-upload').data();
             if(data) {
+                CKEDITOR.instances[editor.name].config.filebrowserUploadMethod = 'form';
                 CKEDITOR.instances[editor.name].config.filebrowserUploadUrl = data.csUploadurl.path;
             }
         });

@@ -494,7 +494,8 @@ class ProjectController extends Controller
                 }
 
                 if ($add) {
-                    $titles[$template->getItemID()] = $template->getTitle();
+                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
+                    $titles[$template->getItemID()] = $label;
                     $descriptions[$template->getItemID()] = $template->getDescription();
                 }
 

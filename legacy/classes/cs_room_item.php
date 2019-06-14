@@ -1778,34 +1778,15 @@ class cs_room_item extends cs_context_item {
             $body .= LF . LF;
             $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION', str_ireplace('&amp;', '&', $this->getTitle()), $current_user->getFullname(), $room_change_action);
 
-            $url_to_portal = '';
-            if (!empty($current_portal)) {
-                $url_to_portal = $current_portal->getURL();
-            }
+            // set new commsy url
+            global $symfonyContainer;
 
-            $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
-            if (isset($c_commsy_cron_path)) {
-                $url = $c_commsy_cron_path . 'commsy.php?cid=';
-            } elseif (!empty($url_to_portal)) {
-                $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
-                if (stristr($c_commsy_domain, 'https://')) {
-                    $url = 'https://';
-                } else {
-                    $url = 'http://';
-                }
-                $url .= $url_to_portal;
-                $file = 'commsy.php';
-                $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-                if (!empty($c_single_entry_point)) {
-                    $file = $c_single_entry_point;
-                }
-                $url .= '/' . $file . '?cid=';
-            } else {
-                $file = $_SERVER['PHP_SELF'];
-                $file = str_replace('cron', 'commsy', $file);
-                $url = 'http://' . $_SERVER['HTTP_HOST'] . $file . '?cid=';
-            }
-            $url .= $this->getItemID();
+            /** @var \Symfony\Component\Routing\RouterInterface $router */
+            $router = $symfonyContainer->get('router');
+            $url = $router->generate('app_room_home', [
+                'roomId' => $this->getItemID(),
+            ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
+
             $body .= LF . $url;
 
             if ($this->isProjectRoom()) {

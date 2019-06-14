@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="validators_room_agb">
                 <source>You must accept room agb.</source>
-                <target>You must accept room agb.</target>
+                <target>You must accept workspace agb.</target>
             </trans-unit>
             <trans-unit id="validators_room_code">
                 <source>Your access code is invalid.</source>
@@ -98,7 +98,7 @@
             </trans-unit>
             <trans-unit id="violation_csv_user_import_room_valid">
                 <source>The field rooms must be empty or a list of room ids.</source>
-                <target>The field "rooms" must be empty or a list of room ids.</target>
+                <target>The field "rooms" must be empty or a list of workspace ids.</target>
             </trans-unit>
             <trans-unit id="violation_unique_category">
                 <source>A category can only be used once per portfolio.</source>

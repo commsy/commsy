@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Form\Type\SendType;
 use App\Form\Type\SendListType;
 use App\Form\Type\ItemDescriptionType;
+use App\Form\Type\ItemCatsBuzzType;
 use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
 use Symfony\Component\Validator\Constraints\Count;
@@ -352,6 +353,184 @@ class ItemController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
              if ($form->get('save')->isClicked()) {
+                $data = $form->getData();
+
+                $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
+
+                // update modifier
+                $item->setModificatorItem($environment->getCurrentUserItem());
+
+                // save links
+                $item->setLinkedItemsByIDArray($itemData);
+                $item->setTagListByID($data['categories']);
+                $item->setBuzzwordListByID($data['hashtags']);
+
+                if ($item->getItemType() == CS_TOPIC_TYPE) {
+                    if (empty($itemData)) {
+                        $item->deactivatePath();
+                    }
+                }
+
+                // persist
+                $item->save();
+            }
+
+            return $this->redirectToRoute('app_item_savelinks', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
+        }
+
+        return [
+            'itemId' => $itemId,
+            'roomId' => $roomId,
+            'form' => $form->createView(),
+            'showCategories' => $roomItem->withTags(),
+            'showHashtags' => $roomItem->withBuzzwords(),
+            'items' => $items,
+            'itemsLatest' => $optionsData['itemsLatest'],
+        ];
+    }
+
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}", defaults={"feedAmount" = 20})
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editCatsBuzzAction($roomId, $itemId, $feedAmount, Request $request)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $formData = array();
+        $optionsData = array();
+        $items = array();
+
+        // get all items that are linked or can be linked
+        $rubricInformation = $roomService->getRubricInformation($roomId);
+        if (in_array('group', $rubricInformation)) {
+            $rubricInformation[] = 'label';
+        }
+
+        $optionsData['filterRubric']['all'] = 'all';
+        foreach ($rubricInformation as $rubric) {
+            $optionsData['filterRubric'][$rubric] = $rubric;
+        }
+
+        $optionsData['filterPublic']['public'] = 'public';
+        $optionsData['filterPublic']['all'] = 'all';
+
+        $itemManager = $environment->getItemManager();
+        $itemManager->reset();
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setTypeArrayLimit($rubricInformation);
+
+        // get all linked items
+        $itemLinkedList = $itemManager->getItemList($item->getAllLinkedItemIDArray());
+        $tempLinkedItem = $itemLinkedList->getFirst();
+        while ($tempLinkedItem) {
+            $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
+            if ($tempTypedLinkedItem->getItemType() != 'user') {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
+                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
+            } else {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
+                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
+            }
+            $tempLinkedItem = $itemLinkedList->getNext();
+        }
+        if (empty($optionsData['itemsLinked'])) {
+            $optionsData['itemsLinked'] = [];
+        }
+        // add number of linked items to feed amount
+        $countLinked = count($optionsData['itemsLinked']);
+
+        $itemManager->setIntervalLimit($feedAmount + $countLinked);
+        $itemManager->select();
+        $itemList = $itemManager->get();
+
+        // get all items except linked items
+        $optionsData['items'] = [];
+        $tempItem = $itemList->getFirst();
+        while ($tempItem) {
+            $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
+            // skip already linked items
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
+                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                $items[$tempTypedItem->getItemId()] = $tempTypedItem;
+            }
+            $tempItem = $itemList->getNext();
+
+        }
+
+        $linkedItemIds = $item->getAllLinkedItemIDArray();
+        foreach ($linkedItemIds as $linkedId) {
+            $formData['itemsLinked'][$linkedId] = true;
+        }
+
+        // get latest edited items from current user
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setUserUserIDLimit($environment->getCurrentUser()->getUserId());
+        $itemManager->select();
+        $latestItemList = $itemManager->get();
+
+        $i = 0;
+        $latestItem = $latestItemList->getFirst();
+        while ($latestItem && $i < 5) {
+            $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
+                if ($tempTypedItem->getType() != "discarticle" && $tempTypedItem->getType() != "task" && $tempTypedItem->getType() != 'link_item' && $tempTypedItem->getType() != 'tag') {
+                    $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                    $i++;
+                }
+            }
+            $latestItem = $latestItemList->getNext();
+        }
+        if (empty($optionsData['itemsLatest'])) {
+            $optionsData['itemsLatest'] = [];
+        }
+
+        // get all categories -> tree
+        $optionsData['categories'] = $this->getCategories($roomId, $this->get('commsy_legacy.category_service'));
+        $formData['categories'] = $this->getLinkedCategories($item);
+        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
+
+        // get all hashtags -> list
+        $optionsData['hashtags'] = $this->getHashtags($roomId, $environment);
+        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $environment);
+        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+
+
+        $translator = $this->get('translator');
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+
+        $form = $this->createForm(ItemCatsBuzzType::class, $formData, [
+            'filterRubric' => [],
+            'filterPublic' => [],
+            'items' => [],
+            'itemsLinked' => [],
+            'itemsLatest' => [],
+            'categories' => $optionsData['categories'],
+            'categoryConstraints' => $categoryConstraints,
+            'hashtags' => $optionsData['hashtags'],
+            'hashtagConstraints' => $hashtagConstraints,
+            'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+            'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('save')->isClicked()) {
                 $data = $form->getData();
 
                 $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
