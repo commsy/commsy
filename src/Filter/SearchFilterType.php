@@ -87,7 +87,7 @@ class SearchFilterType extends AbstractType
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
-                'label' => 'Modified from/until',
+                'label' => 'Last modified from/until',
                 'left_date_options' => [
                     'label' => 'from',
                     'input'  => 'datetime',
