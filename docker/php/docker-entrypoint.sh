@@ -7,7 +7,7 @@ if [ "${1#-}" != "$1" ]; then
 fi
 
 if [ "$1" = 'php-fpm' ] || [ "$1" = 'bin/console' ]; then
-	mkdir -p var/cache var/log
+	mkdir -p var/cache var/cache/htmlpurifier var/log
 #	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
 #	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
     chown -R www-data:www-data var/cache
