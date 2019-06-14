@@ -379,12 +379,18 @@ class SearchController extends BaseController
         if (!empty($searchParams['creation_date_range'])) {
             $creationDateRange = [];
             if (!empty($searchParams['creation_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date'])->setTime(0, 0, 0);
-                $creationDateRange[0] = $date;
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date']);
+                if ($date) {
+                    $date = $date->setTime(0, 0, 0);
+                    $creationDateRange[0] = $date;
+                }
             }
             if (!empty($searchParams['creation_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date'])->setTime(23, 59, 59);
-                $creationDateRange[1] = $date;
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date']);
+                if ($date) {
+                    $date = $date->setTime(23, 59, 59);
+                    $creationDateRange[1] = $date;
+                }
             }
             $searchData->setCreationDateRange($creationDateRange);
         }
@@ -393,12 +399,18 @@ class SearchController extends BaseController
         if (!empty($searchParams['modification_date_range'])) {
             $modificationDateRange = [];
             if (!empty($searchParams['modification_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date'])->setTime(0, 0, 0);
-                $modificationDateRange[0] = $date;
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date']);
+                if ($date) {
+                    $date = $date->setTime(0, 0, 0);
+                    $modificationDateRange[0] = $date;
+                }
             }
             if (!empty($searchParams['modification_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date'])->setTime(23, 59, 59);
-                $modificationDateRange[1] = $date;
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date']);
+                if ($date) {
+                    $date = $date->setTime(23, 59, 59);
+                    $modificationDateRange[1] = $date;
+                }
             }
             $searchData->setModificationDateRange($modificationDateRange);
         }
