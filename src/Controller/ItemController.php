@@ -314,7 +314,7 @@ class ItemController extends Controller
         if (empty($optionsData['itemsLatest'])) {
             $optionsData['itemsLatest'] = [];
         }
-        
+
         // get all categories -> tree
         $optionsData['categories'] = $this->getCategories($roomId, $this->get('commsy_legacy.category_service'));
         $formData['categories'] = $this->getLinkedCategories($item);
@@ -324,6 +324,8 @@ class ItemController extends Controller
         $optionsData['hashtags'] = $this->getHashtags($roomId, $environment);
         $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $environment);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+
+
 
 
         $translator = $this->get('translator');
@@ -337,9 +339,9 @@ class ItemController extends Controller
             'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
-            'categoryConstraints' => $categoryConstraints,
+            'categoryConstraints' => array(),
             'hashtags' => $optionsData['hashtags'],
-            'hashtagConstraints' => $hashtagConstraints,
+            'hashtagConstraints' => array(),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);
