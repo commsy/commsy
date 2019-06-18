@@ -10,11 +10,13 @@
                     themes: {
                         icons: false
                     },
-                    multiple: true
+                    multiple: true,
+                    dblclick_toggle: false
                 },
                 checkbox: {
                     keep_selected_style: false,
-                    three_state: false
+                    three_state: false,
+                    // cascade: 'down',
                 },
                 plugins: [
                     "wholerow",
@@ -52,6 +54,7 @@
                             let value = $input.attr('value');
 
                             $(element).jstree(true).select_node('tag_' + value);
+                            $(element).jstree(true).open_node('tag_' + value);
                         }
                     };
 
@@ -61,6 +64,14 @@
                     $('input[id*="itemLinks_categories"]').each(selectNode);
                     $('input[id*="portfolio_categories"]').each(selectNode);
 
+                    $(element)
+                        .on('select_node.jstree', function (event, data) {
+                            let node = data.node;
+                            let instance = data.instance;
+
+                            instance.open_all(node);
+                        });
+
                     /**
                      * Register handler for select and deselect events, recursively selecting or deselecting
                      * all child nodes. We could use the "cascade" configuration for this, but it's "down" mode
@@ -68,25 +79,17 @@
                      * propergation is also done when syncing the checkbox states with the tree after submitting the
                      * filter form.
                      */
-                    $(element)
-                        .on('select_node.jstree', function(event, data) {
-                            let node = data.node;
-                            let instance = data.instance;
+                    if ($this.options.custom && $this.options.custom.customCascade) {
+                        $(element)
+                            .on('select_node.jstree', function(event, data) {
+                                let node = data.node;
+                                let instance = data.instance;
 
-                            $.each(node.children, function() {
-                                instance.select_node(this, true);
+                                $.each(node.children, function() {
+                                    instance.select_node(this, true);
+                                });
                             });
-                        });
-
-                    $(element)
-                        .on('deselect_node.jstree', function(event, data) {
-                            let node = data.node;
-                            let instance = data.instance;
-
-                            $.each(instance.get_children_dom(node), function() {
-                                instance.deselect_node(this, true);
-                            });
-                        });
+                    }
 
                     /**
                      * the following event handler are registered, after checkbox sync

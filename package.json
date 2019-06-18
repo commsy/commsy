@@ -32,7 +32,7 @@
     "hard-source-webpack-plugin": "^0.13.1",
     "jquery": "^3.2.1",
     "jscolor-picker": "^2.0.4",
-    "jstree": "^3.3.4",
+    "jstree": "^3.3.8",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "nprogress": "^0.2.0",
