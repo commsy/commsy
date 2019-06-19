@@ -13,6 +13,21 @@ class MaterialsRepository extends ServiceEntityRepository
         parent::__construct($registry, Materials::class);
     }
 
+    public function findLatestVersionByItemId($itemId):? Materials
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin(
+                'App:Materials',
+                'b',
+                Expr\Join::WITH,
+                'm.itemId = b.itemId AND m.versionId < b.versionId')
+            ->where('b.itemId IS NULL')
+            ->andWhere('m.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * Used by Elastic when populating the index. The join will ensure only the latest version of a material
      * is index. Check the answer at StackOverflow for details on the greatest-n-per-group query.
