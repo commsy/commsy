@@ -2875,8 +2875,7 @@ function getExternalViewerArray(){
 
     protected function replaceElasticItem($objectPersister, $repository)
     {
-        global $symfonyContainer;
-        $elasticHost = $symfonyContainer->getParameter('env(ELASTIC_HOST)');
+        $elasticHost = $_ENV['ELASTIC_HOST'];
 
         if ($elasticHost) {
             $object = $repository->findOneByItemId($this->getItemID());
@@ -2889,8 +2888,7 @@ function getExternalViewerArray(){
 
     protected function deleteElasticItem($objectPersister, $repository)
     {
-        global $symfonyContainer;
-        $elasticHost = $symfonyContainer->getParameter('env(ELASTIC_HOST)');
+        $elasticHost = $_ENV['ELASTIC_HOST'];
 
         if ($elasticHost) {
             $object = $repository->findOneByItemId($this->getItemID());
