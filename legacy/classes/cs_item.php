@@ -2878,7 +2878,11 @@ function getExternalViewerArray(){
         $elasticHost = $_ENV['ELASTIC_HOST'];
 
         if ($elasticHost) {
-            $object = $repository->findOneByItemId($this->getItemID());
+            if ($repository instanceof \App\Repository\MaterialsRepository) {
+                $object = $repository->findLatestVersionByItemId($this->getItemID());
+            } else {
+                $object = $repository->findOneByItemId($this->getItemID());
+            }
 
             if ($object && $object->isIndexable() && !$this->isDraft()) {
                 $objectPersister->replaceOne($object);
