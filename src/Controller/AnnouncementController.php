@@ -294,6 +294,8 @@ class AnnouncementController extends BaseController
             'showHashTags' => $roomItem->withBuzzwords(),
             'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'ratingList' => $ratingList,
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
@@ -356,6 +358,8 @@ class AnnouncementController extends BaseController
             'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'roomCategories' => $infoArray['categories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
@@ -394,6 +398,8 @@ class AnnouncementController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'itions' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
@@ -866,6 +872,8 @@ class AnnouncementController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
+        $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
         $infoArray['showAssociations'] = $current_context->withAssociations();
         $infoArray['categories'] = $categories;
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [

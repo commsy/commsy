@@ -156,7 +156,7 @@
                         </div>
                         {% if (showCategories or showCategories) %}
                             <div id="categoriesAndBuzzwords{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
-                                {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories) }}
+                                {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
                             </div>
                         {% endif %}
                     {% endif %}

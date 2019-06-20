@@ -466,6 +466,8 @@ class DateController extends BaseController
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
@@ -1545,6 +1547,8 @@ class DateController extends BaseController
             'showCategories' => $current_context->withTags(),
             'showAssociations' => $current_context->withAssociations(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
         ]);
 
