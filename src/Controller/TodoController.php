@@ -81,6 +81,8 @@ class TodoController extends BaseController
             'showCategories' => $roomItem->withTags(),
             'statusList' => $roomItem->getExtraToDoStatusArray(),
             'usageInfo' => $usageInfo,
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
         );
@@ -347,6 +349,8 @@ class TodoController extends BaseController
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
             'showRating' => $current_context->isAssessmentActive(),
             'ratingArray' => $current_context->isAssessmentActive() ? [
@@ -742,6 +746,8 @@ class TodoController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
@@ -824,6 +830,8 @@ class TodoController extends BaseController
             'showHashTags' => $roomItem->withBuzzwords(),
             'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'ratingList' => $ratingList,
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
@@ -1177,6 +1185,8 @@ class TodoController extends BaseController
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
             'roomCategories' => $categories,
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'showRating' => $current_context->isAssessmentActive(),
             'ratingArray' => $current_context->isAssessmentActive() ? [
                 'ratingDetail' => $ratingDetail,

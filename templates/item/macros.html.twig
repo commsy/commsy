@@ -150,7 +150,7 @@
     </article>
 {% endmacro %}
 
-{% macro links(item,withTags,withCategories,roomCategories, draft) %}
+{% macro links(item,withTags,withCategories,roomCategories, draft, buzzExpanded, catzExpanded) %}
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}
     
@@ -199,9 +199,16 @@
 
     {% set content %}
 
-    <div class="uk-grid">
+    {% if catzExpanded %}
+        <div class="uk-grid" id="structureExpanded">
+    {% elseif buzzExpanded %}
+        <div class="uk-grid" id="structureExpanded">
+    {% else %}
+        <div class="uk-grid">
+    {% endif %}
         {% if withCategories %}
-        <div class="uk-width-1-3">
+
+            <div class="uk-width-1-3">
             <strong>{{ 'categories'|trans({}, "room") }}:</strong>
             {% if (item.tagsArray|length) > 0 %}
                 <div class="cs-tree-plain">
@@ -213,7 +220,7 @@
         </div>
         {% endif %}
         {% if withTags %}
-        <div class="uk-width-1-3">
+            <div class="uk-width-1-3">
             <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
             {% set tagArray = item.buzzwordList.to_array() %} 
             {% if (tagArray|length) > 0 %}
