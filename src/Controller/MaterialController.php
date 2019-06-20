@@ -158,6 +158,8 @@ class MaterialController extends BaseController
             'showHashTags' => $roomItem->withBuzzwords(),
             'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
@@ -339,6 +341,8 @@ class MaterialController extends BaseController
             'showHashtags' => $infoArray['showHashtags'],
             'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
@@ -782,6 +786,8 @@ class MaterialController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
+        $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
         $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
@@ -1141,6 +1147,8 @@ class MaterialController extends BaseController
             'showHashtags' => $infoArray['showHashtags'],
             'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],

@@ -6,7 +6,10 @@
         if( $("#detail_toggle_long").length) {
             let toggleElement = $( "div[id^='links']" ).find('a.cs-toggle');
             toggleElement.click();
-        }else{
+        }
+        if( $("#structureExpanded").length) {
+            let toggleElement = $(  "div[id^='categoriesAndBuzzwords']" ).find('a.cs-toggle');
+            toggleElement.click();
         }
     });
 
