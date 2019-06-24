@@ -191,13 +191,11 @@
                     {% if not draft %}
                         {# links #}
                         <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                            {{ macrosItem.linksAssociations(topic,showHashtags,showCategories,roomCategories, draft) }}
+                            {{ macrosItem.linksAssociations(topic,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
                         </div>
-                        {% if (showCategories or showHashtags) %}
-                            <div id="categoriesAndBuzzwords{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                                {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
-                            </div>
-                        {% endif %}
+                        <div id="categoriesAndBuzzwords{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                            {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
+                        </div>
                     {% endif %}
 
                     {% if draft %}
@@ -226,10 +224,8 @@
                         <li><a href="#description{{ topic.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#topicpath{{ topic.itemId }}">{{ 'topic path'|trans({})}}</a></li>
                         <li><a href="#links{{ topic.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        {% if (showCategories or showHashtags) %}
-                            <li><a href="#categoriesAndBuzzwords{{ topic.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
-                        {% endif %}
-                    </ul>
+                        <li><a href="#categoriesAndBuzzwords{{ topic.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                     </ul>
                 </div>
             </div>
 
