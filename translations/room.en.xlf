@@ -16,7 +16,7 @@
             </trans-unit>
             <trans-unit id="4">
                 <source>Room-Information</source>
-                <target>Room information</target>
+                <target>Workspace information</target>
             </trans-unit>
             <trans-unit id="6">
                 <source>Entries:</source>
@@ -56,11 +56,11 @@
             </trans-unit>
              <trans-unit id="15">
                 <source>latest entries</source>
-                <target>Latest entries in this room</target>
+                <target>Latest entries in this workspace</target>
             </trans-unit>
             <trans-unit id="16">
                 <source>latest entries from my rooms</source>
-                <target>Latest entries from my rooms</target>
+                <target>Latest entries from my workspaces</target>
             </trans-unit>
             <trans-unit id="17">
                 <source>no hashtags</source>
@@ -68,7 +68,7 @@
             </trans-unit>
             <trans-unit id="18">
                 <source>project</source>
-                <target>Project room</target>
+                <target>Project workspace</target>
             </trans-unit>
             <trans-unit id="19">
                 <source>moderation support</source>
@@ -80,19 +80,19 @@
             </trans-unit>
             <trans-unit id="room-nav-title">
                 <source>All rooms</source>
-                <target>All rooms</target>
+                <target>All workspaces</target>
             </trans-unit>
             <trans-unit id="list-all-rooms">
                 <source>List all rooms</source>
-                <target>List all rooms</target>
+                <target>List all workspaces</target>
             </trans-unit>
             <trans-unit id="room-my-rooms">
                 <source>My rooms</source>
-                <target>My rooms</target>
+                <target>My workspaces</target>
             </trans-unit>
             <trans-unit id="list-my-rooms">
                 <source>List my rooms</source>
-                <target>List my rooms</target>
+                <target>List my workspaces</target>
             </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
@@ -112,19 +112,19 @@
             </trans-unit>
             <trans-unit id="room-filter-choice-project">
                 <source>Project Rooms</source>
-                <target>Project Rooms</target>
+                <target>Project Workspaces</target>
             </trans-unit>
             <trans-unit id="room-filter-choice-community">
                 <source>Community Rooms</source>
-                <target>Community Rooms</target>
+                <target>Community Workspaces</target>
             </trans-unit>
             <trans-unit id="room-grouprooms">
                 <source>Group Rooms</source>
-                <target>Group rooms</target>
+                <target>Group workspaces</target>
             </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>
-                <target>Enter room</target>
+                <target>Enter workspace</target>
             </trans-unit>
             <trans-unit id="room_no_access">
                 <source>no access</source>
@@ -148,15 +148,15 @@
             </trans-unit>
             <trans-unit id="rooms">
                 <source>Rooms</source>
-                <target>Rooms</target>
+                <target>Workspaces</target>
             </trans-unit>
             <trans-unit id="hide-archived">
                 <source>hide-archived-rooms</source>
-                <target>Hide archived rooms</target>
+                <target>Hide archived workspaces</target>
             </trans-unit>
             <trans-unit id="hide-without-membership">
                 <source>hide-rooms-without-membership</source>
-                <target>Hide rooms without membership</target>
+                <target>Hide workspaces without membership</target>
             </trans-unit>
             <trans-unit id="search-filter">
                 <source>search-filter</source>
@@ -184,7 +184,7 @@
             </trans-unit>
             <trans-unit id="room_locked">
                 <source>This room is currently locked.</source>
-                <target>This room is currently locked.</target>
+                <target>This workspace is currently locked.</target>
             </trans-unit>
             <trans-unit id="room_rejected">
                 <source>Your request has been rejected.</source>
@@ -232,7 +232,7 @@
             </trans-unit>
             <trans-unit id="context type">
                 <source>context type</source>
-                <target>Room type</target>
+                <target>Workspace type</target>
             </trans-unit>
             <trans-unit id="Room description">
                 <source>Room description</source>
@@ -240,11 +240,11 @@
             </trans-unit>
             <trans-unit id="community">
                 <source>community</source>
-                <target>Community room</target>
+                <target>Community workspace</target>
             </trans-unit>
             <trans-unit id="Group room">
                 <source>Group room</source>
-                <target>Group room</target>
+                <target>Group workspace</target>
             </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
@@ -264,11 +264,11 @@
             </trans-unit>
             <trans-unit id="New room">
                 <source>New room</source>
-                <target>New room</target>
+                <target>New workspace</target>
             </trans-unit>
             <trans-unit id="Create new context">
                 <source>Create new context</source>
-                <target>Create new room</target>
+                <target>Create new workspace</target>
             </trans-unit>
             <trans-unit id="confirm">
                 <source>confirm</source>
@@ -280,7 +280,7 @@
             </trans-unit>
             <trans-unit id="Room description...">
                 <source>Room description...</source>
-                <target>Room description...</target>
+                <target>Workspace description...</target>
             </trans-unit>
             <trans-unit id="moderation actions">
                 <source>moderation actions</source>
@@ -288,15 +288,15 @@
             </trans-unit>
             <trans-unit id="Archived room">
                 <source>Archived room</source>
-                <target>Archived room</target>
+                <target>Archived workspace</target>
             </trans-unit>
             <trans-unit id="Archived room info">
                 <source>Archived room info</source>
-                <target>This room has been archived and is in read-only mode. I.e., you can view items in this room but cannot edit them or create new ones.</target>
+                <target>This workspace has been archived and is in read-only mode. I.e., you can view items in this workspace but cannot edit them or create new ones.</target>
             </trans-unit>
             <trans-unit id="Archived room removal warning">
                 <source>Archived room removal warning</source>
-                <target>Please note that this room will be deleted if it hasn't been used for %days% days.</target>
+                <target>Please note that this workspace will be deleted if it hasn't been used for %days% days.</target>
             </trans-unit>
             <trans-unit id="room_template">
                 <source>Template</source>

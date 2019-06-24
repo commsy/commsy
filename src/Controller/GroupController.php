@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Download\DownloadAction;
 use App\Http\JsonDataResponse;
+use App\Services\PrintService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -89,7 +90,7 @@ class GroupController extends BaseController
     /**
      * @Route("/room/{roomId}/group/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request, $sort)
+    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -150,7 +151,7 @@ class GroupController extends BaseController
             'showCategories' => false,
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
     /**
@@ -341,7 +342,7 @@ class GroupController extends BaseController
     /**
      * @Route("/room/{roomId}/group/{itemId}/print")
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, PrintService $printService)
     {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -377,7 +378,7 @@ class GroupController extends BaseController
             'annotationForm' => $form->createView(),
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
 

@@ -59,7 +59,7 @@ class DownloadService
             $fileSystem->mkdir($tempDirectory, 0777);
             
             // create PDF-file
-            $htmlView = 'App:' . $item->getItemType() . ':detail_print.html.twig';
+            $htmlView = $item->getItemType() . '/detail_print.html.twig';
             $htmlOutput = $this->serviceContainer->get('templating')->renderResponse($htmlView, $detailArray);
             file_put_contents($tempDirectory . '/' . $item->getTitle() . '.pdf', $this->printService->getPdfContent($htmlOutput));
 

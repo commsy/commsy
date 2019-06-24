@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Download\DownloadAction;
 use App\Http\JsonRedirectResponse;
 use App\Entity\License;
+use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -170,7 +171,7 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request, $sort)
+    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -238,7 +239,7 @@ class MaterialController extends BaseController
             
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
     /**
@@ -1111,7 +1112,7 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/{itemId}/print")
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, PrintService $printService)
     {
         $materialService = $this->get('commsy_legacy.material_service');
         $material = $materialService->getMaterial($itemId);
@@ -1154,7 +1155,7 @@ class MaterialController extends BaseController
             'roomCategories' => $infoArray['roomCategories'],
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
 
     /**

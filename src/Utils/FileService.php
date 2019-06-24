@@ -13,7 +13,11 @@ class FileService
         $this->legacyEnvironment = $legacyEnvironment;
     }
 
-    public function getFile($fileId)
+    /**
+     * @param $fileId
+     * @return \cs_file_item|null
+     */
+    public function getFile($fileId):? \cs_file_item
     {
         $fileManager = $this->legacyEnvironment->getEnvironment()->getFileManager();
         $file = $fileManager->getItem($fileId);

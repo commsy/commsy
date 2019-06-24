@@ -13,8 +13,8 @@
 
             <!-- General settings -->
             <trans-unit id="general_configuration">
-                <source>General Configuration</source>
-                <target>General Configuration</target>
+                <source>General configuration</source>
+                <target>General configuration</target>
             </trans-unit>
             <trans-unit id="basic_settings">
                 <source>Basic settings</source>
@@ -62,7 +62,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>Title</source>
-                <target>Title:</target>
+                <target>Title</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>Language</source>
@@ -70,11 +70,11 @@
             </trans-unit>
             <trans-unit id="12">
                 <source>Room image</source>
-                <target>Room image</target>
+                <target>Workspace image</target>
             </trans-unit>
             <trans-unit id="room_logo">
                 <source>Room logo</source>
-                <target>Room logo</target>
+                <target>Workspace logo</target>
             </trans-unit>
             <trans-unit id="13">
                 <source>Access check</source>
@@ -82,7 +82,7 @@
             </trans-unit>
             <trans-unit id="14">
                 <source>Room description</source>
-                <target>Room description</target>
+                <target>Workspace description</target>
             </trans-unit>
             <trans-unit id="15">
                 <source>Save</source>
@@ -94,11 +94,11 @@
             </trans-unit>
             <trans-unit id="17">
                 <source>Room image choice</source>
-                <target>Room image choice</target>
+                <target>Workspace image choice</target>
             </trans-unit>
             <trans-unit id="community_rooms">
                 <source>Community rooms</source>
-                <target>Community rooms</target>
+                <target>Community workspaces</target>
             </trans-unit>
             <trans-unit id="home">
                 <source>Home</source>
@@ -118,7 +118,7 @@
             </trans-unit>
             <trans-unit id="project">
                 <source>project</source>
-                <target>Project rooms</target>
+                <target>Project workspaces</target>
             </trans-unit>
             <trans-unit id="discussion">
                 <source>Discussion</source>
@@ -134,7 +134,7 @@
             </trans-unit>
             <trans-unit id="todo">
                 <source>Todo</source>
-                <target>Todo</target>
+                <target>Task</target>
             </trans-unit>
             <trans-unit id="task">
                 <source>Task</source>
@@ -146,7 +146,7 @@
             </trans-unit>
             <trans-unit id="defaultimage">
                 <source>Theme image</source>
-                <target>Theme Image</target>
+                <target>Theme image</target>
             </trans-unit>
             <trans-unit id="customimage">
                 <source>Custom image</source>
@@ -174,25 +174,25 @@
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>
-                <target>Select and configure workspace rubrics. The option "Show" means that this workspace rubric is shown in the navigation menu on the home page. The option "Hide" means that entries from this workspace rubric are included in the "Latest entries in this room" section on the home page. The option "Deactivate" means that this workspace rubric is not available in this CommSy room. You can customize the rubric order in the side menu with drag &amp; drop.</target>
+                <target>Select and configure workspace rubrics. The option "Show" means that this workspace rubric is shown in the navigation menu on the home page. The option "Hide" means that entries from this workspace rubric are included in the "Latest entries in this workspace" section on the home page. The option "Deactivate" means that this workspace rubric is not available in this CommSy workspace. You can customize the rubric order in the side menu with drag &amp; drop.</target>
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Rubric selection tip</source>
-                <target>In order to be able to manage the room membership of individual users, room moderators like yourself will always see the rubric "<![CDATA[<span class='uk-text-bold'>]]>Users<![CDATA[</span>]]>", even if it is deactivated for normal users.</target>
+                <target>In order to be able to manage the workspace membership of individual users, workspace moderators like yourself will always see the rubric "<![CDATA[<span class='uk-text-bold'>]]>Users<![CDATA[</span>]]>", even if it is deactivated for normal users.</target>
             </trans-unit>
             <trans-unit id="room_language_tip">
                 <source>Room language tip</source>
-                <target>Use a room specific system language or fall back to the user's preferences.</target>
+                <target>Use a workspace specific system language or fall back to the user's preferences.</target>
             </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
-                <target>Insert an additional Description. Max. 1000 characters are allowed.</target>
+                <target>Insert an additional description (max. 1000 characters allowed).</target>
             </trans-unit>  
 
             <!-- Additional settings -->
             <trans-unit id="additional_configuration">
-                <source>Additional Configuration</source>
-                <target>Additional Configuration</target>
+                <source>Additional configuration</source>
+                <target>Additional configuration</target>
             </trans-unit>            
             <trans-unit id="tags">
                 <source>Buzzwords</source>
@@ -244,15 +244,15 @@
             </trans-unit>
             <trans-unit id="activate">
                 <source>Activate</source>
-                <target>activate</target>
+                <target>Activate</target>
             </trans-unit>
             <trans-unit id="mandatoryassignment">
                 <source>Mandatory</source>
-                <target>mandatory assignment</target>
+                <target>Mandatory assignment</target>
             </trans-unit>
             <trans-unit id="ShowExpanded">
                 <source>Show expanded</source>
-                <target>show expanded</target>
+                <target>Show expanded</target>
             </trans-unit>
             <trans-unit id="access">
                 <source>Edit</source>
@@ -264,7 +264,7 @@
             </trans-unit>
             <trans-unit id="archiveroom">
                 <source>Archive room</source>
-                <target>Archive room</target>
+                <target>Archive workspace</target>
             </trans-unit>
             <trans-unit id="settings-label-archive">
                 <source>Archived</source>
@@ -272,7 +272,7 @@
             </trans-unit>
             <trans-unit id="terms">
                 <source>Terms</source>
-                <target>Terms and Conditions</target>
+                <target>Terms and conditions</target>
             </trans-unit>
             <trans-unit id="status">
                 <source>Status</source>
@@ -288,19 +288,19 @@
             </trans-unit>
             <trans-unit id="switchon">
                 <source>Switch on</source>
-                <target>switch on</target>
+                <target>Switch on</target>
             </trans-unit>
             <trans-unit id="switchoff">
                 <source>Switch off</source>
-                <target>switch off</target>
+                <target>Switch off</target>
             </trans-unit>
             <trans-unit id="rss">
-                <source>Rss</source>
-                <target>RSS Feed</target>
+                <source>RSS feed</source>
+                <target>RSS feed</target>
             </trans-unit>
             <trans-unit id="tasks_text">
                 <source>Tasks text</source>
-                <target>For todos there exist three progress status: "not started", "in progress" an "done". Here you can add additional status.</target>
+                <target>For tasks, there are by default three progress status items: "not started", "in progress" and "done". Here you can add additional status items.</target>
             </trans-unit>   
             <trans-unit id="template_text">
                 <source>Template text</source>
@@ -308,7 +308,7 @@
             </trans-unit>
             <trans-unit id="archive_text">
                 <source>Archive text</source>
-                <target>Archived rooms will be persisted in their current state, content can not be changed.</target>
+                <target>Archived workspaces will be persisted in their current state, content can not be changed.</target>
             </trans-unit>
             <trans-unit id="archive_text_permanently_archived">
                 <source>Archive text permanently archived</source>
@@ -316,17 +316,17 @@
             </trans-unit>
             <trans-unit id="archive_text_deletion_warning">
                 <source>Archive text deletion warning</source>
-                <target>When archived, this room will be deleted if it hasn't been used for %days% days.</target>
+                <target>When archived, this workspace will be deleted if it hasn't been used for %days% days.</target>
             </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>
-                <target>This activates the General Terms and Conditions dialogue for this workspace. Users are required to accept the defined General Terms and Conditions before they enter for the first time.</target>
+                <target>This activates the "General terms and conditions" dialogue for this workspace. Users are required to accept the defined "General terms and conditions" before they enter for the first time.</target>
             </trans-unit>
 
             <!-- Appearance settings -->
             <trans-unit id="appearance_configuration">
-                <source>Appearance Configuration</source>
-                <target>Appearance Configuration</target>
+                <source>Appearance configuration</source>
+                <target>Appearance configuration</target>
             </trans-unit>
             <trans-unit id="configure_events">
                 <source>Configure events</source>
@@ -342,11 +342,11 @@
             </trans-unit>
            <trans-unit id="weekview">
                 <source>weekview</source>
-                <target>Week view</target>
+                <target>Weekly calendar view</target>
             </trans-unit>
            <trans-unit id="monthview">
                 <source>monthview</source>
-                <target>Month view</target>
+                <target>Monthly calendar view</target>
             </trans-unit>
            <trans-unit id="Dates status">
                 <source>Dates status</source>
@@ -358,15 +358,15 @@
             </trans-unit>
             <trans-unit id="configure_events_text">
                 <source>Configure events text</source>
-                <target>Select list of events , or the calendar-view with weeks or months as default view for the events workspace page.</target>
+                <target>For the display of events in this workspace, choose between a list view of events, or a weekly or monthly calendar view as the default view.</target>
             </trans-unit>
             <trans-unit id="configure_color_theme_text">
                 <source>Configure color theme text</source>
-                <target>Choose one of several available color themes for this room.</target>
+                <target>Choose one of several available color themes for this workspace.</target>
             </trans-unit>
             <trans-unit id="room_image_text">
                 <source>Room image text</source>
-                <target>You can either use the current themes default image or upload your own picture file to use as background for this rooms home page.</target>
+                <target>You can either use the current themes default image or upload your own picture file to use as background for this workspace's home page.</target>
             </trans-unit>
             <trans-unit id="room_image_tip">
                 <source>Room image tip</source>
@@ -374,11 +374,11 @@
             </trans-unit>
             <trans-unit id="room_logo_text">
                 <source>Room logo text</source>
-                <target>The room logo is superimposed over the room background image on the start page.</target>
+                <target>The workspace logo is superimposed over the workspace's background image on the start page.</target>
             </trans-unit>
             <trans-unit id="room_logo_tip">
                 <source>Room logo tip</source>
-                <target>Images with transparent background are especially well suited as room logo.</target>
+                <target>Images with transparent background are especially well suited as workspace logo.</target>
             </trans-unit>
             <trans-unit id="theme_default">
                 <source>default</source>
@@ -431,40 +431,40 @@
 
             <!-- Moderation settings -->
             <trans-unit id="moderation_configuration">
-                <source>Moderation support Configuration</source>
-                <target>Moderation Support Configuration</target>
+                <source>Moderation support configuration</source>
+                <target>Moderation support configuration</target>
             </trans-unit>
             <trans-unit id="contentid">
                 <source>Content ID</source>
-                <target>content ID:</target>
+                <target>Content ID</target>
             </trans-unit>
             <trans-unit id="arrayrubric">
                 <source>Array info text rubric</source>
-                <target>Rubric:</target>
+                <target>Rubric</target>
             </trans-unit>
             <trans-unit id="rubric_message">
                 <source>Message</source>
-                <target>Text:</target>
+                <target>Text</target>
             </trans-unit>
             <trans-unit id="arrayrubricmail">
                 <source>Array mail text rubric</source>
-                <target>Edit e-mail texts:</target>
+                <target>Edit e-mail texts</target>
             </trans-unit> 
             <trans-unit id="showinfo">
                 <source>Show info</source>
-                <target>show</target>
+                <target>Show</target>
             </trans-unit>
             <trans-unit id="donotshowinfo">
                 <source>Do not show info</source>
-                <target>do not show</target>
+                <target>Do not show</target>
             </trans-unit>
             <trans-unit id="mailbodyde">
                 <source>body_de</source>
-                <target>Body (German):</target>
+                <target>Body (German)</target>
             </trans-unit>
             <trans-unit id="mailbodyen">
                 <source>body_en</source>
-                <target>Body (English):</target>
+                <target>Body (English)</target>
             </trans-unit>
             <trans-unit id="homenotice">
                 <source>Homenotice</source>
@@ -476,7 +476,7 @@
             </trans-unit>
             <trans-unit id="email_configuration">
                 <source>Email configuration</source>
-                <target>E-Mail-Konfiguration</target>
+                <target>E-mail configuration</target>
             </trans-unit>
             <trans-unit id="homenotice_text">
                 <source>Homenotice text</source>
@@ -524,8 +524,8 @@
                 <target>Change status: contact person</target>
             </trans-unit>
             <trans-unit id="email_change_status_no_contact_person">
-                <source>Change status: contact person</source>
-                <target>Change status: contact person</target>
+                <source>Change status: no contact person</source>
+                <target>Remove status: contact person</target>
             </trans-unit>
             <trans-unit id="email_change_status_read_only_user">
                 <source>Change status: read only user</source>
@@ -534,28 +534,28 @@
 
             <!-- Extension settings -->
             <trans-unit id="extensions_configuration">
-                <source>Extensions Configuration</source>
-                <target>Extensions Configuration</target>
+                <source>Extensions configuration</source>
+                <target>Extensions configuration</target>
             </trans-unit>
             <trans-unit id="assessment">
                 <source>Assessment</source>
-                <target>Assessments:</target>
+                <target>Assessments</target>
             </trans-unit>                        
             <trans-unit id="workflow">
                 <source>Workflow</source>
-                <target>Workflow settings:</target>
+                <target>Workflow settings</target>
             </trans-unit>            
             <trans-unit id="workflow_resubmission">
                 <source>Resubmission</source>
-                <target>Resubmission:</target>
+                <target>Resubmission</target>
             </trans-unit>
             <trans-unit id="workflow_validity">
                 <source>Validity</source>
-                <target>Validity date:</target>
+                <target>Validity date</target>
             </trans-unit>
             <trans-unit id="workflow_trafic_light">
                 <source>Status view</source>
-                <target>Status view:</target>
+                <target>Status view</target>
             </trans-unit>
             <trans-unit id="workflow_green_text">
                 <source>Traffic light green text</source>
@@ -571,7 +571,7 @@
             </trans-unit>
             <trans-unit id="reader">
                 <source>Reader</source>
-                <target>use in this workroom</target>
+                <target>Use in this workspace</target>
             </trans-unit>
             <trans-unit id="reader_group">
                 <source>Reader group</source>
@@ -583,14 +583,14 @@
             </trans-unit>
             <trans-unit id="reader_view">
                 <source>Reader view</source>
-                <target>Reader view:</target>
+                <target>Reader view</target>
             </trans-unit>
             <trans-unit id="mods_only">
-                <source>Moderators</source>
-                <target>Reader view only for Moderators</target>
+                <source>Moderators only</source>
+                <target>Reader view only for moderators</target>
             </trans-unit>            
             <trans-unit id="all_users">
-                <source>Users</source>
+                <source>All users</source>
                 <target>Reader view for all users</target>
             </trans-unit>
             <trans-unit id="wiki">
@@ -603,11 +603,11 @@
             </trans-unit>
             <trans-unit id="assessment_text">
                 <source>Assessment text</source>
-                <target>If this function is activated, entries in this room can be assessed.</target>
+                <target>If this function is activated, entries in this workspace can be assessed.</target>
             </trans-unit>
             <trans-unit id="workflow_text">
                 <source>Workflow text</source>
-                <target>The Workflow settings are additional features to manage the editorial process in materials.</target>
+                <target>The workflow settings are additional features to manage the editorial process for materials.</target>
             </trans-unit> 
             <trans-unit id="wiki_Text">
                 <source>wiki text</source>
@@ -615,7 +615,7 @@
             </trans-unit>
             <trans-unit id="default_state">
                 <source>Default status</source>
-                <target>Default-Status:</target>
+                <target>Default status</target>
             </trans-unit>
             <trans-unit id="no_default_state">
                 <source>No default status</source>
@@ -623,12 +623,12 @@
             </trans-unit>
             <trans-unit id="status_description">
                 <source>Status description</source>
-                <target>Status description:</target>
+                <target>Status description</target>
             </trans-unit>
 
             <trans-unit id="open_for_guest">
                 <source>Is this room open for guests?</source>
-                <target>Is this room open for guests?</target>
+                <target>Is this workspace open for guests?</target>
             </trans-unit>
             <trans-unit id="material_open_for_guest">
                 <source>Are materials open for guests?</source>
@@ -636,7 +636,7 @@
             </trans-unit>
             <trans-unit id="assignment_restricted">
                 <source>Only members are allow to assign project rooms</source>
-                <target>Only members are allow to assign project rooms</target>
+                <target>Only members are allow to assign project workspaces</target>
             </trans-unit>
             <trans-unit id="guest_access">
                 <source>Guest Access</source>
@@ -652,11 +652,11 @@
             <!-- Delete -->
             <trans-unit id="settings_delete_title">
                 <source>Delete room</source>
-                <target>Delete room</target>
+                <target>Delete workspace</target>
             </trans-unit>
             <trans-unit id="settings_delete_intro">
                 <source>Delete intro</source>
-                <target>Attention: The entire room and all data will be deleted. This action cannot be undone!</target>
+                <target>Attention: The entire workspace and all data will be deleted. This action cannot be undone!</target>
             </trans-unit>
             <trans-unit id="settings_delete_explanation_start">
                 <source>Delete explanation start</source>
@@ -708,7 +708,7 @@
             </trans-unit>
             <trans-unit id="settings_time_context_description">
                 <source>Time context description</source>
-                <target>Choose the time context for your room.</target>
+                <target>Choose the time context for your workspace.</target>
             </trans-unit>
             <trans-unit id="settings_time_context_cont">
                 <source>continuous</source>
@@ -720,15 +720,15 @@
             </trans-unit>
             <trans-unit id="users_can_set_external_calendars_url">
                 <source>users_can_set_external_calendars_url</source>
-                <target>User can set external urls on calendars</target>
+                <target>User can set external URLs on calendars</target>
             </trans-unit>
             <trans-unit id="rss_enabled">
                 <source>rss_enabled</source>
-                <target>switch on</target>
+                <target>Switch on</target>
             </trans-unit>
             <trans-unit id="rss_disabled">
                 <source>rss_disabled</source>
-                <target>switch off</target>
+                <target>Switch off</target>
             </trans-unit>
             <trans-unit id="Portal terms">
                 <source>Portal terms</source>

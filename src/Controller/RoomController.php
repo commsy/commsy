@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Room;
 use App\Entity\User;
+use App\Entity\ZzzRoom;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
@@ -342,7 +344,7 @@ class RoomController extends Controller
         $countAll = 0;
 
         // ***** Active rooms *****
-        $repository = $this->getDoctrine()->getRepository('App:Room');
+        $repository = $this->getDoctrine()->getRepository(Room::class);
         $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
@@ -363,7 +365,7 @@ class RoomController extends Controller
         // This is not the best solution, but works for now. It would be better
         // to use the form validation below, instead of manually checking for a
         // specific value
-        $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
+        $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
         $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
         $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
@@ -1225,7 +1227,8 @@ class RoomController extends Controller
                 }
 
                 if ($add) {
-                    $templates[$template->getTitle()] = $template->getItemID();
+                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
+                    $templates[$label] = $template->getItemID();
                 }
 
                 $template = $templateList->getNext();

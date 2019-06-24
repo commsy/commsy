@@ -543,7 +543,7 @@ class ProfileController extends Controller
 
         $form = $this->createForm(ProfileAdditionalType::class, $userData, [
             'itemId' => $itemId,
-            'emailToCommsy' => $this->getParameter('email.upload.enabled'),
+            'emailToCommsy' => $this->getParameter('commsy.upload.enabled'),
         ]);
 
         $form->handleRequest($request);
@@ -557,7 +557,7 @@ class ProfileController extends Controller
 
         return [
             'form' => $form->createView(),
-            'uploadEmail' => $this->getParameter('email.upload.account'),
+            'uploadEmail' => $this->getParameter('commsy.upload.account'),
             'portalEmail' => $userItem->getRelatedPortalUserItem()->getRoomEmail(),
         ];
     }

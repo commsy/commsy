@@ -158,14 +158,11 @@
                     {% if not draft %}
                         {# links #}
                         <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
-                            {{ macrosItem.linksAssociations(discussion,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
+                            {{ macrosItem.linksAssociations(discussion,showHashtags,showCategories,roomCategories) }}
                         </div>
-                        {% if (showCategories or showCategories) %}
                         <div id="categoriesAndBuzzwords{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
-                            {{ macrosItem.links(discussion,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
+                            {{ macrosItem.links(discussion,showHashtags,showCategories,roomCategories) }}
                         </div>
-                        {% endif %}
-
                         {# articles #}
                         <div id="articles{{ discussion.itemId }}" class="cs-edit-section cs-toggle">
                             {{ macrosDiscussion.articles(discussion, articleList, articleTree) }}
@@ -333,9 +330,7 @@
                         <li><a href="#description{{ discussion.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ discussion.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ discussion.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        {% if (showCategories or showCategories) %}
-                            <li><a href="#categoriesAndBuzzwords{{ discussion.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
-                        {% endif %}
+                        <li><a href="#categoriesAndBuzzwords{{ discussion.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
                         {% if not articleList is empty %}
                             <li class="uk-parent">
                                 <a href="#articles{{ discussion.itemId }}">{{ 'articles'|trans({},'discussion')|capitalize }}</a>

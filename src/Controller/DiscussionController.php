@@ -8,6 +8,7 @@ use App\Event\CommsyEditEvent;
 use App\Filter\DiscussionFilterType;
 use App\Form\Type\DiscussionArticleType;
 use App\Form\Type\DiscussionType;
+use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -159,7 +160,7 @@ class DiscussionController extends BaseController
      * @Route("/room/{roomId}/discussion/print/{sort}", defaults={"sort" = "none"})
      * @Template()
      */
-    public function printlistAction($roomId, Request $request, $sort)
+    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
@@ -233,7 +234,7 @@ class DiscussionController extends BaseController
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
     
     /**
@@ -555,7 +556,7 @@ class DiscussionController extends BaseController
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/print")
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, PrintService $printService)
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -587,7 +588,7 @@ class DiscussionController extends BaseController
             'roomCategories' => $infoArray['roomCategories'],
         ]);
 
-        return $this->get('commsy.print_service')->buildPdfResponse($html);
+        return $printService->buildPdfResponse($html);
     }
     
     /**
