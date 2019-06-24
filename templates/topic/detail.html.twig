@@ -191,10 +191,10 @@
                     {% if not draft %}
                         {# links #}
                         <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                            {{ macrosItem.linksAssociations(topic,showHashtags,showCategories,roomCategories, draft) }}
+                            {{ macrosItem.linksAssociations(topic,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
                         </div>
                         <div id="categoriesAndBuzzwords{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                            {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft) }}
+                            {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
                         </div>
                     {% endif %}
 

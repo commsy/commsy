@@ -145,7 +145,7 @@ class DiscussionController extends BaseController
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
-            'showAssociations' => $roomItem->withAssociations(),
+            'showAssociations' => $roomItem->showAssociations(),
             'showCategories' => $roomItem->withTags(),
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
@@ -489,7 +489,7 @@ class DiscussionController extends BaseController
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
         $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
-        $infoArray['showAssociations'] = $current_context->withAssociations();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
             'ratingAverageDetail' => $ratingAverageDetail,

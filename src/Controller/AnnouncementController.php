@@ -875,7 +875,7 @@ class AnnouncementController extends BaseController
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
         $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
-        $infoArray['showAssociations'] = $current_context->withAssociations();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
         $infoArray['categories'] = $categories;
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
