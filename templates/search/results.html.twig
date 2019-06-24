@@ -129,10 +129,10 @@
                                     "search[phrase]": "{{ searchData.phrase }}",
                                     "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",
-                                    "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('Y-m-d') : '' }}",
-                                    "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('Y-m-d') : '' }}",
-                                    "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('Y-m-d') : '' }}",
-                                    "search[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('Y-m-d') : '' }}",
+                                    "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
+                                    "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
+                                    "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
+                                    "search[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
                                     "search[selectedRubric]": "{{ searchData.selectedRubric }}"
                                 }
                         }'>
