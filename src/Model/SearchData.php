@@ -14,6 +14,16 @@ class SearchData
     private $allRooms;
 
     /**
+     * @var boolean|null
+     */
+    private $appearsInTitle;
+
+    /**
+     * @var boolean|null
+     */
+    private $appearsInDescription;
+
+    /**
      * @var array|null associative array of rubrics (key: rubric name, value: count)
      */
     private $rubrics;
@@ -86,6 +96,66 @@ class SearchData
     public function setAllRooms(bool $allRooms): SearchData
     {
         $this->allRooms = $allRooms;
+        return $this;
+    }
+
+    /**
+     * @return array an array of field names describing the fields that must contain a search term
+     */
+    public function getAppearsIn(): array
+    {
+        $appearsIn = [];
+        if ($this->getAppearsInTitle()) {
+            $appearsIn[] = 'title';
+        }
+        if ($this->getAppearsInDescription()) {
+            $appearsIn[] = 'description';
+        }
+        return $appearsIn;
+    }
+
+    /**
+     * @param array $appearsIn an array of field names describing the fields that must contain a search term
+     * @return SearchData
+     */
+    public function setAppearsIn(array $appearsIn): SearchData
+    {
+        $this->setAppearsInTitle(in_array('title', $appearsIn, true) ? true : false);
+        $this->setAppearsInDescription(in_array('description', $appearsIn, true) ? true : false);
+        return $this;
+    }
+
+    /**
+     * @return boolean|null
+     */
+    public function getAppearsInTitle(): ?bool
+    {
+        return $this->appearsInTitle;
+    }
+
+    /**
+     * @param boolean $appearsInTitle
+     */
+    public function setAppearsInTitle(bool $appearsInTitle): SearchData
+    {
+        $this->appearsInTitle = $appearsInTitle;
+        return $this;
+    }
+
+    /**
+     * @return boolean|null
+     */
+    public function getAppearsInDescription(): ?bool
+    {
+        return $this->appearsInDescription;
+    }
+
+    /**
+     * @param boolean $appearsInDescription
+     */
+    public function setAppearsInDescription(bool $appearsInDescription): SearchData
+    {
+        $this->appearsInDescription = $appearsInDescription;
         return $this;
     }
 
@@ -202,9 +272,11 @@ class SearchData
      */
     public function setCreationDateRange(?array $creationDateRange): SearchData
     {
+        // start date
         if (isset($creationDateRange[0]) && $creationDateRange[0] instanceof \DateTime) {
             $this->setCreationDateFrom($creationDateRange[0]);
         }
+        // end date
         if (isset($creationDateRange[1]) && $creationDateRange[1] instanceof \DateTime) {
             $this->setCreationDateUntil($creationDateRange[1]);
         }

@@ -55,6 +55,23 @@ class SearchFilterType extends AbstractType
                     'class' => 'uk-form-label',
                 ],
             ])
+            ->add('appears_in', Filters\ChoiceFilterType::class, [
+                'choice_attr' => function($choice, $key, $value) {
+                    return [
+                        'onchange' => 'this.form.submit()',
+                    ];
+                },
+                'choices' => [
+                    'Title' => 'title',
+                    'Description' => 'description',
+//                    'Files' => 'files',
+                ],
+                'label' => 'Appearing in',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'placeholder' => false,
+            ])
             ->add('selectedCreator', Select2ChoiceType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
