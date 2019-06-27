@@ -4,7 +4,7 @@
 namespace App\Search\QueryConditions;
 
 
-use Elastica\Query\Match;
+use Elastica\Query\MultiMatch;
 
 class DescriptionQueryCondition implements QueryConditionInterface
 {
@@ -32,8 +32,23 @@ class DescriptionQueryCondition implements QueryConditionInterface
             return [];
         }
 
-        $descriptionMatch = new Match();
-        $descriptionMatch->setFieldQuery('description', $this->description);
+        $descriptionMatch = new MultiMatch();
+        $descriptionMatch->setQuery($this->description);
+        $descriptionMatch->setType('most_fields');
+
+        $fields = [
+            // description
+            'description^1.7',
+
+            // discussion articles
+            'discussionarticles.description^1.3',
+
+            // others
+            'steps.description',
+            'sections.description',
+        ];
+
+        $descriptionMatch->setFields($fields);
 
         return [$descriptionMatch];
     }
