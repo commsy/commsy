@@ -37,8 +37,16 @@ class TitleQueryCondition implements QueryConditionInterface
         $titleMatch->setType('most_fields');
 
         $fields = [
+            // first level title
             'title^5',
             'title.raw^20',
+
+            // discussion articles
+            'discussionarticles.subject^1.3',
+
+            // others
+            'steps.title',
+            'sections.title',
         ];
 
         $titleMatch->setFields($fields);
