@@ -145,7 +145,7 @@ class DiscussionController extends BaseController
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
-            'showAssociations' => $roomItem->showAssociations(),
+            'showAssociations' => $roomItem->isAssociationShowExpanded(),
             'showCategories' => $roomItem->withTags(),
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
