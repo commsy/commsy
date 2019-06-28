@@ -154,9 +154,13 @@ class MaterialController extends BaseController
             'module' => 'material',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
@@ -336,7 +340,10 @@ class MaterialController extends BaseController
             'withValidity' => $roomItem->withWorkflowValidity(),
             'withReader' => $roomItem->withWorkflowReader(),
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
@@ -780,6 +787,9 @@ class MaterialController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
+        $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
             'ratingAverageDetail' => $ratingAverageDetail,
@@ -1136,7 +1146,10 @@ class MaterialController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],

@@ -246,6 +246,10 @@
                 <source>Mandatory</source>
                 <target>Zwingende Zuordnung</target>
             </trans-unit>
+            <trans-unit id="associations">
+                <source>Associations</source>
+                <target>Zuordnungen</target>
+            </trans-unit>
             <trans-unit id="ShowExpanded">
                 <source>Show expanded</source>
                 <target>Ausgeklappte Darstellung</target>

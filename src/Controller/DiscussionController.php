@@ -145,7 +145,10 @@ class DiscussionController extends BaseController
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->isAssociationShowExpanded(),
             'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
@@ -225,7 +228,10 @@ class DiscussionController extends BaseController
             'module' => 'discussion',
             'itemsCountArray' => $itemsCountArray,
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
         ]);
 
         return $printService->buildPdfResponse($html);
@@ -276,6 +282,9 @@ class DiscussionController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
@@ -478,6 +487,9 @@ class DiscussionController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
+        $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
             'ratingAverageDetail' => $ratingAverageDetail,
@@ -567,7 +579,10 @@ class DiscussionController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],
