@@ -804,24 +804,27 @@ class cs_context_item extends cs_item {
   }
 
 
-  function isAssociationShowExpanded () {
-    $retour = true;
-    if ( $this->_issetExtra('ASSOCIATIONSHOWEXPANDED') ) {
-      $value = $this->_getExtra('ASSOCIATIONSHOWEXPANDED');
-      if ($value == 0) {
-        $retour = false;
-      }
+    public function isAssociationShowExpanded()
+    {
+        if ($this->_issetExtra('ASSOCIATIONSHOWEXPANDED')) {
+            $value = $this->_getExtra('ASSOCIATIONSHOWEXPANDED');
+            if ($value == 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
-    return $retour;
-  }
 
-  function setAssociationShowExpanded () {
-    $this->_addExtra('ASSOCIATIONSHOWEXPANDED',1);
-  }
+    public function setAssociationShowExpanded()
+    {
+        $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 1);
+    }
 
-  function unsetAssociationShowExpanded () {
-    $this->_addExtra('ASSOCIATIONSHOWEXPANDED',0);
-  }
+    public function unsetAssociationShowExpanded()
+    {
+        $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 0);
+    }
 
 
   function isBuzzwordShowExpanded () {
