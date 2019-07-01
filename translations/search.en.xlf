@@ -42,6 +42,22 @@
                 <source>Search in all my rooms</source>
                 <target>Search in all my workspaces</target>
             </trans-unit>
+            <trans-unit id="search-filter-appearing-in">
+                <source>Appearing in</source>
+                <target>Appearing in</target>
+            </trans-unit>
+            <trans-unit id="search-filter-appearing-in-title">
+                <source>Title</source>
+                <target>Title</target>
+            </trans-unit>
+            <trans-unit id="search-filter-appearing-in-description">
+                <source>Description</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="search-filter-appearing-in-files">
+                <source>Files</source>
+                <target>Files</target>
+            </trans-unit>
             <trans-unit id="search-filter-creator">
                 <source>Creator</source>
                 <target>Creator</target>

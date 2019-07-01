@@ -128,6 +128,8 @@
                                 "query": {
                                     "search[phrase]": "{{ searchData.phrase }}",
                                     "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
+                                    "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
+                                    "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",
                                     "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
                                     "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
