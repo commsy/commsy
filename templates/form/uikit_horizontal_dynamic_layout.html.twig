@@ -111,7 +111,7 @@
             {% endif %}
         </div>
 
-        <div id="room-categories" class="cs-toggle-preview-filter{% if expanded %} cs-toggle-full-filter{% endif %}" data-cs-tree>
+        <div id="room-categories" class="cs-toggle-preview-filter{% if expanded %} cs-toggle-full-filter{% endif %}" data-cs-tree='{ "custom": {"customCascade": true } }'>
             {% if form.vars is not empty %}
                 <ul class="uk-list uk-list-striped">
                     {{ macros.nestedList(form.vars.choices, 0) }}
