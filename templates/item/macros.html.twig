@@ -153,6 +153,9 @@
 {% macro links(item,withTags,withCategories,roomCategories, draft, buzzExpanded, catzExpanded) %}
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}
+
+    {% set buzzExpanded = false %}
+    {% set catzExpanded = false %}
     
     {% set countEntries = item.buzzwordArray|length + item.tagsArray|length %}
 
