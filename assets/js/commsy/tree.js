@@ -89,6 +89,16 @@
                                     instance.select_node(this, true);
                                 });
                             });
+
+                        $(element)
+                            .on('deselect_node.jstree', function(event, data) {
+                                let node = data.node;
+                                let instance = data.instance;
+
+                                $.each(node.children, function() {
+                                    instance.deselect_node(this, true);
+                                });
+                            });
                     }
 
                     /**
