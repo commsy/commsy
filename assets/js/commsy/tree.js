@@ -117,6 +117,7 @@
                                 $('input[id*="filter_calendar_calendar"]').prop('checked', false);
                                 $('input[id*="itemLinks_categories"]').prop('checked', false);
                                 $('input[id*="portfolio_categories"]').prop('checked', false);
+                                $('input[id*="category_mapping_categories"]').prop('checked', false);
 
                                 $.each(data.selected, function() {
                                     $('input[value="' + this.substring(4) + '"]')
