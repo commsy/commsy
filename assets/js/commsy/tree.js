@@ -63,6 +63,7 @@
                     $('input[id*="filter_calendar_calendar"]').each(selectNode);
                     $('input[id*="itemLinks_categories"]').each(selectNode);
                     $('input[id*="portfolio_categories"]').each(selectNode);
+                    $('input[id*="category_mapping_categories"]').each(selectNode);
 
                     $(element)
                         .on('select_node.jstree', function (event, data) {
