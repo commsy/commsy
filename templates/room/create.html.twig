@@ -16,8 +16,106 @@
                 </div>
 
                 <div>
+
                     {{ form_start(form) }}
                     {{ form_errors(form) }}
+
+                    {% if form.title is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.title) }}
+                            <div class='uk-form-label'>{{ 'Title' | trans({} , 'settings') }}*</div>
+                            <div class='uk-form-controls'>
+                                {{ form_widget(form.title) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.type_select is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.type_select) }}
+                            <div class='uk-form-label'>{{ 'context type' | trans({} , 'room') }}*</div>
+                            <div>
+                                {{ form_widget(form.type_select) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.type_sub is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.type_sub) }}
+                            <div class='uk-form-label'>{{ 'Template' | trans({} , 'settings') }}*</div>
+                            <div>
+                                {{ form_widget(form.type_sub) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.type_sub.master_template is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.type_sub.master_template) }}
+                            <div class='uk-form-label'>{{ 'Template' | trans({} , 'settings') }}*</div>
+                            <div>
+                                {{ form_widget(form.type_sub.master_template) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.type_sub.community_rooms is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.type_sub.community_rooms) }}
+                            <div class='uk-form-label'>{{ 'Community rooms' | trans({} , 'settings') }}*</div>
+                            <div>
+                                {{ form_widget(form.type_sub.community_rooms) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.type_sub.times is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.type_sub.times) }}
+                            <div class='uk-form-label'>{{ 'Time interval' | trans({} , 'room') }}*</div>
+                            <div>
+                                {{ form_widget(form.type_sub.times) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.language is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.language) }}
+                            <div class='uk-form-label'>{{ 'Language' | trans({} , 'settings') }}*</div>
+                            <div>
+                                {{ form_widget(form.language) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.room_description is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.room_description) }}
+                            <div class='uk-form-label'>{{ 'Room description' | trans({} , 'room') }}</div>
+                            <div>
+                                {{ form_widget(form.room_description) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.categories is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.categories) }}
+                            <div class='uk-form-label'>{{ 'Room categories' | trans({} , 'portal') }}*</div>
+                            <div>
+                                {{ form_widget(form.categories) }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {# buttons #}
+                    {% if form.save is defined%}
+                        <div class="uk-form-row">
+                            <div >
+                                {{ form_widget(form.save) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.cancel is defined%}
+                    <div class="uk-form-row">
+                        <div>
+                            {{ form_widget(form.cancel) }}
+                        </div>
+                    {% endif %}
                     {{ form_end(form) }}
                 </div>
             </div>
