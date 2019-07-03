@@ -60,40 +60,46 @@
 
                                             <ul class="uk-comment-list">
                                                 {% for key, entry in form.itemsLatest.vars.choices %}
-                                                    {% set currentItem = items[entry.value] %}
-                                                    <article class="uk-comment selectable" data-cs-linked-items>
-                                                        <header class="uk-comment-header uk-flex">
-                                                            <div class="items-checkbox uk-margin-right uk-margin-top">
-                                                                {{ form_widget(form.itemsLatest[key]) }}
-                                                            </div>
-                                                            <div class="uk-margin-right uk-flex-item-none">
-                                                                {% if not currentItem.modificatorItem.isDeleted and currentItem.modificatorItem.isUser %}
-                                                                    {{ macros.userIconLink(currentItem.modificatorItem) }}
-                                                                {% else %}
-                                                                    {{ macros.userIcon(currentItem.modificatorItem) }}
-                                                                {% endif %}
-                                                                <div class="uk-comment-meta">
-                                                                    {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                                        {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+
+                                                    {% if items[entry.value] is defined %}
+
+                                                        {% set currentItem = items[entry.value] %}
+                                                        <article class="uk-comment selectable" data-cs-linked-items>
+                                                            <header class="uk-comment-header uk-flex">
+                                                                <div class="items-checkbox uk-margin-right uk-margin-top">
+                                                                    {{ form_widget(form.itemsLatest[key]) }}
+                                                                </div>
+                                                                <div class="uk-margin-right uk-flex-item-none">
+                                                                    {% if not currentItem.modificatorItem.isDeleted and currentItem.modificatorItem.isUser %}
+                                                                        {{ macros.userIconLink(currentItem.modificatorItem) }}
                                                                     {% else %}
-                                                                        {{currentItem.getModificationDate|date("d.m.Y")}}
+                                                                        {{ macros.userIcon(currentItem.modificatorItem) }}
                                                                     {% endif %}
+                                                                    <div class="uk-comment-meta">
+                                                                        {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                                            {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+                                                                        {% else %}
+                                                                            {{currentItem.getModificationDate|date("d.m.Y")}}
+                                                                        {% endif %}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="uk-width-8-10">
-                                                                <h4 class="uk-comment-title">
-                                                                    <a href="">{{ form_label(form.itemsLatest[key]) }}</a>
-                                                                </h4>
-                                                                <div class="uk-comment-meta">
-                                                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(currentItem.modificatorItem) }} ({{currentItem.getCreationDate|date("d.m.Y")}})
+                                                                <div class="uk-width-8-10">
+                                                                    <h4 class="uk-comment-title">
+                                                                        <a href="">{{ form_label(form.itemsLatest[key]) }}</a>
+                                                                    </h4>
+                                                                    <div class="uk-comment-meta">
+                                                                        {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(currentItem.modificatorItem) }} ({{currentItem.getCreationDate|date("d.m.Y")}})
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="uk-width-2-10 uk-text-right">
-                                                                <i class="{{ macros.iconClassForItemType(currentItem.itemType) }} uk-icon-small"></i>
-                                                            </div>
-                                                        </header>
-                                                    </article>
+                                                                <div class="uk-width-2-10 uk-text-right">
+                                                                    <i class="{{ macros.iconClassForItemType(currentItem.itemType) }} uk-icon-small"></i>
+                                                                </div>
+                                                            </header>
+                                                        </article>
+                                                    {% endif %}
                                                 {% endfor %}
+
+                                                {% do form.itemsLatest.setRendered %}
                                             </ul>
                                         </div>
                                     </div>
