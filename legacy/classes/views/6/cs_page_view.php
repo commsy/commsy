@@ -580,17 +580,6 @@ class cs_page_view extends cs_view {
    	   $to_javascript['autoOpenPopup']['parameters'] = array();
    	}
    	
-   	switch ($mode) {
-   		
-   		default:
-   			$html .= "
-   				<script>
-   					var from_php  = '" . json_encode($to_javascript) . "';
-   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
-   				</script>
-   			";
-   	}
-   	
    	$html .= '
    		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles.css" />
    		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles_addon.css" />
