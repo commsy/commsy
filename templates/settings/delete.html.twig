@@ -1,4 +1,5 @@
 {% extends 'base/settings.html.twig' %}
+{% import "utils/macros.html.twig" as utilsMacros %}
 
 {% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
@@ -17,6 +18,20 @@
                     <p class="uk-text-uppercase uk-text-bold">
                         {{ 'Delete intro'|trans({}, 'settings') }}
                     </p>
+
+                    {% if relatedGroupRooms is not empty %}
+                        <div class="uk-margin">
+                            Das Löschen dieses Projektraums führt ebenfalls auch zur Löschung der folgenden ihm untergeordneten Gruppenräume:
+
+                            <ul>
+                                {% for relatedGroupRoom in relatedGroupRooms %}
+
+
+                                    <li>{{ relatedGroupRoom.title }} ({{ utilsMacros.userListToString(relatedGroupRoom.moderatorList) }})</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
 
                     <div class="uk-margin">
                         {{ 'Delete explanation start'|trans({}, 'settings') }}
