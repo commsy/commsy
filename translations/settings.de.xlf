@@ -665,6 +665,10 @@
                 <source>Delete explanation end</source>
                 <target>ein und bestätigen den Vorgang.</target>
             </trans-unit>
+            <trans-unit id="settings_delete_grouprooms">
+                <source>Deletion of grouprooms</source>
+                <target>Das Löschen dieses Projektraums führt ebenfalls auch zur Löschung der folgenden ihm untergeordneten Gruppenräume</target>
+            </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>
                 <target>Bestätigen</target>
