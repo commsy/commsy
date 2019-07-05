@@ -44,9 +44,6 @@ Icon
 !/var/cache/htmlpurifier
 /var/cache/htmlpurifier/*
 !var/cache/htmlpurifier/.gitkeep
-!/var/logs
-/var/logs/*
-!var/logs/.gitkeep
 !/var/sessions
 /var/sessions/*
 !var/sessions/.gitkeep
