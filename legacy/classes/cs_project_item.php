@@ -333,71 +333,72 @@ class cs_project_item extends cs_room_item {
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-   /** delete project
-    * this method deletes the project
-    */
-   function delete() {
-      parent::delete();
+    /**
+     * Deletes the project room
+     */
+    public function delete()
+    {
+        parent::delete();
 
-      // delete in community rooms
-      $com_list = $this->getCommunityList();
-      if ( isset($com_list)
-           and is_object($com_list)
-           and $com_list->isNotEmpty()
-         ) {
-         $com_item = $com_list->getFirst();
-         while ($com_item) {
-            $com_item->removeProjectID2InternalProjectIDArray($this->getItemID());
-            $com_item->saveWithoutChangingModificationInformation();
-            unset($com_item);
-            $com_item = $com_list->getNext();
-         }
-      }
-      unset($com_list);
+        // delete in community rooms
+        $com_list = $this->getCommunityList();
+        if (isset($com_list)
+            and is_object($com_list)
+            and $com_list->isNotEmpty()
+        ) {
+            $com_item = $com_list->getFirst();
+            while ($com_item) {
+                $com_item->removeProjectID2InternalProjectIDArray($this->getItemID());
+                $com_item->saveWithoutChangingModificationInformation();
+                unset($com_item);
+                $com_item = $com_list->getNext();
+            }
+        }
+        unset($com_list);
 
-      // delete associated tasks
-      $task_list = $this->_getTaskList();
-      $current_task = $task_list->getFirst();
-      while ($current_task) {
-         $current_task->delete();
-         unset($current_task);
-         $current_task = $task_list->getNext();
-      }
-      unset($task_list);
+        // delete associated tasks
+        $task_list = $this->_getTaskList();
+        $current_task = $task_list->getFirst();
+        while ($current_task) {
+            $current_task->delete();
+            unset($current_task);
+            $current_task = $task_list->getNext();
+        }
+        unset($task_list);
 
-      // send mail to moderation
-      $this->_sendMailRoomDelete();
+        // send mail to moderation
+        $this->_sendMailRoomDelete();
 
-      $manager = $this->_environment->getProjectManager();
-      $this->_delete($manager);
-      unset($manager);
+        $manager = $this->_environment->getProjectManager();
+        $this->_delete($manager);
+        unset($manager);
 
-      if ( $this->_environment->inPortal() ) {
-         $id_manager = $this->_environment->getExternalIdManager();
-         $id_manager->deleteByCommSyID($this->getItemID());
-         unset($id_manager);
-      }
+        if ($this->_environment->inPortal()) {
+            $id_manager = $this->_environment->getExternalIdManager();
+            $id_manager->deleteByCommSyID($this->getItemID());
+            unset($id_manager);
+        }
 
-      // sync count room redundancy
-      $current_portal_item = $this->getContextItem();
-      if ( $current_portal_item->isCountRoomRedundancy() ) {
-         $current_portal_item->syncCountProjectRoomRedundancy(true);
-      }
-      unset($current_portal_item);
+        // sync count room redundancy
+        $current_portal_item = $this->getContextItem();
+        if ($current_portal_item->isCountRoomRedundancy()) {
+            $current_portal_item->syncCountProjectRoomRedundancy(true);
+        }
+        unset($current_portal_item);
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Room');
+        global $symfonyContainer;
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Room');
 
 
-      // use zzz repository if room is archived
-       if ($this->isArchived()) {
-           $repository = $em->getRepository('App:ZzzRoom');
-       }
+        // use zzz repository if room is archived
+        if ($this->isArchived()) {
+            $repository = $em->getRepository('App:ZzzRoom');
+        }
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    function undelete () {
       $manager = $this->_environment->getProjectManager();
@@ -606,48 +607,6 @@ class cs_project_item extends cs_room_item {
          return true;
       }
 
-      /*
-      $activity = $activity + $this->getCountAnnouncements($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-
-      $activity = $activity + $this->getCountDates($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-
-      $activity = $activity + $this->getCountMaterials($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-
-      $activity = $activity + $this->getCountDiscussions($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-
-      $activity = $activity + $this->getCountGroups($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-
-      $activity = $activity + $this->getCountTopics($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-
-      $activity = $activity + $this->getCountUsers($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-
-      $activity = $activity + $this->getCountTodos($start,$end);
-      if ($activity > $activity_border) {
-         return true;
-      }
-      */
-
       return false;
    }
 
@@ -697,36 +656,7 @@ class cs_project_item extends cs_room_item {
 
       return $cron_array;
    }
-/*
-   private function _cleanLinksToGroupAll () {
-      $retour = array();
-      $retour['title'] = 'control links to group all';
-      $retour['description'] = '';
-      $retour['success'] = false;
-      $retour['success_text'] = 'cron failed';
 
-      $group_manager = $this->_environment->getGroupManager();
-      $count = $group_manager->cleanLinkToGroupAll($this->getItemID());
-      unset($group_manager);
-      if ( !isset($count) ) {
-         $retour['success_text'] = 'cron failed';
-      } elseif ( !empty($count) ) {
-         $retour['success'] = true;
-         if ( $count == 1 ) {
-            $retour['success_text'] = 're-insert '.$count.' link';
-         } elseif ( $count == -1 ) {
-            $retour['success_text'] = 'can not find group all';
-            $retour['success'] = false;
-         } else {
-            $retour['success_text'] = 're-insert '.$count.' links';
-         }
-      } else {
-         $retour['success'] = true;
-         $retour['success_text'] = 'nothing to do';
-      }
-      return $retour;
-   }
-*/
    #########################################################
    # COMMSY CRON JOBS - END
    #########################################################
@@ -1228,7 +1158,13 @@ class cs_project_item extends cs_room_item {
       unset($grouproom_list);
    }
 
-   public function getGroupRoomList () {
+    /**
+     * Returns a list of related grouprooms.
+     *
+     * @return cs_list
+     */
+   public function getGroupRoomList(): \cs_list
+   {
        if ($this->getItemID()) {
            $grouproom_manager = $this->_environment->getGroupRoomManager();
            $grouproom_manager->setContextLimit($this->getContextID());
