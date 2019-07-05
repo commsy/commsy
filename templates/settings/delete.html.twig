@@ -21,12 +21,10 @@
 
                     {% if relatedGroupRooms is not empty %}
                         <div class="uk-margin">
-                            Das Löschen dieses Projektraums führt ebenfalls auch zur Löschung der folgenden ihm untergeordneten Gruppenräume:
+                            {{ 'Deletion of grouprooms'|trans({}, 'settings') }}:
 
                             <ul>
                                 {% for relatedGroupRoom in relatedGroupRooms %}
-
-
                                     <li>{{ relatedGroupRoom.title }} ({{ utilsMacros.userListToString(relatedGroupRoom.moderatorList) }})</li>
                                 {% endfor %}
                             </ul>
