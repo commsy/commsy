@@ -340,6 +340,13 @@ class cs_project_item extends cs_room_item {
     {
         parent::delete();
 
+        // delete related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /** @var \cs_grouproom_item $groupRoom */
+            $groupRoom->delete();
+            $groupRoom->save();
+        }
+
         // delete in community rooms
         $com_list = $this->getCommunityList();
         if (isset($com_list)
