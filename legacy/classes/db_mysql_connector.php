@@ -30,13 +30,11 @@ class db_mysql_connector
     private $_log_query = false;
     private $_display = true;
     private $_query_failed = 0;
-    private $_db_data = array();
 
     private $dbalConnection;
 
-    public function __construct($data)
+    public function __construct()
     {
-        $this->_db_data = $data;
         $this->_connect();
     }
 
