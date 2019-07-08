@@ -668,7 +668,7 @@
             </trans-unit>
             <trans-unit id="settings_delete_grouprooms">
                 <source>Deletion of grouprooms</source>
-                <target>By deleting this project room the following related group rooms will also be deleted:</target>
+                <target>By deleting this project workspace the following related group workspaces will also be deleted:</target>
             </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>
