@@ -18,6 +18,10 @@
                 <source>Your access code is invalid.</source>
                 <target>Ihr Zugangscode ist inkorrekt.</target>
             </trans-unit>
+            <trans-unit id="validators_room_no_moderators">
+                <source>Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}</source>
+                <target>Bitte benennen Sie zunächst im Raum {{ criteria }} eine neue Moderation oder löschen Sie den Raum {{ criteria }}</target>
+            </trans-unit>
             <trans-unit id="validators_room_code_filled">
                 <source>Please enter an access code.</source>
                 <target>Bitte geben Sie einen Zugangscode an.</target>
