@@ -10,7 +10,7 @@ use App\Form\Type\LicenseSortType;
 use App\User\UserBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,14 +29,13 @@ use App\Entity\Terms;
 use App\Form\Type\TermType;
 
 use App\Event\CommsyEditEvent;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class PortalController
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class PortalController extends Controller
+class PortalController extends AbstractController
 {
     /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")

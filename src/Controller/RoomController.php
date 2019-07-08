@@ -9,10 +9,10 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class RoomController extends Controller
+class RoomController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}", requirements={

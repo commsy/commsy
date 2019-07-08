@@ -10,13 +10,10 @@ namespace App\Controller;
 
 
 use App\Action\ActionFactory;
-use App\Http\JsonDataResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-abstract class BaseController extends Controller
+abstract class BaseController extends AbstractController
 {
     /**
      * @param \cs_room_item $room

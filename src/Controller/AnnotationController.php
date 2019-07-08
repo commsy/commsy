@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Utils\PortfolioService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,7 +18,7 @@ use App\Form\Type\AnnotationType;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class AnnotationController extends Controller
+class AnnotationController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")

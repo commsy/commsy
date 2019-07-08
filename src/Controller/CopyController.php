@@ -4,13 +4,10 @@ namespace App\Controller;
 
 use App\Action\Copy\InsertAction;
 use App\Action\Copy\RemoveAction;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Filter\CopyFilterType;
 

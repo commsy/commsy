@@ -2,16 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Calendars;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
 
-use App\Entity\User;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileAddressType;
 use App\Form\Type\Profile\RoomProfileContactType;
@@ -30,7 +27,7 @@ use App\Form\Type\Profile\ProfilePersonalInformationType;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class ProfileController extends Controller
+class ProfileController extends AbstractController
 {
     /**
     * @Route("/room/{roomId}/user/{itemId}/general")

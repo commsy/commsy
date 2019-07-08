@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,8 +10,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use App\Form\Type\SendType;
 use App\Form\Type\SendListType;
@@ -29,7 +27,7 @@ use App\Event\CommsyEditEvent;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class ItemController extends Controller
+class ItemController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")

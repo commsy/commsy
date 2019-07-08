@@ -10,10 +10,10 @@ namespace App\Controller;
 
 
 use App\Services\LegacyEnvironment;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HelperController extends Controller
+class HelperController extends AbstractController
 {
     /**
      * Redirects the user to the private room specific url for the all rooms overview

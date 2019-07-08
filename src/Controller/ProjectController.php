@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Form\Type\ProjectType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -18,7 +18,7 @@ use App\Entity\Room;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class ProjectController extends Controller
+class ProjectController extends AbstractController
 {    
     /**
      * @Route("/room/{roomId}/project/feed/{start}/{sort}")

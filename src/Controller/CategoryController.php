@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -13,7 +13,7 @@ use App\Form\Type as Types;
 
 use App\Entity\Tag;
 
-class CategoryController extends Controller
+class CategoryController extends AbstractController
 {
     /**
      * @Template("category/show.html.twig")

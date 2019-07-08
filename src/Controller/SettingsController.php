@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Terms;
 use App\Form\Type\Room\DeleteType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -12,9 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-
-use App\Entity\Room;
 use App\Form\DataTransformer\ExtensionSettingsTransformer;
 use App\Form\Type\GeneralSettingsType;
 use App\Form\Type\ModerationSettingsType;
@@ -24,14 +21,12 @@ use App\Form\Type\ExtensionSettingsType;
 use App\Form\Type\InvitationsSettingsType;
 use App\Utils\RoomService;
 
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
-
 /**
  * Class SettingsController
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class SettingsController extends Controller
+class SettingsController extends AbstractController
 {
     /**
     * @Route("/room/{roomId}/settings/general")

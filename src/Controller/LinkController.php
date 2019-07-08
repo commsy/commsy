@@ -2,14 +2,9 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-
-use App\Filter\UserFilterType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -18,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class LinkController extends Controller
+class LinkController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/link/{itemId}/{rubric}")

@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +14,7 @@ use App\Entity\Labels;
 
 use App\Event\CommsyEditEvent;
 
-class HashtagController extends Controller
+class HashtagController extends AbstractController
 {
     /**
      * @Template("hashtag/show.html.twig")

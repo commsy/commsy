@@ -5,7 +5,7 @@ use App\Form\Model\File;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\ItemService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,8 +13,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use App\Event\CommsyEditEvent;
 
 use App\Form\Type\UploadType;
@@ -24,7 +22,7 @@ use App\Form\Type\UploadType;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class UploadController extends Controller
+class UploadController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/upload/{itemId}")

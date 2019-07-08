@@ -6,10 +6,10 @@ use App\Utils\PortfolioService;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\PortfolioEditCategoryType;
 use App\Form\Type\PortfolioType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class PortfolioController extends Controller
+class PortfolioController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/portfolio/")

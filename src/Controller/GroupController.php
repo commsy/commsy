@@ -2,29 +2,22 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
 use App\Action\Download\DownloadAction;
 use App\Http\JsonDataResponse;
 use App\Services\PrintService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-
 use App\Filter\GroupFilterType;
 use App\Form\Type\GroupType;
 use App\Form\Type\GrouproomType;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\GroupSendType;
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use App\Event\CommsyEditEvent;
 

@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Services\ReaderService;
 use App\Services\UserService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class DashboardController extends Controller
+class DashboardController extends AbstractController
 {
     /**
      * @Route("/dashboard/{roomId}")
