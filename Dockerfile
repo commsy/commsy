@@ -1,7 +1,7 @@
-ARG PHP_VERSION=7.1
+ARG PHP_VERSION=7.3-fpm-stretch
 ARG NGINX_VERSION=1.15
 
-FROM php:7.1-fpm-jessie AS commsy_php
+FROM php:${PHP_VERSION} AS commsy_php
 
 # install additinal packages and PHP extensions
 RUN apt-get update && apt-get install -y \
