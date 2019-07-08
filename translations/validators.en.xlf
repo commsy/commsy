@@ -22,6 +22,10 @@
                 <source>Please enter an access code.</source>
                 <target>Please enter an access code.</target>
             </trans-unit>
+            <trans-unit id="validators_room_no_moderators">
+                <source>Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}</source>
+                <target>Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}</target>
+            </trans-unit>
             <trans-unit id="validators_password_criteria">
                 <source>The password does not fulfill the following criteria: {{ criteria }}.</source>
                 <target>The password does not fulfill the following criteria: {{ criteria }}.</target>

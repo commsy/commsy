@@ -1,12 +1,14 @@
 <?php
 namespace App\Form\Type\Profile;
 
+use App\Validator\Constraints\UniqueModeratorConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Utils\UserService;
 
 class DeleteType extends AbstractType
 {
@@ -29,6 +31,7 @@ class DeleteType extends AbstractType
                         'value' => mb_strtoupper($options['data']['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
+                    new UniqueModeratorConstraint(),
                 ],
                 'required' => true,
             ])
