@@ -79,7 +79,7 @@ RUN apt-get update && apt-get install -y \
         libxrender1 \
         xvfb
 
-RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.2.1/wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
+RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb \
         && dpkg -i /usr/src/wkhtmltopdf.deb
 
 # copy configurations
