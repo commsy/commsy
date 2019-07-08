@@ -112,7 +112,8 @@ web/templates/templates_c/*
 
 files/[0-9]*
 files/templates/individual/*
-files/temp
+files/temp/*
+!files/temp/.gitkeep
 
 external_pages/[0-9]*
 htdocs/css/external_portal_styles/[0-9]*
