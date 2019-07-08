@@ -688,9 +688,6 @@ class ProfileController extends Controller
 
             if(empty($error_number)) {
                 $portalUser->setNewGenerationPassword($form_data['old_password']);
-
-                $caldavService = $this->get('commsy.caldav_service');
-                $caldavService->setCalDAVHash($portalUser->getUserId(), $form_data['new_password'], 'CommSy');
             }
         }
 
@@ -753,115 +750,5 @@ class ProfileController extends Controller
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView()
         ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/calendars")
-     * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function calendarsAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy_legacy.item_service');
-        $userItem = $legacyEnvironment->getCurrentUserItem();
-
-        $request->setLocale($userItem->getLanguage());
-
-        /**
-         * Workaround:
-         * Instead of calling getRelatedUserList directly on the current (room) user, we use the portal user.
-         * getRelatedUserList will exclude the current context and the list remains incomplete. As a portal
-         * cannot contain calenders, we make sure all relevant rooms are included.
-         */
-        $portalUser = $userItem->getRelatedPortalUserItem();
-        $relatedUsers = $portalUser->getRelatedUserList()->to_array();
-
-        $userContextIds = [];
-        foreach ($relatedUsers as $relatedUser) {
-            /** @var \cs_user_item $relatedUser */
-            if ($relatedUser->isModerator()) {
-                $userContextIds[] = $relatedUser->getContextID();
-            }
-        }
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $repository = $this->getDoctrine()->getRepository(Calendars::class);
-        /** @noinspection PhpUndefinedMethodInspection */
-        $calendars = $repository->findBy([
-            'context_id' => $userContextIds,
-            'external_url' => [
-                '',
-                null,
-            ],
-        ]);
-
-        $dashboard = [];
-        $caldav = [];
-        $roomTitles = [];
-
-        $privateRoomItem = $userItem->getOwnRoom();
-        $calendarSelection = $privateRoomItem->getCalendarSelection();
-
-        $options = [];
-        if ($calendarSelection) {
-            $options = $calendarSelection;
-        }
-
-        foreach ($calendars as $calendar) {
-            $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
-            $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
-
-            $dashboard[] = $calendar->getId();
-            $caldav[] = $calendar->getId();
-            $roomTitles[] = $roomItemCalendar->getTitle().' / '.$calendar->getTitle();
-            if ($calendarSelection === false) {
-                $options['calendarsDashboard'][] = $calendar->getId();
-                $options['calendarsCalDAV'][] = $calendar->getId();
-            }
-        }
-
-        $form = $this->createForm(ProfileCalendarsType::class, $options, array(
-            'itemId' => $itemId,
-            'dashboard' => $dashboard,
-            'caldav' => $caldav,
-        ));
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $privateRoomItem->setCalendarSelection($form->getData());
-            $privateRoomItem->save();
-        }
-
-        $protocoll = 'https://';
-        if ($_SERVER['HTTPS'] == 'off') {
-            $protocoll = 'http://';
-        }
-        $caldavUrl = $protocoll . $_SERVER['HTTP_HOST'];
-
-        $caldavPath = $this->generateUrl('app_caldav_caldavprincipal', array(
-            'portalId' => $legacyEnvironment->getCurrentPortalId(),
-            'userId' => $legacyEnvironment->getCurrentUser()->getUserId(),
-        ));
-
-        $allNoneDashboard = false;
-        if (isset($options['calendarsDashboard'])) {
-            $allNoneDashboard = (sizeof($calendars) == sizeof($options['calendarsDashboard']));
-        }
-
-        $allNoneCaldav = false;
-        if (isset($options['calendarsCalDAV'])) {
-            $allNoneCaldav = (sizeof($calendars) == sizeof($options['calendarsCalDAV']));
-        }
-
-        return array(
-            'form' => $form->createView(),
-            'roomTitles' => $roomTitles,
-            'user' => $userItem,
-            'caldavUrl' => $caldavUrl,
-            'caldavPath' => $caldavPath,
-            'allNoneDashboard' => $allNoneDashboard,
-            'allNoneCaldav' => $allNoneCaldav,
-        );
     }
 }

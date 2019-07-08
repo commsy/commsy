@@ -100,10 +100,6 @@ if ( isOption($command,$translator->getMessage('ADMIN_CANCEL_BUTTON')) or isOpti
                $portal_item = $portal_manager->getItem($user->getContextID());
                $user->setPasswordExpireDate($portal_item->getPasswordExpiration());
 
-               global $symfonyContainer;
-               $caldavService = $symfonyContainer->get('commsy.caldav_service');
-               $caldavService->setCalDAVHash($_POST['user_id'], $_POST['password'], 'CommSy');
-
                $user->save();
                unset($portal_manager);
                $error_number = $auth_manager->getErrorNumber();

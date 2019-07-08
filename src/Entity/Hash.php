@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hash
  *
- * @ORM\Table(name="hash", indexes={@ORM\Index(name="rss", columns={"rss"}), @ORM\Index(name="ical", columns={"ical"}), @ORM\Index(name="caldav", columns={"caldav"})})
+ * @ORM\Table(name="hash", indexes={@ORM\Index(name="rss", columns={"rss"}), @ORM\Index(name="ical", columns={"ical"})})
  * @ORM\Entity
  */
 class Hash
@@ -35,13 +35,6 @@ class Hash
      */
     private $ical;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="caldav", type="string", length=32, nullable=true)
-     */
-    private $caldav;
-
 
     /**
      * Get iCal
@@ -51,20 +44,6 @@ class Hash
     public function getICal()
     {
         return $this->iCal;
-    }
-
-    /**
-     * Set caldav
-     *
-     * @param integer $caldav
-     *
-     * @return Hash
-     */
-    public function setCaldav($caldav)
-    {
-        $this->caldav = $caldav;
-
-        return $this;
     }
 }
 

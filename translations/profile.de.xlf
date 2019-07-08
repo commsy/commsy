@@ -361,27 +361,6 @@
                 <target>Dashboard</target>
             </trans-unit>
 
-
-            <trans-unit id="caldav_server">
-                <source>caldav_server</source>
-                <target>CalDAV Server</target>
-            </trans-unit>
-            <trans-unit id="caldav_path">
-                <source>caldav_path</source>
-                <target>CalDAV Pfad</target>
-            </trans-unit>
-            <trans-unit id="caldav_user">
-                <source>caldav_user</source>
-                <target>Benutzername</target>
-            </trans-unit>
-            <trans-unit id="caldav_password">
-                <source>caldav_password</source>
-                <target>Passwort</target>
-            </trans-unit>
-            <trans-unit id="caldav_password_description">
-                <source>caldav_password_description</source>
-                <target>Ihr gewohntes CommSy-Passwort</target>
-            </trans-unit>
             <trans-unit id="all_none">
                 <source>all_none</source>
                 <target>alle / keine</target>

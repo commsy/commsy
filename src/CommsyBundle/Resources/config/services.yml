@@ -753,10 +753,6 @@ services:
         class: CommsyBundle\Services\CalendarsService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
-    commsy.caldav_service:
-        class: CommsyBundle\Services\CalDAVService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
-
     commsy.roomcategories_service:
         class: CommsyBundle\Services\RoomCategoriesService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']

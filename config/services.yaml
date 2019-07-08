@@ -1131,10 +1131,6 @@ services:
         class: App\Services\CalendarsService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
-    commsy.caldav_service:
-        class: App\Services\CalDAVService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
-
     commsy.roomcategories_service:
         class: App\Services\RoomCategoriesService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
@@ -1246,19 +1242,6 @@ services:
     # User
     App\User\UserBuilder:
         autowire: true
-
-    # CalDAV
-    App\CalDAV\AuthPDO:
-        autowire: false
-
-    App\CalDAV\CalendarPDO:
-        autowire: false
-
-    App\CalDAV\Digest:
-        autowire: false
-
-    App\CalDAV\PrincipalPDO:
-        autowire: false
 
     # Events
     App\Event\CommsyEditEvent:

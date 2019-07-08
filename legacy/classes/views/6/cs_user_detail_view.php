@@ -549,32 +549,6 @@ class cs_user_detail_view extends cs_detail_view {
            $formal_data[] = $temp_array;
        }
 
-       if ($this->_environment->inPortal()) {
-           $temp_array = array();
-           $formal_data[] = $temp_array;
-
-           $temp_array = array();
-           $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV');
-
-           if ($item->getIsAllowedToUseCalDAV() == 'standard') {
-               $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING_SHORT');
-           } else if ($item->getIsAllowedToUseCalDAV() == 1) {
-               $temp_array[] = $this->_translator->getMessage('COMMON_YES');
-           } else {
-               $temp_array[] = $this->_translator->getMessage('COMMON_NO');
-           }
-           $formal_data[] = $temp_array;
-
-           $temp_array = array();
-           $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING');
-           $temp_array[] = $this->_translator->getMessage($this->_environment->getCurrentPortalItem()->getConfigurationCalDAV());
-
-           $formal_data[] = $temp_array;
-
-           $temp_array = array();
-           $formal_data[] = $temp_array;
-       }
-
       if ( $item->isModerator() and !$this->_environment->inPrivateRoom() ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('ACCOUNT_EMAIL_MEMBERSHIP');

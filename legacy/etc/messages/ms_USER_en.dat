@@ -258,7 +258,4 @@ $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING"]["en"] = "Stand
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT"]["en"] = "Standard value";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR"]["en"] = "User is portalmoderator";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_FORM_ERROR"]["en"] = "You have no permission to create new rooms.";
-$message["USER_IS_ALLOWED_TO_USE_CALDAV"]["de"] = "May use CalDAV";
-$message["USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING"]["de"] = "Standard value of the portal";
-$message["USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING_SHORT"]["de"] = "Standard value";
 ?>

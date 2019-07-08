@@ -296,29 +296,6 @@ class cs_user_form extends cs_rubric_form {
                   $this->_form->addText('allowed_to_create_context_text',$this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT'), $this->_translator->getMessage('COMMON_YES').' ('.$this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR').')');
               }
           }
-
-          if ($this->_environment->inPortal()) {
-              $this->_form->addEmptyline();
-
-              $portal_standard_setting = $this->_translator->getMessage($this->_environment->getCurrentPortalItem()->getConfigurationCalDAV());
-
-              $radio_values = array();
-              $radio_values[0]['text'] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING') . ' (' . $portal_standard_setting . ')';
-              $radio_values[0]['value'] = 'standard';
-              $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_YES');
-              $radio_values[1]['value'] = 1;
-              $radio_values[2]['text'] = $this->_translator->getMessage('COMMON_NO');
-              $radio_values[2]['value'] = -1;
-
-              $this->_form->addRadioGroup('user_is_allowed_to_use_caldav',
-                  $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV'),
-                  $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV'),
-                  $radio_values,
-                  '',
-                  true,
-                  false
-              );
-          }
       }
       $context_item = $this->_environment->getCurrentContextItem();
 
@@ -391,10 +368,6 @@ class cs_user_form extends cs_rubric_form {
 
        if ($this->_environment->inPortal()) {
            $this->_values['user_is_allowed_to_create_context'] = $this->_item->getIsAllowedToCreateContext();
-       }
-
-       if ($this->_environment->inPortal()) {
-           $this->_values['user_is_allowed_to_use_caldav'] = $this->_item->getIsAllowedToUseCalDAV();
        }
 
       } elseif (isset($this->_form_post)) {

@@ -510,13 +510,6 @@ if ($command != 'error') { // only if user is allowed to edit user
                  }
              }
 
-             if (isset($_POST['user_is_allowed_to_use_caldav'])) {
-                 $user_item->setIsAllowedToUseCalDAV($_POST['user_is_allowed_to_use_caldav']);
-                 if ( isset($portal_user_item) ) {
-                     $portal_user_item->setIsAllowedToUseCalDAV($_POST['user_is_allowed_to_use_caldav']);
-                 }
-             }
-
 
             #########################################################
             # Gruppen können im Formular nicht mehr gesetzt werden
@@ -779,10 +772,6 @@ if ($command != 'error') { // only if user is allowed to edit user
             $dummy_user = $user_manager->getNewItem();
             if (isset($_POST['user_is_allowed_to_create_context'])) {
                 $dummy_user->setIsAllowedToCreateContext($_POST['user_is_allowed_to_create_context']);
-            }
-
-            if (isset($_POST['user_is_allowed_to_use_caldav'])) {
-                $dummy_user->setIsAllowedToUseCalDAV($_POST['user_is_allowed_to_use_caldav']);
             }
 
             $user_item->changeRelatedUser($dummy_user);

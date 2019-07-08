@@ -263,7 +263,4 @@ $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING"]["de"] = "Stand
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT"]["de"] = "Standardeinstellung";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR"]["de"] = "Person ist PortalmoderatorIn";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_FORM_ERROR"]["de"] = "Sie haben nicht die Berechtigung, neue Räume anzulegen.";
-$message["USER_IS_ALLOWED_TO_USE_CALDAV"]["de"] = "Darf CalDAV nutzen";
-$message["USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING"]["de"] = "Standardeinstellung des Portals";
-$message["USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING_SHORT"]["de"] = "Standardeinstellung";
 ?>

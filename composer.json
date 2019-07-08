@@ -26,7 +26,6 @@
         "nategood/httpful": "^0.2.20",
         "nette/utils": "^3.0",
         "php-imap/php-imap": "^3.0",
-        "sabre/dav": "^3.2.2",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "^4.2",
         "symfony/console": "4.2",

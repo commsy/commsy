@@ -3554,22 +3554,6 @@ class cs_portal_item extends cs_guide_item {
     return $retour;
    }
 
-    public function setConfigurationCalDAV($value)
-    {
-        $this->_addExtra('CALDAV', $value);
-    }
-
-    public function getConfigurationCalDAV()
-    {
-        $retour = 0;
-        if ($this->_issetExtra('CALDAV')) {
-            $retour = $this->_getExtra('CALDAV');
-        } else {
-            $retour = 'CONFIGURATION_CALDAV_DISABLE';
-        }
-        return $retour;
-    }
-
     function setSupportPageLink($value) {
        $this->_setExtra('SUPPORTPAGELINK', (string)$value);
     }

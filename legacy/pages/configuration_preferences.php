@@ -1002,12 +1002,6 @@ if ($current_user->isGuest()) {
             unset($url);
          }
 
-         if($item->isPortal()){
-             if (!empty($_POST['caldav_select'])) {
-                 $item->setConfigurationCalDAV($_POST['caldav_select']);
-             }
-         }
-
                   //******************************************//
 
                   // Save item

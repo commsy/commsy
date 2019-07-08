@@ -828,27 +828,6 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $this->_form->combine('vertical');
             $this->_form->addText('template_select_text','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'),'',false,'','','left','','id="template_extention"');
          }
-
-          if ( $this->_environment->inPortal() and $this->_type == CS_PORTAL_TYPE ) {
-              $this->_form->addSelect('caldav_select',
-                  [
-                      ['text' => $this->_translator->getMessage('CONFIGURATION_CALDAV_DISABLE'), 'value' => 'CONFIGURATION_CALDAV_DISABLE'],
-                      ['text' => $this->_translator->getMessage('CONFIGURATION_CALDAV_ENABLE'), 'value' => 'CONFIGURATION_CALDAV_ENABLE'],
-                  ],
-                  '',
-                  $this->_translator->getMessage('CONFIGURATION_CALDAV_SHORT_TITLE'),
-                  $this->_translator->getMessage('CONFIGURATION_CALDAV_DESC'),
-                  0,
-                  false,
-                  false,
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  ''
-              );
-          }
       }
 
       // template
@@ -1453,10 +1432,6 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          if ( $this->_item->isPrivateRoom() ) {
             $this->_values['template_select'] = $this->_item->getTemplateID();
          }
-
-          if ( $this->_item->isPortal() ) {
-              $this->_values['caldav_select'] = $this->_item->getConfigurationCalDAV();
-          }
 
       } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;

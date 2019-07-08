@@ -449,10 +449,6 @@ $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO"]["en"] = "Toggle this user no
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC"]["en"] = "Display this notice";
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC_GLOBAL"]["en"] = "Disable notice boxes in this workspace";
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_GLOBAL"]["en"] = "Toggle notice boxes globally";
-$message["CONFIGURATION_CALDAV_SHORT_TITLE"]["en"] = "CalDAV";
-$message["CONFIGURATION_CALDAV_DISABLE"]["en"] = "Disable";
-$message["CONFIGURATION_CALDAV_ENABLE"]["en"] = "Enable";
-
 $message["CONFIGURATION_ROOM_CATEGORIES"]["de"] = "Room categories";
 $message["CONFIGURATION_ROOM_CATEGORIES_DESC"]["de"] = "To configuration";
 ?>

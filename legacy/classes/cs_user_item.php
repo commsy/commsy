@@ -3092,37 +3092,6 @@ class cs_user_item extends cs_item
         }
     }
 
-    function setIsAllowedToUseCalDAV($value)
-    {
-        $this->_addExtra('IS_ALLOWED_TO_USE_CALDAV', $value);
-    }
-
-    function getIsAllowedToUseCalDAV()
-    {
-        $retour = 'standard';
-        if ($this->_issetExtra('IS_ALLOWED_TO_USE_CALDAV')) {
-            $retour = $this->_getExtra('IS_ALLOWED_TO_USE_CALDAV');
-        }
-        return $retour;
-    }
-
-    public function isAllowedToUseCalDAV()
-    {
-        if ($this->getIsAllowedToUseCalDAV() != 'standard') {
-            if ($this->getIsAllowedToUseCalDAV() == -1) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            if ($this->_environment->getCurrentPortalItem()->getConfigurationCalDAV() == 'CONFIGURATION_CALDAV_DISABLE') {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
-
     /**
      * Deletes a user caused by inactivity, expects a portal user
      *
