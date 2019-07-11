@@ -22,6 +22,10 @@
                 <source>Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}</source>
                 <target>Bitte benennen Sie zunächst im Raum {{ criteria }} eine neue Moderation oder löschen Sie den Raum {{ criteria }}.</target>
             </trans-unit>
+            <trans-unit id="validators_no_account_deletion_rooms_moderated">
+                <source>You can not delete your account. The following workspaces would otherwise be without moderators: {{ criteria }}. Please assign further moderators or delete said room/s.</source>
+                <target>Sie können Ihren Account NICHT löschen. Die folgenden Räumen wären ansonsten ohne Moderation: {{ criteria }}. Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
+            </trans-unit>
             <trans-unit id="validators_room_code_filled">
                 <source>Please enter an access code.</source>
                 <target>Bitte geben Sie einen Zugangscode an.</target>
