@@ -1,6 +1,7 @@
 <?php
 namespace App\Form\Type\Profile;
 
+use App\Validator\Constraints\ModeratorAccountDeleteConstraint;
 use App\Validator\Constraints\UniqueModeratorConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -31,7 +32,7 @@ class DeleteAccountType extends AbstractType
                         'value' => mb_strtoupper($options['data']['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
-                    new UniqueModeratorConstraint(),
+                    new ModeratorAccountDeleteConstraint(),
                 ],
                 'required' => true,
             ])

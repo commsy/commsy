@@ -10,5 +10,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class ModeratorAccountDeleteConstraint extends Constraint
 {
-    public $message = 'Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}';
+    public $message = 'You can not delete your account. The following workspaces would otherwise be without moderators: {{ criteria }}. Please assign further moderators or delete said room/s.';
 }
