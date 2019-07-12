@@ -27,12 +27,20 @@ class DeleteGroupRoomConstraintValidator extends ConstraintValidator
     {
         $roomId = $this->legacyEnvironment->getEnvironment()->getCurrentContextItem();
         $project_room_names = $this->projectRoomsAttached($roomId);
+        $portalItem = $this->legacyEnvironment->getEnvironment()->getCurrentPortalItem();
 
+        try{
+            $project_room_link_status = $portalItem->_data['extras']['PROJECTROOMLINKSTATUS'];
+        }catch(Exception $e){
+            $project_room_link_status = "";
+        }
 
         if(!empty($project_room_names)){
+            if(strcmp($project_room_link_status, "mandatory") == 0){
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('{{ criteria }}', $project_room_names)
                     ->addViolation();
+            }
         }
     }
 
