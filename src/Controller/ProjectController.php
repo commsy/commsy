@@ -185,12 +185,23 @@ class ProjectController extends Controller
 
         $room = new Room();
         $templates = $this->getAvailableTemplates();
-        $form = $this->createForm(ProjectType::class, $room, [
+        $roomCategoriesService = $this->get('commsy.roomcategories_service');
+        $roomCategories = [];
+        foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
+            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
+        }
+
+        $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
+
+        $formData = [];
+        $form = $this->createForm(ProjectType::class, $formData, [
             'templates' => array_flip($templates['titles']),
             'descriptions' => $templates['descriptions'],
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
+            'roomCategories' => $roomCategories,
+            'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,
         ]);
 
         $form->handleRequest($request);
