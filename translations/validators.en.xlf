@@ -30,6 +30,10 @@
                 <source>You can not delete your account. The following workspaces would otherwise be without moderators: {{ criteria }}. Please assign further moderators or delete said room/s.</source>
                 <target>You can not delete your account. The following workspaces would otherwise be without moderators: {{ criteria }}. Please assign further moderators or delete said room/s.</target>
             </trans-unit>
+            <trans-unit id="validators_project_rooms_attached_to_deletion_group_room">
+                <source>Caution, the following project rooms are attached to this group room: {{ criteria }}. Those project rooms must be delete first or must be assigned to a different group room.</source>
+                <target>Caution, the following project rooms are attached to this group room: {{ criteria }}. Those project rooms must be delete first or must be assigned to a different group room.</target>
+            </trans-unit>
             <trans-unit id="validators_password_criteria">
                 <source>The password does not fulfill the following criteria: {{ criteria }}.</source>
                 <target>The password does not fulfill the following criteria: {{ criteria }}.</target>
