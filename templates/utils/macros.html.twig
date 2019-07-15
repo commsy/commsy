@@ -709,3 +709,7 @@
         {% endif %}
     {% endfor %}
 {% endmacro %}
+
+{% macro userListToString(userList) %}
+    {{- userList|map(user => "#{user.fullName}")|join(', ') -}}
+{% endmacro %}
