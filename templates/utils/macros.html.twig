@@ -605,7 +605,7 @@
         {% endif %}
         </ul>
 
-        <div class="uk-form-label">{{ 'links'|trans({}, "messages")|capitalize }}</div>
+        <div class="uk-form-label">{{ 'categoriesAndBuzzwords'|trans({}, "messages")|capitalize }}</div>
         <div class="uk-form-controls">
             <ul id="mandatoryLinkFormTabs" class="uk-tab" data-uk-tab="{connect:'#mandatoryLinksForm'}">
                 {% if showCategories %}
@@ -708,4 +708,8 @@
            {{ user.fullname ~ suffix }}
         {% endif %}
     {% endfor %}
+{% endmacro %}
+
+{% macro userListToString(userList) %}
+    {{- userList|map(user => "#{user.fullName}")|join(', ') -}}
 {% endmacro %}

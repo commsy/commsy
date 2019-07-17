@@ -38,7 +38,9 @@ services:
       - commsy-data:/var/www/html/files
       # Use only in development
       - ./:/var/www/html:cached
+      - commsy-cache:/var/www/html/var/cache
 
 volumes:
   db-data:
   commsy-data:
+  commsy-cache:

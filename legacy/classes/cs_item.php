@@ -1549,8 +1549,13 @@ class cs_item {
    }
 
 
-    function maySee($userItem)
+    public function maySee($userItem)
     {
+        // Deny access, if the item's context is deleted
+        if ($this->getContextItem()->isDeleted()) {
+            return false;
+        }
+
         if ($userItem->isRoot()) {
            return true;
         }

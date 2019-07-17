@@ -63,6 +63,7 @@
                     $('input[id*="filter_calendar_calendar"]').each(selectNode);
                     $('input[id*="itemLinks_categories"]').each(selectNode);
                     $('input[id*="portfolio_categories"]').each(selectNode);
+                    $('input[id*="category_mapping_categories"]').each(selectNode);
 
                     $(element)
                         .on('select_node.jstree', function (event, data) {
@@ -117,6 +118,7 @@
                                 $('input[id*="filter_calendar_calendar"]').prop('checked', false);
                                 $('input[id*="itemLinks_categories"]').prop('checked', false);
                                 $('input[id*="portfolio_categories"]').prop('checked', false);
+                                $('input[id*="category_mapping_categories"]').prop('checked', false);
 
                                 $.each(data.selected, function() {
                                     $('input[value="' + this.substring(4) + '"]')

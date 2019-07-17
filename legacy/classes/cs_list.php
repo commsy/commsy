@@ -1,4 +1,4 @@
-<?PHP
+<?php
 // $Id$
 //
 // Release $Name$
@@ -25,7 +25,7 @@
 /** class for lists of commsy items (objects)
  * this class implements a list of ojects. An object is a commsy item
  */
-class cs_list {
+class cs_list implements IteratorAggregate {
 
    /**
     * string - containing the type of the list resp. the type of the elements
@@ -338,5 +338,16 @@ class cs_list {
 
       return $retour;
    }
+
+    /**
+     * Retrieve an external iterator
+     * @link https://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return Traversable An instance of an object implementing <b>Iterator</b> or
+     * <b>Traversable</b>
+     * @since 5.0.0
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->to_array());
+    }
 }
-?>
