@@ -31,7 +31,6 @@ class ProjectType extends AbstractType
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
-                'empty_data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
             ]);
         if (!empty($options['times'])) {
             $builder->add('time_interval', Select2ChoiceType::class, [
