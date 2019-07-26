@@ -12,8 +12,13 @@
         </div>
         <div class="uk-margin-small-left uk-margin-small-top">
             <div class="uk-form-row">
-                {{ form_label(form.due_date) }}
-                {{ form_widget(form.due_date) }}
+                {% if language == 'en' %}
+                    {{ form_label(form.due_date_eng) }}
+                    {{ form_widget(form.due_date_eng)  }}
+                {% else %}
+                    {{ form_label(form.due_date) }}
+                    {{ form_widget(form.due_date)  }}
+                {% endif %}
             </div>
 
             <div class="uk-form-row">

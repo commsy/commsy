@@ -48,6 +48,11 @@ class TodoTransformer implements DataTransformerInterface
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;
 
+                $todoData['due_date_eng']['date'] = $datetimeDueDate;
+                $todoData['due_date_eng']['time'] = $datetimeDueDate;
+
+                // $this->legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE']
+
                 $todoData['steps'] = array();
                 foreach($todoItem->getStepItemList()->to_array() as $id => $item){
                     $todoData['steps'][$id] = $item->getTitle();

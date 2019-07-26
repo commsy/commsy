@@ -548,12 +548,15 @@ class TodoController extends BaseController
             throw $this->createNotFoundException('No todo found for id ' . $itemId);
         }
 
+
+
         $formData = $transformer->transform($todoItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $formData['draft'] = $isDraft;
+        $formData['language'] = $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
 
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
         
@@ -594,6 +597,7 @@ class TodoController extends BaseController
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
         );
     }
     

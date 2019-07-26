@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use App\Form\Type\Custom\DateTimeSelectType;
+use App\Form\Type\Custom\DateTimeSelectEngType;
 use App\Form\Type\Custom\MandatoryCategoryMappingType;
 use App\Form\Type\Custom\MandatoryHashtagMappingType;
 
@@ -33,6 +34,17 @@ class TodoType extends AbstractType
                 'translation_domain' => 'material',
             ))
             ->add('due_date', DateTimeSelectType::class, array(
+                'constraints' => array(
+                ),
+                'label' => 'due date',
+                'attr' => array(
+                    'placeholder' => 'due date',
+                    'class' => 'uk-form-width-medium',
+                ),
+                'translation_domain' => 'todo',
+                'required' => false,
+            ))
+            ->add('due_date_eng', DateTimeSelectEngType::class, array(
                 'constraints' => array(
                 ),
                 'label' => 'due date',
@@ -82,7 +94,7 @@ class TodoType extends AbstractType
                 'label' => 'hidden',
                 'required' => false,
             ))
-            ->add('hiddendate', DateTimeSelectType::class, array(
+            ->add('hiddendate', DateTimeSelectEngType::class, array(
                 'label' => 'hidden until',
             ))
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
