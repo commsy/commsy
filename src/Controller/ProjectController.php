@@ -268,7 +268,7 @@ class ProjectController extends Controller
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
             } else {
-                return $this->redirectToRoute('commsy_project_list', [
+                return $this->redirectToRoute('app_project_list', [
                     'roomId' => $roomId,
                 ]);
             }
