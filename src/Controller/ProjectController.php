@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\Type\ProjectType;
+use App\Services\LegacyMarkup;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -128,7 +129,7 @@ class ProjectController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $userService = $this->get('commsy_legacy.user_service');
@@ -145,9 +146,8 @@ class ProjectController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
         
         return [
             'roomId' => $roomId,

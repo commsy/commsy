@@ -8,6 +8,7 @@ use App\Event\CommsyEditEvent;
 use App\Filter\DiscussionFilterType;
 use App\Form\Type\DiscussionArticleType;
 use App\Form\Type\DiscussionType;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -244,9 +245,9 @@ class DiscussionController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
@@ -294,7 +295,7 @@ class DiscussionController extends BaseController
         ];
     }
     
-    private function getDetailInfo ($roomId, $itemId) {
+    private function getDetailInfo ($roomId, $itemId, LegacyMarkup $legacyMarkup) {
         $infoArray = array();
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
@@ -332,9 +333,8 @@ class DiscussionController extends BaseController
                 $noticedManager->markNoticed($article->getItemID(), 0);
             }
 
-            $markupService = $this->get('commsy_legacy.markup');
             $itemService = $this->get('commsy_legacy.item_service');
-            $markupService->addFiles($itemService->getItemFileList($article->getItemID()));
+            $legacyMarkup->addFiles($itemService->getItemFileList($article->getItemID()));
 
             $article = $articleList->getNext();
         }
@@ -556,9 +556,9 @@ class DiscussionController extends BaseController
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/print")
      */
-    public function printAction($roomId, $itemId, PrintService $printService)
+    public function printAction($roomId, $itemId, PrintService $printService, LegacyMarkup $legacyMarkup)
     {
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
 
         $html = $this->renderView('discussion/detail_print.html.twig', [
             'roomId' => $roomId,
