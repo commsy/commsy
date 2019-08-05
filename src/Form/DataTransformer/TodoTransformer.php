@@ -148,8 +148,11 @@ class TodoTransformer implements DataTransformerInterface
                 $newStepOrder = explode(",", $todoData['stepOrder']);
             }
 
-            if (isset($todoData['due_date'])) {
+            if (isset($todoData['due_date']['date'])) {
                 $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
+            }
+            if (isset($todoData['due_date_eng']['date'])) {
+                $todoObject->setDate($todoData['due_date_eng']['date']->format('Y-m-d').' '.$todoData['due_date_eng']['time']->format('H:i:s'));
             }
         } else {
             $hours = is_numeric($todoData['time_spend']['hour']) ? $todoData['time_spend']['hour'] : 0;

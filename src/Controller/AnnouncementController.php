@@ -474,6 +474,7 @@ class AnnouncementController extends BaseController
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $formData['language'] = $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
             $translator = $this->get('translator');
             $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('app_announcement_edit', array(
@@ -531,6 +532,7 @@ class AnnouncementController extends BaseController
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
         );
     }
 
