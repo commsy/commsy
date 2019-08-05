@@ -36,6 +36,9 @@ class TodoTransformer implements DataTransformerInterface
                     $datetime = new \DateTime($activating_date);
                     $todoData['hiddendate']['date'] = $datetime;
                     $todoData['hiddendate']['time'] = $datetime;
+
+                    $todoData['hiddendate_eng']['date'] = $datetime;
+                    $todoData['hiddendate_eng']['time'] = $datetime;
                 }
             }
             
@@ -113,6 +116,17 @@ class TodoTransformer implements DataTransformerInterface
                     $datetime = $todoData['hiddendate']['date'];
                     if ($todoData['hiddendate']['time']) {
                         $time = explode(":", $todoData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $todoObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $todoObject->setModificationDate('9999-00-00 00:00:00');
+                }
+                if ($todoData['hiddendate_eng']['date']) {
+                    // add validdate to validdate
+                    $datetime = $todoData['hiddendate_eng']['date'];
+                    if ($todoData['hiddendate_eng']['time']) {
+                        $time = explode(":", $todoData['hiddendate_eng']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $todoObject->setModificationDate($datetime->format('Y-m-d H:i:s'));

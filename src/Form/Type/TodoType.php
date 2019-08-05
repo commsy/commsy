@@ -94,7 +94,10 @@ class TodoType extends AbstractType
                 'label' => 'hidden',
                 'required' => false,
             ))
-            ->add('hiddendate', DateTimeSelectEngType::class, array(
+            ->add('hiddendate', DateTimeSelectType::class, array(
+                'label' => 'hidden until',
+            ))
+            ->add('hiddendate_eng', DateTimeSelectEngType::class, array(
                 'label' => 'hidden until',
             ))
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
