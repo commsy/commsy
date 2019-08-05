@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 use App\Form\Type\Custom\DateTimeSelectType;
+use App\Form\Type\Custom\DateTimeSelectEngType;
 use App\Form\Type\Custom\MandatoryCategoryMappingType;
 use App\Form\Type\Custom\MandatoryHashtagMappingType;
 
@@ -41,6 +42,9 @@ class DiscussionType extends AbstractType
                 'required' => false,
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
+                'label' => 'hidden until',
+            ))
+            ->add('hiddendate_eng', DateTimeSelectEngType::class, array(
                 'label' => 'hidden until',
             ))
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
