@@ -1,7 +1,6 @@
 <?php
 namespace App\Filter;
 
-use App\Form\EventListener\AddRubricSearchListener;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
