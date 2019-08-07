@@ -68,9 +68,13 @@ class SearchManager
         $typeAggregation->setField('_type');
         $query->addAggregation($typeAggregation);
 
-        $creatorAggergation = new Aggregations\Terms('creators');
-        $creatorAggergation->setField('creator.fullName.raw');
-        $query->addAggregation($creatorAggergation);
+        $creatorAggregation = new Aggregations\Terms('creators');
+        $creatorAggregation->setField('creator.fullName.raw');
+        $query->addAggregation($creatorAggregation);
+
+        $hashtagsAggregation = new Aggregations\Terms('hashtags');
+        $hashtagsAggregation->setField('hashtags');
+        $query->addAggregation($hashtagsAggregation);
 
         // aggregations
 //        $filterAggregation = new Aggregations\Filter('filterContext');
