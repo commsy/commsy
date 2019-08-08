@@ -70,10 +70,14 @@ class SearchManager
 
         $creatorAggregation = new Aggregations\Terms('creators');
         $creatorAggregation->setField('creator.fullName.raw');
+        // return at most 100 of the most prolific creators (default is 10)
+        $creatorAggregation->setSize(100);
         $query->addAggregation($creatorAggregation);
 
         $hashtagsAggregation = new Aggregations\Terms('hashtags');
         $hashtagsAggregation->setField('hashtags');
+        // return at most 100 of the most used hashtags (default is 10)
+        $hashtagsAggregation->setSize(100);
         $query->addAggregation($hashtagsAggregation);
 
         // aggregations
