@@ -1,7 +1,6 @@
 <?php
 namespace App\Filter;
 
-use App\Form\EventListener\AddRubricSearchListener;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
@@ -138,6 +137,18 @@ class SearchFilterType extends AbstractType
                 'label' => 'Rubric',
                 'required' => false,
                 'placeholder' => false,
+            ])
+            ->add('selectedHashtags', Select2ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    return $this->buildHashtagChoices($searchData->getHashtags());
+                }),
+                'label' => 'Hashtags',
+                'expanded' => false,
+                'multiple' => true,
+                'required' => false,
             ]);
     }
 
@@ -209,6 +220,26 @@ class SearchFilterType extends AbstractType
         foreach ($creators as $name => $count) {
             $creator = $name . " (" . $count . ")";
             $choices[$creator] = $name;
+        }
+
+        return $choices;
+    }
+
+    /**
+     * Builds the array of choices for the hashtags filter field.
+     *
+     * @param array|null $hashtags associative array of hashtags (key: hashtag name, value: count)
+     */
+    private function buildHashtagChoices($hashtags): array
+    {
+        if (!isset($hashtags) || empty($hashtags)) {
+            return [];
+        }
+
+        $choices = [];
+        foreach ($hashtags as $name => $count) {
+            $hashtag = $name . " (" . $count . ")";
+            $choices[$hashtag] = $name;
         }
 
         return $choices;
