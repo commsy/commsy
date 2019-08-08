@@ -200,8 +200,8 @@ class SearchController extends BaseController
         $countsByHashtag = $searchManager->countsByKeyFromAggregation($aggregations['hashtags']);
         $searchData->addHashtags($countsByHashtag);
 
-        // if a rubric/creator is selected that isn't part of the results anymore, we keep displaying it in the respective
-        // search filter form field; this also avoids a form validation error ("this value is not valid")
+        // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
+        // respective search filter form field; this also avoids a form validation error ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
         if (!empty($selectedRubric) && $selectedRubric !== 'all' && !array_key_exists($selectedRubric, $countsByRubric)) {
             $searchData->addRubrics([$selectedRubric => 0]);
@@ -210,6 +210,13 @@ class SearchController extends BaseController
         $selectedCreator = $searchData->getSelectedCreator();
         if (!empty($selectedCreator) && $selectedCreator !== 'all' && !array_key_exists($selectedCreator, $countsByCreator)) {
             $searchData->addCreators([$selectedCreator => 0]);
+        }
+
+        $selectedHashtags = $searchData->getSelectedHashtags();
+        foreach ($selectedHashtags as $hashtag) {
+            if (!array_key_exists($hashtag, $countsByHashtag)) {
+                $searchData->addHashtags([$hashtag => 0]);
+            }
         }
 
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
