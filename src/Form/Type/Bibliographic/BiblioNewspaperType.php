@@ -18,6 +18,7 @@ class BiblioNewspaperType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $translationDomain = 'form';
+        $language = $GLOBALS['environment']->_current_portal->_environment->_selected_language;
 
         $builder
             ->add('author', TextType::class, array(
@@ -61,16 +62,23 @@ class BiblioNewspaperType extends AbstractType
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
                 'required' => false,
-                ))
-            ->add('url_date', TextType::class, array(
-                'label' => 'url date',
-                'translation_domain' => $translationDomain,
-                'required' => false,
-                'attr' => array(
-                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
-                )
             ))
         ;
+
+        if($language == 'en'){
+            $format = '{format:\'DD/MM/YYYY\'}';
+        } else{
+            $format = '{format:\'DD.MM.YYYY\'}';
+        }
+
+        $builder->add('url_date', TextType::class, array(
+            'label' => 'url date',
+            'translation_domain' => $translationDomain,
+            'required' => false,
+            'attr' => array(
+                'data-uk-datepicker' => $format
+            )
+        ));
     }
 
     /**
