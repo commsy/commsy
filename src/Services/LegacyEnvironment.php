@@ -37,7 +37,6 @@ class LegacyEnvironment
             global $cs_color;
             global $db;
             include_once('etc/cs_constants.php');
-            include_once('etc/cs_config.php');
             include_once('functions/misc_functions.php');
 
             global $symfonyContainer;
