@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
+use App\Form\Type\Custom\DateTimeSelectEngType;
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\MandatoryCategoryMappingType;
 use App\Form\Type\Custom\MandatoryHashtagMappingType;
@@ -44,7 +45,26 @@ class DateType extends AbstractType
                     'class' => 'uk-form-width-medium',
                 ),
             ))
+            ->add('start_eng', DateTimeSelectEngType::class, array(
+                'constraints' => array(
+                ),
+                'label' => 'startdate',
+                'attr' => array(
+                    'placeholder' => 'startdate',
+                    'class' => 'uk-form-width-medium',
+                ),
+            ))
             ->add('end', DateTimeSelectType::class, array(
+                'constraints' => array(
+                ),
+                'label' => 'enddate',
+                'attr' => array(
+                    'placeholder' => 'enddate',
+                    'class' => 'uk-form-width-medium',
+                ),
+                'required' => false,
+            ))
+            ->add('end_eng', DateTimeSelectEngType::class, array(
                 'constraints' => array(
                 ),
                 'label' => 'enddate',
@@ -89,6 +109,11 @@ class DateType extends AbstractType
                 'translation_domain' => 'form',
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
+                'label' => 'hidden until',
+                'label_attr' => array('class' => 'uk-form-label'),
+                'translation_domain' => 'form',
+            ))
+            ->add('hiddendate_eng', DateTimeSelectEngType::class, array(
                 'label' => 'hidden until',
                 'label_attr' => array('class' => 'uk-form-label'),
                 'translation_domain' => 'form',
