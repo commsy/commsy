@@ -6,15 +6,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 use App\Form\Type\Custom\DateTimeSelectType;
+use App\Form\Type\Custom\DateTimeSelectEngType;
 use App\Form\Type\Custom\MandatoryCategoryMappingType;
 use App\Form\Type\Custom\MandatoryHashtagMappingType;
 
@@ -54,6 +53,9 @@ class MaterialType extends AbstractType
                 'required' => false,
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
+                'label' => 'hidden until',
+            ))
+            ->add('hiddendate_eng', DateTimeSelectEngType::class, array(
                 'label' => 'hidden until',
             ))
             ->addEventSubscriber($this->etherpadFormListener)

@@ -100,6 +100,7 @@ class MaterialController extends BaseController
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'ratingList' => $ratingList,
             'allowedActions' => $allowedActions,
             'workflowTitles' => [
@@ -161,6 +162,7 @@ class MaterialController extends BaseController
             'showCategories' => $roomItem->withTags(),
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
@@ -235,6 +237,7 @@ class MaterialController extends BaseController
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'ratingList' => $ratingList,
             
         ]);
@@ -254,6 +257,7 @@ class MaterialController extends BaseController
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $materialService = $this->get('commsy_legacy.material_service');
         if ($versionId === null) {
@@ -340,6 +344,7 @@ class MaterialController extends BaseController
             'withValidity' => $roomItem->withWorkflowValidity(),
             'withReader' => $roomItem->withWorkflowReader(),
             'showHashtags' => $infoArray['showHashtags'],
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'buzzExpanded' => $infoArray['buzzExpanded'],
@@ -787,6 +792,7 @@ class MaterialController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['language'] = $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
         $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
         $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
@@ -944,6 +950,7 @@ class MaterialController extends BaseController
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $formData['language'] = $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
             $availableLicenses = $licensesRepository->findByContextOrderByPosition($legacyEnvironment->getCurrentPortalId());
@@ -1047,6 +1054,7 @@ class MaterialController extends BaseController
             'isMaterial' => $isMaterial,
             'form' => $form->createView(),
             'showHashtags' => $hashtagsMandatory,
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
             'material' => $typedItem,
@@ -1064,6 +1072,7 @@ class MaterialController extends BaseController
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
@@ -1099,6 +1108,7 @@ class MaterialController extends BaseController
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'showRating' => $infoArray['showRating'],
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'workflowTitles' => [
                 '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
@@ -1116,6 +1126,7 @@ class MaterialController extends BaseController
     {
         $materialService = $this->get('commsy_legacy.material_service');
         $material = $materialService->getMaterial($itemId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -1146,6 +1157,7 @@ class MaterialController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'buzzExpanded' => $infoArray['buzzExpanded'],
