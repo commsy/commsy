@@ -37,6 +37,9 @@ class TopicTransformer implements DataTransformerInterface
                     $datetime = new \DateTime($activating_date);
                     $topicData['hiddendate']['date'] = $datetime;
                     $topicData['hiddendate']['time'] = $datetime;
+
+                    $topicData['hiddendate_eng']['date'] = $datetime;
+                    $topicData['hiddendate_eng']['time'] = $datetime;
                 }
             }
         }

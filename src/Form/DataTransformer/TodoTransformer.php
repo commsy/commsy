@@ -36,9 +36,6 @@ class TodoTransformer implements DataTransformerInterface
                     $datetime = new \DateTime($activating_date);
                     $todoData['hiddendate']['date'] = $datetime;
                     $todoData['hiddendate']['time'] = $datetime;
-
-                    $todoData['hiddendate_eng']['date'] = $datetime;
-                    $todoData['hiddendate_eng']['time'] = $datetime;
                 }
             }
             
@@ -50,9 +47,6 @@ class TodoTransformer implements DataTransformerInterface
                 }
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;
-
-                $todoData['due_date_eng']['date'] = $datetimeDueDate;
-                $todoData['due_date_eng']['time'] = $datetimeDueDate;
 
                 // $this->legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE']
 
@@ -122,17 +116,6 @@ class TodoTransformer implements DataTransformerInterface
                 } else {
                     $todoObject->setModificationDate('9999-00-00 00:00:00');
                 }
-                if ($todoData['hiddendate_eng']['date']) {
-                    // add validdate to validdate
-                    $datetime = $todoData['hiddendate_eng']['date'];
-                    if ($todoData['hiddendate_eng']['time']) {
-                        $time = explode(":", $todoData['hiddendate_eng']['time']->format('H:i'));
-                        $datetime->setTime($time[0], $time[1]);
-                    }
-                    $todoObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
-                } else {
-                    $todoObject->setModificationDate('9999-00-00 00:00:00');
-                }
             } else {
                 if($todoObject->isNotActivated()){
     	            $todoObject->setModificationDate(getCurrentDateTimeInMySQL());
@@ -164,9 +147,6 @@ class TodoTransformer implements DataTransformerInterface
 
             if (isset($todoData['due_date']['date'])) {
                 $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
-            }
-            if (isset($todoData['due_date_eng']['date'])) {
-                $todoObject->setDate($todoData['due_date_eng']['date']->format('Y-m-d').' '.$todoData['due_date_eng']['time']->format('H:i:s'));
             }
         } else {
             $hours = is_numeric($todoData['time_spend']['hour']) ? $todoData['time_spend']['hour'] : 0;

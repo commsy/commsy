@@ -7,7 +7,7 @@
                 {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}
             </div>
             <div class="uk-comment-meta uk-margin-bottom">
-                {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|craue_date}}
+                {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}
             </div>
         </div>
 

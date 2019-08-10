@@ -10,10 +10,29 @@ use App\Services\LegacyEnvironment;
 
 class DateTimeSelectType extends AbstractType
 {
+    private $legacyEnvironment;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('date', DateTimeType::class, array(
+        $language = $this->legacyEnvironment->getSelectedLanguage();
+        if($language == 'en'){
+            $builder->add('date', DateTimeType::class, array(
+                'input'  => 'datetime',
+                'label' => false,
+                'widget' => 'single_text',
+                'format' => 'dd/MM/yyyy',
+                'required' => false,
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD/MM/YYYY\'}',
+                )
+            ));
+        }else{
+            $builder->add('date', DateTimeType::class, array(
                 'input'  => 'datetime',
                 'label' => false,
                 'widget' => 'single_text',
@@ -22,8 +41,9 @@ class DateTimeSelectType extends AbstractType
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 )
-            ))
-            ->add('time', DateTimeType::class, array(
+            ));
+
+            $builder->add('time', DateTimeType::class, array(
                 'input'  => 'datetime',
                 'label' => false,
                 'widget' => 'single_text',
@@ -34,6 +54,7 @@ class DateTimeSelectType extends AbstractType
                     'style' => 'margin-left: 5px;',
                 )
             ));
+        }
     }
 
     /**

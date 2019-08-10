@@ -145,7 +145,6 @@ class DiscussionController extends BaseController
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
-            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'showAssociations' => $roomItem->isAssociationShowExpanded(),
             'showCategories' => $roomItem->withTags(),
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
@@ -229,7 +228,6 @@ class DiscussionController extends BaseController
             'module' => 'discussion',
             'itemsCountArray' => $itemsCountArray,
             'showHashTags' => $roomItem->withBuzzwords(),
-            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
@@ -762,7 +760,6 @@ class DiscussionController extends BaseController
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $formData['draft'] = $isDraft;
-            $formData['language'] = $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
             $form = $this->createForm(DiscussionType::class, $formData, array(
                 'action' => $this->generateUrl('app_discussion_edit', array(
                     'roomId' => $roomId,
@@ -792,7 +789,6 @@ class DiscussionController extends BaseController
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-                'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             ));
         }
         
@@ -849,7 +845,6 @@ class DiscussionController extends BaseController
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
         );
     }
     

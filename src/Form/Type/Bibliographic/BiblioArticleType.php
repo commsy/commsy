@@ -1,12 +1,21 @@
 <?php
 namespace App\Form\Type\Bibliographic;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BiblioArticleType extends AbstractType
 {
+
+    private $legacyEnvironment;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -17,8 +26,9 @@ class BiblioArticleType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
         $translationDomain = 'form';
-        $language = $GLOBALS['environment']->_current_portal->_environment->_selected_language;
+        $language = $this->legacyEnvironment->getSelectedLanguage();
 
         $builder
             ->add('author', TextType::class, array(
@@ -85,6 +95,7 @@ class BiblioArticleType extends AbstractType
                 'required' => false,
             ))
         ;
+
 
         if($language == 'en'){
             $format = '{format:\'DD/MM/YYYY\'}';

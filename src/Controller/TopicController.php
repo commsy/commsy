@@ -499,8 +499,8 @@ class TopicController extends BaseController
             'topic' => $topicItem,
             'isDraft' => $isDraft,  
             'showHashtags' => $hashtagsMandatory,
+            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
             'showCategories' => $categoriesMandatory,
-            'language' => 'en',
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

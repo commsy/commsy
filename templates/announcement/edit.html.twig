@@ -13,11 +13,7 @@
         <div class="uk-margin-small-left uk-margin-small-top uk-flex">
             <label class="uk-form-label">{{ 'valid until'|trans }}</label>
             <div>
-                {% if language == 'en' %}
-                    {{ form_widget(form.validdate_eng) }}
-                {% else %}
-                    {{ form_widget(form.validdate) }}
-                {% endif %}
+                {{ form_widget(form.validdate) }}
             </div>
         </div>
 

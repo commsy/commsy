@@ -49,7 +49,7 @@ class PrintService
      *
      * @return Response HTML Response containing the generated PDF
      */
-    public function buildPdfResponse($html, $debug = false)
+    public function buildPdfResponse($html, $debug = true)
     {
         if ($debug) {
             return new Response($html);

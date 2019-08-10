@@ -37,9 +37,6 @@ class DiscussionTransformer implements DataTransformerInterface
                     $datetime = new \DateTime($activating_date);
                     $discussionData['hiddendate']['date'] = $datetime;
                     $discussionData['hiddendate']['time'] = $datetime;
-
-                    $discussionData['hiddendate_eng']['date'] = $datetime;
-                    $discussionData['hiddendate_eng']['time'] = $datetime;
                 }
             }
 
@@ -79,17 +76,6 @@ class DiscussionTransformer implements DataTransformerInterface
                     $datetime = $discussionData['hiddendate']['date'];
                     if ($discussionData['hiddendate']['time']) {
                         $time = explode(":", $discussionData['hiddendate']['time']->format('H:i'));
-                        $datetime->setTime($time[0], $time[1]);
-                    }
-                    $discussionObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
-                } else {
-                    $discussionObject->setModificationDate('9999-00-00 00:00:00');
-                }
-                if ($discussionData['hiddendate_eng']['date']) {
-                    // add validdate to validdate
-                    $datetime = $discussionData['hiddendate_eng']['date'];
-                    if ($discussionData['hiddendate_eng']['time']) {
-                        $time = explode(":", $discussionData['hiddendate_eng']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $discussionObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
