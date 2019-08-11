@@ -1221,7 +1221,7 @@ class cs_translator {
          if (mb_strlen($hour) == 1) {
             $hour = '0'.$hour;
          }
-         $Datetime = $day.'/'.$this->getShortMonthName($month).'/'.$year.' '.$hour.':'.$min.$ampm;
+         $Datetime = $day.'/'.$month.'/'.$year.' '.$hour.':'.$min.$ampm;
       } elseif ($language == 'de') {
          $Datetime = $day.'.'.$month.'.'.$year.' '.$hour.':'.$min;#.':'.$sec;
       }elseif ($language == 'ru') {
@@ -1365,7 +1365,6 @@ function getShortMonthNameToInt($month) {
    function getDateInLang ($datetime) {
       $Date = explode(' ',$this->_getDateTimeInLang($datetime));
       $Date[0] = mb_eregi_replace(',','',$Date[0]);
-      $Date[0] = mb_eregi_replace('/',' ',$Date[0]);
       return $Date[0];
    }
 
