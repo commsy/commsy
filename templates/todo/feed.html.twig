@@ -29,9 +29,9 @@
                         {{ 'today'|trans({})|capitalize }}, {{todo.getModificationDate|date("H:i")}}
                     {% else %}
                         {% if '9999-00-00' not in todo.getModificationDate %}
-                            {{todo.getModificationDate|date("d.m.Y")}}
+                            {{todo.getModificationDate|craue_date}}
                         {% else %}
-                            {{todo.getCreationDate|date("d.m.Y")}}
+                            {{todo.getCreationDate|craue_date}}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -48,7 +48,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(todo.getCreator) }} ({{todo.getCreationDate|date("d.m.Y")}})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(todo.getCreator) }} ({{todo.getCreationDate|craue_date}})
                 </div>
                
                 <div class="uk-comment-meta">
@@ -58,7 +58,7 @@
 
             <div class="uk-width-3-10">
                 <div class="uk-comment-meta">
-                    {{ 'due date'|trans({}, 'todo') }}: {{todo.getDate|date("d.m.Y")}}
+                    {{ 'due date'|trans({}, 'todo') }}: {{todo.getDate|craue_date}}
                 </div>
             </div>
             

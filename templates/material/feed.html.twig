@@ -29,9 +29,9 @@
                         {{ 'today'|trans({})|capitalize }}, {{material.getModificationDate|date("H:i")}}
                     {% else %}
                         {% if '9999-00-00' not in material.getModificationDate %}
-                            {{material.getModificationDate|date("d.m.Y")}}
+                            {{material.getModificationDate|craue_date}}
                         {% else %}
-                            {{material.getCreationDate|date("d.m.Y")}}
+                            {{material.getCreationDate|craue_date}}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -48,7 +48,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(material.getCreator) }} ({{material.getCreationDate|date("d.m.Y")}})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(material.getCreator) }} ({{material.getCreationDate|craue_date}})
                 </div>
                
                 <div class="uk-comment-meta">
