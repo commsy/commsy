@@ -10,6 +10,7 @@ use App\Search\FilterConditions\CreationDateFilterCondition;
 use App\Search\FilterConditions\ModificationDateFilterCondition;
 use App\Search\FilterConditions\MultipleContextFilterCondition;
 use App\Search\FilterConditions\SingleCreatorFilterCondition;
+use App\Search\FilterConditions\MultipleHashtagFilterCondition;
 use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\FilterConditions\SingleContextFilterCondition;
 use App\Search\SearchManager;
@@ -196,8 +197,11 @@ class SearchController extends BaseController
         $countsByCreator = $searchManager->countsByKeyFromAggregation($aggregations['creators']);
         $searchData->addCreators($countsByCreator);
 
-        // if a rubric/creator is selected that isn't part of the results anymore, we keep displaying it in the respective
-        // search filter form field; this also avoids a form validation error ("this value is not valid")
+        $countsByHashtag = $searchManager->countsByKeyFromAggregation($aggregations['hashtags']);
+        $searchData->addHashtags($countsByHashtag);
+
+        // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
+        // respective search filter form field; this also avoids a form validation error ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
         if (!empty($selectedRubric) && $selectedRubric !== 'all' && !array_key_exists($selectedRubric, $countsByRubric)) {
             $searchData->addRubrics([$selectedRubric => 0]);
@@ -206,6 +210,13 @@ class SearchController extends BaseController
         $selectedCreator = $searchData->getSelectedCreator();
         if (!empty($selectedCreator) && $selectedCreator !== 'all' && !array_key_exists($selectedCreator, $countsByCreator)) {
             $searchData->addCreators([$selectedCreator => 0]);
+        }
+
+        $selectedHashtags = $searchData->getSelectedHashtags();
+        foreach ($selectedHashtags as $hashtag) {
+            if (!array_key_exists($hashtag, $countsByHashtag)) {
+                $searchData->addHashtags([$hashtag => 0]);
+            }
         }
 
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
@@ -264,6 +275,9 @@ class SearchController extends BaseController
         $countsByCreator = $searchManager->countsByKeyFromAggregation($aggregations['creators']);
         $searchData->addCreators($countsByCreator);
 
+        $countsByHashtag = $searchManager->countsByKeyFromAggregation($aggregations['hashtags']);
+        $searchData->addHashtags($countsByHashtag);
+
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
@@ -319,6 +333,9 @@ class SearchController extends BaseController
 
         // creator parameter
         $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? "all");
+
+        // hashtags parameter
+        $searchData->setSelectedHashtags($searchParams['selectedHashtags'] ?? []);
 
         // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
@@ -446,6 +463,13 @@ class SearchController extends BaseController
             $singleCreatorFilterCondition = new SingleCreatorFilterCondition();
             $singleCreatorFilterCondition->setCreator($searchData->getSelectedCreator());
             $searchManager->addFilterCondition($singleCreatorFilterCondition);
+        }
+
+        // hashtags parameter
+        if ($searchData->getSelectedHashtags()) {
+            $multipleHashtagFilterCondition = new MultipleHashtagFilterCondition();
+            $multipleHashtagFilterCondition->setHashtags($searchData->getSelectedHashtags());
+            $searchManager->addFilterCondition($multipleHashtagFilterCondition);
         }
 
         // creation date range parameter

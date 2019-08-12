@@ -44,6 +44,16 @@ class SearchData
     private $selectedCreator;
 
     /**
+     * @var array|null associative array of hashtags (key: hashtag name, value: count)
+     */
+    private $hashtags;
+
+    /**
+     * @var string[]|null $selectedHashtags
+     */
+    private $selectedHashtags;
+
+    /**
      * @var \DateTime|null $creationDateFrom
      */
     private $creationDateFrom;
@@ -252,6 +262,54 @@ class SearchData
     public function setSelectedCreator(string $selectedCreator): SearchData
     {
         $this->selectedCreator = $selectedCreator;
+        return $this;
+    }
+
+    /**
+     * @return array|null associative array of hashtags (key: hashtag name, value: count)
+     */
+    public function getHashtags(): ?array
+    {
+        return $this->hashtags;
+    }
+
+    /**
+     * @param array $hashtags associative array of hashtags (key: hashtag name, value: count)
+     * @return SearchData
+     */
+    public function setHashtags(array $hashtags): SearchData
+    {
+        $this->hashtags = $hashtags;
+        return $this;
+    }
+
+    /**
+     * @param array $hashtags associative array of hashtags (key: hashtag name, value: count)
+     * @return SearchData
+     */
+    public function addHashtags(array $hashtags): SearchData
+    {
+        foreach ($hashtags as $name => $count) {
+            $this->hashtags[$name] = $count;
+        }
+        return $this;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getSelectedHashtags(): ?array
+    {
+        return $this->selectedHashtags;
+    }
+
+    /**
+     * @param string[] $selectedHashtags
+     * @return SearchData
+     */
+    public function setSelectedHashtags(array $selectedHashtags): SearchData
+    {
+        $this->selectedHashtags = $selectedHashtags;
         return $this;
     }
 
