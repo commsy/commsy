@@ -79,7 +79,7 @@ class BiblioThesisType extends AbstractType
         ;
 
         if($language == 'en'){
-            $format = '{format:\'DD/MM/YYYY\'}';
+            $format = '{format:\'MM/DD/YYYY\'}';
         } else{
             $format = '{format:\'DD.MM.YYYY\'}';
         }

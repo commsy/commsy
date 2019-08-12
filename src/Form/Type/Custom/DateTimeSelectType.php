@@ -25,15 +25,15 @@ class DateTimeSelectType extends AbstractType
                 'input'  => 'datetime',
                 'label' => false,
                 'widget' => 'single_text',
-                'format' => 'dd/MM/yyyy',
+                'format' => 'MM/DD/yyyy',
                 'required' => false,
                 'attr' => array(
-                    'data-uk-datepicker' => '{format:\'DD/MM/YYYY\'}',
+                    'data-uk-datepicker' => '{format:\'MM/DD/YYYY\'}',
                 )
             ));
-        }else{
+        }else {
             $builder->add('date', DateTimeType::class, array(
-                'input'  => 'datetime',
+                'input' => 'datetime',
                 'label' => false,
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
@@ -42,19 +42,19 @@ class DateTimeSelectType extends AbstractType
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 )
             ));
-
-            $builder->add('time', DateTimeType::class, array(
-                'input'  => 'datetime',
-                'label' => false,
-                'widget' => 'single_text',
-                'format' => 'HH:mm',
-                'required' => false,
-                'attr' => array(
-                    'data-uk-timepicker' => '',
-                    'style' => 'margin-left: 5px;',
-                )
-            ));
         }
+
+        $builder->add('time', DateTimeType::class, array(
+            'input'  => 'datetime',
+            'label' => false,
+            'widget' => 'single_text',
+            'format' => 'HH:mm',
+            'required' => false,
+            'attr' => array(
+                'data-uk-timepicker' => '',
+                'style' => 'margin-left: 5px;',
+            )
+        ));
     }
 
     /**

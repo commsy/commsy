@@ -68,7 +68,7 @@ class PrintService
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
 
         if($this->legacyEnvironment->getSelectedLanguage() == 'en'){
-            $dateFormat = 'd/m/y';
+            $dateFormat = 'm/d/y';
         }else{
             $dateFormat = 'd.m.y';
         }
