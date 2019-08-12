@@ -55,7 +55,7 @@
                                     {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                         {{ 'today'|trans({})|capitalize }}, {{date.getModificationDate|date("H:i")}}
                                     {% else %}
-                                        {{date.getModificationDate|date("d.m.Y")}}
+                                        {{date.getModificationDate|craue_date}}
                                     {% endif %}
                                 </div>
                             </div>
