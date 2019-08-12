@@ -30,15 +30,11 @@ export class Portfolio {
     }
 
     private onSourceTabsChanged($actor: JQuery) {
-        // console.log('source tabs changed');
-
         this.resetPortfolioView(true);
         this.loadPortfolioTabs(this.getCurrentSourceId());
     }
 
     private onPortfolioTabsChanged($actor: JQuery) {
-        // console.log('portfolio tabs changed');
-
         this.resetPortfolioView(false);
         this.loadPortfolio(this.getActivePortfolioId());
     }
@@ -49,10 +45,8 @@ export class Portfolio {
         $.ajax({
             url: $('#portfolio-wrapper').data('portfolio-tabs-url') + '/' + sourceId,
         }).done(function(result) {
-            // console.log(result);
 
             $('#portfolio-tabs').html(result);
-            // UIkit.notify('loaded portfolio tabs', 'success');
 
             // Register on change listener for portfolio tabs
             $('#portfolioTabs').on('change.uk.tab', (event) => {
@@ -90,12 +84,19 @@ export class Portfolio {
     }
 
     private loadPortfolio(portfolioId: number) {
-        // console.log('loading portfolio content with id ' + portfolioId);
-
         $.ajax({
             url: $('#portfolio-wrapper').data('portfolio-url')+'/'+portfolioId,
         }).done(function(result) {
             $('#portfolio-table').html(result);
+
+            let stopActivationLink: JQuery = $('a#portfolio-stop-activation');
+            stopActivationLink.on('click', function() {
+                $.ajax({
+                    url: stopActivationLink.data('portfolio-stop-activation-url'),
+                }).done(function (result) {
+
+                });
+            });
 
             //UIkit.notify('loaded portfolio', 'success');
         }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -103,17 +104,3 @@ export class Portfolio {
         });
     }
 }
-
-
-//     (function($) {
-//         var origAppend = $.fn.append;
-//         $.fn.append = function () {
-//             return origAppend.apply(this, arguments).trigger("append");
-//         };
-//     })(jQuery);
-//
-//     $("#portfolio-tabs").bind("append", function() {
-//         $('#portfolio-tabs div.uk-dropdown').each(function () {
-//             $(this).addClass('uk-dropdown-scrollable');
-//         });
-//     });

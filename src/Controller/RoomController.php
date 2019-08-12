@@ -9,6 +9,7 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Services\LegacyMarkup;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -29,7 +30,7 @@ class RoomController extends Controller
      * })
      * @Template()
      */
-    public function homeAction($roomId, Request $request)
+    public function homeAction($roomId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -162,9 +163,8 @@ class RoomController extends Controller
                 $roomItem->setwithInformationBox(false);
                 $homeInformationEntry = null;
             } else {
-                $markupService = $this->get('commsy_legacy.markup');
                 $itemService = $this->get('commsy_legacy.item_service');
-                $markupService->addFiles($itemService->getItemFileList($homeInformationEntry->getItemId()));
+                $legacyMarkup->addFiles($itemService->getItemFileList($homeInformationEntry->getItemId()));
             }
         }
 
@@ -517,7 +517,7 @@ class RoomController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $userService = $this->get('commsy_legacy.user_service');
@@ -545,9 +545,8 @@ class RoomController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return [
             'roomId' => $roomId,

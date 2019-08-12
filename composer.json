@@ -102,7 +102,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.2.*"
+            "require": "4.3.*"
         },
         "ckeditor-tag": "4.11.4",
         "ckeditor-clear": "drop"

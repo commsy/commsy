@@ -39,13 +39,6 @@ class ProfileAdditionalType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('portfolioStatus', CheckboxType::class, [
-                'label'    => 'portfolioStatus',
-                'required' => false,
-                'label_attr' => [
-                    'class' => 'uk-form-label',
-                ],
-            ])
             ->add('language', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices'  => array(
@@ -74,13 +67,6 @@ class ProfileAdditionalType extends AbstractType
             }
 
         $builder
-//            ->add('autoSaveStatus', CheckboxType::class, array(
-//                'label'    => 'autoSaveStatus',
-//                'required' => false,
-//                'label_attr' => array(
-//                    'class' => 'uk-form-label',
-//                ),
-//            ))
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',

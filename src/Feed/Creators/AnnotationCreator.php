@@ -30,7 +30,7 @@ class AnnotationCreator extends Creator
     {
         $linkedItem = $item->getLinkedItem();
 
-        $routeName = 'commsy_' . $linkedItem->getType() . '_detail';
+        $routeName = 'app_' . $linkedItem->getType() . '_detail';
         return $this->router->generate($routeName, [
             'roomId' => $linkedItem->getContextId(),
             'itemId' => $linkedItem->getItemId(),

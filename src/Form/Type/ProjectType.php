@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Validator\Constraints\Count;
 
 class ProjectType extends AbstractType
 {
@@ -80,8 +81,28 @@ class ProjectType extends AbstractType
                 ],
                 'required' => false,
                 'translation_domain' => 'room',
-            ])
-            ->add('save', SubmitType::class, [
+            ]);
+
+            $constraints = [];
+            if (isset($options['linkRoomCategoriesMandatory']) && $options['linkRoomCategoriesMandatory']) {
+                $constraints[] = new Count(array('min' => 1, 'minMessage' => "Please select at least one category"));
+            }
+
+            $roomCategories = $options['roomCategories'];
+            if (isset($roomCategories) && !empty($roomCategories) && isset($options['linkRoomCategoriesMandatory'])) {
+                $builder->add('categories', ChoiceType::class, array(
+                    'placeholder' => false,
+                    'choices' => $roomCategories,
+                    'label' => 'Room categories',
+                    'required' => $options['linkRoomCategoriesMandatory'],
+                    'expanded' => true,
+                    'multiple' => true,
+                    'translation_domain' => 'portal',
+                    'constraints' => $constraints,
+                ));
+            }
+
+            $builder->add('save', SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button-primary',
                 ],
@@ -112,9 +133,10 @@ class ProjectType extends AbstractType
                 'preferredChoices',
                 'timesDisplay',
                 'times',
+                'linkRoomCategoriesMandatory',
+                'roomCategories',
             ])
             ->setDefaults([
-                'data_class' => Room::class,
                 'translation_domain' => 'project',
             ]);
     }
