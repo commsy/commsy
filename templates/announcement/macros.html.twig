@@ -55,12 +55,12 @@
                                             </div>
                                             <div class="uk-margin-right">
                                                 {% if '9999-00-00' not in item.getModificationDate %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|craue_date}} {{item.modificationDate|date("H:i")}}<br/>
                                                 {% else %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}<br/>
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.creationDate|craue_date}} {{item.creationDate|date("H:i")}}<br/>
                                                 {% endif %}
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
-                                                {{ 'valid until'|trans({}) }}: {{item.secondDateTime|date("d.m.Y H:i")}}
+                                                {{ 'valid until'|trans({}) }}: {{item.secondDateTime|craue_date}} {{item.secondDateTime|date("H:i")}}
                                             </div>
                                         </div>
                                     </div>
@@ -80,9 +80,9 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|craue_date}} {{item.modificationDate|date("H:i")}}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
-                                                {{ 'valid until'|trans({}) }}: {{item.secondDateTime|date("d.m.Y H:i")}}<br/>
+                                                {{ 'valid until'|trans({}) }}: {{item.secondDateTime|craue_date}} {{item.secondDateTime|date("H:i")}}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
                                         </div>
@@ -214,7 +214,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|craue_date}} {{item.modificationDate|date("H:i")}}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
@@ -235,7 +235,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|craue_date}} {{item.modificationDate|date("H:i")}}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>

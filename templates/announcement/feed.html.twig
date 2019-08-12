@@ -29,9 +29,9 @@
                         {{ 'today'|trans({})|capitalize }}, {{announcement.getModificationDate|date("H:i")}}
                     {% else %}
                         {% if '9999-00-00' not in announcement.getModificationDate %}
-                            {{announcement.getModificationDate|date("d.m.Y")}}
+                            {{announcement.getModificationDate|craue_date}}
                         {% else %}
-                            {{announcement.getCreationDate|date("d.m.Y")}}
+                            {{announcement.getCreationDate|craue_date}}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -53,7 +53,7 @@
                             <span class="uk-text-bold">
                         {% endif %}
                         
-                        {{ 'valid until'|trans({})}}: {{announcement.getSecondDateTime|date("d.m.Y")}}
+                        {{ 'valid until'|trans({})}}: {{announcement.getSecondDateTime|craue_date}}
                         
                         {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
                             </span>

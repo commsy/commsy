@@ -32,10 +32,16 @@ class DateTransformer implements DataTransformerInterface
             $datetimeStart = new \DateTime($dateItem->getDateTime_start());
             $dateData['start']['date'] = $datetimeStart;
             $dateData['start']['time'] = $datetimeStart;
+
+            $dateData['start_eng']['date'] = $datetimeStart;
+            $dateData['start_eng']['time'] = $datetimeStart;
             
             $datetimeEnd = new \DateTime($dateItem->getDateTime_end());
             $dateData['end']['date'] = $datetimeEnd;
             $dateData['end']['time'] = $datetimeEnd;
+
+            $dateData['end_eng']['date'] = $datetimeEnd;
+            $dateData['end_eng']['time'] = $datetimeEnd;
 
             $dateData['whole_day'] = $dateItem->isWholeDay();
 
@@ -54,6 +60,9 @@ class DateTransformer implements DataTransformerInterface
                     $datetime = new \DateTime($activating_date);
                     $dateData['hiddendate']['date'] = $datetime;
                     $dateData['hiddendate']['time'] = $datetime;
+
+                    $dateData['hiddendate_eng']['date'] = $datetime;
+                    $dateData['hiddendate_eng']['time'] = $datetime;
                 }
             }
 
@@ -91,21 +100,42 @@ class DateTransformer implements DataTransformerInterface
 
         $dateObject->setWholeDay($dateData['whole_day']);
         if ($dateObject->isWholeDay()) {
-            $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
-            $dateObject->setStartingTime($dateData['start']['time']->format('00:00'));
-            $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('00:00:00'));
+            if(!empty($dateData['start']['date'])){
+                $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
+                $dateObject->setStartingTime($dateData['start']['time']->format('00:00'));
+                $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('00:00:00'));
 
-            $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
-            $dateObject->setEndingTime($dateData['end']['time']->format('23:59'));
-            $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('23:59:59'));
+                $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
+                $dateObject->setEndingTime($dateData['end']['time']->format('23:59'));
+                $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('23:59:59'));
+            }else{
+                $dateObject->setStartingDay($dateData['start_eng']['date']->format('Y-m-d'));
+                $dateObject->setStartingTime($dateData['start_eng']['time']->format('00:00'));
+                $dateObject->setDatetime_start($dateData['start_eng']['date']->format('Y-m-d') . ' ' . $dateData['start_eng']['time']->format('00:00:00'));
+
+                $dateObject->setEndingDay($dateData['end_eng']['date']->format('Y-m-d'));
+                $dateObject->setEndingTime($dateData['end_eng']['time']->format('23:59'));
+                $dateObject->setDatetime_end($dateData['end_eng']['date']->format('Y-m-d') . ' ' . $dateData['end_eng']['time']->format('23:59:59'));
+            }
         } else {
-            $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
-            $dateObject->setStartingTime($dateData['start']['time']->format('H:i'));
-            $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('H:i:s'));
+            if(!empty($dateData['start']['date'])){
 
-            $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
-            $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
-            $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('H:i:s'));
+                $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
+                $dateObject->setStartingTime($dateData['start']['time']->format('H:i'));
+                $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('H:i:s'));
+
+                $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
+                $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
+                $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('H:i:s'));
+            }else{
+                $dateObject->setStartingDay($dateData['start_eng']['date']->format('Y-m-d'));
+                $dateObject->setStartingTime($dateData['start_eng']['time']->format('H:i'));
+                $dateObject->setDatetime_start($dateData['start_eng']['date']->format('Y-m-d') . ' ' . $dateData['start_eng']['time']->format('H:i:s'));
+
+                $dateObject->setEndingDay($dateData['end_eng']['date']->format('Y-m-d'));
+                $dateObject->setEndingTime($dateData['end_eng']['time']->format('H:i'));
+                $dateObject->setDatetime_end($dateData['end_eng']['date']->format('Y-m-d') . ' ' . $dateData['end_eng']['time']->format('H:i:s'));
+            }
         }
 
         $dateObject->setCalendarId($dateData['calendar']);
@@ -117,6 +147,17 @@ class DateTransformer implements DataTransformerInterface
                     $datetime = $dateData['hiddendate']['date'];
                     if ($dateData['hiddendate']['time']) {
                         $time = explode(":", $dateData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $dateObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $dateObject->setModificationDate('9999-00-00 00:00:00');
+                }
+                if ($dateData['hiddendate_eng']['date']) {
+                    // add validdate to validdate
+                    $datetime = $dateData['hiddendate_eng']['date'];
+                    if ($dateData['hiddendate_eng']['time']) {
+                        $time = explode(":", $dateData['hiddendate_eng']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $dateObject->setModificationDate($datetime->format('Y-m-d H:i:s'));

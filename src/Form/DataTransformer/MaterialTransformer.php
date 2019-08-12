@@ -29,6 +29,7 @@ class MaterialTransformer implements DataTransformerInterface
             $materialData['draft'] = $materialItem->isDraft();
             $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();
+            $formData['language'] = $this->legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
 
             if (get_class($materialItem) != 'cs_section_item') {
 

@@ -37,6 +37,9 @@ class TopicTransformer implements DataTransformerInterface
                     $datetime = new \DateTime($activating_date);
                     $topicData['hiddendate']['date'] = $datetime;
                     $topicData['hiddendate']['time'] = $datetime;
+
+                    $topicData['hiddendate_eng']['date'] = $datetime;
+                    $topicData['hiddendate_eng']['time'] = $datetime;
                 }
             }
         }
@@ -70,6 +73,17 @@ class TopicTransformer implements DataTransformerInterface
                     $datetime = $topicData['hiddendate']['date'];
                     if ($topicData['hiddendate']['time']) {
                         $time = explode(":", $topicData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $topicObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $topicObject->setModificationDate('9999-00-00 00:00:00');
+                }
+                if ($topicData['hiddendate_eng']['date']) {
+                    // add validdate to validdate
+                    $datetime = $topicData['hiddendate_eng']['date'];
+                    if ($topicData['hiddendate_eng']['time']) {
+                        $time = explode(":", $topicData['hiddendate_eng']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $topicObject->setModificationDate($datetime->format('Y-m-d H:i:s'));

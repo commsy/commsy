@@ -4,19 +4,6 @@ namespace App\Form\Type\Event;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use App\Form\Type\Bibliographic\BiblioArticleType;
-use App\Form\Type\Bibliographic\BiblioBookType;
-use App\Form\Type\Bibliographic\BiblioChapterType;
-use App\Form\Type\Bibliographic\BiblioCollectionType;
-use App\Form\Type\Bibliographic\BiblioDocManagementType;
-use App\Form\Type\Bibliographic\BiblioJournalType;
-use App\Form\Type\Bibliographic\BiblioManuscriptType;
-use App\Form\Type\Bibliographic\BiblioNewspaperType;
-use App\Form\Type\Bibliographic\BiblioPictureType;
-use App\Form\Type\Bibliographic\BiblioPlainType;
-use App\Form\Type\Bibliographic\BiblioThesisType;
-use App\Form\Type\Bibliographic\BiblioWebsiteType;
-use App\Form\Type\Bibliographic\BiblioNoneType;
 
 
 /**

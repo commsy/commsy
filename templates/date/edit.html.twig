@@ -15,11 +15,19 @@
             <div class="uk-margin-small-left uk-margin-small-top">
                 <div class="uk-form-row">
                     {{ form_label(form.start) }}
-                    {{ form_widget(form.start) }}
+                    {% if language == 'en' %}
+                        {{ form_widget(form.start_eng) }}
+                    {% else %}
+                        {{ form_widget(form.start) }}
+                    {% endif %}
                 </div>
                 <div class="uk-form-row">
                     {{ form_label(form.end) }}
-                    {{ form_widget(form.end) }}
+                    {% if language == 'en' %}
+                        {{ form_widget(form.end_eng) }}
+                    {% else %}
+                        {{ form_widget(form.end) }}
+                    {% endif %}
                 </div>
                 <div class="uk-form-row">
                     {{ form_label(form.whole_day) }}
@@ -144,7 +152,11 @@
                 <div class="uk-form-row">
                     <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
                     <div class="uk-margin-small-top">
-                        {{ form_widget(form.hiddendate) }}
+                        {% if language == 'en' %}
+                            {{ form_widget(form.hiddendate_eng) }}
+                        {% else %}
+                            {{ form_widget(form.hiddendate) }}
+                        {% endif %}
                     </div>
                 </div>
                 {% endif %}

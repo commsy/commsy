@@ -56,7 +56,7 @@
                                         {% if announcement.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                             {{ 'today'|trans({})|capitalize }}, {{announcement.getModificationDate|date("H:i")}}
                                         {% else %}
-                                            {{announcement.getModificationDate|date("d.m.Y")}}
+                                            {{announcement.getModificationDate|craue_date}}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
 
                                     <div class="uk-comment-meta">
 
-                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(announcement.modificatorItem) }} ({{announcement.getCreationDate|date("d.m.Y")}})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(announcement.modificatorItem) }} ({{announcement.getCreationDate|craue_date}})
 
                                     </div>
 

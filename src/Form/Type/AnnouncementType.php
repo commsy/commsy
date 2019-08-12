@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 use App\Form\Type\Custom\DateTimeSelectType;
+use App\Form\Type\Custom\DateTimeSelectEngType;
 use App\Form\Type\Custom\MandatoryCategoryMappingType;
 use App\Form\Type\Custom\MandatoryHashtagMappingType;
 
@@ -45,6 +46,11 @@ class AnnouncementType extends AbstractType
                 'label' => 'valid until',
                 'translation_domain' => 'announcement'
             ))
+            // add custom datetime picker english
+            ->add('validdate_eng', DateTimeSelectEngType::class, array(
+                'label' => 'valid until',
+                'translation_domain' => 'announcement',
+            ))
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,
@@ -54,6 +60,9 @@ class AnnouncementType extends AbstractType
                 'required' => false,
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
+                'label' => 'hidden until',
+            ))
+            ->add('hiddendate_eng', DateTimeSelectEngType::class, array(
                 'label' => 'hidden until',
             ))
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
