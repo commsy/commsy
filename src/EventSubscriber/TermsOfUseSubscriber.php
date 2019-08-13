@@ -46,7 +46,7 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
                 // Redirect to tou site
                 if ($event->getRequest()->attributes->get('_route') !== 'app_tou_accept' &&
                     $event->getRequest()->attributes->get('_route') !== 'app_profile_deleteaccount' &&
-                    $event->getRequest()->attributes->get('_route') !== 'app_logout') {
+                    $event->getRequest()->attributes->get('_route') !== 'app_logout_logout') {
                     $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_tou_accept', [
                         'roomId' => $portal->getItemID(),
                         'redirect' => $event->getRequest()->getRequestUri(),
@@ -67,7 +67,7 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
                     // Redirect to tou site
                     if ($event->getRequest()->attributes->get('_route') !== 'app_tou_accept' &&
                         $event->getRequest()->attributes->get('_route') !== 'app_profile_deleteroomprofile' &&
-                        $event->getRequest()->attributes->get('_route') !== 'app_logout') {
+                        $event->getRequest()->attributes->get('_route') !== 'app_logout_logout') {
                         $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_tou_accept', [
                             'roomId' => $currentContext->getItemID(),
                             'redirect' => $event->getRequest()->getRequestUri(),
