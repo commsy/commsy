@@ -34,6 +34,11 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Return early if this is not a GET request are it is an XHR request
+        if ($event->getRequest()->getMethod() !== 'GET' || $event->getRequest()->isXmlHttpRequest()) {
+            return;
+        }
+
         // First check for potal tou
         $portal = $this->legacyEnvironment->getCurrentPortalItem(); // Will return null on server
         if ($portal && $portal->withAGB()) {
