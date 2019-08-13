@@ -262,7 +262,6 @@ div.gauge {
     height:5px;
     margin: 3px 10px 3px 0px;
     border: 1px solid #666; font-size:5px;
-    background-color: <?php echo($color['myarea_headline_title'])?>;
 }
 
 div.gauge-bar {
@@ -467,12 +466,6 @@ a.titlelink{
    color:white;
 }
 
-
-
-
-<?php
-// Password Security Check Javascript
-?>
 #iSM
 {margin:0 0 15px 0;padding:0;height:14px;}
 #iSM ul
@@ -512,7 +505,9 @@ div.strong #iStrong, div.medium #iMedium, div.weak #iWeak {
    color:#000;
 }
 
-.small_font {8pt;}
+.small_font {
+    font-size: 8pt;
+}
 
 /**************************************
 **** commsy_right_boxes_css ***********
