@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="portal_general">
+                <source>Portal</source>
+                <target>Portal</target>
+            </trans-unit>
             <trans-unit id="Edit room categories">
                 <source>Edit room categories</source>
                 <target>Raumkategorien bearbeiten</target>

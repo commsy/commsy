@@ -125,8 +125,8 @@ class cs_home_member2_page extends cs_left_page {
               $success = true;
 
               $portal_item = $this->_environment->getCurrentPortalItem();
-              if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
-              	if($this->_post_vars['terms_of_use']){
+              if ($this->_environment->getCurrentContextItem()->withAGB()){
+              	if ($this->_post_vars['terms_of_use']){
               		$portal_user->setAGBAcceptance();
               	}
               }
