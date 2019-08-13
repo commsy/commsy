@@ -74,7 +74,7 @@ class cs_home_member2_form extends cs_rubric_form {
       $this->_form->addHidden('language','');
       
       // Datenschutz
-      if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+      if ($this->_environment->getCurrentContextItem()->withAGB()) {
       	$link = ahref_curl($this->_environment->getCurrentContextID(), 'agb', 'index', '', $this->_translator->getMessage('CONFIGURATION_AGB_FORM_HEADLINE'),'','_new');
       	$this->_form->addCheckbox('terms_of_use', '1', false, '', $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT').$link);
       }
@@ -100,7 +100,7 @@ class cs_home_member2_form extends cs_rubric_form {
     */
    function _checkValues () {
    	
-   	if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+   	if ($this->_environment->getCurrentContextItem()->withAGB()) {
    		if (!isset($this->_form_post['terms_of_use'])){
    			$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT_ERROR');
    			$this->_form->setFailure('terms_of_use','');
