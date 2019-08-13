@@ -1,6 +1,9 @@
 language: php
 sudo: required
 
+# TODO: Stay on trusty for now as mariadb is unable to install on xenial right now
+dist: trusty
+
 matrix:
   # Fast finish allows to set the build as "finished" even if the "allow_failures" matrix elements are not finished yet.
   fast_finish: true
