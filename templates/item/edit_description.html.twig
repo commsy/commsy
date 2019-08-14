@@ -34,19 +34,16 @@
             </div>
         </div>
     {% endif %}
-    <div class="uk-flex uk-margin-small-top">
+    <div class="uk-flex">
         {% if not withRecurrence %}
-        <div class="uk-margin-small-left">
-            {{ form_row(form.save) }}
-        </div>
+            <div>{{ form_row(form.save) }}</div>
         {% else %}
-        <div class="uk-margin-small-left">
-            {{ form_row(form.saveThisDate) }}
-        </div>
-        <div class="uk-margin-small-left">
-            {{ form_row(form.saveAllDates) }}
-        </div>
+            <div>{{ form_row(form.saveThisDate) }}</div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.saveAllDates) }}
+            </div>
         {% endif %}
+
         <div class="uk-margin-small-left">
             {{ form_row(form.cancel) }}
         </div>
