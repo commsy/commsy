@@ -4,7 +4,7 @@
 namespace App\Search\FilterConditions;
 
 
-use Elastica\Query\Terms;
+use Elastica\Query\Term;
 
 class MultipleHashtagFilterCondition implements FilterConditionInterface
 {
@@ -24,14 +24,18 @@ class MultipleHashtagFilterCondition implements FilterConditionInterface
     }
 
     /**
-     * @return Terms[]
+     * @return Term[]
      */
     public function getConditions(): array
     {
-        $hashtagTerm = new Terms();
-        $hashtagTerm->setTerms('hashtags', $this->hashtags);
+        $terms = [];
+        foreach ($this->hashtags as $hashtag) {
+            $hashtagTerm = new Term();
+            $hashtagTerm->setTerm('hashtags', $hashtag);
+            $terms[] = $hashtagTerm;
+        }
 
-        return [$hashtagTerm];
+        return $terms;
     }
 
     /**
