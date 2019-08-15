@@ -972,6 +972,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 
             if ($environment->getCurrentModule() !== 'configuration'
                 && $environment->getCurrentModule() !== 'account'
+                && $environment->getCurrentModule() !== 'mail'
                 && file_exists($externalStylesFilename)) {
                 include_once($externalStylesFilename);
                 $params = array();
