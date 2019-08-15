@@ -2,6 +2,7 @@
 namespace App\Filter;
 
 use App\Form\Type\Custom\Select2ChoiceType;
+use App\Form\Type\Custom\CheckboxFilterWithSeparatorType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
 use Symfony\Component\Form\AbstractType;
@@ -44,7 +45,7 @@ class SearchFilterType extends AbstractType
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])
-            ->add('all_rooms', Filters\CheckboxFilterType::class, [
+            ->add('all_rooms', CheckboxFilterWithSeparatorType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
