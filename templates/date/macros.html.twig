@@ -70,7 +70,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|dcraue_date}} {{item.modificationDate|date("H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|craue_date}} {{item.modificationDate|date("H:i")}}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
