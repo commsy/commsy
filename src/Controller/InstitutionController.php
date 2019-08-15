@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Download\DownloadAction;
 use App\Services\PrintService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -472,13 +473,18 @@ class InstitutionController extends BaseController
                 // ToDo ...
             }
             return $this->redirectToRoute('app_institution_save', array('roomId' => $roomId, 'itemId' => $itemId));
+        }elseif(!$form->isValid()){
+            $errors = $form->getErrors(true);
+            foreach($errors as $error){
+                $form->addError(new FormError($error->getMessage()));
+            }
         }
 
         return array(
             'form' => $form->createView(),
             'institution' => $institutionItem,
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
