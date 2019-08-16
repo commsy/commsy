@@ -10,6 +10,7 @@ use App\Search\FilterConditions\CreationDateFilterCondition;
 use App\Search\FilterConditions\ModificationDateFilterCondition;
 use App\Search\FilterConditions\MultipleContextFilterCondition;
 use App\Search\FilterConditions\SingleCreatorFilterCondition;
+use App\Search\FilterConditions\MultipleCategoryFilterCondition;
 use App\Search\FilterConditions\MultipleHashtagFilterCondition;
 use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\FilterConditions\SingleContextFilterCondition;
@@ -200,6 +201,9 @@ class SearchController extends BaseController
         $countsByHashtag = $searchManager->countsByKeyFromAggregation($aggregations['hashtags']);
         $searchData->addHashtags($countsByHashtag);
 
+        $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
+        $searchData->addCategories($countsByCategory);
+
         // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
         // respective search filter form field; this also avoids a form validation error ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
@@ -216,6 +220,13 @@ class SearchController extends BaseController
         foreach ($selectedHashtags as $hashtag) {
             if (!array_key_exists($hashtag, $countsByHashtag)) {
                 $searchData->addHashtags([$hashtag => 0]);
+            }
+        }
+
+        $selectedCategories = $searchData->getSelectedCategories();
+        foreach ($selectedCategories as $category) {
+            if (!array_key_exists($category, $countsByCategory)) {
+                $searchData->addCategories([$category => 0]);
             }
         }
 
@@ -278,6 +289,9 @@ class SearchController extends BaseController
         $countsByHashtag = $searchManager->countsByKeyFromAggregation($aggregations['hashtags']);
         $searchData->addHashtags($countsByHashtag);
 
+        $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
+        $searchData->addCategories($countsByCategory);
+
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
@@ -336,6 +350,9 @@ class SearchController extends BaseController
 
         // hashtags parameter
         $searchData->setSelectedHashtags($searchParams['selectedHashtags'] ?? []);
+
+        // categories parameter
+        $searchData->setSelectedCategories($searchParams['selectedCategories'] ?? []);
 
         // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
@@ -470,6 +487,13 @@ class SearchController extends BaseController
             $multipleHashtagFilterCondition = new MultipleHashtagFilterCondition();
             $multipleHashtagFilterCondition->setHashtags($searchData->getSelectedHashtags());
             $searchManager->addFilterCondition($multipleHashtagFilterCondition);
+        }
+
+        // categories parameter
+        if ($searchData->getSelectedCategories()) {
+            $multipleCategoryFilterCondition = new MultipleCategoryFilterCondition();
+            $multipleCategoryFilterCondition->setCategories($searchData->getSelectedCategories());
+            $searchManager->addFilterCondition($multipleCategoryFilterCondition);
         }
 
         // creation date range parameter

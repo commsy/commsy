@@ -54,6 +54,16 @@ class SearchData
     private $selectedHashtags;
 
     /**
+     * @var array|null associative array of categories (key: category name, value: count)
+     */
+    private $categories;
+
+    /**
+     * @var string[]|null $selectedCategories
+     */
+    private $selectedCategories;
+
+    /**
      * @var \DateTime|null $creationDateFrom
      */
     private $creationDateFrom;
@@ -310,6 +320,54 @@ class SearchData
     public function setSelectedHashtags(array $selectedHashtags): SearchData
     {
         $this->selectedHashtags = $selectedHashtags;
+        return $this;
+    }
+
+    /**
+     * @return array|null associative array of categories (key: category name, value: count)
+     */
+    public function getCategories(): ?array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param array $categories associative array of categories (key: category name, value: count)
+     * @return SearchData
+     */
+    public function setCategories(array $categories): SearchData
+    {
+        $this->categories = $categories;
+        return $this;
+    }
+
+    /**
+     * @param array $categories associative array of categories (key: category name, value: count)
+     * @return SearchData
+     */
+    public function addCategories(array $categories): SearchData
+    {
+        foreach ($categories as $name => $count) {
+            $this->categories[$name] = $count;
+        }
+        return $this;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getSelectedCategories(): ?array
+    {
+        return $this->selectedCategories;
+    }
+
+    /**
+     * @param string[] $selectedCategories
+     * @return SearchData
+     */
+    public function setSelectedCategories(array $selectedCategories): SearchData
+    {
+        $this->selectedCategories = $selectedCategories;
         return $this;
     }
 
