@@ -18,7 +18,3 @@ framework:
 
     templating:
         engines: ['twig']
-
-    assets:
-        # this manifest is applied to every asset (including packages)
-        json_manifest_path: "%kernel.project_dir%/public/build/manifest.json"
