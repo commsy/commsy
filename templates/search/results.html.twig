@@ -40,7 +40,7 @@
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-text-large">
                             {{ 'Search for "%query%" (%totalHits% Hits)'| trans({
-                                '%query%': query,
+                                '%query%': searchData.phrase,
                                 '%totalHits%': totalHits
                             }, 'search') }}
                         </div>
@@ -76,7 +76,7 @@
                                                         'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                                                         'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                                                         'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                                                        'returnUrl': path('app_search_results', {'roomId': roomId, 'search_filter[query]=': query})
+                                                        'returnUrl': path('app_search_results', {'roomId': roomId, 'search_filter[phrase]=': searchData.phrase})
                                                     }|json_encode|e('html_attr') }}">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                                                     </a>
@@ -120,12 +120,22 @@
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}
+                    {# TODO: add all fields from SearchFilterType form to query dictionary #}
                     {% if totalHits != results|length %}
                         <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
                                 "target": "#search-feed",
                                 "query": {
-                                    "search": "{{ query }}"
+                                    "search[phrase]": "{{ searchData.phrase }}",
+                                    "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
+                                    "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
+                                    "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
+                                    "search[selectedCreator]": "{{ searchData.selectedCreator }}",
+                                    "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
+                                    "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
+                                    "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
+                                    "search[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
+                                    "search[selectedRubric]": "{{ searchData.selectedRubric }}"
                                 }
                         }'>
                             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>

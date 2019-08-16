@@ -42,6 +42,42 @@
                 <source>Search in all my rooms</source>
                 <target>Search in all my workspaces</target>
             </trans-unit>
+            <trans-unit id="search-filter-appearing-in">
+                <source>Appearing in</source>
+                <target>Appearing in</target>
+            </trans-unit>
+            <trans-unit id="search-filter-appearing-in-title">
+                <source>Title</source>
+                <target>Title</target>
+            </trans-unit>
+            <trans-unit id="search-filter-appearing-in-description">
+                <source>Description</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="search-filter-appearing-in-files">
+                <source>Files</source>
+                <target>Files</target>
+            </trans-unit>
+            <trans-unit id="search-filter-creator">
+                <source>Creator</source>
+                <target>Creator</target>
+            </trans-unit>
+            <trans-unit id="search-filter-created-range">
+                <source>Created from/until</source>
+                <target>Created from/until</target>
+            </trans-unit>
+            <trans-unit id="search-filter-last-modified-range">
+                <source>Last modified from/until</source>
+                <target>Last modified from/until</target>
+            </trans-unit>
+            <trans-unit id="search-filter-rubric">
+                <source>Rubric</source>
+                <target>Rubric</target>
+            </trans-unit>
+            <trans-unit id="search-filter-rubric-labels">
+                <source>Groups, Topics and Institutions</source>
+                <target>Groups, Topics &amp; Institutions</target>
+            </trans-unit>
             <trans-unit id="room-search">
                 <source>Room search</source>
                 <target>Workspace search</target>

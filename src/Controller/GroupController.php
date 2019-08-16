@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Action\Download\DownloadAction;
 use App\Http\JsonDataResponse;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
@@ -73,6 +74,7 @@ class GroupController extends BaseController
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
+            'showAssociations' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
@@ -247,7 +249,7 @@ class GroupController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -287,9 +289,8 @@ class GroupController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         $roomService = $this->get('commsy_legacy.room_service');
 
@@ -307,13 +308,17 @@ class GroupController extends BaseController
             'lastItemId' => $infoArray['lastItemId'],
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'showAssociations' => $infoArray['showAssociations'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'roomCategories' => $infoArray['roomCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'members' => $infoArray['members'],
             'user' => $infoArray['user'],
             'userIsMember' => $infoArray['userIsMember'],
@@ -357,6 +362,9 @@ class GroupController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'members' => $infoArray['members'],
             'user' => $infoArray['user'],
@@ -525,6 +533,9 @@ class GroupController extends BaseController
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
+        $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
+        $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
         $infoArray['roomCategories'] = $categories;
         $infoArray['members'] = $members;
         $infoArray['userIsMember'] = $membersList->inList($infoArray['user']);

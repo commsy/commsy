@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use DateTime;
 
@@ -345,7 +346,7 @@ class DateController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'date')")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $dateService = $this->get('commsy_legacy.date_service');
         $itemService = $this->get('commsy_legacy.item_service');
@@ -449,9 +450,8 @@ class DateController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,
@@ -466,6 +466,9 @@ class DateController extends BaseController
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'showAssociations' => $current_context->isAssociationShowExpanded(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
@@ -1543,7 +1546,10 @@ class DateController extends BaseController
             'readSinceModificationCount' => $read_since_modification_count,
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
+            'showAssociations' => $current_context->isAssociationShowExpanded(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
         ]);
 

@@ -8,7 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
-
+use App\Utils\RoomService;
+use App\Services\LegacyEnvironment;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileAddressType;
 use App\Form\Type\Profile\RoomProfileContactType;
@@ -699,7 +700,7 @@ class ProfileController extends AbstractController
     * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
     * @Template
     */
-    public function deleteRoomProfileAction($roomId, Request $request)
+    public function deleteRoomProfileAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
@@ -707,7 +708,7 @@ class ProfileController extends AbstractController
         $userService = $this->get('commsy_legacy.user_service');
         $currentUser = $userService->getCurrentUserItem();
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
         $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
@@ -732,7 +733,6 @@ class ProfileController extends AbstractController
                 $currentUser->delete();
 
                 // get room from RoomService
-                $roomService = $this->get('commsy_legacy.room_service');
                 $roomItem = $roomService->getRoomItem($roomId);
 
                 if (!$roomItem) {

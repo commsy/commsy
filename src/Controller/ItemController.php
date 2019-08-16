@@ -318,7 +318,7 @@ class ItemController extends AbstractController
         if (empty($optionsData['itemsLatest'])) {
             $optionsData['itemsLatest'] = [];
         }
-        
+
         // get all categories -> tree
         $optionsData['categories'] = $this->getCategories($roomId, $this->get('commsy_legacy.category_service'));
         $formData['categories'] = $this->getLinkedCategories($item);
@@ -328,6 +328,8 @@ class ItemController extends AbstractController
         $optionsData['hashtags'] = $this->getHashtags($roomId, $environment);
         $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $environment);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+
+
 
 
         $translator = $this->get('translator');
@@ -341,9 +343,9 @@ class ItemController extends AbstractController
             'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
-            'categoryConstraints' => $categoryConstraints,
+            'categoryConstraints' => array(),
             'hashtags' => $optionsData['hashtags'],
-            'hashtagConstraints' => $hashtagConstraints,
+            'hashtagConstraints' => array(),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);
@@ -531,13 +533,13 @@ class ItemController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $data = $form->getData();
 
-                $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
+                // $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
 
                 // update modifier
                 $item->setModificatorItem($environment->getCurrentUserItem());
 
                 // save links
-                $item->setLinkedItemsByIDArray($itemData);
+                //$item->setLinkedItemsByIDArray($itemData);
                 $item->setTagListByID($data['categories']);
                 $item->setBuzzwordListByID($data['hashtags']);
 

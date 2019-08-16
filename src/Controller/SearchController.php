@@ -2,6 +2,16 @@
 
 namespace App\Controller;
 
+use App\Search\QueryConditions\DescriptionQueryCondition;
+use App\Search\QueryConditions\MostFieldsQueryCondition;
+use App\Search\QueryConditions\RoomQueryCondition;
+use App\Search\QueryConditions\TitleQueryCondition;
+use App\Search\FilterConditions\CreationDateFilterCondition;
+use App\Search\FilterConditions\ModificationDateFilterCondition;
+use App\Search\FilterConditions\MultipleContextFilterCondition;
+use App\Search\FilterConditions\SingleCreatorFilterCondition;
+use App\Search\FilterConditions\RubricFilterCondition;
+use App\Search\FilterConditions\SingleContextFilterCondition;
 use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
@@ -14,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Form\Type\SearchType;
-use App\Model\GlobalSearch;
+use App\Model\SearchData;
 
 use App\Filter\SearchFilterType;
 
@@ -30,16 +40,17 @@ class SearchController extends BaseController
     /**
      * Generates the search form and search field for embedding them into
      * a template.
-     * Post data needs to be passed directly, since we can not handle data
+     * Request data needs to be passed directly, since we can not handle data
      * from the main request here.
      *
      * @Template
      */
-    public function searchFormAction($roomId, $postData)
+    public function searchFormAction($roomId, $requestData)
     {
-        $globalSearch = new GlobalSearch();
+        $searchData = new SearchData();
+        $searchData->setPhrase($requestData['phrase'] ?? null);
 
-        $form = $this->createForm(SearchType::class, $globalSearch, [
+        $form = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId
             ])
@@ -82,8 +93,18 @@ class SearchController extends BaseController
     public function itemSearchResultsAction($roomId, Request $request, SearchManager $searchManager)
     {
         $query = $request->get('search', '');
-        $searchManager->setQuery($query);
-        $searchManager->setContext($roomId);
+
+        // query conditions
+        if (!empty($query)) {
+            $mostFieldsQueryCondition = new MostFieldsQueryCondition();
+            $mostFieldsQueryCondition->setQuery($query);
+            $searchManager->addQueryCondition($mostFieldsQueryCondition);
+        }
+
+        // filter conditions
+        $singleFilterCondition = new SingleContextFilterCondition();
+        $singleFilterCondition->setContextId($roomId);
+        $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
         $results = $this->prepareResults($searchResults, $roomId, 0, true);
@@ -103,8 +124,17 @@ class SearchController extends BaseController
     {
         $query = $request->get('search', '');
 
-        $searchManager->setQuery($query);
-        $searchManager->setContext($roomId);
+        // query conditions
+        if (!empty($query)) {
+            $mostFieldsQueryCondition = new MostFieldsQueryCondition();
+            $mostFieldsQueryCondition->setQuery($query);
+            $searchManager->addQueryCondition($mostFieldsQueryCondition);
+        }
+
+        // filter conditions
+        $singleFilterCondition = new SingleContextFilterCondition();
+        $singleFilterCondition->setContextId($roomId);
+        $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getResults();
         $results = $this->prepareResults($searchResults, $roomId, 0, true);
@@ -124,41 +154,66 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/results")
      * @Template
      */
-    public function resultsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
-    {
+    public function resultsAction(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        RoomService $roomService,
+        SearchManager $searchManager,
+        MultipleContextFilterCondition $multipleContextFilterCondition
+    ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        $globalSearch = new GlobalSearch();
+        $searchData = new SearchData();
+        $searchData = $this->populateSearchData($searchData, $request);
 
-        $filterData = [
-            'all_rooms' => false,
-            'query' => '',
-        ];
-
-        $topForm = $this->createForm(SearchType::class, $globalSearch, [
+        // if the top form submits a POST request it will call setPhrase() on SearchData
+        $topForm = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId,
             ])
         ]);
         $topForm->handleRequest($request);
-        if ($topForm->isSubmitted() && $topForm->isValid()) {
-            $globalSearch = $topForm->getData();
-            $filterData['query'] = $globalSearch->getPhrase();
-        }
 
-        $filterForm = $this->createForm(SearchFilterType::class, $filterData, []);
-        $filterForm->handleRequest($request);
-        if ($filterForm->isSubmitted()) {
-            $filterData = $filterForm->getData();
-        }
+        /**
+         * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
+         * according to the current query parameters.
+         */
 
-        $searchManager = $this->getSearchManager($roomId, $filterData);
+        $this->setupSearchQueryConditions($searchManager, $searchData);
+        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
 
         $searchResults = $searchManager->getResults();
+        $aggregations = $searchResults->getAggregations();
+
+        $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
+        $searchData->addRubrics($countsByRubric);
+
+        $countsByCreator = $searchManager->countsByKeyFromAggregation($aggregations['creators']);
+        $searchData->addCreators($countsByCreator);
+
+        // if a rubric/creator is selected that isn't part of the results anymore, we keep displaying it in the respective
+        // search filter form field; this also avoids a form validation error ("this value is not valid")
+        $selectedRubric = $searchData->getSelectedRubric();
+        if (!empty($selectedRubric) && $selectedRubric !== 'all' && !array_key_exists($selectedRubric, $countsByRubric)) {
+            $searchData->addRubrics([$selectedRubric => 0]);
+        }
+
+        $selectedCreator = $searchData->getSelectedCreator();
+        if (!empty($selectedCreator) && $selectedCreator !== 'all' && !array_key_exists($selectedCreator, $countsByCreator)) {
+            $searchData->addCreators([$selectedCreator => 0]);
+        }
+
+        // if the filter form is submitted by a GET request we use the same data object here to populate the data
+        $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
+            'contextId' => $roomId,
+        ]);
+        $filterForm->handleRequest($request);
+
         $totalHits = $searchResults->getTotalHits();
         $results = $this->prepareResults($searchResults, $roomId);
 
@@ -167,7 +222,7 @@ class SearchController extends BaseController
             'roomId' => $roomId,
             'totalHits' => $totalHits,
             'results' => $results,
-            'query' => $filterData['query'],
+            'searchData' => $searchData,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getEnvironment()->getCurrentUserItem(),
         ];
@@ -179,20 +234,42 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/searchmore/{start}/{sort}")
      * @Template
      */
-    public function moreResultsAction($roomId, $start = 0, $sort = 'date', Request $request)
+    public function moreResultsAction($roomId,
+                                      $start = 0,
+                                      $sort = 'date',
+                                      Request $request,
+                                      SearchManager $searchManager,
+                                      MultipleContextFilterCondition $multipleContextFilterCondition)
     {
-        $filterData = [
-            'query' => $request->query->get('search', ''),
-        ];
-        $filterForm = $this->createForm(SearchFilterType::class, [], []);
-        $filterForm->handleRequest($request);
-        if ($filterForm->isSubmitted()) {
-            $filterData = $filterForm->getData();
-        }
+        // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
+        //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
-        $searchManager = $this->getSearchManager($roomId, $filterData);
+        $searchData = new SearchData();
+        $searchData = $this->populateSearchData($searchData, $request);
+
+        /**
+         * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
+         * according to the current query parameters.
+         */
+
+        $this->setupSearchQueryConditions($searchManager, $searchData);
+        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
 
         $searchResults = $searchManager->getResults();
+        $aggregations = $searchResults->getAggregations();
+
+        $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
+        $searchData->addRubrics($countsByRubric);
+
+        $countsByCreator = $searchManager->countsByKeyFromAggregation($aggregations['creators']);
+        $searchData->addCreators($countsByCreator);
+
+        // if the filter form is submitted by a GET request we use the same data object here to populate the data
+        $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
+            'contextId' => $roomId,
+        ]);
+        $filterForm->handleRequest($request);
+
         $results = $this->prepareResults($searchResults, $roomId, $start);
 
         return [
@@ -202,6 +279,193 @@ class SearchController extends BaseController
     }
 
     /**
+     * Populates the given SearchData object with relevant data from the request, and returns it.
+     *
+     * @param SearchData $searchData
+     * @param Request $request
+     * @return SearchData
+     */
+    private function populateSearchData(SearchData $searchData, Request $request): SearchData
+    {
+        // TODO: should we better move this method to SearchData.php?
+
+        if (!isset($request)) {
+            return $searchData;
+        }
+
+        $requestParams = $request->query->all();
+        if (empty($requestParams)) {
+            $requestParams = $request->request->all();
+        }
+        if (empty($requestParams)) {
+            return $searchData;
+        }
+
+        $searchParams = $requestParams['search'] ?? $requestParams['search_filter'] ?? null;
+
+        // search phrase parameter
+        if (!$searchData->getPhrase()) {
+            $searchData->setPhrase($searchParams['phrase'] ?? null);
+        }
+
+        // search in all contexts parameter
+        $searchData->setAllRooms((!empty($searchParams['all_rooms'])) ? true : false);
+
+        // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
+        $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
+
+        // rubric parameter
+        $searchData->setSelectedRubric($searchParams['selectedRubric'] ?? 'all');
+
+        // creator parameter
+        $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? "all");
+
+        // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
+        // creation_date_range parameter
+        if (!empty($searchParams['creation_date_range'])) {
+            $creationDateRange = [];
+            if (!empty($searchParams['creation_date_range']['left_date'])) {
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date']);
+                if ($date) {
+                    $date = $date->setTime(0, 0, 0);
+                    $creationDateRange[0] = $date;
+                }
+            }
+            if (!empty($searchParams['creation_date_range']['right_date'])) {
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date']);
+                if ($date) {
+                    $date = $date->setTime(23, 59, 59);
+                    $creationDateRange[1] = $date;
+                }
+            }
+            $searchData->setCreationDateRange($creationDateRange);
+        }
+
+        // modification_date_range parameter
+        if (!empty($searchParams['modification_date_range'])) {
+            $modificationDateRange = [];
+            if (!empty($searchParams['modification_date_range']['left_date'])) {
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date']);
+                if ($date) {
+                    $date = $date->setTime(0, 0, 0);
+                    $modificationDateRange[0] = $date;
+                }
+            }
+            if (!empty($searchParams['modification_date_range']['right_date'])) {
+                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date']);
+                if ($date) {
+                    $date = $date->setTime(23, 59, 59);
+                    $modificationDateRange[1] = $date;
+                }
+            }
+            $searchData->setModificationDateRange($modificationDateRange);
+        }
+
+        return $searchData;
+    }
+
+    /**
+     * Uses the given search manager to add search query conditions for relevant SearchData parameters.
+     *
+     * @param SearchManager $searchManager
+     * @param SearchData $searchData
+     */
+    public function setupSearchQueryConditions(SearchManager $searchManager,
+                                               SearchData $searchData)
+    {
+        // TODO: should we better move this method to SearchData.php?
+
+        if (!isset($searchManager) || !isset($searchData)) {
+            return;
+        }
+
+        if (!$searchData->getPhrase()) {
+            return;
+        }
+
+        // if the search phrase must appear in the title and/or description, we don't need to search any other fields
+        if ($searchData->getAppearsInTitle() || $searchData->getAppearsInDescription()) {
+            // appears in title parameter
+            if ($searchData->getAppearsInTitle()) {
+                $titleQueryCondition = new TitleQueryCondition();
+                $titleQueryCondition->setTitle($searchData->getPhrase());
+                $searchManager->addQueryCondition($titleQueryCondition);
+            }
+
+            // appears in description parameter
+            if ($searchData->getAppearsInDescription()) {
+                $descriptionQueryCondition = new DescriptionQueryCondition();
+                $descriptionQueryCondition->setDescription($searchData->getPhrase());
+                $searchManager->addQueryCondition($descriptionQueryCondition);
+            }
+        } else {
+            // search phrase parameter
+            $mostFieldsQueryCondition = new MostFieldsQueryCondition();
+            $mostFieldsQueryCondition->setQuery($searchData->getPhrase());
+            $searchManager->addQueryCondition($mostFieldsQueryCondition);
+        }
+    }
+
+    /**
+     * Uses the given search manager to add search filter conditions for relevant SearchData parameters.
+     *
+     * @param SearchManager $searchManager
+     * @param SearchData $searchData
+     * @param integer $roomId
+     * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     */
+    public function setupSearchFilterConditions(SearchManager $searchManager,
+                                                SearchData $searchData,
+                                                int $roomId,
+                                                MultipleContextFilterCondition $multipleContextFilterCondition)
+    {
+        // TODO: should we better move this method to SearchData.php?
+
+        if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition)) {
+            return;
+        }
+
+        // search in all contexts parameter
+        if ($searchData->getAllRooms()) {
+            $searchManager->addFilterCondition($multipleContextFilterCondition);
+        } else {
+            $singleContextFilterCondition = new SingleContextFilterCondition();
+            $singleContextFilterCondition->setContextId($roomId);
+            $searchManager->addFilterCondition($singleContextFilterCondition);
+        }
+
+        // rubric parameter
+        if ($searchData->getSelectedRubric()) {
+            $rubricFilterCondition = new RubricFilterCondition();
+            $rubricFilterCondition->setRubric($searchData->getSelectedRubric());
+            $searchManager->addFilterCondition($rubricFilterCondition);
+        }
+
+        // creator parameter
+        if ($searchData->getSelectedCreator()) {
+            $singleCreatorFilterCondition = new SingleCreatorFilterCondition();
+            $singleCreatorFilterCondition->setCreator($searchData->getSelectedCreator());
+            $searchManager->addFilterCondition($singleCreatorFilterCondition);
+        }
+
+        // creation date range parameter
+        if ($searchData->getCreationDateFrom() || $searchData->getCreationDateUntil()) {
+            $creationDateFilterCondition = new CreationDateFilterCondition();
+            $creationDateFilterCondition->setStartDate($searchData->getCreationDateFrom());
+            $creationDateFilterCondition->setEndDate($searchData->getCreationDateUntil());
+            $searchManager->addFilterCondition($creationDateFilterCondition);
+        }
+
+        // modification date range parameter
+        if ($searchData->getModificationDateFrom() || $searchData->getModificationDateUntil()) {
+            $modificationDateFilterCondition = new ModificationDateFilterCondition();
+            $modificationDateFilterCondition->setStartDate($searchData->getModificationDateFrom());
+            $modificationDateFilterCondition->setEndDate($searchData->getModificationDateUntil());
+            $searchManager->addFilterCondition($modificationDateFilterCondition);
+        }
+    }
+
+     /**
      * Generates JSON results for the room navigation search-as-you-type form
      *
      * @Route("/room/{roomId}/search/rooms")
@@ -218,7 +482,11 @@ class SearchController extends BaseController
         $router = $this->container->get('router');
         $translator = $this->container->get('translator');
 
-        $searchManager->setQuery($query);
+        if (!empty($query)) {
+            $roomQueryCondition = new RoomQueryCondition();
+            $roomQueryCondition->setQuery($query);
+            $searchManager->addQueryCondition($roomQueryCondition);
+        }
 
         $roomResults = $searchManager->getRoomResults();
 
@@ -403,20 +671,5 @@ class SearchController extends BaseController
         }
 
         return $results;
-    }
-
-    private function getSearchManager($roomId, $filterData)
-    {
-        $searchManager = $this->get('commsy.search.manager');
-
-        if (isset($filterData['query'])) {
-            $searchManager->setQuery($filterData['query']);
-        }
-
-        if (!isset($filterData['all_rooms']) || !$filterData['all_rooms']) {
-            $searchManager->setContext($roomId);
-        }
-
-        return $searchManager;
     }
 }

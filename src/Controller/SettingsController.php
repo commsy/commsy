@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Terms;
 use App\Form\Type\Room\DeleteType;
+use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -20,6 +21,7 @@ use App\Form\Type\AppearanceSettingsType;
 use App\Form\Type\ExtensionSettingsType;
 use App\Form\Type\InvitationsSettingsType;
 use App\Utils\RoomService;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class SettingsController
@@ -351,25 +353,34 @@ class SettingsController extends AbstractController
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function deleteAction($roomId, Request $request, RoomService $roomService)
-    {
-        $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
+    public function deleteAction(
+        $roomId,
+        Request $request,
+        RoomService $roomService,
+        TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $roomItem = $roomService->getRoomItem($roomId);
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $relatedGroupRooms = [];
+        if ($roomItem instanceof \cs_project_item) {
+            $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
+        }
+
+        $form = $this->createForm(DeleteType::class, [
+            'confirm_string' => $translator->trans('delete', [], 'profile')
+        ], []);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // get room from RoomService
-            $roomItem = $roomService->getRoomItem($roomId);
-            if (!$roomItem) {
-                throw $this->createNotFoundException('No room found for id ' . $roomId);
-            }
-
             $roomItem->delete();
             $roomItem->save();
 
             // redirect back to portal
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $portal = $legacyEnvironment->getCurrentPortalItem();
-
+            $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
             $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
 
             return $this->redirect($url);
@@ -377,6 +388,7 @@ class SettingsController extends AbstractController
 
         return [
             'form' => $form->createView(),
+            'relatedGroupRooms' => $relatedGroupRooms,
         ];
     }
 

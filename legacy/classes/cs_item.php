@@ -1549,8 +1549,13 @@ class cs_item {
    }
 
 
-    function maySee($userItem)
+    public function maySee($userItem)
     {
+        // Deny access, if the item's context is deleted
+        if ($this->getContextItem()->isDeleted()) {
+            return false;
+        }
+
         if ($userItem->isRoot()) {
            return true;
         }
@@ -2875,11 +2880,14 @@ function getExternalViewerArray(){
 
     protected function replaceElasticItem($objectPersister, $repository)
     {
-        global $symfonyContainer;
-        $elasticHost = $symfonyContainer->getParameter('env(ELASTIC_HOST)');
+        $elasticHost = $_ENV['ELASTIC_HOST'];
 
         if ($elasticHost) {
-            $object = $repository->findOneByItemId($this->getItemID());
+            if ($repository instanceof \App\Repository\MaterialsRepository) {
+                $object = $repository->findLatestVersionByItemId($this->getItemID());
+            } else {
+                $object = $repository->findOneByItemId($this->getItemID());
+            }
 
             if ($object && $object->isIndexable() && !$this->isDraft()) {
                 $objectPersister->replaceOne($object);
@@ -2889,8 +2897,7 @@ function getExternalViewerArray(){
 
     protected function deleteElasticItem($objectPersister, $repository)
     {
-        global $symfonyContainer;
-        $elasticHost = $symfonyContainer->getParameter('env(ELASTIC_HOST)');
+        $elasticHost = $_ENV['ELASTIC_HOST'];
 
         if ($elasticHost) {
             $object = $repository->findOneByItemId($this->getItemID());

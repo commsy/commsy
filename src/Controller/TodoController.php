@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\TodoStatus\TodoStatusAction;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -77,9 +78,12 @@ class TodoController extends BaseController
             'module' => 'todo',
             'itemsCountArray' => $itemsCountArray,
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
             'statusList' => $roomItem->getExtraToDoStatusArray(),
             'usageInfo' => $usageInfo,
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
         );
@@ -192,7 +196,7 @@ class TodoController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $todoService = $this->get('commsy_legacy.todo_service');
         $itemService = $this->get('commsy_legacy.item_service');
@@ -326,9 +330,8 @@ class TodoController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,
@@ -345,6 +348,9 @@ class TodoController extends BaseController
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'showAssociations' => $current_context->withAssociations(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
             'showRating' => $current_context->isAssessmentActive(),
             'ratingArray' => $current_context->isAssessmentActive() ? [
@@ -740,6 +746,9 @@ class TodoController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
@@ -819,7 +828,10 @@ class TodoController extends BaseController
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'ratingList' => $ratingList,
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
@@ -1171,7 +1183,10 @@ class TodoController extends BaseController
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'showAssociations' => $current_context->withAssociations(),
             'roomCategories' => $categories,
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
             'showRating' => $current_context->isAssessmentActive(),
             'ratingArray' => $current_context->isAssessmentActive() ? [
                 'ratingDetail' => $ratingDetail,

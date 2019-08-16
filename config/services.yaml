@@ -290,12 +290,9 @@ services:
         autoconfigure: true
 
     # Markup
-    commsy_legacy.markup:
-        class: App\Services\LegacyMarkup
-        arguments:
-            - '@commsy_legacy.environment'
-            - '@router'
-            - '@translator'
+    App\Services\LegacyMarkup:
+        autowire: true
+        autoconfigure: true
 
     # Transformer
     commsy_legacy.transformer.general_settings:
@@ -1030,16 +1027,6 @@ services:
     commsy.api.soap:
         class: App\Services\SoapService
         arguments: ['@commsy_legacy.environment', '@service_container']
-
-    # Feed
-    debril.rss_atom.provider:
-        class: App\Feed\CommsyFeedContentProvider
-        arguments:
-            - '@commsy_legacy.environment'
-            - '@request_stack'
-            - '@translator'
-            - '@commsy.feed.creator_factory'
-            - '@feedio'
 
     commsy.feed.creator_factory:
         class: App\Feed\FeedCreatorFactory

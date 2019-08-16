@@ -164,6 +164,10 @@
                 <source>Repeat x</source>
                 <target>Repeat image horizontally</target>
             </trans-unit>
+            <trans-unit id="associations">
+                <source>Associations</source>
+                <target>Associations</target>
+            </trans-unit>
             <trans-unit id="basic_settings_text">
                 <source>Basic settings text</source>
                 <target>Please define workspace basics, i.e. title, access checks, language.</target>
@@ -661,6 +665,10 @@
             <trans-unit id="settings_delete_explanation_end">
                 <source>Delete explanation end</source>
                 <target>and confirm the process.</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_grouprooms">
+                <source>Deletion of grouprooms</source>
+                <target>By deleting this project workspace the following related group workspaces will also be deleted:</target>
             </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>

@@ -742,7 +742,26 @@ class cs_context_item extends cs_item {
 	return true;
   }
 
+  function setWithAssociations() {
+    $this->_addExtra('WITHASSOCIATIONS',2);
+  }
 
+  function setWithoutAssociations() {
+    $this->_addExtra('WITHASSOCIATIONS',1);
+  }
+
+  function withAssociations() {
+    $retour = false;
+    if ($this->_issetExtra('WITHASSOCIATIONS') ) {
+      $re = $this->_getExtra('WITHASSOCIATIONS');
+      if ($re == 2) {
+        $retour = true;
+      }
+    }else {
+      $retour = true;
+    }
+    return $retour;
+  }
 
   function setWithBuzzwords() {
     $this->_addExtra('WITHBUZZWORDS',2);
@@ -783,6 +802,30 @@ class cs_context_item extends cs_item {
   function unsetBuzzwordMandatory () {
     $this->_addExtra('BUZZWORDMANDATORY',0);
   }
+
+
+    public function isAssociationShowExpanded()
+    {
+        if ($this->_issetExtra('ASSOCIATIONSHOWEXPANDED')) {
+            $value = $this->_getExtra('ASSOCIATIONSHOWEXPANDED');
+            if ($value == 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function setAssociationShowExpanded()
+    {
+        $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 1);
+    }
+
+    public function unsetAssociationShowExpanded()
+    {
+        $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 0);
+    }
+
 
   function isBuzzwordShowExpanded () {
     $retour = true;

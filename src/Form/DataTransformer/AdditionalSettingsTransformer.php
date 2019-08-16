@@ -28,6 +28,8 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
 
         if ($roomItem) {
             // structural auxilaries
+            $roomData['structural_auxilaries']['associations']['show_expanded'] = $roomItem->isAssociationShowExpanded();
+
             $roomData['structural_auxilaries']['buzzwords']['activate'] = $roomItem->withBuzzwords();
             $roomData['structural_auxilaries']['buzzwords']['show_expanded'] = $roomItem->isBuzzwordShowExpanded();
             $roomData['structural_auxilaries']['buzzwords']['mandatory'] = $roomItem->isBuzzwordMandatory();
@@ -93,9 +95,17 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
     public function applyTransformation($roomObject, $roomData)
     {
         /********* save buzzword and tag options ******/
+        $associations = $roomData['structural_auxilaries']['associations'];
         $buzzwords = $roomData['structural_auxilaries']['buzzwords'];
         $categories = $roomData['structural_auxilaries']['categories'];
         $calendars = $roomData['structural_auxilaries']['calendars'];
+
+        // association options
+        if ( isset($associations['show_expanded']) and !empty($associations['show_expanded']) and $associations['show_expanded'] == true) {
+            $roomObject->setAssociationShowExpanded();
+        } else {
+            $roomObject->unsetAssociationShowExpanded();
+        }
 
         // buzzword options
         if ( isset($buzzwords['activate']) and !empty($buzzwords['activate']) and $buzzwords['activate'] == true) {

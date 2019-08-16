@@ -2,24 +2,29 @@
 
 namespace App\Feed;
 
-use Debril\RssAtomBundle\Provider\FeedContentProviderInterface;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
 
+use Debril\RssAtomBundle\Provider\FeedProviderInterface;
 use FeedIo\Feed;
 use FeedIo\FeedInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Translation\TranslatorInterface;
 
 use App\Services\LegacyEnvironment;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CommsyFeedContentProvider implements FeedContentProviderInterface
+class CommsyFeedContentProvider implements FeedProviderInterface
 {
     private $legacyEnvironment;
     private $requestStack;
     private $translator;
     private $feedCreatorFactory;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RequestStack $requestStack, TranslatorInterface $translator, FeedCreatorFactory $feedCreatorFactory)
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        RequestStack $requestStack,
+        TranslatorInterface $translator,
+        FeedCreatorFactory $feedCreatorFactory)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->requestStack = $requestStack;
@@ -28,15 +33,15 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
     }
 
     /**
-     * @param array $options
+     * @param Request $request
      *
      * @throws FeedNotFoundException
      *
      * @return FeedInterface
      */
-    public function getFeedContent(array $options): FeedInterface
+    public function getFeed(Request $request): FeedInterface
     {
-        $contextId = $options['contextId'];
+        $contextId = $request->query->get('contextId');
         $this->legacyEnvironment->setCurrentContextID($contextId);
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 

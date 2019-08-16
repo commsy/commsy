@@ -322,6 +322,10 @@
                 <source>all</source>
                 <target>All</target>
             </trans-unit>
+            <trans-unit id="any">
+                <source>any</source>
+                <target>Any</target>
+            </trans-unit>
             <trans-unit id="public">
                 <source>public</source>
                 <target>Accessable Entries</target>

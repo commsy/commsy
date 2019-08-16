@@ -49,7 +49,7 @@
                         {{ render(controller(
                             'App\\Controller\\SearchController::searchFormAction', {
                                 'roomId': app.request.attributes.get('roomId'),
-                                'postData': app.request.request.get('search')
+                                'requestData': app.request.request.get('search') ?? app.request.query.get('search_filter')
                             }
                         ))}}
                     </div>
@@ -158,7 +158,7 @@
         </div>
         
         {% block javascripts %}
-            <script src="{{ absolute_url(asset('build/app.js') )}}"></script>
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </body>
 </html>

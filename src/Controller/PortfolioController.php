@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use App\Utils\PortfolioService;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\PortfolioEditCategoryType;
 use App\Form\Type\PortfolioType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -371,6 +373,30 @@ class PortfolioController extends AbstractController
             'form' => $form->createView(),
             'categoryId' => $categoryId,
         ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/stopActivation")
+     */
+    public function stopActivation($roomId, $portfolioId, LegacyEnvironment $legacyEnvironment)
+    {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $portfolioManager = $legacyEnvironment->getPortfolioManager();
+
+        $portfolio = $portfolioManager->getItem($portfolioId);
+
+        if (!$portfolio) {
+            throw new NotFoundHttpException('Portfolio not found');
+        }
+
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+        $portfolioManager->removeExternalViewer($portfolio->getItemID(), $currentUser->getUserID());
+
+        return $this->redirectToRoute('app_portfolio_index', [
+            'roomId' => $roomId,
+            'portfolioId' => $portfolioId
+        ]);
     }
 
     private function getDisabledTags($roomTags, $orientation, $portfolio) {

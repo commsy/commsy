@@ -8,6 +8,7 @@ use App\Filter\TopicFilterType;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -71,10 +72,14 @@ class TopicController extends BaseController
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
             'showHashTags' => false,
+            'showAssociations' => false,
             'showCategories' => false,
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
+            'showAssociations' => false,
         );
     }
     
@@ -147,7 +152,7 @@ class TopicController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -186,9 +191,8 @@ class TopicController extends BaseController
             $isLinkedToItems = true;
         }
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,
@@ -209,6 +213,9 @@ class TopicController extends BaseController
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
             'roomCategories' => $categories,
             'user' => $infoArray['user'],
@@ -366,9 +373,12 @@ class TopicController extends BaseController
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
+        $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
+        $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
 
-        
+
         return $infoArray;
     }
 
@@ -596,7 +606,10 @@ class TopicController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'roomCategories' => 'roomCategories',
@@ -664,6 +677,7 @@ class TopicController extends BaseController
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssocations(),
             'showCategories' => $roomItem->withTags(),
             'ratingList' => $ratingList,
             'showWorkflow' => $current_context->withWorkflow(),
