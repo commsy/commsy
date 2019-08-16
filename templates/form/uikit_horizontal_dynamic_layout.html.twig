@@ -229,3 +229,10 @@
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-dynamic')|trim}) %}
     {{- parent() -}}
 {%- endblock form_start %}
+
+{%- block form_row -%}
+    {{- parent() -}}
+    {%- if use_separator is defined and use_separator == true -%}
+        <hr/>
+    {%- endif -%}
+{%- endblock -%}

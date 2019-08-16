@@ -2,6 +2,7 @@
 namespace App\Filter;
 
 use App\Form\Type\Custom\Select2ChoiceType;
+use App\Form\Type\Custom\CheckboxFilterWithSeparatorType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
 use Symfony\Component\Form\AbstractType;
@@ -44,7 +45,7 @@ class SearchFilterType extends AbstractType
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])
-            ->add('all_rooms', Filters\CheckboxFilterType::class, [
+            ->add('all_rooms', CheckboxFilterWithSeparatorType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
@@ -77,7 +78,7 @@ class SearchFilterType extends AbstractType
                 ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
-                    return array_merge([$translatedTitleAny => 'all'], $this->buildCreatorChoices($searchData->getCreators()));
+                    return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getCreators()));
                 }),
                 'label' => 'Creator',
                 'required' => false,
@@ -143,9 +144,21 @@ class SearchFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    return $this->buildHashtagChoices($searchData->getHashtags());
+                    return $this->buildTermChoices($searchData->getHashtags());
                 }),
                 'label' => 'Hashtags',
+                'expanded' => false,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('selectedCategories', Select2ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    return $this->buildTermChoices($searchData->getCategories());
+                }),
+                'label' => 'Categories',
                 'expanded' => false,
                 'multiple' => true,
                 'required' => false,
@@ -206,40 +219,20 @@ class SearchFilterType extends AbstractType
     }
 
     /**
-     * Builds the array of choices for the creators filter field.
+     * Builds the array of choices for the creators/hashtags/categories filter fields.
      *
-     * @param array|null $creators associative array of creators (key: creator name, value: count)
+     * @param array|null $terms associative array of creator/hashtag/category terms (key: term name, value: count)
      */
-    private function buildCreatorChoices($creators): array
+    private function buildTermChoices($terms): array
     {
-        if (!isset($creators) || empty($creators)) {
+        if (!isset($terms) || empty($terms)) {
             return [];
         }
 
         $choices = [];
-        foreach ($creators as $name => $count) {
-            $creator = $name . " (" . $count . ")";
-            $choices[$creator] = $name;
-        }
-
-        return $choices;
-    }
-
-    /**
-     * Builds the array of choices for the hashtags filter field.
-     *
-     * @param array|null $hashtags associative array of hashtags (key: hashtag name, value: count)
-     */
-    private function buildHashtagChoices($hashtags): array
-    {
-        if (!isset($hashtags) || empty($hashtags)) {
-            return [];
-        }
-
-        $choices = [];
-        foreach ($hashtags as $name => $count) {
-            $hashtag = $name . " (" . $count . ")";
-            $choices[$hashtag] = $name;
+        foreach ($terms as $name => $count) {
+            $term = $name . " (" . $count . ")";
+            $choices[$term] = $name;
         }
 
         return $choices;
