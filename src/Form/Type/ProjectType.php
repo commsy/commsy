@@ -99,6 +99,7 @@ class ProjectType extends AbstractType
                     'multiple' => true,
                     'translation_domain' => 'portal',
                     'constraints' => $constraints,
+                    'mapped' => false,
                 ));
             }
 
