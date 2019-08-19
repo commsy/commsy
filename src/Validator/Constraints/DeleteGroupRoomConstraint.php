@@ -10,5 +10,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class DeleteGroupRoomConstraint extends Constraint
 {
-    public $message = 'Caution, the following project rooms are attached to this group room: {{ criteria }}. Those project rooms must be delete first or must be assigned to a different group room.';
+    public $messageStart = 'Caution, the following project rooms are attached to this workspace:';
+    public $message = '- {{ criteria }}';
+    public $messageEnd = 'Those project rooms must be delete first or must be assigned to a different workspace.';
 }

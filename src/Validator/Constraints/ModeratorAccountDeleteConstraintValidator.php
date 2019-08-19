@@ -30,13 +30,15 @@ class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
 
 
         if(!empty($rooms)){
-            $room_names = "";
+            $this->context->buildViolation($constraint->messageBeginning)
+                ->addViolation();
             foreach($rooms as $room){
-                $room_names .= $room->getTitle() . " ";
-            }
-                $this->context->buildViolation($constraint->message)
-                    ->setParameter('{{ criteria }}', $room_names)
+                $this->context->buildViolation($constraint->itemMessage)
+                    ->setParameter('{{ criteria }}', $room->getTitle())
                     ->addViolation();
+            }
+            $this->context->buildViolation($constraint->messageEnd)
+                ->addViolation();
         }
     }
 

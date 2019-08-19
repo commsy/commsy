@@ -22,13 +22,21 @@
                 <source>Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}</source>
                 <target>Bitte benennen Sie zunächst im Raum {{ criteria }} eine neue Moderation oder löschen Sie den Raum {{ criteria }}.</target>
             </trans-unit>
-            <trans-unit id="validators_no_account_deletion_rooms_moderated">
-                <source>You can not delete your account. The following workspaces would otherwise be without moderators: {{ criteria }}. Please assign further moderators or delete said room/s.</source>
-                <target>Sie können Ihren Account NICHT löschen. Die folgenden Räumen wären ansonsten ohne Moderation: {{ criteria }}. Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
+            <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
+                <source>You can not delete your account. The following workspaces would otherwise be without moderators:</source>
+                <target>Sie können Ihren Account NICHT löschen. Die folgenden Räumen wären ansonsten ohne Moderation:</target>
             </trans-unit>
-            <trans-unit id="validators_project_rooms_attached_to_deletion_group_room">
-                <source>Caution, the following project rooms are attached to this group room: {{ criteria }}. Those project rooms must be delete first or must be assigned to a different group room.</source>
-                <target>Achtung: Diesem Gemeinschaftsraum/Schulraum sind noch folgende Projketräume/Klassenräume zugeordnet: {{ criteria }}. Diese Projketräume/Klassenräume müssen zunöchst gelöscht- oder eine andere Zuordnung getroffen werden.</target>
+            <trans-unit id="validators_no_account_deletion_rooms_moderated_end">
+                <source>Please assign further moderators or delete said room/s.</source>
+                <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
+            </trans-unit>
+            <trans-unit id="validators_project_rooms_attached_to_deletion_group_room_start">
+                <source>Caution, the following project rooms are attached to this workspace:</source>
+                <target>Achtung: Diesem Gemeinschaftsraum sind noch folgende Projketräume zugeordnet:</target>
+            </trans-unit>
+            <trans-unit id="validators_project_rooms_attached_to_deletion_group_room_end">
+                <source>Those project rooms must be delete first or must be assigned to a different workspace.</source>
+                <target>Diese Projketräume müssen zunöchst gelöscht- oder eine andere Zuordnung getroffen werden.</target>
             </trans-unit>
             <trans-unit id="validators_room_code_filled">
                 <source>Please enter an access code.</source>
