@@ -62,19 +62,6 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $admin_link_list->add($link_item);
    }
 
-   if ( !$environment->inServer() and !$environment->inPrivateRoom() ) {
-      $link_item = new cs_link();
-      $link_item->setTitle($translator->getMessage('PREFERENCES_AGB'));
-      $link_item->setDescription($translator->getMessage('PREFERENCES_AGB_DESC'));
-      $link_item->setIconPath('images/cs_config/PREFERENCES_AGB.gif');
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('agb');
-      $link_item->setParameter('');
-      $link_item->setLink($router->generate('app_portal_terms', ['roomId' => $environment->getCurrentContextID()]));
-      $admin_link_list->add($link_item);
-   }
-
    if ( !$environment->inServer()
         and !$environment->inPrivateRoom()
         and !$environment->inPortal()
