@@ -27,7 +27,15 @@
                         {{ form_start(form) }}
 
                         <div class="uk-form-row">
-                            {{ form_errors(form.confirm) }}
+                            {% for error in form.confirm.vars.errors  %}
+                                {% if ' ' not in error.message %}
+                                    <br /><a href="/room/{{ error.message}}">
+                                    {{ error.message | roomtitle}}
+                                </a><br />
+                                {% else %}
+                                    {{ error.message}}<br/>
+                                {% endif %}
+                            {% endfor %}
                             {{ form_label(form.confirm) }}
                             {{ form_widget(form.confirm) }}
                         </div>

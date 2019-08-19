@@ -35,33 +35,32 @@ class DeleteGroupRoomConstraintValidator extends ConstraintValidator
             $project_room_link_status = "";
         }
         if(!empty($project_room_link_status)){
-            $room_names = null;
-            if($env->inCommunityRoom()){
-                $room_names = "";
-                $project_IDs = $roomId->_data['extras']['PROJECT_ID_ARRAY'];
-                $rooms = $env->_current_portal->getRoomList();
+            if(strcmp($project_room_link_status, "mandatory") == 0){
+                $room_names = null;
+                if($env->inCommunityRoom()){
+                    $room_names = "";
+                    try{
+                        $project_IDs = $roomId->_data['extras']['PROJECT_ID_ARRAY'];
+                        $rooms = $env->_current_portal->getRoomList();
+                    }catch(Exception $e){
+                        $rooms = [];
+                    }
 
-                if(!empty($rooms)){
-                    $this->context->buildViolation($constraint->messageStart)
-                        ->addViolation();
-                }
-
-                foreach ($rooms as $current_room){
-                    $current_room_id = $current_room->_data['item_id'];
-                    if(in_array($current_room_id, $project_IDs)){
-                        $this->context->buildViolation($constraint->message)
-                            ->setParameter('{{ criteria }}', $current_room->_data['title'])
+                    if(!empty($rooms)){
+                        $this->context->buildViolation($constraint->messageStart)
                             ->addViolation();
+                    }
+
+                    foreach ($rooms as $current_room){
+                        $current_room_id = $current_room->_data['item_id'];
+                        if(in_array($current_room_id, $project_IDs)){
+                            $this->context->buildViolation($constraint->message)
+                                ->setParameter('{{ criteria }}', $current_room->getItemID())
+                                ->addViolation();
+                        }
                     }
                 }
             }
-
-
-                if(strcmp($project_room_link_status, "mandatory") == 0){
-                    $this->context->buildViolation($constraint->message)
-                        ->setParameter('{{ criteria }}', $project_room_names)
-                        ->addViolation();
-                }
         }
     }
 
