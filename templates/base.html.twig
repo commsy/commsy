@@ -40,12 +40,14 @@
                 <div class="uk-navbar-flip">
                     <div class="uk-navbar-content">
                         {# global search #}
-                        {{ render(controller(
-                            'App\\Controller\\SearchController::searchFormAction', {
-                                'roomId': app.request.attributes.get('roomId'),
-                                'requestData': app.request.request.get('search') ?? app.request.query.get('search_filter')
-                            }
-                        ))}}
+                        {% if app.request.attributes.get('_route') is not same as('app_tou_accept') %}
+                            {{ render(controller(
+                                'App\\Controller\\SearchController::searchFormAction', {
+                                    'roomId': app.request.attributes.get('roomId'),
+                                    'requestData': app.request.request.get('search') ?? app.request.query.get('search_filter')
+                                }
+                            ))}}
+                        {% endif %}
                     </div>
                     
                     {# global actions #}
