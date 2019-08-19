@@ -34,7 +34,7 @@ class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
                 ->addViolation();
             foreach($rooms as $room){
                 $this->context->buildViolation($constraint->itemMessage)
-                    ->setParameter('{{ criteria }}', $room->getTitle())
+                    ->setParameter('{{ criteria }}', $room->getItemID())
                     ->addViolation();
             }
             $this->context->buildViolation($constraint->messageEnd)
