@@ -3,19 +3,21 @@
 
 namespace App\Twig\Extension;
 
-use App\Utils\RoomService;
+use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 
 class RoomTitleResolver extends AbstractExtension
 {
+    private $legacyEnvironment;
+    private $userService;
 
-    private $roomService;
-
-    public function __construct(RoomService $roomService)
+    public function __construct( LegacyEnvironment $legacyEnvironment, UserService $userService)
     {
-        $this->roomService = $roomService;
+        $this->userService = $userService;
+        $this->legacyEnvironment = $legacyEnvironment;
     }
 
     public function getFilters()
@@ -27,7 +29,16 @@ class RoomTitleResolver extends AbstractExtension
 
     public function resolveRoomTitle($roomId)
     {
-        return $this->roomService->getRoomTitle($roomId);
+        $currentUser = $this->userService->getCurrentUserItem();
+        $env = $this->legacyEnvironment->getEnvironment();
+        $rooms = $env->getRoomManager()->getRelatedRoomListForUser($currentUser);
+        $type = ' ';
+        foreach($rooms as $room){
+            if($room->getItemID() == $roomId){
+                $type = $room->getType();
+            }
+        }
+        return $this->roomService->getRoomTitle($roomId).' ('.$type.')';
     }
 
 }
