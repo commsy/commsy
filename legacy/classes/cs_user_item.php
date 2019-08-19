@@ -3076,7 +3076,7 @@ class cs_user_item extends cs_item
 
     public function isAllowedToCreateContext()
     {
-        if ($this->isReallyGuest()) {
+        if ($this->isGuest()) {
             return false;
         }
 
