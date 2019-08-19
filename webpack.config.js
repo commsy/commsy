@@ -26,10 +26,6 @@ Encore
 
     .addEntry('app', './assets/js/common_js.js')
 
-    // .createSharedEntry('app', [
-    //     './assets/js/common_js.js'
-    // ])
-
     .enableTypeScriptLoader()
 
     // allow less files to be processed
@@ -40,14 +36,17 @@ Encore
         ]
     })
 
+    .copyFiles({
+        from: './assets/img',
+        includeSubdirectories: false
+    })
+
     .addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /uikit\/dist\/js\/components$/))
-
-    // .addLoader({
-    //     test: /\.(eot|woff|woff2|ttf|svg|png|jpg)$/,
-    //     loader: 'url-loader'
-    // })
-
     .addPlugin(new HardSourceWebpackPlugin())
+
+    // will require an extra script tag for runtime.js
+    // but, you probably want this, unless you're building a single-page app
+    .enableSingleRuntimeChunk()
 
     // allow legacy applications to use $/jQuery as a global variable
     .autoProvidejQuery()

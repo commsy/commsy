@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Form\Type\ProjectType;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
+use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -171,10 +173,9 @@ class ProjectController extends Controller
      * }))
      * @Template()
      */
-    public function createAction($roomId, Request $request)
+    public function createAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
@@ -193,8 +194,7 @@ class ProjectController extends Controller
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
-        $formData = [];
-        $form = $this->createForm(ProjectType::class, $formData, [
+        $form = $this->createForm(ProjectType::class, $room, [
             'templates' => array_flip($templates['titles']),
             'descriptions' => $templates['descriptions'],
             'preferredChoices' => $defaultTemplateIDs,
@@ -261,6 +261,11 @@ class ProjectController extends Controller
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
                 $linkModifierItemManager->markEdited($legacyRoom->getItemID());
+
+                if ($form->has('categories')) {
+                    $roomCategoriesService = $this->get('commsy.roomcategories_service');
+                    $roomCategoriesService->setRoomCategoriesLinkedToContext($legacyRoom->getItemId(), $form->get('categories')->getData());
+                }
 
                 // redirect to the project detail page
                 return $this->redirectToRoute('app_project_detail', [

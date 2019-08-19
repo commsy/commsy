@@ -152,7 +152,7 @@
         </div>
         
         {% block javascripts %}
-            <script src="{{ absolute_url(asset('build/app.js') )}}"></script>
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </body>
 </html>
