@@ -7,6 +7,7 @@ use App\Filter\UserFilterType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
@@ -411,7 +412,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
@@ -437,9 +438,8 @@ class UserController extends BaseController
             $isSelf = true;
         }
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         $roomItem = $roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();

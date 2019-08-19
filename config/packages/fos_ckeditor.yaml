@@ -1,11 +1,10 @@
 # Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
-
 twig:
     form_themes:
         - 'form/ckeditor_widget.html.twig'
 
 fos_ck_editor:
-    inline: true
+    inline: false
     default_config: cs_item_config
     input_sync: true
 
@@ -63,7 +62,7 @@ fos_ck_editor:
             basicstyles: [ "Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript" ]
             paragraph: [ "NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote" ]
             justify: [ "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ]
-            misc: [ "Sourcedialog" ]
+            misc: [ "Sourcedialog", "Maximize" ]
             format: [ "Format", "Font", "FontSize" ]
             style: [ "TextColor", "BGColor", "RemoveFormat" ]
             content: [ "Link", "Unlink", "Table", "HorizontalRule" ]
@@ -73,15 +72,14 @@ fos_ck_editor:
     configs:
         cs_item_config:
             toolbar: "fullToolbar"
-            extraPlugins: "sourcedialog,lineutils,widgetselection,sharedspace,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
             language_list: ['de:German', 'en:English']
-            removePlugins: 'floatingspace,maximize,resize'
-            sharedSpaces:
-                top: 'cke_top'
-                bottom: 'cke_bottom'
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
 
         cs_annotation_config:
             toolbar: "simpleToolbar"
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
 
         cs_mail_config:
             toolbar: "nonHtml"
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath'

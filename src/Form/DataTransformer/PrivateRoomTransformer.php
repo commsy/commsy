@@ -39,11 +39,6 @@ class PrivateRoomTransformer implements DataTransformerInterface
             } else {
                 $privateRoomData['stackStatus'] = false;
             }
-            if ($privateRoomItem->getCSBarShowPortfolio() == '1') {
-                $privateRoomData['portfolioStatus'] = true;
-            } else {
-                $privateRoomData['portfolioStatus'] = false;
-            }
             if ($privateRoomItem->getCSBarShowOldRoomSwitcher() == '1') {
                 $privateRoomData['switchRoomStatus'] = true;
             } else {
@@ -91,12 +86,6 @@ class PrivateRoomTransformer implements DataTransformerInterface
                 $privateRoomObject->setCSBarShowStack('1');
             } else {
                 $privateRoomObject->setCSBarShowStack('-1');
-            }
-
-            if ($privateRoomData['portfolioStatus'] == '1') {
-                $privateRoomObject->setCSBarShowPortfolio('1');
-            } else {
-                $privateRoomObject->setCSBarShowPortfolio('-1');
             }
 
             if ($privateRoomData['switchRoomStatus'] == '1') {

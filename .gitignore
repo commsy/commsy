@@ -31,11 +31,7 @@ Icon
 ######################
 # Symfony 2 related  #
 ######################
-/app/config/parameters.yml
-/build/
 /phpunit.xml
-/vendor/
-/web/bundles/
 
 /var/*
 !/var/cache
@@ -57,36 +53,6 @@ Icon
 !bin/symfony_requirements
 
 ######################
-# Eclipse related    #
-######################
-*.pydevproject
-.project
-.metadata
-tmp/**
-tmp/**/*
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-
-# External tool builders
-.externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# CDT-specific
-.cproject
-
-# PDT-specific
-.buildpath
-/vendor
-
-######################
 # Sublime related    #
 ######################
 *.sublime-project
@@ -100,20 +66,11 @@ legacy/etc/cs_config.php
 etc/commsy/*.php
 legacy/etc/commsy/*.php
 
-htdocs/jsMath/*
-htdocs/javascript/jQuery/commsy_min/*
-web/javascript/jQuery/commsy_min/*
-web/htdocs/js/build/*
-htdocs/templates/templates_c/*
-web/templates/templates_c/*
-
 files/[0-9]*
 files/templates/individual/*
 files/temp
 
 external_pages/[0-9]*
-htdocs/css/external_portal_styles/[0-9]*
-web/css/external_portal_styles/[0-9]*
 
 !.bowerrc
 !.gitlab-ci.yml
@@ -123,14 +80,6 @@ web/css/external_portal_styles/[0-9]*
 !.env.test
 
 wikis/*
-web/commsy
-
-public/build
-
-node_modules
-src/App/Resources/public/components
-
-legacy/var/temp
 
 mediawiki/*
 
@@ -156,3 +105,10 @@ mediawiki/*
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###
