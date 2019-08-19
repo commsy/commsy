@@ -34,6 +34,7 @@ class DeleteGroupRoomConstraintValidator extends ConstraintValidator
         }catch(Exception $e){
             $project_room_link_status = "";
         }
+
         if(!empty($project_room_link_status)){
             if(strcmp($project_room_link_status, "mandatory") == 0){
                 $room_names = null;
@@ -41,22 +42,43 @@ class DeleteGroupRoomConstraintValidator extends ConstraintValidator
                     $room_names = "";
                     try{
                         $project_IDs = $roomId->_data['extras']['PROJECT_ID_ARRAY'];
-                        $rooms = $env->_current_portal->getRoomList();
                     }catch(Exception $e){
-                        $rooms = [];
+                        $project_IDs = [];
                     }
 
-                    if(!empty($rooms)){
-                        $this->context->buildViolation($constraint->messageStart)
-                            ->addViolation();
+                    $rooms = $env->_current_portal->getRoomList();
+
+                    $projectRoomNotUnique = false;
+                    foreach ($rooms as $current_room_tmp){
+                        $current_room_id = $current_room_tmp->_data['item_id'];
+                        $project_IDs_Current_Room = [];
+                        if($current_room_tmp->getType() == 'community' && $current_room_tmp->getItemID() != $roomId->getItemID()){
+                            try{
+                                $project_IDs_Current_Room = $current_room_tmp->_data['extras']['PROJECT_ID_ARRAY'];
+                            }catch(Exception $e){
+                                $project_IDs_Current_Room = [];
+                            }
+                            foreach($project_IDs as $project_ID){
+                                if(in_array($project_ID, $project_IDs_Current_Room)){
+                                    $projectRoomNotUnique = true;
+                                }
+                            }
+                        }
                     }
 
-                    foreach ($rooms as $current_room){
-                        $current_room_id = $current_room->_data['item_id'];
-                        if(in_array($current_room_id, $project_IDs)){
-                            $this->context->buildViolation($constraint->message)
-                                ->setParameter('{{ criteria }}', $current_room->getItemID())
+                    if($projectRoomNotUnique){
+                        if(!empty($project_IDs)){
+                            $this->context->buildViolation($constraint->messageStart)
                                 ->addViolation();
+                        }
+
+                        foreach ($rooms as $current_room){
+                            $current_room_id = $current_room->_data['item_id'];
+                            if(in_array($current_room_id, $project_IDs)){
+                                $this->context->buildViolation($constraint->message)
+                                    ->setParameter('{{ criteria }}', $current_room->getItemID())
+                                    ->addViolation();
+                            }
                         }
                     }
                 }
