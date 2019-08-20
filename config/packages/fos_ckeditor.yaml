@@ -42,6 +42,9 @@ fos_ck_editor:
         widget:
             path:     "/ckeditor/widget/"
             filename: "plugin.js"
+        autogrow:
+            path:     "/ckeditor/autogrow/"
+            filename: "plugin.js"
         lineutils:
             path:     "/ckeditor/lineutils/"
             filename: "plugin.js"
@@ -72,7 +75,7 @@ fos_ck_editor:
     configs:
         cs_item_config:
             toolbar: "fullToolbar"
-            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,sharedspace,resize,elementspath'
 
