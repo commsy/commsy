@@ -4,6 +4,7 @@ namespace App\Twig\Extension;
 
 use App\Services\LegacyMarkup;
 use App\Utils\ItemService;
+use Masterminds\HTML5;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -28,7 +29,7 @@ class MarkupExtension extends AbstractExtension
         );
     }
 
-    public function commsyMarkup($text)
+    public function commsyMarkup($text, \cs_item $item = null)
     {
         $text = $this->commsyMarkupEscapes($text);
         $text = $this->commsyMarkupHeadings($text);
@@ -54,6 +55,11 @@ class MarkupExtension extends AbstractExtension
 
         // links
         $text = $this->interpreteLinks($text);
+
+        // image post-processing to add lightbox preview
+        if ($item !== null) {
+            $text = $this->formatLightbox($text, $item);
+        }
 
         return $text;
     }
@@ -231,5 +237,33 @@ class MarkupExtension extends AbstractExtension
             $html.= '</ul>'."\n";
         }
         return $html;
+    }
+
+    /**
+     * Searches the given html text string for image tags and wraps them with an a tag in a way
+     * that they will be shown in a lightbox with the given item's id as group.
+     *
+     * @param $text HTML string
+     * @param \cs_item $item
+     * @return string Replaced HTML string
+     */
+    private function formatLightbox($text, \cs_item $item): string
+    {
+        $html5 = new HTML5();
+        $dom = $html5->loadHTML($text);
+        $imageTags = $dom->getElementsByTagName('img');
+
+        foreach ($imageTags as $imageTag) {
+            /** @var \DOMNode $imageTag */
+            $aTag = $dom->createElement('a');
+            $aTag->setAttribute('data-uk-lightbox', '{group:' . $item->getItemID() . '}');
+            $aTag->setAttribute('data-lightbox-type', 'image');
+            $aTag->setAttribute('href', $imageTag->getAttribute('src'));
+
+            $imageTag->parentNode->replaceChild($aTag, $imageTag);
+            $aTag->appendChild($imageTag);
+        }
+
+        return $html5->saveHTML($dom);
     }
 }
