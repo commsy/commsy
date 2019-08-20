@@ -28,7 +28,15 @@
                         </div>
 
                         <div class="uk-form-row">
-                            {{ form_errors(form_lock.confirm_field) }}
+                            {% for error in form_lock.confirm_field.vars.errors  %}
+                                {% if ' ' not in error.message %}
+                                    <br /><a href="/room/{{ error.message}}">
+                                    {{ error.message | roomtitle}}
+                                </a><br />
+                                {% else %}
+                                    {{ error.message}}<br/>
+                                {% endif %}
+                            {% endfor %}
                             {{ form_widget(form_lock.confirm_field) }}
                             {{ form_widget(form_lock.confirm_button) }}
                         </div>
