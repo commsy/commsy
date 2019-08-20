@@ -48,7 +48,7 @@ class DeleteGroupRoomConstraintValidator extends ConstraintValidator
 
                     $rooms = $env->_current_portal->getRoomList();
 
-                    $projectRoomNotUnique = false;
+                    $projectRoomUnique = true;
                     foreach ($rooms as $current_room_tmp){
                         $current_room_id = $current_room_tmp->_data['item_id'];
                         $project_IDs_Current_Room = [];
@@ -60,13 +60,13 @@ class DeleteGroupRoomConstraintValidator extends ConstraintValidator
                             }
                             foreach($project_IDs as $project_ID){
                                 if(in_array($project_ID, $project_IDs_Current_Room)){
-                                    $projectRoomNotUnique = true;
+                                    $projectRoomUnique = false;
                                 }
                             }
                         }
                     }
 
-                    if($projectRoomNotUnique){
+                    if($projectRoomUnique){
                         if(!empty($project_IDs)){
                             $this->context->buildViolation($constraint->messageStart)
                                 ->addViolation();

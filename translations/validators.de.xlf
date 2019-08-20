@@ -23,11 +23,11 @@
                 <target>Bitte benennen Sie zunächst im Raum {{ criteria }} eine neue Moderation oder löschen Sie den Raum {{ criteria }}.</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
-                <source>You can not delete your account. The following workspaces would otherwise be without moderators:</source>
-                <target>Sie können Ihren Account NICHT löschen. Die folgenden Räumen wären ansonsten ohne Moderation:</target>
+                <source>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</source>
+                <target>Sie können Ihren Account NICHT löschen oder sperren. Die folgenden Räumen wären ansonsten ohne Moderation:</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_end">
-                <source>Please assign further moderators or delete said room/s.</source>
+                <source>Please assign further moderators or delete said workspace/s.</source>
                 <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
             </trans-unit>
             <trans-unit id="validators_project_rooms_attached_to_deletion_group_room_start">
