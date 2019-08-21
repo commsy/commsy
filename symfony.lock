@@ -299,6 +299,9 @@
     "liip/theme-bundle": {
         "version": "1.6.1"
     },
+    "masterminds/html5": {
+        "version": "2.7.0"
+    },
     "mediawiki/oauthclient": {
         "version": "0.1.2"
     },
