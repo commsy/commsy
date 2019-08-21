@@ -78,6 +78,7 @@ fos_ck_editor:
             extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,sharedspace,resize,elementspath'
+            autoGrow_onStartup: true
 
         cs_annotation_config:
             toolbar: "simpleToolbar"
