@@ -24,7 +24,9 @@
 
                 <div id="list-filter" class="uk-hidden-small">
                     {{ form_start(filterForm) }}
-                    {{ form_widget(filterForm) }}
+                    {# visually separate the first form field from the rest (since it expands the search results instead of restricting them) #}
+                    {{ form_row(filterForm.all_rooms) }}
+                    <hr/>
                     {{ form_end(filterForm) }}
                 </div>
             </div>
