@@ -34,7 +34,7 @@
                                     {{ error.message | roomtitle}}
                                 </a><br />
                                 {% else %}
-                                    {{ error.message}}<br/>
+                                    {{ error.message |trans({}, "validators")}}<br/>
                                 {% endif %}
                             {% endfor %}
                             {{ form_widget(form_lock.confirm_field) }}
