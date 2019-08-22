@@ -65,6 +65,9 @@ class MostFieldsQueryCondition implements QueryConditionInterface
             'discussionarticles.subject^1.3',
             'discussionarticles.description^1.3',
 
+            // user
+            'fullName',
+
             // others
             'steps.title',
             'sections.title',
