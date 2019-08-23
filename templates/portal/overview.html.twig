@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Login</title>
+
+    {% include 'stylesheets.html.twig' %}
+
+    <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
+</head>
+<body id="commsy" class="nav-collapsed">
+
+{% for portal in portals %}
+    {{ portal.title }}: {{ portal.itemId }} <a href="{{ path('app_login', { context: portal.itemId }) }}">Login</a>
+{% endfor %}
+
+{% block javascripts %}
+    <script src="{{ absolute_url(asset('build/app.js') )}}"></script>
+{% endblock %}
+</body>
+</html>

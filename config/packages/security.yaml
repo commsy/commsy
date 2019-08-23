@@ -1,13 +1,35 @@
 security:
+
+    # Which password encoder is used depends on the getEncoderName() method in App\Entity\Auth
+    encoders:
+        # This is the new default encoder used by all migrated users
+        App\Entity\Auth:
+            algorithm: bcrypt
+
+        # This is the legacy encoder supporting MD5 until the user is migrated
+        legacy_encoder:
+            algorithm: md5
+            encode_as_base64: false
+            iterations: 1
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory: { memory: ~ }
+        commsy_user_provider:
+            id: App\Security\UserProvider
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
         main:
             anonymous: true
+            logout: true
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+                    - App\Security\LdapAuthenticator
+                entry_point: App\Security\LoginFormAuthenticator
 
             # activate different ways to authenticate
 
@@ -22,3 +44,11 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+
+#        - { path: ^/portal/overview, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+#
+#        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+#
+#        - { path: ^/, roles: IS_AUTHENTICATED_REMEMBERED }
+
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

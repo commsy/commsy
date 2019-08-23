@@ -1,0 +1,120 @@
+<?php
+
+
+namespace App\Security;
+
+
+use App\Entity\Auth;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+
+class UserProvider implements UserProviderInterface
+{
+    private $requestStack;
+    private $entityManager;
+
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager)
+    {
+        $this->requestStack = $requestStack;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * Symfony calls this method if you use features like switch_user
+     * or remember_me.
+     *
+     * If you're not using these features, you do not need to implement
+     * this method.
+     *
+     * @return UserInterface
+     *
+     * @throws UsernameNotFoundException if the user is not found
+     */
+    public function loadUserByUsername($username)
+    {
+        // Load a User object from your data source or throw UsernameNotFoundException.
+        // The $username argument may not actually be a username:
+        // it is whatever value is being returned by the getUsername()
+        // method in your User class.
+        $contextId = null;
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest) {
+            $contextId = $currentRequest->getSession()->get('context');
+        }
+
+        if (!$contextId) {
+            throw new UsernameNotFoundException();
+        }
+
+        try {
+            $user = $this->entityManager->getRepository(Auth::class)
+                ->findOneByCredentials($username, $contextId);
+        } catch (NonUniqueResultException $e) {
+        }
+
+
+        if (!$user) {
+            throw new UsernameNotFoundException();
+        }
+
+        return $user;
+    }
+
+    /**
+     * Refreshes the user after being reloaded from the session.
+     *
+     * When a user is logged in, at the beginning of each request, the
+     * User object is loaded from the session and then this method is
+     * called. Your job is to make sure the user's data is still fresh by,
+     * for example, re-querying for fresh User data.
+     *
+     * If your firewall is "stateless: true" (for a pure API), this
+     * method is not called.
+     *
+     * @return UserInterface
+     */
+    public function refreshUser(UserInterface $user)
+    {
+        if (!$user instanceof Auth) {
+            throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
+        }
+
+        // Return a User object after making sure its data is "fresh".
+        // Or throw a UsernameNotFoundException if the user no longer exists.
+        $contextId = null;
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest) {
+            $contextId = $currentRequest->getSession()->get('context');
+        }
+
+        if (!$contextId) {
+            throw new UsernameNotFoundException();
+        }
+
+        try {
+            $user = $this->entityManager->getRepository(Auth::class)
+                ->findOneByCredentials($user->getUsername(), $contextId);
+        } catch (NonUniqueResultException $e) {
+        }
+
+
+        if (!$user) {
+            throw new UsernameNotFoundException();
+        }
+
+        return $user;
+    }
+
+    /**
+     * Tells Symfony to use this provider for this User class.
+     */
+    public function supportsClass($class)
+    {
+        return Auth::class === $class;
+    }
+}
