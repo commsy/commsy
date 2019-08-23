@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -127,6 +129,16 @@ class Portal
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
     private $url;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AuthSource", mappedBy="portal")
+     */
+    private $authSources;
+
+    public function __construct()
+    {
+        $this->authSources = new ArrayCollection();
+    }
 
 
 
@@ -474,5 +486,36 @@ class Portal
     public function getUrl()
     {
         return $this->url;
+    }
+
+    /**
+     * @return Collection|AuthSource[]
+     */
+    public function getAuthSources(): Collection
+    {
+        return $this->authSources;
+    }
+
+    public function addAuthSource(AuthSource $authSource): self
+    {
+        if (!$this->authSources->contains($authSource)) {
+            $this->authSources[] = $authSource;
+            $authSource->setPortal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuthSource(AuthSource $authSource): self
+    {
+        if ($this->authSources->contains($authSource)) {
+            $this->authSources->removeElement($authSource);
+            // set the owning side to null (unless already changed)
+            if ($authSource->getPortal() === $this) {
+                $authSource->setPortal(null);
+            }
+        }
+
+        return $this;
     }
 }

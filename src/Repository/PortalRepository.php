@@ -37,4 +37,13 @@ class PortalRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getOneOrNullResult();
     }
+
+    public function findAllActive()
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.deleter IS NULL')
+            ->andWhere('p.deletionDate IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }
