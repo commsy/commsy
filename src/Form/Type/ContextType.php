@@ -35,7 +35,7 @@ class ContextType extends AbstractType
                 'multiple' => false,
                 'translation_domain' => 'room',
             ))
-            ->addEventSubscriber(new AddContextFieldListener())
+            ->addEventSubscriber(new AddContextFieldListener($options['preferredChoices']))
             ->add('language', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => array(
