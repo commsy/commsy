@@ -25,13 +25,6 @@ use App\Form\Type\Bibliographic\BiblioNoneType;
 class AddContextFieldListener implements EventSubscriberInterface
 {
 
-    public $param;
-
-    public function __construct(array $param = NULL)
-    {
-        $this->param = (array) $param;
-    }
-
     public static function getSubscribedEvents()
     {
         return array(

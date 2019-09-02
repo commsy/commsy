@@ -1,7 +1,6 @@
 <?php
 namespace App\Form\Type\Context;
 
-use App\Form\DataTransformer\PreferredTemplateTransformer;
 use App\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -10,13 +9,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProjectType extends AbstractType
 {
-    private $transformer;
-
-    public function __construct(PreferredTemplateTransformer $transformer)
-    {
-        $this->transformer = $transformer;
-    }
-
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -34,13 +26,12 @@ class ProjectType extends AbstractType
         // added as 'type_sub' in `AddContextFieldListener`? However, `empty_data` will work here.
         $builder->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
+                'placeholder' => false,
                 'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'No template',
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
                 'empty_data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
-                'data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
             ]);
         if (!empty($options['times'])) {
             $builder->add('time_interval', Select2ChoiceType::class, [
@@ -63,9 +54,6 @@ class ProjectType extends AbstractType
                 'translation_domain' => 'settings',
             ])
         ;
-
-        $builder->get('master_template')
-            ->addModelTransformer(new PreferredTemplateTransformer());
     }
 
     /**

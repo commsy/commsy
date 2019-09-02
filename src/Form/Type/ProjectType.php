@@ -3,7 +3,6 @@
 namespace App\Form\Type;
 
 use App\Entity\Room;
-use App\Form\DataTransformer\PreferredTemplateTransformer;
 use App\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -83,9 +82,6 @@ class ProjectType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'room',
             ]);
-
-        $builder->get('master_template')
-            ->addModelTransformer(new PreferredTemplateTransformer());
 
             $constraints = [];
             if (isset($options['linkRoomCategoriesMandatory']) && $options['linkRoomCategoriesMandatory']) {
