@@ -45,6 +45,9 @@ fos_ck_editor:
         autogrow:
             path:     "/ckeditor/autogrow/"
             filename: "plugin.js"
+        stickytoolbar:
+            path:     "/ckeditor/stickytoolbar/"
+            filename: "plugin.js"
         lineutils:
             path:     "/ckeditor/lineutils/"
             filename: "plugin.js"
@@ -75,7 +78,7 @@ fos_ck_editor:
     configs:
         cs_item_config:
             toolbar: "fullToolbar"
-            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,sharedspace,resize,elementspath'
             autoGrow_onStartup: true
