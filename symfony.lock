@@ -299,6 +299,9 @@
     "liip/theme-bundle": {
         "version": "1.6.1"
     },
+    "masterminds/html5": {
+        "version": "2.7.0"
+    },
     "mediawiki/oauthclient": {
         "version": "0.1.2"
     },
@@ -394,9 +397,6 @@
     },
     "psr/log": {
         "version": "1.0.2"
-    },
-    "psr/simple-cache": {
-        "version": "1.0.1"
     },
     "ralouphie/getallheaders": {
         "version": "2.0.5"
@@ -586,6 +586,9 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/mime": {
+        "version": "v4.3.3"
+    },
     "symfony/monolog-bridge": {
         "version": "v4.2.4"
     },
@@ -647,6 +650,9 @@
         "version": "v1.11.0"
     },
     "symfony/polyfill-php72": {
+        "version": "v1.11.0"
+    },
+    "symfony/polyfill-php73": {
         "version": "v1.11.0"
     },
     "symfony/polyfill-util": {
@@ -783,6 +789,24 @@
             "config/packages/dev/web_profiler.yaml",
             "config/packages/test/web_profiler.yaml",
             "config/routes/dev/web_profiler.yaml"
+        ]
+    },
+    "symfony/webpack-encore-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "faa1c4972a2b855edc2e113bcf9e1d84b02bf1de"
+        },
+        "files": [
+            "assets/css/app.css",
+            "assets/js/app.js",
+            "config/packages/assets.yaml",
+            "config/packages/prod/webpack_encore.yaml",
+            "config/packages/webpack_encore.yaml",
+            "package.json",
+            "webpack.config.js"
         ]
     },
     "symfony/yaml": {

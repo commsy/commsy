@@ -88,7 +88,7 @@
                         <i class="uk-icon-check uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Confirm'|trans({}, 'user') }}</span>
                     </a>
-                    <a class="uk-button uk-button-small uk-button-danger uk-border-rounded responsive-icon-only" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                    <a class="uk-button uk-button-small uk-button-danger uk-border-rounded responsive-icon-only" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-delete', 'userDetail': 1}) }}" id="status-delete">
                         <i class="uk-icon-times uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Reject'|trans({}, 'user') }}</span>
                     </a>

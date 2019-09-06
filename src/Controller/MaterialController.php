@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Download\DownloadAction;
 use App\Http\JsonRedirectResponse;
 use App\Entity\License;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -250,7 +251,7 @@ class MaterialController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
-    public function detailAction($roomId, $itemId, $versionId = null, Request $request)
+    public function detailAction($roomId, $itemId, $versionId = null, Request $request, LegacyMarkup $legacyMarkup)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -306,9 +307,8 @@ class MaterialController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,

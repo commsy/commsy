@@ -254,7 +254,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
    $room_item = $room_manager->getItem($current_item_id);
    $portal_item = $environment->getCurrentPortalItem();
    
-   if($portal_item->withAGBDatasecurity() and $room_item->getAGBStatus() == 1){
+   if($room_item->getAGBStatus() == 1) {
    	$agb_acceptance = false;
    	if($room_item->getAGBStatus() == 1 AND isset($_POST['agb_acceptance']) and $_POST['agb_acceptance'] == 1){
    		$agb_acceptance = true;
@@ -358,10 +358,6 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              $group->setTitle('ALL');
              $user_item->setGroupByID($group->getItemID());
           }
-       }
-       // set new agb date
-       if($current_context->withAGBDatasecurity()){
-       	$user_item->setAGBAcceptance();
        }
 
        // test if user id allready exist (reload page)

@@ -127,7 +127,7 @@ class ItemVoter extends Voter
 
         if ($item->getItemType() == CS_DISCUSSION_TYPE) {
             $request = $this->requestStack->getCurrentRequest();
-            if ($request->get('_route') == 'commsy_discussion_createarticle') {
+            if ($request->get('_route') == 'app_discussion_createarticle') {
                 return true;
             }
         }
