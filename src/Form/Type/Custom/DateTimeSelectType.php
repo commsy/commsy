@@ -25,10 +25,13 @@ class DateTimeSelectType extends AbstractType
                 'input'  => 'datetime',
                 'label' => false,
                 'widget' => 'single_text',
-                'format' => 'MM/DD/yyyy',
+                'format' => 'MM/dd/yyyy',
                 'required' => false,
+                'html5' => false,
                 'attr' => array(
-                    'data-uk-datepicker' => '{format:\'MM/DD/YYYY\'}',
+                    'data-uk-datepicker' => '{
+                        format:\'MM/DD/YYYY\',
+                        }',
                 )
             ));
         }else {
@@ -37,6 +40,7 @@ class DateTimeSelectType extends AbstractType
                 'label' => false,
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
+                'html5' => false,
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
