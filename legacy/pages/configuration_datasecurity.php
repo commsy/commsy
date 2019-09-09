@@ -171,18 +171,6 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
       	} else if($hide_accountname == 1){
       		$context_item->setHideAccountname();
       	}
-      	
-      	if (!empty($_POST['use_ds_agb'])){
-      		$ds_agb = $_POST['use_ds_agb'];
-      	} else {
-      		#$ds_agb = 1;
-      	}
-      	
-      	if($ds_agb == 2){
-      		$context_item->unsetAGBDatasecurity();
-      	} else {
-      		$context_item->setAGBDatasecurity();
-      	}
 
          $hideMailDefault = $_POST['default_hide_mail'];
          if($hideMailDefault == 2){

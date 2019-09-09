@@ -82,7 +82,7 @@ class ProjectController extends AbstractController
      * @Route("/room/{roomId}/project")
      * @Template()
      */
-    public function listAction($roomId, Request $request)
+    public function listAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment)
     {
         // setup filter form
         $defaultFilterValues = array(
@@ -106,7 +106,7 @@ class ProjectController extends AbstractController
 
         $usageInfo = false;
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         if ($roomItem->getUsageInfoTextForRubricInForm('project') != '') {
@@ -119,7 +119,8 @@ class ProjectController extends AbstractController
             'form' => $filterForm->createView(),
             'module' => 'project',
             'itemsCountArray' => $itemsCountArray,
-            'usageInfo' => $usageInfo
+            'usageInfo' => $usageInfo,
+            'userCanCreateContext' => $legacyEnvironment->getCurrentUserItem()->isAllowedToCreateContext(),
         );
     }
     
@@ -176,6 +177,12 @@ class ProjectController extends AbstractController
     public function createAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        if (!$currentUser->isAllowedToCreateContext()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();

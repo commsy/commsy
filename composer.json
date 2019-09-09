@@ -22,6 +22,7 @@
         "lexik/form-filter-bundle": "^5.0",
         "liip/imagine-bundle": "^2.1",
         "liip/theme-bundle": "^1.6",
+        "masterminds/html5": "^2.7",
         "mediawiki/oauthclient": "^0.1.2",
         "nategood/httpful": "^0.2.20",
         "nette/utils": "^3.0",

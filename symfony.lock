@@ -1,6 +1,24 @@
 {
+    "masterminds/html5": {
+        "version": "2.7.0"
+    },
+    "symfony/cache-contracts": {
+        "version": "v1.1.5"
+    },
+    "symfony/event-dispatcher-contracts": {
+        "version": "v1.1.5"
+    },
+    "symfony/http-client-contracts": {
+        "version": "v1.1.6"
+    },
     "symfony/serializer": {
         "version": "v4.3.3"
+    },
+    "symfony/service-contracts": {
+        "version": "v1.1.6"
+    },
+    "symfony/translation-contracts": {
+        "version": "v1.1.6"
     },
     "symfony/webpack-encore-bundle": {
         "version": "1.0",
