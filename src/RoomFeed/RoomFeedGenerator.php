@@ -13,6 +13,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 
 class RoomFeedGenerator
 {
@@ -163,9 +164,9 @@ class RoomFeedGenerator
     /**
      * Sets filter conditions to apply when fetching items
      *
-     * @param Form $filterForm
+     * @param FormInterface $filterForm
      */
-    public function setFilterConditions(Form $filterForm)
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 

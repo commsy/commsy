@@ -4,6 +4,12 @@ namespace App\Controller;
 
 use App\Action\Copy\InsertAction;
 use App\Action\Copy\RemoveAction;
+use App\Services\CopyService;
+use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
+use cs_item;
+use cs_room_item;
+use Exception;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -23,9 +29,26 @@ class CopyController extends BaseController
     /**
      * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
      * @Template()
+     * @param Request $request
+     * @param CopyService $copyService
+     * @param RoomService $roomService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $max
+     * @param int $start
+     * @param string $sort
+     * @return array
      */
-    public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
-    {
+    public function feedAction(
+        Request $request,
+        CopyService $copyService,
+        RoomService $roomService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $max = 10,
+        int $start = 0,
+        string $sort = 'date'
+    ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query parameters (AJAX)
         $copyFilter = $request->get('copyFilter');
@@ -33,7 +56,7 @@ class CopyController extends BaseController
             $copyFilter = $request->query->get('copy_filter');
         }
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -47,9 +70,6 @@ class CopyController extends BaseController
             }
         }
 
-        // get the copy service
-        $copyService = $this->get('commsy.copy_service');
-
         if ($roomItem->isPrivateRoom()) {
             $rubrics = [
                 "announcement" => "announcement",
@@ -59,7 +79,6 @@ class CopyController extends BaseController
                 "todo" => "todo",
             ];
         } else {
-            $roomService = $this->get('commsy_legacy.room_service');
             $rubrics = $roomService->getRubricInformation($roomId);
             $rubrics = array_combine($rubrics, $rubrics);
         }
@@ -97,14 +116,23 @@ class CopyController extends BaseController
             'allowedActions' => $allowedActions,
         ];
     }
-    
+
     /**
      * @Route("/room/{roomId}/copy")
      * @Template()
+     * @param Request $request
+     * @param CopyService $copyService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function listAction($roomId, Request $request)
+    public function listAction(
+        Request $request,
+        CopyService $copyService,
+        LegacyEnvironment $environment,
+        int $roomId)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -119,9 +147,6 @@ class CopyController extends BaseController
         }
 
         $filterForm = $this->createFilterForm($roomItem);
-
-        // get the copy service
-        $copyService = $this->get('commsy.copy_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -149,10 +174,15 @@ class CopyController extends BaseController
 
     /**
      * @Route("/room/{roomId}/copy/xhr/insert", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrInsertAction($roomId, Request $request)
-    {
+    public function xhrInsertAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -210,9 +240,14 @@ class CopyController extends BaseController
 
     /**
      * @Route("/room/{roomId}/copy/xhr/remove", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrRemoveAction($roomId, Request $request)
+    public function xhrRemoveAction(
+        Request $request,
+        int $roomId)
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
@@ -223,13 +258,17 @@ class CopyController extends BaseController
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_item[]
+     * @return cs_item[]
      */
-    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
+    public function getItemsByFilterConditions(
+        Request $request,
+        $roomItem,
+        $selectAll,
+        $itemIds = []
+    ) {
         $copyService = $this->get('commsy.copy_service');
 
         if ($selectAll) {
@@ -251,11 +290,12 @@ class CopyController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      * @return FormInterface
      */
-    private function createFilterForm($room)
-    {
+    private function createFilterForm(
+        cs_room_item $room
+    ) {
         if ($room->isPrivateRoom()) {
             $rubrics = [
                 "announcement" => "announcement",

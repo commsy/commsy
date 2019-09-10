@@ -5,11 +5,26 @@ namespace App\Controller;
 use App\Action\Download\DownloadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\TopicFilterType;
+use App\Form\DataTransformer\TopicTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
+use App\Utils\AssessmentService;
+use App\Utils\CategoryService;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
+use App\Utils\RoomService;
+use App\Utils\TopicService;
+use cs_project_item;
+use cs_room_item;
+use cs_topic_item;
+use cs_user_item;
+use Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -18,6 +33,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class TopicController
@@ -29,23 +46,24 @@ class TopicController extends BaseController
     /**
      * @Route("/room/{roomId}/topic")
      * @Template()
+     * @param Request $request
+     * @param TopicService $topicService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function listAction($roomId, Request $request)
+    public function listAction(
+        Request $request,
+        TopicService $topicService,
+        LegacyEnvironment $environment,
+        int $roomId)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomService = $this->get('commsy_legacy.room_service');
-        /** @var \cs_project_item $roomItem */
-        $roomItem = $roomService->getRoomItem($roomId);
-
+        $legacyEnvironment = $environment->getEnvironment();
+        $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-
-        // get the topic manager service
-        $topicService = $this->get('commsy_legacy.topic_service');
         $filterForm = $this->createFilterForm($roomItem);
-
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
@@ -79,16 +97,30 @@ class TopicController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
-            'showAssociations' => false,
         );
     }
-    
-   /**
+
+    /**
      * @Route("/room/{roomId}/topic/feed/{start}/{sort}")
      * @Template()
+     * @param Request $request
+     * @param ReaderService $readerService
+     * @param TopicService $topicService
+     * @param int $roomId
+     * @param int $max
+     * @param int $start
+     * @param string $sort
+     * @return array
      */
-    public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
-    {
+    public function feedAction(
+        Request $request,
+        ReaderService $readerService,
+        TopicService $topicService,
+        int $roomId,
+        int $max = 10,
+        int $start = 0,
+        string $sort = 'date'
+    ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $topicFilter = $request->get('topicFilter');
@@ -96,22 +128,15 @@ class TopicController extends BaseController
             $topicFilter = $request->query->get('topic_filter');
         }
 
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
-
+        $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // get the topic manager service
-        $topicService = $this->get('commsy_legacy.topic_service');
-
         if ($topicFilter) {
             $filterForm = $this->createFilterForm($roomItem);
-
             // manually bind values from the request
             $filterForm->submit($topicFilter);
-
             // set filter conditions in topic manager
             $topicService->setFilterConditions($filterForm);
         }
@@ -121,9 +146,6 @@ class TopicController extends BaseController
 
         // get topic list from manager service 
         $topics = $topicService->getListTopics($roomId, $max, $start);
-
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $readerList = array();
         $allowedActions = array();
@@ -151,38 +173,55 @@ class TopicController extends BaseController
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'topic')")
+     * @param Request $request
+     * @param AnnotationService $annotationService
+     * @param CategoryService $categoryService
+     * @param ItemService $itemService
+     * @param ReaderService $readerService
+     * @param TopicService $topicService
+     * @param TranslatorInterface $translator
+     * @param LegacyMarkup $legacyMarkup
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function detailAction(
+        Request $request,
+        AnnotationService $annotationService,
+        CategoryService $categoryService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        TopicService $topicService,
+        TranslatorInterface $translator,
+        LegacyMarkup $legacyMarkup,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-
-        $topicService = $this->get('commsy_legacy.topic_service');
         $topic = $topicService->getTopic($itemId);
-
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($annotationService, $itemService, $readerService, $topicService, $environment, $roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $topicCategories = $topic->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $topicCategories);
         }
 
         $alert = null;
         if ($infoArray['topic']->isLocked()) {
-            $translator = $this->get('translator');
-
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
         $pathTopicItem = null;
         if ($request->query->get('path')) {
-            $topicService = $this->get('commsy_legacy.topic_service');
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
@@ -191,7 +230,6 @@ class TopicController extends BaseController
             $isLinkedToItems = true;
         }
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
@@ -226,20 +264,19 @@ class TopicController extends BaseController
        );
     }
 
-
- 
-
-    private function getDetailInfo ($roomId, $itemId) {
+    private function getDetailInfo (
+        AnnotationService $annotationService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        TopicService $topicService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $infoArray = array();
-        
-        $topicService = $this->get('commsy_legacy.topic_service');
-        $itemService = $this->get('commsy_legacy.item_service');
-
-        $annotationService = $this->get('commsy_legacy.annotation_service');
-        
         $topic = $topicService->getTopic($itemId);
-        
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $legacyEnvironment = $environment->getEnvironment();
         $item = $topic;
         $reader_manager = $legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
@@ -252,15 +289,8 @@ class TopicController extends BaseController
         if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
-
-        
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
-        $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomService->getRoomItem($topic->getContextId());
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -271,7 +301,7 @@ class TopicController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
@@ -292,8 +322,6 @@ class TopicController extends BaseController
             }
             $current_user = $user_list->getNext();
         }
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
         $readerList = array();
         $modifierList = array();
         $reader = $readerService->getLatestReader($topic->getItemId());
@@ -385,11 +413,14 @@ class TopicController extends BaseController
 
     /**
      * @Route("/room/{roomId}/topic/create")
+     * @param TopicService $topicService
+     * @param int $roomId
+     * @return RedirectResponse
      */
-    public function createAction($roomId, Request $request)
-    {
-        $topicService = $this->get('commsy_legacy.topic_service');
-        
+    public function createAction(
+        TopicService $topicService,
+        int $roomId
+    ) {
         // create new topic item
         $topicItem = $topicService->getNewtopic();
         $topicItem->setDraftStatus(1);
@@ -402,9 +433,13 @@ class TopicController extends BaseController
     /**
      * @Route("/room/{roomId}/topic/new")
      * @Template()
+     * @param Request $request
+     * @param int $roomId
      */
-    public function newAction($roomId, Request $request)
-    {
+    public function newAction(
+        Request $request,
+        int $roomId
+    ) {
 
     }
 
@@ -413,16 +448,34 @@ class TopicController extends BaseController
      * @Route("/room/{roomId}/topic/{itemId}/edit")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
+     * @param Request $request
+     * @param CategoryService $categoryService
+     * @param ItemService $itemService
+     * @param TopicService $topicService
+     * @param TopicTransformer $transformer
+     * @param TranslatorInterface $translator
+     * @param ItemController $itemController
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
+    public function editAction(
+        Request $request,
+        CategoryService $categoryService,
+        ItemService $itemService,
+        TopicService $topicService,
+        TopicTransformer $transformer,
+        TranslatorInterface $translator,
+        ItemController $itemController,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $item = $itemService->getItem($itemId);
-        
-        $topicService = $this->get('commsy_legacy.topic_service');
-        $transformer = $this->get('commsy_legacy.transformer.topic');
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $isDraft = $item->isDraft();
@@ -435,14 +488,12 @@ class TopicController extends BaseController
         if (!$topicItem) {
             throw $this->createNotFoundException('No topic found for id ' . $itemId);
         }
-        $itemController = $this->get('commsy.item_controller');
         $formData = $transformer->transform($topicItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $formData['draft'] = $isDraft;
-        $translator = $this->get('translator');
         $form = $this->createForm(TopicType::class, $formData, array(
             'action' => $this->generateUrl('app_date_edit', array(
                 'roomId' => $roomId,
@@ -450,7 +501,7 @@ class TopicController extends BaseController
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+                'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
@@ -488,7 +539,7 @@ class TopicController extends BaseController
             return $this->redirectToRoute('app_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($topicItem));
+        $eventDispatcher->dispatch(new CommsyEditEvent($topicItem), 'commsy.edit');
 
         return array(
             'form' => $form->createView(),
@@ -504,13 +555,24 @@ class TopicController extends BaseController
      * @Route("/room/{roomId}/topic/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
+     * @param ItemService $itemService
+     * @param ReaderService $readerService
+     * @param TopicService $topicService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function saveAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        
-        $topicService = $this->get('commsy_legacy.topic_service');
-        
+    public function saveAction(
+        ItemService $itemService,
+        ReaderService $readerService,
+        TopicService $topicService,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $topic = $topicService->getTopic($itemId);
         
         $itemArray = array($topic);
@@ -519,7 +581,7 @@ class TopicController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
         
         $userManager = $legacyEnvironment->getUserManager();
@@ -551,8 +613,6 @@ class TopicController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
@@ -566,7 +626,7 @@ class TopicController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($topic));
+        $eventDispatcher->dispatch(new CommsyEditEvent($topic), 'commsy.save');
 
         return array(
             'roomId' => $roomId,
@@ -580,11 +640,27 @@ class TopicController extends BaseController
 
     /**
      * @Route("/room/{roomId}/topic/{itemId}/print")
+     * @param AnnotationService $annotationService
+     * @param ItemService $itemService
+     * @param PrintService $printService
+     * @param ReaderService $readerService
+     * @param TopicService $topicService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return Response
      */
-    public function printAction($roomId, $itemId, PrintService $printService)
-    {
-
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+    public function printAction(
+        AnnotationService $annotationService,
+        ItemService $itemService,
+        PrintService $printService,
+        ReaderService $readerService,
+        TopicService $topicService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        $infoArray = $this->getDetailInfo($annotationService, $itemService, $readerService, $topicService, $environment, $roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -617,38 +693,41 @@ class TopicController extends BaseController
 
         return $printService->buildPdfResponse($html);
     }
-    
+
     /**
      * @Route("/room/{roomId}/topic/print")
+     * @param Request $request
+     * @param AssessmentService $assessmentService
+     * @param PrintService $printService
+     * @param ReaderService $readerService
+     * @param TopicService $topicService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return Response
      */
-    public function printlistAction($roomId, Request $request, PrintService $printService)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
-
+    public function printlistAction(
+        Request $request,
+        AssessmentService $assessmentService,
+        PrintService $printService,
+        ReaderService $readerService,
+        TopicService $topicService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-
         $filterForm = $this->createFilterForm($roomItem);
-
-        // get the announcement manager service
-        $topicService = $this->get('commsy_legacy.topic_service');
-
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $topicService->setFilterConditions($filterForm);
         }
-
         // get announcement list from manager service 
         $topics = $topicService->getListTopics($roomId);
-
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
@@ -658,7 +737,6 @@ class TopicController extends BaseController
 
         $ratingList = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->get('commsy_legacy.assessment_service');
             $itemIds = array();
             foreach ($topics as $topic) {
                 $itemIds[] = $topic->getItemId();
@@ -690,14 +768,25 @@ class TopicController extends BaseController
      * @Route("/room/{roomId}/topic/{itemId}/editpath")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
      */
-    public function editPathAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        /** @var \cs_topic_item $item */
+    public function editPathAction(
+        Request $request,
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        /** @var cs_topic_item $item */
         $item = $itemService->getTypedItem($itemId);
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $formData = array();
 
@@ -732,8 +821,6 @@ class TopicController extends BaseController
             $pathElements[$typedLinkedItem->getTitle()] = $typedLinkedItem->getItemId();
             $pathElementsAttr[$typedLinkedItem->getTitle()] = ['title' => $typedLinkedItem->getTitle(), 'type' => $typedLinkedItem->getItemType()];
         }
-
-
 
         $form = $this->createForm(TopicPathType::class, $formData, array(
             'action' => $this->generateUrl('app_topic_editpath', array(
@@ -791,7 +878,7 @@ class TopicController extends BaseController
             return $this->redirectToRoute('app_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($item));
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), 'commsy.edit');
 
         return array(
             'form' => $form->createView(),
@@ -802,19 +889,22 @@ class TopicController extends BaseController
      * @Route("/room/{roomId}/topic/{itemId}/savepath")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
+     * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param int $itemId
+     * @return array
      */
-    public function savePathAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
+    public function savePathAction(
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
+        int $itemId
+    ) {
         $item = $itemService->getItem($itemId);
-
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($item));
-
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), 'commsy.save');
         $isLinkedToItems = false;
         if (!empty($item->getAllLinkedItemIDArray())) {
             $isLinkedToItems = true;
         }
-
         return [
             'topic' => $itemService->getTypedItem($itemId),
             'isLinkedToItems' => $isLinkedToItems,
@@ -823,10 +913,15 @@ class TopicController extends BaseController
 
     /**
      * @Route("/room/{roomId}/topic/download")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function downloadAction($roomId, Request $request)
-    {
+    public function downloadAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -840,39 +935,55 @@ class TopicController extends BaseController
 
     /**
      * @Route("/room/{roomId}/topic/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function xhrMarkReadAction($roomId, Request $request)
-    {
+    public function xhrMarkReadAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
+        // TODO: find a way to load this service via new Symfony Dependency Injection!
         $action = $this->get('commsy.action.mark_read.generic');
         return $action->execute($room, $items);
     }
 
     /**
      * @Route("/room/{roomId}/topic/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function xhrDeleteAction($roomId, Request $request)
-    {
+    public function xhrDeleteAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
+        // TODO: find a way to load this service via new Symfony Dependency Injection!
         $action = $this->get('commsy.action.delete.generic');
         return $action->execute($room, $items);
     }
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_topic_item[]
+     * @return cs_topic_item[]
      */
-    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
+    public function getItemsByFilterConditions(
+        Request $request,
+        $roomItem,
+        $selectAll,
+        $itemIds = []
+    ) {
         $topicService = $this->get('commsy_legacy.topic_service');
 
         if ($selectAll) {
@@ -896,11 +1007,12 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      * @return FormInterface
      */
-    private function createFilterForm($room)
-    {
+    private function createFilterForm(
+        $room
+    ) {
         // setup filter form default values
         $defaultFilterValues = [
             'hide-deactivated-entries' => true,
@@ -915,7 +1027,10 @@ class TopicController extends BaseController
         ]);
     }
 
-    private function getTagDetailArray ($baseCategories, $itemCategories) {
+    private function getTagDetailArray (
+        $baseCategories,
+        $itemCategories
+    ) {
         $result = array();
         $tempResult = array();
         $addCategory = false;

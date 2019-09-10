@@ -6,9 +6,28 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\TodoStatus\TodoStatusAction;
+use App\Form\DataTransformer\TodoTransformer;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
+use App\Utils\AssessmentService;
+use App\Utils\CategoryService;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
+use App\Utils\RoomService;
+use App\Utils\TodoService;
+use App\Utils\TopicService;
+use cs_item;
+use cs_room_item;
+use cs_step_item;
+use cs_todo_item;
+use cs_user_item;
+use Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +43,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use App\Event\CommsyEditEvent;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class TodoController
@@ -35,19 +55,26 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo")
      * @Template()
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param TodoService $todoService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function listAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
+    public function listAction(
+        Request $request,
+        RoomService $roomService,
+        TodoService $todoService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-        
-        // get the todo manager service
-        $todoService = $this->get('commsy_legacy.todo_service');
 
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -65,10 +92,8 @@ class TodoController extends BaseController
         $itemsCountArray = $todoService->getCountArray($roomId);
  
         $usageInfo = false;
-        /** @noinspection PhpUndefinedMethodInspection */
         if ($roomItem->getUsageInfoTextForRubricInForm('todo') != '') {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('todo');
-            /** @noinspection PhpUndefinedMethodInspection */
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('todo');
         }
  
@@ -88,14 +113,17 @@ class TodoController extends BaseController
             'user' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/create")
+     * @param TodoService $todoService
+     * @param int $roomId
+     * @return RedirectResponse
      */
-    public function createAction($roomId)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
-        
+    public function createAction(
+        TodoService $todoService,
+        int $roomId
+    ) {
         // create new todo item
         $todoItem = $todoService->getNewTodo();
         $todoItem->setDraftStatus(1);
@@ -104,13 +132,34 @@ class TodoController extends BaseController
 
         return $this->redirectToRoute('app_todo_detail', array('roomId' => $roomId, 'itemId' => $todoItem->getItemId()));
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/feed/{start}/{sort}")
      * @Template()
+     * @param Request $request
+     * @param AssessmentService $assessmentService
+     * @param ReaderService $readerService
+     * @param RoomService $roomService
+     * @param TodoService $todoService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $max
+     * @param int $start
+     * @param string $sort
+     * @return array
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'duedate_rev', Request $request)
-    {
+    public function feedAction(
+        Request $request,
+        AssessmentService $assessmentService,
+        ReaderService $readerService,
+        RoomService $roomService,
+        TodoService $todoService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $max = 10,
+        int $start = 0,
+        string $sort = 'duedate_rev'
+    ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $todoFilter = $request->get('todoFilter');
@@ -118,15 +167,10 @@ class TodoController extends BaseController
             $todoFilter = $request->query->get('todo_filter');
         }
 
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-
-        // get the todo manager service
-        $todoService = $this->get('commsy_legacy.todo_service');
 
         if ($todoFilter) {
             $filterForm = $this->createFilterForm($roomItem);
@@ -142,13 +186,12 @@ class TodoController extends BaseController
         }
 
         // get todo list from manager service
-        /** @var \cs_todo_item[] $todos */
+        /** @var cs_todo_item[] $todos */
         $todos = $todoService->getListTodos($roomId, $max, $start, $sort);
 
         $this->get('session')->set('sortTodos', $sort);
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
@@ -170,7 +213,6 @@ class TodoController extends BaseController
 
         $ratingList = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->get('commsy_legacy.assessment_service');
             $itemIds = array();
             foreach ($todos as $todo) {
                 $itemIds[] = $todo->getItemId();
@@ -188,25 +230,46 @@ class TodoController extends BaseController
             'allowedActions' => $allowedActions,
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @param Request $request
+     * @param AnnotationService $annotationService
+     * @param AssessmentService $assessmentService
+     * @param CategoryService $categoryService
+     * @param ItemService $itemService
+     * @param ReaderService $readerService
+     * @param TodoService $todoService
+     * @param TopicService $topicService
+     * @param LegacyMarkup $legacyMarkup
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $itemService = $this->get('commsy_legacy.item_service');
-        
+    public function detailAction(
+        Request $request,
+        AnnotationService $annotationService,
+        AssessmentService $assessmentService,
+        CategoryService $categoryService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        TodoService $todoService,
+        TopicService $topicService,
+        LegacyMarkup $legacyMarkup,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $todo = $todoService->getTodo($itemId);
-
-        /** @var \cs_step_item[] $steps */
+        /** @var cs_step_item[] $steps */
         $steps = $todo->getStepItemList()->to_array();
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $reader_manager = $legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($todo->getItemID());
@@ -221,7 +284,6 @@ class TodoController extends BaseController
         }
 
         // mark annotations as read
-        $annotationService = $this->get('commsy_legacy.annotation_service');
         $annotationList = $todo->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
@@ -257,7 +319,7 @@ class TodoController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
@@ -278,8 +340,6 @@ class TodoController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
@@ -298,14 +358,13 @@ class TodoController extends BaseController
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $todoCategories = $todo->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $todoCategories);
         }
 
         $ratingDetail = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->get('commsy_legacy.assessment_service');
             $ratingDetail = $assessmentService->getRatingDetail($todo);
             $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
@@ -326,11 +385,9 @@ class TodoController extends BaseController
 
         $pathTopicItem = null;
         if ($request->query->get('path')) {
-            $topicService = $this->get('commsy_legacy.topic_service');
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
@@ -363,19 +420,25 @@ class TodoController extends BaseController
             'pathTopicItem' => $pathTopicItem,
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template("todo/edit_step.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @param TodoService $todoService
+     * @param TodoTransformer $transformer
+     * @param TranslatorInterface $translator
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function createStepAction($roomId, $itemId)
-    {
-        $translator = $this->get('translator');
-
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $transformer = $this->get('commsy_legacy.transformer.todo');
-
+    public function createStepAction(
+        TodoService $todoService,
+        TodoTransformer $transformer,
+        TranslatorInterface $translator,
+        int $roomId,
+        int $itemId
+    ) {
         $step = $todoService->getNewStep();
         $step->setDraftStatus(1);
         $step->setTodoID($itemId);
@@ -401,17 +464,31 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/{itemId}/editstep")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param TodoService $todoService
+     * @param TodoTransformer $transformer
+     * @param TranslatorInterface $translator
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
      */
-    public function editStepAction($roomId, $itemId, Request $request)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $transformer = $this->get('commsy_legacy.transformer.todo');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function editStepAction(
+        Request $request,
+        ItemService $itemService,
+        TodoService $todoService,
+        TodoTransformer $transformer,
+        TranslatorInterface $translator,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-
-        $translator = $this->get('translator');
 
         // get step
         $step = $todoService->getStep($itemId);
@@ -426,7 +503,7 @@ class TodoController extends BaseController
             'placeholderText' => '['.$translator->trans('insert title').']',
         ]);
 
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($step->getLinkedItem()));
+        $eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
@@ -456,7 +533,7 @@ class TodoController extends BaseController
                     // this will also update the todo item's modification date to indicate that it has changes
                     $step->getLinkedItem()->save();
 
-                    $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($step->getLinkedItem()));
+                    $eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::SAVE);
 
                     return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,
@@ -488,23 +565,39 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/{itemId}/edit")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @param Request $request
+     * @param CategoryService $categoryService
+     * @param ItemService $itemService
+     * @param RoomService $roomService
+     * @param TodoService $todoService
+     * @param TodoTransformer $transformer
+     * @param TranslatorInterface $translator
+     * @param ItemController $itemController
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-
-        /** @var \cs_item $item */
+    public function editAction(
+        Request $request,
+        CategoryService $categoryService,
+        ItemService $itemService,
+        RoomService $roomService,
+        TodoService $todoService,
+        TodoTransformer $transformer,
+        TranslatorInterface $translator,
+        ItemController $itemController,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        /** @var cs_item $item */
         $item = $itemService->getItem($itemId);
-        
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $transformer = $this->get('commsy_legacy.transformer.todo');
 
-        $translator = $this->get('translator');
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         $todoItem = NULL;
@@ -524,8 +617,6 @@ class TodoController extends BaseController
             $statusChoices[$value] = $key;
         }
 
-        $itemController = $this->get('commsy.item_controller');
-
         $formOptions = array(
             'action' => $this->generateUrl('app_todo_edit', array(
                 'roomId' => $roomId,
@@ -534,7 +625,7 @@ class TodoController extends BaseController
             'statusChoices' => $statusChoices,
             'placeholderText' => '['.$translator->trans('insert title').']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+                'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
@@ -585,7 +676,7 @@ class TodoController extends BaseController
             return $this->redirectToRoute('app_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($todoItem));
+        $eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
@@ -596,27 +687,36 @@ class TodoController extends BaseController
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @param ItemService $itemService
+     * @param TodoService $todoService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param ReaderService $readerService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function saveAction($roomId, $itemId)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
+    public function saveAction(
+        ItemService $itemService,
+        TodoService $todoService,
+        EventDispatcherInterface $eventDispatcher,
+        ReaderService $readerService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $item = $itemService->getItem($itemId);
-        
-        $todoService = $this->get('commsy_legacy.todo_service');
-        
         if ($item->getItemType() == 'todo') {
             $typedItem = $todoService->getTodo($itemId);
-
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($typedItem));
+            $eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
         } else if ($item->getItemType() == 'step') {
             $typedItem = $todoService->getStep($itemId);
-
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($typedItem->getLinkedItem()));
+            $eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()), CommsyEditEvent::SAVE);
         }
         
         $itemArray = array($typedItem);
@@ -625,7 +725,7 @@ class TodoController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
         
         $userManager = $legacyEnvironment->getUserManager();
@@ -637,7 +737,7 @@ class TodoController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
@@ -660,8 +760,6 @@ class TodoController extends BaseController
 		    $current_user = $user_list->getNext();
 		}
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
@@ -688,20 +786,26 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo/{itemId}/rating/{vote}")
      * @Template()
-     **/
-    public function ratingAction($roomId, $itemId, $vote)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
+     * @param AssessmentService $assessmentService
+     * @param TodoService $todoService
+     * @param int $roomId
+     * @param int $itemId
+     * @param $vote
+     * @return array
+     */
+    public function ratingAction(
+        AssessmentService $assessmentService,
+        TodoService $todoService,
+        int $roomId,
+        int $itemId,
+        $vote
+    ) {
         $todo = $todoService->getTodo($itemId);
-        
-        $assessmentService = $this->get('commsy_legacy.assessment_service');
         if ($vote != 'remove') {
             $assessmentService->rateItem($todo, $vote);
         } else {
             $assessmentService->removeRating($todo);
         }
-        
-        $assessmentService = $this->get('commsy_legacy.assessment_service');
         $ratingDetail = $assessmentService->getRatingDetail($todo);
         $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
         $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
@@ -716,18 +820,34 @@ class TodoController extends BaseController
             ),
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/{itemId}/print")
+     * @param AssessmentService $assessmentService
+     * @param ItemService $itemService
+     * @param CategoryService $categoryService
+     * @param ReaderService $readerService
+     * @param TodoService $todoService
+     * @param PrintService $printService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @param int $itemId
+     * @return Response
      */
-    public function printAction($roomId, $itemId, PrintService $printService)
-    {
-
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
-
+    public function printAction(
+        AssessmentService $assessmentService,
+        ItemService $itemService,
+        CategoryService $categoryService,
+        ReaderService $readerService,
+        TodoService $todoService,
+        PrintService $printService,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId,
+        int $itemId
+    ) {
+        $infoArray = $this->getDetailInfo($assessmentService, $categoryService, $itemService, $readerService, $todoService, $legacyEnvironment, $roomId, $itemId);
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-
         $html = $this->renderView('todo/detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['todo'],
@@ -755,26 +875,38 @@ class TodoController extends BaseController
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => 'roomCategories',
         ]);
-
         return $printService->buildPdfResponse($html);
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/print/{sort}", defaults={"sort" = "none"})
+     * @param Request $request
+     * @param AssessmentService $assessmentService
+     * @param PrintService $printService
+     * @param ReaderService $readerService
+     * @param RoomService $roomService
+     * @param TodoService $todoService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param string $sort
+     * @return Response
      */
-    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
+    public function printlistAction(
+        Request $request,
+        AssessmentService $assessmentService,
+        PrintService $printService,
+        ReaderService $readerService,
+        RoomService $roomService,
+        TodoService $todoService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        string $sort
+    ) {
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-
         $filterForm = $this->createFilterForm($roomItem);
-
-        // get the announcement manager service
-        $todoService = $this->get('commsy_legacy.todo_service');
         $numAllTodos = $todoService->getCountArray($roomId)['countAll'];
 
         // apply filter
@@ -786,20 +918,19 @@ class TodoController extends BaseController
 
         // get todo list from manager service
         if ($sort != "none") {
-            /** @var \cs_todo_item[] $todos */
+            /** @var cs_todo_item[] $todos */
             $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
         }
         elseif ($this->get('session')->get('sortTodos')) {
-            /** @var \cs_todo_item[] $todos */
+            /** @var cs_todo_item[] $todos */
             $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $this->get('session')->get('sortTodos'));
         }
         else {
-            /** @var \cs_todo_item[] $todos */
+            /** @var cs_todo_item[] $todos */
             $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, 'date');
         }
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
@@ -809,7 +940,6 @@ class TodoController extends BaseController
 
         $ratingList = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->get('commsy_legacy.assessment_service');
             $itemIds = array();
             foreach ($todos as $todo) {
                 $itemIds[] = $todo->getItemId();
@@ -838,24 +968,29 @@ class TodoController extends BaseController
 
         return $printService->buildPdfResponse($html);
     }
-    
+
     /**
      * @Route("/room/{roomId}/todo/{itemId}/participate")
+     * @param TodoService $todoService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return RedirectResponse
      */
-    public function participateAction($roomId, $itemId)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
+    public function participateAction(
+        TodoService $todoService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $todo = $todoService->getTodo($itemId);
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
-        
         if (!$todo->isProcessor($legacyEnvironment->getCurrentUserItem())) {
             $todo->addProcessor($currentUser);
         } else {
             $todo->removeProcessor($currentUser);
         }
-
         return $this->redirectToRoute('app_todo_detail', [
             'roomId' => $roomId,
             'itemId' => $itemId,
@@ -864,10 +999,15 @@ class TodoController extends BaseController
 
     /**
      * @Route("/room/{roomId}/todo/download")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function downloadAction($roomId, Request $request)
-    {
+    public function downloadAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -881,10 +1021,15 @@ class TodoController extends BaseController
 
     /**
      * @Route("/room/{roomId}/todo/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function xhrMarkReadAction($roomId, Request $request)
-    {
+    public function xhrMarkReadAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -895,10 +1040,15 @@ class TodoController extends BaseController
 
     /**
      * @Route("/room/{roomId}/todo/xhr/copy", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function xhrCopyAction($roomId, Request $request)
-    {
+    public function xhrCopyAction(
+        Request $request,
+        $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -908,10 +1058,15 @@ class TodoController extends BaseController
 
     /**
      * @Route("/room/{roomId}/todo/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function xhrDeleteAction($roomId, Request $request)
-    {
+    public function xhrDeleteAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -921,20 +1076,25 @@ class TodoController extends BaseController
 
     /**
      * @Route("/room/{roomId}/todo/xhr/status", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param $roomId
+     * @return Response
+     * @throws Exception
      */
-    public function xhrStatusAction($roomId, Request $request)
-    {
+    public function xhrStatusAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         if (!$request->request->has('payload')) {
-            throw new \Exception('payload information not provided');
+            throw new Exception('payload information not provided');
         }
 
         $payload = $request->request->get('payload');
         if (!isset($payload['status'])) {
-            throw new \Exception('new status string not provided');
+            throw new Exception('new status string not provided');
         }
 
         $newStatus = $payload['status'];
@@ -946,13 +1106,17 @@ class TodoController extends BaseController
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_todo_item[]
+     * @return cs_todo_item[]
      */
-    protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
+    protected function getItemsByFilterConditions(
+        Request $request,
+        $roomItem,
+        $selectAll,
+        $itemIds = []
+    ) {
         $todoService = $this->get('commsy_legacy.todo_service');
 
         if ($selectAll) {
@@ -977,7 +1141,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      * @return FormInterface
      */
     private function createFilterForm($room)
@@ -1031,15 +1195,21 @@ class TodoController extends BaseController
         return $result;
     }
 
-    private function getDetailInfo ($roomId, $itemId) {
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $itemService = $this->get('commsy_legacy.item_service');
-
+    private function getDetailInfo (
+        AssessmentService $assessmentService,
+        CategoryService $categoryService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        TodoService $todoService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $todo = $todoService->getTodo($itemId);
 
         $stepList = $todo->getStepItemList()->to_array();
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $item = $todo;
         $reader_manager = $legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
@@ -1068,7 +1238,7 @@ class TodoController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
@@ -1089,8 +1259,6 @@ class TodoController extends BaseController
             }
             $current_user = $user_list->getNext();
         }
-        $readerService = $this->get('commsy_legacy.reader_service');
-
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
@@ -1109,20 +1277,19 @@ class TodoController extends BaseController
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $todoCategories = $todo->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $todoCategories);
         }
 
         $ratingDetail = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->get('commsy_legacy.assessment_service');
             $ratingDetail = $assessmentService->getRatingDetail($todo);
             $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
         }
 
-        /** @var \cs_todo_item[] $todos */
+        /** @var cs_todo_item[] $todos */
         $todos = $todoService->getListTodos($roomId);
         $todoList = array();
         $counterBefore = 0;

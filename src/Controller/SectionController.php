@@ -9,6 +9,9 @@
 namespace App\Controller;
 
 
+use cs_room_item;
+use cs_step_item;
+use Exception;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -20,26 +23,36 @@ class SectionController extends BaseController
 
     /**
      * @Route("/room/{roomId}/section/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrDeleteAction($roomId, Request $request)
-    {
+    public function xhrDeleteAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
+        // TODO: find a way to load this service via new Symfony Dependency Injection!
         $action = $this->get('commsy.action.delete.section');
         return $action->execute($room, $items);
     }
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_step_item[]
+     * @return cs_step_item[]
      */
-    protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
+    protected function getItemsByFilterConditions(
+        Request $request,
+        $roomItem,
+        $selectAll,
+        $itemIds = []
+    ) {
         $materialService = $this->get('commsy_legacy.material_service');
 
         if (count($itemIds) == 1) {

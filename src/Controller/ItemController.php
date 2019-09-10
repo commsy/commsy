@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use FeedIo\Feed\Item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +23,13 @@ use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use App\Event\CommsyEditEvent;
+use App\Services\LegacyEnvironment;
+use App\Utils\CategoryService;
+use App\Utils\ItemService;
+use App\Utils\MaterialService;
+use App\Utils\RoomService;
+use App\Utils\UserService;
+
 
 /**
  * Class ItemController
@@ -33,10 +42,16 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param bool $draft
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
-    public function editDescriptionAction($roomId, $itemId, $draft = false, Request $request)
+    public function editDescriptionAction($roomId, $itemId, $draft = false, Request $request, ItemService $itemService, LegacyEnvironment $environment)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
         /** @var \cs_item $item */
         $item = $itemService->getTypedItem($itemId);
         
@@ -76,7 +91,7 @@ class ItemController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $legacyEnvironment = $environment->getEnvironment();
             if ($saveType == 'save' || $saveType == 'saveThisDate') {
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
@@ -118,15 +133,18 @@ class ItemController extends AbstractController
             'withRecurrence' => $withRecurrence,
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/item/{itemId}/savedescription")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param ItemService $itemService
+     * @return array
      */
-    public function saveDescriptionAction($roomId, $itemId)
+    public function saveDescriptionAction($roomId, $itemId, ItemService $itemService)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
         $itemArray = array($item);
     
@@ -150,21 +168,25 @@ class ItemController extends AbstractController
             'modifierList' => $modifierList
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/item/{itemId}/editworkflow")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @param MaterialService $materialService
+     * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
-    public function editWorkflowAction($roomId, $itemId, Request $request)
+    public function editWorkflowAction($roomId, $itemId, Request $request, RoomService $roomService, ItemService $itemService, MaterialService $materialService, LegacyEnvironment $environment)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $room = $roomService->getRoomItem($roomId);
-
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-        
-        $materialService = $this->get('commsy_legacy.material_service');
+
         $transformer = $this->get('commsy_legacy.transformer.item');
         
         $formData = array();
@@ -183,7 +205,7 @@ class ItemController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $legacyEnvironment = $environment->getEnvironment();
                 $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
                 $tempItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $tempItem->save();
@@ -206,23 +228,27 @@ class ItemController extends AbstractController
             'workflow' => $workflowData
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/item/{itemId}/editlinks/{feedAmount}", defaults={"feedAmount" = 20})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param $feedAmount
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
-    public function editLinksAction($roomId, $itemId, $feedAmount, Request $request)
+    public function editLinksAction($roomId, $itemId, $feedAmount, Request $request, RoomService $roomService, ItemService $itemService, LegacyEnvironment $environment)
     {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
-        
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getTypedItem($itemId);
+        $legacyEnvironment = $environment->getEnvironment();
 
+        $item = $itemService->getTypedItem($itemId);
         $roomItem = $roomService->getRoomItem($roomId);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $formData = array();
@@ -243,7 +269,7 @@ class ItemController extends AbstractController
         $optionsData['filterPublic']['public'] = 'public';
         $optionsData['filterPublic']['all'] = 'all';
 
-        $itemManager = $environment->getItemManager();
+        $itemManager = $legacyEnvironment->getItemManager();
         $itemManager->reset();
         $itemManager->setContextLimit($roomId);
         $itemManager->setTypeArrayLimit($rubricInformation);
@@ -293,7 +319,7 @@ class ItemController extends AbstractController
 
         // get latest edited items from current user
         $itemManager->setContextLimit($roomId);
-        $itemManager->setUserUserIDLimit($environment->getCurrentUser()->getUserId());
+        $itemManager->setUserUserIDLimit($legacyEnvironment->getCurrentUser()->getUserId());
         $itemManager->select();
         $latestItemList = $itemManager->get();
 
@@ -325,12 +351,9 @@ class ItemController extends AbstractController
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
-        $optionsData['hashtags'] = $this->getHashtags($roomId, $environment);
-        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $environment);
+        $optionsData['hashtags'] = $this->getHashtags($roomId, $legacyEnvironment);
+        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
-
-
-
 
         $translator = $this->get('translator');
 
@@ -358,7 +381,7 @@ class ItemController extends AbstractController
                 $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
 
                 // update modifier
-                $item->setModificatorItem($environment->getCurrentUserItem());
+                $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 // save links
                 $item->setLinkedItemsByIDArray($itemData);
@@ -397,18 +420,22 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}", defaults={"feedAmount" = 20})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param $feedAmount
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
-    public function editCatsBuzzAction($roomId, $itemId, $feedAmount, Request $request)
+    public function editCatsBuzzAction($roomId, $itemId, $feedAmount, Request $request, RoomService $roomService, ItemService $itemService, LegacyEnvironment $environment)
     {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
+        $legacyEnvironment = $environment->getEnvironment();
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
-
         $roomItem = $roomService->getRoomItem($roomId);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $formData = array();
@@ -429,7 +456,7 @@ class ItemController extends AbstractController
         $optionsData['filterPublic']['public'] = 'public';
         $optionsData['filterPublic']['all'] = 'all';
 
-        $itemManager = $environment->getItemManager();
+        $itemManager = $legacyEnvironment->getItemManager();
         $itemManager->reset();
         $itemManager->setContextLimit($roomId);
         $itemManager->setTypeArrayLimit($rubricInformation);
@@ -479,7 +506,7 @@ class ItemController extends AbstractController
 
         // get latest edited items from current user
         $itemManager->setContextLimit($roomId);
-        $itemManager->setUserUserIDLimit($environment->getCurrentUser()->getUserId());
+        $itemManager->setUserUserIDLimit($legacyEnvironment->getCurrentUser()->getUserId());
         $itemManager->select();
         $latestItemList = $itemManager->get();
 
@@ -505,8 +532,8 @@ class ItemController extends AbstractController
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
-        $optionsData['hashtags'] = $this->getHashtags($roomId, $environment);
-        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $environment);
+        $optionsData['hashtags'] = $this->getHashtags($roomId, $legacyEnvironment);
+        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
 
 
@@ -536,7 +563,7 @@ class ItemController extends AbstractController
                 // $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
 
                 // update modifier
-                $item->setModificatorItem($environment->getCurrentUserItem());
+                $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 // save links
                 //$item->setLinkedItemsByIDArray($itemData);
@@ -569,18 +596,21 @@ class ItemController extends AbstractController
             'itemsLatest' => $optionsData['itemsLatest'],
         ];
     }
-    
+
     /**
      * @Route("/room/{roomId}/item/{itemId}/savelinks")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @return array
      */
-    public function saveLinksAction($roomId, $itemId, Request $request)
+    public function saveLinksAction($roomId, $itemId, Request $request, RoomService $roomService, ItemService $itemService)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
-        $itemService = $this->get('commsy_legacy.item_service');
         $tempItem = $itemService->getTypedItem($itemId);
 
         $itemArray = array($tempItem);
@@ -604,11 +634,15 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/{itemId}/send")
      * @Template()
-     **/
-    public function sendAction($roomId, $itemId, Request $request)
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @return array|RedirectResponse
+     */
+    public function sendAction($roomId, $itemId, Request $request, ItemService $itemService)
     {
         // get item
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -676,11 +710,14 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/{itemId}/send/success")
      * @Template()
-     **/
-    public function sendSuccessAction($roomId, $itemId)
+     * @param $roomId
+     * @param $itemId
+     * @param ItemService $itemService
+     * @return array
+     */
+    public function sendSuccessAction($roomId, $itemId, ItemService $itemService)
     {
         // get item
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -719,13 +756,18 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}", defaults={"feedAmount" = 20})
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param $feedAmount
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @return JsonResponse
      */
-    public function autocompleteAction($roomId, $itemId, $feedAmount, Request $request)
+    public function autocompleteAction($roomId, $itemId, $feedAmount, Request $request, RoomService $roomService, ItemService $itemService, LegacyEnvironment $legacyEnvironment)
     {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
-        
-        $itemService = $this->get('commsy_legacy.item_service');
+        $environment = $legacyEnvironment->getEnvironment();
 
         $optionsData = array();
         $items = array();
@@ -795,19 +837,25 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/sendlist", condition="request.isXmlHttpRequest()")
      * @Template()
-     **/
-    public function sendlistAction($roomId, Request $request)
+     * @param $roomId
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param UserService $userService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @return array|JsonResponse
+     * @throws \Exception
+     */
+    public function sendlistAction($roomId, Request $request, RoomService $roomService, UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
         // extract item id from request data
         $requestContent = $request->getContent();
         if (empty($requestContent)) {
             throw new \Exception('no request content given');
         }
-        
-        $roomService = $this->get('commsy_legacy.room_service');
+
         $room = $roomService->getRoomItem($roomId);
 
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $environment = $legacyEnvironment->getEnvironment();
         $currentUser = $environment->getCurrentUser();
 
         $jsonArray = json_decode($requestContent, true);
@@ -826,7 +874,6 @@ class ItemController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userService = $this->get('commsy_legacy.user_service');
             
             $data = $form->getData();
 
@@ -874,11 +921,14 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/{itemId}/filelist")
      * @Template()
-     **/
-    public function filelistAction($roomId, $itemId, Request $request)
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @return JsonResponse
+     */
+    public function filelistAction($roomId, $itemId, Request $request, ItemService $itemService)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
-
         /** @var \cs_item $item */
         $item = $itemService->getItem($itemId);
 
@@ -907,12 +957,16 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/{itemId}/stepper")
      * @Template()
-     **/
-    public function stepperAction($roomId, $itemId, Request $request)
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @return array
+     */
+    public function stepperAction($roomId, $itemId, Request $request, ItemService $itemService, LegacyEnvironment $legacyEnvironment)
     {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        
-        $itemService = $this->get('commsy_legacy.item_service');
+        $environment = $legacyEnvironment->getEnvironment();
 
         /** @var \cs_item $baseItem */
         $baseItem = $itemService->getItem($itemId);
@@ -996,14 +1050,16 @@ class ItemController extends AbstractController
             'lastItemId' => $lastItemId,
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/item/{itemId}/print")
+     * @param $roomId
+     * @param $itemId
+     * @param ItemService $itemService
+     * @return Response
      */
-    public function printAction($roomId, $itemId)
+    public function printAction($roomId, $itemId, ItemService $itemService)
     {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy_legacy.item_service');
         $baseItem = $itemService->getItem($itemId);
         
         $html = $this->renderView('App:'.ucfirst($baseItem->getItemType()).':detailPrint.html.twig', [
@@ -1023,10 +1079,13 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/get", condition="request.isXmlHttpRequest()")
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param ItemService $itemService
+     * @return array
      */
-    public function singleArticleAction($roomId, $itemId)
+    public function singleArticleAction($roomId, $itemId, ItemService $itemService)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -1042,23 +1101,29 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/links")
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @param CategoryService $categoryService
+     * @param LegacyEnvironment $environment
+     * @return array
      */
-    public function linksAction($roomId, $itemId, Request $request)
+    public function linksAction($roomId, $itemId, Request $request, RoomService $roomService, ItemService $itemService, CategoryService $categoryService, LegacyEnvironment $environment)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $itemCategories = $item->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $itemCategories);
         }
 
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         return [
@@ -1169,10 +1234,14 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/{itemId}/canceledit")
      * @Template()
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @return array
      */
-    public function cancelEditAction($roomId, $itemId, Request $request)
+    public function cancelEditAction($roomId, $itemId, Request $request, ItemService $itemService)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
         
         if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {

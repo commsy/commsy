@@ -5,6 +5,7 @@ use App\Utils\RoomService;
 use App\Utils\UserService;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
+use cs_room_item;
 
 class ModerationSettingsTransformer implements DataTransformerInterface
 {

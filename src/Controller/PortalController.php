@@ -7,10 +7,13 @@ use App\Form\Model\Base64File;
 use App\Form\Model\CsvImport;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\LicenseSortType;
+use App\Services\LegacyEnvironment;
+use App\Services\RoomCategoriesService;
 use App\User\UserBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +32,7 @@ use App\Entity\Terms;
 use App\Form\Type\TermType;
 
 use App\Event\CommsyEditEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class PortalController
@@ -41,12 +45,25 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param RoomCategoriesService $roomCategoriesService
+     * @param EventDispatcherInterface $dispatcher
+     * @param LegacyEnvironment $environment
+     * @param $roomId
+     * @param null $roomCategoryId
+     * @return array|RedirectResponse
      */
-    public function roomcategoriesAction($roomId, $roomCategoryId = null, Request $request)
-    {
+    public function roomcategoriesAction(
+        Request $request,
+        RoomCategoriesService $roomCategoriesService,
+        EventDispatcherInterface $dispatcher,
+        LegacyEnvironment $environment,
+        $roomId,
+        $roomCategoryId = null
+    ) {
         $portalId = $roomId;
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -67,7 +84,6 @@ class PortalController extends AbstractController
 
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
             if ($editForm->getClickedButton()->getName() == 'delete') {
-                $roomCategoriesService = $this->get('commsy.roomcategories_service');
                 $roomCategoriesService->removeRoomCategory($roomCategory);
             } else {
                 $em->persist($roomCategory);
@@ -83,8 +99,7 @@ class PortalController extends AbstractController
 
         $roomCategories = $repository->findBy(array('context_id' => $portalId));
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+        $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
 
         // mandatory links form
         $linkForm = $this->createForm(RoomCategoriesLinkType::class, ['mandatory' => $portalItem->isTagMandatory()], []);
@@ -117,10 +132,15 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/announcements")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @return array
      */
-    public function announcementsAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function announcementsAction(
+        Request $request,
+        LegacyEnvironment $environment
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -167,9 +187,15 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/terms")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @return array
      */
-    public function termsAction($roomId, Request $request) {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function termsAction(
+        Request $request,
+        LegacyEnvironment $environment
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -205,12 +231,22 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/roomTermsTemplates/{termId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int|null $termId
+     * @return array|RedirectResponse
      */
-    public function roomTermsTemplatesAction($roomId, $termId = null, Request $request)
-    {
+    public function roomTermsTemplatesAction(
+        Request $request,
+        EventDispatcherInterface $dispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $termId = null
+    ) {
         $portalId = $roomId;
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository(Terms::class);
@@ -247,8 +283,7 @@ class PortalController extends AbstractController
         /** @noinspection PhpUndefinedMethodInspection */
         $terms = $repository->findByContextId($portalId);
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+        $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
 
         return [
             'form' => $form->createView(),
@@ -263,10 +298,15 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/help")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @return array
      */
-    public function helpAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function helpAction(
+        Request $request,
+        LegacyEnvironment $environment
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -296,9 +336,12 @@ class PortalController extends AbstractController
 
     /**
      * @Route("/portal/{roomId}/legacysettings")
+     * @param int $roomId
+     * @return RedirectResponse
      */
-    public function legacysettingsAction($roomId, Request $request)
-    {
+    public function legacysettingsAction(
+        int $roomId
+    ) {
         return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
     }
 
@@ -306,12 +349,21 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/translations/{translationId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param $roomId
+     * @param null $translationId
+     * @return array|RedirectResponse
      */
-    public function translationsAction($roomId, $translationId = null, Request $request)
-    {
+    public function translationsAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        $roomId,
+        $translationId = null
+    ) {
         $portalId = $roomId;
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -358,9 +410,20 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/licenses/{licenseId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param EventDispatcherInterface $dispatcher
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int|null $licenseId
+     * @return array|RedirectResponse
      */
-    public function licensesAction($roomId, $licenseId = null, Request $request)
-    {
+    public function licensesAction(
+        Request $request,
+        EventDispatcherInterface $dispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $licenseId = null
+    ) {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository(License::class);
 
@@ -401,8 +464,7 @@ class PortalController extends AbstractController
                 $em->persist($license);
                 $em->flush();
 
-                $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+                $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
             }
 
             return $this->redirectToRoute('app_portal_licenses', [
@@ -422,7 +484,7 @@ class PortalController extends AbstractController
             /** @var ArrayCollection $delete */
             $delete = $data['license'];
             if (!$delete->isEmpty()) {
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $legacyEnvironment = $environment->getEnvironment();
 
                 $materialManager = $legacyEnvironment->getMaterialManager();
                 $materialManager->unsetLicenses($delete->get(0));
@@ -459,9 +521,16 @@ class PortalController extends AbstractController
      * @Route("/portal/{roomId}/csvimport")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function csvImportAction($roomId, Request $request)
-    {
+    public function csvImportAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
         $portal = null;
         try {
             $portal = $this->getDoctrine()->getRepository(Portal::class)
@@ -498,7 +567,7 @@ class PortalController extends AbstractController
                     }
                 }
 
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $legacyEnvironment = $environment->getEnvironment();
                 $authSourceManager = $legacyEnvironment->getAuthSourceManager();
                 $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
 

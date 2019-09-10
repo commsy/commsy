@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Utils\FileService;
+use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,16 +15,23 @@ class FileController extends AbstractController
     /**
      * @Route("/file/{fileId}/{disposition}")
      * @Security("is_granted('FILE_DOWNLOAD', fileId)")
+     * @param FileService $fileService
+     * @param RoomService $roomService
+     * @param int $fileId
+     * @param string $disposition
+     * @return Response
      */
-    public function getFileAction($fileId, $disposition = 'attachment')
-    {
-        $fileService = $this->get('commsy_legacy.file_service');
+    public function getFileAction(
+        FileService $fileService,
+        RoomService $roomService,
+        int $fileId,
+        string $disposition = 'attachment'
+    ) {
         $file = $fileService->getFile($fileId);
         $rootDir = $this->get('kernel')->getRootDir().'/';
 
         // fix for archived rooms
         if (!$file->getPortalID()) {
-            $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getArchivedRoomItem($file->getContextID());
 
             if ($roomItem) {
@@ -59,10 +68,14 @@ class FileController extends AbstractController
 
     /**
      * @Route("/room/{roomId}/logo", name="getLogo")
+     * @param RoomService $roomService
+     * @param int $roomId
+     * @return Response
      */
-    public function getLogoAction($roomId)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
+    public function getLogoAction(
+        RoomService $roomService,
+        int $roomId
+    ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
         $fileName = $roomItem->getLogoFilename();
@@ -89,22 +102,27 @@ class FileController extends AbstractController
     }
 
     /**
-    * @Route(
-            "/room/{roomId}/{imageType}/background/", 
-            name="getBackground", 
-            defaults={"imageType": "theme"}, 
-            requirements={
-                "imageType": "custom|theme"
-            }
-        )
-    */
-    public function getBackgroundImageAction($roomId, $imageType)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
+     * @Route(
+    "/room/{roomId}/{imageType}/background/",
+    name="getBackground",
+    defaults={"imageType": "theme"},
+    requirements={
+    "imageType": "custom|theme"
+    }
+    )
+     * @param RoomService $roomService
+     * @param int $roomId
+     * @param $imageType
+     * @return Response
+     * @return Response
+     */
+    public function getBackgroundImageAction(
+        RoomService $roomService,
+        int $roomId,
+        $imageType
+    ) {
         $roomItem = $roomService->getRoomItem($roomId);
-
         $filename = $roomItem->getBGImageFilename();
-
         $themesDir = $this->getParameter("themes_directory");
 
         if ($imageType == 'theme') {
@@ -143,9 +161,12 @@ class FileController extends AbstractController
 
     /**
      * @Route("/theme/{theme}/background", name="getThemeBackground")
+     * @param $theme
+     * @return Response
      */
-    public function getThemeBackgroundAction($theme)
-    {
+    public function getThemeBackgroundAction(
+        $theme
+    ) {
         $themesDir = $this->getParameter("themes_directory");
         $filePath = $themesDir . "/" . $theme . "/bg.jpg";
 

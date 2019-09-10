@@ -2,7 +2,13 @@
 
 namespace App\Controller;
 
+use App\Form\DataTransformer\PrivateRoomTransformer;
+use App\Form\DataTransformer\UserTransformer;
+use App\Utils\DiscService;
+use App\Utils\UserService;
+use cs_user_item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -31,23 +37,38 @@ use App\Form\Type\Profile\ProfilePersonalInformationType;
 class ProfileController extends AbstractController
 {
     /**
-    * @Route("/room/{roomId}/user/{itemId}/general")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function generalAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+     * @Route("/room/{roomId}/user/{itemId}/general")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param DiscService $discService
+     * @param RoomService $roomService
+     * @param UserService $userService
+     * @param UserTransformer $userTransformer
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
+     */
+    public function generalAction(
+        Request $request,
+        DiscService $discService,
+        RoomService $roomService,
+        UserService $userService,
+        UserTransformer $userTransformer,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $discManager = $legacyEnvironment->getDiscManager();
-        $userService = $this->get('commsy_legacy.user_service');
-        $roomService = $this->get('commsy_legacy.room_service');
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
 
         if (!$userItem) {
             throw $this->createNotFoundException('No user found for id ' . $itemId);
         }
 
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userData = $userTransformer->transform($userItem);
         $userData['useProfileImage'] = $userItem->getPicture() != "";
 
@@ -95,8 +116,8 @@ class ProfileController extends AbstractController
 
             if ($formData['imageChangeInAllContexts']) {
                 $userList = $userItem->getRelatedUserList();
+                /** @var cs_user_item $tempUserItem */
                 $tempUserItem = $userList->getFirst();
-                $discService = $this->get('commsy_legacy.disc_service');
                 while ($tempUserItem) {
                     if ($tempUserItem->getItemId() == $userItem->getItemId()) {
                         $tempUserItem = $userList->getNext();
@@ -123,7 +144,6 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         return array(
@@ -135,18 +155,29 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/address")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function addressAction($roomId, $itemId, Request $request)
-    {
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/address")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param UserService $userService
+     * @param PrivateRoomTransformer $privateRoomTransformer
+     * @param UserTransformer $userTransformer
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
+     */
+    public function addressAction(
+        Request $request,
+        UserService $userService,
+        PrivateRoomTransformer $privateRoomTransformer,
+        UserTransformer $userTransformer,
+        int $roomId,
+        int $itemId
+    ) {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -199,18 +230,29 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/contact")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function contactAction($roomId, $itemId, Request $request)
-    {
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/contact")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param PrivateRoomTransformer $privateRoomTransformer
+     * @param UserService $userService
+     * @param UserTransformer $userTransformer
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
+     */
+    public function contactAction(
+        Request $request,
+        PrivateRoomTransformer $privateRoomTransformer,
+        UserService $userService,
+        UserTransformer $userTransformer,
+        int $roomId,
+        int $itemId
+    ) {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -266,13 +308,20 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/notifications")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function notificationsAction($roomId, $itemId, Request $request)
-    {
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/notifications")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param UserService $userService
+     * @param int $itemId
+     * @return array
+     */
+    public function notificationsAction(
+        Request $request,
+        UserService $userService,
+        int $itemId
+    ) {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = [];
 
@@ -306,14 +355,26 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/personal")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function personalAction($roomId, $itemId, Request $request)
-    {
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/personal")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param UserService $userService
+     * @param PrivateRoomTransformer $privateRoomTransformer
+     * @param UserTransformer $userTransformer
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
+     */
+    public function personalAction(
+        Request $request,
+        UserService $userService,
+        PrivateRoomTransformer $privateRoomTransformer,
+        UserTransformer $userTransformer,
+        int $roomId,
+        int $itemId
+    ) {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
@@ -321,7 +382,6 @@ class ProfileController extends AbstractController
 
         $request->setLocale($userItem->getLanguage());
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -346,20 +406,31 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/account")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function accountAction($roomId, $itemId, Request $request)
-    {
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/account")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param UserService $userService
+     * @param PrivateRoomTransformer $privateRoomTransformer
+     * @param UserTransformer $userTransformer
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
+     */
+    public function accountAction(
+        Request $request,
+        UserService $userService,
+        PrivateRoomTransformer $privateRoomTransformer,
+        UserTransformer $userTransformer,
+        int $roomId,
+        int $itemId
+    ) {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
         $request->setLocale($userItem->getLanguage());
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -382,17 +453,26 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/mergeaccounts")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function mergeAccountsAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/mergeaccounts")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param UserService $userService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
+     */
+    public function mergeAccountsAction(
+        Request $request,
+        UserService $userService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         // account administration page => set language to user preferences
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userItem = $userService->getUser($itemId);
         $request->setLocale($userItem->getLanguage());
 
@@ -482,20 +562,29 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/newsletter")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function newsletterAction($roomId, $itemId, Request $request)
-    {
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/newsletter")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param UserService $userService
+     * @param PrivateRoomTransformer $privateRoomTransformer
+     * @param UserTransformer $userTransformer
+     * @param int $itemId
+     * @return array
+     */
+    public function newsletterAction(
+        Request $request,
+        UserService $userService,
+        PrivateRoomTransformer $privateRoomTransformer,
+        UserTransformer $userTransformer,
+        int $itemId
+    ) {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
         $request->setLocale($userItem->getLanguage());
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -520,20 +609,29 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/additional")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
-    public function additionalAction($roomId, $itemId, Request $request)
-    {
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/{itemId}/additional")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param UserService $userService
+     * @param PrivateRoomTransformer $privateRoomTransformer
+     * @param UserTransformer $userTransformer
+     * @param int $itemId
+     * @return array|RedirectResponse
+     */
+    public function additionalAction(
+        Request $request,
+        UserService $userService,
+        PrivateRoomTransformer $privateRoomTransformer,
+        UserTransformer $userTransformer,
+        int $itemId
+    ) {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
         $request->setLocale($userItem->getLanguage());
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -561,46 +659,60 @@ class ProfileController extends AbstractController
     }
 
     /**
-    * @Route("/room/{roomId}/user/profileImage")
-    * @Template
-    */
-    public function imageAction($roomId, Request $request)
-    {
-        $userService = $this->get('commsy_legacy.user_service');
+     * @Route("/room/{roomId}/user/profileImage")
+     * @Template
+     * @param UserService $userService
+     * @return array
+     */
+    public function imageAction(
+        UserService $userService
+    ) {
         return array('user' => $userService->getCurrentUserItem());
     }
 
     /**
-    * @Route("/room/{roomId}/user/dropdownmenu")
-    * @Template
-    */
-    public function menuAction($roomId, Request $request)
-    {
-        $userService = $this->get('commsy_legacy.user_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+     * @Route("/room/{roomId}/user/dropdownmenu")
+     * @Template
+     * @param UserService $userService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @return array
+     */
+    public function menuAction(
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId
+    ) {
+        $environment = $$legacyEnvironment->getEnvironment();
         return [
             'userId' => $userService->getCurrentUserItem()->getItemId(),
             'roomId' => $roomId,
-            'inPrivateRoom' => $legacyEnvironment->inPrivateRoom(),
+            'inPrivateRoom' => $environment->inPrivateRoom(),
         ];
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
-    * @Template
-    */
-    public function deleteAccountAction($roomId, Request $request)
-    {
+     * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
+     * @Template
+     * @param Request $request
+     * @param UserService $userService
+     * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
+     */
+    public function deleteAccountAction(
+        Request $request,
+        UserService $userService,
+        LegacyEnvironment $environment
+    ) {
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
 
-        $userService = $this->get('commsy_legacy.user_service');
         $currentUser = $userService->getCurrentUserItem();
         $portalUser = $currentUser->getRelatedCommSyUserItem();
 
         $request->setLocale($currentUser->getLanguage());
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
         $sessionManager = $legacyEnvironment->getSessionManager();
@@ -646,12 +758,17 @@ class ProfileController extends AbstractController
 
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/changepassword")
-    * @Template
-    */
-    public function changePasswordAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+     * @Route("/room/{roomId}/user/{itemId}/changepassword")
+     * @Template
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @return array
+     */
+    public function changePasswordAction(
+        Request $request,
+        LegacyEnvironment $environment
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         if ( !$legacyEnvironment->inPortal() ) {
             $portalUser = $legacyEnvironment->getPortalUserItem();
@@ -697,15 +814,25 @@ class ProfileController extends AbstractController
 
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
-    * @Template
-    */
-    public function deleteRoomProfileAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
-    {
+     * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
+     * @Template
+     * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param UserService $userService
+     * @param RoomService $roomService
+     * @param int $roomId
+     * @return array|RedirectResponse
+     */
+    public function deleteRoomProfileAction(
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        UserService $userService,
+        RoomService $roomService,
+        int $roomId
+    ) {
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
 
-        $userService = $this->get('commsy_legacy.user_service');
         $currentUser = $userService->getCurrentUserItem();
 
         $legacyEnvironment = $legacyEnvironment->getEnvironment();

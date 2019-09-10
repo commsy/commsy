@@ -5,10 +5,24 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
+use App\Services\CalendarsService;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
+use App\Utils\CategoryService;
+use App\Utils\DateService;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
+use App\Utils\RoomService;
+use App\Utils\TopicService;
+use cs_dates_item;
+use cs_room_item;
 use DateTime;
 
+use Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -37,11 +51,25 @@ class DateController extends BaseController
     /**
      * @Route("/room/{roomId}/date/feed/{start}/{sort}")
      * @Template()
+     * @param Request $request
+     * @param DateService $dateService
+     * @param ReaderService $readerService
+     * @param int $roomId
+     * @param int $max
+     * @param int $start
+     * @param string $sort
+     * @return array
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'time', Request $request)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
+    public function feedAction(
+        Request $request,
+        DateService $dateService,
+        ReaderService $readerService,
+        int $roomId,
+        int $max = 10,
+        int $start = 0,
+        string $sort = 'time'
+    ) {
+        $roomItem = $this->getRoom($roomId);
         
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -49,10 +77,7 @@ class DateController extends BaseController
         if (!$dateFilter) {
             $dateFilter = $request->query->get('date_filter');
         }
-        
-        // get the date service
-        $dateService = $this->get('commsy_legacy.date_service');
-        
+
         if ($dateFilter) {
             $filterForm = $this->createFilterForm($roomItem);
     
@@ -77,8 +102,6 @@ class DateController extends BaseController
 
         $this->get('session')->set('sortDates', $sort);
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-
         $readerList = array();
         $allowedActions = array();
         foreach ($dates as $item) {
@@ -101,17 +124,22 @@ class DateController extends BaseController
     /**
      * @Route("/room/{roomId}/date")
      * @Template()
+     * @param Request $request
+     * @param DateService $dateService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function listAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
+    public function listAction(
+        Request $request,
+        DateService $dateService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
+        $roomItem = $this->getRoom($roomId);
 
         $filterForm = $this->createFilterForm($roomItem);
-
-        // get the date manager service
-        $dateService = $this->get('commsy_legacy.date_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -186,18 +214,26 @@ class DateController extends BaseController
         ];
     }
 
-       /**
+    /**
      * @Route("/room/{roomId}/date/print/{sort}", defaults={"sort" = "none"})
+     * @param Request $request
+     * @param DateService $dateService
+     * @param PrintService $printService
+     * @param ReaderService $readerService
+     * @param int $roomId
+     * @param string $sort
+     * @return Response
      */
-    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
-
+    public function printlistAction(
+        Request $request,
+        DateService $dateService,
+        PrintService $printService,
+        ReaderService $readerService,
+        int $roomId,
+        string $sort
+    ) {
+        $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem);
-
-        // get the date manager service
-        $dateService = $this->get('commsy_legacy.date_service');
         $numAllDates = $dateService->getCountArray($roomId)['countAll'];
 
         // apply filter
@@ -219,8 +255,6 @@ class DateController extends BaseController
         else {
             $dates = $dateService->getListDates($roomId, $numAllDates, 0, 'date');
         }
-
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         foreach ($dates as $item) {
@@ -244,21 +278,25 @@ class DateController extends BaseController
 
         return $printService->buildPdfResponse($html);
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/calendar")
      * @Template()
+     * @param Request $request
+     * @param DateService $dateService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function calendarAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
-
+    public function calendarAction(
+        Request $request,
+        DateService $dateService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
+        $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem, false);
-
-        // get the material manager service
-        $dateService = $this->get('commsy_legacy.date_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -326,34 +364,57 @@ class DateController extends BaseController
             'isArchived' => $roomItem->isArchived(),
         ];
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/calendardashboard")
      * @Template()
+     * @param int $roomId
+     * @return array
      */
-    public function calendardashboardAction($roomId)
-    {
+    public function calendardashboardAction(
+        int $roomId
+    ) {
         return [
             'roomId' => $roomId,
             'module' => 'date',
         ];
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'date')")
+     * @param Request $request
+     * @param AnnotationService $annotationService
+     * @param CategoryService $categoryService
+     * @param DateService $dateService
+     * @param ItemService $itemService
+     * @param ReaderService $readerService
+     * @param TopicService $topicService
+     * @param LegacyMarkup $legacyMarkup
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
-    {
-        $dateService = $this->get('commsy_legacy.date_service');
-        $itemService = $this->get('commsy_legacy.item_service');
-        
+    public function detailAction(
+        Request $request,
+        AnnotationService $annotationService,
+        CategoryService $categoryService,
+        DateService $dateService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        TopicService $topicService,
+        LegacyMarkup $legacyMarkup,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $date = $dateService->getDate($itemId);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $item = $date;
         $reader_manager = $legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
@@ -368,7 +429,6 @@ class DateController extends BaseController
         }
 
         // mark annotations as read
-        $annotationService = $this->get('commsy_legacy.annotation_service');
         $annotationList = $date->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
@@ -408,8 +468,7 @@ class DateController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
+
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
@@ -428,7 +487,7 @@ class DateController extends BaseController
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $dateCategories = $date->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
         }
@@ -446,11 +505,9 @@ class DateController extends BaseController
 
         $pathTopicItem = null;
         if ($request->query->get('path')) {
-            $topicService = $this->get('commsy_legacy.topic_service');
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
@@ -476,15 +533,21 @@ class DateController extends BaseController
             'pathTopicItem' => $pathTopicItem,
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/events")
-     * @throws
+     * @param Request $request
+     * @param DateService $dateService
+     * @param int $roomId
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function eventsAction($roomId, Request $request)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
+    public function eventsAction(
+        Request $request,
+        DateService $dateService,
+        int $roomId
+    ) {
+        $roomItem = $this->getRoom($roomId);
         
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -492,8 +555,6 @@ class DateController extends BaseController
         if (!$dateFilter) {
             $dateFilter = $request->query->get('date_filter');
         }
-        // get the date service
-        $dateService = $this->get('commsy_legacy.date_service');
 
         $startDate = $request->get('start');
         $endDate = $request->get('end');
@@ -628,16 +689,21 @@ class DateController extends BaseController
 
         return new JsonResponse($events);
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/eventsdashboard")
+     * @param ItemService $itemService
+     * @param DateService $dateService
+     * @param LegacyEnvironment $environment
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function eventsdashboardAction($roomId)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $dateService = $this->get('commsy_legacy.date_service');
-        
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function eventsdashboardAction(
+        ItemService $itemService,
+        DateService $dateService,
+        LegacyEnvironment $environment
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         
         $user = $legacyEnvironment->getCurrentUserItem();
         $userList = $user->getRelatedUserList()->to_array();
@@ -652,7 +718,7 @@ class DateController extends BaseController
 
         $events = array();
         foreach ($listDates as $date) {
-            /** @var \cs_dates_item $date */
+            /** @var cs_dates_item $date */
             if (!$date->isWholeDay()) {
                 $start = $date->getStartingDay();
                 if ($date->getStartingTime() != '') {
@@ -756,14 +822,19 @@ class DateController extends BaseController
 
         return new JsonResponse($events);
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/create/{dateDescription}")
+     * @param DateService $dateService
+     * @param $roomId
+     * @param $dateDescription
+     * @return RedirectResponse
      */
-    public function createAction($roomId, $dateDescription)
-    {
-        $dateService = $this->get('commsy_legacy.date_service');
-
+    public function createAction(
+        DateService $dateService,
+        int $roomId,
+        $dateDescription
+    ) {
         // create new material item
         $dateItem = $dateService->getNewDate();
         $dateItem->setDraftStatus(1);
@@ -810,12 +881,18 @@ class DateController extends BaseController
 
     /**
      * @Route("/room/{roomId}/date/{itemId}/calendaredit")
+     * @param Request $request
+     * @param DateService $dateService
+     * @param int $itemId
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function calendareditAction($roomId, $itemId, Request $request)
-    {
+    public function calendareditAction(
+        Request $request,
+        DateService $dateService,
+        int $itemId
+    ) {
         $translator = $this->get('translator');
-
-        $dateService = $this->get('commsy_legacy.date_service');
         $date = $dateService->getDate($itemId);
 
         $requestContent = json_decode($request->getContent());
@@ -895,23 +972,32 @@ class DateController extends BaseController
             ],
         ]);
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/{itemId}/edit")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
+     * @param Request $request
+     * @param DateService $dateService
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $itemId, Request $request)
-    {
+    public function editAction(
+        Request $request,
+        DateService $dateService,
+        ItemService $itemService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $translator = $this->get('translator');
-
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-
-        $dateService = $this->get('commsy_legacy.date_service');
         $transformer = $this->get('commsy_legacy.transformer.date');
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $isDraft = $item->isDraft();
@@ -1120,12 +1206,22 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
+     * @param ItemService $itemService
+     * @param DateService $dateService
+     * @param ReaderService $readerService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function saveAction($roomId, $itemId)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $dateService = $this->get('commsy_legacy.date_service');
-        
+    public function saveAction(
+        ItemService $itemService,
+        DateService $dateService,
+        ReaderService $readerService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $date = $dateService->getDate($itemId);
         
         $itemArray = array($date);
@@ -1134,7 +1230,7 @@ class DateController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
         
         $userManager = $legacyEnvironment->getUserManager();
@@ -1167,8 +1263,7 @@ class DateController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
+
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
@@ -1198,7 +1293,7 @@ class DateController extends BaseController
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-        /** @var \cs_dates_item $dateItem */
+        /** @var cs_dates_item $dateItem */
 
         if($isNewRecurring) {
             $recurringDateArray = array();
@@ -1416,7 +1511,7 @@ class DateController extends BaseController
 
             $datesList = $datesManager->get();
 
-            /** @var \cs_dates_item $tempDate */
+            /** @var cs_dates_item $tempDate */
             $tempDate = $datesList->getFirst();
             while($tempDate) {
                 if(in_array('startingTime',$valuesToChange)){
@@ -1449,15 +1544,28 @@ class DateController extends BaseController
 
     /**
      * @Route("/room/{roomId}/date/{itemId}/print")
+     * @param CategoryService $categoryService
+     * @param DateService $dateService
+     * @param ItemService $itemService
+     * @param PrintService $printService
+     * @param ReaderService $readerService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return Response
      */
-    public function printAction($roomId, $itemId, PrintService $printService)
-    {
-        $dateService = $this->get('commsy_legacy.date_service');
-        $itemService = $this->get('commsy_legacy.item_service');
-        
+    public function printAction(
+        CategoryService $categoryService,
+        DateService $dateService,
+        ItemService $itemService,
+        PrintService $printService,
+        ReaderService $readerService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $date = $dateService->getDate($itemId);
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $item = $date;
         $reader_manager = $legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
@@ -1509,8 +1617,7 @@ class DateController extends BaseController
         }
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
+
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
@@ -1529,7 +1636,7 @@ class DateController extends BaseController
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $dateCategories = $date->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
         }
@@ -1555,16 +1662,24 @@ class DateController extends BaseController
 
         return $printService->buildPdfResponse($html);
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/{itemId}/participate")
+     * @param DateService $dateService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return RedirectResponse
      */
-    public function participateAction($roomId, $itemId)
-    {
-        $dateService = $this->get('commsy_legacy.date_service');
+    public function participateAction(
+        DateService $dateService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $date = $dateService->getDate($itemId);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
         
         if (!$date->isParticipant($legacyEnvironment->getCurrentUserItem())) {
@@ -1579,10 +1694,19 @@ class DateController extends BaseController
     /**
      * @Route("/room/{roomId}/date/import")
      * @Template()
+     * @param Request $request
+     * @param CalendarsService $calendarsService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array|RedirectResponse
      */
-    public function importAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function importAction(
+        Request $request,
+        CalendarsService $calendarsService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $translator = $this->get('translator');
 
         $formData = [];
@@ -1623,7 +1747,6 @@ class DateController extends BaseController
 
             if (!empty($files)) {
                 // get calendar object or create new
-                $calendarsService = $this->get('commsy.calendars_service');
                 if ($formData['calendar'] != 'new') {
                     $calendars = $calendarsService->getCalendar($formData['calendar']);
                     if (isset($calendars[0])) {
@@ -1676,9 +1799,14 @@ class DateController extends BaseController
 
     /**
      * @Route("/room/{roomId}/date/importupload")
+     * @param Request $request
+     * @param int $roomId
+     * @return JsonResponse
      */
-    public function importUploadAction($roomId, Request $request)
-    {
+    public function importUploadAction(
+        Request $request,
+        int $roomId
+    ) {
         $response = new JsonResponse();
 
         $kernelRootDir = $this->getParameter('kernel.root_dir');
@@ -1702,9 +1830,14 @@ class DateController extends BaseController
 
     /**
      * @Route("/room/{roomId}/date/download")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function downloadAction($roomId, Request $request)
+    public function downloadAction(
+        Request $request,
+        int $roomId)
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
@@ -1719,9 +1852,14 @@ class DateController extends BaseController
 
     /**
      * @Route("/room/{roomId}/date/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrMarkReadAction($roomId, Request $request)
+    public function xhrMarkReadAction(
+        Request $request,
+        int $roomId)
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
@@ -1733,9 +1871,14 @@ class DateController extends BaseController
 
     /**
      * @Route("/room/{roomId}/date/xhr/copy", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrCopyAction($roomId, Request $request)
+    public function xhrCopyAction(
+        Request $request,
+        int $roomId)
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
@@ -1746,9 +1889,14 @@ class DateController extends BaseController
 
     /**
      * @Route("/room/{roomId}/date/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrDeleteAction($roomId, Request $request)
+    public function xhrDeleteAction(
+        Request $request,
+        int $roomId)
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
@@ -1772,7 +1920,7 @@ class DateController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      * @param bool $hidePastDates Default state for hide past dates filter
      * @return FormInterface
      */
@@ -1795,12 +1943,16 @@ class DateController extends BaseController
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_dates_item[]
+     * @return cs_dates_item[]
      */
-    protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    protected function getItemsByFilterConditions(
+        Request $request,
+        $roomItem,
+        $selectAll,
+        $itemIds = [])
     {
         $dateService = $this->get('commsy_legacy.date_service');
 

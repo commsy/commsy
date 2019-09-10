@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
+use App\Services\LegacyEnvironment;
+use App\Utils\ProjectService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -19,17 +21,20 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class ContextController extends AbstractController
-{    
+{
     /**
      * @Route("/room/{roomId}/context")
      *
-     * @param int $roomId
      * @param Request $request
-     *
+     * @param ProjectService $projectService
+     * @param $roomId
      * @return array
      */
-    public function listAction($roomId, Request $request)
-    {
+    public function listAction(
+        Request $request,
+        ProjectService $projectService,
+        int $roomId
+    ) {
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true
@@ -37,9 +42,6 @@ class ContextController extends AbstractController
         $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('app_project_list', array('roomId' => $roomId)),
         ));
-
-        // get the material manager service
-        $projectService = $this->get('commsy_legacy.project_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -57,22 +59,26 @@ class ContextController extends AbstractController
             'itemsCountArray' => $itemsCountArray
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/context/{itemId}/request", requirements={
      *     "itemId": "\d+"
      * }))
      * @Template()
      *
-     * @param int $roomId
-     * @param int $itemId
      * @param Request $request
-     *
+     * @param LegacyEnvironment $environment
+     * @param $roomId
+     * @param int $itemId
      * @return array|Response
      */
-    public function requestAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function requestAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
         if ($currentUserItem->isReallyGuest()) {

@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -18,9 +21,12 @@ class HashtagController extends AbstractController
 {
     /**
      * @Template("hashtag/show.html.twig")
+     * @param int $roomId
+     * @return array
      */
-    public function showAction($roomId, Request $request)
-    {
+    public function showAction(
+        int $roomId
+    ) {
         $em = $this->getDoctrine()->getManager();
         $hashtags = $em->getRepository('App:Labels')
             ->findRoomHashtags($roomId);
@@ -33,8 +39,9 @@ class HashtagController extends AbstractController
     /**
      * @Template("hashtag/showDetail.html.twig")
      */
-    public function showDetailAction($roomId, Request $request)
-    {
+    public function showDetailAction(
+        int $roomId
+    ) {
         $em = $this->getDoctrine()->getManager();
         $hashtags = $em->getRepository('App:Labels')
             ->findRoomHashtags($roomId);
@@ -47,8 +54,9 @@ class HashtagController extends AbstractController
     /**
      * @Template("hashtag/showDetailShort.html.twig")
      */
-    public function showDetailShortAction($roomId, Request $request)
-    {
+    public function showDetailShortAction(
+        int $roomId
+    ) {
         $em = $this->getDoctrine()->getManager();
         $hashtags = $em->getRepository('App:Labels')
             ->findRoomHashtags($roomId);
@@ -61,10 +69,17 @@ class HashtagController extends AbstractController
     /**
      * @Route("/room/{roomId}/hashtag/add")
      * @Security("is_granted('CATEGORY_EDIT')")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return JsonResponse
      */
-    public function addAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function addAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -99,16 +114,25 @@ class HashtagController extends AbstractController
         } else {
             throw $this->createAccessDeniedException('Title is empty');
         }
-    }    
+    }
 
     /**
      * @Route("/room/{roomId}/hashtag/edit/{labelId}")
      * @Template()
      * @Security("is_granted('CATEGORY_EDIT')")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int|null $labelId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $labelId = null, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function editAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $labelId = null
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);

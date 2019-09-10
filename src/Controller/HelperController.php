@@ -11,6 +11,7 @@ namespace App\Controller;
 
 use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HelperController extends AbstractController
@@ -20,6 +21,8 @@ class HelperController extends AbstractController
      * without the need of knowing it beforehand.
      *
      * @Route("/portal/{portalId}/helper/allrooms")
+     * @param LegacyEnvironment $environment
+     * @return RedirectResponse
      */
     public function gotoAllRooms(LegacyEnvironment $environment)
     {

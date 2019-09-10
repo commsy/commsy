@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use App\Utils\PortfolioService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +14,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Form\Type\AnnotationType;
+use App\Utils\AnnotationService;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
 
 /**
  * Class AnnotationController
@@ -23,12 +28,20 @@ class AnnotationController extends AbstractController
     /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")
      * @Template()
+     * @param $roomId
+     * @param $linkedItemId
+     * @param int $max
+     * @param int $start
+     * @param null $firstTagId
+     * @param null $secondTagId
+     * @param Request $request
+     * @param AnnotationService $annotationService
+     * @param ItemService $itemService
+     * @param ReaderService $readerService
+     * @return array
      */
-    public function feedAction($roomId, $linkedItemId, $max = 10, $start = 0, $firstTagId = null, $secondTagId = null, Request $request)
+    public function feedAction($roomId, $linkedItemId, $max = 10, $start = 0, $firstTagId = null, $secondTagId = null, Request $request, AnnotationService $annotationService, ItemService $itemService, ReaderService $readerService)
     {
-        // get the annotation manager service
-        $annotationService = $this->get('commsy_legacy.annotation_service');
-
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
@@ -36,23 +49,16 @@ class AnnotationController extends AbstractController
             $portfolioService = $this->get(PortfolioService::class);
             $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($linkedItemId, $firstTagId, $secondTagId);
             if (!empty($cellCoordinates)) {
-                $itemService = $this->get('commsy_legacy.item_service');
-
                 $annotationIds = $portfolioService->getAnnotationIdsForPortfolioCell($linkedItemId, $cellCoordinates[0], $cellCoordinates[1]);
-
                 $portfolioAnnotations = [];
-
                 if ($annotationIds) {
                     foreach ($annotationIds as $annotationId) {
                         $portfolioAnnotations[] = $itemService->getTypedItem($annotationId);
                     }
                 }
-
                 $annotations = $portfolioAnnotations;
             }
         }
-
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = [];
         foreach ($annotations as $item) {
@@ -70,16 +76,19 @@ class AnnotationController extends AbstractController
     /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}")
      * @Template()
+     * @param $roomId
+     * @param $linkedItemId
+     * @param int $max
+     * @param int $start
+     * @param Request $request
+     * @param AnnotationService $annotationService
+     * @param ReaderService $readerService
+     * @return array
      */
-    public function feedPrintAction($roomId, $linkedItemId, $max = 10, $start = 0, Request $request)
+    public function feedPrintAction($roomId, $linkedItemId, $max = 10, $start = 0, Request $request, AnnotationService $annotationService, ReaderService $readerService)
     {
-        // get the annotation manager service
-        $annotationService = $this->get('commsy_legacy.annotation_service');
-
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
-
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = [];
         foreach ($annotations as $item) {
@@ -98,10 +107,15 @@ class AnnotationController extends AbstractController
      * @Method({"GET", "POST"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $itemId, Request $request)
+    public function editAction($roomId, $itemId, Request $request, ItemService $itemService, LegacyEnvironment $environment)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $transformer = $this->get('commsy_legacy.transformer.annotation');
@@ -112,7 +126,7 @@ class AnnotationController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $legacyEnvironment = $environment->getEnvironment();
                 $readerManager = $legacyEnvironment->getReaderManager();
                 $noticedManager = $legacyEnvironment->getNoticedManager();
 
@@ -140,12 +154,15 @@ class AnnotationController extends AbstractController
      * @Method({"GET"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @return array
      */
-    public function successAction($roomId, $itemId, Request $request)
+    public function successAction($roomId, $itemId, Request $request, ItemService $itemService)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
-
         return [
             'annotation' => $item,
         ];
@@ -156,14 +173,18 @@ class AnnotationController extends AbstractController
      * @Method({"POST"})
      * @Template()
      * @Security("is_granted('ITEM_ANNOTATE', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param null $firstTagId
+     * @param null $secondTagId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param AnnotationService $annotationService
+     * @return RedirectResponse
      */
-    public function createAction($roomId, $itemId, $firstTagId = null, $secondTagId = null, Request $request)
+    public function createAction($roomId, $itemId, $firstTagId = null, $secondTagId = null, Request $request, ItemService $itemService, AnnotationService $annotationService)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
-
-        $annotationService = $this->get('commsy_legacy.annotation_service');
-
         $itemType = $item->getItemType();
 
         $form = $this->createForm(AnnotationType::class);
@@ -201,21 +222,20 @@ class AnnotationController extends AbstractController
      * @Route("/room/{roomId}/annotation/{itemId}/delete")
      * @Method({"GET"})
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param $roomId
+     * @param $itemId
+     * @param Request $request
+     * @param ItemService $itemService
+     * @return JsonResponse
      */
-    public function deleteAction($roomId, $itemId, Request $request)
+    public function deleteAction($roomId, $itemId, Request $request, ItemService $itemService)
     {
-
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
-
         $item->delete();
-
         $response = new JsonResponse();
-
         $response->setData([
             'deleted' => true,
         ]);
-
         return $response;
     }
 }

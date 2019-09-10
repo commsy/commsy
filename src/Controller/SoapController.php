@@ -13,9 +13,12 @@ class SoapController extends AbstractController
 {
     /**
      * @Route("/api/soap")
+     * @param Request $request
+     * @return Response
      */
-    public function soapAction(Request $request)
-    {
+    public function soapAction(
+        Request $request
+    ) {
         if ($request->query->has('wsdl')) {
             // handle wsdl request
             return $this->handleWSDL();

@@ -3,9 +3,15 @@ namespace App\Controller;
 
 use App\Form\Model\File;
 use App\Services\LegacyEnvironment;
+use App\Utils\DiscService;
 use App\Utils\FileService;
 use App\Utils\ItemService;
+use App\Utils\UserService;
+use cs_link_item;
+use cs_list;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Event\CommsyEditEvent;
 
 use App\Form\Type\UploadType;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class UploadController
@@ -26,19 +33,30 @@ class UploadController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/upload/{itemId}")
+     * @param Request $request
+     * @param DiscService $discService
+     * @param FileService $fileService
+     * @param ItemService $itemService
+     * @param UserService $userService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @param int|null $itemId
+     * @return JsonResponse
      */
-    public function uploadAction($roomId, $itemId = NULL, Request $request)
-    {
+    public function uploadAction(
+        Request $request,
+        DiscService $discService,
+        FileService $fileService,
+        ItemService $itemService,
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId,
+        int $itemId = NULL
+    ) {
         $response = new JsonResponse();
-
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-        $fileService = $this->get('commsy_legacy.file_service');
-
         $files = $request->files->all();
-
         $fileIds = array();
-
         if ($item) {
             foreach ($files['files'] as $file) {
                 /*
@@ -107,13 +125,11 @@ class UploadController extends AbstractController
                         imagedestroy($newimg);
 
                         // determ new file name
-                        $environment = $this->get("commsy_legacy.environment")->getEnvironment();
-                        $userService = $this->get("commsy_legacy.user_service");
+                        $environment = $legacyEnvironment->getEnvironment();
                         $userItem = $userService->getUser($itemId);
                         $filename = 'cid' . $environment->getCurrentContextID() . '_' . $userItem->getUserID() . '.png';
 
                         // copy file and set picture
-                        $discService = $this->get('commsy_legacy.disc_service');
                         $discService->copyFile($targetfile, $filename, true);
                         $userItem->setPicture($filename);
                         $userItem->save();
@@ -153,7 +169,7 @@ class UploadController extends AbstractController
             'fileIds' => $responseData,
         ]);
     }
-    
+
     /**
      * @Route("/room/{roomId}/upload/{itemId}/form/{versionId}", requirements={
      *     "itemId": "\d+",
@@ -163,16 +179,27 @@ class UploadController extends AbstractController
      * }))
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param FileService $fileService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @param int $itemId
+     * @param int|null $versionId
+     * @return array|RedirectResponse
+     * @throws Exception
      */
     public function uploadFormAction(
-        $roomId,
-        $itemId,
-        $versionId = null,
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         ItemService $itemService,
-        FileService $fileService)
-    {
+        FileService $fileService,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId,
+        int $itemId,
+        int $versionId = null
+    ) {
         /**
          * Setting the default value of versionId to 0 does not seem to work and will always cut off the versionId from
          * routes. Instead we default to -1.
@@ -203,9 +230,9 @@ class UploadController extends AbstractController
         }
 
         if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item->getLinkedItem()));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::EDIT);
         } else {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
         }
 
         $form = $this->createForm(UploadType::class, $assignedFiles, [
@@ -255,12 +282,12 @@ class UploadController extends AbstractController
                     $linkItemManager->setFileIDLimit($tempFile->getFileID());
                     $linkItemManager->select();
 
-                    /** @var \cs_list $linkItemList */
+                    /** @var cs_list $linkItemList */
                     $linkItemList = $linkItemManager->get();
 
                     $delete = true;
                     if ($linkItemList->isNotEmpty()) {
-                        /** @var \cs_link_item $linkItem */
+                        /** @var cs_link_item $linkItem */
                         $linkItem = $linkItemList->getFirst();
                         while ($linkItem) {
                             if (!$linkItem->isDeleted()) {
@@ -285,25 +312,34 @@ class UploadController extends AbstractController
             'form' => $form->createView(),
         ];
     }
-    
+
     /**
      * @Route("/room/{roomId}/upload/{itemId}/saveupload")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function uploadSaveAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
+    public function uploadSaveAction(
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $item = $itemService->getTypedItem($itemId);
-        
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $tempManager = $legacyEnvironment->getManager($item->getItemType());
         $tempItem = $tempManager->getItem($item->getItemId());
         
         if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item->getLinkedItem()));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::SAVE);
         } else {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
         }
 
         return array(
@@ -314,13 +350,14 @@ class UploadController extends AbstractController
 
     /**
      * @Route("/room/{roomId}/base64upload/")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function base64UploadAction($roomId, Request $request)
-    {
+    public function base64UploadAction(
+        Request $request
+    ) {
         $files = $request->files->all();
-
         $base64Content = [];
-
         $fileSystem = new Filesystem();
 
         /** @var UploadedFile $file */
@@ -351,12 +388,18 @@ class UploadController extends AbstractController
      * @Route("/room/{roomId}/ckupload/{itemId}/")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $environment
+     * @param int $itemId
      */
-    public function ckuploadAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy_legacy.item_service');
-
+    public function ckuploadAction(
+        Request $request,
+        ItemService $itemService,
+        LegacyEnvironment $environment,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $item = $itemService->getTypedItem($itemId);
         $fileIds = $item->getFileIDArray();
 

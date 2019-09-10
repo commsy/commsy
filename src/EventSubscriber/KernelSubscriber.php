@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Utils\FileService;
 use App\Utils\ItemService;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -44,6 +45,11 @@ class KernelSubscriber implements EventSubscriberInterface
 
     /**
      * @param HttpKernelInterface $legacyKernel
+     * @param LegacyAuthentication $legacyAuthentication
+     * @param ItemService $itemService
+     * @param FileService $fileService
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param LegacyEnvironment $legacyEnvironment
      */
     public function __construct(
         HttpKernelInterface $legacyKernel,
@@ -80,8 +86,9 @@ class KernelSubscriber implements EventSubscriberInterface
 
     /**
      * Catches all legacy requests and hands them over to legacy kernel
-     * 
-     * @param  GetResponseEvent $event
+     *
+     * @param GetResponseEvent $event
+     * @throws Exception
      */
     public function onKernelRequest(GetResponseEvent $event)
     {

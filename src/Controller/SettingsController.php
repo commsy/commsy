@@ -3,9 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Terms;
+use App\Form\DataTransformer\AdditionalSettingsTransformer;
+use App\Form\DataTransformer\AppearanceSettingsTransformer;
+use App\Form\DataTransformer\GeneralSettingsTransformer;
+use App\Form\DataTransformer\ModerationSettingsTransformer;
 use App\Form\Type\Room\DeleteType;
+use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
+use App\Services\RoomCategoriesService;
+use cs_room_item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -31,15 +39,29 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SettingsController extends AbstractController
 {
     /**
-    * @Route("/room/{roomId}/settings/general")
-    * @Template
-    * @Security("is_granted('MODERATOR')")
-    */
-    public function generalAction($roomId, Request $request, RoomService $roomService)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+     * @Route("/room/{roomId}/settings/general")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     * @param Request $request
+     * @param RoomCategoriesService $roomCategoriesService
+     * @param RoomService $roomService
+     * @param GeneralSettingsTransformer $transformer
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array|RedirectResponse
+     */
+    public function generalAction(
+        Request $request,
+        RoomCategoriesService $roomCategoriesService,
+        RoomService $roomService,
+        GeneralSettingsTransformer $transformer,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         // get room from RoomService
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
 	
         // $room = $this->getDoctrine()
@@ -50,10 +72,7 @@ class SettingsController extends AbstractController
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.general_settings');
         $roomData = $transformer->transform($roomItem);
-
-        $roomCategoriesService = $this->get('commsy.roomcategories_service');
         $roomCategories = [];
         foreach ($roomCategoriesService->getListRoomCategories($legacyEnvironment->getCurrentPortalId()) as $roomCategory) {
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
@@ -100,15 +119,23 @@ class SettingsController extends AbstractController
      * @Route("/room/{roomId}/settings/moderation")
      * @Template
      * @Security("is_granted('MODERATOR')")
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ModerationSettingsTransformer $transformer
+     * @param int $roomId
+     * @return array
      */
-    public function moderationAction($roomId, Request $request, RoomService $roomService)
-    {
+    public function moderationAction(
+        Request $request,
+        RoomService $roomService,
+        ModerationSettingsTransformer $transformer,
+        int $roomId
+    ) {
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
-
-        $transformer = $this->get('commsy_legacy.transformer.moderation_settings');
         $roomData = $transformer->transform($roomItem);
 
         $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
@@ -131,16 +158,25 @@ class SettingsController extends AbstractController
         return array(
             'form' => $form->createView()
         );
-
     }
 
     /**
      * @Route("/room/{roomId}/settings/additional")
      * @Template
      * @Security("is_granted('MODERATOR')")
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param AdditionalSettingsTransformer $transformer
+     * @param int $roomId
+     * @return array
      */
-    public function additionalAction($roomId, Request $request, RoomService $roomService)
-    {
+    public function additionalAction(
+        Request $request,
+        RoomService $roomService,
+        AdditionalSettingsTransformer $transformer,
+        int $roomId
+    ) {
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -153,7 +189,6 @@ class SettingsController extends AbstractController
             $portalTerms[$availableTerm->getTitle()] = $availableTerm->getId();
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.additional_settings');
         $roomData = $transformer->transform($roomItem);
 
         if ($selectedTerms = $request->get('terms')) {
@@ -196,16 +231,24 @@ class SettingsController extends AbstractController
      * @Route("/room/{roomId}/settings/appearance")
      * @Template
      * @Security("is_granted('MODERATOR')")
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param AppearanceSettingsTransformer $transformer
+     * @param int $roomId
+     * @return array|RedirectResponse
      */
-    public function appearanceAction($roomId, Request $request, RoomService $roomService)
-    {
+    public function appearanceAction(
+        Request $request,
+        RoomService $roomService,
+        AppearanceSettingsTransformer $transformer,
+        int $roomId
+    ) {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.appearance_settings');
         $roomData = $transformer->transform($roomItem);
 
         // is theme pre-defined in config?
@@ -318,14 +361,23 @@ class SettingsController extends AbstractController
             'logoImageFilepath' => $logoImage,
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/settings/extensions")
      * @Template
      * @Security("is_granted('MODERATOR')")
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param ExtensionSettingsTransformer $extensionSettingsTransformer
+     * @param int $roomId
+     * @return array
      */
-    public function extensionsAction($roomId, Request $request, RoomService $roomService, ExtensionSettingsTransformer $extensionSettingsTransformer)
-    {
+    public function extensionsAction(
+        Request $request,
+        RoomService $roomService,
+        ExtensionSettingsTransformer $extensionSettingsTransformer,
+        int $roomId
+    ) {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -352,13 +404,19 @@ class SettingsController extends AbstractController
      * @Route("/room/{roomId}/settings/delete")
      * @Template
      * @Security("is_granted('MODERATOR')")
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param TranslatorInterface $translator
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @return array|RedirectResponse
      */
     public function deleteAction(
-        $roomId,
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -396,10 +454,22 @@ class SettingsController extends AbstractController
      * @Route("/room/{roomId}/settings/invitations")
      * @Template
      * @Security("is_granted('MODERATOR')")
+     * @param Request $request
+     * @param InvitationsService $invitationsService
+     * @param RoomService $roomService
+     * @param RouterInterface $router
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array|RedirectResponse
      */
-    public function invitationsAction($roomId, Request $request, RoomService $roomService, RouterInterface $router)
-    {
-        $invitationsService = $this->get('commsy.invitations_service');
+    public function invitationsAction(
+        Request $request,
+        InvitationsService $invitationsService,
+        RoomService $roomService,
+        RouterInterface $router,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
         $translator = $this->get('translator');
 
         // get room from RoomService
@@ -408,7 +478,7 @@ class SettingsController extends AbstractController
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
         $authSourceManager = $legacyEnvironment->getAuthSourceManager();

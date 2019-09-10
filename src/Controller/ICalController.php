@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
 use Eluceo\iCal\Component\Timezone;
@@ -20,10 +21,17 @@ class ICalController extends AbstractController
 {
     /**
      * @Route("/ical/{contextId}")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param int $contextId
+     * @return Response
      */
-    public function getContentAction($contextId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function getContentAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        int $contextId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $legacyEnvironment->setCurrentContextID($contextId);
         $currentContextItem = $legacyEnvironment->getCurrentContextItem();
@@ -83,8 +91,11 @@ class ICalController extends AbstractController
         return $response;
     }
 
-    private function createCalendar($currentContextItem, $export, $calendarId)
-    {
+    private function createCalendar(
+        $currentContextItem,
+        $export,
+        $calendarId
+    ) {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $translator = $legacyEnvironment->getTranslationObject();
 
@@ -275,8 +286,11 @@ class ICalController extends AbstractController
         return $calendar;
     }
 
-    private function getDateList($currentContextItem, $export, $calendarId)
-    {
+    private function getDateList(
+        $currentContextItem,
+        $export,
+        $calendarId
+    ) {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $datesManager = $legacyEnvironment->getDatesManager();
 
