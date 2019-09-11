@@ -1420,7 +1420,7 @@ class cs_item {
                and ($user_item->isModerator()
                     or ($user_item->isUser()
                         and ($user_item->getItemID() == $this->getCreatorID()
-                             or $this->isPublic()))))
+                             or !$this->isPrivateEditing()))))
             ) {
             $access = true;
          }
