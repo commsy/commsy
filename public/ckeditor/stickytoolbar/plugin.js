@@ -1,11 +1,14 @@
 /*
-*   CKEditor plugin which on scroll keeps the CKEditor toolbar fixed at the top of the screen.
+*   CKEditor plugin which on scroll or resize keeps the CKEditor toolbar fixed at the top of the screen.
 *   Based on the "Fixed toolbar on top" plugin (<https://ckeditor.com/cke4/addon/fixed>).
 */
 
 CKEDITOR.plugins.add('stickytoolbar', {
     init: function (editor) {
-        window.addEventListener('scroll', function () {
+        window.addEventListener('scroll', manageToolbarStickiness, false);
+        window.addEventListener('resize', manageToolbarStickiness, false);
+
+        function manageToolbarStickiness() {
 
             // since offsetTop takes the position relative to its parent element(s) having a relative
             // position, we iterate over all the parent elements
@@ -47,6 +50,6 @@ CKEDITOR.plugins.add('stickytoolbar', {
                 toolbar.style.top = "calc(100% - " + minContentHeight + "px)";
                 inner.style.position = "relative";
             }
-        }, false);
+        }
     }
 });
