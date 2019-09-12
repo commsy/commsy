@@ -266,7 +266,7 @@
 
                                                         {# delete #}
                                                         <li>
-                                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                            {% if is_granted('ITEM_EDIT', article.itemId) %}
                                                                 <a  href="#" data-cs-action="{{ {
                                                                     'url': path('app_discussionarticle_xhrdelete', {'roomId': roomId, 'itemId': article.itemId}),
                                                                     'action': 'delete',
