@@ -90,6 +90,9 @@ if ( $command != 'error' ) {
       $status = $session->getValue('status');
       if(isset($status)){
       	$userid = $session->getValue('userAccount');
+          $user_manager = $environment->getUserManager();
+          $user = $user_manager->getItem($userid);
+
 	      if ($status == 'reject' or $status == 'close') {
 	      	$subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK',$context_item->getTitle());
 	      	$body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
