@@ -589,6 +589,7 @@ class ProfileController extends Controller
             'userId' => $userService->getCurrentUserItem()->getItemId(),
             'roomId' => $roomId,
             'inPrivateRoom' => $legacyEnvironment->inPrivateRoom(),
+            'inPortal' => $legacyEnvironment->inPortal(),
         ];
     }
 

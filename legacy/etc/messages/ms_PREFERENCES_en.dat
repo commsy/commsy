@@ -1,9 +1,6 @@
 <?php
 $message["PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON"]["en"] = "associate";
 $message["PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON"]["en"] = "Add forum";
-$message["PREFERENCES_AGB"]["en"] = "Edit Terms and Conditions";
-$message["PREFERENCES_AGB_DESC"]["en"] = "Define and configure Terms and Conditions for this workspace.";
-$message["PREFERENCES_AGB_NOTE"]["en"] = "If you change and save this text, all users will be forced to reaccept the Terms and Conditions the next time they log in!";
 $message["PREFERENCES_BACKUP_BUTTON"]["en"] = "Insert backup";
 $message["PREFERENCES_BACKUP_DESC"]["en"] = "The backup file should be created with the CommSy verson %1 (version of this CommSy server). Otherwise not all data can be insert into this server.";
 $message["PREFERENCES_BACKUP_ERROR_FILE"]["en"] = "Sorry, wrong file format.";

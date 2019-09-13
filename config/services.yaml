@@ -290,12 +290,9 @@ services:
         autoconfigure: true
 
     # Markup
-    commsy_legacy.markup:
-        class: App\Services\LegacyMarkup
-        arguments:
-            - '@commsy_legacy.environment'
-            - '@router'
-            - '@translator'
+    App\Services\LegacyMarkup:
+        autowire: true
+        autoconfigure: true
 
     # Transformer
     commsy_legacy.transformer.general_settings:

@@ -9,6 +9,7 @@ use App\Event\CommsyEditEvent;
 use App\Filter\AnnouncementFilterType;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
+use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -311,7 +312,7 @@ class AnnouncementController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -333,9 +334,8 @@ class AnnouncementController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,

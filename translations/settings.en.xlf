@@ -666,6 +666,10 @@
                 <source>Delete explanation end</source>
                 <target>and confirm the process.</target>
             </trans-unit>
+            <trans-unit id="settings_delete_grouprooms">
+                <source>Deletion of grouprooms</source>
+                <target>By deleting this project workspace the following related group workspaces will also be deleted:</target>
+            </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>
                 <target>Confirm</target>

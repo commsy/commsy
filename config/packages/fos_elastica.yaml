@@ -368,6 +368,10 @@ fos_elastica:
                             fields:
                                 raw:
                                     type: keyword
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                     persistence:
                         driver: orm
                         model: App\Entity\Labels
