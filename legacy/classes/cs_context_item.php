@@ -6113,25 +6113,6 @@ class cs_context_item extends cs_item {
   	}
   	return $retour;
   }
-  
-  function setAGBDatasecurity() {
-  	$this->_setExtraConfig('AGB_DATASECURITY', '1');
-  }
-  
-  function unsetAGBDatasecurity() {
-  	$this->_setExtraConfig('AGB_DATASECURITY', '2');
-  }
-  
-  function withAGBDatasecurity() {
-  	$retour = false;
-  	$value = $this->_getExtraConfig('AGB_DATASECURITY');
-  	if($value == 2){
-  		$retour = false;
-  	} else if($value == 1){
-  		$retour = true;
-  	}
-  	return $retour;
-  }
 
   function setWithAnnouncementDates() {
   	$this->_addExtra('HIDE_ANNOUNCEMENT_DATE',2);

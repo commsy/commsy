@@ -1056,7 +1056,7 @@ class cs_page_guide_view extends cs_page_view {
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE').': ';
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
            
-           if($item->getAGBStatus() != 2 and $portal_item->withAGBDatasecurity()){
+           if ($item->getAGBStatus() != 2) {
            	$text_array = $item->getAGBTextArray();
            
            	$lang = strtoupper($this->_translator->_selected_language);
@@ -1106,7 +1106,7 @@ class cs_page_guide_view extends cs_page_view {
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
            
            // if code is set for room
-        if($item->getAGBStatus() != 2 and $portal_item->withAGBDatasecurity()){
+        if($item->getAGBStatus() != 2) {
            	  $text_array = $item->getAGBTextArray();
            	  $lang = strtoupper($this->_translator->_selected_language);
            	  
@@ -1150,7 +1150,7 @@ class cs_page_guide_view extends cs_page_view {
            
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
 
-           if($item->getAGBStatus() != 2 and $portal_item->withAGBDatasecurity()){
+           if($item->getAGBStatus() != 2) {
            	  $text_array = $item->getAGBTextArray();
            	  $lang = strtoupper($this->_translator->_selected_language);
            	  #$usage_info = $text_array[$lang];

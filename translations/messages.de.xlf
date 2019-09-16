@@ -430,14 +430,14 @@
             <trans-unit id="invitation body">
                 <source>invitation body %portal% %link% %sender%</source>
                 <target>
-Sie wurde eingeladen in den Raum %room% im CommSy-Portal %portal%.
+Sie wurden in den Raum %room% im CommSy-Portal %portal% eingeladen.
 Bitte legen Sie sich über folgenden Link eine Kennung für das Portal %portal% an, dieser ist 14 Tage gültig:
 %link%
 
 Nachdem Sie die Kennung angelegt und sich eingeloggt haben, können Sie über diesen Link zum Raum gelangen:
 %roomLink%
-Dort befinden sich Auswahlmöglichkeiten für die Teilnahme. Diese erfolgt je nach Raumeinstellung per Antrag oder per Passwort.
-Sollt letzteres der Fall sein und das Passwort liegt Ihnen nicht vor, erfragen Sie es bitte beim Einladenden.
+Dort befinden sich Auswahlmöglichkeiten für die Teilnahme. Diese erfolgt je nach Raumeinstellung per Antrag oder per Code.
+Sollte im letzteren Fall der Code Ihnen nicht vorliegen, erfragen Sie diesen bitte bei der/dem Einladenden.
 
 Gruß ...
 %sender%

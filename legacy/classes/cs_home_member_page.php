@@ -95,7 +95,7 @@ class cs_home_member_page extends cs_left_page {
               $portal_item = $this->_environment->getCurrentPortalItem();
               
               // acceptance date (agb) Datenschutz
-              if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+              if ($this->_environment->getCurrentContextItem()->withAGB()) {
               	if($this->_post_vars['terms_of_use']){
               		$portal_user->setAGBAcceptance();
               	}

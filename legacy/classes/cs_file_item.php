@@ -756,18 +756,18 @@ class cs_file_item extends cs_item {
       return false;
    }
 
-   /**
-    * Returns true if the user represented by the given user item is allowed to see the file,
-    * otherwise returns false.
-    *
-    * @param \cs_user_item $userItem
-    * @return bool
-    */
-   public function maySee($userItem)
-   {
-      // a user who's allowed to see any of this file's linked items may also see this file
-      return $this->maySeeLinkedItem($userItem);
-   }
+    /**
+     * Returns true if the user represented by the given user item is allowed to see the file,
+     * otherwise returns false.
+     *
+     * @param \cs_user_item $userItem
+     * @return bool
+     */
+    public function maySee($userItem)
+    {
+        // a user who's allowed to see any of this file's linked items may also see this file
+        return $this->maySeeLinkedItem($userItem);
+    }
 
    /**
     * Returns true if the user represented by the given user item is allowed to see any of 

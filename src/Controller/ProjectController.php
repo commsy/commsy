@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Form\Type\ProjectType;
+use App\Services\LegacyEnvironment;
+use App\Services\LegacyMarkup;
+use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -79,7 +82,7 @@ class ProjectController extends Controller
      * @Route("/room/{roomId}/project")
      * @Template()
      */
-    public function listAction($roomId, Request $request)
+    public function listAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment)
     {
         // setup filter form
         $defaultFilterValues = array(
@@ -103,7 +106,7 @@ class ProjectController extends Controller
 
         $usageInfo = false;
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         if ($roomItem->getUsageInfoTextForRubricInForm('project') != '') {
@@ -116,7 +119,8 @@ class ProjectController extends Controller
             'form' => $filterForm->createView(),
             'module' => 'project',
             'itemsCountArray' => $itemsCountArray,
-            'usageInfo' => $usageInfo
+            'usageInfo' => $usageInfo,
+            'userCanCreateContext' => $legacyEnvironment->getCurrentUserItem()->isAllowedToCreateContext(),
         );
     }
     
@@ -128,7 +132,7 @@ class ProjectController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $userService = $this->get('commsy_legacy.user_service');
@@ -145,9 +149,8 @@ class ProjectController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
         
         return [
             'roomId' => $roomId,
@@ -171,10 +174,15 @@ class ProjectController extends Controller
      * }))
      * @Template()
      */
-    public function createAction($roomId, Request $request)
+    public function createAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        if (!$currentUser->isAllowedToCreateContext()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
@@ -185,12 +193,22 @@ class ProjectController extends Controller
 
         $room = new Room();
         $templates = $this->getAvailableTemplates();
+        $roomCategoriesService = $this->get('commsy.roomcategories_service');
+        $roomCategories = [];
+        foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
+            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
+        }
+
+        $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
+
         $form = $this->createForm(ProjectType::class, $room, [
             'templates' => array_flip($templates['titles']),
             'descriptions' => $templates['descriptions'],
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
+            'roomCategories' => $roomCategories,
+            'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,
         ]);
 
         $form->handleRequest($request);
@@ -251,13 +269,18 @@ class ProjectController extends Controller
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
                 $linkModifierItemManager->markEdited($legacyRoom->getItemID());
 
+                if ($form->has('categories')) {
+                    $roomCategoriesService = $this->get('commsy.roomcategories_service');
+                    $roomCategoriesService->setRoomCategoriesLinkedToContext($legacyRoom->getItemId(), $form->get('categories')->getData());
+                }
+
                 // redirect to the project detail page
                 return $this->redirectToRoute('app_project_detail', [
                     'roomId' => $roomId,
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
             } else {
-                return $this->redirectToRoute('commsy_project_list', [
+                return $this->redirectToRoute('app_project_list', [
                     'roomId' => $roomId,
                 ]);
             }
