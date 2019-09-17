@@ -596,8 +596,12 @@ class ProfileController extends Controller
     */
     public function deleteAccountAction($roomId, Request $request)
     {
-        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteAccountType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
-        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteAccountType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteAccountType::class, [
+            'confirm_string' => $this->get('translator')->trans('lock', [], 'profile'),
+        ],[])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteAccountType::class, [
+            'confirm_string' => $this->get('translator')->trans('delete', [], 'profile'),
+        ], [])->getForm();
 
         $userService = $this->get('commsy_legacy.user_service');
         $currentUser = $userService->getCurrentUserItem();
