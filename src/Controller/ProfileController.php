@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Calendars;
 use App\Form\Type\Profile\DeleteAccountType;
+use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -326,8 +327,6 @@ class ProfileController extends Controller
 
         $portalUser = $userItem->getRelatedPortalUserItem();
 
-        $request->setLocale($userItem->getLanguage());
-
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
@@ -364,8 +363,6 @@ class ProfileController extends Controller
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
-        $request->setLocale($userItem->getLanguage());
-
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
@@ -401,7 +398,6 @@ class ProfileController extends Controller
         // account administration page => set language to user preferences
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userItem = $userService->getUser($itemId);
-        $request->setLocale($userItem->getLanguage());
 
         // external auth sources
         $current_portal_item = $legacyEnvironment->getCurrentPortalItem();
@@ -500,8 +496,6 @@ class ProfileController extends Controller
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
-        $request->setLocale($userItem->getLanguage());
-
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
@@ -537,8 +531,6 @@ class ProfileController extends Controller
         $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
-
-        $request->setLocale($userItem->getLanguage());
 
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
@@ -581,12 +573,17 @@ class ProfileController extends Controller
     * @Route("/room/{roomId}/user/dropdownmenu")
     * @Template
     */
-    public function menuAction($roomId, Request $request)
-    {
-        $userService = $this->get('commsy_legacy.user_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function menuAction(
+        $roomId,
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment,
+        Request $request
+    ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
         return [
             'userId' => $userService->getCurrentUserItem()->getItemId(),
+            'portalUser' => $userService->getCurrentUserItem()->getRelatedPortalUserItem(),
             'roomId' => $roomId,
             'inPrivateRoom' => $legacyEnvironment->inPrivateRoom(),
             'inPortal' => $legacyEnvironment->inPortal(),
@@ -605,8 +602,6 @@ class ProfileController extends Controller
         $userService = $this->get('commsy_legacy.user_service');
         $currentUser = $userService->getCurrentUserItem();
         $portalUser = $currentUser->getRelatedCommSyUserItem();
-
-        $request->setLocale($currentUser->getLanguage());
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
@@ -667,8 +662,6 @@ class ProfileController extends Controller
         else {
             $portalUser = $legacyEnvironment->getCurrentUserItem();
         }
-
-        $request->setLocale($portalUser->getLanguage());
 
         $form = $this->createForm(ProfileChangePasswordType::class);
 
@@ -770,8 +763,6 @@ class ProfileController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $itemService = $this->get('commsy_legacy.item_service');
         $userItem = $legacyEnvironment->getCurrentUserItem();
-
-        $request->setLocale($userItem->getLanguage());
 
         /**
          * Workaround:
