@@ -27,7 +27,7 @@ class CommunityType extends AbstractType
             ->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'No template',
+                'placeholder' => false,
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',

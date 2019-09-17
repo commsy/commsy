@@ -994,10 +994,23 @@ class RoomController extends Controller
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
+        $templates = $this->getAvailableTemplates($type);
+
+        // necessary, since the data field malfunctions when added via listener call (#2979)
+        $templates['No template'] = '-1';
+
+        // re-sort array by elements
+        foreach($templates as $index => $entry){
+            if(!($index == 'No template')){
+                unset($templates[$index]);
+                $templates[$index] = $entry;
+            }
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
-            'templates' => $this->getAvailableTemplates($type),
+            'templates' => $templates,
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
