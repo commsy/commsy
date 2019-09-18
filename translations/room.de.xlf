@@ -126,6 +126,10 @@
                 <source>Group Rooms</source>
                 <target>Gruppenräume</target>
             </trans-unit>
+            <trans-unit id="grouproom">
+                <source>grouproom</source>
+                <target>Gruppenraum</target>
+            </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>
                 <target>Raum betreten</target>
