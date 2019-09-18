@@ -7,7 +7,6 @@ namespace App\Validator\Constraints;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
 use App\Utils\UserService;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraint;

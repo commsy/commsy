@@ -19,7 +19,7 @@
                 <target>Ihr Zugangscode ist inkorrekt.</target>
             </trans-unit>
             <trans-unit id="validators_room_no_moderators">
-                <source>Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}</source>
+                <source>Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}</source>
                 <target>Bitte benennen Sie zunächst im Raum {{ criteria }} eine neue Moderation oder löschen Sie den Raum {{ criteria }}.</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
