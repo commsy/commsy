@@ -24,7 +24,9 @@
 
                 <div id="list-filter" class="uk-hidden-small">
                     {{ form_start(filterForm) }}
-                    {{ form_widget(filterForm) }}
+                    {# visually separate the first form field from the rest (since it expands the search results instead of restricting them) #}
+                    {{ form_row(filterForm.all_rooms) }}
+                    <hr/>
                     {{ form_end(filterForm) }}
                 </div>
             </div>
@@ -120,7 +122,6 @@
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}
-                    {# TODO: add all fields from SearchFilterType form to query dictionary #}
                     {% if totalHits != results|length %}
                         <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
@@ -131,6 +132,14 @@
                                     "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
                                     "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",
+                                    {% for hashtag in searchData.selectedHashtags -%}
+                                    "search[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
+                                    {%- endfor %}
+
+                                    {% for category in searchData.selectedCategories -%}
+                                        "search[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
+                                    {%- endfor %}
+
                                     "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
                                     "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
                                     "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
