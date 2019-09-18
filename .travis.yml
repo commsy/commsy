@@ -28,8 +28,10 @@ addons:
   mariadb: 10.1
   chrome: stable
   apt:
+    update: true
     packages:
       - nginx
+      - dpkg
   hosts:
     - commsy_test_db
 
@@ -43,7 +45,7 @@ before_install:
   - install_nginx
 
   # Install yarn
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.15.2
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.17.3
   - export PATH=$HOME/.yarn/bin:$PATH
 
   # Setup Database
@@ -54,7 +56,7 @@ before_install:
   - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
 
   # ChromeDriver
-  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
+  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/77.0.3865.40/chromedriver_linux64.zip
   - unzip -o -q chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - chromedriver --url-base=/wd/hub &
