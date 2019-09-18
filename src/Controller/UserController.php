@@ -1202,6 +1202,7 @@ class UserController extends BaseController
 
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
+        $userService->resetLimits();
 
         if ($userFilter) {
             // setup filter form
