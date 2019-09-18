@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Services\CalendarsService;
+use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -10,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 use App\Form\Type\CalendarEditType;
 use App\Entity\Calendars;
-
 use App\Event\CommsyEditEvent;
 
 /**
@@ -24,11 +26,21 @@ class CalendarController extends AbstractController
      * @Route("/room/{roomId}/calendar/edit/{calendarId}")
      * @Template()
      * @Security("is_granted('CALENDARS_EDIT') and is_granted('RUBRIC_SEE', 'date')")
+     * @param Request $request
+     * @param CalendarsService $calendarsService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $calendarId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $calendarId = null, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
+    public function editAction(
+        Request $request,
+        CalendarsService $calendarsService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $calendarId = null
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         if (!$roomItem) {
@@ -67,7 +79,6 @@ class CalendarController extends AbstractController
             }
 
             if ($editForm->getClickedButton()->getName() == 'delete') {
-                $calendarsService = $this->get('commsy.calendars_service');
                 $calendarsService->removeCalendar($calendar);
             } else {
                 $em->persist($calendar);

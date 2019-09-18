@@ -3,7 +3,18 @@
 namespace App\Controller;
 
 use App\Action\Download\DownloadAction;
+use App\Form\DataTransformer\InstitutionTransformer;
+use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
+use App\Utils\InstitutionService;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
+use App\Utils\TopicService;
+use cs_label_item;
+use cs_room_item;
+use Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -24,20 +35,34 @@ class InstitutionController extends BaseController
     /**
      * @Route("/room/{roomId}/institution/feed/{start}/{sort}")
      * @Template()
+     * @param Request $request
+     * @param InstitutionService $institutionService
+     * @param ReaderService $readerService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $max
+     * @param int $start
+     * @param string $sort
+     * @return array
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAction(
+        Request $request,
+        InstitutionService $institutionService,
+        ReaderService $readerService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $max = 10,
+        int $start = 0,
+        string $sort = 'date')
     {
         $institutionFilter = $request->get('institutionFilter');
         if (!$institutionFilter) {
             $institutionFilter = $request->query->get('institution_filter');
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
-
-        // get the institution service
-        $institutionService = $this->get('commsy_legacy.institution_service');
 
         if ($institutionFilter) {
             $filterForm = $this->createFilterForm($roomItem);
@@ -52,8 +77,6 @@ class InstitutionController extends BaseController
         $institutions = $institutionService->getListInstitutions($roomId, $max, $start, $sort);
 
         $this->get('session')->set('sortInstitutions', $sort);
-
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         $allowedActions = array();
@@ -78,23 +101,29 @@ class InstitutionController extends BaseController
             'allowedActions' => $allowedActions,
         );
     }
-    
+
     /**
      * @Route("/room/{roomId}/institution")
      * @Template()
+     * @param Request $request
+     * @param InstitutionService $institutionService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function listAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function listAction(
+        Request $request,
+        InstitutionService $institutionService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
 
         /** @var \cs_community_item $roomItem */
         $roomItem = $roomManager->getItem($roomId);
 
         $filterForm = $this->createFilterForm($roomItem);
-
-        // get the institution service
-        $institutionService = $this->get('commsy_legacy.institution_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -113,7 +142,7 @@ class InstitutionController extends BaseController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('institution');
         }
 
-        $currentUser = $this->get('commsy_legacy.environment')->getEnvironment()->getCurrentUser();
+        $currentUser = $legacyEnvironment->getCurrentUser();
         $createContext = true;
         if ($currentUser->getStatus() == "" || !$currentUser->isAllowedToCreateContext()) {
             $createContext = false;
@@ -131,12 +160,18 @@ class InstitutionController extends BaseController
 
     /**
      * @Route("/room/{roomId}/institution/create")
+     * @param InstitutionService $institutionService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @return RedirectResponse
      */
-    public function createAction($roomId, Request $request)
-    {
-        $currentUser = $this->get('commsy_legacy.environment')->getEnvironment()->getCurrentUser();
+    public function createAction(
+        InstitutionService $institutionService,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId
+    ) {
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUser();
         if ($currentUser->isAllowedToCreateContext()) {
-            $institutionService = $this->get('commsy_legacy.institution_service');
             $institutionItem = $institutionService->getNewInstitution();
             $institutionItem->setDraftStatus(1);
             $institutionItem->setPrivateEditing(1);
@@ -153,9 +188,18 @@ class InstitutionController extends BaseController
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
+     * @param Request $request
+     * @param TopicService $topicService
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function detailAction($roomId, $itemId, Request $request)
-    {
+    public function detailAction(
+        Request $request,
+        TopicService $topicService,
+        int $roomId,
+        int $itemId
+    ) {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -172,7 +216,6 @@ class InstitutionController extends BaseController
 
         $pathTopicItem = null;
         if ($request->query->get('path')) {
-            $topicService = $this->get('commsy_legacy.topic_service');
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
@@ -208,9 +251,16 @@ class InstitutionController extends BaseController
 
     /**
      * @Route("/room/{roomId}/institution/{itemId}/print")
+     * @param PrintService $printService
+     * @param int $roomId
+     * @param int $itemId
+     * @return Response
      */
-    public function printAction($roomId, $itemId, PrintService $printService)
-    {
+    public function printAction(
+        PrintService $printService,
+        int $roomId,
+        int $itemId
+    ) {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -245,7 +295,10 @@ class InstitutionController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    private function getDetailInfo ($roomId, $itemId) {
+    private function getDetailInfo (
+        int $roomId,
+        int $itemId
+    ) {
         $infoArray = array();
 
         $institutionService = $this->get('commsy_legacy.institution_service');
@@ -406,18 +459,29 @@ class InstitutionController extends BaseController
      * @Route("/room/{roomId}/institution/{itemId}/edit")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param Request $request
+     * @param InstitutionService $institutionService
+     * @param ItemService $itemService
+     * @param InstitutionTransformer $transformer
+     * @param ItemController $itemController
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
+    public function editAction(
+        Request $request,
+        InstitutionService $institutionService,
+        ItemService $itemService,
+        InstitutionTransformer $transformer,
+        ItemController $itemController,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $item = $itemService->getItem($itemId);
 
-        $itemController = $this->get('commsy.item_controller');
-
-        $institutionService = $this->get('commsy_legacy.institution_service');
-        $transformer = $this->get('commsy_legacy.transformer.institution');
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
@@ -479,26 +543,34 @@ class InstitutionController extends BaseController
         );
     }
 
-        /**
+    /**
      * @Route("/room/{roomId}/institution/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @param InstitutionService $institutionService
+     * @param ItemService $itemService
+     * @param ReaderService $readerService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function saveAction($roomId, $itemId)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-
-        $institutionService = $this->get('commsy_legacy.institution_service');
-
+    public function saveAction(
+        InstitutionService $institutionService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
         $institution = $institutionService->getInstitution($itemId);
-
         $itemArray = array($institution);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
 
         $userManager = $legacyEnvironment->getUserManager();
@@ -530,7 +602,6 @@ class InstitutionController extends BaseController
             }
             $current_user = $user_list->getNext();
         }
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         $modifierList = array();
@@ -557,10 +628,25 @@ class InstitutionController extends BaseController
 
     /**
      * @Route("/room/{roomId}/institution/print/{sort}", defaults={"sort" = "none"})
+     * @param Request $request
+     * @param InstitutionService $institutionService
+     * @param PrintService $printService
+     * @param ReaderService $readerService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param string $sort
+     * @return Response
      */
-    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
-    {
-         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function printlistAction(
+        Request $request,
+        InstitutionService $institutionService,
+        PrintService $printService,
+        ReaderService $readerService,
+        LegacyEnvironment $environment,
+        int $roomId,
+        string $sort
+    ) {
+         $legacyEnvironment = $environment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -576,8 +662,6 @@ class InstitutionController extends BaseController
             'hasHashtags' => false,
             'hasCategories' => false,
         ));
-
-        $institutionService = $this->get('commsy_legacy.institution_service');
         $numAllInstitutions = $institutionService->getCountArray($roomId)['countAll'];
 
         // apply filter
@@ -598,8 +682,6 @@ class InstitutionController extends BaseController
             $institutions = $institutionService->getListInstitutions($roomId, $numAllInstitutions, 0, 'date');
         }
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-
         $readerList = array();
         foreach ($institutions as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
@@ -612,23 +694,26 @@ class InstitutionController extends BaseController
             'roomId' => $roomId,
             'institutions' => $institutions,
             'readerList' => $readerList,
-            'showRating' => false,
             'module' => 'institution',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
         ]);
-
         return $printService->buildPdfResponse($html);
     }
 
     /**
      * @Route("/room/{roomId}/institution/download")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function downloadAction($roomId, Request $request)
-    {
+    public function downloadAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -642,10 +727,15 @@ class InstitutionController extends BaseController
 
     /**
      * @Route("/room/{roomId}/institution/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrMarkReadAction($roomId, Request $request)
-    {
+    public function xhrMarkReadAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -655,10 +745,15 @@ class InstitutionController extends BaseController
 
     /**
      * @Route("/room/{roomId}/institution/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrDeleteAction($roomId, Request $request)
-    {
+    public function xhrDeleteAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -668,13 +763,17 @@ class InstitutionController extends BaseController
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_label_item[]
+     * @return cs_label_item[]
      */
-    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
+    public function getItemsByFilterConditions(
+        Request $request,
+        $roomItem,
+        $selectAll,
+        $itemIds = []
+    ) {
         $institutionService = $this->get('commsy_legacy.institution_service');
 
         if ($selectAll) {
@@ -698,11 +797,12 @@ class InstitutionController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      * @return FormInterface
      */
-    private function createFilterForm($room)
-    {
+    private function createFilterForm(
+        cs_room_item $room
+    ) {
         // setup filter form default values
         $defaultFilterValues = [
             'hide-deactivated-entries' => true,

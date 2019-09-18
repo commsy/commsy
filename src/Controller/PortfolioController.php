@@ -2,12 +2,19 @@
 
 namespace App\Controller;
 
+use App\Form\DataTransformer\PortfolioTransformer;
 use App\Services\LegacyEnvironment;
+use App\Utils\CategoryService;
+use App\Utils\ItemService;
 use App\Utils\PortfolioService;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\PortfolioEditCategoryType;
 use App\Form\Type\PortfolioType;
+use App\Utils\ReaderService;
+use App\Utils\UserService;
+use cs_user_item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -24,9 +31,14 @@ class PortfolioController extends AbstractController
     /**
      * @Route("/room/{roomId}/portfolio/")
      * @Template()
+     * @param Request $request
+     * @param int $roomId
+     * @return array
      */
-    public function indexAction($roomId, Request $request)
-    {
+    public function indexAction(
+        Request $request,
+        int $roomId
+    ) {
         $portfolioId = 'none';
         if ($request->query->has('portfolioId')) {
             $portfolioId = $request->query->get('portfolioId');
@@ -43,10 +55,18 @@ class PortfolioController extends AbstractController
      *     "portfolioId": "\d+"
      * }))
      * @Template()
+     * @param PortfolioService $portfolioService
+     * @param UserService $userService
+     * @param int $roomId
+     * @param int|null $portfolioId
+     * @return array
      */
-    public function portfolioAction($roomId, $portfolioId = null, Request $request)
-    {
-        $portfolioService = $this->get(PortfolioService::class);
+    public function portfolioAction(
+        PortfolioService $portfolioService,
+        UserService $userService,
+        int $roomId,
+        int $portfolioId = null
+    ) {
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $linkItemIds = [];
@@ -96,8 +116,7 @@ class PortfolioController extends AbstractController
             }
         }
 
-        $userService = $this->get("commsy_legacy.user_service");
-
+        /** @var cs_user_item $user */
         $user = $userService->getPortalUserFromSessionId();
 
         $external = false;
@@ -118,10 +137,16 @@ class PortfolioController extends AbstractController
     /**
      * @Route("/room/{roomId}/portfolio/portfoliosource/{source}")
      * @Template()
+     * @param PortfolioService $portfolioService
+     * @param int $roomId
+     * @param string|null $source
+     * @return array
      */
-    public function tabsAction($roomId, $source = null, Request $request)
-    {
-        $portfolioService = $this->get(PortfolioService::class);
+    public function tabsAction(
+        PortfolioService $portfolioService,
+        int $roomId,
+        string $source = null
+    ) {
         $portfolioList = $portfolioService->getPortfolioList();
 
         $portfolios = [];
@@ -143,11 +168,28 @@ class PortfolioController extends AbstractController
     /**
      * @Route("/room/{roomId}/portfolio/{portfolioId}/detail/{firstTagId}/{secondTagId}")
      * @Template()
+     * @param CategoryService $categoryService
+     * @param ItemService $itemService
+     * @param PortfolioService $portfolioService
+     * @param ReaderService $readerService
+     * @param UserService $userService
+     * @param int $roomId
+     * @param int $portfolioId
+     * @param int $firstTagId
+     * @param int $secondTagId
+     * @return array
      */
-    public function detailAction($roomId, $portfolioId, $firstTagId, $secondTagId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $portfolioService = $this->get(PortfolioService::class);
+    public function detailAction(
+        CategoryService $categoryService,
+        ItemService $itemService,
+        PortfolioService $portfolioService,
+        ReaderService $readerService,
+        UserService $userService,
+        int $roomId,
+        int $portfolioId,
+        int $firstTagId,
+        int $secondTagId
+    ) {
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $items = [];
@@ -165,8 +207,7 @@ class PortfolioController extends AbstractController
             }
         }
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $userService = $this->get("commsy_legacy.user_service");
+        /** @var cs_user_item $user */
         $user = $userService->getPortalUserFromSessionId();
 
         $readerList = array();
@@ -178,8 +219,6 @@ class PortfolioController extends AbstractController
                 }
             }
         }
-
-        $categoryService = $this->get('commsy_legacy.category_service');
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -202,10 +241,24 @@ class PortfolioController extends AbstractController
      *
      * @Route("/room/{roomId}/portfolio/{portfolioId}/edit")
      * @Template()
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param PortfolioService $portfolioService
+     * @param PortfolioTransformer $transformer
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @param int $portfolioId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $portfolioId, Request $request)
-    {
-        $portfolioService = $this->get(PortfolioService::class);
+    public function editAction(
+        Request $request,
+        ItemService $itemService,
+        PortfolioService $portfolioService,
+        PortfolioTransformer $transformer,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId,
+        int $portfolioId
+    ) {
 
         // when creating a new item, return a redirect to the edit form (portfolio draft)
         if ($portfolioId === 'new') {
@@ -217,13 +270,11 @@ class PortfolioController extends AbstractController
             ]);
         }
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($portfolioId);
 
-        $portfolioManager = $this->get('commsy_legacy.environment')->getEnvironment()->getPortfolioManager();
+        $portfolioManager = $legacyEnvironment->getEnvironment()->getPortfolioManager();
         $portfolioItem = $portfolioManager->getItem($portfolioId);
 
-        $transformer = $this->get('commsy_legacy.transformer.portfolio');
         $formData = $transformer->transform($portfolioItem);
 
         $form = $this->createForm(PortfolioType::class, $formData, [
@@ -275,9 +326,22 @@ class PortfolioController extends AbstractController
     /**
      * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryId}/")
      * @Template()
+     * @param Request $request
+     * @param CategoryService $categoryService
+     * @param int $roomId
+     * @param int $portfolioId
+     * @param string $position
+     * @param int $categoryId
+     * @return array|RedirectResponse
      */
-    public function editcategoryAction($roomId, $portfolioId, $position, $categoryId, Request $request)
-    {
+    public function editcategoryAction(
+        Request $request,
+        CategoryService $categoryService,
+        int $roomId,
+        int $portfolioId,
+        string $position,
+        int $categoryId
+    ) {
         $portfolioService = $this->get(PortfolioService::class);
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
@@ -289,7 +353,6 @@ class PortfolioController extends AbstractController
             $formData['categories'] = [$categoryId];
         }
 
-        $categoryService = $this->get('commsy_legacy.category_service');
         $roomTags = $categoryService->getTags($roomId);
 //        $disabledCategories = $this->getDisabledTags($roomTags, $categoryId, $portfolio);
 
@@ -377,10 +440,17 @@ class PortfolioController extends AbstractController
 
     /**
      * @Route("/room/{roomId}/portfolio/{portfolioId}/stopActivation")
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $portfolioId
+     * @return RedirectResponse
      */
-    public function stopActivation($roomId, $portfolioId, LegacyEnvironment $legacyEnvironment)
-    {
-        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+    public function stopActivation(
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $portfolioId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $portfolioManager = $legacyEnvironment->getPortfolioManager();
 
         $portfolio = $portfolioManager->getItem($portfolioId);
@@ -399,7 +469,11 @@ class PortfolioController extends AbstractController
         ]);
     }
 
-    private function getDisabledTags($roomTags, $orientation, $portfolio) {
+    private function getDisabledTags(
+        $roomTags,
+        $orientation,
+        $portfolio
+    ) {
         $result = [];
         foreach ($roomTags as $roomTag) {
             $usedCategories = [];

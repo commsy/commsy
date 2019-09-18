@@ -8,7 +8,6 @@
 
 namespace App\Controller;
 
-
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,11 +21,14 @@ class StepController extends BaseController
      * @Route("/room/{roomId}/step/xhr/delete", condition="request.isXmlHttpRequest()")
      * @throws \Exception
      */
-    public function xhrDeleteAction($roomId, Request $request)
+    public function xhrDeleteAction(
+        Request $request,
+        $roomId)
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
+        // TODO: find a way to load this service via new Symfony Dependency Injection!
         $action = $this->get('commsy.action.delete.step');
         return $action->execute($room, $items);
     }

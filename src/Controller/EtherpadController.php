@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Services\EtherpadService;
+use App\Services\LegacyEnvironment;
+use App\Utils\MaterialService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -12,15 +15,24 @@ class EtherpadController extends AbstractController
 {
     /**
      * @Template()
+     * @param Request $request
+     * @param MaterialService $materialService
+     * @param EtherpadService $etherpadService
+     * @param LegacyEnvironment $environment
+     * @param int $materialId
+     * @param int $roomId
+     * @return array
      */
-    public function indexAction($materialId, $roomId, Request $request)
-    {
-        $materialService = $this->get('commsy_legacy.material_service');
-        $etherpadService = $this->get('commsy.etherpad_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
+    public function indexAction(
+        Request $request,
+        MaterialService $materialService,
+        EtherpadService $etherpadService,
+        LegacyEnvironment $environment,
+        int $materialId,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $material = $materialService->getMaterial($materialId);
-
         $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         # Init etherpad

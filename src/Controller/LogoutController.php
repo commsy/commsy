@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -10,10 +12,15 @@ class LogoutController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/logout")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @return RedirectResponse
      */
-    public function logoutAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function logoutAction(
+        Request $request,
+        LegacyEnvironment $environment
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $session = $legacyEnvironment->getSessionItem();
         $sessionId = $session->getSessionID();

@@ -5,6 +5,7 @@ use App\Utils\RoomService;
 use App\Services\LegacyEnvironment;
 
 use App\Services\MediawikiService;
+use cs_room_item;
 
 class ExtensionSettingsTransformer implements DataTransformerInterface
 {

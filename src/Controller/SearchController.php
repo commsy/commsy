@@ -17,6 +17,9 @@ use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
+use cs_item;
+use cs_room_item;
+use Exception;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -44,9 +47,14 @@ class SearchController extends BaseController
      * from the main request here.
      *
      * @Template
+     * @param int $roomId
+     * @param $requestData
+     * @return array
      */
-    public function searchFormAction($roomId, $requestData)
-    {
+    public function searchFormAction(
+        int $roomId,
+        $requestData
+    ) {
         $searchData = new SearchData();
         $searchData->setPhrase($requestData['phrase'] ?? null);
 
@@ -71,8 +79,9 @@ class SearchController extends BaseController
      * @param $roomId int The id of the containing context
      * @Template
      */
-    public function itemSearchFormAction($roomId)
-    {
+    public function itemSearchFormAction(
+        int $roomId
+    ) {
         $form = $this->createForm(SearchItemType::class, [], [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId
@@ -87,11 +96,16 @@ class SearchController extends BaseController
 
     /**
      * @Route("/room/{roomId}/search/itemresults")
-     * @param $roomId
      * @param Request $request
+     * @param SearchManager $searchManager
+     * @param int $roomId
+     * @return JsonResponse
      */
-    public function itemSearchResultsAction($roomId, Request $request, SearchManager $searchManager)
-    {
+    public function itemSearchResultsAction(
+        Request $request,
+        SearchManager $searchManager,
+        int $roomId
+    ) {
         $query = $request->get('search', '');
 
         // query conditions
@@ -118,10 +132,16 @@ class SearchController extends BaseController
 
     /**
      * @Route("/room/{roomId}/search/instantresults")
+     * @param Request $request
+     * @param SearchManager $searchManager
      * @param $roomId int The context id
+     * @return JsonResponse
      */
-    public function instantResultsAction($roomId, Request $request, SearchManager $searchManager)
-    {
+    public function instantResultsAction(
+        Request $request,
+        SearchManager $searchManager,
+        int $roomId
+    ) {
         $query = $request->get('search', '');
 
         // query conditions
@@ -150,17 +170,24 @@ class SearchController extends BaseController
 
     /**
      * Displays search results
-     * 
+     *
      * @Route("/room/{roomId}/search/results")
      * @Template
+     * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param RoomService $roomService
+     * @param SearchManager $searchManager
+     * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     * @param int $roomId
+     * @return array
      */
     public function resultsAction(
-        $roomId,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
-        MultipleContextFilterCondition $multipleContextFilterCondition
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+        int $roomId
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -230,17 +257,23 @@ class SearchController extends BaseController
 
     /**
      * Returns more search results
-     * 
+     *
      * @Route("/room/{roomId}/searchmore/{start}/{sort}")
      * @Template
+     * @param Request $request
+     * @param SearchManager $searchManager
+     * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     * @param int $roomId
+     * @param int $start
+     * @return array
      */
-    public function moreResultsAction($roomId,
-                                      $start = 0,
-                                      $sort = 'date',
-                                      Request $request,
-                                      SearchManager $searchManager,
-                                      MultipleContextFilterCondition $multipleContextFilterCondition)
-    {
+    public function moreResultsAction(
+        Request $request,
+        SearchManager $searchManager,
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+        int $roomId,
+        int $start = 0
+    ) {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
@@ -285,8 +318,10 @@ class SearchController extends BaseController
      * @param Request $request
      * @return SearchData
      */
-    private function populateSearchData(SearchData $searchData, Request $request): SearchData
-    {
+    private function populateSearchData(
+        SearchData $searchData,
+        Request $request
+    ): SearchData {
         // TODO: should we better move this method to SearchData.php?
 
         if (!isset($request)) {
@@ -465,16 +500,19 @@ class SearchController extends BaseController
         }
     }
 
-     /**
+    /**
      * Generates JSON results for the room navigation search-as-you-type form
      *
      * @Route("/room/{roomId}/search/rooms")
-     * 
-     * @param  int $roomId The current room id
+     *
+     * @param Request $request
+     * @param SearchManager $searchManager
      * @return JsonResponse The JSON result
      */
-    public function roomNavigationAction($roomId, Request $request, SearchManager $searchManager)
-    {
+    public function roomNavigationAction(
+        Request $request,
+        SearchManager $searchManager
+    ) {
         $results = [];
 
         $query = $request->get('search', '');
@@ -552,10 +590,15 @@ class SearchController extends BaseController
 
     /**
      * @Route("/room/{roomId}/search/xhr/copy", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrCopyAction($roomId, Request $request)
-    {
+    public function xhrCopyAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -565,26 +608,36 @@ class SearchController extends BaseController
 
     /**
      * @Route("/room/{roomId}/search/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return
+     * @throws Exception
      */
-    public function xhrDeleteAction($roomId, Request $request)
-    {
+    public function xhrDeleteAction(
+        Request $request,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
+        // TODO: find a way to load this service via new Symfony Dependency Injection!
         $action = $this->get('commsy.action.delete.generic');
         return $action->execute($room, $items);
     }
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_item[]
+     * @return cs_item[]
      */
-    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
+    public function getItemsByFilterConditions(
+        Request $request,
+        $roomItem,
+        $selectAll,
+        $itemIds = []
+    ) {
         if ($selectAll) {
             // TODO: This is currently a limitation
             return [];
@@ -601,8 +654,12 @@ class SearchController extends BaseController
         }
     }
 
-    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, $offset = 0, $json = false)
-    {
+    private function prepareResults(
+        TransformedPaginatorAdapter $searchResults,
+        int $currentRoomId,
+        int $offset = 0,
+        bool $json = false
+    ) {
         $itemService = $this->get('commsy_legacy.item_service');
 
         $results = [];

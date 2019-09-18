@@ -638,7 +638,7 @@ class cs_material_item extends cs_item {
 
 
     /**
-     * @return \cs_list
+     * @return cs_list
      */
    function getSectionList() {
       $section_list = $this->_getValue('section_for');
@@ -656,7 +656,7 @@ class cs_material_item extends cs_item {
    }
 
     /**
-     * @return \cs_list
+     * @return cs_list
      */
     public function getAnnotationList()
     {

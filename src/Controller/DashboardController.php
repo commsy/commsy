@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
-use App\Services\ReaderService;
-use App\Services\UserService;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
+use App\Utils\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -22,10 +24,17 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/{roomId}")
      * @Template()
+     * @param ItemService $itemService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-     public function overviewAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+     public function overviewAction(
+         ItemService $itemService,
+         LegacyEnvironment $environment,
+         int $roomId
+     ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
         $roomManager = $legacyEnvironment->getPrivateRoomManager();
@@ -82,7 +91,6 @@ class DashboardController extends AbstractController
         $repository = $em->getRepository('App:Calendars');
         $calendars = $repository->findBy(array('context_id' => $contextIds, 'external_url' => array('', NULL)));
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $contextArray = [];
         foreach ($calendars as $index => $calendar) {
             $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
@@ -122,13 +130,22 @@ class DashboardController extends AbstractController
         );
     }
 
-    
+
     /**
      * @Route("/dashboard/{roomId}/feed/{start}/{sort}")
      * @Template()
+     * @param Request $request
+     * @param ReaderService $readerService
+     * @param UserService $userService
+     * @param int $max
+     * @return array
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
-    {
+    public function feedAction(
+        Request $request,
+        ReaderService $readerService,
+        UserService $userService,
+        int $max = 10
+    ) {
         $lastId = null;
         if ($request->query->has('lastId')) {
             $lastId = $request->query->get('lastId');
@@ -137,10 +154,7 @@ class DashboardController extends AbstractController
         $roomFeedGenerator = $this->get('commsy.room_feed_generator');
         $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
 
-        $userService = $this->get("commsy_legacy.user_service");
         $user = $userService->getPortalUserFromSessionId();
-
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         $feedItems = [];
@@ -158,17 +172,24 @@ class DashboardController extends AbstractController
             'readerList' => $readerList
         ];
     }
-    
+
     /**
      * @Route("/dashboard/{roomId}/edit")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return JsonResponse
      */
-    public function editAction($roomId, Request $request)
-    {
+    public function editAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
         $translator = $this->get('translator');
         
         $requestContent = json_decode($request->getContent());
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
         $roomManager = $legacyEnvironment->getPrivateRoomManager();
@@ -185,27 +206,37 @@ class DashboardController extends AbstractController
                                       'data' => array(),
                                     ));
     }
-    
+
     /**
      * @Route("/dashboard/{roomId}/rss")
      * @Template()
+     * @param Request $request
+     * @param int $roomId
+     * @return array
      */
-    public function rssAction($roomId, Request $request)
+    public function rssAction(
+        Request $request,
+        int $roomId)
     {
         return array(
         );
     }
-    
+
     /**
      * @Route("/dashboard/{roomId}/externalaccess")
      * @Template()
+     * @param UserService $userService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function externalaccessAction($roomId, Request $request)
-    {
-        $userService = $this->get("commsy_legacy.user_service");
+    public function externalaccessAction(
+        UserService $userService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
         $user = $userService->getPortalUserFromSessionId();
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
 
         $itemManager = $legacyEnvironment->getItemManager();
         $releasedIds = $itemManager->getExternalViewerEntriesForRoom($roomId);

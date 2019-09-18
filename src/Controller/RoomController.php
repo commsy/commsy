@@ -9,13 +9,27 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Repository\RoomRepository;
+use App\Repository\ZzzRoomRepository;
+use App\RoomFeed\RoomFeedGenerator;
+use App\Services\LegacyEnvironment;
+use App\Services\RoomCategoriesService;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
+use App\Utils\RoomService;
+use App\Utils\UserService;
+use cs_user_item;
+use Exception;
+use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Services\LegacyMarkup;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class RoomController
@@ -29,10 +43,25 @@ class RoomController extends AbstractController
      *     "roomId": "\d+"
      * })
      * @Template()
+     * @param Request $request
+     * @param ItemService $itemService
+     * @param RoomService $roomService
+     * @param RoomFeedGenerator $roomFeedGenerator
+     * @param LegacyMarkup $legacyMarkup
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array
      */
-    public function homeAction($roomId, Request $request, LegacyMarkup $legacyMarkup)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function homeAction(
+        Request $request,
+        ItemService $itemService,
+        RoomService $roomService,
+        RoomFeedGenerator $roomFeedGenerator,
+        LegacyMarkup $legacyMarkup,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         // get room item
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -63,7 +92,6 @@ class RoomController extends AbstractController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in feed generator
-            $roomFeedGenerator = $this->get('commsy.room_feed_generator');
             $roomFeedGenerator->setFilterConditions($filterForm);
             $header = "search results";
         }
@@ -101,7 +129,6 @@ class RoomController extends AbstractController
         }
 
         // TODO: calculate parallax-scrolling range for home.html.twig depending on image dimensions!
-        $roomService = $this->get('commsy_legacy.room_service');
 
         // support mail
         $serviceContact = [
@@ -155,7 +182,6 @@ class RoomController extends AbstractController
         $homeInformationEntry = null;
         if ($roomItem->withInformationBox()) {
             $entryId = $roomItem->getInformationBoxEntryID();
-            $itemService = $this->get('commsy_legacy.item_service');
             $homeInformationEntry = $itemService->getTypedItem($entryId);
 
             // This check is now present in settings form. Check also added here to secure display of rooms with old and invalid settings in database.
@@ -163,7 +189,6 @@ class RoomController extends AbstractController
                 $roomItem->setwithInformationBox(false);
                 $homeInformationEntry = null;
             } else {
-                $itemService = $this->get('commsy_legacy.item_service');
                 $legacyMarkup->addFiles($itemService->getItemFileList($homeInformationEntry->getItemId()));
             }
         }
@@ -200,10 +225,23 @@ class RoomController extends AbstractController
      *     "roomId": "\d+"
      * })
      * @Template("room/list.html.twig")
+     * @param Request $request
+     * @param ReaderService $readerService
+     * @param RoomFeedGenerator $roomFeedGenerator
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $max
+     * @return array
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function feedAction(
+        Request $request,
+        ReaderService $readerService,
+        RoomFeedGenerator $roomFeedGenerator,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $max = 10
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -222,9 +260,6 @@ class RoomController extends AbstractController
             'hasCategories' => $roomItem->withTags(),
         ));
 
-        // collect information for feed panel
-        $roomFeedGenerator = $this->get('commsy.room_feed_generator');
-
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
@@ -238,12 +273,9 @@ class RoomController extends AbstractController
         }
 
         $feedList = $roomFeedGenerator->getRoomFeedList($roomId, $max, $lastId);
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-
- 
         $readerList = array();
         foreach ($feedList as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
@@ -255,15 +287,24 @@ class RoomController extends AbstractController
             'showRating' => $current_context->isAssessmentActive()
          );
     }
-    
+
     /**
      * @Route("/room/{roomId}/moderationsupport", requirements={
      *     "roomId": "\d+"
      * })
      * @Template()
+     * @param Request $request
+     * @param TranslatorInterface $translator
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array|JsonResponse
      */
-    public function moderationsupportAction($roomId, Request $request)
-    {
+    public function moderationsupportAction(
+        Request $request,
+        TranslatorInterface $translator,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
         $moderationsupportData = array();
         $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, array(
             'action' => $this->generateUrl('app_room_moderationsupport', array(
@@ -275,7 +316,7 @@ class RoomController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $legacyEnvironment = $environment->getEnvironment();
 
             $currentUser = $legacyEnvironment->getCurrentUser();
 
@@ -300,9 +341,7 @@ class RoomController extends AbstractController
             $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
             
             $this->get('mailer')->send($message);
-            
-            $translator = $this->get('translator');
-            
+
             return new JsonResponse([
                 'message' => $translator->trans('message was send'),
                 'timeout' => '5550',
@@ -322,17 +361,23 @@ class RoomController extends AbstractController
      *     "roomId": "\d+"
      * })
      * @Template()
-     * 
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request [description]
+     * @param RoomService $roomService
+     * @param FilterBuilderUpdater $filterBuilderUpdater
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array [type]           [description]
      */
-    public function listAllAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
-
+    public function listAllAction(
+        Request $request,
+        RoomService $roomService,
+        FilterBuilderUpdater $filterBuilderUpdater,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portalItem->showTime(),
             'timePulses' => $roomService->getTimePulses(),
@@ -351,8 +396,7 @@ class RoomController extends AbstractController
 
         // filtered rooms
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-            $this->get('lexik_form_filter.query_builder_updater')
-                ->addFilterConditions($filterForm, $activeRoomQueryBuilder);
+            $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
             $count += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
         }
         else {
@@ -376,16 +420,14 @@ class RoomController extends AbstractController
             // "archived" not set or archived != 1 = include archived rooms in list 
             if (!isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
                 if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-                    $this->get('lexik_form_filter.query_builder_updater')
-                        ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+                    $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
                     $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
                 }
             }
         }
         // archived rooms have to be included if they aren't explicitely excluded!
         else {
-            $this->get('lexik_form_filter.query_builder_updater')
-                ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+            $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
             $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
         }
 
@@ -423,11 +465,25 @@ class RoomController extends AbstractController
     /**
      * @Route("/room/{roomId}/all/feed/{start}/{sort}")
      * @Template()
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param FilterBuilderUpdater $filterBuilderUpdater
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $max
+     * @param int $start
+     * @return array
      */
-    public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
+    public function feedAllAction(
+        Request $request,
+        RoomService $roomService,
+        FilterBuilderUpdater $filterBuilderUpdater,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $max = 10,
+        int $start = 0
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -453,8 +509,7 @@ class RoomController extends AbstractController
             // manually bind values from the request
             $filterForm->submit($roomFilter);
 
-            $this->get('lexik_form_filter.query_builder_updater')
-                    ->addFilterConditions($filterForm, $activeRoomQueryBuilder);
+            $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
         }
 
         $rooms = $activeRoomQueryBuilder->getQuery()->getResult();
@@ -473,8 +528,7 @@ class RoomController extends AbstractController
                     'timePulses' => $roomService->getTimePulses(),
                 ]);
                 $filterForm->submit($roomFilter);
-                $this->get('lexik_form_filter.query_builder_updater')
-                        ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+                $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
             }
 
             $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
@@ -499,11 +553,16 @@ class RoomController extends AbstractController
     /**
      * @Route("/room/{roomId}/logo")
      * @Template()
+     * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
+     * @return array
      */
-    public function logoAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+    public function logoAction(
+        Request $request,
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $environment = $legacyEnvironment->getEnvironment();
+        $portalItem = $environment->getCurrentPortalItem();
 
         return [
             'portalUrl' => $request->getSchemeAndHttpHost() . '?cid=' . $portalItem->getItemId(),
@@ -516,22 +575,36 @@ class RoomController extends AbstractController
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
+     * @param ItemService $itemService
+     * @param RoomService $roomService
+     * @param UserService $userService
+     * @param LegacyEnvironment $environment
+     * @param LegacyMarkup $legacyMarkup
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
      */
-    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $userService = $this->get('commsy_legacy.user_service');
-
+    public function detailAction(
+        ItemService $itemService,
+        RoomService $roomService,
+        UserService $userService,
+        LegacyEnvironment $environment,
+        LegacyMarkup $legacyMarkup,
+        int $roomId,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
 
         $currentUser = $legacyEnvironment->getCurrentUser();
 
-        $infoArray = $this->getDetailInfo($roomItem);
+        $infoArray = $this->getDetailInfo($roomItem, $itemService, $environment);
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
         $showRoomModerationActions = false;
+        /** @var cs_user_item $roomUser */
         $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
         if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
             $showRoomModerationActions = true;
@@ -542,10 +615,7 @@ class RoomController extends AbstractController
             }
         }
 
-        $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
-
-        $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return [
@@ -563,10 +633,11 @@ class RoomController extends AbstractController
         ];
     }
 
-    private function getDetailInfo($room)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    private function getDetailInfo(
+        $room,
+        ItemService $itemService,
+        \cs_environment $legacyEnvironment
+    ) {
         $readerManager = $legacyEnvironment->getReaderManager();
 
         $info = [];
@@ -620,10 +691,19 @@ class RoomController extends AbstractController
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @return array|string|RedirectResponse
      */
-    public function requestAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function requestAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
@@ -909,18 +989,26 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @param $roomId
-     * @param Request $request
-     *
      * @Route("/room/{roomId}/all/create", requirements={
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param RoomCategoriesService $roomCategoriesService
+     * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @return array|RedirectResponse
+     * @throws Exception
      */
-    public function createAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
+    public function createAction(
+        Request $request,
+        RoomService $roomService,
+        RoomCategoriesService $roomCategoriesService,
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $type = null;
@@ -986,7 +1074,6 @@ class RoomController extends AbstractController
             $linkCommunitiesMandantory = false;
         }
 
-        $roomCategoriesService = $this->get('commsy.roomcategories_service');
         $roomCategories = [];
         foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
@@ -997,7 +1084,7 @@ class RoomController extends AbstractController
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
-            'templates' => $this->getAvailableTemplates($type),
+            'templates' => $this->getAvailableTemplates($legacyEnvironment, $type),
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
@@ -1091,11 +1178,11 @@ class RoomController extends AbstractController
         ];
     }
 
-    private function getAvailableTemplates($type)
-    {
+    private function getAvailableTemplates(
+        \cs_environment $legacyEnvironment,
+        string $type
+    ) {
         $templates = [];
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
@@ -1178,8 +1265,9 @@ class RoomController extends AbstractController
         return $templates;
     }
 
-    private function memberStatus($roomItem)
-    {
+    private function memberStatus(
+        $roomItem
+    ) {
         $status = 'closed';
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -1274,7 +1362,7 @@ class RoomController extends AbstractController
                 $creator_item = $user_list->getFirst();
                 $creator_id = $creator_item->getItemID();
             } else {
-                throw new \Exception('can not get creator of new room');
+                throw new Exception('can not get creator of new room');
             }
         }
         $creator_item->setAccountWantMail('yes');

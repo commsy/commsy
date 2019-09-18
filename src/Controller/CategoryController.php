@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -12,17 +13,26 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\Type as Types;
 
 use App\Entity\Tag;
+use App\Services\LegacyEnvironment;
+use App\Utils\CategoryService;
+use App\Utils\RoomService;
 
 class CategoryController extends AbstractController
 {
     /**
      * @Template("category/show.html.twig")
+     * @param Request $request
+     * @param CategoryService $categoryService
+     * @param int $roomId
+     * @return array
      */
-    public function showAction($roomId, Request $request)
-    {
+    public function showAction(
+        Request $request,
+        CategoryService $categoryService,
+        int $roomId
+    ) {
         // get categories from CategoryManager
-        $tagManager = $this->get('commsy_legacy.category_service');
-        $roomTags = $tagManager->getTags($roomId);
+        $roomTags = $categoryService->getTags($roomId);
 
         $defaultData = array(
             'roomId' => $roomId,
@@ -40,12 +50,18 @@ class CategoryController extends AbstractController
 
     /**
      * @Template("category/showDetail.html.twig")
+     * @param Request $request
+     * @param CategoryService $categoryService
+     * @param int $roomId
+     * @return array
      */
-    public function showDetailAction($roomId, Request $request)
-    {
+    public function showDetailAction(
+        Request $request,
+        CategoryService $categoryService,
+        int $roomId
+    ) {
         // get categories from CategoryManager
-        $tagManager = $this->get('commsy_legacy.category_service');
-        $roomTags = $tagManager->getTags($roomId);
+        $roomTags = $categoryService->getTags($roomId);
 
         $defaultData = array(
             'roomId' => $roomId,
@@ -65,9 +81,16 @@ class CategoryController extends AbstractController
      * @Route("/room/{roomId}/category/new")
      * @Method("POST")
      * @Security("is_granted('CATEGORY_EDIT')")
+     * @param Request $request
+     * @param CategoryService $categoryService
+     * @param $roomId
+     * @return RedirectResponse
      */
-    public function newAction($roomId, Request $request)
-    {
+    public function newAction(
+        Request $request,
+        CategoryService $categoryService,
+        $roomId
+    ) {
         $form = $this->createForm(Types\TagType::class);
 
         $form->handleRequest($request);
@@ -76,8 +99,7 @@ class CategoryController extends AbstractController
             $data = $form->getData();
 
             // persist new tag
-            $tagManager = $this->get('commsy_legacy.category_service');
-            $tagManager->addTag($data['title'], $roomId);
+            $categoryService->addTag($data['title'], $roomId);
 
             return $this->redirectToRoute('app_room_home', array('roomId' => $roomId));
         }
@@ -87,17 +109,27 @@ class CategoryController extends AbstractController
      * @Route("/room/{roomId}/category/edit/{categoryId}")
      * @Template()
      * @Security("is_granted('CATEGORY_EDIT')")
+     * @param Request $request
+     * @param RoomService $roomService
+     * @param CategoryService $categoryService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @param int $categoryId
+     * @return array|RedirectResponse
      */
-    public function editAction($roomId, $categoryId = null, Request $request)
+    public function editAction(
+        Request $request,
+        RoomService $roomService,
+        CategoryService $categoryService,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId,
+        int $categoryId = null)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem->withTags()) {
             throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
         }
-
-        $categoryService = $this->get('commsy_legacy.category_service');
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('App:Tag');
@@ -176,7 +208,7 @@ class CategoryController extends AbstractController
             $tagIdOne = $mergeData['first']->getItemId();
             $tagIdTwo = $mergeData['second']->getItemId();
 
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
             $tagManager = $legacyEnvironment->getTagManager();
             $tag2TagManager = $legacyEnvironment->getTag2TagManager();

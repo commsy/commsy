@@ -511,8 +511,7 @@ services:
 
     # Exporter
     commsy.export.wordpress:
-        class: App\Export\WordpressExporter
-        arguments: ['@commsy_legacy.environment']
+        alias: App\Export\WordpressExporter
 
     commsy.export.wiki:
         class: App\Export\WikiExporter

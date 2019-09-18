@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,10 +14,16 @@ class DefaultController extends AbstractController
 {
     /**
      * @Route("/")
+     * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
+     * @return RedirectResponse
      */
-    public function indexAction(Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    /*
+    public function indexAction(
+        Request $request,
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $redirectContextId = 99;
 
@@ -66,4 +74,5 @@ class DefaultController extends AbstractController
         $url = $request->getBaseUrl() . '?cid=' . $redirectContextId;
         return $this->redirect($url);
     }
+    */
 }
