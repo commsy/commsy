@@ -26,6 +26,10 @@
                 <source>Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}</source>
                 <target>Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}.</target>
             </trans-unit>
+            <trans-unit id="validators_no_account_deletion_rooms_moderated">
+                <source>You can not delete your account. The following workspaces would otherwise be without moderators: {{ criteria }}. Please assign further moderators or delete said room/s.</source>
+                <target>You can not delete your account. The following workspaces would otherwise be without moderators: {{ criteria }}. Please assign further moderators or delete said room/s.</target>
+            </trans-unit>
             <trans-unit id="validators_password_criteria">
                 <source>The password does not fulfill the following criteria: {{ criteria }}.</source>
                 <target>The password does not fulfill the following criteria: {{ criteria }}.</target>
