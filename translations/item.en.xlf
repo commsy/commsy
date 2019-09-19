@@ -36,19 +36,19 @@
             </trans-unit>
             <trans-unit id="workflowValidity">
                 <source>workflowValidity</source>
-                <target>Validity date</target>
+                <target>2nd resubmission</target>
             </trans-unit>
             <trans-unit id="workflowValidityDate">
                 <source>workflowValidityDate</source>
-                <target>Validity date</target>
+                <target>2nd resubmission date</target>
             </trans-unit>
             <trans-unit id="workflowValidityWho">
                 <source>workflowValidityWho</source>
-                <target>Notification after the expiration of the validity date</target>
+                <target>Notification after the expiration of the 2nd resubmission date</target>
             </trans-unit>
             <trans-unit id="workflowStatusValidityDate">
                 <source>workflowStatusValidityDate</source>
-                <target>Status after the expiration of the validity date</target>
+                <target>Status after the expiration of the 2nd resubmission date</target>
             </trans-unit>
             <trans-unit id="additionalActions">
                 <source>additional actions</source>
