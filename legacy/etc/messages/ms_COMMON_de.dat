@@ -428,7 +428,7 @@ $message["COMMON_ERROR_MINUTES_INT"]["de"] = "Geben Sie die Zeit bitte als Zahl 
 $message["COMMON_ERROR_SELECT"]["de"] = "Bitte wählen Sie bei <span style=&quot;font-weight:bold;&quot;>%1</span> etwas aus.";
 $message["COMMON_ERROR_TAG_ENTRY"]["de"] = "Bitte wählen Sie eine <span style=&quot;font-weight:bold;&quot;>Kategorie</span> aus.";
 $message["COMMON_ERROR_WORKFLOW_RESUBMISSION_DATE_MISSED"]["de"] = "Bitte geben Sie ein Wiedervorlage-Datum an";
-$message["COMMON_ERROR_WORKFLOW_VALIDITY_DATE_MISSED"]["de"] = "Bitte geben Sie ein G&uuml;ltigkeitsdatum an";
+$message["COMMON_ERROR_WORKFLOW_VALIDITY_DATE_MISSED"]["de"] = "Bitte geben Sie ein 2. Wiedervorlage-Datum an";
 $message["COMMON_EXTERNAL_SYSTEMS"]["de"] = "Plugins";
 $message["COMMON_EXTERNAL_VIEWER"]["de"] = "Der Eintrag ist freigegeben für";
 $message["COMMON_FACTS"]["de"] = "Fakten";
@@ -1040,11 +1040,11 @@ $message["COMMON_WORKFLOW_DESCRIPTION_DESC"]["de"] = "Die Workflow Einstellungen
 $message["COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION"]["de"] = "Im Raum &quot;%1&quot; wurde das Wiedervorlage-Datum f&uuml;r den Eintrag &quot;%2&quot; erreicht:
 
 %3";
-$message["COMMON_WORKFLOW_EMAIL_BODY_VALIDITY"]["de"] = "Im Raum &quot;%1&quot; wurde das G&uuml;ltigkeitsdatum f&uuml;r den Eintrag &quot;%2&quot; erreicht:
+$message["COMMON_WORKFLOW_EMAIL_BODY_VALIDITY"]["de"] = "Im Raum &quot;%1&quot; wurde das 2. Wiedervorlage-Datum f&uuml;r den Eintrag &quot;%2&quot; erreicht:
 
 %3";
 $message["COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION"]["de"] = "%1 - Das Wiedervorlage-Datum eines Eintrags wurde erreicht.";
-$message["COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY"]["de"] = "%1 - Das Gültigkeitsdatum eines Eintrags wurde erreicht.";
+$message["COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY"]["de"] = "%1 - Das 2. Wiedervorlage-Datum eines Eintrags wurde erreicht.";
 $message["COMMON_WORKFLOW_INDEX"]["de"] = "Status";
 $message["COMMON_WORKFLOW_READ_SINCE_MODIFICATION"]["de"] = "seither gelesen von";
 $message["COMMON_WORKFLOW_RESUBMISSION"]["de"] = "Wiedervorlage";
@@ -1066,9 +1066,9 @@ $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE"]["de"] = "Kein Status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT"]["de"] = "ungültig";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT"]["de"] = "Entwurf";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW"]["de"] = "gelb";
-$message["COMMON_WORKFLOW_VALIDITY"]["de"] = "Gültigkeitsdatum";
-$message["COMMON_WORKFLOW_VALIDITY_TRAFFIC_LIGHT"]["de"] = "Status nach Ablauf des Gültigkeitsdatum";
-$message["COMMON_WORKFLOW_VALIDITY_WHO"]["de"] = "Benachrichtigung nach Ablauf des Gültigkeitsdatums";
+$message["COMMON_WORKFLOW_VALIDITY"]["de"] = "2. Wiedervorlage-Datum";
+$message["COMMON_WORKFLOW_VALIDITY_TRAFFIC_LIGHT"]["de"] = "Status nach Ablauf des 2. Wiedervorlage-Datums";
+$message["COMMON_WORKFLOW_VALIDITY_WHO"]["de"] = "Benachrichtigung nach Ablauf des 2. Wiedervorlage-Datums";
 $message["COMMON_X_ANNOTATIONS"]["de"] = "%1 Einträge";
 $message["COMMON_X_ENTRIES"]["de"] = "%1";
 $message["COMMON_X_ENTRIES_FROM_ALL"]["de"] = "Angezeigt: %1 Einträge (%2 insgesamt)";
