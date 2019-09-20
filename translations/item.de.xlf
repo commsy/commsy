@@ -44,11 +44,11 @@
             </trans-unit>
             <trans-unit id="workflowValidityWho">
                 <source>workflowValidityWho</source>
-                <target>Benachrichtigung nach Ablauf des 2. Wiedervorlage-Datums</target>
+                <target>Benachrichtigung nach Ablauf des zweiten Wiedervorlage-Datums</target>
             </trans-unit>
             <trans-unit id="workflowStatusValidityDate">
                 <source>workflowStatusValidityDate</source>
-                <target>Status nach Ablauf des 2. Wiedervorlage-Datums</target>
+                <target>Status nach Ablauf des zweiten Wiedervorlage-Datums</target>
             </trans-unit>
             <trans-unit id="additionalActions">
                 <source>additional actions</source>
