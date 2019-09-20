@@ -1021,14 +1021,14 @@ $message["COMMON_WORDPRESS_LINK"]["en"] = "Wordpress blog";
 $message["COMMON_WORKFLOW"]["en"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["en"] = "Workflow settings";
 $message["COMMON_WORKFLOW_DESCRIPTION_DESC"]["en"] = "The Workflow settings are additional features to manage the editorial prozess in materials.";
-$message["COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION"]["en"] = "In the workspace &quot;%1&quot; the resubmission date for the entry &quot;%2&quot; has been reached:
+$message["COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION"]["en"] = "For the workspace &quot;%1&quot;, the resubmission date for the entry &quot;%2&quot; has been reached:
 
 %3";
-$message["COMMON_WORKFLOW_EMAIL_BODY_VALIDITY"]["en"] = "In the workspace &quot;%1&quot; the 2nd resubmission date for the entry &quot;%2&quot; has been reached:
+$message["COMMON_WORKFLOW_EMAIL_BODY_VALIDITY"]["en"] = "For the workspace &quot;%1&quot;, the second resubmission date for the entry &quot;%2&quot; has been reached:
 
 %3";
 $message["COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION"]["en"] = "%1 - The resubmission date of an entry has been reached";
-$message["COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY"]["en"] = "%1 - The 2nd resubmission date of an entry has been reached";
+$message["COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY"]["en"] = "%1 - The second resubmission date of an entry has been reached";
 $message["COMMON_WORKFLOW_INDEX"]["en"] = "Status";
 $message["COMMON_WORKFLOW_READ_SINCE_MODIFICATION"]["en"] = "since then read by";
 $message["COMMON_WORKFLOW_RESUBMISSION"]["en"] = "Resubmission";
