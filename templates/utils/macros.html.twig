@@ -268,6 +268,13 @@
     {% endif %}
 {% endmacro %}
 
+{% macro userFullnameLink(user) %}
+    {% import _self as macros %}
+    <a href="{{ path('app_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
+        {{ macros.userFullname(user) }}
+    </a>
+{% endmacro %}
+
 {% macro actionIcons(title, item, edit, draft) %}
     <div class="uk-flex uk-flex-right">
         {% if edit %}
@@ -489,20 +496,15 @@
 
 {% macro workflowWhoCreator(item) %}
     {% import _self as macros %}
-    <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': item.creatorItem.itemId}) }}">
-        {{ macros.userFullname(item.creatorItem) }}
-    </a>
+    {{ macros.userFullnameLink(item.creatorItem) }}
 {% endmacro %}
 
 {% macro workflowWhoModifier(item) %}
     {% import _self as macros %}
-    
-    {{ macros.workflowWhoCreator(item) }}
-    
+
+    {# TODO: use a helper macro similar to userListToString() instead #}
     {% for modifier in item.modifierList %}
-        <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
-            {{ macros.userFullname(modifier) }}
-        </a>
+        {{ macros.userFullnameLink(modifier) }}
     {% endfor %}
 {% endmacro %}
 
