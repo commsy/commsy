@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 use \Twig_Environment;
@@ -97,12 +98,13 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessage($formData, $item, $forceBCCMail = false): \Swift_Message
+    public function getSwiftMessage(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $formData = $form->getData();
 
-        $recipients = $this->getRecipients($formData, $item);
+        $recipients = $this->getRecipients($form, $item);
         $to = $recipients['to'];
         $toBCC = $recipients['bcc'];
 
@@ -121,12 +123,12 @@ class MailAssistant
 
         // form option: copy_to_sender
         $toCC = [];
-        if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+        if ($form->has('copy_to_sender') && $formData['copy_to_sender']) {
             $toCC[$currentUserEmail] = $currentUserName;
         }
 
         // form option: additional_recipients
-        if (isset($formData['additional_recipients'])) {
+        if ($form->has('additional_recipients')) {
             $additionalRecipients = array_filter($formData['additional_recipients']);
 
             if (!empty($additionalRecipients)) {
@@ -154,15 +156,17 @@ class MailAssistant
         return $message;
     }
 
-    private function getRecipients($formData, $item)
+    private function getRecipients(FormInterface $form, $item)
     {
         $recipients = [
             'to' => [],
             'bcc' => [],
         ];
 
+        $formData = $form->getData();
+
         // form option: send_to_all
-        if (isset($formData['send_to_all']) && $formData['send_to_all']) {
+        if ($form->has('send_to_all') && $formData['send_to_all']) {
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
             $userManager->setUserLimit();
@@ -174,7 +178,7 @@ class MailAssistant
         }
 
         // form option: send_to_attendees
-        if (isset($formData['send_to_attendees']) && $formData['send_to_attendees']) {
+        if ($form->has('send_to_attendees') && $formData['send_to_attendees']) {
             if ($item instanceof \cs_dates_item) {
                 $attendees = $item->getParticipantsItemList();
                 $this->addRecipients($recipients, $attendees);
@@ -182,7 +186,7 @@ class MailAssistant
         }
 
         // form option: send_to_assigned
-        if (isset($formData['send_to_assigned']) && $formData['send_to_assigned']) {
+        if ($form->has('send_to_assigned') && $formData['send_to_assigned']) {
             if ($item instanceof \cs_todo_item) {
                 $processors = $item->getProcessorItemList();
                 $this->addRecipients($recipients, $processors);
@@ -190,7 +194,7 @@ class MailAssistant
         }
 
         // form option: send_to_group_all - if group rubric is not active
-        if (isset($formData['send_to_group_all']) && $formData['send_to_group_all']) {
+        if ($form->has('send_to_group_all') && $formData['send_to_group_all']) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
             $userList = $currentContextItem->getUserList();
 
@@ -198,7 +202,7 @@ class MailAssistant
         }
 
         // form option: send_to_groups
-        if (isset($formData['send_to_groups']) && !empty($formData['send_to_groups'])) {
+        if ($form->has('send_to_groups') && !empty($formData['send_to_groups'])) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
             $groups = $labelManager->getItemList($formData['send_to_groups']);
 
@@ -219,7 +223,7 @@ class MailAssistant
         }
 
         // form option: send_to_institutions
-        if (isset($formData['send_to_institutions']) && !empty($formData['send_to_institutions'])) {
+        if ($form->has('send_to_institutions') && !empty($formData['send_to_institutions'])) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
             $institutions = $labelManager->getItemList($formData['send_to_institutions']);
 
