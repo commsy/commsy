@@ -1,0 +1,9 @@
+{% extends 'base/portal.html.twig' %}
+
+{% block content %}
+    {% for activePortal in activePortals %}
+        {{ activePortal.title }}
+    {% else %}
+        No portals yet!
+    {% endfor %}
+{% endblock %}
