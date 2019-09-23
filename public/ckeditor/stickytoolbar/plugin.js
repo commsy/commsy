@@ -12,7 +12,7 @@ CKEDITOR.plugins.add('stickytoolbar', {
 
             // since offsetTop takes the position relative to its parent element(s) having a relative
             // position, we iterate over all the parent elements
-            function argetOffset(element, horizontal) {
+            function getOffset(element, horizontal) {
                 horizontal = horizontal || false;
 
                 if (!element) return 0;
