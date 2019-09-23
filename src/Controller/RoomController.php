@@ -23,6 +23,7 @@ use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Services\LegacyMarkup;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -59,6 +60,7 @@ class RoomController extends AbstractController
         RoomFeedGenerator $roomFeedGenerator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $environment,
+        ParameterBagInterface $parameterBag,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -68,7 +70,7 @@ class RoomController extends AbstractController
         $roomItem = $roomManager->getItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
-        if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $this->container->getParameter('liip_theme.themes'))) {
+        if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $parameterBag->get('liip_theme.themes'))) {
             $roomItem->setColorArray(array('schema' => 'default'));
             $roomItem->save();
         }

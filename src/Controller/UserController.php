@@ -24,6 +24,7 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -1125,22 +1126,16 @@ class UserController extends BaseController
      * 
      * @param  int $roomId The current room id
      */
-    public function globalNavbarAction($roomId)
+    public function globalNavbarAction($roomId, UserService $userService, LegacyEnvironment $legacyEnvironment, SessionInterface $session)
     {
-        $userService = $this->get('commsy_legacy.user_service');
         $currentUserItem = $userService->getCurrentUserItem();
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $sessionItem = $legacyEnvironment->getSessionItem();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
-        $currentClipboardIds = array();
-        if ($sessionItem->issetValue('clipboard_ids')) {
-            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
-        }
-
+        $currentClipboardIds = $session->get('clipboard_ids', []);
         $showPortalConfigurationLink = false;
         $currentPortalUserItem = $currentUserItem->getRelatedPortalUserItem();
         if ($currentPortalUserItem) {
@@ -1174,9 +1169,8 @@ class UserController extends BaseController
      *
      * @Template()
      */
-    public function allRoomsNavbarAction()
+    public function allRoomsNavbarAction(UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
-        $userService = $this->get('commsy_legacy.user_service');
         $currentUserItem = $userService->getCurrentUserItem();
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
@@ -1184,7 +1178,7 @@ class UserController extends BaseController
         if ($privateRoomItem) {
             $itemId = $privateRoomItem->getItemId();
         } else {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $legacyEnvironment = $legacyEnvironment->getEnvironment();
             $itemId = $legacyEnvironment->getCurrentContextId();
         }
 

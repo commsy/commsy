@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\RoomFeed\RoomFeedGenerator;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
@@ -144,6 +145,8 @@ class DashboardController extends AbstractController
         Request $request,
         ReaderService $readerService,
         UserService $userService,
+        RoomFeedGenerator $roomFeedGenerator,
+        LegacyEnvironment $legacyEnvironment,
         int $max = 10
     ) {
         $lastId = null;
@@ -151,10 +154,10 @@ class DashboardController extends AbstractController
             $lastId = $request->query->get('lastId');
         }
 
-        $roomFeedGenerator = $this->get('commsy.room_feed_generator');
         $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
 
-        $user = $userService->getPortalUserFromSessionId();
+        $user = $legacyEnvironment->getEnvironment()->getPortalUserItem();
+
 
         $readerList = array();
         $feedItems = [];
@@ -235,8 +238,8 @@ class DashboardController extends AbstractController
         LegacyEnvironment $environment,
         int $roomId
     ) {
-        $user = $userService->getPortalUserFromSessionId();
         $legacyEnvironment = $environment->getEnvironment();
+        $user = $legacyEnvironment->getCurrentUser()->getRelatedPortalUserItem();
 
         $itemManager = $legacyEnvironment->getItemManager();
         $releasedIds = $itemManager->getExternalViewerEntriesForRoom($roomId);

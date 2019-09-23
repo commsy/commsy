@@ -360,12 +360,7 @@ class MenuBuilder
 
             $inPrivateRoom = false;
             if (!$currentUser->isRoot() && !$currentUser->isGuest()) {
-                $portalUser = $this->userService->getPortalUserFromSessionId();
-                $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
-                $authSource = $authSourceManager->getItem($portalUser->getAuthSource());
-                $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
-                $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-                $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($portalUser, $this->legacyEnvironment->getCurrentPortalID());
+                $privateRoom = $currentUser->getOwnRoom();
 
                 if ($roomId === $privateRoom->getItemId()) {
                     $inPrivateRoom = true;

@@ -683,7 +683,7 @@ class ProfileController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         int $roomId
     ) {
-        $environment = $$legacyEnvironment->getEnvironment();
+        $environment = $legacyEnvironment->getEnvironment();
         return [
             'userId' => $userService->getCurrentUserItem()->getItemId(),
             'roomId' => $roomId,
