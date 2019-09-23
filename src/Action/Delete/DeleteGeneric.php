@@ -10,6 +10,7 @@ namespace App\Action\Delete;
 
 
 use App\Services\LegacyEnvironment;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DeleteGeneric implements DeleteInterface
 {
@@ -18,9 +19,12 @@ class DeleteGeneric implements DeleteInterface
      */
     protected $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    private $session;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, SessionInterface $session)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->session = $session;
     }
 
     /**
@@ -44,15 +48,10 @@ class DeleteGeneric implements DeleteInterface
 
     private function removeItemFromClipboard(int $itemId)
     {
-        $sessionItem = $this->legacyEnvironment->getSessionItem();
-        if ($sessionItem && $sessionItem->issetValue('clipboard_ids')) {
-            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
-            if (in_array($itemId, $currentClipboardIds)) {
-                unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
-                $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
-            }
-            $sessionManager = $this->legacyEnvironment->getSessionManager();
-            $sessionManager->save($sessionItem);
+        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+        if (in_array($itemId, $currentClipboardIds)) {
+            unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
+            $this->session->set('clipboard_ids', $currentClipboardIds);
         }
     }
 }

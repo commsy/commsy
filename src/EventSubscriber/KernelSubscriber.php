@@ -77,10 +77,6 @@ class KernelSubscriber implements EventSubscriberInterface
                 'onKernelRequest',
                 512,
             ],
-            KernelEvents::FINISH_REQUEST => [
-                'onKernelRequestFinished',
-                100,
-            ],
         );
     }
 
@@ -228,19 +224,5 @@ class KernelSubscriber implements EventSubscriberInterface
          // set user language
         $currentRequest = $event->getRequest();
         $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
-    }
-
-    public function onKernelRequestFinished(FinishRequestEvent $event) {
-        // only deal with master requests
-        if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {
-            return;
-        }
-
-        $session = $this->legacyEnvironment->getSessionItem();
-
-        if ($session) {
-            $sessionManager = $this->legacyEnvironment->getSessionManager();
-            $sessionManager->update($session);
-        }
     }
 }
