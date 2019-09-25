@@ -212,17 +212,23 @@
                 
                     {% if versions|length > 1 %}
                     <div class="">
-                        <div style="padding:20px 20px 40px 20px;">
+                        <div style="padding:40px 20px 40px 20px;">
                             <div style="width:100%;">
                                 <div style="width:100%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
                                     {% for version in versions %}
                                         {% if loop.first %}
+                                            <div style="position:absolute; top:-40px; left:0px;">
+                                                {{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}
+                                            </div>
                                             <div style="position:absolute; top:-20px; left:0px;">
                                                 {{ version.date }}
                                             </div>
                                         {% endif %}
                                         
                                         {% if loop.last %}
+                                            <div style="position:absolute; top:-40px; right:0px;">
+                                                {{ 'latest version'|trans({}, 'material') }}
+                                            </div>
                                             <div style="position:absolute; top:-20px; right:0px;">
                                                 {{ version.date }}
                                             </div>
@@ -230,9 +236,9 @@
                                     
                                         <div style="position:absolute; top:4px; left:{{ version.percent }}%;">
                                             {% if version.current %}
-                                                <a href="#" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
+                                                <a href="#" data-uk-tooltip title="{{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
                                             {% else %}
-                                                <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
+                                                <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
                                             {% endif %}
                                         </div>
                                     {% endfor %}
