@@ -215,6 +215,7 @@
                         <div style="padding:40px 20px 40px 20px;">
                             <div style="width:100%;">
                                 <div style="width:100%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
+                                    {% set iconColor = '#b34400' %}
                                     {% for version in versions %}
                                         {% if loop.first %}
                                             <div style="position:absolute; top:-40px; left:0px;">
@@ -226,6 +227,7 @@
                                         {% endif %}
                                         
                                         {% if loop.last %}
+                                            {% set iconColor = '#4cb34d' %}
                                             <div style="position:absolute; top:-40px; right:0px;">
                                                 {{ 'latest version'|trans({}, 'material') }}
                                             </div>
@@ -236,7 +238,7 @@
                                     
                                         <div style="position:absolute; top:4px; left:{{ version.percent }}%;">
                                             {% if version.current %}
-                                                <a href="#" data-uk-tooltip title="{{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
+                                                <a href="#" data-uk-tooltip title="{{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file" style="color:{{ iconColor }};"></i></a>
                                             {% else %}
                                                 <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
                                             {% endif %}
