@@ -198,6 +198,14 @@
                 <source>License id</source>
                 <target>Lizenz</target>
             </trans-unit>
+            <trans-unit id="latest-version">
+                <source>latest version</source>
+                <target>Aktuelle Version</target>
+            </trans-unit>
+            <trans-unit id="numbered-version">
+                <source>%count% version</source>
+                <target>%count%. Version</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

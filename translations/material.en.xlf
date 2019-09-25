@@ -198,6 +198,14 @@
                 <source>License id</source>
                 <target>License</target>
             </trans-unit>
+            <trans-unit id="latest-version">
+                <source>latest version</source>
+                <target>Latest version</target>
+            </trans-unit>
+            <trans-unit id="numbered-version">
+                <source>%count% version</source>
+                <target>{1} 1st version|{2} 2nd version|{3} 3rd version|]3,Inf[ %count%th version</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
