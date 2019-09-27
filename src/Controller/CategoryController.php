@@ -84,6 +84,21 @@ class CategoryController extends Controller
     }
 
     /**
+     * @Route("/room/{roomId}/category/delete/{categoryId}")
+     * @Security("is_granted('CATEGORY_EDIT')")
+     */
+    public function deleteAction($roomId, $categoryId)
+    {
+        $categoryService = $this->get('commsy_legacy.category_service');
+
+        $categoryService->removeTag($categoryId, $roomId);
+
+        return $this->redirectToRoute('app_category_edit', [
+            'roomId' => $roomId,
+        ]);
+    }
+
+    /**
      * @Route("/room/{roomId}/category/edit/{categoryId}")
      * @Template()
      * @Security("is_granted('CATEGORY_EDIT')")

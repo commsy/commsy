@@ -26,9 +26,12 @@
                     }) }}">
                         {{- 'Edit'|trans({}, 'form') -}}
                     </a>
-                    <button class="category_delete uk-button uk-button-mini uk-button-danger uk-float-right" data-id='{{ child.data }}'>
+                    <a class="uk-button uk-button-mini uk-button-danger uk-float-right" href="{{ path('app_category_delete', {
+                        roomId: app.request.attributes.get('roomId'),
+                        categoryId: child.data
+                    }) }}">
                         {{- 'Delete'|trans({}, 'form') -}}
-                    </button>
+                    </a>
                 </div>
         {% endif %}
     {% endfor %}
