@@ -10,8 +10,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Form\Type as Types;
-
 use App\Entity\Tag;
+use App\Utils\CategoryService;
 
 class CategoryController extends Controller
 {
@@ -87,10 +87,8 @@ class CategoryController extends Controller
      * @Route("/room/{roomId}/category/delete/{categoryId}")
      * @Security("is_granted('CATEGORY_EDIT')")
      */
-    public function deleteAction($roomId, $categoryId)
+    public function delete($roomId, $categoryId, CategoryService $categoryService)
     {
-        $categoryService = $this->get('commsy_legacy.category_service');
-
         $categoryService->removeTag($categoryId, $roomId);
 
         return $this->redirectToRoute('app_category_edit', [
