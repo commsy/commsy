@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
 
 use Symfony\Component\Translation\TranslatorInterface;
@@ -113,21 +114,36 @@ class MailAssistant
             $replyTo[$currentUserEmail] = $currentUserName;
         }
 
+        $formDataSubject = (get_class($formData) == Send::class ? (is_null($formData->getSubject())
+            ? false : $formData->getSubject()) : $formData['subject']);
+
+        $formDataMessage = (get_class($formData) == Send::class ? (is_null($formData->getMessage())
+            ? false : $formData->getMessage()) : $formData['message']);
+
         $message = (new \Swift_Message())
-            ->setSubject($formData['subject'])
-            ->setBody($formData['message'], 'text/html')
+            ->setSubject($formDataSubject)
+            ->setBody($formDataMessage, 'text/html')
             ->setFrom([$this->from => $portalItem->getTitle()])
             ->setReplyTo($replyTo);
 
         // form option: copy_to_sender
         $toCC = [];
-        if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+
+        $isCopyToSender = (get_class($formData) == Send::class ? (is_null($formData->getCopyToSender())
+            ? false : $formData->getCopyToSender()) : isset($formData['copy_to_sender']) && $formData['copy_to_sender']);
+
+        if ($isCopyToSender) {
             $toCC[$currentUserEmail] = $currentUserName;
         }
 
         // form option: additional_recipients
-        if (isset($formData['additional_recipients'])) {
-            $additionalRecipients = array_filter($formData['additional_recipients']);
+        $isAdditionalRecipients = (get_class($formData) == Send::class ? (is_null($formData->getAdditionalRecipients())
+            ? false : true) : isset($formData['additional_recipients']));
+
+        if ($isAdditionalRecipients) {
+            $formDataAdditionalRecipients = (get_class($formData) == Send::class
+                ? ($formData->getAdditionalRecipients()) : $formData['additional_recipients']);
+            $additionalRecipients = array_filter($formDataAdditionalRecipients);
 
             if (!empty($additionalRecipients)) {
                 $to = array_merge($to, $additionalRecipients);
@@ -161,8 +177,10 @@ class MailAssistant
             'bcc' => [],
         ];
 
-        // form option: send_to_all
-        if (isset($formData['send_to_all']) && $formData['send_to_all']) {
+        $isSendToAll = (get_class($formData) == Send::class ? (is_null($formData->getSendToAll())
+            ? false : $formData->getSendToAll()) : isset($formData['send_to_all']) && $formData['send_to_all']);
+
+        if ($isSendToAll) {
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
             $userManager->setUserLimit();
@@ -173,8 +191,11 @@ class MailAssistant
             $this->addRecipients($recipients, $userList);
         }
 
+        $isSendToAttendees = (get_class($formData) == Send::class ? (is_null($formData->getSendToAttendees())
+            ? false : $formData->getSendToAttendees()) : isset($formData['send_to_attendees']) && $formData['send_to_attendees']);
+
         // form option: send_to_attendees
-        if (isset($formData['send_to_attendees']) && $formData['send_to_attendees']) {
+        if ($isSendToAttendees) {
             if ($item instanceof \cs_dates_item) {
                 $attendees = $item->getParticipantsItemList();
                 $this->addRecipients($recipients, $attendees);
@@ -182,7 +203,10 @@ class MailAssistant
         }
 
         // form option: send_to_assigned
-        if (isset($formData['send_to_assigned']) && $formData['send_to_assigned']) {
+        $isSendToAssigned = (get_class($formData) == Send::class ? (is_null($formData->getSendToAttendees())
+            ? false : $formData->getSendToAttendees()) : isset($formData['send_to_assigned']) && $formData['send_to_assigned']);
+
+        if ($isSendToAssigned) {
             if ($item instanceof \cs_todo_item) {
                 $processors = $item->getProcessorItemList();
                 $this->addRecipients($recipients, $processors);
@@ -190,7 +214,10 @@ class MailAssistant
         }
 
         // form option: send_to_group_all - if group rubric is not active
-        if (isset($formData['send_to_group_all']) && $formData['send_to_group_all']) {
+        $isSendToGroupAll = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroupAll())
+            ? false : $formData->getSendToGroupAll()) : isset($formData['send_to_group_all']) && $formData['send_to_group_all']);
+
+        if ($isSendToGroupAll) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
             $userList = $currentContextItem->getUserList();
 
@@ -198,7 +225,10 @@ class MailAssistant
         }
 
         // form option: send_to_groups
-        if (isset($formData['send_to_groups']) && !empty($formData['send_to_groups'])) {
+        $isSendToGroups = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
+            ? false : $formData->getSendToGroups()) : isset($formData['send_to_groups']) && !empty($formData['send_to_groups']));
+
+        if ($isSendToGroups) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
             $groups = $labelManager->getItemList($formData['send_to_groups']);
 
@@ -219,7 +249,10 @@ class MailAssistant
         }
 
         // form option: send_to_institutions
-        if (isset($formData['send_to_institutions']) && !empty($formData['send_to_institutions'])) {
+        $isSendToInstitutions = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
+            ? false : $formData->getSendToGroups()) : isset($formData['send_to_groups']) && !empty($formData['send_to_institutions']));
+
+        if ($isSendToInstitutions) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
             $institutions = $labelManager->getItemList($formData['send_to_institutions']);
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\Model\Send;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -628,18 +629,12 @@ class ItemController extends Controller
             $defaultGroupId = "";
         }
 
-        $formData = [
-            'additional_recipients' => [
-                '',
-            ],
-            'send_to_groups' => [
-                $defaultGroupId
-            ],
-            'send_to_group_all' => false,
-            'send_to_all' => false,
-            'message' => $mailAssistant->prepareMessage($item),
-            'copy_to_sender' => false,
-        ];
+        $formData = new Send();
+        $formData->setSendToGroups($defaultGroupId);
+        $formData->setMessage($mailAssistant->prepareMessage($item));
+        $formData->setSendToGroups(false);
+        $formData->setSendToGroupAll(false);
+        $formData->setCopyToSender(false);
 
         $form = $this->createForm(SendType::class, $formData, [
             'item' => $item,
