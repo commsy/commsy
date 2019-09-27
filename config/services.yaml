@@ -194,7 +194,10 @@ services:
         arguments: ['%legacy.site_index%', '@service_container']
 
     commsy_legacy.category_service:
-        class: App\Utils\CategoryService
+        alias: App\Utils\CategoryService
+
+    App\Utils\CategoryService:
+        autowire: true
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.material_service:
