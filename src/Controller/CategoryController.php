@@ -12,17 +12,17 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\Type as Types;
 use App\Entity\Tag;
 use App\Utils\CategoryService;
+use App\Utils\RoomService;
 
 class CategoryController extends Controller
 {
     /**
      * @Template("category/show.html.twig")
      */
-    public function showAction($roomId, Request $request)
+    public function show($roomId, Request $request, CategoryService $categoryService)
     {
-        // get categories from CategoryManager
-        $tagManager = $this->get('commsy_legacy.category_service');
-        $roomTags = $tagManager->getTags($roomId);
+        // get categories
+        $roomTags = $categoryService->getTags($roomId);
 
         $defaultData = array(
             'roomId' => $roomId,
@@ -41,11 +41,10 @@ class CategoryController extends Controller
     /**
      * @Template("category/showDetail.html.twig")
      */
-    public function showDetailAction($roomId, Request $request)
+    public function showDetail($roomId, Request $request, CategoryService $categoryService)
     {
-        // get categories from CategoryManager
-        $tagManager = $this->get('commsy_legacy.category_service');
-        $roomTags = $tagManager->getTags($roomId);
+        // get categories
+        $roomTags = $categoryService->getTags($roomId);
 
         $defaultData = array(
             'roomId' => $roomId,
@@ -66,7 +65,7 @@ class CategoryController extends Controller
      * @Method("POST")
      * @Security("is_granted('CATEGORY_EDIT')")
      */
-    public function newAction($roomId, Request $request)
+    public function new($roomId, Request $request, CategoryService $categoryService)
     {
         $form = $this->createForm(Types\TagType::class);
 
@@ -75,9 +74,8 @@ class CategoryController extends Controller
         if ($form->isSubmitted() &&$form->isValid()) {
             $data = $form->getData();
 
-            // persist new tag
-            $tagManager = $this->get('commsy_legacy.category_service');
-            $tagManager->addTag($data['title'], $roomId);
+            // persist new category
+            $categoryService->addTag($data['title'], $roomId);
 
             return $this->redirectToRoute('app_room_home', array('roomId' => $roomId));
         }
@@ -101,16 +99,13 @@ class CategoryController extends Controller
      * @Template()
      * @Security("is_granted('CATEGORY_EDIT')")
      */
-    public function editAction($roomId, $categoryId = null, Request $request)
+    public function edit($roomId, $categoryId = null, Request $request, RoomService $roomService, CategoryService $categoryService)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem->withTags()) {
             throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
         }
-
-        $categoryService = $this->get('commsy_legacy.category_service');
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('App:Tag');
