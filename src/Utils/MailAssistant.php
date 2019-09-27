@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormInterface;
 
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -98,12 +99,13 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessage($formData, $item, $forceBCCMail = false): \Swift_Message
+    public function getSwiftMessage(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $formData = $form->getData();
 
-        $recipients = $this->getRecipients($formData, $item);
+        $recipients = $this->getRecipients($form, $item);
         $to = $recipients['to'];
         $toBCC = $recipients['bcc'];
 
@@ -130,7 +132,7 @@ class MailAssistant
         $toCC = [];
 
         $isCopyToSender = (get_class($formData) == Send::class ? (is_null($formData->getCopyToSender())
-            ? false : $formData->getCopyToSender()) : isset($formData['copy_to_sender']) && $formData['copy_to_sender']);
+            ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
 
         if ($isCopyToSender) {
             $toCC[$currentUserEmail] = $currentUserName;
@@ -138,7 +140,7 @@ class MailAssistant
 
         // form option: additional_recipients
         $isAdditionalRecipients = (get_class($formData) == Send::class ? (is_null($formData->getAdditionalRecipients())
-            ? false : true) : isset($formData['additional_recipients']));
+            ? false : true) : $form->has('additional_recipients'));
 
         if ($isAdditionalRecipients) {
             $formDataAdditionalRecipients = (get_class($formData) == Send::class
@@ -170,15 +172,16 @@ class MailAssistant
         return $message;
     }
 
-    private function getRecipients($formData, $item)
+    private function getRecipients(FormInterface $form, $item)
     {
         $recipients = [
             'to' => [],
             'bcc' => [],
         ];
 
+        $formData = $form->getData();
         $isSendToAll = (get_class($formData) == Send::class ? (is_null($formData->getSendToAll())
-            ? false : $formData->getSendToAll()) : isset($formData['send_to_all']) && $formData['send_to_all']);
+            ? false : $formData->getSendToAll()) : $form->has('send_to_all') && $formData['send_to_all']);
 
         if ($isSendToAll) {
             $userManager = $this->legacyEnvironment->getUserManager();
@@ -192,7 +195,7 @@ class MailAssistant
         }
 
         $isSendToAttendees = (get_class($formData) == Send::class ? (is_null($formData->getSendToAttendees())
-            ? false : $formData->getSendToAttendees()) : isset($formData['send_to_attendees']) && $formData['send_to_attendees']);
+            ? false : $formData->getSendToAttendees()) : $form->has('send_to_attendees') && $formData['send_to_attendees']);
 
         // form option: send_to_attendees
         if ($isSendToAttendees) {
@@ -204,7 +207,7 @@ class MailAssistant
 
         // form option: send_to_assigned
         $isSendToAssigned = (get_class($formData) == Send::class ? (is_null($formData->getSendToAttendees())
-            ? false : $formData->getSendToAttendees()) : isset($formData['send_to_assigned']) && $formData['send_to_assigned']);
+            ? false : $formData->getSendToAttendees()) : $form->has('send_to_assigned') && $formData['send_to_assigned']);
 
         if ($isSendToAssigned) {
             if ($item instanceof \cs_todo_item) {
@@ -215,7 +218,7 @@ class MailAssistant
 
         // form option: send_to_group_all - if group rubric is not active
         $isSendToGroupAll = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroupAll())
-            ? false : $formData->getSendToGroupAll()) : isset($formData['send_to_group_all']) && $formData['send_to_group_all']);
+            ? false : $formData->getSendToGroupAll()) : $form->has('send_to_group_all') && $formData['send_to_group_all']);
 
         if ($isSendToGroupAll) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
@@ -226,7 +229,7 @@ class MailAssistant
 
         // form option: send_to_groups
         $isSendToGroups = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
-            ? false : $formData->getSendToGroups()) : isset($formData['send_to_groups']) && !empty($formData['send_to_groups']));
+            ? false : $formData->getSendToGroups()) : $form->has('send_to_groups') && !empty($formData['send_to_groups']));
 
         if ($isSendToGroups) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
@@ -250,7 +253,7 @@ class MailAssistant
 
         // form option: send_to_institutions
         $isSendToInstitutions = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
-            ? false : $formData->getSendToGroups()) : isset($formData['send_to_groups']) && !empty($formData['send_to_institutions']));
+            ? false : $formData->getSendToGroups()) : $form->has('send_to_groups') && !empty($formData['send_to_institutions']));
 
         if ($isSendToInstitutions) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
