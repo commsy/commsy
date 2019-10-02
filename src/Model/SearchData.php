@@ -218,10 +218,10 @@ class SearchData
     }
 
     /**
-     * @param string $selectedRubric
+     * @param string|null $selectedRubric
      * @return SearchData
      */
-    public function setSelectedRubric(string $selectedRubric): SearchData
+    public function setSelectedRubric(?string $selectedRubric): SearchData
     {
         $this->selectedRubric = $selectedRubric;
         return $this;
@@ -266,10 +266,10 @@ class SearchData
     }
 
     /**
-     * @param string $selectedCreator
+     * @param string|null $selectedCreator
      * @return SearchData
      */
-    public function setSelectedCreator(string $selectedCreator): SearchData
+    public function setSelectedCreator(?string $selectedCreator): SearchData
     {
         $this->selectedCreator = $selectedCreator;
         return $this;
