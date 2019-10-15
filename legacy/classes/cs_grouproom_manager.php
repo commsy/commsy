@@ -430,13 +430,24 @@ class cs_grouproom_manager extends cs_room2_manager {
       return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
    }
 
-   function saveActivityPoints ($item) {
-      parent::saveActivityPoints($item);
+    public function saveActivityPoints(\cs_item $item)
+    {
+        parent::saveActivityPoints($item);
 
-      // portal item -> save max activity points
-      $portal = $item->getContextItem();
-      $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
-      unset($portal);
-   }
+        global $symfonyContainer;
+        /** @var \Doctrine\ORM\EntityManagerInterface $entityManager */
+        /** @noinspection MissingService */
+        $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+
+        $portal = $entityManager->getRepository(\App\Entity\Portal::class)->find($item->getContextId());
+        $extras = $portal->getExtras();
+        if (isset($extras['MAX_ROOM_ACTIVITY'])) {
+            if ($item->getActivityPoints() > $extras['MAX_ROOM_ACTIVITY']) {
+                $extras['MAX_ROOM_ACTIVITY'] = $item->getActivityPoints();
+                $portal->setExtras($extras);
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+    }
 }
-?>

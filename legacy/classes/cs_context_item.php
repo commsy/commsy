@@ -4994,23 +4994,24 @@ class cs_context_item extends cs_item {
     $this->_setValue('activity', $value, TRUE);
   }
 
-  function saveActivityPoints ($points) {
-    $this->setActivityPoints($points + $this->getActivityPoints());
-    if ( $this->isProjectRoom() ) {
-      $manager = $this->_environment->getProjectManager();
-    } elseif ( $this->isGroupRoom() ) {
-      $manager = $this->_environment->getGrouproomManager();
-    } elseif ( $this->isCommunityRoom() ) {
-      $manager = $this->_environment->getCommunityManager();
-    } elseif ( $this->isPortal() ) {
-      $manager = $this->_environment->getPortalManager();
-    } elseif ( $this->isServer() ) {
-      $manager = $this->_environment->getServerManager();
+    public function saveActivityPoints($points)
+    {
+        $this->setActivityPoints($points + $this->getActivityPoints());
+        if ($this->isProjectRoom()) {
+            $manager = $this->_environment->getProjectManager();
+        } elseif ($this->isGroupRoom()) {
+            $manager = $this->_environment->getGrouproomManager();
+        } elseif ($this->isCommunityRoom()) {
+            $manager = $this->_environment->getCommunityManager();
+        } elseif ($this->isPortal()) {
+            $manager = $this->_environment->getPortalManager();
+        } elseif ($this->isServer()) {
+            $manager = $this->_environment->getServerManager();
+        }
+        if (isset($manager)) {
+            $manager->saveActivityPoints($this);
+        }
     }
-    if ( isset($manager) ) {
-      $manager->saveActivityPoints($this);
-    }
-  }
 
   ##########################################
   # activity points

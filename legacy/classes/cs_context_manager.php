@@ -740,16 +740,17 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       return $retour;
    }
 
-   function saveActivityPoints ($item) {
-      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-               ' activity="'.encode(AS_DB,$item->getActivityPoints()).'"'.
-               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems updating activity points '.$this->_db_table.'.',E_USER_WARNING);
-      }
-   }
+    public function saveActivityPoints(\cs_item $item)
+    {
+        $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
+            ' activity="' . encode(AS_DB, $item->getActivityPoints()) . '"' .
+            ' WHERE item_id="' . encode(AS_DB, $item->getItemID()) . '"';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems updating activity points ' . $this->_db_table . '.', E_USER_WARNING);
+        }
+    }
 
    public function setQueryWithExtra () {
       $this->_sql_with_extra = true;
