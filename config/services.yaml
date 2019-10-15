@@ -527,34 +527,15 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
-    kernel.listener.commsy_breadcrumb:
-        class: App\EventListener\CommsyBreadcrumbListener
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service', '@translator', '@router', '@white_october_breadcrumbs']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
-
     kernel.listener.commsy_login:
         class: App\EventListener\CommsyLoginListener
         arguments: ['@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
-    kernel.listener.commsy_logging:
-        class: App\EventListener\CommsyLoggingListener
-        arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
     kernel.listener.commsy_activity:
         class: App\EventListener\CommsyActivityListener
         arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
-    kernel.listener.commsy_changemail:
-        class: App\EventListener\CommsyChangeMailListener
-        arguments: ['@commsy_legacy.environment', '@router']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
