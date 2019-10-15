@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Auth;
+use App\Entity\Account;
 use App\Form\Model\NewPassword;
 use App\Form\Type\PasswordMigrationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +32,7 @@ class MigrationController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Auth $user */
+            /** @var Account $user */
             $user = $this->getUser();
             $user->setPasswordMd5(null);
             $user->setPassword($passwordEncoder->encodePassword($user, $newPasswordData->getPassword()));

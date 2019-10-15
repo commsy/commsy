@@ -3,7 +3,7 @@ security:
     # Which password encoder is used depends on the getEncoderName() method in App\Entity\Auth
     encoders:
         # This is the new default encoder used by all migrated users
-        App\Entity\Auth:
+        App\Entity\Account:
             algorithm: bcrypt
 
         # This is the legacy encoder supporting MD5 until the user is migrated

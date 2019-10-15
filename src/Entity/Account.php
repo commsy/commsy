@@ -3,16 +3,17 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Auth
  *
- * @ORM\Table(name="auth")
- * @ORM\Entity(repositoryClass="App\Repository\AuthRepository")"
+ * @ORM\Table(name="accounts")
+ * @ORM\Entity(repositoryClass="App\Repository\AccountsRepository")"
  */
-class Auth implements UserInterface, EncoderAwareInterface
+class Account implements UserInterface, EncoderAwareInterface
 {
     /**
      * @var integer
@@ -31,6 +32,13 @@ class Auth implements UserInterface, EncoderAwareInterface
      * @ORM\GeneratedValue(strategy="NONE")
      */
     private $username;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
+     * @Assert\NotCompromisedPassword()
+     */
+    private $plainPassword;
 
     /**
      * @var string
@@ -73,6 +81,12 @@ class Auth implements UserInterface, EncoderAwareInterface
     private $language;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\AuthSource")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $authSource;
+
+    /**
      * Returns the roles granted to the user.
      *
      *     public function getRoles()
@@ -106,9 +120,9 @@ class Auth implements UserInterface, EncoderAwareInterface
 
     /**
      * @param string $password
-     * @return Auth
+     * @return Account
      */
-    public function setPassword(string $password): Auth
+    public function setPassword(string $password): Account
     {
         $this->password = $password;
         return $this;
@@ -136,9 +150,9 @@ class Auth implements UserInterface, EncoderAwareInterface
 
     /**
      * @param int $contextId
-     * @return Auth
+     * @return Account
      */
-    public function setContextId(int $contextId): Auth
+    public function setContextId(int $contextId): Account
     {
         $this->contextId = $contextId;
         return $this;
@@ -156,11 +170,29 @@ class Auth implements UserInterface, EncoderAwareInterface
 
     /**
      * @param string $username
-     * @return Auth
+     * @return Account
      */
-    public function setUsername(string $username): Auth
+    public function setUsername(string $username): Account
     {
         $this->username = $username;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     * @return Account
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
         return $this;
     }
 
@@ -174,9 +206,9 @@ class Auth implements UserInterface, EncoderAwareInterface
 
     /**
      * @param string|null $passwordMd5
-     * @return Auth
+     * @return Account
      */
-    public function setPasswordMd5(?string $passwordMd5): Auth
+    public function setPasswordMd5(?string $passwordMd5): Account
     {
         $this->passwordMd5 = $passwordMd5;
         return $this;
@@ -185,16 +217,16 @@ class Auth implements UserInterface, EncoderAwareInterface
     /**
      * @return string
      */
-    public function getFirstname(): string
+    public function getFirstname():? string
     {
         return $this->firstname;
     }
 
     /**
      * @param string $firstname
-     * @return Auth
+     * @return Account
      */
-    public function setFirstname(string $firstname): Auth
+    public function setFirstname(string $firstname): Account
     {
         $this->firstname = $firstname;
         return $this;
@@ -203,16 +235,16 @@ class Auth implements UserInterface, EncoderAwareInterface
     /**
      * @return string
      */
-    public function getLastname(): string
+    public function getLastname():? string
     {
         return $this->lastname;
     }
 
     /**
      * @param string $lastname
-     * @return Auth
+     * @return Account
      */
-    public function setLastname(string $lastname): Auth
+    public function setLastname(string $lastname): Account
     {
         $this->lastname = $lastname;
         return $this;
@@ -221,16 +253,16 @@ class Auth implements UserInterface, EncoderAwareInterface
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail():? string
     {
         return $this->email;
     }
 
     /**
      * @param string $email
-     * @return Auth
+     * @return Account
      */
-    public function setEmail(string $email): Auth
+    public function setEmail(string $email): Account
     {
         $this->email = $email;
         return $this;
@@ -246,9 +278,9 @@ class Auth implements UserInterface, EncoderAwareInterface
 
     /**
      * @param string $language
-     * @return Auth
+     * @return Account
      */
-    public function setLanguage(string $language): Auth
+    public function setLanguage(string $language): Account
     {
         $this->language = $language;
         return $this;
@@ -276,6 +308,18 @@ class Auth implements UserInterface, EncoderAwareInterface
         }
 
         return null;
+    }
+
+    public function getAuthSource(): ?AuthSource
+    {
+        return $this->authSource;
+    }
+
+    public function setAuthSource(?AuthSource $authSource): self
+    {
+        $this->authSource = $authSource;
+
+        return $this;
     }
 }
 
