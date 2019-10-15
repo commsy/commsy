@@ -29,6 +29,8 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     abstract protected function isSupportedByPortalConfiguration(Request $request): bool;
 
+    abstract protected function getLoginUrl(Request $request): string;
+
     /**
      * Called on every request to decide if this authenticator should be
      * used for the request. Returning false will cause this authenticator

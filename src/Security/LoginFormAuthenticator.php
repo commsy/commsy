@@ -2,10 +2,12 @@
 
 namespace App\Security;
 
-use App\Entity\Auth;
+use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Portal;
 use App\Entity\RoomPrivat;
 use App\Repository\AuthSourceRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -54,11 +56,18 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         if ($request->request->has('context')) {
             $context = $request->request->get('context');
 
-            // TODO
+            // If context is "server" this will be a root login as system administrator. The form authenticator
+            // is the only one that handles these requests
+            if ($context === 'server') {
+                return true;
+            }
+
+            // Try to find an enabled authentication source of type local for the given context
             $authSource = $this->entityManager->getRepository(AuthSource::class)
                 ->findBy([
-                    'id' => 102,
+                    'type' => 'local',
                     'portal' => $context,
+                    'enabled' => 1,
                 ]);
 
             if (!empty($authSource)) {
@@ -76,12 +85,24 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             throw new InvalidCsrfTokenException();
         }
 
-        $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
-
         $user = null;
         try {
-            $user = $this->entityManager->getRepository(Auth::class)
-                ->findOneByCredentials($credentials['email'], $context);
+            if ($credentials['context'] === 'server') {
+                $user = $this->entityManager->getRepository(Account::class)
+                    ->findOneBy([
+                        'username' => $credentials['email'],
+                        'contextId' => 99,
+                    ]);
+            } else {
+                /** @var Collection $authSources */
+                $authSources = $this->entityManager->getRepository(Portal::class)->find($credentials['context'])->getAuthSources();
+                $localAuthSource = $authSources->filter(function(AuthSource $authSource) {
+                    return $authSource->getType() === 'local';
+                })->first();
+
+                $user = $this->entityManager->getRepository(Account::class)
+                    ->findOneByCredentials($credentials['email'], $credentials['context'], $localAuthSource);
+            }
         } catch (NonUniqueResultException $e) {
             throw new CustomUserMessageAuthenticationException('A problem with your account occurred.');
         }
@@ -101,22 +122,31 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        /** @var Account $user */
+        $user = $token->getUser();
+
+        $context = ($request->request->get('context') === 'server') ? 99 : $request->request->get('context');
+
+        // Store the current context and the auth source id in the user session so we can
+        // refer to it later in the user provider to get the correct user.
+        $session = $request->getSession();
+        $session->set('context', $context);
+        $session->set('authSourceId', $user->getAuthSource()->getId());
+
         // This will redirect the user to the route they visited initially.
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
 
-        // Store the current context in the user session so we can refer to it later in the user provider
-        // to get the correct user.
-        $session = $request->getSession();
-        $session->set('context', $request->request->get('context'));
-
         // The default redirect to the dashboard.
-        /** @var Auth $user */
-        $user = $token->getUser();
-
         $privateRoom = $this->entityManager->getRepository(RoomPrivat::class)
-            ->findByContextIdAndUsername($request->request->get('context'), $user->getUsername());
+            ->findByContextIdAndUsername($context, $user->getUsername());
+
+        // If unable to find a private room this is very likely a root login (which does not own a private room)
+        // so we will redirect to the list of all portals
+        if (!$privateRoom) {
+            return new RedirectResponse($this->urlGenerator->generate('app_server_show'));
+        }
 
         return new RedirectResponse($this->urlGenerator->generate('app_dashboard_overview', [
             'roomId' => $privateRoom->getItemId(),
@@ -144,7 +174,7 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         return true;
     }
 
-    private function getLoginUrl(Request $request)
+    protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate('app_login', [
             'context' => $request->attributes->get('context'),

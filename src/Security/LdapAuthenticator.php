@@ -4,7 +4,7 @@
 namespace App\Security;
 
 
-use App\Entity\Auth;
+use App\Entity\Account;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,7 +74,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
 
         // TODO: Perform LDAP requests here.
-        $dummyUser = new Auth();
+        $dummyUser = new Account();
         $dummyUser->setUsername('test');
 
         return $dummyUser;
@@ -140,7 +140,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     {
         // Check if the user exists locally, update his account information
 
-        /** @var Auth $user */
+        /** @var Account $user */
         $user = $token->getUser();
         $i = 5;
     }
@@ -162,5 +162,13 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     public function supportsRememberMe()
     {
         // TODO: Implement supportsRememberMe() method.
+    }
+
+    protected function getLoginUrl(Request $request): string
+    {
+        // TODO
+        return $this->urlGenerator->generate('app_login', [
+            'context' => $request->attributes->get('context'),
+        ]);
     }
 }

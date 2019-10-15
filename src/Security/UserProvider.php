@@ -4,7 +4,8 @@
 namespace App\Security;
 
 
-use App\Entity\Auth;
+use App\Entity\Account;
+use App\Entity\AuthSource;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -42,21 +43,23 @@ class UserProvider implements UserProviderInterface
         // it is whatever value is being returned by the getUsername()
         // method in your User class.
         $contextId = null;
+        $authSourceId = null;
         $currentRequest = $this->requestStack->getCurrentRequest();
         if ($currentRequest) {
             $contextId = $currentRequest->getSession()->get('context');
+            $authSourceId = $currentRequest->getSession()->get('authSourceId');
         }
 
-        if (!$contextId) {
+        if (!$contextId || !$authSourceId) {
             throw new UsernameNotFoundException();
         }
 
         try {
-            $user = $this->entityManager->getRepository(Auth::class)
-                ->findOneByCredentials($username, $contextId);
+            $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
+            $user = $this->entityManager->getRepository(Account::class)
+                ->findOneByCredentials($username, $contextId, $authSource);
         } catch (NonUniqueResultException $e) {
         }
-
 
         if (!$user) {
             throw new UsernameNotFoundException();
@@ -80,28 +83,30 @@ class UserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof Auth) {
+        if (!$user instanceof Account) {
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
         }
 
         // Return a User object after making sure its data is "fresh".
         // Or throw a UsernameNotFoundException if the user no longer exists.
         $contextId = null;
+        $authSourceId = null;
         $currentRequest = $this->requestStack->getCurrentRequest();
         if ($currentRequest) {
             $contextId = $currentRequest->getSession()->get('context');
+            $authSourceId = $currentRequest->getSession()->get('authSourceId');
         }
 
-        if (!$contextId) {
+        if (!$contextId || !$authSourceId) {
             throw new UsernameNotFoundException();
         }
 
         try {
-            $user = $this->entityManager->getRepository(Auth::class)
-                ->findOneByCredentials($user->getUsername(), $contextId);
+            $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
+            $user = $this->entityManager->getRepository(Account::class)
+                ->findOneByCredentials($user->getUsername(), $contextId, $authSource);
         } catch (NonUniqueResultException $e) {
         }
-
 
         if (!$user) {
             throw new UsernameNotFoundException();
@@ -115,6 +120,6 @@ class UserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return Auth::class === $class;
+        return Account::class === $class;
     }
 }
