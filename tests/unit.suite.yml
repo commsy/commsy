@@ -9,4 +9,5 @@ modules:
         - \App\Tests\Helper\Unit
         - Symfony
         - Db
-
+        - Doctrine2:
+            depends: Symfony

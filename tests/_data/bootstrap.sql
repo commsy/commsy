@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Pro SQL dump
-# Version 4541
+# Version 5446
 #
-# http://www.sequelpro.com/
+# https://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
-# Host: 127.0.0.1 (MySQL 5.5.5-10.1.30-MariaDB-1~jessie)
-# Datenbank: test
-# Erstellt am: 2018-03-14 00:11:20 +0000
+# Host: 127.0.0.1 (MySQL 5.5.5-10.1.40-MariaDB-1~bionic)
+# Database: commsy_test
+# Generation Time: 2019-10-07 13:25:56 +0000
 # ************************************************************
 
 
@@ -15,12 +15,44 @@
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
+SET NAMES utf8mb4;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# Export von Tabelle annotation_portfolio
+# Dump of table accounts
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `accounts`;
+
+CREATE TABLE `accounts` (
+  `context_id` int(11) NOT NULL,
+  `username` varchar(32) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `password_md5` varchar(32) DEFAULT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `language` varchar(10) NOT NULL,
+  `auth_source_id` int(11) NOT NULL,
+  PRIMARY KEY (`context_id`,`username`,`auth_source_id`),
+  KEY `accounts_auth_source_id_fk` (`auth_source_id`),
+  CONSTRAINT `accounts_auth_source_id_fk` FOREIGN KEY (`auth_source_id`) REFERENCES `auth_source` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOCK TABLES `accounts` WRITE;
+/*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+
+INSERT INTO `accounts` (`context_id`, `username`, `email`, `password`, `password_md5`, `firstname`, `lastname`, `language`, `auth_source_id`)
+VALUES
+	(99,'root','','$2y$13$R0nZfchFvHDX2Ji5biP4seI0q1cNa49akgLdDsv0eTPORjP9yu8Zi',NULL,'CommSy','Administrator','de',100);
+
+/*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table annotation_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `annotation_portfolio`;
@@ -36,7 +68,7 @@ CREATE TABLE `annotation_portfolio` (
 
 
 
-# Export von Tabelle annotations
+# Dump of table annotations
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `annotations`;
@@ -64,7 +96,7 @@ CREATE TABLE `annotations` (
 
 
 
-# Export von Tabelle announcement
+# Dump of table announcement
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `announcement`;
@@ -92,7 +124,7 @@ CREATE TABLE `announcement` (
 
 
 
-# Export von Tabelle assessments
+# Dump of table assessments
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `assessments`;
@@ -115,66 +147,41 @@ CREATE TABLE `assessments` (
 
 
 
-# Export von Tabelle auth
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `auth`;
-
-CREATE TABLE `auth` (
-  `commsy_id` int(11) NOT NULL DEFAULT '0',
-  `user_id` varchar(32) NOT NULL,
-  `password_md5` varchar(32) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `language` varchar(10) NOT NULL,
-  PRIMARY KEY (`commsy_id`,`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-LOCK TABLES `auth` WRITE;
-/*!40000 ALTER TABLE `auth` DISABLE KEYS */;
-
-INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastname`, `email`, `language`)
-VALUES
-  (99,'root','63a9f0ea7bb98050796b649e85481845','CommSy','Administrator','','de');
-
-/*!40000 ALTER TABLE `auth` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Export von Tabelle auth_source
+# Dump of table auth_source
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `auth_source`;
 
 CREATE TABLE `auth_source` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deletion_date` datetime DEFAULT NULL,
+  `id` int(11) AUTO_INCREMENT,
+  `portal_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `type` enum('local','oidc') NOT NULL DEFAULT 'local',
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
   `extras` text,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
+  `default` tinyint(4) NOT NULL DEFAULT '0',
+  `add_account` tinyint(4) NOT NULL DEFAULT '0',
+  `change_username` tinyint(4) NOT NULL DEFAULT '0',
+  `delete_account` tinyint(4) NOT NULL DEFAULT '0',
+  `change_userdata` tinyint(4) NOT NULL DEFAULT '0',
+  `change_password` tinyint(4) NOT NULL DEFAULT '0',
+  `create_room` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `auth_source_portal_id_index` (`portal_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `auth_source` WRITE;
 /*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
 
-INSERT INTO `auth_source` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`)
+INSERT INTO `auth_source` (`id`, `portal_id`, `title`, `type`, `enabled`, `extras`, `default`, `add_account`, `change_username`, `delete_account`, `change_userdata`, `change_password`, `create_room`)
 VALUES
-  (100,99,99,99,NULL,'2006-09-14 12:32:24','2006-09-14 12:32:24',NULL,'CommSy','a:4:{s:14:\"COMMSY_DEFAULT\";s:1:\"1\";s:6:\"SOURCE\";s:5:\"MYSQL\";s:13:\"CONFIGURATION\";a:5:{s:11:\"ADD_ACCOUNT\";s:1:\"0\";s:13:\"CHANGE_USERID\";s:1:\"0\";s:14:\"DELETE_ACCOUNT\";s:1:\"0\";s:15:\"CHANGE_USERDATA\";s:1:\"1\";s:15:\"CHANGE_PASSWORD\";s:1:\"1\";}s:4:\"SHOW\";s:1:\"1\";}');
+	(100,99,'CommSy','local',1,NULL,1,0,0,0,1,1,1);
 
 /*!40000 ALTER TABLE `auth_source` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle calendars
+# Dump of table calendars
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `calendars`;
@@ -193,7 +200,7 @@ CREATE TABLE `calendars` (
 
 
 
-# Export von Tabelle dates
+# Dump of table dates
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `dates`;
@@ -228,6 +235,7 @@ CREATE TABLE `dates` (
   `external` tinyint(4) NOT NULL DEFAULT '0',
   `uid` varchar(255) DEFAULT NULL,
   `whole_day` tinyint(4) NOT NULL DEFAULT '0',
+  `datetime_recurrence` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -235,7 +243,7 @@ CREATE TABLE `dates` (
 
 
 
-# Export von Tabelle discussionarticles
+# Dump of table discussionarticles
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `discussionarticles`;
@@ -262,7 +270,7 @@ CREATE TABLE `discussionarticles` (
 
 
 
-# Export von Tabelle discussions
+# Dump of table discussions
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `discussions`;
@@ -292,7 +300,7 @@ CREATE TABLE `discussions` (
 
 
 
-# Export von Tabelle external_viewer
+# Dump of table external_viewer
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `external_viewer`;
@@ -305,7 +313,7 @@ CREATE TABLE `external_viewer` (
 
 
 
-# Export von Tabelle external2commsy_id
+# Dump of table external2commsy_id
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `external2commsy_id`;
@@ -319,7 +327,7 @@ CREATE TABLE `external2commsy_id` (
 
 
 
-# Export von Tabelle files
+# Dump of table files
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `files`;
@@ -346,7 +354,7 @@ CREATE TABLE `files` (
 
 
 
-# Export von Tabelle hash
+# Dump of table hash
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `hash`;
@@ -364,7 +372,7 @@ CREATE TABLE `hash` (
 
 
 
-# Export von Tabelle invitations
+# Dump of table invitations
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `invitations`;
@@ -383,7 +391,7 @@ CREATE TABLE `invitations` (
 
 
 
-# Export von Tabelle item_backup
+# Dump of table item_backup
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `item_backup`;
@@ -401,7 +409,7 @@ CREATE TABLE `item_backup` (
 
 
 
-# Export von Tabelle item_link_file
+# Dump of table item_link_file
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `item_link_file`;
@@ -417,7 +425,7 @@ CREATE TABLE `item_link_file` (
 
 
 
-# Export von Tabelle items
+# Dump of table items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `items`;
@@ -440,15 +448,15 @@ LOCK TABLES `items` WRITE;
 
 INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`, `draft`)
 VALUES
-  (98,99,'user',NULL,NULL,NULL,0),
-  (99,0,'server',NULL,NULL,'2014-08-19 15:38:16',0),
-  (100,99,'auth_source',NULL,NULL,'2006-09-14 12:32:24',0);
+	(98,99,'user',NULL,NULL,NULL,0),
+	(99,0,'server',NULL,NULL,'2014-08-19 15:38:16',0),
+	(100,99,'auth_source',NULL,NULL,'2006-09-14 12:32:24',0);
 
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle labels
+# Dump of table labels
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `labels`;
@@ -477,7 +485,23 @@ CREATE TABLE `labels` (
 
 
 
-# Export von Tabelle link_items
+# Dump of table licenses
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `licenses`;
+
+CREATE TABLE `licenses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `position` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table link_items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `link_items`;
@@ -509,7 +533,7 @@ CREATE TABLE `link_items` (
 
 
 
-# Export von Tabelle link_modifier_item
+# Dump of table link_modifier_item
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `link_modifier_item`;
@@ -525,13 +549,13 @@ LOCK TABLES `link_modifier_item` WRITE;
 
 INSERT INTO `link_modifier_item` (`item_id`, `modifier_id`)
 VALUES
-  (99,98);
+	(99,98);
 
 /*!40000 ALTER TABLE `link_modifier_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle links
+# Dump of table links
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `links`;
@@ -563,7 +587,7 @@ CREATE TABLE `links` (
 
 
 
-# Export von Tabelle log
+# Dump of table log
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `log`;
@@ -592,7 +616,7 @@ CREATE TABLE `log` (
 
 
 
-# Export von Tabelle log_archive
+# Dump of table log_archive
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `log_archive`;
@@ -621,7 +645,7 @@ CREATE TABLE `log_archive` (
 
 
 
-# Export von Tabelle materials
+# Dump of table materials
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `materials`;
@@ -650,6 +674,7 @@ CREATE TABLE `materials` (
   `workflow_validity_date` datetime DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
+  `license_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -658,50 +683,63 @@ CREATE TABLE `materials` (
 
 
 
-# Export von Tabelle migration_versions
+# Dump of table migration_versions
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `migration_versions`;
 
 CREATE TABLE `migration_versions` (
-  `version` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `version` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `executed_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 LOCK TABLES `migration_versions` WRITE;
 /*!40000 ALTER TABLE `migration_versions` DISABLE KEYS */;
 
-INSERT INTO `migration_versions` (`version`)
+INSERT INTO `migration_versions` (`version`, `executed_at`)
 VALUES
-  ('20150623133246'),
-  ('20150623135455'),
-  ('20150831152400'),
-  ('20150914082323'),
-  ('20160718213927'),
-  ('20160719021757'),
-  ('20160727100551'),
-  ('20160727103653'),
-  ('20160727111607'),
-  ('20160727112623'),
-  ('20160727133717'),
-  ('20160728231457'),
-  ('20170225094328'),
-  ('20170225121940'),
-  ('20170420141745'),
-  ('20170521105856'),
-  ('20170616103508'),
-  ('20170714122834'),
-  ('20170721185631'),
-  ('20170802185102'),
-  ('20170810143230'),
-  ('20170824064811'),
-  ('20170908083138');
+	('20150623133246','2019-10-07 13:23:49'),
+	('20150623135455','2019-10-07 13:23:52'),
+	('20150831152400','2019-10-07 13:23:52'),
+	('20150914082323','2019-10-07 13:23:52'),
+	('20160718213927','2019-10-07 13:23:52'),
+	('20160719021757','2019-10-07 13:23:52'),
+	('20160727100551','2019-10-07 13:23:52'),
+	('20160727103653','2019-10-07 13:23:52'),
+	('20160727111607','2019-10-07 13:23:52'),
+	('20160727112623','2019-10-07 13:23:52'),
+	('20160727133717','2019-10-07 13:23:52'),
+	('20160728231457','2019-10-07 13:23:52'),
+	('20170225094328','2019-10-07 13:23:52'),
+	('20170225121940','2019-10-07 13:23:52'),
+	('20170420141745','2019-10-07 13:23:52'),
+	('20170521105856','2019-10-07 13:23:59'),
+	('20170616103508','2019-10-07 13:23:59'),
+	('20170714122834','2019-10-07 13:23:59'),
+	('20170721185631','2019-10-07 13:23:59'),
+	('20170802185102','2019-10-07 13:23:59'),
+	('20170810143230','2019-10-07 13:23:59'),
+	('20170824064811','2019-10-07 13:23:59'),
+	('20170908083138','2019-10-07 13:24:00'),
+	('20180212155007','2019-10-07 13:24:00'),
+	('20180227100813','2019-10-07 13:24:00'),
+	('20180315103403','2019-10-07 13:24:00'),
+	('20180713115204','2019-10-07 13:24:00'),
+	('20190125123633','2019-10-07 13:24:00'),
+	('20190523132611','2019-10-07 13:24:00'),
+	('20190708172814','2019-10-07 13:24:00'),
+	('20190923121921','2019-10-07 13:24:00'),
+	('20190923152100','2019-10-07 13:24:01'),
+	('20190924133007','2019-10-07 13:24:01'),
+	('20190924140632','2019-10-07 13:24:01'),
+	('20191007171054','2019-10-07 17:16:19');
 
 /*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle noticed
+# Dump of table noticed
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `noticed`;
@@ -716,19 +754,16 @@ CREATE TABLE `noticed` (
 
 
 
-# Export von Tabelle portal
+# Dump of table portal
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `portal`;
 
 CREATE TABLE `portal` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) DEFAULT NULL,
-  `modifier_id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `creation_date` datetime NOT NULL,
+  `modification_date` datetime NOT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `extras` text,
@@ -737,14 +772,12 @@ CREATE TABLE `portal` (
   `type` varchar(10) NOT NULL DEFAULT 'portal',
   `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '1',
   `url` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31126 DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle portfolio
+# Dump of table portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `portfolio`;
@@ -766,7 +799,7 @@ CREATE TABLE `portfolio` (
 
 
 
-# Export von Tabelle reader
+# Dump of table reader
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `reader`;
@@ -781,7 +814,7 @@ CREATE TABLE `reader` (
 
 
 
-# Export von Tabelle room
+# Dump of table room
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `room`;
@@ -823,7 +856,7 @@ CREATE TABLE `room` (
 
 
 
-# Export von Tabelle room_categories
+# Dump of table room_categories
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `room_categories`;
@@ -837,7 +870,7 @@ CREATE TABLE `room_categories` (
 
 
 
-# Export von Tabelle room_categories_links
+# Dump of table room_categories_links
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `room_categories_links`;
@@ -851,7 +884,7 @@ CREATE TABLE `room_categories_links` (
 
 
 
-# Export von Tabelle room_privat
+# Dump of table room_privat
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `room_privat`;
@@ -887,7 +920,7 @@ CREATE TABLE `room_privat` (
 
 
 
-# Export von Tabelle section
+# Dump of table section
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `section`;
@@ -916,7 +949,7 @@ CREATE TABLE `section` (
 
 
 
-# Export von Tabelle server
+# Dump of table server
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `server`;
@@ -947,30 +980,28 @@ LOCK TABLES `server` WRITE;
 
 INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`)
 VALUES
-  (99,0,NULL,NULL,NULL,'2006-09-13 12:16:38','2014-08-19 15:38:16',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.8\";}','1',74,'server',1,'');
+	(99,0,NULL,NULL,NULL,'2006-09-13 12:16:38','2014-08-19 15:38:16',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.8\";}','1',74,'server',1,'');
 
 /*!40000 ALTER TABLE `server` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle session
+# Dump of table sessions
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `session`;
+DROP TABLE IF EXISTS `sessions`;
 
-CREATE TABLE `session` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(150) NOT NULL,
-  `session_key` varchar(30) NOT NULL,
-  `session_value` longtext NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `session_id` (`session_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+CREATE TABLE `sessions` (
+  `sess_id` varchar(128) COLLATE utf8mb4_bin NOT NULL,
+  `sess_data` blob NOT NULL,
+  `sess_time` int(10) unsigned NOT NULL,
+  `sess_lifetime` mediumint(9) NOT NULL,
+  PRIMARY KEY (`sess_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 
 
-# Export von Tabelle step
+# Dump of table step
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `step`;
@@ -999,7 +1030,7 @@ CREATE TABLE `step` (
 
 
 
-# Export von Tabelle tag
+# Dump of table tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tag`;
@@ -1014,13 +1045,14 @@ CREATE TABLE `tag` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `public` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle tag_portfolio
+# Dump of table tag_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tag_portfolio`;
@@ -1037,7 +1069,7 @@ CREATE TABLE `tag_portfolio` (
 
 
 
-# Export von Tabelle tag2tag
+# Dump of table tag2tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tag2tag`;
@@ -1063,7 +1095,7 @@ CREATE TABLE `tag2tag` (
 
 
 
-# Export von Tabelle tasks
+# Dump of table tasks
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tasks`;
@@ -1086,7 +1118,7 @@ CREATE TABLE `tasks` (
 
 
 
-# Export von Tabelle template_portfolio
+# Dump of table template_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `template_portfolio`;
@@ -1099,7 +1131,23 @@ CREATE TABLE `template_portfolio` (
 
 
 
-# Export von Tabelle todos
+# Dump of table terms
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `terms`;
+
+CREATE TABLE `terms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content_de` text NOT NULL,
+  `content_en` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table todos
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `todos`;
@@ -1130,7 +1178,23 @@ CREATE TABLE `todos` (
 
 
 
-# Export von Tabelle user
+# Dump of table translation
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `translation`;
+
+CREATE TABLE `translation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `translation_key` varchar(255) NOT NULL,
+  `translation_de` varchar(2000) NOT NULL,
+  `translation_en` varchar(2000) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table user
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `user`;
@@ -1173,13 +1237,13 @@ LOCK TABLES `user` WRITE;
 
 INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`, `expire_date`, `use_portal_email`)
 VALUES
-  (98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL,NULL,0);
+	(98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL,NULL,0);
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle user_portfolio
+# Dump of table user_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `user_portfolio`;
@@ -1192,7 +1256,7 @@ CREATE TABLE `user_portfolio` (
 
 
 
-# Export von Tabelle workflow_read
+# Dump of table workflow_read
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `workflow_read`;
@@ -1205,7 +1269,7 @@ CREATE TABLE `workflow_read` (
 
 
 
-# Export von Tabelle zzz_annotations
+# Dump of table zzz_annotations
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_annotations`;
@@ -1233,7 +1297,7 @@ CREATE TABLE `zzz_annotations` (
 
 
 
-# Export von Tabelle zzz_announcement
+# Dump of table zzz_announcement
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_announcement`;
@@ -1261,7 +1325,7 @@ CREATE TABLE `zzz_announcement` (
 
 
 
-# Export von Tabelle zzz_assessments
+# Dump of table zzz_assessments
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_assessments`;
@@ -1284,7 +1348,7 @@ CREATE TABLE `zzz_assessments` (
 
 
 
-# Export von Tabelle zzz_calendars
+# Dump of table zzz_calendars
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_calendars`;
@@ -1301,7 +1365,7 @@ CREATE TABLE `zzz_calendars` (
 
 
 
-# Export von Tabelle zzz_dates
+# Dump of table zzz_dates
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_dates`;
@@ -1336,6 +1400,7 @@ CREATE TABLE `zzz_dates` (
   `external` tinyint(4) NOT NULL DEFAULT '0',
   `uid` varchar(255) DEFAULT NULL,
   `whole_day` tinyint(4) NOT NULL DEFAULT '0',
+  `datetime_recurrence` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1343,7 +1408,7 @@ CREATE TABLE `zzz_dates` (
 
 
 
-# Export von Tabelle zzz_discussionarticles
+# Dump of table zzz_discussionarticles
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_discussionarticles`;
@@ -1370,7 +1435,7 @@ CREATE TABLE `zzz_discussionarticles` (
 
 
 
-# Export von Tabelle zzz_discussions
+# Dump of table zzz_discussions
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_discussions`;
@@ -1400,7 +1465,7 @@ CREATE TABLE `zzz_discussions` (
 
 
 
-# Export von Tabelle zzz_external_viewer
+# Dump of table zzz_external_viewer
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_external_viewer`;
@@ -1413,7 +1478,7 @@ CREATE TABLE `zzz_external_viewer` (
 
 
 
-# Export von Tabelle zzz_files
+# Dump of table zzz_files
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_files`;
@@ -1440,7 +1505,7 @@ CREATE TABLE `zzz_files` (
 
 
 
-# Export von Tabelle zzz_hash
+# Dump of table zzz_hash
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_hash`;
@@ -1458,7 +1523,7 @@ CREATE TABLE `zzz_hash` (
 
 
 
-# Export von Tabelle zzz_item_link_file
+# Dump of table zzz_item_link_file
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_item_link_file`;
@@ -1474,7 +1539,7 @@ CREATE TABLE `zzz_item_link_file` (
 
 
 
-# Export von Tabelle zzz_items
+# Dump of table zzz_items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_items`;
@@ -1494,7 +1559,7 @@ CREATE TABLE `zzz_items` (
 
 
 
-# Export von Tabelle zzz_labels
+# Dump of table zzz_labels
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_labels`;
@@ -1523,7 +1588,7 @@ CREATE TABLE `zzz_labels` (
 
 
 
-# Export von Tabelle zzz_link_items
+# Dump of table zzz_link_items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_link_items`;
@@ -1555,7 +1620,7 @@ CREATE TABLE `zzz_link_items` (
 
 
 
-# Export von Tabelle zzz_link_modifier_item
+# Dump of table zzz_link_modifier_item
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_link_modifier_item`;
@@ -1568,7 +1633,7 @@ CREATE TABLE `zzz_link_modifier_item` (
 
 
 
-# Export von Tabelle zzz_links
+# Dump of table zzz_links
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_links`;
@@ -1595,7 +1660,7 @@ CREATE TABLE `zzz_links` (
 
 
 
-# Export von Tabelle zzz_materials
+# Dump of table zzz_materials
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_materials`;
@@ -1624,6 +1689,7 @@ CREATE TABLE `zzz_materials` (
   `workflow_validity_date` datetime DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
+  `license_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1632,7 +1698,7 @@ CREATE TABLE `zzz_materials` (
 
 
 
-# Export von Tabelle zzz_noticed
+# Dump of table zzz_noticed
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_noticed`;
@@ -1647,7 +1713,7 @@ CREATE TABLE `zzz_noticed` (
 
 
 
-# Export von Tabelle zzz_reader
+# Dump of table zzz_reader
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_reader`;
@@ -1662,7 +1728,7 @@ CREATE TABLE `zzz_reader` (
 
 
 
-# Export von Tabelle zzz_room
+# Dump of table zzz_room
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_room`;
@@ -1704,7 +1770,7 @@ CREATE TABLE `zzz_room` (
 
 
 
-# Export von Tabelle zzz_section
+# Dump of table zzz_section
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_section`;
@@ -1733,7 +1799,7 @@ CREATE TABLE `zzz_section` (
 
 
 
-# Export von Tabelle zzz_step
+# Dump of table zzz_step
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_step`;
@@ -1762,7 +1828,7 @@ CREATE TABLE `zzz_step` (
 
 
 
-# Export von Tabelle zzz_tag
+# Dump of table zzz_tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_tag`;
@@ -1777,13 +1843,14 @@ CREATE TABLE `zzz_tag` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `public` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_tag2tag
+# Dump of table zzz_tag2tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_tag2tag`;
@@ -1809,7 +1876,7 @@ CREATE TABLE `zzz_tag2tag` (
 
 
 
-# Export von Tabelle zzz_tasks
+# Dump of table zzz_tasks
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_tasks`;
@@ -1832,7 +1899,7 @@ CREATE TABLE `zzz_tasks` (
 
 
 
-# Export von Tabelle zzz_todos
+# Dump of table zzz_todos
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_todos`;
@@ -1863,7 +1930,7 @@ CREATE TABLE `zzz_todos` (
 
 
 
-# Export von Tabelle zzz_user
+# Dump of table zzz_user
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_user`;
@@ -1903,7 +1970,7 @@ CREATE TABLE `zzz_user` (
 
 
 
-# Export von Tabelle zzz_workflow_read
+# Dump of table zzz_workflow_read
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_workflow_read`;

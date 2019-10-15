@@ -9,7 +9,5 @@ actor: FunctionalTester
 modules:
     enabled:
         - Symfony
-#        - Doctrine2:
-#            depends: Symfony
-#            cleanup: true
+        - Db
         - \App\Tests\Helper\Functional
