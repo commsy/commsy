@@ -8,10 +8,8 @@ matrix:
   # Fast finish allows to set the build as "finished" even if the "allow_failures" matrix elements are not finished yet.
   fast_finish: true
   include:
-    - php: 7.1
     - php: 7.2
-  allow_failures:
-    - php: 7.2
+    - php: 7.3
 
 cache:
   yarn: true
@@ -49,9 +47,6 @@ before_install:
   # Setup Database
   - mysql -e 'CREATE DATABASE IF NOT EXISTS commsy;'
   - mysql -e 'USE mysql; UPDATE user SET password=PASSWORD("root") WHERE user="root"; FLUSH PRIVILEGES;'
-
-  # Copy legacy config
-  - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
 
   # ChromeDriver
   - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
