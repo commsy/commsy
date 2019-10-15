@@ -24,6 +24,11 @@
 
 /** upper class of all managers
  */
+
+use App\Entity\Portal;
+use App\Proxy\PortalProxy;
+use Doctrine\ORM\EntityManagerInterface;
+
 include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
 include_once('classes/cs_list.php');
@@ -321,27 +326,45 @@ class cs_environment {
    *
    * @return \cs_portal_item portal item
    */
-   function getCurrentPortalItem () {
-      if (!isset($this->_current_portal)) {
-         if ( empty($this->_current_portal_id) ) {
-            $context_item = $this->getCurrentContextItem();
-            if ( $context_item->isServer() ) {
+   public function getCurrentPortalItem()
+   {
+       if ($this->_current_portal) {
+           return $this->_current_portal;
+       }
+
+       if (empty($this->_current_portal_id)) {
+           $contextItem = $this->getCurrentContextItem();
+           if ( $contextItem->isServer() ) {
                $this->_current_portal = NULL;
-            } elseif ( $context_item->isPortal() ) {
-               $this->_current_portal = $context_item;
-            } else {
-               $manager = $this->getPortalManager();
-               $this->_current_portal = $manager->getItem($context_item->getContextID());
-            }
-         } else {
-            $manager = $this->getPortalManager();
-            $this->_current_portal = $manager->getItem($this->_current_portal_id);
-         }
-         if ( isset($this->_current_portal) ) {
-            $this->_current_portal_id = $this->_current_portal->getItemID();
-         }
-      }
-      return $this->_current_portal;
+           } elseif ( $contextItem->isPortal() ) {
+               $this->_current_portal = $contextItem;
+           } else {
+               global $symfonyContainer;
+               /** @var EntityManagerInterface $entityManager */
+               $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+               $portal = $entityManager->getRepository(Portal::class)->find($contextItem->getContextID());
+
+               if ($portal) {
+                   $this->_current_portal = new PortalProxy($portal);
+               }
+           }
+       } else {
+           global $symfonyContainer;
+           /** @var EntityManagerInterface $entityManager */
+           $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+           $portal = $entityManager->getRepository(Portal::class)->find($this->_current_portal_id);
+
+           if ($portal) {
+               $this->_current_portal = new PortalProxy($portal);
+           }
+       }
+
+       if (isset($this->_current_portal)) {
+           $this->_current_portal_id = $this->_current_portal->getItemID();
+           return $this->_current_portal;
+       }
+
+       return null;
    }
 
    function getCurrentPortalID () {

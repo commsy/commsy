@@ -22,6 +22,10 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use App\Entity\Portal;
+use App\Proxy\PortalProxy;
+use Doctrine\ORM\EntityManagerInterface;
+
 include_once('functions/misc_functions.php');
 include_once('functions/text_functions.php');
 
@@ -89,31 +93,43 @@ class cs_item {
       $this->_type = 'item';
    }
 
-   function getContextItem () {
-      if ($this->_context_item == null) {
-         $context_id = $this->getContextID();
-         if ( !empty($context_id) ) {
-            $item_manager = $this->_environment->getItemManager();
-            $item = $item_manager->getItem($this->getContextID());
-            if ( isset($item)
-                 and is_object($item)
-               ) {
-               $manager = $this->_environment->getManager($item->getItemType());
-               $this->_context_item = $manager->getItem($this->getContextId());
-            } else {
-               $item_manager = $this->_environment->getItemManager(true);
-               $item = $item_manager->getItem($this->getContextID());
-               if ( isset($item)
-                    and is_object($item)
-                  ) {
-                  $manager = $this->_environment->getManager($item->getItemType(),true);
-                  $this->_context_item = $manager->getItem($this->getContextId());
-               }
+    public function getContextItem()
+    {
+        if ($this->_context_item == null) {
+            $contextId = $this->getContextID();
+            if (!empty($contextId)) {
+                $item_manager = $this->_environment->getItemManager();
+                $item = $item_manager->getItem($this->getContextID());
+
+                if (isset($item) && is_object($item)) {
+                    $manager = $this->_environment->getManager($item->getItemType());
+                    $this->_context_item = $manager->getItem($this->getContextId());
+                    return $this->_context_item;
+                }
+
+                $item_manager = $this->_environment->getItemManager(true);
+                $item = $item_manager->getItem($this->getContextID());
+
+                if (isset($item) && is_object($item) ) {
+                    $manager = $this->_environment->getManager($item->getItemType(), true);
+                    $this->_context_item = $manager->getItem($this->getContextId());
+                    return $this->_context_item;
+                }
+
+                global $symfonyContainer;
+                /** @var EntityManagerInterface $entityManager */
+                $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+                $portal = $entityManager->getRepository(Portal::class)->find($contextId);
+
+                if ($portal) {
+                    $this->_context_item = new PortalProxy($portal);
+                    return $this->_context_item;
+                }
             }
-         }
-      }
-      return $this->_context_item;
-   }
+        }
+
+        return $this->_context_item;
+    }
 
    public function setContextItem ( $context_item ) {
       if ( is_object($context_item) ) {
