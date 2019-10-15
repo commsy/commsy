@@ -542,7 +542,7 @@ class RoomController extends AbstractController
 
         $projectsMemberStatus = array();
         foreach ($rooms as $room) {
-            $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
+            $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room, $legacyEnvironment, $roomService);
         }
         return [
             'roomId' => $roomId,
@@ -1146,7 +1146,7 @@ class RoomController extends AbstractController
                 if (isset($context['type_sub']['master_template'])) {
                     $masterRoom = $roomService->getRoomItem($context['type_sub']['master_template']);
                     if ($masterRoom) {
-                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
+                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyEnvironment);
                     }
                 }
 
@@ -1268,12 +1268,12 @@ class RoomController extends AbstractController
     }
 
     private function memberStatus(
-        $roomItem
+        $roomItem,
+        \cs_environment $legacyEnvironment,
+        RoomService $roomService
     ) {
         $status = 'closed';
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
-        $roomService = $this->get('commsy_legacy.room_service');
         $item = $roomService->getRoomItem($roomItem->getItemId());
 
         if ($item) {
@@ -1338,17 +1338,15 @@ class RoomController extends AbstractController
         return $status;
     }
 
-    private function copySettings($masterRoom, $targetRoom)
+    private function copySettings($masterRoom, $targetRoom, \cs_environment $legacyEnvironment)
     {
         $old_room = $masterRoom;
         $new_room = $targetRoom;
 
         $old_room_id = $old_room->getItemID();
 
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-
         /**/
-        $user_manager = $environment->getUserManager();
+        $user_manager = $legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($new_room->getCreatorID());
         if ($creator_item->getContextID() == $new_room->getItemID()) {
             $creator_id = $creator_item->getItemID();
