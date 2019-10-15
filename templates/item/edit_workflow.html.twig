@@ -81,9 +81,12 @@
                 class="uk-hidden"
             {% endif %}
         >
-            <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-top">
                 <div>
-                    {{ form_row(form.workflowResubmissionDate) }}
+                    {{ form_label(form.workflowResubmissionDate) }}
+                </div>
+                <div>
+                    {{ form_widget(form.workflowResubmissionDate) }}
                 </div>
             </div>
             {{ form_label(form.workflowResubmissionWho) }}
@@ -107,9 +110,12 @@
                     </div>
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-top">
                 <div>
-                    {{ form_row(form.workflowResubmissionWhoAdditional) }}
+                    {{ form_label(form.workflowResubmissionWhoAdditional) }}
+                </div>
+                <div>
+                    {{ form_widget(form.workflowResubmissionWhoAdditional) }}
                 </div>
             </div>
             {{ form_label(form.workflowResubmissionTrafficLight) }}
@@ -168,9 +174,12 @@
                 class="uk-hidden"
             {% endif %}
         >
-            <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-top">
                 <div>
-                    {{ form_row(form.workflowValidityDate) }}
+                    {{ form_label(form.workflowValidityDate) }}
+                </div>
+                <div>
+                    {{ form_widget(form.workflowValidityDate) }}
                 </div>
             </div>
             {{ form_label(form.workflowValidityWho) }}
@@ -194,9 +203,12 @@
                     </div>
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-top">
                 <div>
-                    {{ form_row(form.workflowValidityWhoAdditional) }}
+                    {{ form_label(form.workflowValidityWhoAdditional) }}
+                </div>
+                <div>
+                    {{ form_widget(form.workflowValidityWhoAdditional) }}
                 </div>
             </div>
             {{ form_label(form.workflowValidityTrafficLight) }}

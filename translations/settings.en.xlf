@@ -551,7 +551,7 @@
             </trans-unit>
             <trans-unit id="workflow_validity">
                 <source>Validity</source>
-                <target>Validity date</target>
+                <target>2nd resubmission</target>
             </trans-unit>
             <trans-unit id="workflow_trafic_light">
                 <source>Status view</source>

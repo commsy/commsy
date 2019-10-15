@@ -140,7 +140,7 @@
             </trans-unit>
             <trans-unit id="workflow-4">
                 <source>workflow validity date</source>
-                <target>valid until</target>
+                <target>2nd resubmission at</target>
             </trans-unit>
             <trans-unit id="workflow-5">
                 <source>workflow resubmission date</source>
