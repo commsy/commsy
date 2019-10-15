@@ -86,13 +86,9 @@ class TodoTransformer implements DataTransformerInterface
      */
     public function applyTransformation($todoObject, $todoData)
     {
-        if(isset($todoData['title'])){
-            $todoObject->setTitle($todoData['title']);
-        }
-        if(isset($todoData['description'])){
-            $todoObject->setDescription($todoData['description']);
-        }
-        
+        $todoObject->setTitle($todoData['title']);
+        $todoObject->setDescription($todoData['description']);
+
         if(isset($todoData['permission'])){
             if ($todoData['permission']) {
                 $todoObject->setPrivateEditing('0');

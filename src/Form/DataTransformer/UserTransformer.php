@@ -71,23 +71,21 @@ class UserTransformer implements DataTransformerInterface
     /**
      * Applies an array of data to an existing object
      *
-     * @param object $roomObject
+     * @param object $userObject
      * @param array $roomData
      * @return cs_room_item|null
      * @throws TransformationFailedException if room item is not found.
      */
     public function applyTransformation($userObject, $userData)
     {
+        /** @var \cs_user_item $userObject */
         if ($userObject) {
             $userObject->setUserId($userData['userId']);
 
             // get portal user if in room context
-            if ( !$this->legacyEnvironment->inPortal() )
-            {
+            if (!$this->legacyEnvironment->inPortal()) {
                 $portalUser = $this->legacyEnvironment->getPortalUserItem();
-            }
-            else
-            {
+            } else {
                 $portalUser = $this->legacyEnvironment->getCurrentUserItem();
             }
             $authentication = $userObject->_environment->getAuthenticationObject();
@@ -142,27 +140,46 @@ class UserTransformer implements DataTransformerInterface
             } else {
                 $userObject->turnAutoSaveOff();
             }
+
             $userObject->setTitle($userData['title']);
-            if(array_key_exists('dateOfBirth', $userData) && $userData['dateOfBirth']){
+            if (array_key_exists('dateOfBirth', $userData) && $userData['dateOfBirth']) {
                 $userObject->setBirthday($userData['dateOfBirth']->format('Y-m-d'));
-            }
-            else{
+            } else {
                 $userObject->setBirthday("");
             }
 
             if ($userData['emailChoice'] === 'account') {
                 $userObject->setUsePortalEmail(1);
-            }
-            else {
+            } else {
                 $userObject->setUsePortalEmail(0);
                 $userObject->setEmail($userData['emailRoom']);
             }
+
             if (isset($userData['emailAccount'])) {
                 $portalUser->setEmail($userData['emailAccount']);
                 if ($portalUser->hasToChangeEmail()) {
                     $portalUser->unsetHasToChangeEmail();
                 }
                 $portalUser->save();
+
+                $privateRoomUserItem = $portalUser->getRelatedPrivateRoomUserItem();
+                if ($privateRoomUserItem) {
+                    $privateRoomUserItem->setEmail($portalUser->getEmail());
+                    $privateRoomUserItem->save();
+                }
+
+                if ($this->legacyEnvironment->inPortal()) {
+                    $userObject->setEmail($portalUser->getEmail());
+
+                    $authentication = $this->legacyEnvironment->getAuthenticationObject();
+                    $authManager = $authentication->getAuthManager($portalUser->getAuthSource());
+
+                    /** @var \cs_auth_item $authItem */
+                    $authItem = $authManager->getItem($portalUser->getUserID());
+                    $authItem->setEmail($portalUser->getEmail());
+
+                    $authentication->save($authItem);
+                }
             }
 
             if ($userData['hideEmailInThisRoom']) {
@@ -170,6 +187,7 @@ class UserTransformer implements DataTransformerInterface
             } else {
                 $userObject->setEmailVisible();
             }
+
             $userObject->setTelephone($userData['phone']);
             $userObject->setCellularphone($userData['mobile']);
             $userObject->setStreet($userData['street']);
