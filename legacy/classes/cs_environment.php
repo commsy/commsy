@@ -625,15 +625,6 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_annotation_manager');
    }
 
-  /** get instance of cs_announcement_manager
-   *
-   * @return \cs_auth_source_manager
-   * @access public
-   */
-   function getAuthSourceManager() {
-      return $this->_getInstance('cs_auth_source_manager');
-   }
-
   /** get instance of cs_disc_manager
    *
    * @return cs_disc_manager
@@ -1621,28 +1612,6 @@ class cs_environment {
    	}
    }
 
-    /**
-     * Returns an object for authenticating users in CommSy
-     *
-     * @return \cs_authentication
-     */
-    public function getAuthenticationObject(): \cs_authentication
-    {
-        if (!isset($this->instance['auth_object'])) {
-            $portal = $this->getCurrentPortalItem();
-            if (!empty($portal) and $portal->isPortal()) {
-                $auth_source_list = $portal->getAuthSourceList();
-            } else {
-                $server = $this->getServerItem();
-                $auth_source_list = $server->getAuthSourceList();
-            }
-            include_once('classes/cs_authentication.php');
-            $this->instance['auth_object'] = new cs_authentication($this);
-            $this->instance['auth_object']->setAuthSourceList($auth_source_list);
-        }
-        return $this->instance['auth_object'];
-    }
-
   /** get instance of cs_XXX_manager by item_type
    *
    * @param string type of an item
@@ -1726,8 +1695,6 @@ class cs_environment {
             return $this->getTimeManager();
          } elseif ($type == CS_WIKI_TYPE) {
             return $this->getWikiManager();
-         } elseif ($type == CS_AUTH_SOURCE_TYPE) {
-            return $this->getAuthSourceManager();
          } elseif ($type == 'chat') {
             return '';
          } elseif ($type == CS_TAG_TYPE) {

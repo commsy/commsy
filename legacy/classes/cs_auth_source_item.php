@@ -31,53 +31,7 @@ include_once('classes/cs_item.php');
  */
 class cs_auth_source_item extends cs_item {
 
-   /** constructor: cs_auth_source_item
-    * the only available constructor, initial values for internal variables
-    */
-   function __construct($environment) {
-      cs_item::__construct($environment);
-      $this->_type = CS_AUTH_SOURCE_TYPE;
-   }
 
-   /** Checks and sets the data of the item.
-    *
-    * @param $data_array Is the prepared array from "_buildItemArray($db_array)"
-    */
-   function _setItemData($data_array) {
-      // not yet implemented
-      $this->_data = $data_array;
-   }
-
-   /** get title of an auth source
-    * this method returns the title of the auth source
-    *
-    * @return string title of an auth source
-    */
-   function getTitle () {
-      return $this->_getValue('title');
-   }
-
-   /** set title of an auth source
-    * this method sets the title of the auth source
-    *
-    * @param string value title of the auth source
-    */
-   function setTitle ($value) {
-      $this->_setValue('title', $value);
-   }
-
-   function setSourceType ($value) {
-      $this->_addExtra('SOURCE',$value);
-   }
-
-   function getSourceType () {
-      $retour = 'MYSQL';
-      $value = $this->_getExtra('SOURCE');
-      if ( !empty($value) ) {
-          $retour = $value;
-      }
-      return $retour;
-   }
 
    function setAuthData ($value) {
       $this->_addExtra('DATA',$value);
@@ -90,63 +44,6 @@ class cs_auth_source_item extends cs_item {
           $retour = $value;
       }
       return $retour;
-   }
-
-   function setAuthConfiguration ($value) {
-      $this->_addExtra('CONFIGURATION',$value);
-   }
-
-   function getAuthConfiguration () {
-      $retour = array();
-      $value = $this->_getExtra('CONFIGURATION');
-      if ( !empty($value) ) {
-          $retour = $value;
-      }
-      return $retour;
-   }
-
-   function _getAuthConfigurationElement ($element) {
-      $retour = '';
-      $temp = $this->getAuthConfiguration();
-      if ( !empty($element) ) {
-         if ( !empty($temp[$element]) ) {
-            $retour = $temp[$element];
-         }
-      }
-      return $retour;
-   }
-
-   function _setAuthConfigurationElement ($element, $value) {
-      $temp = $this->getAuthConfiguration();
-      if ( !empty($element) ) {
-         if ( !empty($value) ) {
-            $temp[$element] = $value;
-         } else {
-            unset($temp[$element]);
-         }
-      }
-      $this->setAuthConfiguration($temp);
-   }
-
-   function setAllowAddAccount () {
-      $this->_setAuthConfigurationElement('ADD_ACCOUNT',1);
-   }
-
-   function unsetAllowAddAccount () {
-      $this->_setAuthConfigurationElement('ADD_ACCOUNT',-1);
-   }
-
-   function _getAllowAddAccount () {
-      return $this->_getAuthConfigurationElement('ADD_ACCOUNT');
-   }
-
-   function allowAddAccount () {
-       $retour = false;
-       $value = $this->_getAllowAddAccount();
-       if ($value == 1) {
-           $retour = true;
-       }
-       return $retour;
    }
 
    function setAllowAddAccountInvitation () {
@@ -168,133 +65,6 @@ class cs_auth_source_item extends cs_item {
            $retour = true;
        }
        return $retour;
-   }
-
-   function setAllowChangeUserID () {
-      $this->_setAuthConfigurationElement('CHANGE_USERID',1);
-   }
-
-   function unsetAllowChangeUserID () {
-      $this->_setAuthConfigurationElement('CHANGE_USERID',-1);
-   }
-
-   function _getAllowChangeUserID () {
-      return $this->_getAuthConfigurationElement('CHANGE_USERID');
-   }
-
-   function allowChangeUserID () {
-      $retour = false;
-      $value = $this->_getAllowChangeUserID();
-      if ($value == 1) {
-          $retour = true;
-      }
-      return $retour;
-   }
-
-   function setAllowDeleteAccount () {
-      $this->_setAuthConfigurationElement('DELETE_ACCOUNT',1);
-   }
-
-   function unsetAllowDeleteAccount () {
-      $this->_setAuthConfigurationElement('DELETE_ACCOUNT',-1);
-   }
-
-   function _getAllowDeleteAccount () {
-      return $this->_getAuthConfigurationElement('DELETE_ACCOUNT');
-   }
-
-   function allowDeleteAccount () {
-      $retour = false;
-      $value = $this->_getAllowDeleteAccount();
-      if ($value == 1) {
-          $retour = true;
-      }
-      return $retour;
-   }
-
-   function setAllowChangeUserData () {
-      $this->_setAuthConfigurationElement('CHANGE_USERDATA',1);
-   }
-
-   function unsetAllowChangeUserData () {
-      $this->_setAuthConfigurationElement('CHANGE_USERDATA',-1);
-   }
-
-   function _getAllowChangeUserData () {
-      return $this->_getAuthConfigurationElement('CHANGE_USERDATA');
-   }
-
-   function allowChangeUserData () {
-      $retour = false;
-      $value = $this->_getAllowChangeUserData();
-      if ($value == 1) {
-          $retour = true;
-      }
-      return $retour;
-   }
-
-   function setAllowChangePassword () {
-      $this->_setAuthConfigurationElement('CHANGE_PASSWORD',1);
-   }
-
-   function unsetAllowChangePassword () {
-      $this->_setAuthConfigurationElement('CHANGE_PASSWORD',-1);
-   }
-
-   function _getAllowChangePassword () {
-      return $this->_getAuthConfigurationElement('CHANGE_PASSWORD');
-   }
-
-   function allowChangePassword () {
-      $retour = false;
-      $value = $this->_getAllowChangePassword();
-      if ($value == 1) {
-          $retour = true;
-      }
-      return $retour;
-   }
-
-   function setShow () {
-      $this->_addExtra('SHOW',1);
-   }
-
-   function unsetShow () {
-      $this->_addExtra('SHOW',-1);
-   }
-
-   function _getShow () {
-      return $this->_getExtra('SHOW');
-   }
-
-   function show () {
-      $retour = false;
-      $value = $this->_getShow();
-      if ($value == 1) {
-          $retour = true;
-      }
-      return $retour;
-   }
-
-   function setCommSyDefault () {
-      $this->_addExtra('COMMSY_DEFAULT',1);
-      $this->setSourceType('MYSQL');
-   }
-
-   function unsetCommSyDefault () {
-      $this->_addExtra('COMMSY_DEFAULT',-1);
-   }
-
-   function _getCommSyDefault () {
-      return $this->_getExtra('COMMSY_DEFAULT');
-   }
-
-   function isCommSyDefault () {
-      $retour = false;
-      $value = $this->_getCommSyDefault();
-      if ($value == 1) {
-         $retour = true;
-      }
-      return $retour;
    }
 
    public function setPasswordChangeLink ($value) {
@@ -449,28 +219,6 @@ class cs_auth_source_item extends cs_item {
 
     public function setEmailRegex($value) {
         $this->_addExtra('EMAIL_REGEX',$value);
-    }
-
-
-    public function getUserAllowedToCreateContext() {
-        $retour = '';
-        $value = $this->_getExtra('USER_IS_ALLOWED_TO_CREATE_CONTEXT');
-        if ( !empty($value) ) {
-            $retour = $value;
-        }
-        return $retour;
-    }
-
-    public function setUserIsAllowedToCreateContext($value) {
-        $this->_addExtra('USER_IS_ALLOWED_TO_CREATE_CONTEXT',$value);
-    }
-
-    public function isUserAllowedToCreateContext(){
-        if(($this->getUserAllowedToCreateContext() == -1)){
-            return false;
-        } else {
-            return true;
-        }
     }
 
    /**
@@ -666,4 +414,3 @@ class cs_auth_source_item extends cs_item {
        return $this->_data['context_id'];
    }
 }
-?>
