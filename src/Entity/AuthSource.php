@@ -32,9 +32,16 @@ class AuthSource
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
-     * @ORM\JoinColumn(name="portal", referencedColumnName="item_id")
+     * @ORM\JoinColumn(name="portal_id", referencedColumnName="id")
      */
     private $portal;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", columnDefinition="ENUM('local')")
+     */
+    private $type;
 
     /**
      * @var string
@@ -42,6 +49,60 @@ class AuthSource
      * @ORM\Column(name="extras", type="object", nullable=true)
      */
     private $extras;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="`default`", type="boolean")
+     */
+    private $default;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $addAccount;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $changeUsername;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $deleteAccount;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $changeUserdata;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $changePassword;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $createRoom;
 
     /**
      * @return int
@@ -106,6 +167,162 @@ class AuthSource
     public function setExtras(string $extras): self
     {
         $this->extras = $extras;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return AuthSource
+     */
+    public function setType(string $type): AuthSource
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getCreateRoom(): ?bool
+    {
+        return $this->createRoom;
+    }
+
+    public function setCreateRoom(bool $createRoom): self
+    {
+        $this->createRoom = $createRoom;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return AuthSource
+     */
+    public function setEnabled(bool $enabled): AuthSource
+    {
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param bool $default
+     * @return AuthSource
+     */
+    public function setDefault(bool $default): AuthSource
+    {
+        $this->default = $default;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAddAccount(): bool
+    {
+        return $this->addAccount;
+    }
+
+    /**
+     * @param bool $addAccount
+     * @return AuthSource
+     */
+    public function setAddAccount(bool $addAccount): AuthSource
+    {
+        $this->addAccount = $addAccount;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChangeUsername(): bool
+    {
+        return $this->changeUsername;
+    }
+
+    /**
+     * @param bool $changeUsername
+     * @return AuthSource
+     */
+    public function setChangeUsername(bool $changeUsername): AuthSource
+    {
+        $this->changeUsername = $changeUsername;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleteAccount(): bool
+    {
+        return $this->deleteAccount;
+    }
+
+    /**
+     * @param bool $deleteAccount
+     * @return AuthSource
+     */
+    public function setDeleteAccount(bool $deleteAccount): AuthSource
+    {
+        $this->deleteAccount = $deleteAccount;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChangeUserdata(): bool
+    {
+        return $this->changeUserdata;
+    }
+
+    /**
+     * @param bool $changeUserdata
+     * @return AuthSource
+     */
+    public function setChangeUserdata(bool $changeUserdata): AuthSource
+    {
+        $this->changeUserdata = $changeUserdata;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChangePassword(): bool
+    {
+        return $this->changePassword;
+    }
+
+    /**
+     * @param bool $changePassword
+     * @return AuthSource
+     */
+    public function setChangePassword(bool $changePassword): AuthSource
+    {
+        $this->changePassword = $changePassword;
         return $this;
     }
 }

@@ -9,48 +9,21 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Portal
  *
- * @ORM\Table(name="portal", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
+ * @ORM\Table(name="portal", indexes={
+ *     @ORM\Index(name="context_id", columns={"context_id"}),
+ *     @ORM\Index(name="creator_id", columns={"creator_id"})
+ * })
  * @ORM\Entity(repositoryClass="App\Repository\PortalRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Portal
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue
      */
-    private $itemId = '0';
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
-     */
-    private $contextId;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
-     */
-
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
-
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
-     */
-    private $modifier;
+    private $id;
 
     /**
      * @var integer
@@ -65,14 +38,14 @@ class Portal
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
-    private $creationDate = '0000-00-00 00:00:00';
+    private $creationDate;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      */
-    private $modificationDate = '0000-00-00 00:00:00';
+    private $modificationDate;
 
     /**
      * @var \DateTime
@@ -140,88 +113,14 @@ class Portal
         $this->authSources = new ArrayCollection();
     }
 
-
-
     /**
-     * Get itemId
+     * Get id
      *
      * @return integer
      */
-    public function getItemId()
+    public function getId()
     {
-        return $this->itemId;
-    }
-
-    /**
-     * Set contextId
-     *
-     * @param integer $contextId
-     *
-     * @return Portal
-     */
-    public function setContextId($contextId)
-    {
-        $this->contextId = $contextId;
-
-        return $this;
-    }
-
-    /**
-     * Get contextId
-     *
-     * @return integer
-     */
-    public function getContextId()
-    {
-        return $this->contextId;
-    }
-
-    /**
-     * Set creator
-     *
-     * @param \App\Entity\User $creator
-     *
-     * @return Portal
-     */
-    public function setCreator(\App\Entity\User $creator = null)
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    /**
-     * Get creator
-     *
-     * @return \App\Entity\User
-     */
-    public function getCreator()
-    {
-        return $this->creator;
-    }
-
-    /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
-     *
-     * @return Portal
-     */
-    public function setModifier(\App\Entity\User $modifier = null)
-    {
-        $this->modifier = $modifier;
-
-        return $this;
-    }
-
-    /**
-     * Get modifier
-     *
-     * @return \App\Entity\User
-     */
-    public function getModifier()
-    {
-        return $this->modifier;
+        return $this->id;
     }
 
     /**
@@ -249,6 +148,15 @@ class Portal
     }
 
     /**
+     * @ORM\PrePersist()
+     */
+    public function setInitialDateValues()
+    {
+        $this->creationDate = new \DateTime("now");
+        $this->modificationDate = new \DateTime("now");
+    }
+
+    /**
      * Set creationDate
      *
      * @param \DateTime $creationDate
@@ -270,6 +178,14 @@ class Portal
     public function getCreationDate()
     {
         return $this->creationDate;
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function setModificationDateValue()
+    {
+        $this->modificationDate = new \DateTime("now");
     }
 
     /**
@@ -363,7 +279,7 @@ class Portal
      *
      * @return array
      */
-    public function getExtras(): array
+    public function getExtras():? array
     {
         return $this->extras;
     }
@@ -489,7 +405,7 @@ class Portal
     }
 
     /**
-     * @return Collection|AuthSource[]
+     * @return Collection
      */
     public function getAuthSources(): Collection
     {
