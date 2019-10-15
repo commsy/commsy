@@ -16,6 +16,22 @@
 <body id="commsy" class="nav-collapsed">
 
 {% block body %}
+    <div>
+        <a href="{{ path('app_server_show') }}">Portalübersicht</a>
+    </div>
+
+    <div>
+        <a href="{{ path('app_account_signup', { 'id': context }) }}">Sign up</a>
+    </div>
+
+    <div>
+        <a href="{{ path('app_logout') }}">Logout</a>
+    </div>
+
+    {% if context is same as('server') %}
+        <h1>Login Systemadministration</h1>
+    {% endif %}
+
 <h1>Lokal</h1>
 <form method="post">
     {% if error %}
@@ -23,14 +39,13 @@
     {% endif %}
 
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail" class="sr-only">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
+
+    <label for="inputEmail" class="sr-only">Email / Username</label>
+    <input type="text" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email / Username" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
     <input type="hidden" name="context" value="{{ context }}">
 
@@ -57,8 +72,8 @@
         {% endif %}
 
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="inputEmail" class="sr-only">Email</label>
-        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
+        <label for="inputEmail" class="sr-only">Email / Username</label>
+        <input type="text" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email / Username" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
 

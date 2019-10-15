@@ -1,8 +1,14 @@
-{% extends 'base/portal.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block content %}
+    {% if app.user and app.user.username is same as('root') %}
+        <div>
+            <a href="{{ path('app_server_createportal') }}">Portal erstellen</a>
+        </div>
+    {% endif %}
+
     {% for activePortal in activePortals %}
-        {{ activePortal.title }}
+        <a href="{{ path('app_login', { 'context': activePortal.id }) }}">{{ activePortal.title }}</a>
     {% else %}
         No portals yet!
     {% endfor %}
