@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Pro SQL dump
-# Version 4096
+# Version 5446
 #
-# http://www.sequelpro.com/
-# http://code.google.com/p/sequel-pro/
+# https://www.sequelpro.com/
+# https://github.com/sequelpro/sequelpro
 #
-# Host: commsy.dev (MySQL 5.5.38-1~dotdeb.0-log)
-# Datenbank: commsy_vanilla
-# Erstellungsdauer: 2014-08-19 13:40:02 +0000
+# Host: 127.0.0.1 (MySQL 5.5.5-10.1.40-MariaDB-1~bionic)
+# Database: commsy_test
+# Generation Time: 2019-10-07 13:25:56 +0000
 # ************************************************************
 
 
@@ -15,12 +15,44 @@
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
+SET NAMES utf8mb4;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# Export von Tabelle annotation_portfolio
+# Dump of table accounts
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `accounts`;
+
+CREATE TABLE `accounts` (
+  `context_id` int(11) NOT NULL,
+  `username` varchar(32) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `password_md5` varchar(32) DEFAULT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `language` varchar(10) NOT NULL,
+  `auth_source_id` int(11) NOT NULL,
+  PRIMARY KEY (`context_id`,`username`,`auth_source_id`),
+  KEY `accounts_auth_source_id_fk` (`auth_source_id`),
+  CONSTRAINT `accounts_auth_source_id_fk` FOREIGN KEY (`auth_source_id`) REFERENCES `auth_source` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOCK TABLES `accounts` WRITE;
+/*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+
+INSERT INTO `accounts` (`context_id`, `username`, `email`, `password`, `password_md5`, `firstname`, `lastname`, `language`, `auth_source_id`)
+VALUES
+	(99,'root','',NULL,'63a9f0ea7bb98050796b649e85481845','CommSy','Administrator','de',100);
+
+/*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table annotation_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `annotation_portfolio`;
@@ -32,11 +64,11 @@ CREATE TABLE `annotation_portfolio` (
   `column` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`p_id`,`a_id`),
   KEY `row` (`row`,`column`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle annotations
+# Dump of table annotations
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `annotations`;
@@ -44,7 +76,7 @@ DROP TABLE IF EXISTS `annotations`;
 CREATE TABLE `annotations` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
@@ -60,11 +92,11 @@ CREATE TABLE `annotations` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `linked_item_id` (`linked_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle announcement
+# Dump of table announcement
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `announcement`;
@@ -72,7 +104,7 @@ DROP TABLE IF EXISTS `announcement`;
 CREATE TABLE `announcement` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -88,11 +120,11 @@ CREATE TABLE `announcement` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle assessments
+# Dump of table assessments
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `assessments`;
@@ -100,7 +132,7 @@ DROP TABLE IF EXISTS `assessments`;
 CREATE TABLE `assessments` (
   `item_id` int(11) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL,
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
@@ -111,70 +143,64 @@ CREATE TABLE `assessments` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle auth
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `auth`;
-
-CREATE TABLE `auth` (
-  `commsy_id` int(11) NOT NULL DEFAULT '0',
-  `user_id` varchar(32) NOT NULL,
-  `password_md5` varchar(32) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `language` varchar(10) NOT NULL,
-  PRIMARY KEY (`commsy_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-LOCK TABLES `auth` WRITE;
-/*!40000 ALTER TABLE `auth` DISABLE KEYS */;
-
-INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastname`, `email`, `language`)
-VALUES
-	(99,'root','63a9f0ea7bb98050796b649e85481845','CommSy','Administrator','','de');
-
-/*!40000 ALTER TABLE `auth` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Export von Tabelle auth_source
+# Dump of table auth_source
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `auth_source`;
 
 CREATE TABLE `auth_source` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deletion_date` datetime DEFAULT NULL,
+  `id` int(11) NOT NULL DEFAULT '0',
+  `portal_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `type` enum('local','oidc') NOT NULL DEFAULT 'local',
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
   `extras` text,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `default` tinyint(4) NOT NULL DEFAULT '0',
+  `add_account` tinyint(4) NOT NULL DEFAULT '0',
+  `change_username` tinyint(4) NOT NULL DEFAULT '0',
+  `delete_account` tinyint(4) NOT NULL DEFAULT '0',
+  `change_userdata` tinyint(4) NOT NULL DEFAULT '0',
+  `change_password` tinyint(4) NOT NULL DEFAULT '0',
+  `create_room` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `auth_source_portal_id_index` (`portal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `auth_source` WRITE;
 /*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
 
-INSERT INTO `auth_source` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`)
+INSERT INTO `auth_source` (`id`, `portal_id`, `title`, `type`, `enabled`, `extras`, `default`, `add_account`, `change_username`, `delete_account`, `change_userdata`, `change_password`, `create_room`)
 VALUES
-	(100,99,99,99,NULL,'2006-09-14 12:32:24','2006-09-14 12:32:24',NULL,'CommSy','a:4:{s:14:\"COMMSY_DEFAULT\";s:1:\"1\";s:6:\"SOURCE\";s:5:\"MYSQL\";s:13:\"CONFIGURATION\";a:5:{s:11:\"ADD_ACCOUNT\";s:1:\"0\";s:13:\"CHANGE_USERID\";s:1:\"0\";s:14:\"DELETE_ACCOUNT\";s:1:\"0\";s:15:\"CHANGE_USERDATA\";s:1:\"1\";s:15:\"CHANGE_PASSWORD\";s:1:\"1\";}s:4:\"SHOW\";s:1:\"1\";}');
+	(100,99,'CommSy','local',1,NULL,1,0,0,0,1,1,1);
 
 /*!40000 ALTER TABLE `auth_source` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle dates
+# Dump of table calendars
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `calendars`;
+
+CREATE TABLE `calendars` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `external_url` varchar(255) DEFAULT NULL,
+  `default_calendar` tinyint(4) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
+  `synctoken` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table dates
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `dates`;
@@ -182,7 +208,7 @@ DROP TABLE IF EXISTS `dates`;
 CREATE TABLE `dates` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -205,14 +231,19 @@ CREATE TABLE `dates` (
   `extras` text,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
+  `calendar_id` int(11) DEFAULT NULL,
+  `external` tinyint(4) NOT NULL DEFAULT '0',
+  `uid` varchar(255) DEFAULT NULL,
+  `whole_day` tinyint(4) NOT NULL DEFAULT '0',
+  `datetime_recurrence` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle discussionarticles
+# Dump of table discussionarticles
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `discussionarticles`;
@@ -221,7 +252,7 @@ CREATE TABLE `discussionarticles` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `discussion_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -235,11 +266,11 @@ CREATE TABLE `discussionarticles` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle discussions
+# Dump of table discussions
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `discussions`;
@@ -247,7 +278,7 @@ DROP TABLE IF EXISTS `discussions`;
 CREATE TABLE `discussions` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -265,11 +296,11 @@ CREATE TABLE `discussions` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle external_viewer
+# Dump of table external_viewer
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `external_viewer`;
@@ -277,12 +308,12 @@ DROP TABLE IF EXISTS `external_viewer`;
 CREATE TABLE `external_viewer` (
   `item_id` int(11) NOT NULL,
   `user_id` varchar(32) NOT NULL,
-  KEY `item_id` (`item_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`item_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle external2commsy_id
+# Dump of table external2commsy_id
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `external2commsy_id`;
@@ -292,11 +323,11 @@ CREATE TABLE `external2commsy_id` (
   `source_system` varchar(60) NOT NULL,
   `commsy_id` int(11) NOT NULL,
   PRIMARY KEY (`external_id`,`source_system`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle files
+# Dump of table files
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `files`;
@@ -304,12 +335,13 @@ DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `files_id` int(11) NOT NULL AUTO_INCREMENT,
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `filename` varchar(255) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
   `size` int(30) NOT NULL DEFAULT '0',
   `has_html` enum('0','1','2') NOT NULL DEFAULT '0',
   `scan` tinyint(1) NOT NULL DEFAULT '-1',
@@ -318,11 +350,11 @@ CREATE TABLE `files` (
   PRIMARY KEY (`files_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle hash
+# Dump of table hash
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `hash`;
@@ -331,14 +363,35 @@ CREATE TABLE `hash` (
   `user_item_id` int(11) NOT NULL,
   `rss` char(32) DEFAULT NULL,
   `ical` char(32) DEFAULT NULL,
+  `caldav` char(32) DEFAULT NULL,
   PRIMARY KEY (`user_item_id`),
   KEY `rss` (`rss`),
-  KEY `ical` (`ical`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `ical` (`ical`),
+  KEY `caldav` (`caldav`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle item_backup
+# Dump of table invitations
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `invitations`;
+
+CREATE TABLE `invitations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `hash` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `authsource_id` int(11) NOT NULL,
+  `context_id` int(11) NOT NULL,
+  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `expiration_date` datetime DEFAULT NULL,
+  `redeemed` tinyint(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table item_backup
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `item_backup`;
@@ -352,11 +405,11 @@ CREATE TABLE `item_backup` (
   `public` tinyint(11) NOT NULL,
   `special` text CHARACTER SET ucs2 NOT NULL,
   PRIMARY KEY (`item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle item_link_file
+# Dump of table item_link_file
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `item_link_file`;
@@ -368,11 +421,11 @@ CREATE TABLE `item_link_file` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle items
+# Dump of table items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `items`;
@@ -384,25 +437,26 @@ CREATE TABLE `items` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
+  `draft` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `type` (`type`)
-) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
 
-INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`)
+INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`, `draft`)
 VALUES
-	(98,99,'user',NULL,NULL,NULL),
-	(99,0,'server',NULL,NULL,'2014-08-19 15:38:16'),
-	(100,99,'auth_source',NULL,NULL,'2006-09-14 12:32:24');
+	(98,99,'user',NULL,NULL,NULL,0),
+	(99,0,'server',NULL,NULL,'2014-08-19 15:38:16',0),
+	(100,99,'auth_source',NULL,NULL,'2006-09-14 12:32:24',0);
 
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle labels
+# Dump of table labels
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `labels`;
@@ -410,7 +464,7 @@ DROP TABLE IF EXISTS `labels`;
 CREATE TABLE `labels` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -427,11 +481,27 @@ CREATE TABLE `labels` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `type` (`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle link_items
+# Dump of table licenses
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `licenses`;
+
+CREATE TABLE `licenses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `position` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table link_items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `link_items`;
@@ -439,7 +509,7 @@ DROP TABLE IF EXISTS `link_items`;
 CREATE TABLE `link_items` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
@@ -459,11 +529,11 @@ CREATE TABLE `link_items` (
   KEY `second_item_type` (`second_item_type`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle link_modifier_item
+# Dump of table link_modifier_item
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `link_modifier_item`;
@@ -472,7 +542,7 @@ CREATE TABLE `link_modifier_item` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `modifier_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`modifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `link_modifier_item` WRITE;
 /*!40000 ALTER TABLE `link_modifier_item` DISABLE KEYS */;
@@ -485,7 +555,7 @@ VALUES
 UNLOCK TABLES;
 
 
-# Export von Tabelle links
+# Dump of table links
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `links`;
@@ -513,11 +583,11 @@ CREATE TABLE `links` (
   KEY `from_version_id_2` (`from_version_id`),
   KEY `to_item_id_2` (`to_item_id`),
   KEY `to_version_id_2` (`to_version_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle log
+# Dump of table log
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `log`;
@@ -542,11 +612,11 @@ CREATE TABLE `log` (
   PRIMARY KEY (`id`),
   KEY `timestamp` (`timestamp`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle log_archive
+# Dump of table log_archive
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `log_archive`;
@@ -571,11 +641,11 @@ CREATE TABLE `log_archive` (
   PRIMARY KEY (`id`),
   KEY `ulogin` (`ulogin`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle materials
+# Dump of table materials
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `materials`;
@@ -584,7 +654,7 @@ CREATE TABLE `materials` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modifier_id` int(11) DEFAULT NULL,
@@ -604,15 +674,71 @@ CREATE TABLE `materials` (
   `workflow_validity_date` datetime DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
+  `license_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `modifier_id` (`modifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle noticed
+# Dump of table migration_versions
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `migration_versions`;
+
+CREATE TABLE `migration_versions` (
+  `version` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `executed_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `migration_versions` WRITE;
+/*!40000 ALTER TABLE `migration_versions` DISABLE KEYS */;
+
+INSERT INTO `migration_versions` (`version`, `executed_at`)
+VALUES
+	('20150623133246','2019-10-07 13:23:49'),
+	('20150623135455','2019-10-07 13:23:52'),
+	('20150831152400','2019-10-07 13:23:52'),
+	('20150914082323','2019-10-07 13:23:52'),
+	('20160718213927','2019-10-07 13:23:52'),
+	('20160719021757','2019-10-07 13:23:52'),
+	('20160727100551','2019-10-07 13:23:52'),
+	('20160727103653','2019-10-07 13:23:52'),
+	('20160727111607','2019-10-07 13:23:52'),
+	('20160727112623','2019-10-07 13:23:52'),
+	('20160727133717','2019-10-07 13:23:52'),
+	('20160728231457','2019-10-07 13:23:52'),
+	('20170225094328','2019-10-07 13:23:52'),
+	('20170225121940','2019-10-07 13:23:52'),
+	('20170420141745','2019-10-07 13:23:52'),
+	('20170521105856','2019-10-07 13:23:59'),
+	('20170616103508','2019-10-07 13:23:59'),
+	('20170714122834','2019-10-07 13:23:59'),
+	('20170721185631','2019-10-07 13:23:59'),
+	('20170802185102','2019-10-07 13:23:59'),
+	('20170810143230','2019-10-07 13:23:59'),
+	('20170824064811','2019-10-07 13:23:59'),
+	('20170908083138','2019-10-07 13:24:00'),
+	('20180212155007','2019-10-07 13:24:00'),
+	('20180227100813','2019-10-07 13:24:00'),
+	('20180315103403','2019-10-07 13:24:00'),
+	('20180713115204','2019-10-07 13:24:00'),
+	('20190125123633','2019-10-07 13:24:00'),
+	('20190523132611','2019-10-07 13:24:00'),
+	('20190708172814','2019-10-07 13:24:00'),
+	('20190923121921','2019-10-07 13:24:00'),
+	('20190923152100','2019-10-07 13:24:01'),
+	('20190924140632','2019-10-07 13:24:01'),
+	('20191007171054','2019-10-07 17:16:19');
+
+/*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table noticed
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `noticed`;
@@ -623,23 +749,20 @@ CREATE TABLE `noticed` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle portal
+# Dump of table portal
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `portal`;
 
 CREATE TABLE `portal` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `creation_date` datetime NOT NULL,
+  `modification_date` datetime NOT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `extras` text,
@@ -648,22 +771,20 @@ CREATE TABLE `portal` (
   `type` varchar(10) NOT NULL DEFAULT 'portal',
   `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '1',
   `url` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31126 DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle portfolio
+# Dump of table portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `portfolio`;
 
 CREATE TABLE `portfolio` (
   `item_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
-  `modifier_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
+  `creator_id` int(11) DEFAULT NULL,
+  `modifier_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `description` mediumtext NOT NULL,
   `template` tinyint(4) NOT NULL DEFAULT '-1',
@@ -673,11 +794,11 @@ CREATE TABLE `portfolio` (
   PRIMARY KEY (`item_id`),
   KEY `creator_id` (`creator_id`),
   KEY `modifier_id` (`modifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='General Portfolio Information';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='General Portfolio Information';
 
 
 
-# Export von Tabelle reader
+# Dump of table reader
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `reader`;
@@ -688,11 +809,11 @@ CREATE TABLE `reader` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle room
+# Dump of table room
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `room`;
@@ -700,7 +821,7 @@ DROP TABLE IF EXISTS `room`;
 CREATE TABLE `room` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -716,7 +837,6 @@ CREATE TABLE `room` (
   `continuous` tinyint(4) NOT NULL DEFAULT '-1',
   `template` tinyint(4) NOT NULL DEFAULT '-1',
   `contact_persons` varchar(255) DEFAULT NULL,
-  `description` text,
   `room_description` varchar(10000) DEFAULT NULL,
   `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -727,17 +847,43 @@ CREATE TABLE `room` (
   KEY `activity` (`activity`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`),
-  KEY `room_description` (`room_description`(333)),
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
   KEY `modifier_id` (`modifier_id`),
-  KEY `lastlogin` (`lastlogin`),
-  KEY `status_2` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `lastlogin` (`lastlogin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle room_privat
+# Dump of table room_categories
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `room_categories`;
+
+CREATE TABLE `room_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table room_categories_links
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `room_categories_links`;
+
+CREATE TABLE `room_categories_links` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table room_privat
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `room_privat`;
@@ -745,7 +891,7 @@ DROP TABLE IF EXISTS `room_privat`;
 CREATE TABLE `room_privat` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -769,11 +915,11 @@ CREATE TABLE `room_privat` (
   KEY `creator_id` (`creator_id`),
   KEY `lastlogin` (`lastlogin`),
   KEY `status_2` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle section
+# Dump of table section
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `section`;
@@ -782,7 +928,7 @@ CREATE TABLE `section` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `creation_date` datetime DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
@@ -798,11 +944,11 @@ CREATE TABLE `section` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `material_item_id` (`material_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle server
+# Dump of table server
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `server`;
@@ -810,7 +956,7 @@ DROP TABLE IF EXISTS `server`;
 CREATE TABLE `server` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -826,37 +972,35 @@ CREATE TABLE `server` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `server` WRITE;
 /*!40000 ALTER TABLE `server` DISABLE KEYS */;
 
 INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`)
 VALUES
-	(99,0,99,0,NULL,'2006-09-13 12:16:38','2014-08-19 15:38:16',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.8\";}','1',74,'server',1,'');
+	(99,0,NULL,NULL,NULL,'2006-09-13 12:16:38','2014-08-19 15:38:16',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.8\";}','1',74,'server',1,'');
 
 /*!40000 ALTER TABLE `server` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle session
+# Dump of table sessions
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `session`;
+DROP TABLE IF EXISTS `sessions`;
 
-CREATE TABLE `session` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(150) NOT NULL,
-  `session_key` varchar(30) NOT NULL,
-  `session_value` longtext NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `session_id` (`session_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+CREATE TABLE `sessions` (
+  `sess_id` varchar(128) COLLATE utf8mb4_bin NOT NULL,
+  `sess_data` blob NOT NULL,
+  `sess_time` int(10) unsigned NOT NULL,
+  `sess_lifetime` mediumint(9) NOT NULL,
+  PRIMARY KEY (`sess_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 
 
-# Export von Tabelle step
+# Dump of table step
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `step`;
@@ -864,7 +1008,7 @@ DROP TABLE IF EXISTS `step`;
 CREATE TABLE `step` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `creation_date` datetime DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
@@ -881,11 +1025,11 @@ CREATE TABLE `step` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `todo_item_id` (`todo_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle tag
+# Dump of table tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tag`;
@@ -893,20 +1037,21 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `public` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle tag_portfolio
+# Dump of table tag_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tag_portfolio`;
@@ -919,11 +1064,11 @@ CREATE TABLE `tag_portfolio` (
   `description` text,
   PRIMARY KEY (`p_id`,`t_id`),
   KEY `row` (`row`,`column`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle tag2tag
+# Dump of table tag2tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tag2tag`;
@@ -933,9 +1078,9 @@ CREATE TABLE `tag2tag` (
   `from_item_id` int(11) NOT NULL DEFAULT '0',
   `to_item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
+  `modifier_id` int(11) DEFAULT NULL,
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
@@ -945,11 +1090,11 @@ CREATE TABLE `tag2tag` (
   KEY `context_id` (`context_id`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle tasks
+# Dump of table tasks
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `tasks`;
@@ -957,7 +1102,7 @@ DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -968,11 +1113,11 @@ CREATE TABLE `tasks` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle template_portfolio
+# Dump of table template_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `template_portfolio`;
@@ -981,11 +1126,27 @@ CREATE TABLE `template_portfolio` (
   `p_id` int(11) NOT NULL DEFAULT '0',
   `u_id` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`p_id`,`u_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle todos
+# Dump of table terms
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `terms`;
+
+CREATE TABLE `terms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content_de` text NOT NULL,
+  `content_en` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table todos
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `todos`;
@@ -993,7 +1154,7 @@ DROP TABLE IF EXISTS `todos`;
 CREATE TABLE `todos` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1012,11 +1173,27 @@ CREATE TABLE `todos` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle user
+# Dump of table translation
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `translation`;
+
+CREATE TABLE `translation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `translation_key` varchar(255) NOT NULL,
+  `translation_de` varchar(2000) NOT NULL,
+  `translation_en` varchar(2000) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table user
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `user`;
@@ -1043,6 +1220,7 @@ CREATE TABLE `user` (
   `auth_source` int(11) DEFAULT NULL,
   `description` text,
   `expire_date` datetime DEFAULT NULL,
+  `use_portal_email` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1051,20 +1229,20 @@ CREATE TABLE `user` (
   KEY `deleter_id` (`deleter_id`),
   KEY `status` (`status`),
   KEY `is_contact` (`is_contact`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`, `expire_date`)
+INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`, `expire_date`, `use_portal_email`)
 VALUES
-	(98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL,NULL);
+	(98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL,NULL,0);
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Export von Tabelle user_portfolio
+# Dump of table user_portfolio
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `user_portfolio`;
@@ -1073,25 +1251,24 @@ CREATE TABLE `user_portfolio` (
   `p_id` int(11) NOT NULL DEFAULT '0',
   `u_id` varchar(32) NOT NULL,
   PRIMARY KEY (`p_id`,`u_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle workflow_read
+# Dump of table workflow_read
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `workflow_read`;
 
 CREATE TABLE `workflow_read` (
   `item_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  KEY `item_id` (`item_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`item_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_annotations
+# Dump of table zzz_annotations
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_annotations`;
@@ -1099,7 +1276,7 @@ DROP TABLE IF EXISTS `zzz_annotations`;
 CREATE TABLE `zzz_annotations` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
@@ -1115,11 +1292,11 @@ CREATE TABLE `zzz_annotations` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `linked_item_id` (`linked_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_announcement
+# Dump of table zzz_announcement
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_announcement`;
@@ -1127,7 +1304,7 @@ DROP TABLE IF EXISTS `zzz_announcement`;
 CREATE TABLE `zzz_announcement` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1143,11 +1320,11 @@ CREATE TABLE `zzz_announcement` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_assessments
+# Dump of table zzz_assessments
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_assessments`;
@@ -1155,7 +1332,7 @@ DROP TABLE IF EXISTS `zzz_assessments`;
 CREATE TABLE `zzz_assessments` (
   `item_id` int(11) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL,
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
@@ -1166,11 +1343,28 @@ CREATE TABLE `zzz_assessments` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_dates
+# Dump of table zzz_calendars
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_calendars`;
+
+CREATE TABLE `zzz_calendars` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `external_url` varchar(255) DEFAULT NULL,
+  `default_calendar` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table zzz_dates
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_dates`;
@@ -1178,7 +1372,7 @@ DROP TABLE IF EXISTS `zzz_dates`;
 CREATE TABLE `zzz_dates` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1201,14 +1395,19 @@ CREATE TABLE `zzz_dates` (
   `extras` text,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
+  `calendar_id` int(11) DEFAULT NULL,
+  `external` tinyint(4) NOT NULL DEFAULT '0',
+  `uid` varchar(255) DEFAULT NULL,
+  `whole_day` tinyint(4) NOT NULL DEFAULT '0',
+  `datetime_recurrence` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_discussionarticles
+# Dump of table zzz_discussionarticles
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_discussionarticles`;
@@ -1217,7 +1416,7 @@ CREATE TABLE `zzz_discussionarticles` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `discussion_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1231,11 +1430,11 @@ CREATE TABLE `zzz_discussionarticles` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_discussions
+# Dump of table zzz_discussions
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_discussions`;
@@ -1243,7 +1442,7 @@ DROP TABLE IF EXISTS `zzz_discussions`;
 CREATE TABLE `zzz_discussions` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1261,11 +1460,11 @@ CREATE TABLE `zzz_discussions` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_external_viewer
+# Dump of table zzz_external_viewer
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_external_viewer`;
@@ -1273,12 +1472,12 @@ DROP TABLE IF EXISTS `zzz_external_viewer`;
 CREATE TABLE `zzz_external_viewer` (
   `item_id` int(11) NOT NULL,
   `user_id` varchar(32) NOT NULL,
-  KEY `item_id` (`item_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`item_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_files
+# Dump of table zzz_files
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_files`;
@@ -1286,12 +1485,13 @@ DROP TABLE IF EXISTS `zzz_files`;
 CREATE TABLE `zzz_files` (
   `files_id` int(11) NOT NULL AUTO_INCREMENT,
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `filename` varchar(255) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
   `size` int(30) NOT NULL DEFAULT '0',
   `has_html` enum('0','1','2') NOT NULL DEFAULT '0',
   `scan` tinyint(1) NOT NULL DEFAULT '-1',
@@ -1300,11 +1500,11 @@ CREATE TABLE `zzz_files` (
   PRIMARY KEY (`files_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_hash
+# Dump of table zzz_hash
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_hash`;
@@ -1313,14 +1513,16 @@ CREATE TABLE `zzz_hash` (
   `user_item_id` int(11) NOT NULL,
   `rss` char(32) DEFAULT NULL,
   `ical` char(32) DEFAULT NULL,
+  `caldav` char(32) DEFAULT NULL,
   PRIMARY KEY (`user_item_id`),
   KEY `rss` (`rss`),
-  KEY `ical` (`ical`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `ical` (`ical`),
+  KEY `caldav` (`caldav`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_item_link_file
+# Dump of table zzz_item_link_file
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_item_link_file`;
@@ -1332,11 +1534,11 @@ CREATE TABLE `zzz_item_link_file` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_items
+# Dump of table zzz_items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_items`;
@@ -1348,14 +1550,15 @@ CREATE TABLE `zzz_items` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
+  `draft` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `type` (`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_labels
+# Dump of table zzz_labels
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_labels`;
@@ -1363,7 +1566,7 @@ DROP TABLE IF EXISTS `zzz_labels`;
 CREATE TABLE `zzz_labels` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1380,11 +1583,11 @@ CREATE TABLE `zzz_labels` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `type` (`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_link_items
+# Dump of table zzz_link_items
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_link_items`;
@@ -1392,7 +1595,7 @@ DROP TABLE IF EXISTS `zzz_link_items`;
 CREATE TABLE `zzz_link_items` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
@@ -1412,11 +1615,11 @@ CREATE TABLE `zzz_link_items` (
   KEY `second_item_type` (`second_item_type`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_link_modifier_item
+# Dump of table zzz_link_modifier_item
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_link_modifier_item`;
@@ -1425,11 +1628,11 @@ CREATE TABLE `zzz_link_modifier_item` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `modifier_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`modifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_links
+# Dump of table zzz_links
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_links`;
@@ -1452,11 +1655,11 @@ CREATE TABLE `zzz_links` (
   KEY `from_version_id` (`from_version_id`),
   KEY `to_item_id` (`to_item_id`),
   KEY `to_version_id` (`to_version_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_materials
+# Dump of table zzz_materials
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_materials`;
@@ -1465,7 +1668,7 @@ CREATE TABLE `zzz_materials` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modifier_id` int(11) DEFAULT NULL,
@@ -1485,15 +1688,16 @@ CREATE TABLE `zzz_materials` (
   `workflow_validity_date` datetime DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
+  `license_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `modifier_id` (`modifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_noticed
+# Dump of table zzz_noticed
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_noticed`;
@@ -1504,11 +1708,11 @@ CREATE TABLE `zzz_noticed` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_reader
+# Dump of table zzz_reader
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_reader`;
@@ -1519,11 +1723,11 @@ CREATE TABLE `zzz_reader` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_room
+# Dump of table zzz_room
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_room`;
@@ -1531,7 +1735,7 @@ DROP TABLE IF EXISTS `zzz_room`;
 CREATE TABLE `zzz_room` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1547,7 +1751,6 @@ CREATE TABLE `zzz_room` (
   `continuous` tinyint(4) NOT NULL DEFAULT '-1',
   `template` tinyint(4) NOT NULL DEFAULT '-1',
   `contact_persons` varchar(255) DEFAULT NULL,
-  `description` text,
   `room_description` varchar(10000) DEFAULT NULL,
   `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -1558,17 +1761,15 @@ CREATE TABLE `zzz_room` (
   KEY `activity` (`activity`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`),
-  KEY `room_description` (`room_description`(333)),
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
   KEY `modifier_id` (`modifier_id`),
-  KEY `lastlogin` (`lastlogin`),
-  KEY `status_2` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `lastlogin` (`lastlogin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_section
+# Dump of table zzz_section
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_section`;
@@ -1577,7 +1778,7 @@ CREATE TABLE `zzz_section` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `creation_date` datetime DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
@@ -1593,11 +1794,11 @@ CREATE TABLE `zzz_section` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `material_item_id` (`material_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_step
+# Dump of table zzz_step
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_step`;
@@ -1605,7 +1806,7 @@ DROP TABLE IF EXISTS `zzz_step`;
 CREATE TABLE `zzz_step` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `creation_date` datetime DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
@@ -1622,11 +1823,11 @@ CREATE TABLE `zzz_step` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `todo_item_id` (`todo_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_tag
+# Dump of table zzz_tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_tag`;
@@ -1634,20 +1835,21 @@ DROP TABLE IF EXISTS `zzz_tag`;
 CREATE TABLE `zzz_tag` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `public` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_tag2tag
+# Dump of table zzz_tag2tag
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_tag2tag`;
@@ -1657,9 +1859,9 @@ CREATE TABLE `zzz_tag2tag` (
   `from_item_id` int(11) NOT NULL DEFAULT '0',
   `to_item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
+  `modifier_id` int(11) DEFAULT NULL,
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
@@ -1669,11 +1871,11 @@ CREATE TABLE `zzz_tag2tag` (
   KEY `context_id` (`context_id`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_tasks
+# Dump of table zzz_tasks
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_tasks`;
@@ -1681,7 +1883,7 @@ DROP TABLE IF EXISTS `zzz_tasks`;
 CREATE TABLE `zzz_tasks` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1692,11 +1894,11 @@ CREATE TABLE `zzz_tasks` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_todos
+# Dump of table zzz_todos
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_todos`;
@@ -1704,7 +1906,7 @@ DROP TABLE IF EXISTS `zzz_todos`;
 CREATE TABLE `zzz_todos` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1723,11 +1925,11 @@ CREATE TABLE `zzz_todos` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_user
+# Dump of table zzz_user
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_user`;
@@ -1754,6 +1956,7 @@ CREATE TABLE `zzz_user` (
   `auth_source` int(11) DEFAULT NULL,
   `description` text,
   `expire_date` datetime DEFAULT NULL,
+  `use_portal_email` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1762,21 +1965,20 @@ CREATE TABLE `zzz_user` (
   KEY `deleter_id` (`deleter_id`),
   KEY `status` (`status`),
   KEY `is_contact` (`is_contact`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Export von Tabelle zzz_workflow_read
+# Dump of table zzz_workflow_read
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `zzz_workflow_read`;
 
 CREATE TABLE `zzz_workflow_read` (
   `item_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  KEY `item_id` (`item_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`item_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
