@@ -919,9 +919,10 @@ class cs_user_manager extends cs_manager {
    /** build a new user item
     * this method returns a new EMTPY user item
     *
-    * @return object cs_item a new EMPTY user
+    * @return \cs_user_item a new EMPTY user
     */
-   function getNewItem () {
+   public function getNewItem(): \cs_user_item
+   {
       include_once('classes/cs_user_item.php');
       return new cs_user_item($this->_environment);
    }

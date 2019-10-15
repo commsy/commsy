@@ -22,8 +22,10 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-/** upper class of the news item
- */
+use App\Entity\Account;
+use App\Entity\AuthSource;
+use Doctrine\ORM\EntityManagerInterface;
+
 include_once('classes/cs_item.php');
 
 /** class for a user
@@ -1333,7 +1335,7 @@ class cs_user_item extends cs_item
         // ContactPersonString
         $context_item = $this->getContextItem();
         // get grouproom
-        if ($context_item->getType() == 'group') {
+        if ($context_item && $context_item->getType() == 'group') {
             $grouproom_array = $context_item->_getItemData();
             $grouproom_id = $grouproom_array['extras']['GROUP_ROOM_ID'];
             $room_manager = $this->_environment->getRoomManager();
@@ -3090,9 +3092,17 @@ class cs_user_item extends cs_item
                 return true;
             }
         } else {
-            $auth_source_manager = $this->_environment->getAuthSourceManager();
-            $auth_source_item = $auth_source_manager->getItem($this->getAuthSource());
-            return $auth_source_item->isUserAllowedToCreateContext();
+            global $symfonyContainer;
+
+            /** @var EntityManagerInterface $entityManager */
+            $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+            $authSourceRepository = $entityManager->getRepository(AuthSource::class);
+
+            $tokenStorage = $symfonyContainer->get('security.token_storage');
+            /** @var Account $user */
+            $user = $tokenStorage->getToken()->getUser();
+
+            return $user->getAuthSource()->getCreateRoom();
         }
     }
 

@@ -63,9 +63,9 @@ class cs_portal_manager extends cs_context_manager {
     */
    function _performQuery ($mode = 'select') {
       if ($mode == 'count') {
-         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) AS count';
+         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.id) AS count';
       } elseif ($mode == 'id_array') {
-          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
+          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.id';
       } else {
          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       }
@@ -114,4 +114,3 @@ class cs_portal_manager extends cs_context_manager {
       }
    }
 }
-?>
