@@ -2,6 +2,8 @@
 
 namespace App\EventListener;
 
+use App\Entity\Portal;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -16,10 +18,16 @@ class CommsyActivityListener
 
     private $legacyEnvironment;
 
-    public function __construct(RoomService $roomService, LegacyEnvironment $legacyEnvironment)
-    {
+    private $entityManager;
+
+    public function __construct(
+        RoomService $roomService,
+        LegacyEnvironment $legacyEnvironment,
+        EntityManagerInterface $entityManager
+    ) {
         $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment;
+        $this->entityManager = $entityManager;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -53,10 +61,13 @@ class CommsyActivityListener
                             // archiving
                             $context_item_current->saveLastLogin();
 
-                            $current_portal_item = $environment->getCurrentPortalItem();
-                            if (isset($current_portal_item)) {
-                                $current_portal_item->saveActivityPoints($activity_points);
-                                unset($current_portal_item);
+                            $portalId = $context_item_current->getContextID();
+                            $portalRespository = $this->entityManager->getRepository(Portal::class);
+                            $portal = $portalRespository->find($portalId);
+                            if ($portal) {
+                                $portal->setActivity($portal->getActivity() + 1);
+                                $this->entityManager->persist($portal);
+                                $this->entityManager->flush();
                             }
                         }
                     }
