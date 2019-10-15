@@ -24,7 +24,8 @@ security:
 
         main:
             anonymous: true
-            logout: true
+            logout:
+                path: app_logout
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
@@ -51,4 +52,5 @@ security:
 #
 #        - { path: ^/, roles: IS_AUTHENTICATED_REMEMBERED }
 
+        - { path: ^/dashboard, roles: IS_AUTHENTICATED_REMEMBERED }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
