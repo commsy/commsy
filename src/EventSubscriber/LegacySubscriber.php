@@ -4,7 +4,7 @@
 namespace App\EventSubscriber;
 
 
-use App\Entity\Auth;
+use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -29,7 +29,7 @@ class LegacySubscriber implements EventSubscriberInterface
         return array(
             KernelEvents::CONTROLLER => [
                 'onKernelController',
-                512,
+                10,
             ],
         );
     }
@@ -46,12 +46,12 @@ class LegacySubscriber implements EventSubscriberInterface
 
             $this->legacyEnvironment->setCurrentContextID($contextId);
 
-            /** @var Auth $user */
+            /** @var Account $user */
             $user = $this->security->getUser();
 
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
-            $userManager->setContextLimit($user->getContextId());
+            $userManager->setContextLimit($contextId);
             $userManager->setUserIDLimit($user->getUsername());
             $userManager->select();
 
