@@ -9,11 +9,13 @@
 namespace App\RoomFeed;
 
 
+use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Security\Core\Security;
 
 class RoomFeedGenerator
 {
@@ -37,12 +39,21 @@ class RoomFeedGenerator
      */
     private $limits = [];
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService)
-    {
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        RoomService $roomService,
+        ItemService $itemService,
+        Security $security
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
         $this->itemService = $itemService;
-
+        $this->security = $security;
     }
 
     /**
@@ -250,26 +261,6 @@ class RoomFeedGenerator
             }
         }
 
-//        $grouproom_list = $currentUser->getUserRelatedGroupList();
-//        if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
-//            $grouproom_list->reverse();
-//            $grouproom_item = $grouproom_list->getFirst();
-//            while ($grouproom_item) {
-//                $project_room_id = $grouproom_item->getLinkedProjectItemID();
-//                if ( in_array($project_room_id,$roomIds) ) {
-//                    $room_id_array_temp = array();
-//                    foreach ($roomIds as $value) {
-//                        $room_id_array_temp[] = $value;
-//                        if ( $value == $project_room_id) {
-//                            $room_id_array_temp[] = $grouproom_item->getItemID();
-//                        }
-//                    }
-//                    $roomIds = $room_id_array_temp;
-//                }
-//                $grouproom_item = $grouproom_list->getNext();
-//            }
-//        }
-
         $communityRooms = $currentUser->getUserRelatedCommunityList();
         if (isset($communityRooms) && $communityRooms->isNotEmpty()) {
             $communityRoom = $communityRooms->getFirst();
@@ -285,14 +276,15 @@ class RoomFeedGenerator
          * TODO: This post-processing filters user items, that are not activated yet. This should be refactored to avoid
          * querying for a user list for each room.
          */
-        $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
-        $authSource = $authSourceManager->getItem($currentUser->getAuthSource());
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        $authSource = $account->getAuthSource();
 
         $userManager = $this->legacyEnvironment->getUserManager();
         $roomIdsActivated = [];
 
         foreach ($roomIds as $roomId) {
-            $userList = $userManager->getUserArrayByUserAndRoomIDLimit($currentUser->getUserId(), [$roomId], $authSource->getItemId());
+            $userList = $userManager->getUserArrayByUserAndRoomIDLimit($currentUser->getUserId(), [$roomId], $authSource->getId());
             if (!empty($userList)) {
                 $roomIdsActivated[] = $roomId;
             }
