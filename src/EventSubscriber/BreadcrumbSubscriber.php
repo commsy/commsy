@@ -1,20 +1,19 @@
 <?php
 
-namespace App\EventListener;
-
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
-
-use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
+namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
 use App\Utils\ItemService;
+use App\Utils\RoomService;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
-class CommsyBreadcrumbListener
+class BreadcrumbSubscriber implements EventSubscriberInterface
 {
     private $legacyEnvironment;
     private $roomService;
@@ -23,7 +22,13 @@ class CommsyBreadcrumbListener
     private $breadcrumbs;
     private $router;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService, TranslatorInterface $translator, RouterInterface $router, Breadcrumbs $whiteOctoberBreadcrumbs)
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        RoomService $roomService,
+        ItemService $itemService,
+        TranslatorInterface $translator,
+        RouterInterface $router,
+        Breadcrumbs $whiteOctoberBreadcrumbs)
     {
         $this->legacyEnvironment = $legacyEnvironment;
         $this->roomService = $roomService;
@@ -33,7 +38,7 @@ class CommsyBreadcrumbListener
         $this->router = $router;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onControllerEvent(ControllerEvent $event)
     {
         if ($event->getRequestType() != HttpKernelInterface::MASTER_REQUEST) {
             return;
@@ -135,6 +140,13 @@ class CommsyBreadcrumbListener
         }
     }
 
+    public static function getSubscribedEvents()
+    {
+        return [
+            ControllerEvent::class => 'onControllerEvent',
+        ];
+    }
+
     private function addPortalCrumb($request)
     {
         $portal = $this->legacyEnvironment->getEnvironment()->getCurrentPortalItem();
@@ -224,7 +236,7 @@ class CommsyBreadcrumbListener
         else {
             $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'menu'), "app_profile_" . $action, $routeParameters);
         }
-        
+
     }
 
     private function addChildRoomListCrumb($roomItem, $childRoomClass)
@@ -232,5 +244,5 @@ class CommsyBreadcrumbListener
         if ($childRoomClass == 'project' || $childRoomClass == 'group') {
             $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans($childRoomClass, [], 'menu')), "app_" . $childRoomClass . "_list", ['roomId' => $roomItem->getItemId()]);
         }
-   }
+    }
 }
