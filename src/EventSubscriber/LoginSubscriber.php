@@ -2,7 +2,7 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\Auth;
+use App\Entity\Account;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -38,7 +38,7 @@ class LoginSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var Auth $user */
+        /** @var Account $user */
         $user = $this->security->getUser();
 
         if ($user && $user->hasLegacyPassword()) {
