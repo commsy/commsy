@@ -918,8 +918,6 @@ class cs_material_item extends cs_item {
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
 
-      $this->SendDeleteEntryMailToModerators();
-
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
