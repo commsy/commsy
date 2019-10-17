@@ -54,7 +54,11 @@
                 </div>
                 <div class="uk-alert uk-alert-danger">
                     {{ form_start(form_delete) }}
+                    {% if override == 'FALSE' %}
+                        <span>{{ 'deleteAccountTextFalseFlag'|trans({}, 'profile') }}</span>
+                    {% else %}
                         <span>{{ 'deleteAccountText'|trans({}, 'profile') }}</span>
+                    {% endif %}
 
                         <div class="uk-margin">
                             {{ 'Delete explanation start'|trans({}, 'settings') }}
