@@ -176,9 +176,16 @@ class UserTransformer implements DataTransformerInterface
 
                     /** @var \cs_auth_item $authItem */
                     $authItem = $authManager->getItem($portalUser->getUserID());
-                    $authItem->setEmail($portalUser->getEmail());
 
-                    $authentication->save($authItem);
+                    /**
+                     * Check if we have an instance of an auth item. This might not be true for external authentication
+                     * sources, because (as of CS9) they do not create an entry in the database
+                     */
+                    if ($authItem) {
+                        $authItem->setEmail($portalUser->getEmail());
+
+                        $authentication->save($authItem);
+                    }
                 }
             }
 
