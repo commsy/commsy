@@ -620,8 +620,13 @@ class ItemController extends Controller
         // prepare form
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
+
         $groupChoices = $mailAssistant->getGroupChoices($item);
-        $defaultGroupId = array_values($groupChoices)[0];
+        $defaultGroupId = $groupChoices;
+        if(sizeof($groupChoices)>0){
+            $defaultGroupId = array_values($groupChoices)[0];
+        }
+
 
         $formData = [
             'additional_recipients' => [

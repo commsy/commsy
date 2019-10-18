@@ -23,7 +23,8 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
         if (isset($values['additional_recipients'][0])) {
             $foundRecipient = true;
         }
-        if (isset($values['send_to_groups'][0])) {
+        if (isset($values['send_to_groups'][0])
+            && $values['send_to_groups'][0]) {
             $foundRecipient = true;
         }
         if ($values['send_to_group_all']) {
@@ -36,10 +37,9 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
             $foundRecipient = true;
         }
 
-        if(isset($values['send_to_attendees'])){
-            if ($values['send_to_attendees']) {
-                $foundRecipient = true;
-            }
+        if(isset($values['send_to_attendees'])
+            && $values['send_to_attendees']){
+            $foundRecipient = true;
         }
 
 
