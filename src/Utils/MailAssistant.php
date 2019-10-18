@@ -69,7 +69,7 @@ class MailAssistant
     public function showGroupAllRecipients($item) {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-        if (!$currentContextItem->withRubric('group')) {
+        if ($currentContextItem->isProjectRoom() && !$currentContextItem->withRubric('group')) {
             return true;
         }
 
