@@ -6,7 +6,6 @@ use App\RoomFeed\RoomFeedGenerator;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
-use App\Utils\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -14,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DashboardController
@@ -137,14 +137,14 @@ class DashboardController extends AbstractController
      * @Template()
      * @param Request $request
      * @param ReaderService $readerService
-     * @param UserService $userService
+     * @param RoomFeedGenerator $roomFeedGenerator
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $max
      * @return array
      */
     public function feedAction(
         Request $request,
         ReaderService $readerService,
-        UserService $userService,
         RoomFeedGenerator $roomFeedGenerator,
         LegacyEnvironment $legacyEnvironment,
         int $max = 10
@@ -158,13 +158,11 @@ class DashboardController extends AbstractController
 
         $user = $legacyEnvironment->getEnvironment()->getPortalUserItem();
 
-
         $readerList = array();
         $feedItems = [];
         foreach ($feedList as $item) {
             if ($item != null) {
                 $feedItems[] = $item;
-
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
                 $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
             }
@@ -179,17 +177,17 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/{roomId}/edit")
      * @param Request $request
+     * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return JsonResponse
      */
     public function editAction(
         Request $request,
+        TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId
     ) {
-        $translator = $this->get('translator');
-        
         $requestContent = json_decode($request->getContent());
         
         $legacyEnvironment = $environment->getEnvironment();
@@ -219,8 +217,8 @@ class DashboardController extends AbstractController
      */
     public function rssAction(
         Request $request,
-        int $roomId)
-    {
+        int $roomId
+    ) {
         return array(
         );
     }
@@ -228,13 +226,11 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/{roomId}/externalaccess")
      * @Template()
-     * @param UserService $userService
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function externalaccessAction(
-        UserService $userService,
         LegacyEnvironment $environment,
         int $roomId
     ) {

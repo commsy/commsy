@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
+use App\Form\DataTransformer\DateTransformer;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -18,6 +19,7 @@ use App\Utils\RoomService;
 use App\Utils\TopicService;
 use cs_dates_item;
 use cs_room_item;
+use cs_user_item;
 use DateTime;
 
 use Exception;
@@ -40,6 +42,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use App\Event\CommsyEditEvent;
 use App\Entity\Calendars;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DateController
@@ -393,6 +397,7 @@ class DateController extends BaseController
      * @param ItemService $itemService
      * @param ReaderService $readerService
      * @param TopicService $topicService
+     * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
      * @param LegacyEnvironment $environment
      * @param int $roomId
@@ -407,6 +412,7 @@ class DateController extends BaseController
         ItemService $itemService,
         ReaderService $readerService,
         TopicService $topicService,
+        TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $environment,
         int $roomId,
@@ -447,7 +453,7 @@ class DateController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ($current_user) {
@@ -494,11 +500,9 @@ class DateController extends BaseController
 
         $alert = null;
         if ($dateService->getDate($itemId)->isLocked()) {
-            $translator = $this->get('translator');
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         } else if ($date->isExternal()) {
-            $translator = $this->get('translator');
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('date is external', array(), 'date');
         }
@@ -538,6 +542,7 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/events")
      * @param Request $request
      * @param DateService $dateService
+     * @param TranslatorInterface $translator
      * @param int $roomId
      * @return JsonResponse
      * @throws Exception
@@ -545,6 +550,7 @@ class DateController extends BaseController
     public function eventsAction(
         Request $request,
         DateService $dateService,
+        TranslatorInterface $translator,
         int $roomId
     ) {
         $roomItem = $this->getRoom($roomId);
@@ -627,7 +633,6 @@ class DateController extends BaseController
             
             $recurringDescription = '';
             if ($date->getRecurrencePattern() != '') {
-                $translator = $this->get('translator');
                 
                 $recurrencePattern = $date->getRecurrencePattern();
                 
@@ -710,7 +715,7 @@ class DateController extends BaseController
 
         $listDates = array();
         foreach ($userList as $tempUser) {
-            /** @var \cs_user_item $tempUser */
+            /** @var cs_user_item $tempUser */
             if ($tempUser->getStatus() >= 2) {
                 $listDates = array_merge($listDates, $dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
             }
@@ -883,6 +888,7 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/{itemId}/calendaredit")
      * @param Request $request
      * @param DateService $dateService
+     * @param TranslatorInterface $translator
      * @param int $itemId
      * @return JsonResponse
      * @throws Exception
@@ -890,9 +896,9 @@ class DateController extends BaseController
     public function calendareditAction(
         Request $request,
         DateService $dateService,
+        TranslatorInterface $translator,
         int $itemId
     ) {
-        $translator = $this->get('translator');
         $date = $dateService->getDate($itemId);
 
         $requestContent = json_decode($request->getContent());
@@ -978,8 +984,13 @@ class DateController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
      * @param Request $request
+     * @param CategoryService $categoryService
      * @param DateService $dateService
      * @param ItemService $itemService
+     * @param DateTransformer $transformer
+     * @param TranslatorInterface $translator
+     * @param ItemController $itemController
+     * @param EventDispatcherInterface $eventDispatcher
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
@@ -987,15 +998,18 @@ class DateController extends BaseController
      */
     public function editAction(
         Request $request,
+        CategoryService $categoryService,
         DateService $dateService,
         ItemService $itemService,
+        DateTransformer $transformer,
+        TranslatorInterface $translator,
+        ItemController $itemController,
+        EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $translator = $this->get('translator');
         $item = $itemService->getItem($itemId);
-        $transformer = $this->get('commsy_legacy.transformer.date');
 
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -1011,7 +1025,6 @@ class DateController extends BaseController
             throw $this->createNotFoundException('No date found for id ' . $itemId);
         }
 
-        $itemController = $this->get('commsy.item_controller');
         $formData = $transformer->transform($dateItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
@@ -1042,7 +1055,7 @@ class DateController extends BaseController
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+                'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
@@ -1126,7 +1139,6 @@ class DateController extends BaseController
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $dateItem->save();
             } else if ($saveType == 'saveAllDates') {
-                $dateService = $this->get('commsy_legacy.date_service');
                 $datesArray = $dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
@@ -1154,7 +1166,7 @@ class DateController extends BaseController
             return $this->redirectToRoute('app_date_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($dateItem));
+        $eventDispatcher->dispatch(new CommsyEditEvent($dateItem), 'commsy.edit');
 
         return array(
             'form' => $form->createView(),
@@ -1209,6 +1221,7 @@ class DateController extends BaseController
      * @param ItemService $itemService
      * @param DateService $dateService
      * @param ReaderService $readerService
+     * @param EventDispatcherInterface $eventDispatcher
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
@@ -1218,6 +1231,7 @@ class DateController extends BaseController
         ItemService $itemService,
         DateService $dateService,
         ReaderService $readerService,
+        EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
@@ -1249,7 +1263,7 @@ class DateController extends BaseController
 		   $current_user = $user_list->getNext();
 		}
 		$readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
 		$current_user = $user_list->getFirst();
 		while ( $current_user ) {
 	   	    $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
@@ -1277,7 +1291,7 @@ class DateController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($date));
+        $eventDispatcher->dispatch(new CommsyEditEvent($date), 'commsy.save');
 
         return array(
             'roomId' => $roomId,
@@ -1696,6 +1710,7 @@ class DateController extends BaseController
      * @Template()
      * @param Request $request
      * @param CalendarsService $calendarsService
+     * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array|RedirectResponse
@@ -1703,11 +1718,11 @@ class DateController extends BaseController
     public function importAction(
         Request $request,
         CalendarsService $calendarsService,
+        TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
-        $translator = $this->get('translator');
 
         $formData = [];
         $em = $this->getDoctrine()->getManager();
@@ -1832,7 +1847,7 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/download")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function downloadAction(
@@ -1854,7 +1869,7 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/xhr/markread", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function xhrMarkReadAction(
@@ -1873,7 +1888,7 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/xhr/copy", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function xhrCopyAction(
@@ -1891,7 +1906,7 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/xhr/delete", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function xhrDeleteAction(

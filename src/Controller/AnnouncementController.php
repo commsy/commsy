@@ -7,6 +7,7 @@ use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\ItemMarkRead;
 use App\Event\CommsyEditEvent;
 use App\Filter\AnnouncementFilterType;
+use App\Form\DataTransformer\AnnouncementTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
 use App\Services\LegacyEnvironment;
@@ -29,6 +30,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class AnnouncementController
@@ -46,7 +48,7 @@ class AnnouncementController extends BaseController
      * @param AnnouncementService $announcementService
      * @param AssessmentService $assessmentService
      * @param LegacyEnvironment $environment
-     * @param $roomId
+     * @param int $roomId
      * @param int $max
      * @param int $start
      * @param string $sort
@@ -58,11 +60,12 @@ class AnnouncementController extends BaseController
         ReaderService $readerService,
         AnnouncementService $announcementService,
         AssessmentService $assessmentService,
-        LegacyEnvironment $environment, $roomId,
+        LegacyEnvironment $environment,
+        int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'date')
-    {
+        string $sort = 'date'
+    ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $announcementFilter = $request->get('announcementFilter');
@@ -524,6 +527,7 @@ class AnnouncementController extends BaseController
      * @param AnnouncementService $announcementService
      * @param CategoryService $categoryService
      * @param ItemService $itemService
+     * @param AnnouncementTransformer $transformer
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
@@ -534,14 +538,13 @@ class AnnouncementController extends BaseController
         AnnouncementService $announcementService,
         CategoryService $categoryService,
         ItemService $itemService,
+        AnnouncementTransformer $transformer,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         /** @var \cs_item $item */
         $item = $itemService->getItem($itemId);
-
-        $transformer = $this->get('commsy_legacy.transformer.announcement');
 
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -634,6 +637,7 @@ class AnnouncementController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      * @param AnnouncementService $announcementService
      * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -641,6 +645,7 @@ class AnnouncementController extends BaseController
     public function saveAction(
         AnnouncementService $announcementService,
         ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ) {
@@ -653,7 +658,7 @@ class AnnouncementController extends BaseController
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($tempItem));
+        $eventDispatcher->dispatch(new CommsyEditEvent($tempItem), 'commsy.save');
 
         return array(
             'roomId' => $roomId,

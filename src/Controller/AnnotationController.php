@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\DataTransformer\AnnotationTransformer;
 use App\Services\LegacyEnvironment;
 use App\Utils\PortfolioService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -28,20 +29,28 @@ class AnnotationController extends AbstractController
     /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")
      * @Template()
-     * @param $roomId
-     * @param $linkedItemId
-     * @param int $max
-     * @param int $start
-     * @param null $firstTagId
-     * @param null $secondTagId
-     * @param Request $request
      * @param AnnotationService $annotationService
      * @param ItemService $itemService
      * @param ReaderService $readerService
+     * @param int $roomId
+     * @param int $linkedItemId
+     * @param int $max
+     * @param int $start
+     * @param int $firstTagId
+     * @param int $secondTagId
      * @return array
      */
-    public function feedAction($roomId, $linkedItemId, $max = 10, $start = 0, $firstTagId = null, $secondTagId = null, Request $request, AnnotationService $annotationService, ItemService $itemService, ReaderService $readerService)
-    {
+    public function feedAction(
+        AnnotationService $annotationService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        int $roomId,
+        int $linkedItemId,
+        int $max = 10,
+        int $start = 0,
+        int $firstTagId = null,
+        int $secondTagId = null
+    ) {
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
@@ -76,17 +85,22 @@ class AnnotationController extends AbstractController
     /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}")
      * @Template()
-     * @param $roomId
-     * @param $linkedItemId
-     * @param int $max
-     * @param int $start
-     * @param Request $request
      * @param AnnotationService $annotationService
      * @param ReaderService $readerService
+     * @param int $roomId
+     * @param int $linkedItemId
+     * @param int $max
+     * @param int $start
      * @return array
      */
-    public function feedPrintAction($roomId, $linkedItemId, $max = 10, $start = 0, Request $request, AnnotationService $annotationService, ReaderService $readerService)
-    {
+    public function feedPrintAction(
+        AnnotationService $annotationService,
+        ReaderService $readerService,
+        int $roomId,
+        int $linkedItemId,
+        int $max = 10,
+        int $start = 0
+    ) {
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
@@ -107,21 +121,24 @@ class AnnotationController extends AbstractController
      * @Method({"GET", "POST"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param ItemService $itemService
+     * @param AnnotationTransformer $transformer
      * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
+     * @param Request $request
      * @return array|RedirectResponse
      */
-    public function editAction($roomId, $itemId, Request $request, ItemService $itemService, LegacyEnvironment $environment)
-    {
+    public function editAction(
+        ItemService $itemService,
+        AnnotationTransformer $transformer,
+        LegacyEnvironment $environment,
+        int $roomId,
+        int $itemId,
+        Request $request
+    ) {
         $item = $itemService->getTypedItem($itemId);
-
-        $transformer = $this->get('commsy_legacy.transformer.annotation');
-
         $formData = $transformer->transform($item);
-
         $form = $this->createForm(AnnotationType::class, $formData);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -154,14 +171,14 @@ class AnnotationController extends AbstractController
      * @Method({"GET"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param ItemService $itemService
+     * @param int $itemId
      * @return array
      */
-    public function successAction($roomId, $itemId, Request $request, ItemService $itemService)
-    {
+    public function successAction(
+        ItemService $itemService,
+        int $itemId
+    ) {
         $item = $itemService->getTypedItem($itemId);
         return [
             'annotation' => $item,
@@ -173,17 +190,24 @@ class AnnotationController extends AbstractController
      * @Method({"POST"})
      * @Template()
      * @Security("is_granted('ITEM_ANNOTATE', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param null $firstTagId
-     * @param null $secondTagId
-     * @param Request $request
      * @param ItemService $itemService
      * @param AnnotationService $annotationService
+     * @param Request $request
+     * @param int $roomId
+     * @param int $itemId
+     * @param int $firstTagId
+     * @param int $secondTagId
      * @return RedirectResponse
      */
-    public function createAction($roomId, $itemId, $firstTagId = null, $secondTagId = null, Request $request, ItemService $itemService, AnnotationService $annotationService)
-    {
+    public function createAction(
+        ItemService $itemService,
+        AnnotationService $annotationService,
+        Request $request,
+        int $roomId,
+        int $itemId,
+        int $firstTagId = null,
+        int $secondTagId = null
+    ) {
         $item = $itemService->getTypedItem($itemId);
         $itemType = $item->getItemType();
 
@@ -222,14 +246,14 @@ class AnnotationController extends AbstractController
      * @Route("/room/{roomId}/annotation/{itemId}/delete")
      * @Method({"GET"})
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param ItemService $itemService
+     * @param int $itemId
      * @return JsonResponse
      */
-    public function deleteAction($roomId, $itemId, Request $request, ItemService $itemService)
-    {
+    public function deleteAction(
+        ItemService $itemService,
+        int $itemId
+    ) {
         $item = $itemService->getTypedItem($itemId);
         $item->delete();
         $response = new JsonResponse();

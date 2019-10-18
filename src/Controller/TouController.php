@@ -6,6 +6,7 @@ use App\Form\Type\TouAcceptType;
 use App\Services\LegacyEnvironment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,9 +15,16 @@ class TouController extends AbstractController
     /**
      * @Route("/room/{roomId}/accept")
      * @Template("tou/accept.html.twig")
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param Request $request
+     * @param int $roomId
+     * @return array|RedirectResponse
      */
-    public function accept($roomId, LegacyEnvironment $legacyEnvironment, Request $request)
-    {
+    public function accept(
+        LegacyEnvironment $legacyEnvironment,
+        Request $request,
+        int $roomId
+    ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $currentContext = $legacyEnvironment->getCurrentContextItem();
 

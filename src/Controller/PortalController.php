@@ -351,15 +351,15 @@ class PortalController extends AbstractController
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      * @param Request $request
      * @param LegacyEnvironment $environment
-     * @param $roomId
-     * @param null $translationId
+     * @param int $roomId
+     * @param int $translationId
      * @return array|RedirectResponse
      */
     public function translationsAction(
         Request $request,
         LegacyEnvironment $environment,
-        $roomId,
-        $translationId = null
+        int $roomId,
+        int $translationId = null
     ) {
         $portalId = $roomId;
 

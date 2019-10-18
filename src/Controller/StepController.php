@@ -8,6 +8,10 @@
 
 namespace App\Controller;
 
+use cs_room_item;
+use cs_step_item;
+use Exception;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,12 +23,15 @@ class StepController extends BaseController
 
     /**
      * @Route("/room/{roomId}/step/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @param Request $request
+     * @param int $roomId
+     * @return Response
+     * @throws Exception
      */
     public function xhrDeleteAction(
         Request $request,
-        $roomId)
-    {
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -35,10 +42,10 @@ class StepController extends BaseController
 
     /**
      * @param Request $request
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param boolean $selectAll
      * @param integer[] $itemIds
-     * @return \cs_step_item[]
+     * @return cs_step_item[]
      */
     protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {

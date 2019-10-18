@@ -458,6 +458,7 @@ class SettingsController extends AbstractController
      * @param InvitationsService $invitationsService
      * @param RoomService $roomService
      * @param RouterInterface $router
+     * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array|RedirectResponse
@@ -467,11 +468,10 @@ class SettingsController extends AbstractController
         InvitationsService $invitationsService,
         RoomService $roomService,
         RouterInterface $router,
+        TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId
     ) {
-        $translator = $this->get('translator');
-
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {

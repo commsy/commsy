@@ -2,6 +2,16 @@
 
 namespace App\Controller;
 
+use App\Form\DataTransformer\ItemTransformer;
+use App\Utils\DateService;
+use App\Utils\MailAssistant;
+use cs_buzzword_item;
+use cs_buzzword_manager;
+use cs_dates_item;
+use cs_item;
+use cs_manager;
+use cs_tag_item;
+use Exception;
 use FeedIo\Feed\Item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,6 +39,8 @@ use App\Utils\ItemService;
 use App\Utils\MaterialService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Zend\Validator\Translator\TranslatorInterface;
 
 
 /**
@@ -42,17 +54,27 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param bool $draft
-     * @param Request $request
+     * @param DateService $dateService
      * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
      * @param LegacyEnvironment $environment
+     * @param Request $request
+     * @param int $roomId
+     * @param int $itemId
+     * @param bool $draft
      * @return array|RedirectResponse
      */
-    public function editDescriptionAction($roomId, $itemId, $draft = false, Request $request, ItemService $itemService, LegacyEnvironment $environment)
-    {
-        /** @var \cs_item $item */
+    public function editDescriptionAction(
+        DateService $dateService,
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        Request $request,
+        int $roomId,
+        int $itemId,
+        bool $draft = false
+    ) {
+        /** @var cs_item $item */
         $item = $itemService->getTypedItem($itemId);
         
         $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
@@ -74,7 +96,7 @@ class ItemController extends AbstractController
         
         $withRecurrence = false;
         if ($itemType == 'date') {
-            /** @var \cs_dates_item $item */
+            /** @var cs_dates_item $item */
             if ($item->getRecurrencePattern() != '' && !$draft) {
                 $formOptions['attr']['unsetRecurrence'] = true;
                 $withRecurrence = true;
@@ -82,9 +104,9 @@ class ItemController extends AbstractController
         }
 
         if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item->getLinkedItem()));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::EDIT);
         } else {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
         }
 
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
@@ -102,7 +124,6 @@ class ItemController extends AbstractController
                     $linkedItem->save();
                 }
             } else if ($saveType == 'saveAllDates') {
-                $dateService = $this->get('commsy_legacy.date_service');
                 $datesArray = $dateService->getRecurringDates($item->getContextId(), $item->getRecurrenceId());
                 $formData = $form->getData();
                 $item = $transformer->applyTransformation($item, $formData);
@@ -138,13 +159,18 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/savedescription")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
      * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param int $roomId
+     * @param int $itemId
      * @return array
      */
-    public function saveDescriptionAction($roomId, $itemId, ItemService $itemService)
-    {
+    public function saveDescriptionAction(
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
+        int $roomId,
+        int $itemId
+    ) {
         $item = $itemService->getTypedItem($itemId);
         $itemArray = array($item);
     
@@ -154,9 +180,9 @@ class ItemController extends AbstractController
         }
 
         if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item->getLinkedItem()));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::SAVE);
         } else {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
         }
 
         return array(
@@ -173,22 +199,29 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editworkflow")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param RoomService $roomService
      * @param ItemService $itemService
      * @param MaterialService $materialService
+     * @param ItemTransformer $transformer
      * @param LegacyEnvironment $environment
+     * @param Request $request
+     * @param int $roomId
+     * @param int $itemId
      * @return array|RedirectResponse
      */
-    public function editWorkflowAction($roomId, $itemId, Request $request, RoomService $roomService, ItemService $itemService, MaterialService $materialService, LegacyEnvironment $environment)
-    {
+    public function editWorkflowAction(
+        RoomService $roomService,
+        ItemService $itemService,
+        MaterialService $materialService,
+        ItemTransformer $transformer,
+        LegacyEnvironment $environment,
+        Request $request,
+        int $roomId,
+        int $itemId
+    ) {
         $room = $roomService->getRoomItem($roomId);
         $item = $itemService->getItem($itemId);
 
-        $transformer = $this->get('commsy_legacy.transformer.item');
-        
         $formData = array();
         $tempItem = NULL;
         
@@ -233,17 +266,30 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editlinks/{feedAmount}", defaults={"feedAmount" = 20})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param $feedAmount
-     * @param Request $request
+     * @param CategoryService $categoryService
      * @param RoomService $roomService
      * @param ItemService $itemService
+     * @param TranslatorInterface $translator
+     * @param EventDispatcherInterface $eventDispatcher
      * @param LegacyEnvironment $environment
+     * @param Request $request
+     * @param int $roomId
+     * @param int $itemId
+     * @param int $feedAmount
      * @return array|RedirectResponse
      */
-    public function editLinksAction($roomId, $itemId, $feedAmount, Request $request, RoomService $roomService, ItemService $itemService, LegacyEnvironment $environment)
-    {
+    public function editLinksAction(
+        CategoryService $categoryService,
+        RoomService $roomService,
+        ItemService $itemService,
+        TranslatorInterface $translator,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        Request $request,
+        int $roomId,
+        int $itemId,
+        int $feedAmount
+    ) {
         $legacyEnvironment = $environment->getEnvironment();
 
         $item = $itemService->getTypedItem($itemId);
@@ -346,7 +392,7 @@ class ItemController extends AbstractController
         }
 
         // get all categories -> tree
-        $optionsData['categories'] = $this->getCategories($roomId, $this->get('commsy_legacy.category_service'));
+        $optionsData['categories'] = $this->getCategories($roomId, $categoryService);
         $formData['categories'] = $this->getLinkedCategories($item);
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
@@ -355,9 +401,7 @@ class ItemController extends AbstractController
         $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
 
-        $translator = $this->get('translator');
-
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(ItemLinksType::class, $formData, [
             'filterRubric' => $optionsData['filterRubric'],
@@ -420,17 +464,30 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}", defaults={"feedAmount" = 20})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param $feedAmount
-     * @param Request $request
+     * @param CategoryService $categoryService
      * @param RoomService $roomService
      * @param ItemService $itemService
+     * @param TranslatorInterface $translator
+     * @param EventDispatcherInterface $eventDispatcher
      * @param LegacyEnvironment $environment
+     * @param Request $request
+     * @param int $roomId
+     * @param int $itemId
+     * @param int $feedAmount
      * @return array|RedirectResponse
      */
-    public function editCatsBuzzAction($roomId, $itemId, $feedAmount, Request $request, RoomService $roomService, ItemService $itemService, LegacyEnvironment $environment)
-    {
+    public function editCatsBuzzAction(
+        CategoryService $categoryService,
+        RoomService $roomService,
+        ItemService $itemService,
+        TranslatorInterface $translator,
+        EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $environment,
+        Request $request,
+        int $roomId,
+        int $itemId,
+        int $feedAmount
+    ) {
         $legacyEnvironment = $environment->getEnvironment();
 
         $item = $itemService->getTypedItem($itemId);
@@ -527,7 +584,7 @@ class ItemController extends AbstractController
         }
 
         // get all categories -> tree
-        $optionsData['categories'] = $this->getCategories($roomId, $this->get('commsy_legacy.category_service'));
+        $optionsData['categories'] = $this->getCategories($roomId, $categoryService);
         $formData['categories'] = $this->getLinkedCategories($item);
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
@@ -536,10 +593,7 @@ class ItemController extends AbstractController
         $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
 
-
-        $translator = $this->get('translator');
-
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(ItemCatsBuzzType::class, $formData, [
             'filterRubric' => [],
@@ -601,15 +655,20 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/savelinks")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param RoomService $roomService
      * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param int $roomId
+     * @param int $itemId
      * @return array
      */
-    public function saveLinksAction($roomId, $itemId, Request $request, RoomService $roomService, ItemService $itemService)
-    {
+    public function saveLinksAction(
+        RoomService $roomService,
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
+        int $roomId,
+        int $itemId
+    ) {
         $roomItem = $roomService->getRoomItem($roomId);
         $tempItem = $itemService->getTypedItem($itemId);
 
@@ -620,7 +679,7 @@ class ItemController extends AbstractController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
 
         return array(
             'roomId' => $roomId,
@@ -634,24 +693,26 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/{itemId}/send")
      * @Template()
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param ItemService $itemService
+     * @param MailAssistant $mailAssistant
+     * @param Request $request
+     * @param int $roomId
+     * @param int $itemId
      * @return array|RedirectResponse
      */
-    public function sendAction($roomId, $itemId, Request $request, ItemService $itemService)
-    {
+    public function sendAction(
+        ItemService $itemService,
+        MailAssistant $mailAssistant,
+        Request $request,
+        int $roomId,
+        int $itemId
+    ) {
         // get item
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
-
-        // prepare form
-        $mailAssistant = $this->get('commsy.utils.mail_assistant');
-
         $groupChoices = $mailAssistant->getGroupChoices($item);
         $defaultGroupId = array_values($groupChoices)[0];
 
@@ -710,13 +771,15 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/{itemId}/send/success")
      * @Template()
-     * @param $roomId
-     * @param $itemId
      * @param ItemService $itemService
+     * @param int $roomId
+     * @param int $itemId
      * @return array
      */
-    public function sendSuccessAction($roomId, $itemId, ItemService $itemService)
-    {
+    public function sendSuccessAction(
+        ItemService $itemService,
+        int $roomId, int $itemId
+    ) {
         // get item
         $item = $itemService->getTypedItem($itemId);
 
@@ -756,17 +819,20 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}", defaults={"feedAmount" = 20})
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param $feedAmount
-     * @param Request $request
      * @param RoomService $roomService
      * @param ItemService $itemService
      * @param LegacyEnvironment $legacyEnvironment
+     * @param int $roomId
+     * @param $feedAmount
      * @return JsonResponse
      */
-    public function autocompleteAction($roomId, $itemId, $feedAmount, Request $request, RoomService $roomService, ItemService $itemService, LegacyEnvironment $legacyEnvironment)
-    {
+    public function autocompleteAction(
+        RoomService $roomService,
+        ItemService $itemService,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId,
+        $feedAmount
+    ) {
         $environment = $legacyEnvironment->getEnvironment();
 
         $optionsData = array();
@@ -837,20 +903,25 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/sendlist", condition="request.isXmlHttpRequest()")
      * @Template()
-     * @param $roomId
-     * @param Request $request
      * @param RoomService $roomService
      * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
+     * @param Request $request
+     * @param int $roomId
      * @return array|JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
-    public function sendlistAction($roomId, Request $request, RoomService $roomService, UserService $userService, LegacyEnvironment $legacyEnvironment)
-    {
+    public function sendlistAction(
+        RoomService $roomService,
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment,
+        Request $request,
+        int $roomId
+    ) {
         // extract item id from request data
         $requestContent = $request->getContent();
         if (empty($requestContent)) {
-            throw new \Exception('no request content given');
+            throw new Exception('no request content given');
         }
 
         $room = $roomService->getRoomItem($roomId);
@@ -858,12 +929,8 @@ class ItemController extends AbstractController
         $environment = $legacyEnvironment->getEnvironment();
         $currentUser = $environment->getCurrentUser();
 
-        $jsonArray = json_decode($requestContent, true);
-
         // prepare form
-        $mailAssistant = $this->get('commsy.utils.mail_assistant');
-
-        $formMessage = $this->renderView('email/item_list_template.txt.twig',array('user' => $currentUser, 'room' => $room));
+        $formMessage = $this->renderView('email/item_list_template.txt.twig', array('user' => $currentUser, 'room' => $room));
 
         $formData = [
             'message' => $formMessage,
@@ -929,7 +996,7 @@ class ItemController extends AbstractController
      */
     public function filelistAction($roomId, $itemId, Request $request, ItemService $itemService)
     {
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $itemService->getItem($itemId);
 
         /** @var \cs_file_item[] $files */
@@ -968,13 +1035,13 @@ class ItemController extends AbstractController
     {
         $environment = $legacyEnvironment->getEnvironment();
 
-        /** @var \cs_item $baseItem */
+        /** @var cs_item $baseItem */
         $baseItem = $itemService->getItem($itemId);
 
-        /** @var \cs_manager $rubricManager */
+        /** @var cs_manager $rubricManager */
         $rubricManager = $environment->getManager($baseItem->getItemType());
 
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $rubricManager->getItem($itemId);
 
         if ($baseItem->getItemType() == 'project') {
@@ -1053,13 +1120,14 @@ class ItemController extends AbstractController
 
     /**
      * @Route("/room/{roomId}/item/{itemId}/print")
-     * @param $roomId
-     * @param $itemId
      * @param ItemService $itemService
+     * @param int $itemId
      * @return Response
      */
-    public function printAction($roomId, $itemId, ItemService $itemService)
-    {
+    public function printAction(
+        ItemService $itemService,
+        int $itemId
+    ) {
         $baseItem = $itemService->getItem($itemId);
         
         $html = $this->renderView('App:'.ucfirst($baseItem->getItemType()).':detailPrint.html.twig', [
@@ -1079,13 +1147,14 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/get", condition="request.isXmlHttpRequest()")
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
-     * @param $roomId
-     * @param $itemId
      * @param ItemService $itemService
+     * @param int $itemId
      * @return array
      */
-    public function singleArticleAction($roomId, $itemId, ItemService $itemService)
-    {
+    public function singleArticleAction(
+        ItemService $itemService,
+        int $itemId
+    ) {
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -1101,17 +1170,21 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/links")
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param RoomService $roomService
      * @param ItemService $itemService
      * @param CategoryService $categoryService
      * @param LegacyEnvironment $environment
+     * @param int $roomId
+     * @param int $itemId
      * @return array
      */
-    public function linksAction($roomId, $itemId, Request $request, RoomService $roomService, ItemService $itemService, CategoryService $categoryService, LegacyEnvironment $environment)
-    {
+    public function linksAction(
+        RoomService $roomService,
+        ItemService $itemService,
+        CategoryService $categoryService,
+        LegacyEnvironment $environment,
+        int $roomId, int $itemId
+    ) {
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -1174,16 +1247,16 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @param \cs_item $item
-     * @return \cs_tag_item[]
+     * @param cs_item $item
+     * @return cs_tag_item[]
      */
     public function getLinkedCategories($item) {
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
 
         $linkedCategories = [];
         $categoriesList = $item->getTagList();
 
-        /** @var \cs_tag_item $categoryItem */
+        /** @var cs_tag_item $categoryItem */
         $categoryItem = $categoriesList->getFirst();
         while ($categoryItem) {
             $linkedCategories[] = $categoryItem->getItemId();
@@ -1195,7 +1268,7 @@ class ItemController extends AbstractController
     public function getHashtags($roomId, $legacyEnvironment) {
         $hashtags = [];
 
-        /** @var \cs_buzzword_manager $buzzwordManager */
+        /** @var cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
@@ -1212,14 +1285,14 @@ class ItemController extends AbstractController
     public function getLinkedHashtags($itemId, $roomId, $legacyEnvironment) {
         $linkedHashtags = [];
 
-        /** @var \cs_buzzword_manager $buzzwordManager */
+        /** @var cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
         $buzzwordManager->select();
         $buzzwordList = $buzzwordManager->get();
 
-        /** @var \cs_buzzword_item $buzzwordItem */
+        /** @var cs_buzzword_item $buzzwordItem */
         $buzzwordItem = $buzzwordList->getFirst();
         while ($buzzwordItem) {
             $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
@@ -1234,20 +1307,24 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/{itemId}/canceledit")
      * @Template()
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
      * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param int $roomId
+     * @param int $itemId
      * @return array
      */
-    public function cancelEditAction($roomId, $itemId, Request $request, ItemService $itemService)
-    {
+    public function cancelEditAction(
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
+        int $roomId,
+        int $itemId
+    ) {
         $item = $itemService->getTypedItem($itemId);
         
         if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::CANCEL, new CommsyEditEvent($item->getLinkedItem()));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::CANCEL);
         } else {
-            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::CANCEL, new CommsyEditEvent($item));
+            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
         }
 
         return array(

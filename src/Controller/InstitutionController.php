@@ -24,6 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Filter\InstitutionFilterType;
 use App\Form\Type\GroupType;
 use App\Form\Type\AnnotationType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class InstitutionController
@@ -190,6 +191,7 @@ class InstitutionController extends BaseController
      * @Security("is_granted('ITEM_SEE', itemId)")
      * @param Request $request
      * @param TopicService $topicService
+     * @param TranslatorInterface $translator
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -197,10 +199,10 @@ class InstitutionController extends BaseController
     public function detailAction(
         Request $request,
         TopicService $topicService,
+        TranslatorInterface $translator,
         int $roomId,
         int $itemId
     ) {
-
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
@@ -208,8 +210,6 @@ class InstitutionController extends BaseController
 
         $alert = null;
         if ($infoArray['institution']->isLocked()) {
-            $translator = $this->get('translator');
-
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
@@ -261,7 +261,6 @@ class InstitutionController extends BaseController
         int $roomId,
         int $itemId
     ) {
-
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
@@ -729,7 +728,7 @@ class InstitutionController extends BaseController
      * @Route("/room/{roomId}/institution/xhr/markread", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function xhrMarkReadAction(
@@ -747,7 +746,7 @@ class InstitutionController extends BaseController
      * @Route("/room/{roomId}/institution/xhr/delete", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function xhrDeleteAction(
