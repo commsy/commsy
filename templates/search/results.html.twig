@@ -72,7 +72,6 @@
                                                     {% set returnUrlParams = {
                                                         'roomId': roomId,
                                                         'search_filter[phrase]': searchData.phrase,
-                                                        "search_filter[all_rooms]": searchData.allRooms ? 1 : 0,
                                                         'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
                                                         "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
                                                         "search_filter[selectedCreator]": searchData.selectedCreator,
@@ -83,6 +82,11 @@
                                                         "search_filter[selectedRubric]": searchData.selectedRubric,
                                                     }
                                                     %}
+                                                    {% if searchData.allRooms %}
+                                                        {# NOTE: for allRooms==false, the param must be left out entirely, otherwise the corresponding checkbox in
+                                                           the search filter form will get marked when handleRequest() gets called for the SearchFilterType form #}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[all_rooms]": 1 }) %}
+                                                    {% endif %}
                                                     {% for hashtag in searchData.selectedHashtags %}
                                                         {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
                                                         {% set val = searchData.selectedHashtags[loop.index0] %}

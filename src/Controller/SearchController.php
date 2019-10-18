@@ -337,7 +337,7 @@ class SearchController extends BaseController
         }
 
         // search in all contexts parameter
-        $searchData->setAllRooms((!empty($searchParams['all_rooms'])) ? true : false);
+        $searchData->setAllRooms((!empty($searchParams['all_rooms']) && $searchParams['all_rooms'] === "1") ? true : false);
 
         // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
