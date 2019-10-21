@@ -20,11 +20,13 @@ class RoomPrivateRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('rp')
             ->select('rp')
-            ->innerJoin('App:Account', 'a', Expr\Join::WITH, 'a.contextId = rp.contextId')
+            ->innerJoin('App:User', 'u', Expr\Join::WITH, 'u.contextId = rp.itemId')
+            ->innerJoin('App:Account', 'a', Expr\Join::WITH, 'a.username = u.userId')
             ->where('rp.contextId = :contextId')
             ->andWhere('rp.deleterId IS NULL')
             ->andWhere('rp.deletionDate IS NULL')
-            ->andWhere('a.username = :username')
+            ->andWhere('u.userId = :username')
+            ->andWhere('a.contextId = :contextId')
             ->setParameters([
                 'contextId' => $contextId,
                 'username' => $username,
