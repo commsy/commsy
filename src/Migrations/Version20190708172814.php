@@ -22,7 +22,7 @@ final class Version20190708172814 extends AbstractMigration
         $this->addSql('ALTER TABLE auth ADD password VARCHAR(255) NULL AFTER user_id');
         $this->addSql('ALTER TABLE auth MODIFY password_md5 VARCHAR(32) NULL');
         $this->addSql('ALTER TABLE auth CHANGE commsy_id context_id int NOT NULL');
-        $this->addSql('ALTER TABLE auth CHANGE user_id username VARCHAR(32) NOT NULL');
+        $this->addSql('ALTER TABLE auth CHANGE user_id username VARCHAR(100) NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -30,6 +30,6 @@ final class Version20190708172814 extends AbstractMigration
         $this->addSql('ALTER TABLE auth DROP password');
         $this->addSql('ALTER TABLE auth MODIFY password_md5 VARCHAR(32)');
         $this->addSql('ALTER TABLE auth CHANGE context_id commsy_id int NOT NULL');
-        $this->addSql('ALTER TABLE auth CHANGE username user_id VARCHAR(32) NOT NULL');
+        $this->addSql('ALTER TABLE auth CHANGE username user_id VARCHAR(100) NOT NULL');
     }
 }
