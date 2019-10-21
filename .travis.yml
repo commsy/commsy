@@ -8,7 +8,6 @@ matrix:
   # Fast finish allows to set the build as "finished" even if the "allow_failures" matrix elements are not finished yet.
   fast_finish: true
   include:
-    - php: 7.2
     - php: 7.3
 
 cache:
