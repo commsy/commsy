@@ -33,7 +33,25 @@ final class Version20190924133007 extends AbstractMigration
 
         $this->addSql('RENAME TABLE auth TO accounts;');
         $this->addSql('ALTER TABLE accounts ADD auth_source_id INT NULL;');
-        $this->addSql('UPDATE accounts INNER JOIN `user` AS u ON accounts.username = u.user_id AND accounts.context_id = u.context_id SET accounts.auth_source_id = u.auth_source;');
+        $this->addSql('
+            UPDATE
+                accounts
+            SET
+                accounts.auth_source_id =
+                (
+                    SELECT DISTINCT
+                        u.auth_source
+                    FROM
+                        user AS u
+                    WHERE
+                        u.user_id = accounts.username AND
+                        u.context_id = accounts.context_id AND
+                        u.deleter_id IS NULL AND
+                        u.deletion_date IS NULL AND
+                        u.auth_source != 0
+                )
+        ');
+//        $this->addSql('UPDATE accounts INNER JOIN `user` AS u ON accounts.username = u.user_id AND accounts.context_id = u.context_id SET accounts.auth_source_id = u.auth_source;');
         $this->addSql('DELETE FROM accounts WHERE accounts.auth_source_id IS NULL;');
         $this->addSql('ALTER TABLE accounts ADD PRIMARY KEY (context_id, username, auth_source_id);');
         $this->addSql('ALTER TABLE accounts ADD CONSTRAINT accounts_auth_source_id_fk FOREIGN KEY (auth_source_id) REFERENCES auth_source (id);');
@@ -55,6 +73,10 @@ final class Version20190924133007 extends AbstractMigration
                 portal AS p
             ON
                 u.context_id = p.item_id
+            INNER JOIN
+                auth_source
+            ON
+                u.auth_source = auth_source.id
             LEFT JOIN
                 accounts AS a
             ON
