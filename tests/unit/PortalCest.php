@@ -1,4 +1,7 @@
-<?php namespace App\Tests;
+<?php
+
+namespace App\Tests;
+
 use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Facade\PortalCreatorFacade;
