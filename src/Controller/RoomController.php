@@ -601,7 +601,7 @@ class RoomController extends AbstractController
 
         $currentUser = $legacyEnvironment->getCurrentUser();
 
-        $infoArray = $this->getDetailInfo($roomItem, $itemService, $environment);
+        $infoArray = $this->getDetailInfo($roomItem, $itemService, $legacyEnvironment);
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 

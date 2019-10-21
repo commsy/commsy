@@ -1123,11 +1123,17 @@ class UserController extends BaseController
      * This is an embedded controller action.
      *
      * @Template()
-     * 
-     * @param  int $roomId The current room id
+     *
+     * @param UserService $userService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param SessionInterface $session
+     * @return array
      */
-    public function globalNavbarAction($roomId, UserService $userService, LegacyEnvironment $legacyEnvironment, SessionInterface $session)
-    {
+    public function globalNavbarAction(
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment,
+        SessionInterface $session
+    ) {
         $currentUserItem = $userService->getCurrentUserItem();
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
@@ -1168,9 +1174,14 @@ class UserController extends BaseController
      * This is an embedded controller action.
      *
      * @Template()
+     * @param UserService $userService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @return array
      */
-    public function allRoomsNavbarAction(UserService $userService, LegacyEnvironment $legacyEnvironment)
-    {
+    public function allRoomsNavbarAction(
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $currentUserItem = $userService->getCurrentUserItem();
 
         $privateRoomItem = $currentUserItem->getOwnRoom();

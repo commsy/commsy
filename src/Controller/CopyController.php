@@ -56,19 +56,7 @@ class CopyController extends BaseController
             $copyFilter = $request->query->get('copy_filter');
         }
         
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-
-        if (!$roomItem) {
-            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
-            $roomItem = $privateRoomManager->getItem($roomId);
-
-            if (!$roomItem) {
-                throw $this->createNotFoundException('The requested room does not exist');
-            }
-        }
+        $roomItem = $this->loadRoom($environment, $roomId);
 
         if ($roomItem->isPrivateRoom()) {
             $rubrics = [
@@ -130,22 +118,9 @@ class CopyController extends BaseController
         Request $request,
         CopyService $copyService,
         LegacyEnvironment $environment,
-        int $roomId)
-    {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-
-        if (!$roomItem) {
-            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
-            $roomItem = $privateRoomManager->getItem($roomId);
-
-            if (!$roomItem) {
-                throw $this->createNotFoundException('The requested room does not exist');
-            }
-        }
-
+        int $roomId
+    ) {
+        $roomItem = $this->loadRoom($environment, $roomId);
         $filterForm = $this->createFilterForm($roomItem);
 
         // apply filter
@@ -316,5 +291,25 @@ class CopyController extends BaseController
             ]),
             'rubrics' => $rubrics,
         ]);
+    }
+
+    private function loadRoom(
+        LegacyEnvironment $environment,
+        int $roomId
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
+            $roomItem = $privateRoomManager->getItem($roomId);
+
+            if (!$roomItem) {
+                throw $this->createNotFoundException('The requested room does not exist');
+            }
+        }
+        return $roomItem;
     }
 }

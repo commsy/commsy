@@ -7,6 +7,7 @@ use App\Facade\PortalCreatorFacade;
 use App\Form\Type\PortalType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,9 +34,14 @@ class ServerController extends AbstractController
      *
      * @Route("/portal/create")
      * @Template()
+     * @param PortalCreatorFacade $portalCreator
+     * @param Request $request
+     * @return array|RedirectResponse
      */
-    public function createPortal(Request $request, PortalCreatorFacade $portalCreator)
-    {
+    public function createPortal(
+        PortalCreatorFacade $portalCreator,
+        Request $request
+    ) {
         $portal = new Portal();
 
         $form = $this->createForm(PortalType::class, $portal);

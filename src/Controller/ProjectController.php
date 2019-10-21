@@ -38,6 +38,7 @@ class ProjectController extends AbstractController
      * @param Request $request
      * @param ProjectService $projectService
      * @param ReaderService $readerService
+     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start

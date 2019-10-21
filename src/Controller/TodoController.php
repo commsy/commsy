@@ -245,6 +245,7 @@ class TodoController extends BaseController
      * @param ReaderService $readerService
      * @param TodoService $todoService
      * @param TopicService $topicService
+     * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
      * @param LegacyEnvironment $environment
      * @param int $roomId
@@ -260,6 +261,7 @@ class TodoController extends BaseController
         ReaderService $readerService,
         TodoService $todoService,
         TopicService $topicService,
+        TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $environment,
         int $roomId,
@@ -377,8 +379,6 @@ class TodoController extends BaseController
 
         $alert = null;
         if ($todoService->getTodo($itemId)->isLocked()) {
-            $translator = $this->get('translator');
-
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }

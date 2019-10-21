@@ -3,13 +3,14 @@
 namespace App\Controller;
 
 use App\Action\Download\DownloadAction;
-use App\Form\DataTransformer\DateTransformer;
 use App\Form\DataTransformer\GroupTransformer;
 use App\Http\JsonDataResponse;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
+use App\Utils\AnnouncementService;
 use App\Utils\CategoryService;
 use App\Utils\GroupService;
 use App\Utils\ItemService;
@@ -37,6 +38,8 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\GroupSendType;
 
 use App\Event\CommsyEditEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class GroupController
@@ -285,10 +288,15 @@ class GroupController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      * @param Request $request
+     * @param AnnotationService $annotationService
+     * @param CategoryService $categoryService
+     * @param GroupService $groupService
      * @param ItemService $itemService
+     * @param ReaderService $readerService
      * @param RoomService $roomService
      * @param UserService $userService
      * @param TopicService $topicService
+     * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
      * @param LegacyEnvironment $environment
      * @param int $roomId
@@ -297,16 +305,22 @@ class GroupController extends BaseController
      */
     public function detailAction(
         Request $request,
+        AnnotationService $annotationService,
+        CategoryService $categoryService,
+        GroupService $groupService,
         ItemService $itemService,
+        ReaderService $readerService,
         RoomService $roomService,
         UserService $userService,
         TopicService $topicService,
+        TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $groupService, $itemService,
+            $readerService, $environment->getEnvironment(), $roomId, $itemId);
 
         $memberStatus = '';
 
@@ -331,8 +345,6 @@ class GroupController extends BaseController
 
         $alert = null;
         if ($infoArray['group']->isLocked()) {
-            $translator = $this->get('translator');
-
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
@@ -383,18 +395,31 @@ class GroupController extends BaseController
 
     /**
      * @Route("/room/{roomId}/group/{itemId}/print")
+     * @param AnnotationService $annotationService
+     * @param CategoryService $categoryService
+     * @param GroupService $groupService
+     * @param ItemService $itemService
      * @param PrintService $printService
+     * @param ReaderService $readerService
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
      * @return Response
      */
     public function printAction(
+        AnnotationService $annotationService,
+        CategoryService $categoryService,
+        GroupService $groupService,
+        ItemService $itemService,
         PrintService $printService,
+        ReaderService $readerService,
+        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
 
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $groupService, $itemService,
+            $readerService, $legacyEnvironment->getEnvironment(), $roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -431,44 +456,43 @@ class GroupController extends BaseController
     }
 
     private function getDetailInfo(
+        AnnotationService $annotationService,
+        CategoryService $categoryService,
+        GroupService $groupService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        \cs_environment $environment,
         int $roomId,
         int $itemId
     ) {
         $infoArray = array();
 
-        $groupService = $this->get('commsy_legacy.group_service');
-        $itemService = $this->get('commsy_legacy.item_service');
-
-        $annotationService = $this->get('commsy_legacy.annotation_service');
-
         $group = $groupService->getGroup($itemId);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $item = $group;
-        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader_manager = $environment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
         // when group is newly created, "modificationDate" is equal to "reader['read_date']", so operator "<=" instead of "<" should be used here
         if (empty($reader) || $reader['read_date'] <= $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed_manager = $environment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
         // when group is newly created, "modificationDate" is equal to "noticed['read_date']", so operator "<=" instead of "<" should be used here
         if (empty($noticed) || $noticed['read_date'] <= $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $environment->getCurrentContextItem();
 
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $roomManager = $environment->getRoomManager();
+        $readerManager = $environment->getReaderManager();
         $roomItem = $roomManager->getItem($group->getContextId());
         $numTotalMember = $roomItem->getAllUsers();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $environment->getUserManager();
+        $userManager->setContextLimit($environment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -498,7 +522,6 @@ class GroupController extends BaseController
         }
         $read_percentage = round(($read_count / $all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count / $all_user_count) * 100);
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         $modifierList = array();
@@ -566,7 +589,7 @@ class GroupController extends BaseController
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $groupCategories = $group->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $groupCategories);
         }
@@ -587,7 +610,7 @@ class GroupController extends BaseController
         $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
-        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['user'] = $environment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
@@ -888,6 +911,7 @@ class GroupController extends BaseController
      * @param GroupService $groupService
      * @param RoomService $roomService
      * @param GroupTransformer $transformer
+     * @param EventDispatcherInterface $eventDispatcher
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
@@ -900,6 +924,7 @@ class GroupController extends BaseController
         GroupService $groupService,
         RoomService $roomService,
         GroupTransformer $transformer,
+        EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
@@ -971,7 +996,7 @@ class GroupController extends BaseController
             return $this->redirectToRoute('app_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
+        $eventDispatcher->dispatch(new CommsyEditEvent($groupItem), 'commsy.edit');
 
         return array(
             'form' => $form->createView(),
@@ -1433,6 +1458,7 @@ class GroupController extends BaseController
      * @param Request $request
      * @param ItemService $itemService
      * @param UserService $userService
+     * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
@@ -1442,6 +1468,7 @@ class GroupController extends BaseController
         Request $request,
         ItemService $itemService,
         UserService $userService,
+        TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
@@ -1456,7 +1483,6 @@ class GroupController extends BaseController
         $currentUser = $legacyEnvironment->getCurrentUserItem();
         $room = $this->getRoom($roomId);
 
-        $translator = $this->get('translator');
         $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
                 'This email has been sent to all users of this group',
                 ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $item->getName(), '%room_name%' => $room->getTitle()],
@@ -1595,7 +1621,7 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/download")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function downloadAction(
@@ -1617,7 +1643,7 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/xhr/markread", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function xhrMarkReadAction(
@@ -1635,7 +1661,7 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/xhr/delete", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function xhrDeleteAction(

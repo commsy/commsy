@@ -17,22 +17,18 @@ use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
-use App\Utils\RoomService;
 use App\Utils\TopicService;
-use cs_project_item;
 use cs_room_item;
 use cs_topic_item;
 use cs_user_item;
 use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -56,8 +52,8 @@ class TopicController extends BaseController
         Request $request,
         TopicService $topicService,
         LegacyEnvironment $environment,
-        int $roomId)
-    {
+        int $roomId
+    ) {
         $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {

@@ -21,13 +21,11 @@ class CategoryController extends AbstractController
 {
     /**
      * @Template("category/show.html.twig")
-     * @param Request $request
      * @param CategoryService $categoryService
      * @param int $roomId
      * @return array
      */
     public function showAction(
-        Request $request,
         CategoryService $categoryService,
         int $roomId
     ) {
@@ -50,13 +48,11 @@ class CategoryController extends AbstractController
 
     /**
      * @Template("category/showDetail.html.twig")
-     * @param Request $request
      * @param CategoryService $categoryService
      * @param int $roomId
      * @return array
      */
     public function showDetailAction(
-        Request $request,
         CategoryService $categoryService,
         int $roomId
     ) {
@@ -123,8 +119,8 @@ class CategoryController extends AbstractController
         CategoryService $categoryService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
-        int $categoryId = null)
-    {
+        int $categoryId = null
+    ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem->withTags()) {
