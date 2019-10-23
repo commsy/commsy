@@ -185,7 +185,6 @@ class cs_announcement_item extends cs_item {
 
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
-      $this->SendDeleteEntryMailToModerators();
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');

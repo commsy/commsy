@@ -62,6 +62,14 @@
                 <source>Creator</source>
                 <target>ErstellerIn</target>
             </trans-unit>
+            <trans-unit id="search-filter-hashtags">
+                <source>Hashtags</source>
+                <target>Schlagwörter</target>
+            </trans-unit>
+            <trans-unit id="search-filter-categories">
+                <source>Categories</source>
+                <target>Kategorien</target>
+            </trans-unit>
             <trans-unit id="search-filter-created-range">
                 <source>Created from/until</source>
                 <target>Erstellt von/bis</target>

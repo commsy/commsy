@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="workflowResubmissionDate">
                 <source>workflowResubmissionDate</source>
-                <target>Wiedervorlagedatum</target>
+                <target>Wiedervorlage-Datum</target>
             </trans-unit>
             <trans-unit id="workflowResubmissionWho">
                 <source>workflowResubmissionWho</source>
@@ -36,19 +36,19 @@
             </trans-unit>
             <trans-unit id="workflowValidity">
                 <source>workflowValidity</source>
-                <target>Gültigkeitsdatum</target>
+                <target>2. Wiedervorlage</target>
             </trans-unit>
             <trans-unit id="workflowValidityDate">
                 <source>workflowValidityDate</source>
-                <target>Gültigkeitsdatum</target>
+                <target>2. Wiedervorlage-Datum</target>
             </trans-unit>
             <trans-unit id="workflowValidityWho">
                 <source>workflowValidityWho</source>
-                <target>Benachrichtigung nach Ablauf des Gültigkeitsdatums</target>
+                <target>Benachrichtigung nach Ablauf des zweiten Wiedervorlage-Datums</target>
             </trans-unit>
             <trans-unit id="workflowStatusValidityDate">
                 <source>workflowStatusValidityDate</source>
-                <target>Status nach Ablauf des Gültigkeitsdatum</target>
+                <target>Status nach Ablauf des zweiten Wiedervorlage-Datums</target>
             </trans-unit>
             <trans-unit id="additionalActions">
                 <source>additional actions</source>

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\Model\Send;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -621,20 +622,19 @@ class ItemController extends Controller
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
         $groupChoices = $mailAssistant->getGroupChoices($item);
-        $defaultGroupId = array_values($groupChoices)[0];
 
-        $formData = [
-            'additional_recipients' => [
-                '',
-            ],
-            'send_to_groups' => [
-                $defaultGroupId
-            ],
-            'send_to_group_all' => false,
-            'send_to_all' => false,
-            'message' => $mailAssistant->prepareMessage($item),
-            'copy_to_sender' => false,
-        ];
+        if(isset(array_values($groupChoices)[0])){
+            $defaultGroupId = array_values($groupChoices)[0];
+        }else{
+            $defaultGroupId = "";
+        }
+
+        $formData = new Send();
+        $formData->setSendToGroups($defaultGroupId);
+        $formData->setMessage($mailAssistant->prepareMessage($item));
+        $formData->setSendToGroups(false);
+        $formData->setSendToGroupAll(false);
+        $formData->setCopyToSender(false);
 
         $form = $this->createForm(SendType::class, $formData, [
             'item' => $item,
@@ -657,7 +657,7 @@ class ItemController extends Controller
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessage($form->getData(), $item, true);
+            $message = $mailAssistant->getSwiftMessage($form, $item, true);
             $this->get('mailer')->send($message);
 
             $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());

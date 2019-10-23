@@ -140,7 +140,7 @@
             </trans-unit>
             <trans-unit id="workflow-4">
                 <source>workflow validity date</source>
-                <target>gültig bis</target>
+                <target>2. Wiedervorlage am</target>
             </trans-unit>
             <trans-unit id="workflow-5">
                 <source>workflow resubmission date</source>
@@ -197,6 +197,14 @@
             <trans-unit id="License id">
                 <source>License id</source>
                 <target>Lizenz</target>
+            </trans-unit>
+            <trans-unit id="latest-version">
+                <source>latest version</source>
+                <target>Aktuelle Version</target>
+            </trans-unit>
+            <trans-unit id="numbered-version">
+                <source>%count% version</source>
+                <target>%count%. Version</target>
             </trans-unit>
         </body>
     </file>
