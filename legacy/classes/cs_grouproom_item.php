@@ -150,8 +150,12 @@ class cs_grouproom_item extends cs_room_item {
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();
          $new_room_user->makeContactPerson();
+         if ($this->_environment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+            $new_room_user->setEmailNotVisible();
+         }
          $new_room_user->save();
          $new_room_user->setCreatorID2ItemID();
+
          $this->setServiceLinkActive();
          $this->_save($manager);
 
