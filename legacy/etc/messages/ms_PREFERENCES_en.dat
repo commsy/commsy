@@ -1,9 +1,6 @@
 <?php
 $message["PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON"]["en"] = "associate";
 $message["PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON"]["en"] = "Add forum";
-$message["PREFERENCES_AGB"]["en"] = "Edit Terms and Conditions";
-$message["PREFERENCES_AGB_DESC"]["en"] = "Define and configure Terms and Conditions for this workspace.";
-$message["PREFERENCES_AGB_NOTE"]["en"] = "If you change and save this text, all users will be forced to reaccept the Terms and Conditions the next time they log in!";
 $message["PREFERENCES_BACKUP_BUTTON"]["en"] = "Insert backup";
 $message["PREFERENCES_BACKUP_DESC"]["en"] = "The backup file should be created with the CommSy verson %1 (version of this CommSy server). Otherwise not all data can be insert into this server.";
 $message["PREFERENCES_BACKUP_ERROR_FILE"]["en"] = "Sorry, wrong file format.";
@@ -41,7 +38,7 @@ $message["PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_DEFAULT"]["en"] = "De
 $message["PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_ENABLE"]["en"] = "use in this workspace.";
 $message["PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_VALUE"]["en"] = "Status view";
 $message["PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_ENABLE"]["en"] = "use in this workspace.";
-$message["PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_VALUE"]["en"] = "Validity date";
+$message["PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_VALUE"]["en"] = "2nd resubmission date";
 $message["PREFERENCES_DATE_CONFIGURATIONS"]["en"] = "Configure events";
 $message["PREFERENCES_DATE_CONFIGURATIONS_DESC"]["en"] = "Configure display type for events.";
 $message["PREFERENCES_DEFAULT_CONFIGURATIONS"]["en"] = "Choose workspace preset";

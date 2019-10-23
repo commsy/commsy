@@ -10,5 +10,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueModeratorConstraint extends Constraint
 {
-    public $message = 'Please first assign another moderator for the room {{ criteria }} or delete the room {{ criteria }}';
+    public $message = 'Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}';
 }

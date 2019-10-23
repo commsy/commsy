@@ -212,7 +212,6 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
         // Datenschutz Portal Ebene
         #############################
         $this->_form->addRadioGroup('hide_accountname',$translator->getMessage('CONFIGURATION_HIDE_USERLOGIN'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-        $this->_form->addRadioGroup('use_ds_agb',$translator->getMessage('CONFIGURATION_AGB_DATASECURITY'),'',$this->_yes_no_array,'','',true,'','',$disabled);
         $this->_form->addRadioGroup('default_hide_mail',$translator->getMessage('CONFIGURATION_DATA_SECURITY_HIDE_MAIL_DEFAULT'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
 
@@ -254,19 +253,12 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
          	}
          } else if($current_context->isPortal()){
          	$this->_values['hide_accountname'] = $current_context->getHideAccountname();
-         	$this->_values['use_ds_agb'] = $current_context->withAGBDatasecurity();
 
          	
          	if( $this->_values['hide_accountname']){
          		$this->_values['hide_accountname'] = 1;
          	} else {
          		$this->_values['hide_accountname'] = 2;
-         	}
-         	
-         	if ($this->_values['use_ds_agb']){
-         		$this->_values['use_ds_agb'] = 1;
-         	} else {
-         		$this->_values['use_ds_agb'] = 2;
          	}
 
           $this->_values['default_hide_mail'] = $current_context->getConfigurationHideMailByDefault();

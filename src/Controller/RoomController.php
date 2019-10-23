@@ -9,6 +9,7 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Services\LegacyMarkup;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -29,7 +30,7 @@ class RoomController extends Controller
      * })
      * @Template()
      */
-    public function homeAction($roomId, Request $request)
+    public function homeAction($roomId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -162,9 +163,8 @@ class RoomController extends Controller
                 $roomItem->setwithInformationBox(false);
                 $homeInformationEntry = null;
             } else {
-                $markupService = $this->get('commsy_legacy.markup');
                 $itemService = $this->get('commsy_legacy.item_service');
-                $markupService->addFiles($itemService->getItemFileList($homeInformationEntry->getItemId()));
+                $legacyMarkup->addFiles($itemService->getItemFileList($homeInformationEntry->getItemId()));
             }
         }
 
@@ -511,72 +511,13 @@ class RoomController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/modalMessage")
-     * @Template()
-     */
-    public function modalMessageAction($roomId, Request $request)
-    {
-        $show = false;
-        $modalTitle = '';
-        $modalMessage = '';
-        $modalConfirm = '';
-        $modalCancel = '';
-        $translator = $this->get('translator');
-
-        // show term of service acceptance?
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUser();
-        if ( $currentUser->isUser() and !$currentUser->isRoot() ) {
-            $currentContext = $legacyEnvironment->getCurrentContextItem();
-            if ( $currentContext->withAGB() ) {
-                $userAgbDate = $currentUser->getAGBAcceptanceDate();
-                $contextAgbDate = $currentContext->getAGBChangeDate();
-                if ($userAgbDate < $contextAgbDate) {
-                    $show = true;
-                    $modalTitle = $translator->trans('AGB', [], 'room');
-                    $modalMessage = $currentContext->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
-                    $modalConfirm = $this->generateUrl('app_room_acceptagb', array('roomId' => $roomId));
-                    $modalCancel = $this->generateUrl('app_dashboard_overview', array('roomId' => $currentUser->getOwnRoom()->getItemId()));
-                }
-            }
-        }
-
-        return [
-            'show' => $show,
-            'modalTitle' => $modalTitle,
-            'modalMessage' => $modalMessage,
-            'modalConfirm' => $modalConfirm,
-            'modalCancel' => $modalCancel,
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/acceptAgb")
-     */
-    public function acceptAgbAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUser();
-
-        $currentUser->setAGBAcceptance();
-        $currentUser->save();
-
-        return $this->redirect(
-        $request
-            ->headers
-            ->get('referer')
-        );
-    }
-
-    /**
      * @Route("/room/{roomId}/all/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId)")
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $userService = $this->get('commsy_legacy.user_service');
@@ -604,9 +545,8 @@ class RoomController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
-        $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
         return [
             'roomId' => $roomId,
@@ -1054,10 +994,23 @@ class RoomController extends Controller
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
+        $templates = $this->getAvailableTemplates($type);
+
+        // necessary, since the data field malfunctions when added via listener call (#2979)
+        $templates['No template'] = '-1';
+
+        // re-sort array by elements
+        foreach($templates as $index => $entry){
+            if(!($index == 'No template')){
+                unset($templates[$index]);
+                $templates[$index] = $entry;
+            }
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
-            'templates' => $this->getAvailableTemplates($type),
+            'templates' => $templates,
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,

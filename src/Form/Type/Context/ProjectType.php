@@ -26,8 +26,8 @@ class ProjectType extends AbstractType
         // added as 'type_sub' in `AddContextFieldListener`? However, `empty_data` will work here.
         $builder->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
+                'placeholder' => false,
                 'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'No template',
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',

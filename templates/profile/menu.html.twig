@@ -2,10 +2,12 @@
     <div class="uk-dropdown uk-dropdown-small uk-dropdown-navbar">
         <ul class="uk-nav uk-nav-navbar">
             {% if userId != "" and userId != "0" %}
-                <li>
-                    <a href="{{ path('app_profile_personal', {'roomId': roomId, 'itemId': userId }) }}"><i class="uk-icon-justify uk-icon-user"></i> {{ 'Account'|trans([], 'profile') }}</a>
-                </li>
-                {% if not inPrivateRoom %}
+                {% if portalUser is defined and portalUser is not null %}
+                    <li>
+                        <a href="{{ path('app_profile_personal', {'roomId': portalUser.contextId, 'itemId': portalUser.itemId }) }}"><i class="uk-icon-justify uk-icon-user"></i> {{ 'Account'|trans([], 'profile') }}</a>
+                    </li>
+                {% endif %}
+                {% if not inPrivateRoom and not inPortal %}
                     <li>
                         <a href="{{ path('app_profile_general', {'roomId': roomId, 'itemId': userId }) }}"><i class="uk-icon-justify uk-icon-th-list"></i> {{ 'Room profile'|trans([], 'profile') }}</a>
                     </li>

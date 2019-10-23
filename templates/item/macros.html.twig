@@ -294,14 +294,6 @@
                  </div>
             </div>
         {% endif %}
-        {% if workflowValidityDate != '0000-00-00 00:00:00' and withValidity %}
-            <div class="uk-width-1-3">
-                <div class="uk-margin-bottom">
-                    <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                    {{ workflowValidityDate|craue_date }}
-                </div>
-            </div>
-        {% endif %}
         {% if workflowResubmissionDate != '0000-00-00 00:00:00' and withResubmission %}
              <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
@@ -310,6 +302,14 @@
                 </div>
             </div>
        {% endif %}
+        {% if workflowValidityDate != '0000-00-00 00:00:00' and withValidity %}
+            <div class="uk-width-1-3">
+                <div class="uk-margin-bottom">
+                    <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
+                    {{ workflowValidityDate|craue_date }}
+                </div>
+            </div>
+        {% endif %}
     </div>
 
         
@@ -326,14 +326,6 @@
                  </div>
             </div>
         {% endif %}
-        {% if workflowValidityDate != '0000-00-00 00:00:00' and withValidity %}
-            <div class="uk-width-1-3">
-                <div class="uk-margin-bottom">
-                    <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                    {{ workflowValidityDate|craue_date }}       
-                </div>
-            </div>
-        {% endif %}
         {% if workflowResubmissionDate != '0000-00-00 00:00:00' and withResubmission %}
             <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
@@ -342,6 +334,14 @@
                 </div>
             </div>
        {% endif %}
+        {% if workflowValidityDate != '0000-00-00 00:00:00' and withValidity %}
+            <div class="uk-width-1-3">
+                <div class="uk-margin-bottom">
+                    <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
+                    {{ workflowValidityDate|craue_date }}       
+                </div>
+            </div>
+        {% endif %}
        {% if not workflowGroupArray is empty %}
             <div class="uk-width-1-2">
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
@@ -417,7 +417,7 @@
 
                 {# preview #}
                 <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-full">
-                    {{ content|commsyMarkup|raw }}
+                    {{ content|commsyMarkup(item)|raw }}
                 </div>
 
             </div>

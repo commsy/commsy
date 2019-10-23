@@ -211,7 +211,7 @@ class cs_environment {
   /** get the current room item
    * current context id must be set
    *
-   * @return cs_context_item     room
+   * @return \cs_context_item     room
    */
    function getCurrentContextItem() {
       if ( !is_null($this->current_context_id)

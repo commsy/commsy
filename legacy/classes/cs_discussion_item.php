@@ -302,7 +302,6 @@ function getDescription(){
    function delete() {
       $discussion_manager = $this->_environment->getDiscussionManager();
       $this->_delete($discussion_manager);
-      $this->SendDeleteEntryMailToModerators();
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
