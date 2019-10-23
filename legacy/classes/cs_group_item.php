@@ -181,6 +181,10 @@ class cs_group_item extends cs_label_item {
                   $new_member_item->setContextID($grouproom_item->getItemID());
                   $new_member_item->makeUser();
 
+                  if ($portal_item->getConfigurationHideMailByDefault()) {
+                     $new_member_item->setEmailNotVisibile();
+                  }
+
                   $picture = $private_room_user_item->getPicture();
                   if ( !empty($picture) ) {
                      $value_array = explode('_',$picture);
