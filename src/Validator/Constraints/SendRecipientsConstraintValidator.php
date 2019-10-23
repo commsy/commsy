@@ -22,11 +22,11 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
         $foundRecipient = false;
 
         if(get_class($values) == Send::class){
-            if(sizeof($values->getAdditionalRecipients()) > 0){
+            if(sizeof($values->getAdditionalRecipients()) > 0 && isset($values->getAdditionalRecipients()[0])){
                 $foundRecipient = true;
             }
-            if($values->getSendToGroups()){
-                $foundRecipient = true;
+            if(sizeof($values->getSendToGroups()) > 0 && isset($values->getSendToGroups()[0])){
+                    $foundRecipient = true;
             }
             if($values->getSendToGroupAll()){
                 $foundRecipient = true;
@@ -41,7 +41,6 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
                 $foundRecipient = true;
             }
         }else{
-
             if (isset($values['additional_recipients'][0])) {
                 $foundRecipient = true;
             }

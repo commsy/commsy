@@ -69,7 +69,11 @@ class MailAssistant
     public function showGroupAllRecipients($item) {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-        if (!$currentContextItem->withRubric('group')) {
+        if ($currentContextItem->isProjectRoom() && !$currentContextItem->withRubric('group')) {
+            return true;
+        }
+
+        if($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('group')){
             return true;
         }
 
@@ -233,7 +237,8 @@ class MailAssistant
 
         if ($isSendToGroups) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
-            $groups = $labelManager->getItemList($formData['send_to_groups']);
+            $groups = $labelManager->getItemList($formData->getSendToGroups());
+
 
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
@@ -257,7 +262,7 @@ class MailAssistant
 
         if ($isSendToInstitutions) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
-            $institutions = $labelManager->getItemList($formData['send_to_institutions']);
+            $institutions = $labelManager->getItemList($formData->getSendToInstitutions());
 
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
