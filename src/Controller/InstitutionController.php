@@ -456,29 +456,29 @@ class InstitutionController extends BaseController
         ));
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $institutionItem = $transformer->applyTransformation($institutionItem, $form->getData());
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $institutionItem = $transformer->applyTransformation($institutionItem, $form->getData());
 
-                // update modifier
-                $institutionItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    // update modifier
+                    $institutionItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
-                $institutionItem->save();
+                    $institutionItem->save();
 
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
+                    if ($item->isDraft()) {
+                        $item->setDraftStatus(0);
+                        $item->saveAsItem();
+                    }
+                    return $this->redirectToRoute('app_institution_save', array('roomId' => $roomId, 'itemId' => $itemId));
+                }elseif(!$form->isValid()){
+                    $errors = $form->getErrors(true);
+                    foreach($errors as $error){
+                        $form->addError(new FormError($error->getMessage()));
+                    }
                 }
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
-            return $this->redirectToRoute('app_institution_save', array('roomId' => $roomId, 'itemId' => $itemId));
-        }elseif(!$form->isValid()){
-            $errors = $form->getErrors(true);
-            foreach($errors as $error){
-                $form->addError(new FormError($error->getMessage()));
-            }
-        }
 
         return array(
             'form' => $form->createView(),
