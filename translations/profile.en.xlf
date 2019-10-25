@@ -326,11 +326,16 @@
             </trans-unit>
             <trans-unit id="delete_room_membership_text">
                 <source>deleteRoomMembershipText</source>
-                <target>Use this option to delete your workspace membership and all of your posts and comments in this workspace. This will remove your access to this workspace.</target>
+                <target>Use this option to delete your workspace membership. This will remove your access to this workspace. However, your posts will remain. Please delete those posts you wish to be removed before deleting your account.</target>
             </trans-unit>
-            <trans-unit id="delete_room_membership_text_false_flag">
-                <source>deleteRoomMembershipTextFalseFlag</source>
-                <target>Use this option to delete your workspace membership. This will remove your access to this workspace. Your posts will remain. Please delete those posts you wish to be removed before deleting your account. CAUTION: this action cannot be undone.</target>
+            <trans-unit id="delete_room_membership_text_flag">
+                <source>deleteRoomMembershipTextFlag</source>
+                <target>Use this option to delete your membership and all of the posts of this workspace.</target>
+            </trans-unit>
+
+            <trans-unit id="delete_room_membership_text_false">
+                <source>deleteRoomMembershipTextFalse</source>
+                <target>Use this option to delete your workspace membership and all of your posts and comments in this workspace.</target>
             </trans-unit>
 
             <trans-unit id="lock_account_title">
@@ -348,11 +353,15 @@
             </trans-unit>
             <trans-unit id="delete_account_text">
                 <source>deleteAccountText</source>
-                <target>Use this option to delete your account and all of your posts and comments in every workspace in this portal. To be able to use this portal again, you will have to register again.</target>
+                <target>Use this option to delete your account in this portal. After this, you won't be able to access this portal anymore. However, your posts will remain. If you wish for certain posts to be removed, you will have to do so before deleting your account.</target>
             </trans-unit>
-            <trans-unit id="delete_account_text_false_flag">
-                <source>deleteAccountTextFalseFlag</source>
-                <target>Use this option to delete your account in this portal. After this, you won't be able to access this portal anymore. Your posts will remain. If you wish for certain posts to be removed, you will have to do so before deleting your account. CAUTION: This action cannot be undone.</target>
+            <trans-unit id="delete_account_text_flag">
+                <source>deleteAccountTextFlag</source>
+                <target>Use this option to delete your account and all of your posts in this portal.</target>
+            </trans-unit>
+            <trans-unit id="delete_account_text_false">
+                <source>deleteAccountTextFalse</source>
+                <target>Use this option to delete your account and all of your posts and comments in every workspace of this portal. To be able to use this portal again, you will have to register again.</target>
             </trans-unit>
 
             <trans-unit id="email_choice_text">
