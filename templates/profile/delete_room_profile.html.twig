@@ -43,7 +43,9 @@
                 <div class="uk-alert uk-alert-danger">
                     {{ form_start(form_delete) }}
                     {% if override == 'FALSE' %}
-                        <span>{{ 'deleteRoomMembershipTextFalseFlag'|trans({}, 'profile') }}</span>
+                        <span>{{ 'deleteRoomMembershipTextFalse'|trans({}, 'profile') }}</span>
+                    {% elseif override == 'FLAG' %}
+                        <span>{{ 'deleteRoomMembershipTextFlag'|trans({}, 'profile') }}</span>
                     {% else %}
                         <span>{{ 'deleteRoomMembershipText'|trans({}, 'profile') }}</span>
                     {% endif %}
