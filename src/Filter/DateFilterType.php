@@ -2,6 +2,7 @@
 namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,17 +24,11 @@ class DateFilterType extends AbstractType
     {
         $builder
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
             ->add('hide-past-dates', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
@@ -46,6 +41,13 @@ class DateFilterType extends AbstractType
             ))
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
+            ))
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-primary uk-margin-top',
+                ),
+                'label' => 'Search',
+                'translation_domain' => 'search',
             ))
             ->add('participant', ParticipantFilterType::class, array(
                 'label' => false,

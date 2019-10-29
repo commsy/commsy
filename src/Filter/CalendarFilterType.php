@@ -2,6 +2,7 @@
 namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -54,8 +55,15 @@ class CalendarFilterType extends AbstractType
                         'multiple' => true,
                         'expanded' => true,
                         'label' => false,
-                    ))
-                ;
+                        ));
+                $builder
+                    ->add('submit', SubmitType::class, array(
+                        'attr' => array(
+                            'class' => 'uk-button-primary',
+                            ),
+                        'label' => 'Search',
+                        'translation_domain' => 'search',
+                        ));
             }
         }
     }

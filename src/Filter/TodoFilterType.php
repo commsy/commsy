@@ -3,6 +3,7 @@ namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,18 +23,12 @@ class TodoFilterType extends AbstractType
     {
         $builder
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
             ->add('hide-completed-entries', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
@@ -44,6 +39,13 @@ class TodoFilterType extends AbstractType
             ))
             ->add('filter', HiddenType::class, []
             )
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-primary uk-margin-top',
+                ),
+                'label' => 'Search',
+                'translation_domain' => 'search',
+            ))
         ;
 
         if ($options['hasCategories']) {
