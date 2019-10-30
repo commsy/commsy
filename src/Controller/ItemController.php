@@ -627,10 +627,16 @@ class ItemController extends Controller
             $defaultGroupId = array_values($groupChoices)[0];
         }
 
+        $isShowGroupAllRecipients = $mailAssistant->showGroupAllRecipients($request);
+
         $formData = new Send();
         $formData->setAdditionalRecipients(['']);
         $formData->setSendToGroups([$defaultGroupId]);
-        $formData->setSendToGroupAll(false);
+        if($isShowGroupAllRecipients){
+            $formData->setSendToGroupAll(false);
+        }else{
+            $formData->setSendToGroupAll(null);
+        }
         $formData->setSendToAll(false);
         $formData->setMessage($mailAssistant->prepareMessage($item));
         $formData->setCopyToSender(false);
