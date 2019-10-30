@@ -630,7 +630,7 @@ class ItemController extends Controller
         $formData = new Send();
         $formData->setAdditionalRecipients(['']);
         $formData->setSendToGroups([$defaultGroupId]);
-        $formData->setSendToGroupAll(false);
+        $formData->setSendToGroupAll(null);
         $formData->setSendToAll(false);
         $formData->setMessage($mailAssistant->prepareMessage($item));
         $formData->setCopyToSender(false);
