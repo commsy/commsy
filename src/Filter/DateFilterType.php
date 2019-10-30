@@ -44,7 +44,7 @@ class DateFilterType extends AbstractType
             ))
             ->add('submit', SubmitType::class, array(
                 'attr' => array(
-                    'class' => 'uk-button-primary uk-margin-top',
+                    'class' => 'uk-button-primary',
                 ),
                 'label' => 'Search',
                 'translation_domain' => 'search',
