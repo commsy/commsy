@@ -106,6 +106,7 @@ class SendType extends AbstractType
                                 'translation_domain' => 'mail',
                                 'choice_translation_domain' => 'form',
                                 'required' => true,
+                                'empty_data' => null,
                             ])
                         ;
                     }

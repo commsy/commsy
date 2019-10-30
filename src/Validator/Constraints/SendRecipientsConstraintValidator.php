@@ -2,6 +2,7 @@
 namespace App\Validator\Constraints;
 
 use App\Form\Model\Send;
+use App\Utils\MailAssistant;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -25,7 +26,14 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
             if(sizeof($values->getAdditionalRecipients()) > 0 && isset($values->getAdditionalRecipients()[0])){
                 $foundRecipient = true;
             }
-            if(sizeof($values->getSendToGroups()) > 0 && isset($values->getSendToGroups()[0])){
+
+            $isSendToGroupAll = $values->getSendToGroupAll();
+
+            if(!isset($isSendToGroupAll)){
+                $isSendToGroupAll = true;
+            }
+
+            if(sizeof($values->getSendToGroups()) > 0 && isset($values->getSendToGroups()[0]) && $isSendToGroupAll){
                     $foundRecipient = true;
             }
             if($values->getSendToGroupAll()){
