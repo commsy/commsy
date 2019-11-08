@@ -420,6 +420,14 @@
                 <source>has to change mail</source>
                 <target>For further use you have to change your email</target>
             </trans-unit>
+            <trans-unit id="message">
+                <source>message</source>
+                <target>Message</target>
+            </trans-unit>
+            <trans-unit id="sendMail">
+                <source>send mail</source>
+                <target>send mail</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

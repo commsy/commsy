@@ -62,9 +62,7 @@
             </div>
             <div class="uk-width-4-10">
                 {% if user.email %}
-                    {% if user.isEmailVisible %}
-                        <td>{{ 'email'|trans({}, 'user')}}: <a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                    {% endif %}
+                    <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId}) }}">{{'send mail'|trans({}, 'profile') }}</a></td>
                 {% endif %}
                 <br/>
                 {% if user.telephone %}

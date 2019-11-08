@@ -4,6 +4,10 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Filter\UserFilterType;
+use App\Form\Model\Send;
+use App\Form\Type\Profile\AccountContactFormType;
+use App\Form\Type\Profile\RoomProfileContactType;
+use App\Form\Type\SendType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
@@ -46,7 +50,60 @@ class UserController extends BaseController
     {
         return $this->gatherUsers($roomId, $max, $start, $sort, 'gridView', $request);
     }
-    
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/contactForm/")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Template
+     */
+    public function sendMailViaContactForm($roomId, $itemId, Request $request){
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = $userTransformer->transform($userItem);
+        $mailAssistant = $this->get('commsy.utils.mail_assistant');
+        $mail = $userItem->getEmail();
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        $formMailData = new Send();
+        $formMailData->setSendToGroups(false);
+        $formMailData->setMessage($mailAssistant->prepareMessage($item));
+        $formMailData->setSendToGroups(false);
+        $formMailData->setSendToGroupAll(false);
+        $formMailData->setCopyToSender(false);
+        $formMailData->setAdditionalRecipients($mail);
+
+        $form = $this->createForm(AccountContactFormType::class, $userData, array(
+            'item' => $item,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            $mail = $userItem->getEmail();
+            $message = $formData['message'];
+
+            // send mail
+            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
+            $this->get('mailer')->send($message);
+
+            $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+            $this->addFlash('recipientCount', $recipientCount);
+
+
+            return $this->redirectToRoute('app_user_list', array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
+
     /**
      * @Route("/room/{roomId}/user/{view}", defaults={"view": "feedView"}, requirements={
      *       "view": "feedView|gridView"
