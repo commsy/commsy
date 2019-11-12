@@ -622,19 +622,25 @@ class ItemController extends Controller
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
         $groupChoices = $mailAssistant->getGroupChoices($item);
-
-        if(isset(array_values($groupChoices)[0])){
+        $defaultGroupId = null;
+        if(sizeof($groupChoices)>0){
             $defaultGroupId = array_values($groupChoices)[0];
-        }else{
-            $defaultGroupId = "";
         }
 
+        $isShowGroupAllRecipients = $mailAssistant->showGroupAllRecipients($request);
+
         $formData = new Send();
-        $formData->setSendToGroups($defaultGroupId);
+        $formData->setAdditionalRecipients(['']);
+        $formData->setSendToGroups([$defaultGroupId]);
+        if($isShowGroupAllRecipients){
+            $formData->setSendToGroupAll(false);
+        }else{
+            $formData->setSendToGroupAll(null);
+        }
+        $formData->setSendToAll(false);
         $formData->setMessage($mailAssistant->prepareMessage($item));
-        $formData->setSendToGroups(false);
-        $formData->setSendToGroupAll(false);
         $formData->setCopyToSender(false);
+
 
         $form = $this->createForm(SendType::class, $formData, [
             'item' => $item,
