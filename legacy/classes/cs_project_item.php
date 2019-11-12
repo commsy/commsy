@@ -248,6 +248,11 @@ class cs_project_item extends cs_room_item {
          $new_room_user->setOpenRoomWantMail('yes');
          $new_room_user->save();
          $new_room_user->setCreatorID2ItemID();
+
+         if ($this->_environment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+             $new_room_user->setEmailNotVisible();
+         }
+
          // save picture in new room
          $picture = $current_user->getPicture();
          if (!empty($picture)) {
