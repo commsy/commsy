@@ -16,7 +16,7 @@
             </trans-unit>
             <trans-unit id="workflowResubmissionWho">
                 <source>workflowResubmissionWho</source>
-                <target>Notification after the expiration of the resubmission date</target>
+                <target>Notification after expiration of the resubmission date</target>
             </trans-unit>
             <trans-unit id="workflowWhoAdditional">
                 <source>workflowWhoAdditional</source>
@@ -32,23 +32,23 @@
             </trans-unit>
             <trans-unit id="workflowStatusResubmissionDate">
                 <source>workflowStatusResubmissionDate</source>
-                <target>Status after the expiration of the resubmission date</target>
+                <target>Status after expiration of the resubmission date</target>
             </trans-unit>
             <trans-unit id="workflowValidity">
                 <source>workflowValidity</source>
-                <target>Validity date</target>
+                <target>2nd resubmission</target>
             </trans-unit>
             <trans-unit id="workflowValidityDate">
                 <source>workflowValidityDate</source>
-                <target>Validity date</target>
+                <target>2nd resubmission date</target>
             </trans-unit>
             <trans-unit id="workflowValidityWho">
                 <source>workflowValidityWho</source>
-                <target>Notification after the expiration of the validity date</target>
+                <target>Notification after expiration of the second resubmission date</target>
             </trans-unit>
             <trans-unit id="workflowStatusValidityDate">
                 <source>workflowStatusValidityDate</source>
-                <target>Status after the expiration of the validity date</target>
+                <target>Status after expiration of the second resubmission date</target>
             </trans-unit>
             <trans-unit id="additionalActions">
                 <source>additional actions</source>

@@ -27,7 +27,7 @@ class DiscussionController extends BaseController
      * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = '', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'latest', Request $request)
     {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -733,6 +733,7 @@ class DiscussionController extends BaseController
         
         $formData = array();
         $discussionItem = NULL;
+        $discussionArticleItem = NULL;
 
         $isDraft = $item->isDraft();
 
@@ -841,6 +842,7 @@ class DiscussionController extends BaseController
         return array(
             'form' => $form->createView(),
             'discussion' => $discussionItem,
+            'discussionArticle' => $discussionArticleItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,

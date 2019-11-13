@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="room_general">
+                <source>Workspace</source>
+                <target>Raum</target>
+            </trans-unit>
             <trans-unit id="1">
                 <source>One new entry in the last %days% days|%num% new entries in the last %days% days</source>
                 <target>Ein neuer Beitrag in den letzten %days% Tagen|%num% neue Beiträge in den letzten %days% Tagen</target>
@@ -121,6 +125,10 @@
             <trans-unit id="room-grouprooms">
                 <source>Group Rooms</source>
                 <target>Gruppenräume</target>
+            </trans-unit>
+            <trans-unit id="grouproom">
+                <source>grouproom</source>
+                <target>Gruppenraum</target>
             </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>

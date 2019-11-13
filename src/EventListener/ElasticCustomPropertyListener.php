@@ -92,6 +92,9 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
+            // when building the index from the CLI command, the context ID is not populated, thus we set it here explicitly
+            $this->legacyEnvironment->setCurrentContextID($item->getContextID());
+
             $tags = $item->getTagList();
             if ($tags->isNotEmpty()) {
                 $objectTags = [];
@@ -202,6 +205,9 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $todo = $todoManager->getItem($event->getObject()->getItemId());
 
         if ($todo) {
+            // when building the index from the CLI command, the context ID is not populated, thus we set it here explicitly
+            $this->legacyEnvironment->setCurrentContextID($todo->getContextID());
+
             $steps = $todo->getStepItemList();
             if ($steps->isNotEmpty()) {
                 $stepContents = [];

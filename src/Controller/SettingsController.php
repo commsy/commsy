@@ -375,9 +375,9 @@ class SettingsController extends Controller
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
-        $form = $this->createForm(DeleteType::class, [
+        $form = $this->createForm(DeleteType::class, $roomItem, [
             'confirm_string' => $translator->trans('delete', [], 'profile')
-        ], []);
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

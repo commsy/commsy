@@ -366,9 +366,9 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
 
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'latest' ) {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC, ' . $this->addDatabasePrefix('discussions') . '.modification_date DESC';
         } elseif ( $this->_sort_order == 'latest_rev' ) {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date, ' . $this->addDatabasePrefix('discussions') . '.modification_date';
         } elseif ( $this->_sort_order == 'title' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title';
         } elseif ( $this->_sort_order == 'title_rev' ) {

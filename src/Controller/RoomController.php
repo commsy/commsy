@@ -511,65 +511,6 @@ class RoomController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/modalMessage")
-     * @Template()
-     */
-    public function modalMessageAction($roomId, Request $request)
-    {
-        $show = false;
-        $modalTitle = '';
-        $modalMessage = '';
-        $modalConfirm = '';
-        $modalCancel = '';
-        $translator = $this->get('translator');
-
-        // show term of service acceptance?
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUser();
-        if ( $currentUser->isUser() and !$currentUser->isRoot() ) {
-            $currentContext = $legacyEnvironment->getCurrentContextItem();
-            if ( $currentContext->withAGB() ) {
-                $userAgbDate = $currentUser->getAGBAcceptanceDate();
-                $contextAgbDate = $currentContext->getAGBChangeDate();
-                if ($userAgbDate < $contextAgbDate) {
-                    $show = true;
-                    $modalTitle = $translator->trans('AGB', [], 'room');
-                    $modalMessage = $currentContext->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
-                    $modalConfirm = $this->generateUrl('app_room_acceptagb', array('roomId' => $roomId));
-                    $modalCancel = $this->generateUrl('app_dashboard_overview', array('roomId' => $currentUser->getOwnRoom()->getItemId()));
-                }
-            }
-        }
-
-        return [
-            'show' => $show,
-            'modalTitle' => $modalTitle,
-            'modalMessage' => $modalMessage,
-            'modalConfirm' => $modalConfirm,
-            'modalCancel' => $modalCancel,
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/acceptAgb")
-     */
-    public function acceptAgbAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUser();
-
-        $currentUser->setAGBAcceptance();
-        $currentUser->save();
-
-        return $this->redirect(
-        $request
-            ->headers
-            ->get('referer')
-        );
-    }
-
-    /**
      * @Route("/room/{roomId}/all/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
@@ -1053,10 +994,23 @@ class RoomController extends Controller
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
+        $templates = $this->getAvailableTemplates($type);
+
+        // necessary, since the data field malfunctions when added via listener call (#2979)
+        $templates['No template'] = '-1';
+
+        // re-sort array by elements
+        foreach($templates as $index => $entry){
+            if(!($index == 'No template')){
+                unset($templates[$index]);
+                $templates[$index] = $entry;
+            }
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
-            'templates' => $this->getAvailableTemplates($type),
+            'templates' => $templates,
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,

@@ -1857,7 +1857,7 @@ class cs_user_item extends cs_item
         return $user_list;
     }
 
-    public function getRelatedUserItemInContext($value)
+    public function getRelatedUserItemInContext($value):? \cs_user_item
     {
         $retour = NULL;
         $user_manager = $this->_environment->getUserManager();
@@ -3076,6 +3076,10 @@ class cs_user_item extends cs_item
 
     public function isAllowedToCreateContext()
     {
+        if ($this->isGuest()) {
+            return false;
+        }
+
         if ($this->isRoot() || ($this->getContextItem()->isPortal() && $this->isModerator())) {
             return true;
         }

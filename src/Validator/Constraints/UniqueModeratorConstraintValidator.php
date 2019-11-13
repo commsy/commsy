@@ -36,13 +36,25 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
 
         $hasModerators = $this->contextHasModerators($roomId, [$currentUser]);
         $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($roomId);
+        $currentUserIsModerator = $this->isCurrentUserModerator($roomId, [$currentUser]);
 
-        if(!$hasModerators or !$hasMoreThanOneModerator){
+
+        if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator){
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('{{ criteria }}', $roomName)
                     ->addViolation();
         }
     }
+
+    private function isCurrentUserModerator($roomId, $currentUsers){
+        $moderatorIds = $this->accessModeratorIds($roomId);
+        foreach ($currentUsers as $selectedId) {
+            if (in_array($selectedId->getItemID(), $moderatorIds)) {
+                    return true;
+                }
+            }
+        return false;
+}
 
     private function contextHasModerators($roomId, $selectedIds) {
         $moderatorIds = $this->accessModeratorIds($roomId);

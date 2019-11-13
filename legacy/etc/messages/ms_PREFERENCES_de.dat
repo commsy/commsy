@@ -1,9 +1,6 @@
 <?php
 $message["PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON"]["de"] = "zuordnen";
 $message["PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON"]["de"] = "Forum hinzuf&uuml;gen";
-$message["PREFERENCES_AGB"]["de"] = "Nutzungsvereinbarungen";
-$message["PREFERENCES_AGB_DESC"]["de"] = "Eingabe und Konfiguration von Nutzungsvereinbarungen für diesen Raum.";
-$message["PREFERENCES_AGB_NOTE"]["de"] = "Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!";
 $message["PREFERENCES_BACKUP_BUTTON"]["de"] = "Backup einspielen";
 $message["PREFERENCES_BACKUP_DESC"]["de"] = "Die Backup-Datei sollte mit der CommSy-Version %1 (CommSy-Version dieses Servers) erzeugt worden sein. Andernfalls können ggf. nicht alle Daten eingespielt werden.";
 $message["PREFERENCES_BACKUP_ERROR_FILE"]["de"] = "Die Datei liegt nicht im richtigen Format vor.";
@@ -41,7 +38,7 @@ $message["PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_DEFAULT"]["de"] = "De
 $message["PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_ENABLE"]["de"] = "in diesem Raum verwenden.";
 $message["PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_VALUE"]["de"] = "Status-Anzeige";
 $message["PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_ENABLE"]["de"] = "in diesem Raum verwenden.";
-$message["PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_VALUE"]["de"] = "Gültigkeitsdatum";
+$message["PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_VALUE"]["de"] = "2. Wiedervorlage-Datum";
 $message["PREFERENCES_DATE_CONFIGURATIONS"]["de"] = "Termindarstellung";
 $message["PREFERENCES_DATE_CONFIGURATIONS_DESC"]["de"] = "Hier können Sie die vorausgewählte Darstellung für die Termine auswählen.";
 $message["PREFERENCES_DEFAULT_CONFIGURATIONS"]["de"] = "Voreinstellungen für Räume";

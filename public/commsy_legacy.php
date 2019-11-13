@@ -883,33 +883,6 @@ if(isset($c_smarty) && $c_smarty === true) {
     /************************************************************************************
      *** AGB
      ************************************************************************************/
-    $current_user = $environment->getCurrentUserItem();
-
-    // portal AGB
-    $current_context = $environment->getCurrentContextItem();
-    if (!$current_context->isPortal() && !$current_context->isServer() && !$current_context->withAGBDatasecurity()) {
-
-        $portal_user = $current_user->getRelatedCommSyUserItem();
-        if ( isset($portal_user) and $portal_user->isUser() and !$portal_user->isRoot() ) {
-            $current_portal = $environment->getCurrentPortalItem();
-            $user_agb_date = $portal_user->getAGBAcceptanceDate();
-            $portal_agb_date = $current_portal->getAGBChangeDate();
-
-            if ( $user_agb_date < $portal_agb_date && $current_portal->getAGBStatus() == 1 ) {
-                redirect($current_portal->getItemID(), "agb", "detail");
-            }
-        }
-    }
-
-    if ( $current_user->isUser() && !$current_user->isRoot() && !$current_context->withAGBDatasecurity() ) {
-        $user_agb_date = $current_user->getAGBAcceptanceDate();
-        $context_agb_date = $current_context->getAGBChangeDate();
-        if ( $user_agb_date < $context_agb_date && $current_context->getAGBStatus() == 1 ) {
-            if ($current_module != "agb"|| $current_function != "index") {
-                redirect($current_context->getItemID(), "agb", "index");
-            }
-        }
-    }
 
     // TODO: get-parameter is checked, because getCurrentModule() returns 'home' when calling 'ajax'
     // TODO: getCurrentFunction() also fails
@@ -972,6 +945,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 
             if ($environment->getCurrentModule() !== 'configuration'
                 && $environment->getCurrentModule() !== 'account'
+                && $environment->getCurrentModule() !== 'mail'
                 && file_exists($externalStylesFilename)) {
                 include_once($externalStylesFilename);
                 $params = array();
