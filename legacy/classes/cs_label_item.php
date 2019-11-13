@@ -163,42 +163,6 @@ class cs_label_item extends cs_item {
       $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
    }
 
-   /** get institutions of a label_item
-    * this method returns a list of institutions which are linked to the label_item
-    *
-    * @return object cs_list a list of institutions (cs_label_item)
-    */
-   function getInstitutionList() {
-      $institution_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_INSTITUTION_TYPE);
-      $institution_list->sortBy('name');
-      return $institution_list;
-   }
-
-  /** set institutions of a label_item item by id
-   * this method sets a list of institution item_ids which are linked to the label_item
-   *
-   * @param array of institution ids
-   */
-   function setInstitutionListByID ($value) {
-      $institution_array = array();
-      foreach ( $value as $iid ) {
-         $tmp_data = array();
-         $tmp_data['iid'] = $iid;
-         $institution_array[] = $tmp_data;
-      }
-      $this->_setValue(CS_INSTITUTION_TYPE, $institution_array, FALSE);
-   }
-
-   /** set institutions of a label_item
-    * this method sets a list of institutions which are linked to the label_item
-    *
-    * @param object cs_list value list of institutions (cs_label_item)
-    */
-   function setInstitutionList($value) {
-      $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
-   }
-
-
    /** get materials of a label_item
     * this method returns a list of materials which are linked to the label_item
     *

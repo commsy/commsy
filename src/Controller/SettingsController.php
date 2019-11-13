@@ -46,11 +46,6 @@ class SettingsController extends Controller
 
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
-	
-        // $room = $this->getDoctrine()
-        //     ->getRepository('App:Room')
-        //     ->find($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -89,10 +84,6 @@ class SettingsController extends Controller
                 $roomCategoriesService->setRoomCategoriesLinkedToContext($roomItem->getItemId(), $formData['categories']);
             }
 
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
             return $this->redirectToRoute('app_settings_general', ["roomId" => $roomId]);
         }
 
@@ -126,11 +117,6 @@ class SettingsController extends Controller
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             $roomItem->save();
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         return array(
@@ -181,11 +167,6 @@ class SettingsController extends Controller
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             $roomItem->save();
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         $portalItem = $roomItem->getContextItem();
@@ -305,10 +286,6 @@ class SettingsController extends Controller
 
             $roomItem->save();
 
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
             return $this->redirectToRoute('app_settings_appearance', ["roomId" => $roomId]);
         }
 

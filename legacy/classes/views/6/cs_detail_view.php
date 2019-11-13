@@ -625,7 +625,7 @@ class cs_detail_view extends cs_view {
          $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
          $html .= $this->_getDetailActionsAsHTML($item);
          $html .='</div>'.LF;
-         if ( $rubric != CS_GROUP_TYPE and $rubric != CS_PROJECT_TYPE and $rubric != CS_TOPIC_TYPE and $rubric != CS_INSTITUTION_TYPE){
+         if ( $rubric != CS_GROUP_TYPE and $rubric != CS_PROJECT_TYPE and $rubric != CS_TOPIC_TYPE){
             if ( $current_context->withBuzzwords()
                  and !strstr($detail_box_conf,'detailbuzzwords_nodisplay')
                ){
@@ -935,300 +935,297 @@ class cs_detail_view extends cs_view {
    }
 
 
-   function _getAllLinkedItemsAsHTML ($spaces=0) {
-      $connections = $this->getRubricConnections();
-      $item = $this->getItem();
-      $current_context = $this->_environment->getCurrentContextItem();
-      $path_counter = 0;
-      $path_entry_counter = 0;
-      if ($current_context->withPath()){
-         $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
-         $path_counter = $topic_link_items->getCount();
-         $link_item = $topic_link_items->getFirst();
-         while($link_item){
-            if (isset($link_item) and !empty($link_item)){
-               $topic_item = $link_item->getLinkedItem($item);
-               if ($topic_item->isPathActive()){
-                  $path_item_list = $topic_item->getPathItemList();
-                  $temp_path_counter = $path_item_list->getCount();
-                  if ($temp_path_counter > $path_entry_counter){
-                     $path_entry_counter = $temp_path_counter;
-                  }
-               }
+    function _getAllLinkedItemsAsHTML($spaces = 0)
+    {
+        $connections = $this->getRubricConnections();
+        $item = $this->getItem();
+        $current_context = $this->_environment->getCurrentContextItem();
+        $path_counter = 0;
+        $path_entry_counter = 0;
+        if ($current_context->withPath()) {
+            $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
+            $path_counter = $topic_link_items->getCount();
+            $link_item = $topic_link_items->getFirst();
+            while ($link_item) {
+                if (isset($link_item) and !empty($link_item)) {
+                    $topic_item = $link_item->getLinkedItem($item);
+                    if ($topic_item->isPathActive()) {
+                        $path_item_list = $topic_item->getPathItemList();
+                        $temp_path_counter = $path_item_list->getCount();
+                        if ($temp_path_counter > $path_entry_counter) {
+                            $path_entry_counter = $temp_path_counter;
+                        }
+                    }
+                }
+                $link_item = $topic_link_items->getNext();
             }
-            $link_item = $topic_link_items->getNext();
-         }
-      }
-      $link_items = $item->getLatestLinkItemList(10);
-      $count_max_entries = $link_items->getCount();
-      $count_rubrics = count($connections);
-      $rubric_height = ($count_rubrics + $path_counter) * 20;
-      if ($path_entry_counter > $count_max_entries){
-         $entry_height = 25 + ($path_entry_counter * 15);
-      }else{
-         $entry_height = $count_max_entries * 15;
-      }
-      $height = 40 - $count_rubrics;
-      $final_height = $height + $entry_height + $rubric_height;
-      $html = '';
-      $html .= '<div id="netnavigation'.$item->getItemID().'" style="height:'.$final_height.'px;">'.LF;
-      $html .= '<div class="netnavigation" >'.LF;
+        }
+        $link_items = $item->getLatestLinkItemList(10);
+        $count_max_entries = $link_items->getCount();
+        $count_rubrics = count($connections);
+        $rubric_height = ($count_rubrics + $path_counter) * 20;
+        if ($path_entry_counter > $count_max_entries) {
+            $entry_height = 25 + ($path_entry_counter * 15);
+        } else {
+            $entry_height = $count_max_entries * 15;
+        }
+        $height = 40 - $count_rubrics;
+        $final_height = $height + $entry_height + $rubric_height;
+        $html = '';
+        $html .= '<div id="netnavigation' . $item->getItemID() . '" style="height:' . $final_height . 'px;">' . LF;
+        $html .= '<div class="netnavigation" >' . LF;
 
-      $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'</div>';
-      $html .= '         </noscript>';
+        $html .= '         <noscript>';
+        $html .= '<div class="right_box_title">' . $this->_translator->getMessage('COMMON_NETNAVIGATION') . '</div>';
+        $html .= '         </noscript>';
 
-      $title_string ='"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_LATEST_ENTRIES');
-      $link_items = $item->getLatestLinkItemList(10);
-      $title_string .= ' ('.$link_items->getCount().')"';
-      $expanded_string ='false';
-      $html .='		<div class="netnavigation_panel">     '.LF;
-      $html .= '         <noscript>';
-      $html .= '<div class="netnavigation_title">'.$this->_translator->getMessage('COMMON_NETNAVIGATION_LATEST_ENTRIES').' ('.$link_items->getCount().')</div>';
-      $html .= '         </noscript>';
+        $title_string = '"' . $this->_translator->getMessage('COMMON_NETNAVIGATION_LATEST_ENTRIES');
+        $link_items = $item->getLatestLinkItemList(10);
+        $title_string .= ' (' . $link_items->getCount() . ')"';
+        $expanded_string = 'false';
+        $html .= '		<div class="netnavigation_panel">     ' . LF;
+        $html .= '         <noscript>';
+        $html .= '<div class="netnavigation_title">' . $this->_translator->getMessage('COMMON_NETNAVIGATION_LATEST_ENTRIES') . ' (' . $link_items->getCount() . ')</div>';
+        $html .= '         </noscript>';
 
-      $html .='				<div><ul style="list-style-type: circle; font-size:8pt;">'.LF;
-      if ($link_items->isEmpty()) {
-         $html .= '   <li><a><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></a></li>'.LF;
-      } else {
-         $link_item = $link_items->getFirst();
-         while($link_item){
-            $link_creator = $link_item->getCreatorItem();
-            if ( isset($link_creator) and !$link_creator->isDeleted() ) {
-               $fullname = $link_creator->getFullname();
-            } else {
-               $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
+        $html .= '				<div><ul style="list-style-type: circle; font-size:8pt;">' . LF;
+        if ($link_items->isEmpty()) {
+            $html .= '   <li><a><span class="disabled">' . $this->_translator->getMessage('COMMON_NONE') . '</span></a></li>' . LF;
+        } else {
+            $link_item = $link_items->getFirst();
+            while ($link_item) {
+                $link_creator = $link_item->getCreatorItem();
+                if (isset($link_creator) and !$link_creator->isDeleted()) {
+                    $fullname = $link_creator->getFullname();
+                } else {
+                    $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
+                }
+                // Create the list entry
+                $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
+                if (isset($linked_item)) {
+                    $fragment = '';    // there is no anchor defined by default
+                    $type = $linked_item->getType();
+                    if ($type == 'label') {
+                        $type = $linked_item->getLabelType();
+                    }
+                    $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
+                    $text = '';
+                    switch (mb_strtoupper($type, 'UTF-8')) {
+                        case 'ANNOUNCEMENT':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+                            break;
+                        case 'DATE':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
+                            break;
+                        case 'DISCUSSION':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
+                            break;
+                        case 'GROUP':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
+                            break;
+                        case 'INSTITUTION':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
+                            break;
+                        case 'MATERIAL':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
+                            break;
+                        case 'PROJECT':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
+                            break;
+                        case 'TODO':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
+                            break;
+                        case 'TOPIC':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
+                            break;
+                        case 'USER':
+                            $text .= $this->_translator->getMessage('COMMON_ONE_USER');
+                            break;
+                        default:
+                            $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR') . ' cs_detail_view(' . __LINE__ . ') ';
+                            break;
+                    }
+                    $link_creator_text = $text . ' - ' . $this->_translator->getMessage('COMMON_LINK_CREATOR') . ' ' .
+                        $fullname . ', ' .
+                        $link_created;
+                    switch ($type) {
+                        case CS_DISCARTICLE_TYPE:
+                            $linked_iid = $linked_item->getDiscussionID();
+                            $fragment = $linked_item->getItemID();
+                            $discussion_manager = $this->_environment->getDiscussionManager();
+                            $linked_item = $discussion_manager->getItem($linked_iid);
+                            break;
+                        case CS_SECTION_TYPE:
+                            $linked_iid = $linked_item->getLinkedItemID();
+                            $fragment = $linked_item->getItemID();
+                            $material_manager = $this->_environment->getMaterialManager();
+                            $linked_item = $material_manager->getItem($linked_iid);
+                            break;
+                        default:
+                            $linked_iid = $linked_item->getItemID();
+                    }
+                    $html .= '   <li>';
+                    $params = array();
+                    $params['iid'] = $linked_iid;
+                    $module = Type2Module($type);
+                    $user = $this->_environment->getCurrentUser();
+                    if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator())) {
+                        $activating_date = $linked_item->getActivatingDate();
+                        if (strstr($activating_date, '9999-00-00')) {
+                            $link_creator_text .= ' (' . $this->_translator->getMessage('COMMON_NOT_ACTIVATED') . ')';
+                        } else {
+                            $link_creator_text .= ' (' . $this->_translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate()) . ')';
+                        }
+                        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                            $module,
+                            'detail',
+                            $params,
+                            chunkText($linked_item->getTitle(), 27),
+                            $link_creator_text,
+                            '_self',
+                            $fragment,
+                            '',
+                            '',
+                            '',
+                            'class="disabled"',
+                            '',
+                            '',
+                            true);
+                        unset($params);
+                    } else {
+                        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                            $module,
+                            'detail',
+                            $params,
+                            chunkText($linked_item->getTitle(), 27),
+                            $link_creator_text,
+                            '_self',
+                            $fragment);
+                        unset($params);
+                    }
+
+
+                    $html .= '</li>' . LF;
+                }
+                $link_item = $link_items->getNext();
             }
-          // Create the list entry
-            $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
-            if ( isset($linked_item) ) {
-               $fragment = '';    // there is no anchor defined by default
-               $type = $linked_item->getType();
-               if ($type =='label'){
-                  $type = $linked_item->getLabelType();
-               }
-               $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
-               $text = '';
-               switch ( mb_strtoupper($type, 'UTF-8') )
-               {
-                  case 'ANNOUNCEMENT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-                     break;
-                  case 'DATE':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-                     break;
-                  case 'DISCUSSION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-                     break;
-                  case 'GROUP':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-                     break;
-                  case 'INSTITUTION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-                     break;
-                  case 'MATERIAL':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-                     break;
-                  case 'PROJECT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-                     break;
-                  case 'TODO':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-                     break;
-                  case 'TOPIC':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-                     break;
-                  case 'USER':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_USER');
-                     break;
-                  default:
-                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
-                     break;
-               }
-               $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
-                                    $fullname.', '.
-                                    $link_created;
-               switch ( $type ) {
-                  case CS_DISCARTICLE_TYPE:
-                     $linked_iid = $linked_item->getDiscussionID();
-                     $fragment = $linked_item->getItemID();
-                     $discussion_manager = $this->_environment->getDiscussionManager();
-                     $linked_item = $discussion_manager->getItem($linked_iid);
-                     break;
-                  case CS_SECTION_TYPE:
-                     $linked_iid = $linked_item->getLinkedItemID();
-                     $fragment = $linked_item->getItemID();
-                     $material_manager = $this->_environment->getMaterialManager();
-                     $linked_item = $material_manager->getItem($linked_iid);
-                     break;
-                  default:
-                     $linked_iid = $linked_item->getItemID();
-               }
-               $html .= '   <li>';
-               $params = array();
-               $params['iid'] = $linked_iid;
-               $module = Type2Module($type);
-               $user = $this->_environment->getCurrentUser();
-               if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-                   $activating_date = $linked_item->getActivatingDate();
-                   if (strstr($activating_date,'9999-00-00')){
-                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
-                   }else{
-                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
-                   }
-                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       chunkText($linked_item->getTitle(),27),
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       'class="disabled"',
-                                       '',
-                                       '',
-                                       true);
-                  unset($params);
-               }else{
-                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       chunkText($linked_item->getTitle(),27),
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment);
-                  unset($params);
-               }
+        }
+        $html .= '</ul></div>' . LF;
+        $html .= '</div>' . LF;
 
-
-               $html .= '</li>'.LF;
+        $counter = 1;
+        foreach ($connections as $connection) {
+            $link_items = $item->getLinkItemList($connection);
+            $count = $link_items->getCount();
+            if ($connection != CS_USER_TYPE) {
+                $html .= '		<div class="netnavigation_panel">     ' . LF;
+                $context = $this->_environment->getCurrentContextItem();
+                $text = '';
+                switch (mb_strtoupper($connection, 'UTF-8')) {
+                    case 'ANNOUNCEMENT':
+                        $text .= $this->_translator->getMessage('ANNOUNCEMENTS');
+                        break;
+                    case 'DATE':
+                        $text .= $this->_translator->getMessage('DATES');
+                        break;
+                    case 'DISCUSSION':
+                        $text .= $this->_translator->getMessage('DISCUSSIONS');
+                        break;
+                    case 'GROUP':
+                        $text .= $this->_translator->getMessage('GROUPS');
+                        break;
+                    case 'INSTITUTION':
+                        $text .= $this->_translator->getMessage('INSTITUTIONS');
+                        break;
+                    case 'MATERIAL':
+                        $text .= $this->_translator->getMessage('MATERIALS');
+                        break;
+                    case 'MYROOM':
+                        $html .= $this->_translator->getMessage('MYROOMS');
+                        break;
+                    case 'PROJECT':
+                        $text .= $this->_translator->getMessage('PROJECTS');
+                        break;
+                    case 'TODO':
+                        $text .= $this->_translator->getMessage('TODOS');
+                        break;
+                    case 'TOPIC':
+                        $text .= $this->_translator->getMessage('TOPICS');
+                        break;
+                    case 'USER':
+                        $text .= $this->_translator->getMessage('USERS');
+                        break;
+                    default:
+                        $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR') . ' cs_detail_view(692) ';
+                        break;
+                }
+                $title_string .= ',"' . $text;
+                $title_string .= ' (' . $link_items->getCount() . ')"';
+                $expanded_string .= ',false';
+                $html .= '         <noscript>';
+                $html .= '<div class="netnavigation_title">' . $text . '(' . $link_items->getCount() . ')</div>';
+                $html .= '         </noscript>';
+                $html .= $this->_getLinkedItemsAsHTML($item, $link_items, $connection,
+                    $this->_is_perspective($connection),
+                    true,
+                    true);
+                $html .= '			</div> ';
+                $counter++;
             }
-            $link_item = $link_items->getNext();
-         }
-      }
-      $html .= '</ul></div>'.LF;
-      $html .= '</div>'.LF;
+        }
+        $show_entry = '0';
 
-      $counter = 1;
-      foreach ( $connections as $connection ) {
-         $link_items = $item->getLinkItemList($connection);
-         $count = $link_items->getCount();
-         if ( $connection != CS_USER_TYPE){
-            $html .='		<div class="netnavigation_panel">     '.LF;
-            $context = $this->_environment->getCurrentContextItem();
-            if ($connection != CS_INSTITUTION_TYPE or $context->withRubric(CS_INSTITUTION_TYPE)) {
-               $text = '';
-               switch ( mb_strtoupper($connection, 'UTF-8') )
-               {
-                  case 'ANNOUNCEMENT':
-                     $text .= $this->_translator->getMessage('ANNOUNCEMENTS');
-                     break;
-                  case 'DATE':
-                     $text .= $this->_translator->getMessage('DATES');
-                     break;
-                  case 'DISCUSSION':
-                     $text .= $this->_translator->getMessage('DISCUSSIONS');
-                     break;
-                  case 'GROUP':
-                     $text .= $this->_translator->getMessage('GROUPS');
-                     break;
-                  case 'INSTITUTION':
-                     $text .= $this->_translator->getMessage('INSTITUTIONS');
-                     break;
-                  case 'MATERIAL':
-                     $text .= $this->_translator->getMessage('MATERIALS');
-                     break;
-                  case 'MYROOM':
-                     $html .= $this->_translator->getMessage('MYROOMS');
-                     break;
-                  case 'PROJECT':
-                     $text .= $this->_translator->getMessage('PROJECTS');
-                     break;
-                  case 'TODO':
-                     $text .= $this->_translator->getMessage('TODOS');
-                     break;
-                  case 'TOPIC':
-                     $text .= $this->_translator->getMessage('TOPICS');
-                     break;
-                  case 'USER':
-                     $text .= $this->_translator->getMessage('USERS');
-                     break;
-                  default:
-                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
-                     break;
-               }
-               $title_string .= ',"'.$text;
-               $title_string .= ' ('.$link_items->getCount().')"';
-               $expanded_string .= ',false';
-               $html .= '         <noscript>';
-               $html .= '<div class="netnavigation_title">'.$text.'('.$link_items->getCount().')</div>';
-               $html .= '         </noscript>';
-               $html .= $this->_getLinkedItemsAsHTML($item, $link_items, $connection,
-               $this->_is_perspective($connection),
-                                      true,
-                                      true);
+        $current_context = $this->_environment->getCurrentContextItem();
+        if ($current_context->withPath()) {
+            $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
+            $link_item = $topic_link_items->getFirst();
+            while ($link_item) {
+                if (isset($link_item) and !empty($link_item)) {
+                    $topic_item = $link_item->getLinkedItem($item);
+                    if ($topic_item->isPathActive()) {
+                        $path_item_list = $topic_item->getPathItemList();
+                        $in_list = $path_item_list->inList($item);
+                        if ($in_list) {
+                            $title = $topic_item->getTitle();
+                            $length = mb_strlen($title);
+                            if ($length > 22) {
+                                $title = mb_substr($title, 0, 22) . '...';
+                            }
+                            $params['iid'] = $topic_item->getItemID();
+                            $noscript_title = ahref_curl($this->_environment->getCurrentContextID(), CS_TOPIC_TYPE, 'detail', $params, $title);
+                            $title = addslashes(ahref_curl($this->_environment->getCurrentContextID(), CS_TOPIC_TYPE, 'detail', $params, $title));
+                            $html .= '		<div class="netnavigation_panel">     ' . LF;
+                            $html .= '         <noscript>';
+                            $html .= '<div class="netnavigation_title">' . $this->_translator->getMessage('TOPIC_PATH') . ': ' . $noscript_title . '</div>';
+                            $html .= '         </noscript>';
+                            $html .= $this->_getPathItemsAsHTML($topic_item, $item->getItemID(), $path_item_list);
+                            $title_string .= ',"' . $this->_translator->getMessage('TOPIC_PATH') . ': ' . $title . '"';
+                            $parameter_array = $this->_environment->getCurrentParameterArray();
+                            if (isset($parameter_array['path']) and $parameter_array['path'] == $topic_item->getItemID()) {
+                                $show_entry = $counter;
+                            } else {
+                                $counter++;
+                            }
+                        }
+                    }
+                }
+                $link_item = $topic_link_items->getNext();
             }
-            $html .='			</div> ';
-            $counter++;
-         }
-      }
-      $show_entry = '0';
-
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ($current_context->withPath()){
-         $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
-         $link_item = $topic_link_items->getFirst();
-         while($link_item){
-            if (isset($link_item) and !empty($link_item)){
-               $topic_item = $link_item->getLinkedItem($item);
-               if ($topic_item->isPathActive()){
-                  $path_item_list = $topic_item->getPathItemList();
-                  $in_list = $path_item_list->inList($item);
-                  if ($in_list){
-                     $title = $topic_item->getTitle();
-                     $length = mb_strlen($title);
-                     if ( $length > 22 ) {
-                        $title = mb_substr($title,0,22).'...';
-                     }
-                     $params['iid'] = $topic_item->getItemID();
-                     $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
-                     $title = addslashes(ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title));
-                     $html .='		<div class="netnavigation_panel">     '.LF;
-                     $html .= '         <noscript>';
-                     $html .= '<div class="netnavigation_title">'.$this->_translator->getMessage('TOPIC_PATH').': '.$noscript_title.'</div>';
-                     $html .= '         </noscript>';
-                     $html .= $this->_getPathItemsAsHTML($topic_item,$item->getItemID(),$path_item_list);
-                     $title_string .= ',"'.$this->_translator->getMessage('TOPIC_PATH').': '.$title.'"';
-                     $parameter_array = $this->_environment->getCurrentParameterArray();
-                     if (isset($parameter_array['path']) and $parameter_array['path'] == $topic_item->getItemID()){
-                        $show_entry = $counter;
-                     }else{
-                        $counter++;
-                     }
-                  }
-               }
+            $item = $this->getItem();
+            $type = $item->getItemType();
+            if ($type == CS_TOPIC_TYPE and $item->isPathActive()) {
+                $show_entry = '-1';
             }
-            $link_item = $topic_link_items->getNext();
-         }
-         $item = $this->getItem();
-         $type = $item->getItemType();
-         if ($type == CS_TOPIC_TYPE and $item->isPathActive()){
-            $show_entry = '-1';
-         }
-      }
-      $html .='		<!-- END OF MENU -->';
-      $html .='      </div>';
-      $html .='      </div>';
-      $html .= '<script type="text/javascript">'.LF;
-      $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
-      $html .= 'initDhtmlNetnavigation("netnavigation",Array('.$title_string.'),'.$show_entry.',"'.$item->getItemID().'");'.LF;
-      $html .= '</script>'.LF;
-      return $html;
-   }
+        }
+        $html .= '		<!-- END OF MENU -->';
+        $html .= '      </div>';
+        $html .= '      </div>';
+        $html .= '<script type="text/javascript">' . LF;
+        $title_string = str_replace('</', '&COMMSYDHTMLTAG&', $title_string);
+        $html .= 'initDhtmlNetnavigation("netnavigation",Array(' . $title_string . '),' . $show_entry . ',"' . $item->getItemID() . '");' . LF;
+        $html .= '</script>' . LF;
+        return $html;
+    }
 
    function _getPathItemsAsHTML($topic_item,$item_id,$path_item_list){
       $html  ='<div>'.LF;
@@ -1462,11 +1459,7 @@ class cs_detail_view extends cs_view {
     * Generally, these methods need not be overridden.
     */
    function _is_perspective ($rubric) {
-      $in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE)) ;
-      if ($rubric == CS_INSTITUTION_TYPE) {
-         $context = $this->_environment->getCurrentContextItem();
-         $in_array = $context->withRubric(CS_INSTITUTION_TYPE);
-      }
+      $in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE)) ;
       return $in_array;
    }
 

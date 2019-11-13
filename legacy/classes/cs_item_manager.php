@@ -955,7 +955,7 @@ class cs_item_manager extends cs_manager {
 
   function setCommunityHomeLimit(){
      $this->_type_limit = array(0=>'materials',1=>CS_MATERIAL_TYPE);
-     $this->_label_limit = array(0=>CS_TOPIC_TYPE,1=>CS_INSTITUTION_TYPE);
+     $this->_label_limit = array(0=>CS_TOPIC_TYPE);
   }
 
    public function deleteSpecialItems ($context_id, $type) {

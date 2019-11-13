@@ -346,14 +346,6 @@
 	                        $list = $manager->get();
 	                        $count_all = $list->getCount();
 	                     break;
-	                  case CS_INSTITUTION_TYPE:
-	                        $manager = $environment->getInstitutionManager();
-	                        $manager->reset();
-	                        $manager->setContextLimit($environment->getCurrentContextID());
-	                        $manager->select();
-	                        $list = $manager->get();
-	                        $count_all = $list->getCount();
-	                     break;
 	                  case CS_USER_TYPE:
 	                        $manager = $environment->getUserManager();
 	                        $manager->reset();
@@ -673,13 +665,6 @@
            						$linked_item_array = $item->getAllLinkedItemIDArray();
 								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
-							case CS_INSTITUTION_TYPE:
-								$column1 = $item->getTitle();
-								$members = $item->getMemberItemList();
-            					$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$members->getCount();
-           						$linked_item_array = $item->getAllLinkedItemIDArray();
-								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
-								break;
 							case CS_PROJECT_TYPE:
 								$column1 = $item->getTitle();
            						$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$item->getAllUsers();
@@ -824,11 +809,6 @@
 								$shown = 0;
 							}
 							$message_tag = $translator->getMessage('HOME_TOPIC_SHORT_VIEW_DESCRIPTION', $shown);
-							break;
-						case CS_INSTITUTION_TYPE:
-							if($rubric_count_all_array[$key] > 0) {
-								$message_tag = $translator->getMessage('HOME_INSTITUTION_SHORT_VIEW_DESCRIPTION', $list->getCount());
-							}
 							break;
 						case CS_USER_TYPE:
 

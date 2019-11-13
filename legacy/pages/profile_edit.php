@@ -927,9 +927,6 @@ if ($command != 'error') { // only if user is allowed to edit user
                case CS_GROUP_TYPE:
                   $rubric_connection[] = CS_GROUP_TYPE;
                   break;
-               case CS_INSTITUTION_TYPE:
-                  $rubric_connection[] = CS_INSTITUTION_TYPE;
-                  break;
             }
       }
       $profile_view->setRubricConnections($rubric_connection);

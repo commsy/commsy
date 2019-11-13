@@ -482,11 +482,6 @@ if ($type != CS_DISCUSSION_TYPE) {
 								$first = CS_TOPIC_TYPE;
 							}
 							break;
-						case CS_INSTITUTION_TYPE:
-							if(empty($first)) {
-								$first = CS_INSTITUTION_TYPE;
-							}
-							break;
 					}
 				}
 			}
@@ -499,10 +494,6 @@ if ($type != CS_DISCUSSION_TYPE) {
 			if($context_item->withRubric(CS_GROUP_TYPE)) {
 				$ids = $this->_item->getLinkedItemIDArray(CS_GROUP_TYPE);
 				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids', $ids);
-			}
-			if($context_item->withRubric(CS_INSTITUTION_TYPE)) {
-				$ids = $this->_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_index_ids', $ids);
 			}
 
 			/* seems to be unused

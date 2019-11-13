@@ -46,14 +46,12 @@ class cs_community_item extends cs_room_item {
       $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
       $this->_default_rubrics_array[6] = CS_USER_TYPE;
       $this->_default_rubrics_array[7] = CS_TOPIC_TYPE;
-      $this->_default_rubrics_array[8] = CS_INSTITUTION_TYPE;
       $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'short';
       $this->_default_home_conf_array[CS_PROJECT_TYPE] = 'short';
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_INSTITUTION_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TODO_TYPE] = 'tiny';
    }
@@ -321,7 +319,7 @@ class cs_community_item extends cs_room_item {
    function setRoomContext ($value) {
       $this->_addExtra('ROOM_CONTEXT',(string)$value);
       if ($value == 'uni'){
-         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_PROJECT_TYPE.'_short,'.CS_MATERIAL_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_short,'.CS_INSTITUTION_TYPE.'_short,'.CS_DISCUSSION_TYPE.'_tiny');
+         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_PROJECT_TYPE.'_short,'.CS_MATERIAL_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_short,'.CS_DISCUSSION_TYPE.'_tiny');
          $retour['NAME'] = CS_PROJECT_TYPE;
         $retour['DE']['GENUS']= 'M';
         $retour['DE']['NOMS']= 'Projektraum';
@@ -403,7 +401,7 @@ class cs_community_item extends cs_room_item {
         $retour['EN']['DATPL']= 'community workspaces';
          $this->setRubricArray (CS_COMMUNITY_TYPE, $retour);
       } elseif ($value == 'school') {
-         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_PROJECT_TYPE.'_short,'.CS_MATERIAL_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_short,'.CS_INSTITUTION_TYPE.'_tiny,'.CS_DISCUSSION_TYPE.'_tiny');
+         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_PROJECT_TYPE.'_short,'.CS_MATERIAL_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_short,'.CS_DISCUSSION_TYPE.'_tiny');
          $retour['NAME'] = CS_TOPIC_TYPE;
         $retour['DE']['GENUS']= 'N';
          $retour['DE']['NOMS']= 'Gremium';
@@ -486,7 +484,7 @@ class cs_community_item extends cs_room_item {
          $this->setRubricArray (CS_COMMUNITY_TYPE, $retour);
       }
       elseif ($value == 'project'){
-         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_PROJECT_TYPE.'_short,'.CS_MATERIAL_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_short,'.CS_INSTITUTION_TYPE.'_tiny,'.CS_DISCUSSION_TYPE.'_tiny');
+         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_PROJECT_TYPE.'_short,'.CS_MATERIAL_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_short,'.CS_DISCUSSION_TYPE.'_tiny');
          $retour['NAME'] = CS_PROJECT_TYPE;
         $retour['DE']['GENUS']= 'M';
         $retour['DE']['NOMS']= 'Projektraum';
@@ -649,11 +647,6 @@ class cs_community_item extends cs_room_item {
       }
 
       $activity = $activity + $this->getCountDiscussions($start,$end);
-      if ($activity > $activity_border) {
-         #return true;
-      }
-
-      $activity = $activity + $this->getCountInstitutions($start,$end);
       if ($activity > $activity_border) {
          #return true;
       }

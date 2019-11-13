@@ -1119,7 +1119,6 @@ class cs_item {
             if ($changed_key != 'general' and $changed_key !='section_for' and $changed_key !='task_item' and $changed_key !='copy_of') {
                // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
                if ( in_array($changed_key, array(  CS_TOPIC_TYPE,
-                                                   CS_INSTITUTION_TYPE,
                                                    CS_GROUP_TYPE,
                                                    CS_PROJECT_TYPE,
                                                    CS_PRIVATEROOM_TYPE,
@@ -2214,13 +2213,6 @@ class cs_item {
       $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
    }
 
-   function getInstitutionList() {
-      $institution_list = $this->getLinkedItemList(CS_INSTITUTION_TYPE);
-      $institution_list->sortBy('name');
-      return $institution_list;
-   }
-
-
    function setExternalViewerAccounts($user_id_array) {
        $this->_external_viewer_user_array = $user_id_array;
    }
@@ -2245,15 +2237,6 @@ function getExternalViewerArray(){
       $retour = $item_manager->getExternalViewerUserArrayForItem($this->getItemID());
       return $retour;
    }
-
-   function setInstitutionListByID ($value) {
-      $this->setLinkedItemsByID (CS_INSTITUTION_TYPE, $value);
-   }
-
-   function setInstitutionList($value) {
-      $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
-   }
-
    function getGroupList () {
       $group_list = $this->getLinkedItemList(CS_GROUP_TYPE);
       $group_list->sortBy('name');

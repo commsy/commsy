@@ -65,15 +65,6 @@ if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    }
    $form->setGroups($groups);
 
-   $institution_list = $rubric_item->getLinkedItemList(CS_INSTITUTION_TYPE);
-   $institution_item = $institution_list->getFirst();
-   $institutions = array();
-   while ($institution_item){
-      $institutions[] .= $institution_item->getItemID();
-      $institution_item = $institution_list->getNext();
-   }
-   $form->setInstitutions($institutions);
-
    $form->prepareForm();
 
    if ( isOption($command,$translator->getMessage('COMMON_MAIL_SEND_BUTTON')) ) { // send mail
@@ -195,29 +186,6 @@ if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          $user_manager->resetLimits();
          $user_manager->setUserLimit();
          $label_manager = $environment->getLabelManager();
-         $institution_list = new cs_list();
-         if ( isset($_POST['institutions']) and !empty($_POST['institutions']) ){
-            $institution_list = $label_manager->getItemList($_POST['institutions']);
-         }
-         $institution_item = $institution_list->getFirst();
-         while ($institution_item){
-            // get selected rubrics for inclusion in recipient list
-            $user_manager->setInstitutionLimit($institution_item->getItemID());
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            $user_item = $user_list->getFirst();
-            while($user_item) {
-               if ($user_item->isEmailVisible()) {
-                     $recipients[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-                     $recipients_display[] = $user_item->getFullName()." &lt;".$user_item->getEmail()."&gt;";
-               } else {
-                     $recipients_bcc[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-                     $recipients_display_bcc[] = $user_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
-               }
-               $user_item = $user_list->getNext();
-            }
-            $institution_item = $institution_list->getNext();
-         }
 
          $recipients = array_unique($recipients);
          $recipients_display = array_unique($recipients_display);

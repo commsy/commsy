@@ -429,45 +429,6 @@ class cs_room_item extends cs_context_item {
       $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
    }
 
-   /** get institutions of a project
-    * this method returns a list of institutions which are linked to the project
-    *
-    * @return object cs_list a list of institutions (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function getInstitutionList() {
-      return $this->getLinkedItemList(CS_INSTITUTION_TYPE);
-   }
-
-  /** set institutions of a project item by id
-   * this method sets a list of institution item_ids which are linked to the project
-   *
-   * @param array of institution ids
-   *
-   * @author CommSy Development Group
-   */
-   function setInstitutionListByID ($value) {
-      $institution_array = array();
-      foreach ( $value as $iid ) {
-         $tmp_data = array();
-         $tmp_data['iid'] = $iid;
-         $institution_array[] = $tmp_data;
-      }
-      $this->_setValue(CS_INSTITUTION_TYPE, $institution_array, FALSE);
-   }
-
-   /** set institutions of a project
-    * this method sets a list of institutions which are linked to the project
-    *
-    * @param object cs_list value list of institutions (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function setInstitutionList($value) {
-      $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
-   }
-
    /** get materials of a project
     * this method returns a list of materials which are linked to the project
     *

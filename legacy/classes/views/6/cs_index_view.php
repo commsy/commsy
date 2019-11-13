@@ -1180,29 +1180,6 @@ EOD;
             $html_text .='</div>';
             $html .= $html_text;
          }
-         if ( isset($params['selinstitution']) and !empty($params['selinstitution']) ){
-            $html_text ='<div class="restriction">';
-            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_INSTITUTION').':</span> ';
-            if ($params['selinstitution'] == '-1'){
-               $html_text .= '<span><a title="'.$this->_translator->getMessage('COMMON_NOT_LINKED').'">'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</a></span>';
-            }else{
-               $institution_manager = $this->_environment->getInstitutionManager();
-               $institution_item = $institution_manager->getItem($params['selinstitution']);
-               $link_params = array();
-               $link_params['iid'] = $institution_item->getItemID();
-               $html_text .=  ahref_curl($this->_environment->getCurrentContextID(),
-                                CS_INSTITUTION_TYPE,
-                                'detail',
-                                $link_params,
-                                chunkText($institution_item->getTitle(),14),$institution_item->getTitle()).LF;
-            }
-            $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
-            $new_params = $params;
-            unset($new_params['selinstitution']);
-            $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
-            $html_text .='</div>';
-            $html .= $html_text;
-         }
          if ( isset($params['seltopic']) and !empty($params['seltopic']) ){
             $html_text ='<div class="restriction">';
             $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_TOPIC').':</span> ';
@@ -2476,7 +2453,6 @@ EOD;
    function setAvailableRubric($rubric,$rubric_list){
       switch($rubric){
          case CS_TOPIC_TYPE: $this->setAvailableTopics($rubric_list);break;
-         case CS_INSTITUTION_TYPE: $this->setAvailableInstitutions($rubric_list);break;
          case CS_GROUP_TYPE: $this->setAvailableGroups($rubric_list);break;
       }
    }
@@ -2486,7 +2462,6 @@ EOD;
    function setSelectedRubric($rubric,$value){
       switch($rubric){
          case CS_TOPIC_TYPE: $this->setSelectedTopic($value);break;
-         case CS_INSTITUTION_TYPE: $this->setSelectedInstitution($value);break;
          case CS_GROUP_TYPE: $this->setSelectedGroup($value);break;
       }
    }
@@ -2495,7 +2470,6 @@ EOD;
    function getAvailableRubric($rubric){
       switch($rubric){
          case CS_TOPIC_TYPE: return $this->getAvailableTopics();break;
-         case CS_INSTITUTION_TYPE: return $this->getAvailableInstitutions();break;
          case CS_GROUP_TYPE: return $this->getAvailableGroups();break;
       }
    }
@@ -2503,7 +2477,6 @@ EOD;
    function getSelectedRubric($rubric){
       switch($rubric){
          case CS_TOPIC_TYPE: return $this->getSelectedTopic();break;
-         case CS_INSTITUTION_TYPE: return $this->getSelectedInstitution();break;
          case CS_GROUP_TYPE: return $this->getSelectedGroup();break;
       }
    }
