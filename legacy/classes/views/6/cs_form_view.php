@@ -445,7 +445,6 @@ class cs_form_view extends cs_view {
                  or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
                  or $this->_environment->getCurrentModule() == CS_DISCARTICLE_TYPE
                  or $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
-                 or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
                  or $this->_environment->getCurrentModule() == CS_GROUP_TYPE
                  or $this->_environment->getCurrentModule() == CS_ANNOTATION_TYPE
                )
@@ -1532,7 +1531,6 @@ class cs_form_view extends cs_view {
              $current_module == CS_USER_TYPE or
              $current_module == CS_DISCUSSION_TYPE or
              $current_module == CS_GROUP_TYPE or
-             $current_module == CS_INSTITUTION_TYPE or
              $current_module == CS_TOPIC_TYPE or
              $current_module == CS_SECTION_TYPE or
              $current_module == CS_DISCARTICLE_TYPE or
@@ -2234,11 +2232,7 @@ class cs_form_view extends cs_view {
     * Generally, these methods need not be overridden.
     */
    function _is_perspective ($rubric) {
-      $in_array = in_array($rubric, array(CS_GROUP_TYPE,CS_TOPIC_TYPE, CS_INSTITUTION_TYPE)) ;
-      if ($rubric == CS_INSTITUTION_TYPE) {
-         $context = $this->_environment->getCurrentContextItem();
-         $in_array = $context->withRubric(CS_INSTITUTION_TYPE);
-      }
+      $in_array = in_array($rubric, array(CS_GROUP_TYPE,CS_TOPIC_TYPE)) ;
       return $in_array;
    }
 
@@ -2566,7 +2560,6 @@ class cs_form_view extends cs_view {
                     or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
                     or $this->_environment->getCurrentModule() == CS_DISCARTICLE_TYPE
                     or $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
-                    or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
                     or $this->_environment->getCurrentModule() == CS_GROUP_TYPE
                     or $this->_environment->getCurrentModule() == CS_ANNOTATION_TYPE
                   )
@@ -2634,7 +2627,6 @@ class cs_form_view extends cs_view {
                  or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
                  or $this->_environment->getCurrentModule() == CS_DISCARTICLE_TYPE
                  or $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
-                 or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
                  or $this->_environment->getCurrentModule() == CS_GROUP_TYPE
                  or $this->_environment->getCurrentModule() == CS_ANNOTATION_TYPE
                )

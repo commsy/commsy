@@ -16,8 +16,7 @@
 	                or $this->_environment->getCurrentModule() == CS_DATE_TYPE
 	                or $this->_environment->getCurrentModule() == CS_GROUP_TYPE
 	                or $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
-	                or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
-	                or ($this->_environment->getCurrentModule() == CS_USER_TYPE and ($context_item->withRubric(CS_GROUP_TYPE) or($context_item->withRubric(CS_INSTITUTION_TYPE))))
+	                or ($this->_environment->getCurrentModule() == CS_USER_TYPE and $context_item->withRubric(CS_GROUP_TYPE))
 	                or $this->_environment->getCurrentModule() == 'search'
 	          		|| ($this->_environment->getCurrentModule() === 'ajax' && in_array($this->_environment->getCurrentFunction(), array('rubric_popup', 'path'))))
 	      ) {
@@ -76,8 +75,6 @@
 
 			if ($current_context->isProjectRoom()){
 				$link_items = $item->getLinkItemList(CS_GROUP_TYPE);
-			}elseif($current_context->isCommunityRoom()){
-				$link_items = $item->getLinkItemList(CS_INSTITUTION_TYPE);
 			}else{
 				$link_items = new cs_list();
 			}

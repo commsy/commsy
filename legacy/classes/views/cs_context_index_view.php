@@ -52,9 +52,6 @@ class cs_context_index_view extends cs_index_view {
      $current_context = $this->_environment->getCurrentContextItem();
       $params = parent::_getGetParamsAsArray();
       if ($this->_environment->inCommunityRoom()) {
-       if ($current_context->withRubric(CS_INSTITUTION_TYPE)) {
-            $params['selinstitution'] = $this->getSelectedInstitution();
-       }
        if ($current_context->withRubric(CS_TOPIC_TYPE)) {
             $params['seltopic'] = $this->getSelectedTopic();
        }

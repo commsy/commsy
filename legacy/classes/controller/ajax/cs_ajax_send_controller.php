@@ -247,10 +247,6 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			if ( $current_context->withRubric(CS_GROUP_TYPE) ) {
 				$showGroupRecipients = true;
 			}
-		} else {
-			if ( $current_context->withRubric(CS_INSTITUTION_TYPE) and !empty($institutionArray) ) {
-				$showInstitutionRecipients = true;
-			}
 		}
 
 		//Projectroom and no groups enabled -> send mails to group all
@@ -275,7 +271,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 		$response['groups'] = $groupArray;
 
 		$allMembers = false;
-		if ( ($current_context->isCommunityRoom() && !$current_context->withRubric(CS_INSTITUTION_TYPE)) || $current_context->isGroupRoom()) {
+		if ( ($current_context->isCommunityRoom()) || $current_context->isGroupRoom()) {
 			$allMembers = true;
 
 			// get number of users
@@ -441,38 +437,6 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$user_manager->resetLimits();
 			$user_manager->setUserLimit();
 			$label_manager = $this->_environment->getLabelManager();
-			$institution_list = new cs_list();
-
-			// build institution id array
-			$institutionIdArray = array();
-			foreach ($this->_data as $key => $value) {
-				if (mb_stristr($key, "institution_") && $value == true) {
-					$institutionIdArray[] = mb_substr($key, 12);
-				}
-			}
-
-			if (!empty($institutionIdArray)) {
-				$institution_list = $label_manager->getItemList($institutionIdArray);
-			}
-			$institution_item = $institution_list->getFirst();
-			while ($institution_item){
-				// get selected rubrics for inclusion in recipient list
-				$user_manager->setInstitutionLimit($institution_item->getItemID());
-				$user_manager->select();
-				$user_list = $user_manager->get();
-				$user_item = $user_list->getFirst();
-				while($user_item) {
-					if ($user_item->isEmailVisible()) {
-						$recipients[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-						$recipients_display[] = $user_item->getFullName()." &lt;".$user_item->getEmail()."&gt;";
-					} else {
-						$recipients_bcc[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-						$recipients_display_bcc[] = $user_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
-					}
-					$user_item = $user_list->getNext();
-				}
-				$institution_item = $institution_list->getNext();
-			}
 			
 			// additional recipients
 			$additionalRecipientsArray = array();
@@ -567,7 +531,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 	}
 	
 	/** Retrieves all labels of a type in the current context
-	 *   @param $type: typ of label, e.g. 'topic', 'group' or 'institution'
+	 *   @param $type: typ of label, e.g. 'topic', 'group'
 	 *   @return list of names and id's of desired labels
 	 */
 	private function getAllLabelsByType($type) {

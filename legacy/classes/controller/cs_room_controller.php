@@ -332,11 +332,7 @@
 		}
 
 		protected function isPerspective($rubric) {
-			$in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE));
-			if($rubric === CS_INSTITUTION_TYPE) {
-				$context = $this->_environment->getCurrentContextItem();
-				$in_array = $context->withRubric(CS_INSTITUTION_TYPE);
-			}
+			$in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE));
 
 			return $in_array;
 		}
@@ -431,8 +427,7 @@
 				CS_GROUP_TYPE			=>	'gr',
 				CS_TODO_TYPE			=>	'au',
 				CS_TOPIC_TYPE			=>	'th',
-				CS_PROJECT_TYPE			=>	'pr',
-				CS_INSTITUTION_TYPE		=>	'in'
+				CS_PROJECT_TYPE			=>	'pr'
 			);
 
 			foreach($rubrics as $rubric) {

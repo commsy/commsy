@@ -256,30 +256,6 @@ class MailAssistant
             }
         }
 
-        // form option: send_to_institutions
-        $isSendToInstitutions = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
-            ? false : $formData->getSendToGroups()) : $form->has('send_to_groups') && !empty($formData['send_to_institutions']));
-
-        if ($isSendToInstitutions) {
-            $labelManager = $this->legacyEnvironment->getLabelManager();
-            $institutions = $labelManager->getItemList($formData->getSendToInstitutions());
-
-            $userManager = $this->legacyEnvironment->getUserManager();
-            $userManager->resetLimits();
-            $userManager->setUserLimit();
-
-            $institution = $institutions->getFirst();
-            while ($institution) {
-                $userManager->setInstitutionLimit($institution->getItemID());
-                $userManager->select();
-                $userList = $userManager->get();
-
-                $this->addRecipients($recipients, $userList);
-
-                $institution = $institutions->getNext();
-            }
-        }
-
         return $recipients;
     }
 

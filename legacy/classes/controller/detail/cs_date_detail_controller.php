@@ -187,27 +187,14 @@ class cs_date_detail_controller extends cs_detail_controller {
 			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids', $ids);
 		}
 
-		if($current_context->withRubric(CS_INSTITUTION_TYPE) and isset($this->_item) ) {
-			$ids = $this->_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_index_ids', $ids);
-		}
-
 		$rubric_connections = array();
 		if($first === CS_TOPIC_TYPE) {
 			$rubric_connections = array(CS_TOPIC_TYPE);
 			if($current_context->withRubric(CS_GROUP_TYPE)) {
 				$rubic_connections[] = CS_GROUP_TYPE;
 			}
-			if($current_context->withRubric(CS_INSTITUTION_TYPE)) {
-				$rubric_connections[] = CS_INSTITUTION_TYPE;
-			}
 		} elseif($first == 'group') {
 			$rubric_connections = array(CS_GROUP_TYPE);
-			if($current_context->withRubric(CS_TOPIC_TYPE)) {
-				$rubric_connections[] = CS_TOPIC_TYPE;
-			}
-		} elseif($first == CS_INSTITUTION_TYPE) {
-			$rubric_connections = array(CS_INSTITUTION_TYPE);
 			if($current_context->withRubric(CS_TOPIC_TYPE)) {
 				$rubric_connections[] = CS_TOPIC_TYPE;
 			}

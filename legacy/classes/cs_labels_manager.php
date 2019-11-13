@@ -258,10 +258,6 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
      $this->_version_limit = (int)$version;
   }
 
-   function setInstitutionLimit ($limit) {
-      $this->_institution_limit = (int)$limit;
-   }
-
    function setTopicLimit ($limit) {
       $this->_topic_limit = (int)$limit;
    }
@@ -412,10 +408,6 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
         }
      }
 
-     if ( isset($this->_institution_limit) ) {
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l11 ON ( l11.deletion_date IS NULL AND ((l11.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l11.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l12 ON ( l12.deletion_date IS NULL AND ((l12.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l12.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-     }
      if ( isset($this->_topic_limit) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
@@ -1083,52 +1075,6 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting topics.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountInstitutions ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_INSTITUTION_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all topics.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewInstitutions ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_INSTITUTION_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting insitutions.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountModInstitutions ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_INSTITUTION_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("labels").".modification_date != ".$this->addDatabasePrefix("labels").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting modified institutions.',E_USER_WARNING);
       } else {
          foreach ($result as $rs) {
             $retour = $rs['number'];
