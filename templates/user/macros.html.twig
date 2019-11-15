@@ -47,6 +47,7 @@
                             <tr>
                                 <td class="uk-text-bold">{{ 'email'|trans({}, 'user')}}:</td>
                                 {% if item.isEmailVisible %}
+                                    <p> Stelle 6</p>
                                     <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
                                 {% else %}
                                     <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('app_user_send', {'roomId': item.contextId, 'itemId': item.itemId}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
@@ -353,6 +354,7 @@
                         <tr>
                             <td class="uk-text-bold">{{ 'email'|trans({}, 'user')}}:</td>
                             {% if item.isEmailVisible %}
+                                <p> Stelle 2</p>
                                 <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
                             {% else %}
                                 <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="">ToDo: "send email"-link</a>)</td>

@@ -20,7 +20,13 @@
 
                     {{ form_errors(form) }}
 
+                    {{ form_row(form.subject) }}
+
+                    {{ form_row(form.message) }}
+
                     {{ form_row(form.save) }}
+
+                    {{ form_row(form.cancel) }}
 
                     {{ form_end(form) }}
                 </div>

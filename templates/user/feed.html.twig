@@ -62,7 +62,7 @@
             </div>
             <div class="uk-width-4-10">
                 {% if user.email %}
-                    <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId}) }}">{{'send mail'|trans({}, 'profile') }}</a></td>
+                    <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'profile') }}</a></td>
                 {% endif %}
                 <br/>
                 {% if user.telephone %}

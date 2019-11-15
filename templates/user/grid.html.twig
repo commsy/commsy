@@ -59,6 +59,7 @@
             <span>
                 {% if user.email %}
                     {% if user.isEmailVisible %}
+                        <p> Stelle 1</p>
                         <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
                     {% endif %}
                 {% else %}

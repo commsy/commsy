@@ -182,7 +182,7 @@ class SendType extends AbstractType
                 'expanded' => true,
                 'translation_domain' => 'mail',
                 'choice_translation_domain' => 'form',
-                'required' => true,
+                'required' => false,
             ])
             ->add('additional_recipients', CollectionType::class, [
                 'label' => 'Additional recipients',

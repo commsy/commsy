@@ -52,11 +52,10 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/contactForm/")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}")
      * @Template
      */
-    public function sendMailViaContactForm($roomId, $itemId, Request $request){
+    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request){
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -96,7 +95,7 @@ class UserController extends BaseController
             $this->addFlash('recipientCount', $recipientCount);
 
 
-            return $this->redirectToRoute('app_user_list', array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
+            return $this->redirectToRoute($originPath, array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
         }
 
         return [
