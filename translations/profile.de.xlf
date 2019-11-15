@@ -326,9 +326,16 @@
             </trans-unit>
             <trans-unit id="delete_room_membership_text">
                 <source>deleteRoomMembershipText</source>
-                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft und sämtlichen Beiträge in diesem Raum zu löschen. Sie können diesen Raum danach nicht mehr betreten.</target>
+                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft in diesem Raum zu löschen. Sie können diesen Raum danach nicht mehr betreten. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Account löschen. ACHTUNG: Diese Aktion kann nicht rückgängig gemacht werden!</target>
             </trans-unit>
-
+            <trans-unit id="delete_room_membership_text_flag">
+                <source>deleteRoomMembershipTextFlag</source>
+                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft und Ihre Beiträge in diesem Raum zu löschen.</target>
+            </trans-unit>
+            <trans-unit id="delete_room_membership_text_false">
+                <source>deleteRoomMembershipTextFalse</source>
+                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft und sämtliche Beiträge in diesem Raum zu löschen.</target>
+            </trans-unit>
             <trans-unit id="lock_account_title">
                 <source>lockAccount</source>
                 <target>Account sperren</target>
@@ -344,7 +351,17 @@
             </trans-unit>
             <trans-unit id="delete_account_text">
                 <source>deleteAccountText</source>
-                <target>Wählen Sie diese Option, um Ihren Account und sämtliche Beiträge in allen Räumen diesen Portals zu löschen. Um CommSy wieder verwenden zu können, müssen Sie sich erneut registrieren.</target>
+                <target>Wählen Sie diese Option, um Ihren Account in diesem Portal zu löschen. Die Teilnahme an Ihren Räumen wird beendet und die Benutzerkennung entfernt. Sie haben anschließend keinen Zutritt mehr zu diesem Portal. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Account löschen.</target>
+            </trans-unit>
+
+            <trans-unit id="delete_account_text_flag">
+                <source>deleteAccountTextFlag</source>
+                <target>Wählen Sie diese Option, um Ihren Account und sämtliche Beiträge in allen Räumen dieses Portals zu löschen.</target>
+            </trans-unit>
+
+            <trans-unit id="delete_account_text_false">
+                <source>deleteAccountTextFalse</source>
+                <target>Wählen Sie diese Option, um Ihren Account und sämtliche Beiträge in allen Räumen diesen Portals zu löschen. Sie haben anschließend keinen Zutritt mehr zu diesem Portal.</target>
             </trans-unit>
 
             <trans-unit id="email_choice_text">

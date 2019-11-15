@@ -7,6 +7,7 @@ use App\Form\Type\Profile\DeleteAccountType;
 use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -594,8 +595,11 @@ class ProfileController extends Controller
     * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
     * @Template
     */
-    public function deleteAccountAction($roomId, Request $request)
+    public function deleteAccountAction($roomId, Request $request, ParameterBagInterface $parameterBag)
     {
+
+        $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
+
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteAccountType::class, [
             'confirm_string' => $this->get('translator')->trans('lock', [], 'profile'),
         ],[])->getForm();
@@ -646,6 +650,7 @@ class ProfileController extends Controller
         }
 
         return [
+            'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView()
         ];
@@ -708,8 +713,9 @@ class ProfileController extends Controller
     * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
     * @Template
     */
-    public function deleteRoomProfileAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
+    public function deleteRoomProfileAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService, ParameterBagInterface $parameterBag)
     {
+        $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
 
@@ -752,6 +758,7 @@ class ProfileController extends Controller
         }
 
         return [
+            'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView()
         ];
