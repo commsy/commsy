@@ -1184,8 +1184,14 @@ class cs_grouproom_item extends cs_room_item {
             ->setSubject($subject)
             ->setBody($body, 'text/plain')
             ->setFrom([$emailFrom => $fromName])
-            ->setReplyTo([$current_user->getEmail() => $current_user->getFullname()])
             ->setTo($value);
+
+         if ($current_user) {
+            $email = $current->user->getEmail();
+            if (!empty($email)) {
+               $message->setReplyTo([$email => $current_user->getFullname()]);
+            }
+         }
 
          $symfonyContainer->get('mailer')->send($message);
 
