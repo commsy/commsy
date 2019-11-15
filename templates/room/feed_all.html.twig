@@ -61,9 +61,14 @@
                         </h4>
 
                         <div class="uk-comment-meta">
-                            Stelle 8
                             {% if room.contactPersons is not empty %}
-                                {{ room.contactPersons }}
+                                {% set splitText = room.contactPersons|split(';') %}
+                                {% if splitText|length > 1 %}
+
+                                    <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': splitText[1], 'originPath': 'app_room_listall'}) }}">{{ splitText[0] }} </a>
+                                {% else %}
+                                    {{ room.contactPersons }}
+                                {% endif %}
                             {% else %}
                                 {{ room.getContactModeratorListString }}
                             {% endif %}

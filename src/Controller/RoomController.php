@@ -489,21 +489,24 @@ class RoomController extends Controller
 
         $projectsMemberStatus = array();
         foreach ($rooms as $room) {
-            $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
 
-            $userManager = $legacyEnvironment->getUserManager();
-            $userManager->reset();
-            $userManager->setModeratorLimit($legacyEnvironment->getCurrentContextID());
-            $userManager->setContactModeratorInProjectLimit();
-            $userManager->select();
-            $users = $userManager->getAllRoomUsersFromCache($room->getContextId());
-            $contactUsers = $room->getContactUsers();
-            foreach($users as $user){
-                if(strpos("mystring", "word") !== false){
-                    // do nothing
+            try{
+                $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
+                $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
+                $users = $currentPortalItem->getUserList();
+                $contactUsers = $room->getContactPersons();
+                foreach($users as $user){
+                    if(strpos($contactUsers, $user->getFullName()) !== false){
+                        $contactItemId = $user->getItemID();
+                        if($user->isCommSyContact()) {
+                            $room->setContactPersons($contactUsers . ";" . $contactItemId);
+                            break;
+                        }
+                    }
                 }
+            }catch (Exception $e){
+                // do nothing
             }
-
         }
         return [
             'roomId' => $roomId,
