@@ -705,7 +705,7 @@
         {% endif %}
 
         {% if not user.email is empty and user.isEmailVisible %}
-            <a href="mailto:{{ user.email }}">{{ user.fullname }}</a>{{ suffix }}
+            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': user.contextId, 'itemId': user.itemId, 'originPath': 'app_room_listall'}) }}">{{ user.fullname }}</a>{{ suffix }}
         {% else %}
            {{ user.fullname ~ suffix }}
         {% endif %}
