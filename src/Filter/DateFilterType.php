@@ -46,8 +46,8 @@ class DateFilterType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'Search',
-                'translation_domain' => 'search',
+                'label' => 'Filter',
+                'translation_domain' => 'form',
             ))
             ->add('participant', ParticipantFilterType::class, array(
                 'label' => false,

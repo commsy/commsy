@@ -97,7 +97,8 @@ class RoomFilterType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'Suchen',
+                'label' => 'Filter',
+                'translation_domain' => 'form',
             ));
     }
 

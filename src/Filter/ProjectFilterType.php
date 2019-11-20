@@ -34,7 +34,7 @@ class ProjectFilterType extends AbstractType
             //     'attr' => array(
             //         'class' => 'uk-button-primary',
             //     ),
-            //     'label' => 'Filtern',
+            //     'label' => 'Filter',
             //     'translation_domain' => 'form',
             // ))
         ;

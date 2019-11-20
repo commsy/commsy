@@ -63,8 +63,8 @@ class CategoryFilterType extends AbstractType
                         'attr' => array(
                             'class' => 'uk-button-primary',
                             ),
-                        'label' => 'Search',
-                        'translation_domain' => 'search',
+                        'label' => 'Filter',
+                        'translation_domain' => 'form',
                     ));
             }
         }

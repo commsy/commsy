@@ -41,8 +41,8 @@ class AnnouncementFilterType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button-primary uk-margin-top',
                 ),
-                'label' => 'Search',
-                'translation_domain' => 'search',
+                'label' => 'Filter',
+                'translation_domain' => 'form',
             ))
         ;
 
