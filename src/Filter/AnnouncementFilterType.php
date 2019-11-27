@@ -22,6 +22,13 @@ class AnnouncementFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, array(
                 'label_attr' => array(
                     'class' => 'uk-form-label',
@@ -37,13 +44,6 @@ class AnnouncementFilterType extends AbstractType
             ))
             ->add('filter', HiddenType::class, []
             )
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary uk-margin-top',
-                ),
-                'label' => 'Filter',
-                'translation_domain' => 'form',
-            ))
         ;
 
         if ($options['hasCategories']) {

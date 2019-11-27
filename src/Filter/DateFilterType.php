@@ -23,6 +23,13 @@ class DateFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
                 'label_attr' => array(
                     'class' => 'uk-form-label',
@@ -41,13 +48,6 @@ class DateFilterType extends AbstractType
             ))
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
-            ))
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Filter',
-                'translation_domain' => 'form',
             ))
             ->add('participant', ParticipantFilterType::class, array(
                 'label' => false,

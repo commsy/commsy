@@ -21,6 +21,13 @@ class UserFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('user_search', TextType::class, [
                 'label' => 'Name',
                 'translation_domain' => 'room',
@@ -75,14 +82,6 @@ class UserFilterType extends AbstractType
             'multiple' => false,
             'placeholder' => 'no restrictions',
         ));
-        $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Filter',
-                'translation_domain' => 'form',
-            ));
     }
 
     /**

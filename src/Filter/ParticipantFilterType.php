@@ -56,14 +56,6 @@ class ParticipantFilterType extends AbstractType
                         'expanded' => true,
                         'label' => false,
                         ));
-                $builder
-                    ->add('submit', SubmitType::class, array(
-                        'attr' => array(
-                            'class' => 'uk-button-primary',
-                            ),
-                        'label' => 'Filter',
-                        'translation_domain' => 'form',
-                        ));
             }
         }
     }

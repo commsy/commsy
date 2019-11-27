@@ -21,6 +21,14 @@ class ProjectFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-mini',
+                ),
+                'disabled' => true,
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             // ->add('activated', Filters\CheckboxFilterType::class, array(
             //     'translation_domain' => 'form',
             //     'label_attr' => array(
@@ -29,13 +37,6 @@ class ProjectFilterType extends AbstractType
             // ))
             // ->add('rubrics', RubricFilterType::class, array(
             //     'label' => false,
-            // ))
-            // ->add('save', SubmitType::class, array(
-            //     'attr' => array(
-            //         'class' => 'uk-button-primary',
-            //     ),
-            //     'label' => 'Filter',
-            //     'translation_domain' => 'form',
             // ))
         ;
     }

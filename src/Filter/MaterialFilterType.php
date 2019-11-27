@@ -22,6 +22,13 @@ class MaterialFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
                 'translation_domain' => 'form',
                 'label_attr' => array(
@@ -33,13 +40,6 @@ class MaterialFilterType extends AbstractType
             ))
             ->add('filter', HiddenType::class, []
             )
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary uk-margin-top',
-                ),
-                'label' => 'Filter',
-                'translation_domain' => 'form',
-            ))
         ;
 
         if ($options['hasCategories']) {
