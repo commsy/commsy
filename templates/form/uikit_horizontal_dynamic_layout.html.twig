@@ -111,18 +111,15 @@
             {% endif %}
         </div>
 
-        <div id="room-categories" class="cs-toggle-preview-filter{% if expanded %} cs-toggle-full-filter{% endif %}">
-            <div data-cs-tree='{ "custom": {"customCascade": true } }'>
-                {% if form.vars is not empty %}
-                    <ul class="uk-list uk-list-striped">
-                        {{ macros.nestedList(form.vars.choices, 0) }}
-                        </li>
-                    </ul>
-                {% else %}
-                    {{ 'No Categories'|trans({}, 'category') }}
-                {% endif %}
-            </div>
-            {{- form_widget(form.parent.submit) -}}
+        <div id="room-categories" class="cs-toggle-preview-filter{% if expanded %} cs-toggle-full-filter{% endif %}" data-cs-tree='{ "custom": {"customCascade": true } }'>
+            {% if form.vars is not empty %}
+                <ul class="uk-list uk-list-striped">
+                    {{ macros.nestedList(form.vars.choices, 0) }}
+                    </li>
+                </ul>
+            {% else %}
+                {{ 'No Categories'|trans({}, 'category') }}
+            {% endif %}
         </div>
 
         {% if form.children|length > 0 %}
@@ -158,18 +155,15 @@
             {% endif %}
         </div>
 
-        <div id="participants" class="cs-toggle-preview-filter">
-            <div data-cs-tree>
-                {% if form.vars is not empty %}
-                    <ul class="uk-list uk-list-striped">
-                        {{ macros.nestedList(form.vars.choices, 0) }}
-                        </li>
-                    </ul>
-                {% else %}
-                    {{ 'No Participants'|trans({}, 'category') }}
-                {% endif %}
-            </div>
-            {{- form_widget(form.parent.submit) -}}
+        <div id="participants" class="cs-toggle-preview-filter" data-cs-tree>
+            {% if form.vars is not empty %}
+                <ul class="uk-list uk-list-striped">
+                    {{ macros.nestedList(form.vars.choices, 0) }}
+                    </li>
+                </ul>
+            {% else %}
+                {{ 'No Participants'|trans({}, 'category') }}
+            {% endif %}
         </div>
 
         {% if form.children|length > 0 %}
@@ -210,18 +204,15 @@
             {% endif %}
         </div>
 
-        <div id="calendars" class="cs-toggle-preview-filter">
-            <div data-cs-tree>
-                {% if form.vars is not empty %}
-                    <ul class="uk-list uk-list-striped">
-                        {{ macros.nestedList(form.vars.choices, 0) }}
-                        </li>
-                    </ul>
-                {% else %}
-                    {{ 'No calendars'|trans({}, 'category') }}
-                {% endif %}
-            </div>
-            {{- form_widget(form.parent.submit) -}}
+        <div id="calendars" class="cs-toggle-preview-filter" data-cs-tree>
+            {% if form.vars is not empty %}
+                <ul class="uk-list uk-list-striped">
+                    {{ macros.nestedList(form.vars.choices, 0) }}
+                    </li>
+                </ul>
+            {% else %}
+                {{ 'No calendars'|trans({}, 'category') }}
+            {% endif %}
         </div>
         {% if form.children|length > 0 %}
             <a id="calendars-toggle-moreless" class="uk-margin-left" href="#" data-cs-unhide-collapsed="{src: '#calendars'}" data-cs-toggle-link="#calendars-toggle" data-cs-readmore>
