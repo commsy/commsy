@@ -94,7 +94,7 @@ class MailAssistant
     {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-        if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('institution') ||
+        if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('project') ||
             $currentContextItem->isGroupRoom()) {
 
             return true;
