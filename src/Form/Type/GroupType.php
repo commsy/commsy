@@ -42,6 +42,10 @@ class GroupType extends AbstractType
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
             ))
+            ->add('permission', CheckboxType::class, array(
+                'label' => 'permission',
+                'required' => false,
+            ))
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $group = $event->getData();
                 $form = $event->getForm();

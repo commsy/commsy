@@ -150,8 +150,12 @@ class cs_grouproom_item extends cs_room_item {
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();
          $new_room_user->makeContactPerson();
+         if ($this->_environment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+            $new_room_user->setEmailNotVisible();
+         }
          $new_room_user->save();
          $new_room_user->setCreatorID2ItemID();
+
          $this->setServiceLinkActive();
          $this->_save($manager);
 
@@ -1180,8 +1184,14 @@ class cs_grouproom_item extends cs_room_item {
             ->setSubject($subject)
             ->setBody($body, 'text/plain')
             ->setFrom([$emailFrom => $fromName])
-            ->setReplyTo([$current_user->getEmail() => $current_user->getFullname()])
             ->setTo($value);
+
+         if ($current_user) {
+            $email = $current->user->getEmail();
+            if (!empty($email)) {
+               $message->setReplyTo([$email => $current_user->getFullname()]);
+            }
+         }
 
          $symfonyContainer->get('mailer')->send($message);
 

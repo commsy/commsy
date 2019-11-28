@@ -68,7 +68,36 @@
                                             </li>
 
                                             <li>
-                                                {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                                                {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
+                                                    {% set returnUrlParams = {
+                                                        'roomId': roomId,
+                                                        'search_filter[phrase]': searchData.phrase,
+                                                        'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
+                                                        "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
+                                                        "search_filter[selectedCreator]": searchData.selectedCreator,
+                                                        "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
+                                                        "search_filter[creation_date_range][right_date]": searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '',
+                                                        "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
+                                                        "search_filter[modification_date_range][right_date]": searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '',
+                                                        "search_filter[selectedRubric]": searchData.selectedRubric,
+                                                    }
+                                                    %}
+                                                    {% if searchData.allRooms %}
+                                                        {# NOTE: for allRooms==false, the param must be left out entirely, otherwise the corresponding checkbox in
+                                                           the search filter form will get marked when handleRequest() gets called for the SearchFilterType form #}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[all_rooms]": 1 }) %}
+                                                    {% endif %}
+                                                    {% for hashtag in searchData.selectedHashtags %}
+                                                        {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
+                                                        {% set val = searchData.selectedHashtags[loop.index0] %}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
+                                                    {% endfor %}
+                                                    {% for category in searchData.selectedCategories %}
+                                                        {% set key = "search_filter[selectedCategories][" ~ loop.index0 ~ "]" %}
+                                                        {% set val = searchData.selectedCategories[loop.index0] %}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
+                                                    {% endfor %}
+
                                                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
                                                         'url': path('app_search_xhrdelete', {'roomId': roomId}),
                                                         'action': 'delete',
@@ -78,15 +107,16 @@
                                                         'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                                                         'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                                                         'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                                                        'returnUrl': path('app_search_results', {'roomId': roomId, 'search_filter[phrase]=': searchData.phrase})
+                                                        'returnUrl': path('app_search_results', returnUrlParams)
                                                     }|json_encode|e('html_attr') }}">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                                                     </a>
-                                                {% else %}
+                                                {%- else -%}
                                                     <span class="uk-text-muted">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                                                     </span>
-                                                {% endif %}
+                                                {%- endif %}
+
                                             </li>
 
                                         </ul>

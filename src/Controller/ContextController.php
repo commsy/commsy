@@ -163,6 +163,10 @@ class ContextController extends Controller
                     $newUser->setAGBAcceptance();
                 }
 
+                if ($legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+                    $newUser->setEmailNotVisible();
+                }
+
                 // check if user id already exists
                 $userTestItem = $roomItem->getUserByUserID($newUser->getUserID(), $newUser->getAuthSource());
                 if (!$userTestItem && !$newUser->isReallyGuest() && !$newUser->isRoot()) {
