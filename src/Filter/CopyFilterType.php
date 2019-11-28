@@ -23,6 +23,13 @@ class CopyFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('type', ChoiceType::class, array(
                 'label_attr' => array('class' => 'uk-form-label'),
                 'expanded' => false,
@@ -31,15 +38,8 @@ class CopyFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => 'no restrictions',
                 'translation_domain' => 'form',
-                ));
-        $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                    ),
-                'label' => 'Filter',
-                'translation_domain' => 'form',
-                ));
+                ))
+        ;
     }
 
     /**
