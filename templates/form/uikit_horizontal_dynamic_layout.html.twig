@@ -225,7 +225,7 @@
 
 {%- block submit_widget -%}
     {% if label == 'Filter' -%}
-        <button type="submit" {{ block('button_attributes') }}><i class="uk-icon-arrow-right"></i> {{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) }}</button>
+        <button type="submit" style="min-width: fit-content" {{ block('button_attributes') }}><i class="uk-icon-arrow-right"></i> {{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) }}</button>
     {%- else -%}
         {{ parent() }}
     {%- endif -%}
