@@ -206,21 +206,23 @@
 
 {% block main_content %}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{ header|trans({}, "room") }}</div>
-                     </div>
+                <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="uk-text-large">{{ header|trans({}, "room") }}</div>
+                         </div>
+                    </div>
                 </div>
 
                 {% if isModerator and userTasks|length > 0 %}
-                    <div class="uk-alert uk-alert-danger">
+                    <div class="uk-alert uk-alert-danger" style="margin-top: -2px; margin-left: -10px; margin-right: -10px">
                         {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('app_user_list', {'roomId': roomItem.itemId,'user_filter[user_status]':1}) }}">
                             {{ 'show user'|trans({},'user') }}
                         </a>
                     </div>
                 {% endif %}
 
-                <div class="feed">
+                <div class="feed uk-margin-top">
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
                             'App\\Controller\\RoomController::feedAction',
