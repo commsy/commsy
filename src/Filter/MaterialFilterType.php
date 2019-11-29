@@ -3,6 +3,7 @@ namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,10 +22,14 @@ class MaterialFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
+            ->add('submit', SubmitType::class, array(
                 'attr' => array(
-                    'onchange' => 'this.form.submit()',
+                    'class' => 'uk-button uk-button-mini',
                 ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
+            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
                 'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',

@@ -126,7 +126,9 @@
 
                                 });
 
-                                $('div#room-category').parents('form').submit();
+                                // NOTE: this would submit the form after (de)selecting a checkbox; for now, the
+                                // form uses a regular submit button to allow for multiple selections before submit
+                                // $('div#room-category').parents('form').submit();
                             }
                         });
                 })

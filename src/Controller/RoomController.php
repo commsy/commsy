@@ -50,10 +50,8 @@ class RoomController extends Controller
 
         // setup filter form
         $filterForm = $this->createForm(HomeFilterType::class, null, array(
-            // on submit, reload the room's home page & bring again the filter form into view (via the #list-filter anchor)
             'action' => $this->generateUrl('app_room_home', array(
                 'roomId' => $roomId,
-                '_fragment' => 'list-filter',
             )),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),

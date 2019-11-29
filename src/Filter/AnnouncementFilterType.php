@@ -3,6 +3,7 @@ namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,18 +22,19 @@ class AnnouncementFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, array(
+            ->add('submit', SubmitType::class, array(
                 'attr' => array(
-                    'onchange' => 'this.form.submit()',
+                    'class' => 'uk-button uk-button-mini',
                 ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
+            ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, array(
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),

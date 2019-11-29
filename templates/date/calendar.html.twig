@@ -11,123 +11,125 @@
     {% endblock %}
 
     <div class="uk-panel uk-panel-box uk-panel-box-primary">
-    
-    <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">
-                            {% if not module is empty %}
-                                {{module|capitalize|transchoice(1, {}, "rubric") }}
-                            {% else %}
-                                Missing rubric title
-                            {% endif %}
 
-                            <div id="commsy-list-count-display" style="display:inline;">
-                                <!-- ({#{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}#}) -->
-                            </div>
-                            <div id="commsy-list-count-edit" style="display:inline;" class="uk-hidden">
-                                <!-- (<span id="commsy-list-count-selected">{#{itemsCountArray.count}#}</span> {#{ 'of'|trans({},'messages')}#} <span id="commsy-list-count-all">{#{itemsCountArray.countAll}#}</span> {#{ 'selected'|trans({},'messages')}#}) -->
-                            </div>
+        <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+            <div class="uk-panel-teaser cs-panel-teaser-primary">
+                <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="uk-text-large">
+                        {% if not module is empty %}
+                            {{module|capitalize|transchoice(1, {}, "rubric") }}
+                        {% else %}
+                            Missing rubric title
+                        {% endif %}
+
+                        <div id="commsy-list-count-display" style="display:inline;">
+                            <!-- ({#{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}#}) -->
                         </div>
-                        <div>
-                            {% block sortbox %}
-                            {% endblock %}
-    
-                            {% block editbox %}
-                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                    <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                    <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
+                        <div id="commsy-list-count-edit" style="display:inline;" class="uk-hidden">
+                            <!-- (<span id="commsy-list-count-selected">{#{itemsCountArray.count}#}</span> {#{ 'of'|trans({},'messages')}#} <span id="commsy-list-count-all">{#{itemsCountArray.countAll}#}</span> {#{ 'selected'|trans({},'messages')}#}) -->
+                        </div>
+                    </div>
+                    <div>
+                        {% block sortbox %}
+                        {% endblock %}
 
+                        {% block editbox %}
+                            <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
+
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
+                                                <a id="create-date" href="{{ path('app_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                                </span>
+                                            {% endif %}
+                                        </li>
+
+                                        {# print #}
+                                        <li>
+                                            <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
+                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {% if iCal.show %}
+                                            {# date export #}
+                                            <li class="uk-parent">
+                                                <a href="#">
+                                                    <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
+                                                </a>
+                                                <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                    {% for calendar in calendars  %}
+                                                        <li>
+                                                            <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                {{ macros.calendarIcon(calendar) }}
+                                                                <span class="uk-vertical-align-middle">
+                                                                    {{ calendar.title|trans({}, 'date') }}
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+
+                                            {# date abo#}
+                                            <li class="uk-parent">
+                                                <a href="#">
+                                                    <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
+                                                </a>
+                                                <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                    {% for calendar in calendars  %}
+                                                        <li>
+                                                            <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                {{ macros.calendarIcon(calendar) }}
+                                                                <span class="uk-vertical-align-middle">
+                                                                    {{ calendar.title|trans({}, 'date') }}
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if is_granted('MODERATOR') %}
+                                            {# import iCal #}
                                             <li>
-                                                {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                    <a id="create-date" href="{{ path('app_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                                {% if not isArchived %}
+                                                    <a href="{{ path('app_date_import', {'roomId': roomId}) }}" >
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
                                                     </a>
                                                 {% else %}
                                                     <span class="uk-text-muted">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
                                                     </span>
                                                 {% endif %}
                                             </li>
+                                        {% endif %}
 
-                                            {# print #}
-                                            <li>
-                                                <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
-                                                    <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
-                                                </a>
-                                            </li>
-
-                                            {% if iCal.show %}
-                                                {# date export #}
-                                                <li class="uk-parent">
-                                                    <a href="#">
-                                                        <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
-                                                    </a>
-                                                    <ul class="uk-nav-sub uk-list-striped uk-text-left">
-                                                        {% for calendar in calendars  %}
-                                                            <li>
-                                                                <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                                                    {{ macros.calendarIcon(calendar) }}
-                                                                    <span class="uk-vertical-align-middle">
-                                                                        {{ calendar.title|trans({}, 'date') }}
-                                                                    </span>
-                                                                </a>
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </li>
-
-                                                {# date abo#}
-                                                <li class="uk-parent">
-                                                    <a href="#">
-                                                        <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
-                                                    </a>
-                                                    <ul class="uk-nav-sub uk-list-striped uk-text-left">
-                                                        {% for calendar in calendars  %}
-                                                            <li>
-                                                                <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                                                    {{ macros.calendarIcon(calendar) }}
-                                                                    <span class="uk-vertical-align-middle">
-                                                                        {{ calendar.title|trans({}, 'date') }}
-                                                                    </span>
-                                                                </a>
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </li>
-                                            {% endif %}
-
-                                            {% if is_granted('MODERATOR') %}
-                                                {# import iCal #}
-                                                <li>
-                                                    {% if not isArchived %}
-                                                        <a href="{{ path('app_date_import', {'roomId': roomId}) }}" >
-                                                            <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
-                                                        </a>
-                                                    {% else %}
-                                                        <span class="uk-text-muted">
-                                                            <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
-                                                        </span>
-                                                    {% endif %}
-                                                </li>
-                                            {% endif %}
-
-                                        </ul>
-                                    </div>
+                                    </ul>
                                 </div>
-                            {% endblock %}
-    
-                            <div class="uk-float-right uk-margin-small-left">
-                                <i class="uk-icon-calendar uk-icon-small" data-uk-tooltip title="{{ 'calendar view'|trans({}, "date") }}"></i>
                             </div>
-                            <div class="uk-float-right uk-margin-small-left">
-                                <a href="{{ path('app_date_list', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-list-ul uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i></a>
-                            </div>
+                        {% endblock %}
+
+                        <div class="uk-float-right uk-margin-small-left">
+                            <i class="uk-icon-calendar uk-icon-small" data-uk-tooltip title="{{ 'calendar view'|trans({}, "date") }}"></i>
+                        </div>
+                        <div class="uk-float-right uk-margin-small-left">
+                            <a href="{{ path('app_date_list', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-list-ul uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i></a>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
     
-    <div id='calendar' data-events='{"url": "{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('app_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}"}' data-options='{"locale": "de" }'></div>
+    <div id='calendar' class="uk-margin-top" data-events='{"url": "{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('app_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}"}' data-options='{"locale": "de" }'></div>
     
     </div>
         </div>
@@ -158,20 +160,25 @@
             {% endif %}
 
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-text-large uk-float-left">
-                            {{ 'list filter'|trans({},"room")}}
+                {{ form_start(form) }}
+                <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary">
+                        <div class="uk-clearfix">
+                            <div class="uk-flex uk-flex-space-between uk-flex-middle">
+                                <div class="uk-text-large">
+                                    {{ 'list filter'|trans({},"room")}}
+                                </div>
+                                <div class="uk-flex-right uk-flex-inline uk-flex-middle">
+                                    {{ form_widget(form.submit) }}
+                                    <a href="#" class="button-toggle uk-button-mini uk-button-secondary uk-margin-small-left" data-uk-toggle="{target: '#list-filter'}" style="padding-top: 1px; padding-bottom: 1px">
+                                        <i class="uk-icon-chevron-up"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="list-filter">
-                    {{ form_start(form) }}
+                <div id="list-filter" class="uk-margin-top">
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
