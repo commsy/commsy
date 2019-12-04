@@ -127,6 +127,7 @@ parameters:
 
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
+    craue_twig_extensions.formatDateTime.datetype: short
 
 services:
     # default configuration for services in *this* file

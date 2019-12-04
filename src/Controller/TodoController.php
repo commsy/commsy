@@ -548,6 +548,8 @@ class TodoController extends BaseController
             throw $this->createNotFoundException('No todo found for id ' . $itemId);
         }
 
+
+
         $formData = $transformer->transform($todoItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;

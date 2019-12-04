@@ -44,7 +44,7 @@
                         {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
                         {% else %}
-                            {{feedItem.getModificationDate|date("d.m.Y")}}
+                            {{feedItem.getModificationDate|craue_date}}
                         {% endif %}
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                             {% if feedItem.author != '' %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
                                 {% else %}
-                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{feedItem.getCreationDate|craue_date}})
                             {% endif %}                        
                         </div>
                     {% elseif feedItem.itemType == 'discussion' %}

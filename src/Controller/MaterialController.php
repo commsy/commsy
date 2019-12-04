@@ -255,6 +255,7 @@ class MaterialController extends BaseController
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $materialService = $this->get('commsy_legacy.material_service');
         if ($versionId === null) {
@@ -1064,6 +1065,7 @@ class MaterialController extends BaseController
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
@@ -1116,6 +1118,7 @@ class MaterialController extends BaseController
     {
         $materialService = $this->get('commsy_legacy.material_service');
         $material = $materialService->getMaterial($itemId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
