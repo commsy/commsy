@@ -444,6 +444,8 @@ class RoomController extends Controller
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
 
+
+
         if ($roomFilter) {
             $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
                 'showTime' => $portalItem->showTime(),
@@ -476,9 +478,10 @@ class RoomController extends Controller
                 $this->get('lexik_form_filter.query_builder_updater')
                         ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
             }
-
             $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
         }
+
+
 
         if ($legacyEnvironment->isArchiveMode()) {
             $legacyEnvironment->deactivateArchiveMode();
@@ -486,7 +489,24 @@ class RoomController extends Controller
 
         $projectsMemberStatus = array();
         foreach ($rooms as $room) {
-            $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
+
+            try{
+                $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
+                $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
+                $users = $currentPortalItem->getUserList();
+                $contactUsers = $room->getContactPersons();
+                foreach($users as $user){
+                    if(strpos($contactUsers, $user->getFullName()) !== false){
+                        $contactItemId = $user->getItemID();
+                        if($user->isCommSyContact()) {
+                            $room->setContactPersons($contactUsers . ";" . $contactItemId);
+                            break;
+                        }
+                    }
+                }
+            }catch (Exception $e){
+                // do nothing
+            }
         }
         return [
             'roomId' => $roomId,
