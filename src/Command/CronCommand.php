@@ -188,14 +188,14 @@ class CronCommand extends Command
             $material = $materialManager->getItem($resubmissionItemInfo['item_id']);
             $latestMaterialVersionId = $materialManager->getLatestVersionID($resubmissionItemInfo['item_id']);
 
-            if (isset($material) && !$material->isDeleted() && ($resubmissionItemInfo['item_id'] == $latestMaterialVersionId)) {
+            if (isset($material) && !$material->isDeleted() && ($resubmissionItemInfo['version_id'] == $latestMaterialVersionId)) {
                 $roomManager = $this->legacyEnvironment->getRoomManager();
                 $room = $roomManager->getItem($material->getContextId());
 
                 // check if context of room is current portal
                 if ($room->getContextID() != $portalItem->getItemID()) continue;
 
-                if ($material->getWorkflowResubmission() && $material->withWorkflowResubmission()) {
+                if ($material->getWorkflowResubmission() && $room->withWorkflowResubmission()) {
                     $emailReceivers = [];
 
                     if ($material->getWorkflowResubmissionWho() == 'creator') {
