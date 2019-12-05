@@ -30,7 +30,7 @@ class MailAssistant
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        return $this->twig->render('mail/send.html.twig', [
+        return $this->twig->render('mail/send.message.html.twig', [
             'contextItem' => $currentContextItem,
             'currentUser' => $currentUser,
             'item' => $item,

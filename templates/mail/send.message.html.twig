@@ -1,0 +1,49 @@
+{% set type = item.type %}
+{% if item.type == 'label' or item.type == 'labels' %}
+    {% set type = item.labelType %}
+{% endif %}
+
+{% set link = url('app_' ~ type ~ '_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': item.itemId}) %}
+
+<br><br>--<br>
+
+{% if contextItem.isProjectRoom %}
+    {{ 'This email has been sent by ... from project room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+{% elseif contextItem.isGroupRoom %}
+    {{ 'This email has been sent by ... from group room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+{% else %}
+    {{ 'This email has been sent by ... from community room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+{% endif %}
+
+<br>
+
+{# content #}
+{% if item.type == 'material' or item.type == 'materials' %}
+    {{ 'material'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+{% elseif item.type == 'announcement' or item.type == 'announcements' %}
+    {{ 'announcement'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+{% elseif item.type == 'label' or item.type == 'labels' %}
+    {% set labelType = item.labelType %}
+
+    {% if labelType == 'group' or labelType == 'groups' %}
+        {{ 'group'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+    {% elseif labelType == 'institution' or labelType == 'institutions' %}
+        {{ 'institution'|transchoice(1, {}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+    {% elseif labelType == 'topic' or labelType == 'topics' %}
+        {{ 'topic'|transchoice(1, {}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+    {% endif %}
+{% elseif item.type == 'discussion' or item.type == 'discussions' %}
+    {{ 'discussion'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+    {{ 'Number of entries'|trans({}, 'discussion') }}: {{ item.allArticlesCount }}
+    {{ 'Last entry'|trans({}, 'discussion') }}: {{ item.latestArticleModificationDate|craue_date }}
+{% elseif item.type == 'date' %}
+    {{ item.startingDay|craue_date }}
+    {{ item.startingTime }}
+    -
+    {{ item.endingDay|craue_date }}
+    {{ item.endingTime }}
+{% endif %}
+
+<br>
+
+<a href="{{ link }}">{{ link }}</a>
