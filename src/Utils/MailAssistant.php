@@ -44,7 +44,7 @@ class MailAssistant
         if ($this->legacyEnvironment->inProjectRoom() && !empty($groupArray)) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-            if ($currentContextItem->withRubric('group')) {
+            if ($currentContextItem->withRubric('group') && !$currentContextItem->withRubric('project')) {
                 return true;
             }
         }
@@ -235,7 +235,7 @@ class MailAssistant
         $isSendToGroups = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
             ? false : $formData->getSendToGroups()) : $form->has('send_to_groups') && !empty($formData['send_to_groups']));
 
-        if ($isSendToGroups) {
+        if ($isSendToGroups && $form->has('send_to_groups')) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
             $groups = $labelManager->getItemList($formData->getSendToGroups());
 
