@@ -1187,7 +1187,7 @@ class cs_grouproom_item extends cs_room_item {
             ->setTo($value);
 
          if ($current_user) {
-            $email = $current->user->getEmail();
+            $email = $current_user->getEmail();
             if (!empty($email)) {
                $message->setReplyTo([$email => $current_user->getFullname()]);
             }
