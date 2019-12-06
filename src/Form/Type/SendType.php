@@ -213,7 +213,7 @@ class SendType extends AbstractType
             ->add('cancel', SubmitType::class, [
                 'attr' => [
                     'formnovalidate' => 'formnovalidate',
-                    'class' => 'place-right', // ToDo: write javascript that manipulates DOM
+                    'class' => 'place-right',
                 ],
                 'label' => 'cancel',
                 'translation_domain' => 'form',
