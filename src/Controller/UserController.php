@@ -83,18 +83,19 @@ class UserController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $mail = $userItem->getEmail();
-            $message = $formData['message'];
+            if ($form->get('save')->isClicked()) {
+                $formData = $form->getData();
+                $mail = $userItem->getEmail();
+                $message = $formData['message'];
 
-            // send mail
-            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
-            $this->get('mailer')->send($message);
+                // send mail
+                $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
+                $this->get('mailer')->send($message);
 
-            $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
-            $this->addFlash('recipientCount', $recipientCount);
+                $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+                $this->addFlash('recipientCount', $recipientCount);
 
-
+            }
             return $this->redirectToRoute($originPath, array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
         }
 
