@@ -7,6 +7,7 @@ use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
 use DateTime;
 
 use Symfony\Component\Routing\Annotation\Route;
@@ -346,7 +347,7 @@ class DateController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'date')")
      */
-    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup, AnnotationService $annotationService)
     {
         $dateService = $this->get('commsy_legacy.date_service');
         $itemService = $this->get('commsy_legacy.item_service');
@@ -452,10 +453,12 @@ class DateController extends BaseController
 
         $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $dateService->getDate($itemId)->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
+            'amountAnnotations' => sizeof($amountAnnotations),
             'readerList' => $readerList,
             'modifierList' => $modifierList,
             'user' => $legacyEnvironment->getCurrentUserItem(),
