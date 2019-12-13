@@ -55,7 +55,9 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if entity.author is defined and entity.author is not empty %}
+                    {% if result.type == 'date' %}
+                        {{ formatDateTimeRange(entity.wholeDay, entity.datetimeStart, entity.datetimeEnd) }}{% if entity.place != '' %}, {{ entity.place }}{% endif %}
+                    {% elseif entity.author is defined and entity.author is not empty %}
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
                     {% else %}
                         {% if entity.modifier is defined and entity.modifier is not empty %}
