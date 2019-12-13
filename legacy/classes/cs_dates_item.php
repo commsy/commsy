@@ -903,7 +903,7 @@ class cs_dates_item extends cs_item {
 			$datetime .= ' ' . $time_print;
 		}
 
-        return $datetime;
+        return trim($datetime);
     }
 
     /** asks if item is a date in an external calendar
