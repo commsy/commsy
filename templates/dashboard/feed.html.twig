@@ -72,7 +72,7 @@
                     {% if feedItem.itemType == 'announcement' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
                     {% elseif feedItem.itemType == 'date' %}
-                        <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
+                        <div class="uk-comment-meta">{{ formatDateTimeRange(feedItem.wholeDay, feedItem.dateTimeObject_Start, feedItem.dateTimeObject_End) }}{% if feedItem.place != '' %}, {{ feedItem.place }}{% endif %}</div>
                     {% elseif feedItem.itemType == 'material' %}
                         <div class="uk-comment-meta">
                             {% if feedItem.author != '' %}

@@ -111,6 +111,17 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('datetime_start');
    }
 
+   /** get date and time of start as a proper \DateTime object
+    * this method returns the starting datetime of the dates
+    *
+    * @return \DateTime starting datetime of the dates
+    *
+    * @author CommSy Development Group
+    */
+   public function getDateTimeObject_start () {
+      return \DateTime::createFromFormat('Y-m-d H:i:s', $this->_getValue('datetime_start'));
+   }
+
    /** set date and time of end in the database time format
     * this method sets the ending datetime of the dates
     *
@@ -131,6 +142,17 @@ class cs_dates_item extends cs_item {
     */
    function getDateTime_end () {
       return $this->_getValue('datetime_end');
+   }
+
+   /** get date and time of end as a proper \DateTime object
+    * this method returns the ending datetime of the dates
+    *
+    * @return \DateTime ending datetime of the dates
+    *
+    * @author CommSy Development Group
+    */
+    public  function getDateTimeObject_end () {
+      return \DateTime::createFromFormat('Y-m-d H:i:s', $this->_getValue('datetime_end'));
    }
 
 

@@ -52,7 +52,7 @@
                     {% endif %}
                 </h4>
 
-                <div class="uk-comment-meta">{{date.getDateListDescription}}{% if date.getPlace != '' %}, {{date.getPlace}}{% endif %}</div>
+                <div class="uk-comment-meta">{{ formatDateTimeRange(date.wholeDay, date.dateTimeObject_Start, date.dateTimeObject_End) }}{% if date.place != '' %}, {{ date.place }}{% endif %}</div>
                 
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(date) }}
