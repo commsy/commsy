@@ -876,7 +876,11 @@ class cs_dates_item extends cs_item {
 					$start_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
 
-				$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+				if ($start_time_print === $end_time_print) {
+                    $time_print = $translator->getMessage('DATES_AT_TIME') . ' ' . $start_time_print;
+                } else {
+					$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                }
 			}
 		}
 
@@ -892,7 +896,11 @@ class cs_dates_item extends cs_item {
                     $time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
                 } elseif ($start_time_print !== '' && $end_time_print !== '') {
                     // all times given
-                    $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                    if ($start_time_print === $end_time_print) {
+                        $time_print = $translator->getMessage('DATES_AT_TIME') . ' ' . $start_time_print;
+                    } else {
+                        $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                    }
                 }
             }
 		}
