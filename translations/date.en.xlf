@@ -272,7 +272,7 @@
             </trans-unit>
             <trans-unit id="short date and time description">
                 <source>short date and time description</source>
-                <target>on %date%, at %time%</target>
+                <target>on %date% at %time%</target>
             </trans-unit>
             <trans-unit id="short date and time range description">
                 <source>short date and time range description</source>

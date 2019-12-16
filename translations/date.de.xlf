@@ -272,7 +272,7 @@
             </trans-unit>
             <trans-unit id="short date and time description">
                 <source>short date and time description</source>
-                <target>am %date%, um %time% Uhr</target>
+                <target>am %date% um %time% Uhr</target>
             </trans-unit>
             <trans-unit id="short date and time range description">
                 <source>short date and time range description</source>
