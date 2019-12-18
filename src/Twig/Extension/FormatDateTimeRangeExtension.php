@@ -7,6 +7,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+use Craue\TwigExtensionsBundle\Twig\Extension as Craue;
+
 class FormatDateTimeRangeExtension extends AbstractExtension
 {
     /**
@@ -16,10 +18,13 @@ class FormatDateTimeRangeExtension extends AbstractExtension
 
     private $translator;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
+    private $dateTimeFormatter;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator, Craue\FormatDateTimeExtension $dateTimeFormatter)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->translator = $translator;
+        $this->dateTimeFormatter = $dateTimeFormatter;
     }
 
     public function getFunctions()
@@ -31,22 +36,19 @@ class FormatDateTimeRangeExtension extends AbstractExtension
 
     public function formatDateTimeRange(bool $wholeDay, \DateTime $dateTimeStart, ?\DateTime $dateTimeEnd)
     {
-        // define the format for the generated date & time strings
-        $dateFormat = 'd.m.Y';
-        $timeFormat = 'H:i';
-
+        global $symfonyContainer;
         $locale = $this->legacyEnvironment->getSelectedLanguage();
-        if ($locale === 'en') {
-            $dateFormat = 'm/d/Y';
-            $timeFormat = 'h:i a';
-        }
+
+        // define the format for the generated date & time strings
+        $dateFormatType = $symfonyContainer->getParameter('craue_twig_extensions.formatDateTime.datetype'); // "none", "full", "long", "medium", or "short"
+        $timeFormatType = $symfonyContainer->getParameter('craue_twig_extensions.formatDateTime.timetype'); // "full", "long", "medium", or "short"
 
         // generate date & time strings
-        $formattedDateStart = $dateTimeStart->format($dateFormat);
-        $formattedTimeStart = $dateTimeStart->format($timeFormat);
+        $formattedDateStart = $this->dateTimeFormatter->formatDate($dateTimeStart, $locale, $dateFormatType);
+        $formattedTimeStart = $this->dateTimeFormatter->formatTime($dateTimeStart, $locale, $timeFormatType);
 
-        $formattedDateEnd = isset($dateTimeEnd) ? $dateTimeEnd->format($dateFormat) : $formattedDateStart;
-        $formattedTimeEnd = isset($dateTimeEnd) ? $dateTimeEnd->format($timeFormat) : $formattedTimeStart;
+        $formattedDateEnd = isset($dateTimeEnd) ? $this->dateTimeFormatter->formatDate($dateTimeEnd, $locale, $dateFormatType) : $formattedDateStart;
+        $formattedTimeEnd = isset($dateTimeEnd) ? $this->dateTimeFormatter->formatTime($dateTimeEnd, $locale, $timeFormatType) : $formattedTimeStart;
 
         // generate composite strings
         if ($formattedDateStart === $formattedDateEnd) {
