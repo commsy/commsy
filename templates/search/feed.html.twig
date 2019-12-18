@@ -60,8 +60,8 @@
                     {% elseif entity.author is defined and entity.author is not empty %}
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
                     {% else %}
-                        {% if entity.modifier is defined and entity.modifier is not empty %}
-                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.modifier) }} ({{ entity.getCreationDate|date("d.m.Y") }})
+                        {% if entity.creator is defined and entity.creator is not empty %}
+                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.creator) }} ({{ entity.getCreationDate|date("d.m.Y") }})
                         {% endif %}
                     {% endif %}
                 </div>
