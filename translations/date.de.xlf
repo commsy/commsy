@@ -266,6 +266,30 @@
                 <source>saveAllDates</source>
                 <target>Für alle Termine der Serie speichern</target>
             </trans-unit>
+            <trans-unit id="short date description">
+                <source>short date description</source>
+                <target>am %date%</target>
+            </trans-unit>
+            <trans-unit id="short date and time description">
+                <source>short date and time description</source>
+                <target>am %date% um %time% Uhr</target>
+            </trans-unit>
+            <trans-unit id="short date and time range description">
+                <source>short date and time range description</source>
+                <target>am %date% von %timeStart% Uhr bis %timeEnd% Uhr</target>
+            </trans-unit>
+            <trans-unit id="short date range description">
+                <source>short date range description</source>
+                <target>%dateStart% bis %dateEnd%</target>
+            </trans-unit>
+            <trans-unit id="short date range and time range description">
+                <source>short date range and time range description</source>
+                <target>%dateStart%, %timeStart% Uhr bis %dateEnd%, %timeEnd% Uhr</target>
+            </trans-unit>
+            <trans-unit id="number of days description">
+                <source>number of days description</source>
+                <target>%numberOfDays% Tage</target>
+            </trans-unit>
             <trans-unit id="add participant">
                 <source>add participant</source>
                 <target>Teilnahme zusagen</target>
