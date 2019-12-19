@@ -127,7 +127,7 @@ parameters:
 
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
-    craue_twig_extensions.formatDateTime.datetype: short
+    craue_twig_extensions.formatDateTime.datetype: medium
     craue_twig_extensions.formatDateTime.timetype: short
 
 services:
