@@ -11,6 +11,7 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -312,7 +313,7 @@ class AnnouncementController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
-    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup, AnnotationService $annotationService)
     {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -336,10 +337,12 @@ class AnnouncementController extends BaseController
 
         $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['announcement']->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
+            'amountAnnotations' => sizeof($amountAnnotations),
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
             'announcementList' => $infoArray['announcementList'],
