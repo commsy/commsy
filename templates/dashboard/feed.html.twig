@@ -70,27 +70,27 @@
                         </a>
                     </h4>
                     {% if feedItem.itemType == 'announcement' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a></div>
                     {% elseif feedItem.itemType == 'date' %}
                         <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
                     {% elseif feedItem.itemType == 'material' %}
                         <div class="uk-comment-meta">
                             {% if feedItem.author != '' %}
-                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
+                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{feedItem.author|decodeHtmlEntity|raw}}</a>({{feedItem.publishingdate|decodeHtmlEntity|raw}})</div>
                                 {% else %}
-                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a>({{feedItem.getCreationDate|date("d.m.Y")}})</div>
                             {% endif %}                        
                         </div>
                     {% elseif feedItem.itemType == 'discussion' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a></div>
                     {% elseif feedItem.itemType == 'user' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem) }}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem) }}</a></div>
                     {% elseif feedItem.itemType == 'group' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a></div>
                     {% elseif feedItem.itemType == 'todo' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a></div>
                     {% elseif feedItem.itemType == 'task' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a></div>
                     {% endif %}
                     <div class="uk-comment-meta">{{ macros.fileListShort(feedItem) }}</div>
                 </div>
