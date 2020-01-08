@@ -45,10 +45,10 @@
                         {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
                         {% else %}
-                            {% if '9999-00-00' not in feedItem.getModificationDate %}
-                                {{feedItem.getModificationDate|date("d.m.Y")}}
+                            {% if '9999-00-00' not in feedItem.modificationDate %}
+                                {{ feedItem.modificationDate|craue_date }}
                             {% else %}
-                                {{feedItem.getCreationDate|date("d.m.Y")}}
+                                {{ feedItem.creationDate|craue_date }}
                             {% endif %}
                         {% endif %}
                     </div>
@@ -78,7 +78,7 @@
                             {% if feedItem.author != '' %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
                                 {% else %}
-                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }} ({{ feedItem.creationDate|craue_date }})
                             {% endif %}                        
                         </div>
                     {% elseif feedItem.itemType == 'discussion' %}

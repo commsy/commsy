@@ -42,10 +42,10 @@
                             {% if room.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                 {{ 'today'|trans({})|capitalize }}, {{room.getModificationDate|date("H:i")}}
                             {% else %}
-                                {% if '9999-00-00' not in room.getModificationDate %}
-                                    {{room.getModificationDate|date("d.m.Y")}}
+                                {% if '9999-00-00' not in room.modificationDate %}
+                                    {{ room.modificationDate|craue_date }}
                                 {% else %}
-                                    {{room.getCreationDate|date("d.m.Y")}}
+                                    {{ room.creationDate|craue_date }}
                                 {% endif %}
                             {% endif %}
                         </div>

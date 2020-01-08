@@ -24,10 +24,10 @@
                         {% if institution.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{institution.getModificationDate|date("H:i")}}
                         {% else %}
-                            {% if '9999-00-00' not in institution.getModificationDate %}
-                                {{institution.getModificationDate|date("d.m.Y")}}
+                            {% if '9999-00-00' not in institution.modificationDate %}
+                                {{ institution.modificationDate|craue_date }}
                             {% else %}
-                                {{institution.getCreationDate|date("d.m.Y")}}
+                                {{ institution.creationDate|craue_date }}
                             {% endif %}
                         {% endif %}
                     </div>

@@ -26,7 +26,7 @@
 
 {% macro lastModified(item) %}
     {% import _self as macros %}
-    {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|date("d.m.Y") }}
+    {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }}
     {{ 'at'|trans({}) }} {{ item.modificationDate|date("H:i") }}
     {{ 'by'|trans({}) }}
     <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': item.modificatorItem.itemId}) }}">

@@ -20,10 +20,10 @@
                         {% if project.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{project.getModificationDate|date("H:i")}}
                         {% else %}
-                            {% if '9999-00-00' not in project.getModificationDate %}
-                                {{project.getModificationDate|date("d.m.Y")}}
+                            {% if '9999-00-00' not in project.modificationDate %}
+                                {{ project.modificationDate|craue_date }}
                             {% else %}
-                                {{project.getCreationDate|date("d.m.Y")}}
+                                {{ project.creationDate|craue_date }}
                             {% endif %}
                         {% endif %}
                     </div>
