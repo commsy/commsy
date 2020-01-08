@@ -81,6 +81,19 @@
                                         </td>
                                     </tr>
                                 {% endif %}
+                                <tr>
+                                    <td><hr/></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h1 class="uk-panel-title">{{ 'portfolioStatus'|trans({}, 'profile') }}</h1>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ form_row(form.portfolio) }}
+                                    </td>
+                                </tr>
                                 {#<tr>#}
                                     {#<td><hr/></td>#}
                                 {#</tr>#}

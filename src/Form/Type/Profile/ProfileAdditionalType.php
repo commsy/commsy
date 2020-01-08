@@ -67,6 +67,14 @@ class ProfileAdditionalType extends AbstractType
             }
 
         $builder
+            ->add('portfolio', CheckboxType::class, [
+                'label' => 'Activate',
+                'translation_domain' => 'settings',
+                'required' => false,
+                'label_attr' => [
+                    'class' => 'uk-form-label',
+                ],
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',

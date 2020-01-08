@@ -1511,13 +1511,33 @@ class cs_privateroom_item extends cs_room_item
         $this->_addExtra('CS_BAR_SHOW_STACK', $i);
     }
 
-    function getCSBarShowPortfolio()
+
+    /**
+     * @return bool
+     */
+    public function isPortfolioEnabled(): bool
     {
-        $retour = '0';
-        if ($this->_issetExtra('CS_BAR_SHOW_PORTFOLIO')) {
-            $retour = $this->_getExtra('CS_BAR_SHOW_PORTFOLIO');
+        return $this->_issetExtra('CS_BAR_SHOW_PORTFOLIO');
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setPortfolioEnabled(bool $enabled): self
+    {
+        if ($enabled) {
+            $this->_addExtra('CS_BAR_SHOW_PORTFOLIO', true);
+        } else {
+            $this->_unsetExtra('CS_BAR_SHOW_PORTFOLIO');
         }
-        return $retour;
+
+        return $this;
+    }
+
+    public function getCSBarShowPortfolio(): string
+    {
+        return ($this->isPortfolioEnabled() ? '1' : '-1');
     }
 
     function setCSBarShowPortfolio($i)
