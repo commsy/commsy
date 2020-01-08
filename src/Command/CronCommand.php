@@ -212,8 +212,11 @@ class CronCommand extends Command
 
                     $additionalReceiver = $material->getWorkflowResubmissionWhoAdditional();
                     if (!empty($additionalReceiver)) {
-                        $to = array_merge($to, explode(',', $additionalReceiver));
+                        foreach (explode(',', $additionalReceiver) as $receiver) {
+                            $to[] = trim($receiver);
+                        }
                     }
+                    $to = array_unique($to);
 
                     $translator = $this->legacyEnvironment->getTranslationObject();
 
