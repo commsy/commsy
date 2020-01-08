@@ -29,8 +29,8 @@
                                 {% endif %}
                             {% endif %}
                             <div class="uk-comment-meta">
-                                {% if releaseItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                    {{ 'today'|trans({})|capitalize }}, {{releaseItem.getModificationDate|date("H:i")}}
+                                {% if releaseItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                    {{ 'today'|trans({})|capitalize }}, {{releaseItem.modificationDate|date("H:i")}}
                                 {% else %}
                                     {{ releaseItem.modificationDate|craue_date }}
                                 {% endif %}
@@ -101,8 +101,8 @@
                                 {% endif %}
                             {% endif %}
                             <div class="uk-comment-meta">
-                                {% if viewableItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                    {{ 'today'|trans({})|capitalize }}, {{viewableItem.getModificationDate|date("H:i")}}
+                                {% if viewableItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                    {{ 'today'|trans({})|capitalize }}, {{viewableItem.modificationDate|date("H:i")}}
                                 {% else %}
                                     {{ viewableItem.modificationDate|craue_date }}
                                 {% endif %}

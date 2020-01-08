@@ -42,8 +42,8 @@
                         {% endif %}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
+                        {% if feedItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{feedItem.modificationDate|date("H:i")}}
                         {% else %}
                             {% if '9999-00-00' not in feedItem.modificationDate %}
                                 {{ feedItem.modificationDate|craue_date }}

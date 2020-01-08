@@ -22,8 +22,8 @@
                     {{ macros.userIcon(entry.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if entry.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{entry.getModificationDate|date("H:i")}}
+                    {% if entry.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{entry.modificationDate|date("H:i")}}
                     {% else %}
                         {{ entry.modificationDate|craue_date }}
                     {% endif %}

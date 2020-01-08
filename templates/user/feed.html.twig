@@ -25,8 +25,8 @@
                     {{ macros.userIcon(user) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if user.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{user.getModificationDate|date("H:i")}}
+                    {% if user.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{user.modificationDate|date("H:i")}}
                     {% else %}
                         {% if '9999-00-00' not in user.modificationDate %}
                             {{ user.modificationDate|craue_date }}

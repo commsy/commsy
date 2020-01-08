@@ -32,13 +32,13 @@
                         </div>
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{date.getModificationDate|date("H:i")}}
+                        {% if date.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{date.modificationDate|date("H:i")}}
                         {% else %}
-                            {% if '9999-00-00' not in date.getModificationDate %}
-                                {{date.getModificationDate|craue_date}}
+                            {% if '9999-00-00' not in date.modificationDate %}
+                                {{ date.modificationDate|craue_date }}
                             {% else %}
-                                {{date.getCreationDate|craue_date}}
+                                {{ date.creationDate|craue_date }}
                             {% endif %}
                         {% endif %}
                     </div>

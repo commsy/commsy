@@ -25,13 +25,13 @@
                     {{ macros.userIcon(material.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{material.getModificationDate|date("H:i")}}
+                    {% if material.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{material.modificationDate|date("H:i")}}
                     {% else %}
-                        {% if '9999-00-00' not in material.getModificationDate %}
-                            {{material.getModificationDate|craue_date}}
+                        {% if '9999-00-00' not in material.modificationDate %}
+                            {{ material.modificationDate|craue_date }}
                         {% else %}
-                            {{material.getCreationDate|craue_date}}
+                            {{ material.creationDate|craue_date }}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -48,7 +48,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(material.getCreator) }} ({{material.getCreationDate|craue_date}})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(material.getCreator) }} ({{ material.creationDate|craue_date }})
                 </div>
                
                 <div class="uk-comment-meta">

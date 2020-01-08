@@ -25,13 +25,13 @@
                     {{ macros.userIcon(announcement.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if announcement.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{announcement.getModificationDate|date("H:i")}}
+                    {% if announcement.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{announcement.modificationDate|date("H:i")}}
                     {% else %}
                         {% if '9999-00-00' not in announcement.modificationDate %}
                             {{ announcement.modificationDate|craue_date }}
                         {% else %}
-                            {{announcement.getCreationDate|craue_date}}
+                            {{ announcement.creationDate|craue_date }}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -53,7 +53,7 @@
                             <span class="uk-text-bold">
                         {% endif %}
                         
-                        {{ 'valid until'|trans({})}}: {{announcement.getSecondDateTime|craue_date}}
+                        {{ 'valid until'|trans({})}}: {{ announcement.getSecondDateTime|craue_date }}
                         
                         {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
                             </span>

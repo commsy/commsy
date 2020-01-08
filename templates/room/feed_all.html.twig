@@ -39,8 +39,8 @@
                             {{ macrosUtils.contextLinkIcon(roomId, room, projectsMemberStatus[room.itemId]) }}
                         </div>
                         <div class="uk-comment-meta">
-                            {% if room.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                {{ 'today'|trans({})|capitalize }}, {{room.getModificationDate|date("H:i")}}
+                            {% if room.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{room.modificationDate|date("H:i")}}
                             {% else %}
                                 {% if '9999-00-00' not in room.modificationDate %}
                                     {{ room.modificationDate|craue_date }}

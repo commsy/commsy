@@ -76,8 +76,8 @@
                                                                         {{ macros.userIcon(currentItem.modificatorItem) }}
                                                                     {% endif %}
                                                                     <div class="uk-comment-meta">
-                                                                        {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                                            {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+                                                                        {% if currentItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                                            {{ 'today'|trans({})|capitalize }}, {{currentItem.modificationDate|date("H:i")}}
                                                                         {% else %}
                                                                             {{ currentItem.modificationDate|craue_date }}
                                                                         {% endif %}
@@ -127,8 +127,8 @@
                                                             {{ macros.userIcon(currentItem.modificatorItem) }}
                                                         {% endif %}
                                                         <div class="uk-comment-meta">
-                                                            {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                                {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+                                                            {% if currentItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                                {{ 'today'|trans({})|capitalize }}, {{currentItem.modificationDate|date("H:i")}}
                                                             {% else %}
                                                                 {{ currentItem.modificationDate|craue_date }}
                                                             {% endif %}

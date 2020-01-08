@@ -53,10 +53,10 @@
                                         {{ macros.userIcon(announcement.modificatorItem) }}
                                     {% endif %}
                                     <div class="uk-comment-meta">
-                                        {% if announcement.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                            {{ 'today'|trans({})|capitalize }}, {{announcement.getModificationDate|date("H:i")}}
+                                        {% if announcement.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                            {{ 'today'|trans({})|capitalize }}, {{announcement.modificationDate|date("H:i")}}
                                         {% else %}
-                                            {{announcement.getModificationDate|craue_date}}
+                                            {{ announcement.modificationDate|craue_date }}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
 
                                     <div class="uk-comment-meta">
 
-                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(announcement.modificatorItem) }} ({{announcement.getCreationDate|craue_date}})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(announcement.modificatorItem) }} ({{ announcement.creationDate|craue_date }})
 
                                     </div>
 
