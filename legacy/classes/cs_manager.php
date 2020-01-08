@@ -484,7 +484,6 @@ class cs_manager {
    function setRubricLimit($type, $limit){
       switch($type){
          case CS_TOPIC_TYPE: $this->setTopicLimit($limit);break;
-         case CS_INSTITUTION_TYPE: $this->setInstitutionLimit($limit);break;
          case CS_GROUP_TYPE: $this->setGroupLimit($limit);break;
          case CS_USER_TYPE: $this->setUserLimit($limit);break;
       }

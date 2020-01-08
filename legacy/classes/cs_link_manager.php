@@ -157,9 +157,6 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
    function setMaterialLimit(){
       $this->setTypeLimit(CS_MATERIAL_TYPE);
    }
-   function setInstitutionLimit(){
-      $this->setTypeLimit(CS_INSTITUTION_TYPE);
-   }
    function setTopicLimit(){
       $this->setTypeLimit(CS_TOPIC_TYPE);
    }

@@ -364,42 +364,6 @@ class cs_topic_index_view extends cs_index_view {
         $width = '18.3';
       }
       $context = $this->_environment->getCurrentContextItem();
-      if ($context->withRubric(CS_INSTITUTION_TYPE)) {
-         $list = $this->getAvailableInstitutions();
-         $selinstitution = $this->getSelectedInstitution();
-         $html .= '<div style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_INSTITUTION').BRLF;
-         if ( isset($list) ) {
-            // jQuery
-            //$html .= '   <select name="selinstitution" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
-            $html .= '   <select name="selinstitution" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" id="submit_form">'.LF;
-            // jQuery
-            $html .= '      <option value="0"';
-            if ( !isset($selinstitution) || $selinstitution == 0 ) {
-               $html .= ' selected="selected"';
-            }
-            $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-            $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-            $institution = $list->getFirst();
-            while ( $institution ) {
-               $html .= '      <option value="'.$institution->getItemID().'"';
-               if ( isset($selinstitution) and $selinstitution == $institution->getItemID() ) {
-                  $html .= ' selected="selected"';
-               }
-               $text = $this->_Name2SelectOption($institution->getName());
-               $html .= '>'.$text.'</option>'.LF;
-               $institution = $list->getNext();
-            }
-            $html .= '   <option class="disabled" disabled="disabled" value="-1">------------------------------</option>'.LF;
-            $html .= '      <option value="-1"';
-            if ( !isset($selinstitution) || $selinstitution == -1 ) {
-               $html .= ' selected="selected"';
-            }
-            $html .= '>*'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</option>'.LF;
-            $html .= '   </select>'.LF;
-         } else {
-           $html.='';
-         }
-      }
       $html .= '</div>';
       return $html;
    }

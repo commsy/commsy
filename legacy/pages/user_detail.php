@@ -277,7 +277,6 @@ if ($type != CS_USER_TYPE) {
                $ids = $user_item->getLinkedItemIDArray($module);
                $session->setValue('cid'.$environment->getCurrentContextID().'_'.$module.'_index_ids', $ids);
                if ($module != CS_TOPIC_TYPE and
-                   $module != CS_INSTITUTION_TYPE and
                    $module != CS_GROUP_TYPE ){
                    $ids = $user_item->getModifiedItemIDArray($module,$user_item->getItemID());
                    $detail_view->addModifiedItemIDArray($module,$ids);
@@ -306,7 +305,7 @@ if ($type != CS_USER_TYPE) {
                       }
                   }
                } else {
-                  if ( $module == CS_GROUP_TYPE or $module == CS_INSTITUTION_TYPE or $module == CS_TOPIC_TYPE) {
+                  if ( $module == CS_GROUP_TYPE or $module == CS_TOPIC_TYPE) {
                      $ids = $user_item->getLinkedItemIDArray($module);
                      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$module.'_index_ids', $ids);
                   } else {

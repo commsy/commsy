@@ -196,62 +196,6 @@ class cs_user_item extends cs_item
         $this->setTopicByID($value->getItemID());
     }
 
-    /** get institutions of a user
-     * this method returns a list of institutions which are linked to the user
-     *
-     * @return object cs_list a list of institutions (cs_label_item)
-     */
-    function getInstitutionList()
-    {
-        $institution_manager = $this->_environment->getLabelManager();
-        $institution_manager->setTypeLimit(CS_INSTITUTION_TYPE);
-        return $this->_getLinkedItems($institution_manager, CS_INSTITUTION_TYPE);
-    }
-
-    /** set institutions of a user
-     * this method sets a list of institutions which are linked to the user
-     *
-     * @param cs_list list of institutions (cs_label_item)
-     */
-    function setInstitutionList($value)
-    {
-        $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
-    }
-
-    /** set institutions of a news item by id
-     * this method sets a list of institution item_ids which are linked to the user
-     *
-     * @param array of institution ids, index of id must be 'iid'<br />
-     * Example:<br />
-     * array(array('iid' => value1), array('iid' => value2))
-     */
-    function setInstitutionListByID($value)
-    {
-        $this->setLinkedItemsByID(CS_INSTITUTION_TYPE, $value);
-    }
-
-    /** set one institution of a user item by id
-     * this method sets one institution item id which is linked to the user
-     *
-     * @param integer institution id
-     */
-    function setInstitutionByID($value)
-    {
-        $value_array = array();
-        $value_array[] = $value;
-        $this->setInstitutionListByID($value_array);
-    }
-
-    /** set one institution of a user item
-     * this method sets one institution which is linked to the user
-     *
-     * @param object cs_label institution
-     */
-    function setInstitution($value)
-    {
-        $this->setInstitutionByID($value->getItemID());
-    }
-
     /** get firstname of the user
      * this method returns the firstname of the user
      *
@@ -2353,20 +2297,6 @@ class cs_user_item extends cs_item
             $retour = $group_list->inList($group_item);
             unset($group_list);
             unset($group_item);
-        }
-        return $retour;
-    }
-
-    public function isInInstitution($institution_item)
-    {
-        $retour = false;
-        if (isset($institution_item)
-            and $institution_item->getItemID() > 0
-        ) {
-            $institution_list = $this->getInstitutionList();
-            $retour = $institution_list->inList($institution_item);
-            unset($institution_list);
-            unset($institution_item);
         }
         return $retour;
     }

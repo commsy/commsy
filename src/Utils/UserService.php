@@ -114,12 +114,6 @@ class UserService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->userManager->setTopicLimit($relatedLabel->getItemId());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->userManager->setInstitutionLimit($relatedLabel->getItemId());
-            }
         }
         
         // hashtag

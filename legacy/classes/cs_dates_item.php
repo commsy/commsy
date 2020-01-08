@@ -556,7 +556,6 @@ class cs_dates_item extends cs_item {
       $copy->setModificatorItem($user);
       $list = new cs_list();
       $copy->setGroupList($list);
-      $copy->setInstitutionList($list);
       $copy->setTopicList($list);
       $copy->save();
       return $copy;
@@ -570,8 +569,6 @@ class cs_dates_item extends cs_item {
       #}
       $group_list = $this->getGroupList();
       $clone_item->setGroupList($group_list);
-      $institution_list = $this->getInstitutionList();
-      $clone_item->setInstitutionList($institution_list);
       $topic_list = $this->getTopicList();
       $clone_item->setTopicList($topic_list);
       return $clone_item;
