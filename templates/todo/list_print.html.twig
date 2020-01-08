@@ -54,7 +54,7 @@
                                     {% endif %}
                                     <div class="uk-comment-meta">
                                         {% if announcement.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                            {{ 'today'|trans({})|capitalize }}, {{announcement.getModificationDate|craue_date}}
+                                            {{ 'today'|trans({})|capitalize }}, {{ announcement.modificationDate|date("H:i") }}
                                         {% else %}
                                             {{announcement.getModificationDate|craue_date}}
                                         {% endif %}
