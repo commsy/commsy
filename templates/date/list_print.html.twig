@@ -68,7 +68,7 @@
 
                                 <div class="uk-comment-meta">
 
-                                        {{date.getDateListDescription}}{% if date.getPlace != '' %}, {{date.getPlace}}{% endif %}
+                                    {{ formatDateTimeRange(date.wholeDay, date.dateTimeObject_Start, date.dateTimeObject_End) }}{% if date.place != '' %}, {{ date.place }}{% endif %}
 
                                 </div>
                                
