@@ -381,16 +381,6 @@ var $_sel_rubric = '';
             }
             $html .= $this->_getTopicItemAsLongHtml($item,$style);
             break;
-         case CS_INSTITUTION_TYPE:
-            if ($this->_first_institution){
-              $this->_first_institution = false;
-              $html .= '   <tr class="list">'.LF;
-              $html .= '      <td class="head" style="font-size:10pt; font-weight:bold" colspan="4">';
-              $html .= $this->_translator->getMessage('INSTITUTIONS');
-              $html .= '</td>'.LF;
-            }
-            $html .= $this->_getInstitutionItemAsLongHtml($item,$style);
-            break;
          case CS_MATERIAL_TYPE:
             if ($this->_first_material){
               $this->_first_material = false;

@@ -704,7 +704,7 @@ class SearchController extends BaseController
             } else {
                 $allowedActions = ['copy'];
                 if (method_exists($searchResult, 'getItemId')) {
-                    if ($this->isGranted('ITEM_EDIT', $searchResult->getItemId())) {
+                    if ($this->isGranted('ITEM_EDIT', $searchResult->getItemId()) && ($type !== 'user')) {
                         $allowedActions[] = 'delete';
                     }
                 }

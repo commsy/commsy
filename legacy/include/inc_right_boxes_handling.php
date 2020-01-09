@@ -496,9 +496,6 @@ if ( isOption($command, $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) or
          if ($context_item->withRubric(CS_GROUP_TYPE)){
             $rubric_array[] = CS_GROUP_TYPE;
          }
-         if ($context_item->withRubric(CS_INSTITUTION_TYPE)){
-            $rubric_array[] = CS_INSTITUTION_TYPE;
-         }
          $interval = 100;
       }
       foreach ($rubric_array as $rubric) {

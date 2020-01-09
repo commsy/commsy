@@ -100,12 +100,6 @@ class DiscussionService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->discussionManager->setTopicLimit($relatedLabel->getItemId());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->discussionManager->setInstitutionLimit($relatedLabel->getItemId());
-            }
         }
         
         // hashtag

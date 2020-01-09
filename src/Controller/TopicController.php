@@ -76,7 +76,7 @@ class TopicController extends BaseController
             'showCategories' => false,
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
+            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
@@ -374,7 +374,7 @@ class TopicController extends BaseController
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
-        $infoArray['language'] = $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
+        $infoArray['language'] = $legacyEnvironment->getCurrentContextItem()->getLanguage();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
         $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
@@ -444,7 +444,7 @@ class TopicController extends BaseController
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
-        $formData['language'] = $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'];
+        $formData['language'] = $legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['draft'] = $isDraft;
         $translator = $this->get('translator');
         $form = $this->createForm(TopicType::class, $formData, array(
@@ -499,7 +499,7 @@ class TopicController extends BaseController
             'topic' => $topicItem,
             'isDraft' => $isDraft,  
             'showHashtags' => $hashtagsMandatory,
-            'language' => $legacyEnvironment->getCurrentUser()->_environment->current_context->_data['extras']['LANGUAGE'],
+            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );

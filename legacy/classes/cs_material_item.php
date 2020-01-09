@@ -1066,7 +1066,6 @@ function copy () {
       }
       $copy->setBuzzwordListByID($buzzword_ids);
       $copy->setGroupList($list);
-      $copy->setInstitutionList($list);
       $copy->setTopicList($list);
    }
    $copy->setSectionList(new cs_list());
@@ -1260,7 +1259,6 @@ function copyVersion ($id) {
       }
       $copy->setBuzzwordListByID($buzzword_ids);
       $copy->setGroupList($list);
-      $copy->setInstitutionList($list);
       $copy->setTopicList($list);
    }
 
@@ -1288,8 +1286,6 @@ function cloneCopy($new_version = false) {
    $clone_item->setGroupList($group_list);
    $section_list = $this->getSectionList();
    $clone_item->setSectionList($section_list);
-   $institution_list = $this->getInstitutionList();
-   $clone_item->setInstitutionList($institution_list);
    $topic_list = $this->getTopicList();
    $clone_item->setTopicList($topic_list);
 

@@ -328,7 +328,6 @@ if ( !empty($_POST['itemlist'])
 				$rubric_array = array();
 			
 				if($current_context->withRubric(CS_GROUP_TYPE)) $rubric_array[] = CS_GROUP_TYPE;
-				if($current_context->withRubric(CS_INSTITUTION_TYPE)) $rubric_array[] = CS_INSTITUTION_TYPE;
 			
 				// $interval = 100;
 			}

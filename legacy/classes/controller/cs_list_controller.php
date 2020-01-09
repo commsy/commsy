@@ -129,15 +129,11 @@
       			$sort_parameter = 'name';
       		}elseif($module == CS_TODO_TYPE){
       			$sort_parameter = 'date';
-      		}elseif($module == CS_INSTITUTION_TYPE){
-      			$sort_parameter = 'title';
       		}elseif($module == CS_DISCUSSION_TYPE){
       			$sort_parameter = 'latest';
       		}elseif($module == CS_GROUP_TYPE){
       			$sort_parameter = 'title';
       		}elseif($module == CS_TOPIC_TYPE){
-      			$sort_parameter = 'title';
-      		}elseif($module == CS_INSTITUTION_TYPE){
       			$sort_parameter = 'title';
       		}elseif($module == CS_PROJECT_TYPE){
       			$sort_parameter = 'activity_rev';
@@ -1444,8 +1440,6 @@
 				if($this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'latest';
 				} elseif($this->_environment->getCurrentModule() === CS_TOPIC_TYPE) {
-					$this->_list_parameter_arrray['sort'] = 'title';
-				}elseif($this->_environment->getCurrentModule() === CS_INSTITUTION_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'title';
 				} elseif($this->_environment->getCurrentModule() === CS_DATE_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'time_rev';

@@ -300,9 +300,6 @@ if ( !empty($ref_iid) and $mode == 'attached' ){
 if ( !empty($search) ) {
    $topic_manager->setSearchLimit($search);
 }
-if ( !empty($selinstitution) and $context->withRubric(CS_INSTITUTION_TYPE) ) {
-   $topic_manager->setInstitutionLimit($selinstitution);
-}
 
 if ( !empty($selgroup) ) {
    $topic_manager->setGroupLimit($selgroup);
@@ -342,13 +339,8 @@ if (isset($_GET['select']) and $_GET['select']=='all'){
 }
 
 
-// Get available institutions
-if ($environment->inCommunityRoom()) {
-   $institution_manager = $environment->getInstitutionManager();
-   $institution_manager->resetLimits();
-   $institution_manager->select();
-   $institution_list = $institution_manager->get();
-} else {
+// Get available groups
+if (!$environment->inCommunityRoom()) {
    $group_manager = $environment->getGroupManager();
    $group_manager->resetLimits();
    $group_manager->select();

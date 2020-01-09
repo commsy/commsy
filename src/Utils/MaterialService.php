@@ -105,12 +105,6 @@ class MaterialService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->materialManager->setTopicLimit($relatedLabel->getItemId());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->materialManager->setInstitutionLimit($relatedLabel->getItemId());
-            }
         }
 
         // hashtag
