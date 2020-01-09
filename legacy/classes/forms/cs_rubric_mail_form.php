@@ -324,9 +324,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
          }
       } else {
          $context_item = $this->_environment->getCurrentContextItem();
-         if ( $context_item->withRubric(CS_INSTITUTION_TYPE) and !empty($this->_institution_array) ) {
-            $this-> _initCheckBoxInstitution();
-         }
       }
       $projekt_room_show_mail_to_all = false;
 
@@ -351,7 +348,7 @@ class cs_rubric_mail_form extends cs_rubric_form {
          }
       }
 
-      if ($context_item->isCommunityRoom() and !$context_item->withRubric(CS_INSTITUTION_TYPE)) {
+      if ($context_item->isCommunityRoom()) {
          $cid = $this->_environment->getCurrentContextId();
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setUserLimit();
@@ -442,15 +439,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
    function _initCheckBoxGroup () {
       if (isset($this->_group_array)) {
          $this->_form->addCheckBoxGroup('groups',$this->_group_array,'',$this->_translator->getMessage('COMMON_MAILTO_GROUPS'),$this->_translator->getMessage('COMMON_RELEVANT_FOR_DESC'), false, false);
-      }
-   }
-
-   /** initializes a check box for selecting the relevant institutions
-    *  this method is called in the child classes, where this row is needed
-    */
-   function _initCheckBoxInstitution () {
-      if (isset($this->_institution_array)) {
-         $this->_form->addCheckBoxGroup('institutions',$this->_institution_array,'',$this->_translator->getMessage('COMMON_RELEVANT_FOR_INSTITUTION'),$this->_translator->getMessage('COMMON_RELEVANT_FOR_INSTITUTION_DESC'), false, false);
       }
    }
 

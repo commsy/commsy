@@ -35,9 +35,9 @@
                 
                 <div class="uk-comment-meta">
                     {% if project.contactPersonString is not empty %}
-                        {{ project.contactPersonString }}
+                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.contactPersonString }}</a>
                     {% else %}
-                        {{ project.getContactModeratorListString }}
+                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.getContactModeratorListString }}</a>
                     {% endif %}
                 </div>
                 

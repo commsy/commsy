@@ -104,13 +104,6 @@ class AnnouncementService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->announcementManager->setTopicLimit($relatedLabel->getItemID());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                /** @var \cs_label_item $relatedLabel */
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->announcementManager->setInstitutionLimit($relatedLabel->getItemID());
-            }
         }
         // hashtag
         if (isset($formData['hashtag'])) {

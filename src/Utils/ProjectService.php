@@ -62,12 +62,6 @@ class ProjectService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->projectManager->setTopicLimit($relatedLabel->getItemId());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->projectManager->setInstitutionLimit($relatedLabel->getItemId());
-            }
         }
         
         // hashtag

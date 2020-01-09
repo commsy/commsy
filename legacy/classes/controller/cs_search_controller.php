@@ -147,7 +147,7 @@
 
 				if($view !== 'none') {
 					if(!($this->_environment->inPrivateRoom() && $name === 'user') && (empty($selfiles) || in_array($name, $file_rubric_array))) {
-						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && $emptyTagsParam) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE, CS_PROJECT_TYPE)))) {
+						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && $emptyTagsParam) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_PROJECT_TYPE)))) {
 							$rubric_array[] = $name;
 						}
 					}
@@ -1019,8 +1019,7 @@ unset($ftsearch_manager);
 					CS_GROUP_TYPE			=>	'gr',
 					CS_TODO_TYPE			=>	'au',
 					CS_TOPIC_TYPE			=>	'th',
-					CS_PROJECT_TYPE			=>	'pr',
-					CS_INSTITUTION_TYPE		=>	'in'
+					CS_PROJECT_TYPE			=>	'pr'
 			);
 
 			foreach($rubrics as $rubric) {
