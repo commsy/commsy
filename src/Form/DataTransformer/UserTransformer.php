@@ -155,6 +155,8 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->setEmail($userData['emailRoom']);
             }
 
+            $privateRoomUserItem = $portalUser->getRelatedPrivateRoomUserItem();
+
             if (isset($userData['emailAccount'])) {
                 $portalUser->setEmail($userData['emailAccount']);
                 if ($portalUser->hasToChangeEmail()) {
@@ -162,7 +164,6 @@ class UserTransformer implements DataTransformerInterface
                 }
                 $portalUser->save();
 
-                $privateRoomUserItem = $portalUser->getRelatedPrivateRoomUserItem();
                 if ($privateRoomUserItem) {
                     $privateRoomUserItem->setEmail($portalUser->getEmail());
                     $privateRoomUserItem->save();
@@ -211,6 +212,11 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setHomepage($userData['homepage']);
             $userObject->setDescription($userData['description']);
             $userObject->setLanguage($userData['language']);
+
+            if ($privateRoomUserItem) {
+                $privateRoomUserItem->setLanguage($userData['language']);
+                $privateRoomUserItem->save();
+            }
         }
         return $userObject;
     }
