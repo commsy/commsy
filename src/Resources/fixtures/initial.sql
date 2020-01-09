@@ -5,9 +5,9 @@
 # https://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
-# Host: 127.0.0.1 (MySQL 5.5.5-10.1.40-MariaDB-1~bionic)
-# Database: commsy_test
-# Generation Time: 2019-10-07 13:25:56 +0000
+# Host: 127.0.0.1 (MySQL 5.5.5-10.3.20-MariaDB-1:10.3.20+maria~bionic)
+# Database: commsy
+# Generation Time: 2019-12-06 10:55:42 +0000
 # ************************************************************
 
 
@@ -28,7 +28,7 @@ DROP TABLE IF EXISTS `accounts`;
 
 CREATE TABLE `accounts` (
   `context_id` int(11) NOT NULL,
-  `username` varchar(32) NOT NULL,
+  `username` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
   `password_md5` varchar(32) DEFAULT NULL,
@@ -58,10 +58,10 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `annotation_portfolio`;
 
 CREATE TABLE `annotation_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
-  `a_id` int(11) NOT NULL DEFAULT '0',
-  `row` int(11) NOT NULL DEFAULT '0',
-  `column` int(11) NOT NULL DEFAULT '0',
+  `p_id` int(11) NOT NULL DEFAULT 0,
+  `a_id` int(11) NOT NULL DEFAULT 0,
+  `row` int(11) NOT NULL DEFAULT 0,
+  `column` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`p_id`,`a_id`),
   KEY `row` (`row`,`column`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -74,7 +74,7 @@ CREATE TABLE `annotation_portfolio` (
 DROP TABLE IF EXISTS `annotations`;
 
 CREATE TABLE `annotations` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -83,11 +83,11 @@ CREATE TABLE `annotations` (
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `linked_item_id` int(11) NOT NULL DEFAULT '0',
-  `linked_version_id` int(11) NOT NULL DEFAULT '0',
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `description` mediumtext DEFAULT NULL,
+  `linked_item_id` int(11) NOT NULL DEFAULT 0,
+  `linked_version_id` int(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -102,7 +102,7 @@ CREATE TABLE `annotations` (
 DROP TABLE IF EXISTS `announcement`;
 
 CREATE TABLE `announcement` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -111,10 +111,10 @@ CREATE TABLE `announcement` (
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
+  `description` mediumtext DEFAULT NULL,
   `enddate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -153,22 +153,22 @@ CREATE TABLE `assessments` (
 DROP TABLE IF EXISTS `auth_source`;
 
 CREATE TABLE `auth_source` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `portal_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `type` enum('local','oidc') NOT NULL DEFAULT 'local',
-  `enabled` tinyint(4) NOT NULL DEFAULT '1',
-  `extras` text,
-  `default` tinyint(4) NOT NULL DEFAULT '0',
-  `add_account` tinyint(4) NOT NULL DEFAULT '0',
-  `change_username` tinyint(4) NOT NULL DEFAULT '0',
-  `delete_account` tinyint(4) NOT NULL DEFAULT '0',
-  `change_userdata` tinyint(4) NOT NULL DEFAULT '0',
-  `change_password` tinyint(4) NOT NULL DEFAULT '0',
-  `create_room` tinyint(4) NOT NULL DEFAULT '1',
+  `enabled` tinyint(4) NOT NULL DEFAULT 1,
+  `extras` text DEFAULT NULL,
+  `default` tinyint(4) NOT NULL DEFAULT 0,
+  `add_account` tinyint(4) NOT NULL DEFAULT 0,
+  `change_username` tinyint(4) NOT NULL DEFAULT 0,
+  `delete_account` tinyint(4) NOT NULL DEFAULT 0,
+  `change_userdata` tinyint(4) NOT NULL DEFAULT 0,
+  `change_password` tinyint(4) NOT NULL DEFAULT 0,
+  `create_room` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `auth_source_portal_id_index` (`portal_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `auth_source` WRITE;
 /*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
@@ -192,9 +192,9 @@ CREATE TABLE `calendars` (
   `title` varchar(255) NOT NULL,
   `color` varchar(255) NOT NULL,
   `external_url` varchar(255) DEFAULT NULL,
-  `default_calendar` tinyint(4) NOT NULL DEFAULT '0',
+  `default_calendar` tinyint(4) NOT NULL DEFAULT 0,
   `creator_id` int(11) DEFAULT NULL,
-  `synctoken` int(11) NOT NULL DEFAULT '0',
+  `synctoken` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -206,7 +206,7 @@ CREATE TABLE `calendars` (
 DROP TABLE IF EXISTS `dates`;
 
 CREATE TABLE `dates` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -215,7 +215,7 @@ CREATE TABLE `dates` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
+  `description` mediumtext DEFAULT NULL,
   `start_time` varchar(100) DEFAULT NULL,
   `end_time` varchar(100) DEFAULT NULL,
   `start_day` varchar(100) NOT NULL,
@@ -223,18 +223,18 @@ CREATE TABLE `dates` (
   `place` varchar(100) DEFAULT NULL,
   `datetime_start` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `datetime_end` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `date_mode` tinyint(4) NOT NULL DEFAULT '0',
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `date_mode` tinyint(4) NOT NULL DEFAULT 0,
   `color` varchar(255) DEFAULT NULL,
   `recurrence_id` int(11) DEFAULT NULL,
-  `recurrence_pattern` text,
-  `extras` text,
+  `recurrence_pattern` text DEFAULT NULL,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   `calendar_id` int(11) DEFAULT NULL,
-  `external` tinyint(4) NOT NULL DEFAULT '0',
+  `external` tinyint(4) NOT NULL DEFAULT 0,
   `uid` varchar(255) DEFAULT NULL,
-  `whole_day` tinyint(4) NOT NULL DEFAULT '0',
+  `whole_day` tinyint(4) NOT NULL DEFAULT 0,
   `datetime_recurrence` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
@@ -249,9 +249,9 @@ CREATE TABLE `dates` (
 DROP TABLE IF EXISTS `discussionarticles`;
 
 CREATE TABLE `discussionarticles` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
-  `discussion_id` int(11) NOT NULL DEFAULT '0',
+  `discussion_id` int(11) NOT NULL DEFAULT 0,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -259,10 +259,10 @@ CREATE TABLE `discussionarticles` (
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `subject` varchar(255) NOT NULL,
-  `description` mediumtext,
+  `description` mediumtext DEFAULT NULL,
   `position` varchar(255) NOT NULL DEFAULT '1',
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -276,7 +276,7 @@ CREATE TABLE `discussionarticles` (
 DROP TABLE IF EXISTS `discussions`;
 
 CREATE TABLE `discussions` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -287,10 +287,10 @@ CREATE TABLE `discussions` (
   `title` varchar(200) NOT NULL,
   `latest_article_item_id` int(11) DEFAULT NULL,
   `latest_article_modification_date` datetime DEFAULT NULL,
-  `status` int(2) NOT NULL DEFAULT '1',
+  `status` int(2) NOT NULL DEFAULT 1,
   `discussion_type` varchar(10) NOT NULL DEFAULT 'simple',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -342,10 +342,10 @@ CREATE TABLE `files` (
   `deletion_date` datetime DEFAULT NULL,
   `filename` varchar(255) NOT NULL,
   `filepath` varchar(255) NOT NULL,
-  `size` int(30) NOT NULL DEFAULT '0',
+  `size` int(30) NOT NULL DEFAULT 0,
   `has_html` enum('0','1','2') NOT NULL DEFAULT '0',
-  `scan` tinyint(1) NOT NULL DEFAULT '-1',
-  `extras` text,
+  `scan` tinyint(1) NOT NULL DEFAULT -1,
+  `extras` text DEFAULT NULL,
   `temp_upload_session_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`files_id`),
   KEY `context_id` (`context_id`),
@@ -385,7 +385,7 @@ CREATE TABLE `invitations` (
   `context_id` int(11) NOT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `expiration_date` datetime DEFAULT NULL,
-  `redeemed` tinyint(11) NOT NULL DEFAULT '0',
+  `redeemed` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -401,7 +401,7 @@ CREATE TABLE `item_backup` (
   `backup_date` datetime NOT NULL,
   `modification_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `public` tinyint(11) NOT NULL,
   `special` text CHARACTER SET ucs2 NOT NULL,
   PRIMARY KEY (`item_id`)
@@ -415,9 +415,9 @@ CREATE TABLE `item_backup` (
 DROP TABLE IF EXISTS `item_link_file`;
 
 CREATE TABLE `item_link_file` (
-  `item_iid` int(11) NOT NULL DEFAULT '0',
-  `item_vid` int(11) NOT NULL DEFAULT '0',
-  `file_id` int(11) NOT NULL DEFAULT '0',
+  `item_iid` int(11) NOT NULL DEFAULT 0,
+  `item_vid` int(11) NOT NULL DEFAULT 0,
+  `file_id` int(11) NOT NULL DEFAULT 0,
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
@@ -437,7 +437,7 @@ CREATE TABLE `items` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
-  `draft` tinyint(4) NOT NULL DEFAULT '0',
+  `draft` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `type` (`type`)
@@ -462,7 +462,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `labels`;
 
 CREATE TABLE `labels` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -471,10 +471,10 @@ CREATE TABLE `labels` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `type` varchar(15) NOT NULL,
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -507,19 +507,19 @@ CREATE TABLE `licenses` (
 DROP TABLE IF EXISTS `link_items`;
 
 CREATE TABLE `link_items` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
-  `first_item_id` int(11) NOT NULL DEFAULT '0',
+  `first_item_id` int(11) NOT NULL DEFAULT 0,
   `first_item_type` varchar(15) DEFAULT NULL,
-  `second_item_id` int(11) NOT NULL DEFAULT '0',
+  `second_item_id` int(11) NOT NULL DEFAULT 0,
   `second_item_type` varchar(15) DEFAULT NULL,
   `sorting_place` int(11) DEFAULT NULL,
-  `extras` text,
+  `extras` text DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -539,8 +539,8 @@ CREATE TABLE `link_items` (
 DROP TABLE IF EXISTS `link_modifier_item`;
 
 CREATE TABLE `link_modifier_item` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `modifier_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`,`modifier_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -561,10 +561,10 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `links`;
 
 CREATE TABLE `links` (
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `from_version_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_version_id` int(11) NOT NULL DEFAULT '0',
+  `from_item_id` int(11) NOT NULL DEFAULT 0,
+  `from_version_id` int(11) NOT NULL DEFAULT 0,
+  `to_item_id` int(11) NOT NULL DEFAULT 0,
+  `to_version_id` int(11) NOT NULL DEFAULT 0,
   `link_type` char(30) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -598,7 +598,7 @@ CREATE TABLE `log` (
   `agent` varchar(250) DEFAULT NULL,
   `timestamp` timestamp NULL DEFAULT NULL,
   `request` varchar(250) DEFAULT NULL,
-  `post_content` mediumtext,
+  `post_content` mediumtext DEFAULT NULL,
   `method` varchar(10) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
   `ulogin` varchar(250) DEFAULT NULL,
@@ -627,7 +627,7 @@ CREATE TABLE `log_archive` (
   `agent` varchar(250) DEFAULT NULL,
   `timestamp` timestamp NULL DEFAULT NULL,
   `request` varchar(250) DEFAULT NULL,
-  `post_content` mediumtext,
+  `post_content` mediumtext DEFAULT NULL,
   `method` varchar(10) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
   `ulogin` varchar(250) DEFAULT NULL,
@@ -651,8 +651,8 @@ CREATE TABLE `log_archive` (
 DROP TABLE IF EXISTS `materials`;
 
 CREATE TABLE `materials` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -661,13 +661,13 @@ CREATE TABLE `materials` (
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `author` varchar(200) DEFAULT NULL,
   `publishing_date` varchar(20) DEFAULT NULL,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `world_public` smallint(2) NOT NULL DEFAULT '0',
-  `extras` text,
-  `new_hack` tinyint(1) NOT NULL DEFAULT '0',
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `world_public` smallint(2) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
+  `new_hack` tinyint(1) NOT NULL DEFAULT 0,
   `copy_of` int(11) DEFAULT NULL,
   `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
   `workflow_resubmission_date` datetime DEFAULT NULL,
@@ -699,40 +699,41 @@ LOCK TABLES `migration_versions` WRITE;
 
 INSERT INTO `migration_versions` (`version`, `executed_at`)
 VALUES
-	('20150623133246','2019-10-07 13:23:49'),
-	('20150623135455','2019-10-07 13:23:52'),
-	('20150831152400','2019-10-07 13:23:52'),
-	('20150914082323','2019-10-07 13:23:52'),
-	('20160718213927','2019-10-07 13:23:52'),
-	('20160719021757','2019-10-07 13:23:52'),
-	('20160727100551','2019-10-07 13:23:52'),
-	('20160727103653','2019-10-07 13:23:52'),
-	('20160727111607','2019-10-07 13:23:52'),
-	('20160727112623','2019-10-07 13:23:52'),
-	('20160727133717','2019-10-07 13:23:52'),
-	('20160728231457','2019-10-07 13:23:52'),
-	('20170225094328','2019-10-07 13:23:52'),
-	('20170225121940','2019-10-07 13:23:52'),
-	('20170420141745','2019-10-07 13:23:52'),
-	('20170521105856','2019-10-07 13:23:59'),
-	('20170616103508','2019-10-07 13:23:59'),
-	('20170714122834','2019-10-07 13:23:59'),
-	('20170721185631','2019-10-07 13:23:59'),
-	('20170802185102','2019-10-07 13:23:59'),
-	('20170810143230','2019-10-07 13:23:59'),
-	('20170824064811','2019-10-07 13:23:59'),
-	('20170908083138','2019-10-07 13:24:00'),
-	('20180212155007','2019-10-07 13:24:00'),
-	('20180227100813','2019-10-07 13:24:00'),
-	('20180315103403','2019-10-07 13:24:00'),
-	('20180713115204','2019-10-07 13:24:00'),
-	('20190125123633','2019-10-07 13:24:00'),
-	('20190523132611','2019-10-07 13:24:00'),
-	('20190708172814','2019-10-07 13:24:00'),
-	('20190923121921','2019-10-07 13:24:00'),
-	('20190923152100','2019-10-07 13:24:01'),
-	('20190924140632','2019-10-07 13:24:01'),
-	('20191007171054','2019-10-07 17:16:19');
+	('20150623133246','2019-12-06 10:54:17'),
+	('20150623135455','2019-12-06 10:54:20'),
+	('20150831152400','2019-12-06 10:54:20'),
+	('20150914082323','2019-12-06 10:54:20'),
+	('20160718213927','2019-12-06 10:54:21'),
+	('20160719021757','2019-12-06 10:54:21'),
+	('20160727100551','2019-12-06 10:54:21'),
+	('20160727103653','2019-12-06 10:54:21'),
+	('20160727111607','2019-12-06 10:54:21'),
+	('20160727112623','2019-12-06 10:54:21'),
+	('20160727133717','2019-12-06 10:54:21'),
+	('20160728231457','2019-12-06 10:54:21'),
+	('20170225094328','2019-12-06 10:54:21'),
+	('20170225121940','2019-12-06 10:54:21'),
+	('20170420141745','2019-12-06 10:54:21'),
+	('20170521105856','2019-12-06 10:54:28'),
+	('20170616103508','2019-12-06 10:54:28'),
+	('20170714122834','2019-12-06 10:54:28'),
+	('20170721185631','2019-12-06 10:54:28'),
+	('20170802185102','2019-12-06 10:54:28'),
+	('20170810143230','2019-12-06 10:54:28'),
+	('20170824064811','2019-12-06 10:54:28'),
+	('20170908083138','2019-12-06 10:54:28'),
+	('20180212155007','2019-12-06 10:54:28'),
+	('20180227100813','2019-12-06 10:54:29'),
+	('20180315103403','2019-12-06 10:54:29'),
+	('20180713115204','2019-12-06 10:54:29'),
+	('20190125123633','2019-12-06 10:54:29'),
+	('20190523132611','2019-12-06 10:54:29'),
+	('20190708172814','2019-12-06 10:54:30'),
+	('20190923121921','2019-12-06 10:54:30'),
+	('20190923152100','2019-12-06 10:54:30'),
+	('20190924133007','2019-12-06 10:54:30'),
+	('20190924140632','2019-12-06 10:54:31'),
+	('20191007171054','2019-12-06 10:54:32');
 
 /*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -744,9 +745,9 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `noticed`;
 
 CREATE TABLE `noticed` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
-  `user_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL DEFAULT 0,
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -765,14 +766,14 @@ CREATE TABLE `portal` (
   `modification_date` datetime NOT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `extras` text,
+  `extras` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
-  `activity` int(11) NOT NULL DEFAULT '0',
+  `activity` int(11) NOT NULL DEFAULT 0,
   `type` varchar(10) NOT NULL DEFAULT 'portal',
-  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '1',
+  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT 1,
   `url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31126 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -782,12 +783,12 @@ CREATE TABLE `portal` (
 DROP TABLE IF EXISTS `portfolio`;
 
 CREATE TABLE `portfolio` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `description` mediumtext NOT NULL,
-  `template` tinyint(4) NOT NULL DEFAULT '-1',
+  `template` tinyint(4) NOT NULL DEFAULT -1,
   `creation_date` datetime NOT NULL,
   `modification_date` datetime NOT NULL,
   `deletion_date` datetime DEFAULT NULL,
@@ -804,9 +805,9 @@ CREATE TABLE `portfolio` (
 DROP TABLE IF EXISTS `reader`;
 
 CREATE TABLE `reader` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
-  `user_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL DEFAULT 0,
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -819,7 +820,7 @@ CREATE TABLE `reader` (
 DROP TABLE IF EXISTS `room`;
 
 CREATE TABLE `room` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -828,14 +829,14 @@ CREATE TABLE `room` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `extras` text,
+  `extras` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
-  `activity` int(11) NOT NULL DEFAULT '0',
+  `activity` int(11) NOT NULL DEFAULT 0,
   `type` varchar(20) NOT NULL DEFAULT 'project',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '0',
-  `continuous` tinyint(4) NOT NULL DEFAULT '-1',
-  `template` tinyint(4) NOT NULL DEFAULT '-1',
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT 0,
+  `continuous` tinyint(4) NOT NULL DEFAULT -1,
+  `template` tinyint(4) NOT NULL DEFAULT -1,
   `contact_persons` varchar(255) DEFAULT NULL,
   `room_description` varchar(10000) DEFAULT NULL,
   `lastlogin` datetime DEFAULT NULL,
@@ -889,7 +890,7 @@ CREATE TABLE `room_categories_links` (
 DROP TABLE IF EXISTS `room_privat`;
 
 CREATE TABLE `room_privat` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -898,16 +899,16 @@ CREATE TABLE `room_privat` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `extras` text,
+  `extras` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
-  `activity` int(11) NOT NULL DEFAULT '0',
+  `activity` int(11) NOT NULL DEFAULT 0,
   `type` varchar(20) NOT NULL DEFAULT 'privateroom',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '0',
-  `continuous` tinyint(4) NOT NULL DEFAULT '-1',
-  `template` tinyint(4) NOT NULL DEFAULT '-1',
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT 0,
+  `continuous` tinyint(4) NOT NULL DEFAULT -1,
+  `template` tinyint(4) NOT NULL DEFAULT -1,
   `contact_persons` varchar(255) DEFAULT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
@@ -925,8 +926,8 @@ CREATE TABLE `room_privat` (
 DROP TABLE IF EXISTS `section`;
 
 CREATE TABLE `section` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -935,11 +936,11 @@ CREATE TABLE `section` (
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `number` smallint(6) NOT NULL DEFAULT '0',
-  `material_item_id` int(11) NOT NULL DEFAULT '0',
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `description` mediumtext DEFAULT NULL,
+  `number` smallint(6) NOT NULL DEFAULT 0,
+  `material_item_id` int(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -954,7 +955,7 @@ CREATE TABLE `section` (
 DROP TABLE IF EXISTS `server`;
 
 CREATE TABLE `server` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -963,11 +964,11 @@ CREATE TABLE `server` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `extras` text,
+  `extras` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
-  `activity` int(11) NOT NULL DEFAULT '0',
+  `activity` int(11) NOT NULL DEFAULT 0,
   `type` varchar(10) NOT NULL DEFAULT 'server',
-  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '1',
+  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT 1,
   `url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
@@ -1006,7 +1007,7 @@ CREATE TABLE `sessions` (
 DROP TABLE IF EXISTS `step`;
 
 CREATE TABLE `step` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1015,12 +1016,12 @@ CREATE TABLE `step` (
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `minutes` float NOT NULL DEFAULT '0',
-  `time_type` smallint(6) NOT NULL DEFAULT '1',
+  `description` mediumtext DEFAULT NULL,
+  `minutes` float NOT NULL DEFAULT 0,
+  `time_type` smallint(6) NOT NULL DEFAULT 1,
   `todo_item_id` int(11) NOT NULL,
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1035,7 +1036,7 @@ CREATE TABLE `step` (
 DROP TABLE IF EXISTS `tag`;
 
 CREATE TABLE `tag` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1044,7 +1045,7 @@ CREATE TABLE `tag` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `public` tinyint(4) NOT NULL DEFAULT '0',
+  `public` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1057,11 +1058,11 @@ CREATE TABLE `tag` (
 DROP TABLE IF EXISTS `tag_portfolio`;
 
 CREATE TABLE `tag_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
-  `t_id` int(11) NOT NULL DEFAULT '0',
-  `row` int(11) DEFAULT '0',
-  `column` int(11) DEFAULT '0',
-  `description` text,
+  `p_id` int(11) NOT NULL DEFAULT 0,
+  `t_id` int(11) NOT NULL DEFAULT 0,
+  `row` int(11) DEFAULT 0,
+  `column` int(11) DEFAULT 0,
+  `description` text DEFAULT NULL,
   PRIMARY KEY (`p_id`,`t_id`),
   KEY `row` (`row`,`column`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1075,9 +1076,9 @@ DROP TABLE IF EXISTS `tag2tag`;
 
 CREATE TABLE `tag2tag` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) NOT NULL DEFAULT '0',
+  `from_item_id` int(11) NOT NULL DEFAULT 0,
+  `to_item_id` int(11) NOT NULL DEFAULT 0,
+  `context_id` int(11) NOT NULL DEFAULT 0,
   `creator_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modifier_id` int(11) DEFAULT NULL,
@@ -1100,7 +1101,7 @@ CREATE TABLE `tag2tag` (
 DROP TABLE IF EXISTS `tasks`;
 
 CREATE TABLE `tasks` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -1109,7 +1110,7 @@ CREATE TABLE `tasks` (
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `status` varchar(20) NOT NULL,
-  `linked_item_id` int(11) NOT NULL DEFAULT '0',
+  `linked_item_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1123,7 +1124,7 @@ CREATE TABLE `tasks` (
 DROP TABLE IF EXISTS `template_portfolio`;
 
 CREATE TABLE `template_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
+  `p_id` int(11) NOT NULL DEFAULT 0,
   `u_id` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`p_id`,`u_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1152,7 +1153,7 @@ CREATE TABLE `terms` (
 DROP TABLE IF EXISTS `todos`;
 
 CREATE TABLE `todos` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1162,12 +1163,12 @@ CREATE TABLE `todos` (
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `date` datetime DEFAULT NULL,
-  `status` tinyint(3) NOT NULL DEFAULT '1',
+  `status` tinyint(3) NOT NULL DEFAULT 1,
   `minutes` float DEFAULT NULL,
-  `time_type` smallint(6) NOT NULL DEFAULT '1',
-  `description` mediumtext,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `extras` text,
+  `time_type` smallint(6) NOT NULL DEFAULT 1,
+  `description` mediumtext DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -1199,28 +1200,28 @@ CREATE TABLE `translation` (
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) NOT NULL DEFAULT 0,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `user_id` varchar(32) NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `is_contact` tinyint(4) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT 0,
+  `is_contact` tinyint(4) NOT NULL DEFAULT 0,
   `firstname` varchar(50) NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `city` varchar(100) NOT NULL,
   `lastlogin` datetime DEFAULT NULL,
-  `visible` tinyint(4) NOT NULL DEFAULT '1',
-  `extras` text,
+  `visible` tinyint(4) NOT NULL DEFAULT 1,
+  `extras` text DEFAULT NULL,
   `auth_source` int(11) DEFAULT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `expire_date` datetime DEFAULT NULL,
-  `use_portal_email` tinyint(1) NOT NULL DEFAULT '0',
+  `use_portal_email` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1248,7 +1249,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `user_portfolio`;
 
 CREATE TABLE `user_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
+  `p_id` int(11) NOT NULL DEFAULT 0,
   `u_id` varchar(32) NOT NULL,
   PRIMARY KEY (`p_id`,`u_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1274,7 +1275,7 @@ CREATE TABLE `workflow_read` (
 DROP TABLE IF EXISTS `zzz_annotations`;
 
 CREATE TABLE `zzz_annotations` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1283,11 +1284,11 @@ CREATE TABLE `zzz_annotations` (
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `linked_item_id` int(11) NOT NULL DEFAULT '0',
-  `linked_version_id` int(11) NOT NULL DEFAULT '0',
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `description` mediumtext DEFAULT NULL,
+  `linked_item_id` int(11) NOT NULL DEFAULT 0,
+  `linked_version_id` int(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1302,7 +1303,7 @@ CREATE TABLE `zzz_annotations` (
 DROP TABLE IF EXISTS `zzz_announcement`;
 
 CREATE TABLE `zzz_announcement` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1311,10 +1312,10 @@ CREATE TABLE `zzz_announcement` (
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
+  `description` mediumtext DEFAULT NULL,
   `enddate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -1358,7 +1359,7 @@ CREATE TABLE `zzz_calendars` (
   `title` varchar(255) NOT NULL,
   `color` varchar(255) NOT NULL,
   `external_url` varchar(255) DEFAULT NULL,
-  `default_calendar` tinyint(4) NOT NULL DEFAULT '0',
+  `default_calendar` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1370,7 +1371,7 @@ CREATE TABLE `zzz_calendars` (
 DROP TABLE IF EXISTS `zzz_dates`;
 
 CREATE TABLE `zzz_dates` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1379,7 +1380,7 @@ CREATE TABLE `zzz_dates` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
+  `description` mediumtext DEFAULT NULL,
   `start_time` varchar(100) DEFAULT NULL,
   `end_time` varchar(100) DEFAULT NULL,
   `start_day` varchar(100) NOT NULL,
@@ -1387,18 +1388,18 @@ CREATE TABLE `zzz_dates` (
   `place` varchar(100) DEFAULT NULL,
   `datetime_start` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `datetime_end` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `date_mode` tinyint(4) NOT NULL DEFAULT '0',
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `date_mode` tinyint(4) NOT NULL DEFAULT 0,
   `color` varchar(255) DEFAULT NULL,
   `recurrence_id` int(11) DEFAULT NULL,
-  `recurrence_pattern` text,
-  `extras` text,
+  `recurrence_pattern` text DEFAULT NULL,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   `calendar_id` int(11) DEFAULT NULL,
-  `external` tinyint(4) NOT NULL DEFAULT '0',
+  `external` tinyint(4) NOT NULL DEFAULT 0,
   `uid` varchar(255) DEFAULT NULL,
-  `whole_day` tinyint(4) NOT NULL DEFAULT '0',
+  `whole_day` tinyint(4) NOT NULL DEFAULT 0,
   `datetime_recurrence` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
@@ -1413,9 +1414,9 @@ CREATE TABLE `zzz_dates` (
 DROP TABLE IF EXISTS `zzz_discussionarticles`;
 
 CREATE TABLE `zzz_discussionarticles` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
-  `discussion_id` int(11) NOT NULL DEFAULT '0',
+  `discussion_id` int(11) NOT NULL DEFAULT 0,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -1423,10 +1424,10 @@ CREATE TABLE `zzz_discussionarticles` (
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `subject` varchar(255) NOT NULL,
-  `description` mediumtext,
+  `description` mediumtext DEFAULT NULL,
   `position` varchar(255) NOT NULL DEFAULT '1',
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1440,7 +1441,7 @@ CREATE TABLE `zzz_discussionarticles` (
 DROP TABLE IF EXISTS `zzz_discussions`;
 
 CREATE TABLE `zzz_discussions` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1451,10 +1452,10 @@ CREATE TABLE `zzz_discussions` (
   `title` varchar(200) NOT NULL,
   `latest_article_item_id` int(11) DEFAULT NULL,
   `latest_article_modification_date` datetime DEFAULT NULL,
-  `status` int(2) NOT NULL DEFAULT '1',
+  `status` int(2) NOT NULL DEFAULT 1,
   `discussion_type` varchar(10) NOT NULL DEFAULT 'simple',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -1492,10 +1493,10 @@ CREATE TABLE `zzz_files` (
   `deletion_date` datetime DEFAULT NULL,
   `filename` varchar(255) NOT NULL,
   `filepath` varchar(255) NOT NULL,
-  `size` int(30) NOT NULL DEFAULT '0',
+  `size` int(30) NOT NULL DEFAULT 0,
   `has_html` enum('0','1','2') NOT NULL DEFAULT '0',
-  `scan` tinyint(1) NOT NULL DEFAULT '-1',
-  `extras` text,
+  `scan` tinyint(1) NOT NULL DEFAULT -1,
+  `extras` text DEFAULT NULL,
   `temp_upload_session_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`files_id`),
   KEY `context_id` (`context_id`),
@@ -1528,9 +1529,9 @@ CREATE TABLE `zzz_hash` (
 DROP TABLE IF EXISTS `zzz_item_link_file`;
 
 CREATE TABLE `zzz_item_link_file` (
-  `item_iid` int(11) NOT NULL DEFAULT '0',
-  `item_vid` int(11) NOT NULL DEFAULT '0',
-  `file_id` int(11) NOT NULL DEFAULT '0',
+  `item_iid` int(11) NOT NULL DEFAULT 0,
+  `item_vid` int(11) NOT NULL DEFAULT 0,
+  `file_id` int(11) NOT NULL DEFAULT 0,
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
@@ -1550,7 +1551,7 @@ CREATE TABLE `zzz_items` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
-  `draft` tinyint(4) NOT NULL DEFAULT '0',
+  `draft` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `type` (`type`)
@@ -1564,7 +1565,7 @@ CREATE TABLE `zzz_items` (
 DROP TABLE IF EXISTS `zzz_labels`;
 
 CREATE TABLE `zzz_labels` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1573,10 +1574,10 @@ CREATE TABLE `zzz_labels` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `type` varchar(15) NOT NULL,
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -1593,19 +1594,19 @@ CREATE TABLE `zzz_labels` (
 DROP TABLE IF EXISTS `zzz_link_items`;
 
 CREATE TABLE `zzz_link_items` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
-  `first_item_id` int(11) NOT NULL DEFAULT '0',
+  `first_item_id` int(11) NOT NULL DEFAULT 0,
   `first_item_type` varchar(15) DEFAULT NULL,
-  `second_item_id` int(11) NOT NULL DEFAULT '0',
+  `second_item_id` int(11) NOT NULL DEFAULT 0,
   `second_item_type` varchar(15) DEFAULT NULL,
   `sorting_place` int(11) DEFAULT NULL,
-  `extras` text,
+  `extras` text DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1625,8 +1626,8 @@ CREATE TABLE `zzz_link_items` (
 DROP TABLE IF EXISTS `zzz_link_modifier_item`;
 
 CREATE TABLE `zzz_link_modifier_item` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `modifier_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`,`modifier_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1638,10 +1639,10 @@ CREATE TABLE `zzz_link_modifier_item` (
 DROP TABLE IF EXISTS `zzz_links`;
 
 CREATE TABLE `zzz_links` (
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `from_version_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_version_id` int(11) NOT NULL DEFAULT '0',
+  `from_item_id` int(11) NOT NULL DEFAULT 0,
+  `from_version_id` int(11) NOT NULL DEFAULT 0,
+  `to_item_id` int(11) NOT NULL DEFAULT 0,
+  `to_version_id` int(11) NOT NULL DEFAULT 0,
   `link_type` char(30) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -1665,8 +1666,8 @@ CREATE TABLE `zzz_links` (
 DROP TABLE IF EXISTS `zzz_materials`;
 
 CREATE TABLE `zzz_materials` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -1675,13 +1676,13 @@ CREATE TABLE `zzz_materials` (
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `author` varchar(200) DEFAULT NULL,
   `publishing_date` varchar(20) DEFAULT NULL,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `world_public` smallint(2) NOT NULL DEFAULT '0',
-  `extras` text,
-  `new_hack` tinyint(1) NOT NULL DEFAULT '0',
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `world_public` smallint(2) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
+  `new_hack` tinyint(1) NOT NULL DEFAULT 0,
   `copy_of` int(11) DEFAULT NULL,
   `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
   `workflow_resubmission_date` datetime DEFAULT NULL,
@@ -1703,9 +1704,9 @@ CREATE TABLE `zzz_materials` (
 DROP TABLE IF EXISTS `zzz_noticed`;
 
 CREATE TABLE `zzz_noticed` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
-  `user_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL DEFAULT 0,
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1718,9 +1719,9 @@ CREATE TABLE `zzz_noticed` (
 DROP TABLE IF EXISTS `zzz_reader`;
 
 CREATE TABLE `zzz_reader` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
-  `user_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL DEFAULT 0,
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1733,7 +1734,7 @@ CREATE TABLE `zzz_reader` (
 DROP TABLE IF EXISTS `zzz_room`;
 
 CREATE TABLE `zzz_room` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1742,14 +1743,14 @@ CREATE TABLE `zzz_room` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `extras` text,
+  `extras` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
-  `activity` int(11) NOT NULL DEFAULT '0',
+  `activity` int(11) NOT NULL DEFAULT 0,
   `type` varchar(20) NOT NULL DEFAULT 'project',
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '0',
-  `continuous` tinyint(4) NOT NULL DEFAULT '-1',
-  `template` tinyint(4) NOT NULL DEFAULT '-1',
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `is_open_for_guests` tinyint(4) NOT NULL DEFAULT 0,
+  `continuous` tinyint(4) NOT NULL DEFAULT -1,
+  `template` tinyint(4) NOT NULL DEFAULT -1,
   `contact_persons` varchar(255) DEFAULT NULL,
   `room_description` varchar(10000) DEFAULT NULL,
   `lastlogin` datetime DEFAULT NULL,
@@ -1775,8 +1776,8 @@ CREATE TABLE `zzz_room` (
 DROP TABLE IF EXISTS `zzz_section`;
 
 CREATE TABLE `zzz_section` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `version_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `version_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1785,11 +1786,11 @@ CREATE TABLE `zzz_section` (
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `number` smallint(6) NOT NULL DEFAULT '0',
-  `material_item_id` int(11) NOT NULL DEFAULT '0',
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `description` mediumtext DEFAULT NULL,
+  `number` smallint(6) NOT NULL DEFAULT 0,
+  `material_item_id` int(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1804,7 +1805,7 @@ CREATE TABLE `zzz_section` (
 DROP TABLE IF EXISTS `zzz_step`;
 
 CREATE TABLE `zzz_step` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1813,12 +1814,12 @@ CREATE TABLE `zzz_step` (
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `minutes` float NOT NULL DEFAULT '0',
-  `time_type` smallint(6) NOT NULL DEFAULT '1',
+  `description` mediumtext DEFAULT NULL,
+  `minutes` float NOT NULL DEFAULT 0,
+  `time_type` smallint(6) NOT NULL DEFAULT 1,
   `todo_item_id` int(11) NOT NULL,
-  `extras` text,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
+  `extras` text DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1833,7 +1834,7 @@ CREATE TABLE `zzz_step` (
 DROP TABLE IF EXISTS `zzz_tag`;
 
 CREATE TABLE `zzz_tag` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1842,7 +1843,7 @@ CREATE TABLE `zzz_tag` (
   `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `public` tinyint(4) NOT NULL DEFAULT '0',
+  `public` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1856,9 +1857,9 @@ DROP TABLE IF EXISTS `zzz_tag2tag`;
 
 CREATE TABLE `zzz_tag2tag` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) NOT NULL DEFAULT '0',
+  `from_item_id` int(11) NOT NULL DEFAULT 0,
+  `to_item_id` int(11) NOT NULL DEFAULT 0,
+  `context_id` int(11) NOT NULL DEFAULT 0,
   `creator_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modifier_id` int(11) DEFAULT NULL,
@@ -1881,7 +1882,7 @@ CREATE TABLE `zzz_tag2tag` (
 DROP TABLE IF EXISTS `zzz_tasks`;
 
 CREATE TABLE `zzz_tasks` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
@@ -1890,7 +1891,7 @@ CREATE TABLE `zzz_tasks` (
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `status` varchar(20) NOT NULL,
-  `linked_item_id` int(11) NOT NULL DEFAULT '0',
+  `linked_item_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1904,7 +1905,7 @@ CREATE TABLE `zzz_tasks` (
 DROP TABLE IF EXISTS `zzz_todos`;
 
 CREATE TABLE `zzz_todos` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) DEFAULT NULL,
   `modifier_id` int(11) DEFAULT NULL,
@@ -1914,12 +1915,12 @@ CREATE TABLE `zzz_todos` (
   `deletion_date` datetime DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `date` datetime DEFAULT NULL,
-  `status` tinyint(3) NOT NULL DEFAULT '1',
+  `status` tinyint(3) NOT NULL DEFAULT 1,
   `minutes` float DEFAULT NULL,
-  `time_type` smallint(6) NOT NULL DEFAULT '1',
-  `description` mediumtext,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `extras` text,
+  `time_type` smallint(6) NOT NULL DEFAULT 1,
+  `description` mediumtext DEFAULT NULL,
+  `public` tinyint(11) NOT NULL DEFAULT 0,
+  `extras` text DEFAULT NULL,
   `locking_date` datetime DEFAULT NULL,
   `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
@@ -1935,28 +1936,28 @@ CREATE TABLE `zzz_todos` (
 DROP TABLE IF EXISTS `zzz_user`;
 
 CREATE TABLE `zzz_user` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
+  `item_id` int(11) NOT NULL DEFAULT 0,
   `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) NOT NULL DEFAULT 0,
   `modifier_id` int(11) DEFAULT NULL,
   `deleter_id` int(11) DEFAULT NULL,
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `user_id` varchar(32) NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `is_contact` tinyint(4) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT 0,
+  `is_contact` tinyint(4) NOT NULL DEFAULT 0,
   `firstname` varchar(50) NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `city` varchar(100) NOT NULL,
   `lastlogin` datetime DEFAULT NULL,
-  `visible` tinyint(4) NOT NULL DEFAULT '1',
-  `extras` text,
+  `visible` tinyint(4) NOT NULL DEFAULT 1,
+  `extras` text DEFAULT NULL,
   `auth_source` int(11) DEFAULT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `expire_date` datetime DEFAULT NULL,
-  `use_portal_email` tinyint(1) NOT NULL DEFAULT '0',
+  `use_portal_email` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
