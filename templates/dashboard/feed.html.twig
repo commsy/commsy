@@ -76,7 +76,7 @@
                     {% elseif feedItem.itemType == 'material' %}
                         <div class="uk-comment-meta">
                             {% if feedItem.author != '' %}
-                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: ({{feedItem.publishingdate|decodeHtmlEntity|raw}})</div>
+                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})</div>
                                 {% else %}
                                     <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a>({{feedItem.getCreationDate|date("d.m.Y")}})</div>
                             {% endif %}                        
