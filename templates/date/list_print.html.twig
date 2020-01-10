@@ -52,11 +52,13 @@
                                     {{ macros.userIcon(date.creator) }}
                                 {% endif %}
                                 <div class="uk-comment-meta">
-                                    {% if date.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                        {{ 'today'|trans({})|capitalize }}, {{date.modificationDate|date("H:i")}}
-                                    {% else %}
-                                        {{ date.modificationDate|craue_date }}
-                                    {% endif %}
+                                    <span class="uk-text-nowrap">
+                                        {% if date.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                            {{ 'today'|trans({})|capitalize }}, {{ date.modificationDate|date("H:i") }}
+                                        {% else %}
+                                            {{ date.modificationDate|craue_date }}
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
 

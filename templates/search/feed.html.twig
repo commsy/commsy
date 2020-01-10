@@ -32,11 +32,13 @@
                     {% endif %}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
-                    {% else %}
-                        {{ entity.modificationDate|craue_date }}
-                    {% endif %}
+                    <span class="uk-text-nowrap">
+                        {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
+                        {% else %}
+                            {{ entity.modificationDate|craue_date }}
+                        {% endif %}
+                    </span>
                 </div>
             </div>
 

@@ -17,15 +17,17 @@
                         {{ macros.userIcon(project.modificatorItem) }}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if project.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{project.modificationDate|date("H:i")}}
-                        {% else %}
-                            {% if '9999-00-00' not in project.modificationDate %}
-                                {{ project.modificationDate|craue_date }}
+                        <span class="uk-text-nowrap">
+                            {% if project.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ project.modificationDate|date("H:i") }}
                             {% else %}
-                                {{ project.creationDate|craue_date }}
+                                {% if '9999-00-00' not in project.modificationDate %}
+                                    {{ project.modificationDate|craue_date }}
+                                {% else %}
+                                    {{ project.creationDate|craue_date }}
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
+                        </span>
                     </div>
             </div>
             <div>

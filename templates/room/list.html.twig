@@ -41,11 +41,13 @@
                         {% endif %}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if feedItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{feedItem.modificationDate|date("H:i")}}
-                        {% else %}
-                            {{ feedItem.modificationDate|craue_date }}
-                        {% endif %}
+                        <span class="uk-text-nowrap">
+                            {% if feedItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ feedItem.modificationDate|date("H:i") }}
+                            {% else %}
+                                {{ feedItem.modificationDate|craue_date }}
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
                 <div class="uk-width-8-10">

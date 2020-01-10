@@ -53,11 +53,13 @@
                                     {{ macros.userIcon(discussion.modificatorItem) }}
                                 {% endif %}
                                 <div class="uk-comment-meta">
-                                    {% if discussion.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                        {{ 'today'|trans({})|capitalize }}, {{discussion.modificationDate|date("H:i")}}
-                                    {% else %}
-                                        {{ discussion.modificationDate|craue_date }}
-                                    {% endif %}
+                                    <span class="uk-text-nowrap">
+                                        {% if discussion.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                            {{ 'today'|trans({})|capitalize }}, {{ discussion.modificationDate|date("H:i") }}
+                                        {% else %}
+                                            {{ discussion.modificationDate|craue_date }}
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
 

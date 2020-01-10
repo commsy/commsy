@@ -76,11 +76,13 @@
                                                                         {{ macros.userIcon(currentItem.modificatorItem) }}
                                                                     {% endif %}
                                                                     <div class="uk-comment-meta">
-                                                                        {% if currentItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                                            {{ 'today'|trans({})|capitalize }}, {{currentItem.modificationDate|date("H:i")}}
-                                                                        {% else %}
-                                                                            {{ currentItem.modificationDate|craue_date }}
-                                                                        {% endif %}
+                                                                        <span class="uk-text-nowrap">
+                                                                            {% if currentItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                                                {{ 'today'|trans({})|capitalize }}, {{ currentItem.modificationDate|date("H:i") }}
+                                                                            {% else %}
+                                                                                {{ currentItem.modificationDate|craue_date }}
+                                                                            {% endif %}
+                                                                        </span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="uk-width-8-10">
@@ -127,11 +129,13 @@
                                                             {{ macros.userIcon(currentItem.modificatorItem) }}
                                                         {% endif %}
                                                         <div class="uk-comment-meta">
-                                                            {% if currentItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                                {{ 'today'|trans({})|capitalize }}, {{currentItem.modificationDate|date("H:i")}}
-                                                            {% else %}
-                                                                {{ currentItem.modificationDate|craue_date }}
-                                                            {% endif %}
+                                                            <span class="uk-text-nowrap">
+                                                                {% if currentItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                                    {{ 'today'|trans({})|capitalize }}, {{ currentItem.modificationDate|date("H:i") }}
+                                                                {% else %}
+                                                                    {{ currentItem.modificationDate|craue_date }}
+                                                                {% endif %}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                     <div class="uk-width-8-10">
