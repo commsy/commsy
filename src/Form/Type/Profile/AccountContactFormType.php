@@ -8,8 +8,6 @@ use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -51,6 +49,17 @@ class AccountContactFormType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'placeholder' => 'Subject',
+                ],
+            ])
+            ->add('recipient', TextType::class, [
+                'constraints' => [
+                    new NotBlank(),
+                ],
+                'label' => 'Additional recipients',
+                'translation_domain' => 'mail',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Additional recipients',
                 ],
             ])
             ->add('message', CKEditorType::class, [
