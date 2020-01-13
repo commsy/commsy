@@ -8,6 +8,7 @@ use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -52,9 +53,6 @@ class AccountContactFormType extends AbstractType
                 ],
             ])
             ->add('recipient', TextType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                ],
                 'label' => 'Additional recipients',
                 'translation_domain' => 'mail',
                 'required' => false,
@@ -67,6 +65,17 @@ class AccountContactFormType extends AbstractType
                 'translation_domain' => 'form',
                 'required' => true,
                 'config_name' => 'cs_mail_config',
+            ])
+            ->add('copy_to_sender', ChoiceType::class, [
+                'label' => 'Copy to sender',
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false,
+                ],
+                'expanded' => true,
+                'translation_domain' => 'mail',
+                'choice_translation_domain' => 'form',
+                'required' => true,
             ])
             ->add('save', SubmitType::class, [
                 'attr' => [
@@ -99,6 +108,7 @@ class AccountContactFormType extends AbstractType
             ->setDefaults([
                 'users' => [],
                 'item' => null,
+                'copy_to_sender' => false,
                 'translation_domain' => 'profile',
             ])
         ;

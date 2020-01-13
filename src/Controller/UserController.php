@@ -69,14 +69,6 @@ class UserController extends BaseController
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        $formMailData = new Send();
-        $formMailData->setSendToGroups(false);
-        $formMailData->setMessage($mailAssistant->prepareMessage($item));
-        $formMailData->setSendToGroups(false);
-        $formMailData->setSendToGroupAll(false);
-        $formMailData->setCopyToSender(false);
-        $formMailData->setAdditionalRecipients($mail);
-
         $form = $this->createForm(AccountContactFormType::class, $userData, array(
             'item' => $item,
         ));
@@ -92,6 +84,10 @@ class UserController extends BaseController
                 $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
                 if(strlen($formData['recipient'])>0){
                     $message->setCc($formData['recipient']);
+                }
+                $copyToSender = $formData['copy_to_sender'];
+                if($copyToSender){
+                    $message->addCc($currentUser->getEmail(), $currentUser->getFullName());
                 }
                 $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
                 $this->addFlash('recipientCount', $recipientCount);
