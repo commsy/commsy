@@ -71,7 +71,6 @@ class UserController extends BaseController
 
         $form = $this->createForm(AccountContactFormType::class, $userData, array(
             'item' => $item,
-            'copy_to_sender' => false,
         ));
 
         $form->handleRequest($request);
