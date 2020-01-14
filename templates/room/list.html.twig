@@ -71,7 +71,7 @@
                             {% if feedItem.author != '' %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
                                 {% else %}
-                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{feedItem.getCreationDate|craue_date}})
+                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem.itemId, 'itemId': feedItem.modificatorItem.itemId, 'originPath': 'app_room_home'}) }}">{{ macros.userFullname(feedItem.modificatorItem) }} ({{feedItem.getCreationDate|craue_date}})</a></div>
                             {% endif %}                        
                         </div>
                     {% elseif feedItem.itemType == 'discussion' %}
