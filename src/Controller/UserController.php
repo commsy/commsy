@@ -71,6 +71,7 @@ class UserController extends BaseController
 
         $form = $this->createForm(AccountContactFormType::class, $userData, array(
             'item' => $item,
+            'copy_to_sender' => false,
         ));
 
         $form->handleRequest($request);
@@ -85,7 +86,7 @@ class UserController extends BaseController
                 if(strlen($formData['recipient'])>0){
                     $message->setCc($formData['recipient']);
                 }
-                $copyToSender = $formData['copy_to_sender'];
+                $copyToSender = $formData['autoSaveStatus']; // workaround
                 if($copyToSender){
                     $message->addCc($currentUser->getEmail(), $currentUser->getFullName());
                 }

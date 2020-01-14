@@ -52,6 +52,12 @@ class AccountContactFormType extends AbstractType
                     'placeholder' => 'Subject',
                 ],
             ])
+            ->add('message', CKEditorType::class, [
+                'label' => false,
+                'translation_domain' => 'form',
+                'required' => true,
+                'config_name' => 'cs_mail_config',
+            ])
             ->add('recipient', TextType::class, [
                 'label' => 'Additional recipients',
                 'translation_domain' => 'mail',
@@ -60,13 +66,7 @@ class AccountContactFormType extends AbstractType
                     'placeholder' => 'Additional recipients',
                 ],
             ])
-            ->add('message', CKEditorType::class, [
-                'label' => false,
-                'translation_domain' => 'form',
-                'required' => true,
-                'config_name' => 'cs_mail_config',
-            ])
-            ->add('copy_to_sender', ChoiceType::class, [
+            ->add('autoSaveStatus', ChoiceType::class, [
                 'label' => 'Copy to sender',
                 'choices' => [
                     'Yes' => true,
