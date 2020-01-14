@@ -97,7 +97,12 @@ class UserController extends BaseController
                 $this->addFlash('recipientCount', $recipientCount);
 
             }
-            return $this->redirectToRoute($originPath, array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
+
+            return $this->redirectToRoute('app_user_sendsuccesscontact', [
+                'roomId' => $roomId,
+                'itemId' => $userItem->getItemId(),
+                'originPath' => $originPath,
+            ]);
         }
 
         return [
@@ -949,6 +954,30 @@ class UserController extends BaseController
 
         return [
             'link' => $this->generateUrl('app_user_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]),
+            'title' => $item->getFullname(),
+        ];
+    }
+
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/send/success/contact/{originPath}")
+     * @Template()
+     **/
+    public function sendSuccessContactAction($roomId, $itemId, $originPath)
+    {
+        // get item
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        return [
+            'link' => $this->generateUrl($originPath, [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
