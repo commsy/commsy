@@ -356,10 +356,23 @@ class SettingsController extends Controller
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
+        $isLastModerator = $this->userIsLastGrouproomModerator($roomItem);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $roomItem->delete();
-            $roomItem->save();
+
+
+            if($isLastModerator){
+                $form->addError(new FormError('last moderator'));
+                return [
+                    'form' => $form->createView(),
+                    'relatedGroupRooms' => $relatedGroupRooms,
+                    'lastModeratorStanding' => $isLastModerator,
+                ];
+            }else{
+                $roomItem->delete();
+                $roomItem->save();
+            }
 
             // redirect back to portal
             $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
@@ -371,7 +384,26 @@ class SettingsController extends Controller
         return [
             'form' => $form->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,
+            'lastModeratorStanding' => $isLastModerator,
         ];
+    }
+
+    private function userIsLastGrouproomModerator($groupRoom)
+    {
+
+        if (!empty($groupRoom)) {
+            $grouproomModerators = $groupRoom->getModeratorList();
+        } else {
+            return false;
+        }
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $relatedUsers = $legacyEnvironment->getCurrentUser()->getRelatedUserList();
+
+        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
+        $relatedUsersItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $relatedUsers->to_array());
+
+        return count($grouproomModeratorItemIds) == 1;
     }
 
     /**
