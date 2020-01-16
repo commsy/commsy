@@ -180,7 +180,7 @@
             </trans-unit>
             <trans-unit id="no moderators left">
                 <source>no moderators left</source>
-                <target>Durch diese Aktion gäbe es keine Moderatoren mehr im Raum. Bitte die Auswahl anpassen!</target>
+                <target>Durch diese Aktion gäbe es kein/e ModeratorInen mehr im Raum. Bitte ernenenn Sie ggf. eine/n Neue/n.</target>
             </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
