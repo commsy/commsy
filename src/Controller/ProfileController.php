@@ -727,6 +727,9 @@ class ProfileController extends Controller
 
         $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
 
+        $roomItem = $roomService->getRoomItem($roomId);
+        $isLastModerator = $this->userIsLastGrouproomModerator($roomItem);
+
         // Lock room profile
         if ($request->request->has('lock_form')) {
             $lockForm->handleRequest($request);
@@ -744,7 +747,22 @@ class ProfileController extends Controller
             $deleteForm->handleRequest($request);
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
 
-                $currentUser->delete();
+                if($isLastModerator){
+                    $translator = $this->get('translator');
+                    $msg = $translator->trans('no moderators left', array(), 'user');
+                    $deleteForm->get('confirm_field')->addError(new FormError($msg));
+
+                    return [
+                        'override' => $deleteParameter,
+                        'form_lock' => $lockForm->createView(),
+                        'form_delete' => $deleteForm->createView()
+                    ];
+
+                }else{
+                    $currentUser->delete();
+                    return $this->redirect($portalUrl);
+                }
+
 
                 // get room from RoomService
                 $roomItem = $roomService->getRoomItem($roomId);
@@ -753,7 +771,7 @@ class ProfileController extends Controller
                     throw $this->createNotFoundException('No room found for id ' . $roomId);
                 }
 
-                return $this->redirect($portalUrl);
+
             }
         }
 
@@ -762,6 +780,23 @@ class ProfileController extends Controller
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView()
         ];
+    }
+
+    private function userIsLastGrouproomModerator($groupRoom)
+    {
+
+        if (!empty($groupRoom)) {
+            $grouproomModerators = $groupRoom->getModeratorList();
+        } else {
+            return false;
+        }
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $relatedUsers = $legacyEnvironment->getCurrentUser()->getRelatedUserList();
+
+        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
+
+        return count($grouproomModeratorItemIds) == 1;
     }
 
     /**
