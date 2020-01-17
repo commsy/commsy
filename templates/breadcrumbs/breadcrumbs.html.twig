@@ -3,8 +3,14 @@
         <ul id="{{ listId }}" class="{{ listClass }}" itemscope itemtype="http://schema.org/BreadcrumbList">
             {% for b in breadcrumbs %}
                 <li{% if itemClass is defined and itemClass|length %} class="{{ itemClass }} uk-display-inline"{% endif %} itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    {% if b.url and not loop.last%}
-                        <a href="{{ b.url }}" itemprop="item"{% if linkRel is defined and linkRel|length %} rel="{{ linkRel }}"{% endif %}>
+                    {% set badUrl =  "user?originPath"%}
+                    {% if b.url and not loop.last %}
+                        {% if badUrl in b.url %}
+
+                        {% else %}
+                            <a href="{{ b.url }}" itemprop="item"{% if linkRel is defined and linkRel|length %} rel="{{ linkRel }}"{% endif %}>
+                        {% endif %}
+
                     {% endif %}
                         {# replace any "Archived room: " prefix with a matching icon #}
                         {% set roomTitle = b.text %}
@@ -15,7 +21,11 @@
                         {% endif %}
                             <span itemprop="name">{{- roomTitle | decodeHtmlEntity | trans(b.translationParameters, translation_domain, locale) -}}</span>
                     {% if b.url and not loop.last %}
-                        </a>
+                        {% if badUrl in b.url %}
+
+                        {% else %}
+                            </a>
+                        {% endif %}
                     {% endif %}
                     <meta itemprop="position" content="{{ loop.index }}" />
 
