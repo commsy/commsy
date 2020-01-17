@@ -396,7 +396,7 @@
                                                 {% endif %}
                                             </div>
                                             <div>
-                                                &nbsp{{item.modificationDate|craue_date}} {{item.modificationDate|date("H:i")}}<br/>
+                                                &nbsp{{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 &nbsp{{ utilsMacros.userFullname(item.modificatorItem) }}<br/>
                                                 
                                             </div>
@@ -659,7 +659,7 @@
                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}
                         </div>   
                         <div class="uk-comment-meta uk-margin-bottom">
-                            {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|craue_date}} {{item.getModificationDate|date("H:i")}}
+                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}
                         </div>
                     </div>
 
@@ -867,7 +867,7 @@
                                                 {% endif %}
                                             </div>
                                             <div >
-                                                  &nbsp&nbsp{{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|craue_date}} {{item.modificationDate|date("H:i")}}<br/>
+                                                  &nbsp&nbsp{{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                   &nbsp&nbsp{{ 'changed by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
