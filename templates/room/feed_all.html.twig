@@ -60,7 +60,7 @@
                             {% if room.template == 1 %}<span class="uk-text-muted"> &ndash; {{ 'Template'|trans({}, 'room') }}</span>{% endif %}
                         </h4>
                         <div class="uk-comment-meta">
-                            {% if room.contactPersons is not empty %}
+                            {% if room.contactPersons is not empty and room.contactPersons|length > 3 %}
                                 {% set splitText = room.contactPersons|split(';') %}
                                 {% if splitText|length > 1 %}
                                     {% set splitContacts = splitText[0]|split(',') %}
@@ -75,10 +75,10 @@
                                         {% set counter = counter + 1 %}
                                     {% endfor %}
                                 {% else %}
-                                    {{ room.contactPersons }}
+                                    {{ room.contactPersons }}Ac
                                 {% endif %}
                             {% else %}
-                                {{ room.getContactModeratorListString }}
+                                {{ room.contactPersons }}
                             {% endif %}
                         </div>
 

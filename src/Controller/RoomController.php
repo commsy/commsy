@@ -9,6 +9,7 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Repository\UserRepository;
 use App\Services\LegacyMarkup;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -424,7 +425,7 @@ class RoomController extends Controller
      * @Route("/room/{roomId}/all/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request, UserRepository $userRepository)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
@@ -492,24 +493,25 @@ class RoomController extends Controller
 
             try{
                 $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
-                $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
-                $users = $currentPortalItem->getUserList();
-                $contactUsers = $room->getContactPersons();
+                $contactUsers = $userRepository->getContactsByRoomId($room->getItemId());
+                $moderators = $userRepository->getModeratorsByRoomId($room->getItemId());
+                $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
+
                 $contactsString = "";
                 $iDsString = "";
-                foreach($users as $user){
-                    if(strpos($contactUsers, $user->getFullName()) !== false){
-                        if($user->isCommSyContact()) {
-                            $contactsString .= $user->getFullName();
-                            $iDsString .= $user->getItemID();
-                            $contactsString .= ", ";
-                            $iDsString .= ",";
-                        }
-                    }
+
+                foreach($contactUsers as $contactUser){
+                    $contactsString .= $contactUser->getFullName();
+                    $iDsString .= $contactUser->getItemID();
+                    $contactsString .= ", ";
+                    $iDsString .= ",";
                 }
+
                 $contactsString = rtrim($contactsString, ", ");
                 $iDsString = rtrim($iDsString, ", ");
-                $room->setContactPersons($contactsString . ";" . $iDsString);
+                if(strlen($iDsString) > 1 and strlen($contactsString) > 1){
+                    $room->setContactPersons($contactsString . ";" . $iDsString);
+                }
             }catch (Exception $e){
                 // do nothing
             }
