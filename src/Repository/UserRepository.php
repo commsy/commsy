@@ -3,6 +3,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class UserRepository extends ServiceEntityRepository
@@ -27,5 +28,36 @@ class UserRepository extends ServiceEntityRepository
                 'contextId' => $contextId,
                 'status' => 1,
             ]);
+    }
+
+
+    /**
+     * @param int $roomId
+     * @return mixed
+     */
+    public function getContactsByRoomId(int $roomId)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.status = 3')
+            ->andWhere('u.contextId = :roomId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->setParameter('roomId', $roomId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param int $roomId
+     * @return mixed
+     */
+    public function getModeratorsByRoomId(int $roomId)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.isContact = 1')
+            ->andWhere('u.contextId = :roomId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->setParameter('roomId', $roomId)
+            ->getQuery()
+            ->getResult();
     }
 }

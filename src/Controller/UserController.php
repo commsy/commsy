@@ -96,6 +96,11 @@ class UserController extends BaseController
                 $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
                 $this->addFlash('recipientCount', $recipientCount);
 
+            }else{
+                return $this->redirectToRoute($originPath, [
+                    'roomId' => $roomId,
+                    'itemId' => $userItem->getItemId(),
+                ]);
             }
 
             return $this->redirectToRoute('app_user_sendsuccesscontact', [
