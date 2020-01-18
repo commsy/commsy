@@ -175,7 +175,7 @@
         let recurringDescription = '';
         if (calEvent.recurringDescription != '') {
             recurringDescription = '<tr>'
-                                  +'<td>Serientermin:</td>'
+                                  +'<td>'+$('#calendar').data('translations').recurringDate+':</td>'
                                   +'<td>'+calEvent.recurringDescription+'</td>'
                                   +'</tr>';
         }
@@ -186,20 +186,20 @@
                 +'<td colspan="2"><b>'+calEvent.title+'</b></td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>Datum:</td>'
+                +'<td>'+$('#calendar').data('translations').date+':</td>'
                 +'<td>'+calEvent.description+'</td>'
                 +'</tr>'
                 +recurringDescription
                 +'<tr>'
-                +'<td>Ort:</td>'
+                +'<td>'+$('#calendar').data('translations').place+':</td>'
                 +'<td>'+calEvent.place+'</td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>Teilnehmer:</td>'
+                +'<td>'+$('#calendar').data('translations').participants+':</td>'
                 +'<td>'+calEvent.participants+'</td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>Kalender:</td>'
+                +'<td>'+$('#calendar').data('translations').calendar+':</td>'
                 +'<td>'+calEvent.calendar+titleDisplay+'</td>'
                 +'</tr>'
                 +'</table>'
