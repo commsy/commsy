@@ -31,7 +31,7 @@
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
-                    content: $(renderEvent(calEvent)),
+                    content: $(renderEvent("#calendar", calEvent)),
                     delay: 0,
                     animationDuration: 0,
                 }).tooltipster('show');
@@ -93,7 +93,7 @@
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
-                    content: $(renderEvent(calEvent)),
+                    content: $(renderEvent("#calendarDashboard", calEvent)),
                     delay: 0,
                     animationDuration: 0,
                 }).tooltipster('show');
@@ -166,7 +166,7 @@
         });
     }
 
-    function renderEvent(calEvent) {
+    function renderEvent(calControlID, calEvent) {
         let titleDisplay = '';
         if (calEvent.contextTitle != '') {
             titleDisplay = ' / '+calEvent.contextTitle;
@@ -175,7 +175,7 @@
         let recurringDescription = '';
         if (calEvent.recurringDescription != '') {
             recurringDescription = '<tr>'
-                                  +'<td>'+$('#calendar').data('translations').recurringDate+':</td>'
+                                  +'<td>'+$(calControlID).data('translations').recurringDate+':</td>'
                                   +'<td>'+calEvent.recurringDescription+'</td>'
                                   +'</tr>';
         }
@@ -186,20 +186,20 @@
                 +'<td colspan="2"><b>'+calEvent.title+'</b></td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>'+$('#calendar').data('translations').date+':</td>'
+                +'<td>'+$(calControlID).data('translations').date+':</td>'
                 +'<td>'+calEvent.description+'</td>'
                 +'</tr>'
                 +recurringDescription
                 +'<tr>'
-                +'<td>'+$('#calendar').data('translations').place+':</td>'
+                +'<td>'+$(calControlID).data('translations').place+':</td>'
                 +'<td>'+calEvent.place+'</td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>'+$('#calendar').data('translations').participants+':</td>'
+                +'<td>'+$(calControlID).data('translations').participants+':</td>'
                 +'<td>'+calEvent.participants+'</td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>'+$('#calendar').data('translations').calendar+':</td>'
+                +'<td>'+$(calControlID).data('translations').calendar+':</td>'
                 +'<td>'+calEvent.calendar+titleDisplay+'</td>'
                 +'</tr>'
                 +'</table>'
