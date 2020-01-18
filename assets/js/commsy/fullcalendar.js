@@ -31,7 +31,7 @@
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
-                    content: $(renderEvent(calEvent)),
+                    content: $(renderEvent("#calendar", calEvent)),
                     delay: 0,
                     animationDuration: 0,
                 }).tooltipster('show');
@@ -93,7 +93,7 @@
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
-                    content: $(renderEvent(calEvent)),
+                    content: $(renderEvent("#calendarDashboard", calEvent)),
                     delay: 0,
                     animationDuration: 0,
                 }).tooltipster('show');
@@ -166,7 +166,7 @@
         });
     }
 
-    function renderEvent(calEvent) {
+    function renderEvent(calControlID, calEvent) {
         let titleDisplay = '';
         if (calEvent.contextTitle != '') {
             titleDisplay = ' / '+calEvent.contextTitle;
@@ -175,31 +175,31 @@
         let recurringDescription = '';
         if (calEvent.recurringDescription != '') {
             recurringDescription = '<tr>'
-                                  +'<td>Serientermin:</td>'
+                                  +'<td>'+$(calControlID).data('translations').recurringDate+':</td>'
                                   +'<td>'+calEvent.recurringDescription+'</td>'
                                   +'</tr>';
         }
         
-        return '<div>'
+        return '<div class="uk-grid">'
                 +'<table>'
                 +'<tr>'
                 +'<td colspan="2"><b>'+calEvent.title+'</b></td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>Datum:</td>'
+                +'<td>'+$(calControlID).data('translations').date+':</td>'
                 +'<td>'+calEvent.description+'</td>'
                 +'</tr>'
                 +recurringDescription
                 +'<tr>'
-                +'<td>Ort:</td>'
+                +'<td>'+$(calControlID).data('translations').place+':</td>'
                 +'<td>'+calEvent.place+'</td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>Teilnehmer:</td>'
+                +'<td>'+$(calControlID).data('translations').participants+':</td>'
                 +'<td>'+calEvent.participants+'</td>'
                 +'</tr>'
                 +'<tr>'
-                +'<td>Kalender:</td>'
+                +'<td>'+$(calControlID).data('translations').calendar+':</td>'
                 +'<td>'+calEvent.calendar+titleDisplay+'</td>'
                 +'</tr>'
                 +'</table>'

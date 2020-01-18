@@ -32,11 +32,13 @@
                     {% endif %}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
-                    {% else %}
-                        {{ entity.modificationDate|date("d.m.Y") }}
-                    {% endif %}
+                    <span class="uk-text-nowrap">
+                        {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
+                        {% else %}
+                            {{ entity.modificationDate|craue_date }}
+                        {% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -61,7 +63,7 @@
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
                     {% else %}
                         {% if entity.creator is defined and entity.creator is not empty %}
-                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.creator) }} ({{ entity.getCreationDate|date("d.m.Y") }})
+                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.creator) }} ({{ entity.creationDate|craue_date }})
                         {% endif %}
                     {% endif %}
                 </div>

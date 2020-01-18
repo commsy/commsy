@@ -25,15 +25,17 @@
                     {{ macros.userIcon(todo.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if todo.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{todo.getModificationDate|date("H:i")}}
-                    {% else %}
-                        {% if '9999-00-00' not in todo.getModificationDate %}
-                            {{todo.getModificationDate|craue_date}}
+                    <span class="uk-text-nowrap">
+                        {% if todo.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{ todo.modificationDate|date("H:i") }}
                         {% else %}
-                            {{todo.getCreationDate|craue_date}}
+                            {% if '9999-00-00' not in todo.modificationDate %}
+                                {{ todo.modificationDate|craue_date }}
+                            {% else %}
+                                {{ todo.creationDate|craue_date }}
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -48,7 +50,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(todo.getCreator) }} ({{todo.getCreationDate|craue_date}})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(todo.getCreator) }} ({{ todo.creationDate|craue_date }})
                 </div>
                
                 <div class="uk-comment-meta">
@@ -58,7 +60,7 @@
 
             <div class="uk-width-3-10">
                 <div class="uk-comment-meta">
-                    {{ 'due date'|trans({}, 'todo') }}: {{todo.getDate|craue_date}}
+                    {{ 'due date'|trans({}, 'todo') }}: {{ todo.getDate|craue_date }}
                 </div>
             </div>
             

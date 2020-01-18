@@ -42,15 +42,17 @@
                         {% endif %}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
-                        {% else %}
-                            {% if '9999-00-00' not in feedItem.getModificationDate %}
-                                {{feedItem.getModificationDate|date("d.m.Y")}}
+                        <span class="uk-text-nowrap">
+                            {% if feedItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ feedItem.modificationDate|date("H:i") }}
                             {% else %}
-                                {{feedItem.getCreationDate|date("d.m.Y")}}
+                                {% if '9999-00-00' not in feedItem.modificationDate %}
+                                    {{ feedItem.modificationDate|craue_date }}
+                                {% else %}
+                                    {{ feedItem.creationDate|craue_date }}
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
+                        </span>
                     </div>
                 </div>
                 <div>
@@ -78,7 +80,7 @@
                             {% if feedItem.author != '' %}
                                     <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})</div>
                                 {% else %}
-                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }} ({{feedItem.getCreationDate|date("d.m.Y")}})</div>
+                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': feedItem.contextItem._environment.current_context_id, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a>({{ feedItem.creationDate|craue_date }})</div>
                             {% endif %}                        
                         </div>
                     {% elseif feedItem.itemType == 'discussion' %}
