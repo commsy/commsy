@@ -708,7 +708,7 @@
                         <strong>{{ "date"|trans({},'date') }}</strong>
                     </td>
                     <td class="uk-text-top">
-                        {{ date.dateDescription }}
+                        {{ formatDateTimeRange(date.wholeDay, date.dateTimeObject_Start, date.dateTimeObject_End, true) }}
                     </td>
                 </tr>
                 <tr>

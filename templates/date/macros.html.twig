@@ -158,7 +158,7 @@
                                         <strong>{{ "date"|trans({},'date') }}</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {{ item.dateDescription }}
+                                        {{ formatDateTimeRange(item.wholeDay, item.dateTimeObject_Start, item.dateTimeObject_End, true) }}
                                     </td>
                                 </tr>
                                 {% if item.getRecurrencePattern is defined and not item.getRecurrencePattern is empty %}
@@ -360,7 +360,7 @@
                                         <strong>{{ "date"|trans({},'date') }}</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {{ item.dateDescription }}
+                                        {{ formatDateTimeRange(item.wholeDay, item.dateTimeObject_Start, item.dateTimeObject_End, true) }}
                                     </td>
                                 </tr>
                                 {% if item.getRecurrencePattern is defined and not item.getRecurrencePattern is empty %}
@@ -518,7 +518,7 @@
                         <strong>{{ "date"|trans({},'date') }}</strong>
                     </td>
                     <td class="uk-text-top">
-                        {{ date.dateDescription }}
+                        {{ formatDateTimeRange(date.wholeDay, date.dateTimeObject_Start, date.dateTimeObject_End, true) }}
                     </td>
                 </tr>
                 {% if date.getRecurrencePattern is defined and not date.getRecurrencePattern is empty %}
