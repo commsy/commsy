@@ -232,7 +232,7 @@
             </trans-unit>
             <trans-unit id="recurring date no chance hint">
                 <source>recurring date no chance hint</source>
-                <target>This settings cannot be changed</target>
+                <target>These settings cannot be changed</target>
             </trans-unit>
             <trans-unit id="every">
                 <source>every</source>
@@ -268,15 +268,15 @@
             </trans-unit>
             <trans-unit id="short date description">
                 <source>short date description</source>
-                <target>on %date%</target>
+                <target>On %date%</target>
             </trans-unit>
             <trans-unit id="short date and time description">
                 <source>short date and time description</source>
-                <target>on %date% at %time%</target>
+                <target>On %date% at %time%</target>
             </trans-unit>
             <trans-unit id="short date and time range description">
                 <source>short date and time range description</source>
-                <target>on %date% from %timeStart% till %timeEnd%</target>
+                <target>On %date% from %timeStart% till %timeEnd%</target>
             </trans-unit>
             <trans-unit id="short date range description">
                 <source>short date range description</source>

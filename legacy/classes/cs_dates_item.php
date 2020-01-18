@@ -706,7 +706,7 @@ class cs_dates_item extends cs_item {
 			}
 		} else {
 			// without ending day
-			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+			$date_print = $translator->getMessage('DATES_ON_DAY_UPPER') . ' ' . $start_day_print;
 
 			if($start_time_print !== '' && $end_time_print == '' && !$this->isWholeDay()) {
 				// starting time given
@@ -737,7 +737,7 @@ class cs_dates_item extends cs_item {
 		}
 
 		if($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
-			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+			$date_print = $translator->getMessage('DATES_ON_DAY_UPPER') . ' ' . $start_day_print;
 
 			if (!$this->isWholeDay()) {
                 if ($start_time_print !== '' && $end_time_print === '') {
@@ -904,7 +904,7 @@ class cs_dates_item extends cs_item {
 		}
 
 		if($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
-			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+			$date_print = $translator->getMessage('DATES_ON_DAY_UPPER') . ' ' . $start_day_print;
 
             if (!$this->isWholeDay()) {
                 if ($start_time_print !== '' && $end_time_print === '') {
