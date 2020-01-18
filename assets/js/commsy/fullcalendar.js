@@ -180,7 +180,7 @@
                                   +'</tr>';
         }
         
-        return '<div>'
+        return '<div class="uk-grid">'
                 +'<table>'
                 +'<tr>'
                 +'<td colspan="2"><b>'+calEvent.title+'</b></td>'
