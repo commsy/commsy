@@ -16,7 +16,7 @@ class PrivateRoomTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_room_item object to an array
      *
-     * @param cs_room_item $roomItem
+     * @param \cs_privateroom_item $roomItem
      * @return array
      */
     public function transform($privateRoomItem)
@@ -29,21 +29,25 @@ class PrivateRoomTransformer implements DataTransformerInterface
             } else {
                 $privateRoomData['widgetStatus'] = false;
             }
+
             if ($privateRoomItem->getCSBarShowCalendar() == '1') {
                 $privateRoomData['calendarStatus'] = true;
             } else {
                 $privateRoomData['calendarStatus'] = false;
             }
+
             if ($privateRoomItem->getCSBarShowStack() == '1') {
                 $privateRoomData['stackStatus'] = true;
             } else {
                 $privateRoomData['stackStatus'] = false;
             }
+
             if ($privateRoomItem->getCSBarShowOldRoomSwitcher() == '1') {
                 $privateRoomData['switchRoomStatus'] = true;
             } else {
                 $privateRoomData['switchRoomStatus'] = false;
             }
+
             if ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'none') {
                 $privateRoomData['newsletterStatus'] = '1';
             } elseif ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'weekly') {
@@ -51,6 +55,9 @@ class PrivateRoomTransformer implements DataTransformerInterface
             } elseif ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'daily') {
                 $privateRoomData['newsletterStatus'] = '3';
             }
+
+            // Portfolio
+            $privateRoomData['portfolio'] = $privateRoomItem->isPortfolioEnabled();
 
             // email to commsy
             $privateRoomData['emailToCommsy'] = $privateRoomItem->getEmailToCommSy();
@@ -62,7 +69,7 @@ class PrivateRoomTransformer implements DataTransformerInterface
     /**
      * Applies an array of data to an existing object
      *
-     * @param object $roomObject
+     * @param \cs_privateroom_item $roomObject
      * @param array $roomData
      * @return cs_room_item|null
      * @throws TransformationFailedException if room item is not found.
@@ -100,6 +107,9 @@ class PrivateRoomTransformer implements DataTransformerInterface
                 elseif ($privateRoomData['newsletterStatus'] == '3') $set_to = 'daily';
             }
             $privateRoomObject->setPrivateRoomNewsletterActivity($set_to);
+
+            // Portfolio
+            $privateRoomObject->setPortfolioEnabled($privateRoomData['portfolio']);
 
             // email to commsy
             if (isset($privateRoomData['emailToCommsy'])) {
