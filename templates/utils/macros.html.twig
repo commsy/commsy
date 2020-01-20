@@ -26,8 +26,8 @@
 
 {% macro lastModified(item) %}
     {% import _self as macros %}
-    {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|date("d.m.Y") }}
-    {{ 'at'|trans({}) }} {{ item.modificationDate|date("H:i") }}
+    {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }}
+    {{ 'at'|trans({}) }} {{ item.modificationDate|craue_time }}
     {{ 'by'|trans({}) }}
     <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': item.modificatorItem.itemId}) }}">
         {{ macros.userFullname(item.modificatorItem) }}
@@ -79,10 +79,10 @@
                     {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                 </div>
                 <div class="uk-comment-meta">
-                    {{ 'created'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}
+                    {{ 'created'|trans({})|capitalize }}: {{ item.creationDate|craue_date }} {{ item.creationDate|craue_time }}
                 </div>
                 <div class="uk-comment-meta">
-                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
+                    {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}
                 </div>
                 <a class="toggle-{{ item.itemId }} uk-hidden" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
             </div>

@@ -34,7 +34,23 @@ class FormatDateTimeRangeExtension extends AbstractExtension
         ];
     }
 
-    public function formatDateTimeRange(bool $wholeDay, \DateTime $dateTimeStart, ?\DateTime $dateTimeEnd)
+    /**
+     * Returns a formatted string which describes the given date & time range according to the user's currently chosen
+     * language.
+     * Example:
+     * DE: "am 26.02.2019 von 12:00 Uhr bis 13:00 Uhr", extended: "am Mittwoch, 26. Februar 2020 von 12:00 Uhr bis 13:00 Uhr"
+     * EN: "on Feb 26, 2019 from 12:00 PM till 1:00 PM", extended: "on Wednesday, February 26, 2020 from 12:00 PM till 1:00 PM"
+     *
+     * @param boolean $wholeDay whether the given date(s) describe a whole day event (true) or not (false)
+     * @param \DateTime $dateTimeStart the start date of the date & time range
+     * @param \DateTime|null $dateTimeEnd the end date of the date & time range; may be null in which case the start
+     * date will be also used as the end date
+     * @param boolean $extendedFormat whether the returned string shall be formatted as a more detailed date & time
+     * range description (true) or not (false); defaults to false
+     *
+     * @return string formatted date & time range description
+     */
+    public function formatDateTimeRange(bool $wholeDay, \DateTime $dateTimeStart, ?\DateTime $dateTimeEnd, bool $extendedFormat = false)
     {
         global $symfonyContainer;
         $locale = $this->legacyEnvironment->getSelectedLanguage();
@@ -42,6 +58,10 @@ class FormatDateTimeRangeExtension extends AbstractExtension
         // define the format for the generated date & time strings
         $dateFormatType = $symfonyContainer->getParameter('craue_twig_extensions.formatDateTime.datetype'); // "none", "full", "long", "medium", or "short"
         $timeFormatType = $symfonyContainer->getParameter('craue_twig_extensions.formatDateTime.timetype'); // "full", "long", "medium", or "short"
+
+        if ($extendedFormat === true) {
+            $dateFormatType = "full";
+        }
 
         // generate date & time strings
         $formattedDateStart = $this->dateTimeFormatter->formatDate($dateTimeStart, $locale, $dateFormatType);

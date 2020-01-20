@@ -61,6 +61,7 @@ $message["DATES_OCLOCK"]["de"] = "Uhr";
 $message["DATES_OCTOBER_LONG"]["de"] = "Oktober";
 $message["DATES_OCTOBER_SHORT"]["de"] = "Okt";
 $message["DATES_ON_DAY"]["de"] = "am";
+$message["DATES_ON_DAY_UPPER"]["de"] = "Am";
 $message["DATES_AT_TIME"]["de"] = "um";
 $message["DATES_PLACE"]["de"] = "Ort";
 $message["DATES_PLACE_DESC"]["de"] = "Ort des Termins";

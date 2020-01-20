@@ -12,11 +12,13 @@
                 {{ macros.userIcon(item.modificatorItem) }}
             {% endif %}
             <div class="uk-comment-meta">
-                {% if item.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                    {{ 'today'|trans({})|capitalize }}, {{item.getModificationDate|date("H:i")}}
-                {% else %}
-                    {{item.getModificationDate|date("d.m.Y")}}
-                {% endif %}
+                <span class="uk-text-nowrap">
+                    {% if item.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{ item.modificationDate|date("H:i") }}
+                    {% else %}
+                        {{ item.modificationDate|craue_date }}
+                    {% endif %}
+                </span>
             </div>
         </div>
         <div class="uk-width-8-10">
@@ -24,7 +26,7 @@
                 <a href="">{{ item.title|decodeHtmlEntity }}</a>
             </h4>
             <div class="uk-comment-meta">
-                {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }} ({{item.getCreationDate|date("d.m.Y")}})
+                {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }} ({{ item.creationDate|craue_date }})
             </div>
         </div>
         <div class="uk-width-2-10 uk-text-right">

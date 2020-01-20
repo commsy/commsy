@@ -25,15 +25,17 @@
                     {{ macros.userIcon(user) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if user.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{user.getModificationDate|date("H:i")}}
-                    {% else %}
-                        {% if '9999-00-00' not in user.getModificationDate %}
-                            {{user.getModificationDate|date("d.m.Y")}}
+                    <span class="uk-text-nowrap">
+                        {% if user.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{ user.modificationDate|date("H:i") }}
                         {% else %}
-                            {{user.getCreationDate|date("d.m.Y")}}
+                            {% if '9999-00-00' not in user.modificationDate %}
+                                {{ user.modificationDate|craue_date }}
+                            {% else %}
+                                {{ user.creationDate|craue_date }}
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
+                    </span>
                 </div>
             </div>
 
