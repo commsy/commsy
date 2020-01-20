@@ -112,22 +112,6 @@ class cs_grouproom_item extends cs_room_item {
       }
       $this->_save($manager);
 
-      // sync group item
-      if ( $save_other ) {
-         $group_item = $this->getLinkedGroupItem();
-         if ( isset($group_item) and !empty($group_item) ) {
-            $group_item->setTitle($this->getTitle());
-            $group_item->setDescription($this->getDescription());
-            $logo = $this->getLogoFileName();
-            if ( isset($logo) and !empty($logo) ) {
-               $disc_manager = $this->_environment->getDiscManager();
-               $disc_manager->copyImageFromRoomToRoom($logo,$group_item->getContextID());
-               $group_item->setPicture($disc_manager->getLastSavedFileName());
-            }
-            $group_item->saveOnlyItem();
-         }
-      }
-
       if ( empty($item_id) ) {
          // create first moderator
          $current_user = $this->_environment->getCurrentUser();
