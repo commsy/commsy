@@ -753,9 +753,8 @@ class ProfileController extends Controller
                     $msg = $msg.$roomItem->getTitle()." ";
                     $projectRooms = $roomItem->getProjectRoomList()->_data;
                     if(sizeof($projectRooms)>0){
-                        $msg = $msg." und folgende Projekträume: ";
+                        $msg = $msg.$translator->trans('and project rooms', array(), 'user');
                     }
-
                     foreach($projectRooms as $projectRoom){
                         $msg = $msg.$projectRoom->getTitle()." ";
                     }

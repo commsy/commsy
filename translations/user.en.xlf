@@ -186,6 +186,10 @@
                 <source>no moderators left first part</source>
                 <target>You cannot delete your account from this room or lock it. The following rooms would otherwise be without moderation: </target>
             </trans-unit>
+            <trans-unit id="and project rooms">
+                <source>and project rooms</source>
+                <target>and the following project rooms: </target>
+            </trans-unit>
             <trans-unit id="no moderators left group rooms second part">
                 <source>no moderators left second part</source>
                 <target>Please assign a new moderation to this room or delete this/these rooms.</target>

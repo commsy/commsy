@@ -190,6 +190,10 @@
                 <source>no moderators left second part</source>
                 <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
             </trans-unit>
+            <trans-unit id="and project rooms">
+                <source>and project rooms</source>
+                <target>und die folgenden Projekträume: </target>
+            </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
                 <target>E-Mail senden</target>
