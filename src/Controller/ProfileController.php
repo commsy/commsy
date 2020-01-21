@@ -40,10 +40,10 @@ use App\Form\Type\Profile\ProfilePersonalInformationType;
 class ProfileController extends Controller
 {
     /**
-    * @Route("/room/{roomId}/user/{itemId}/general")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/general")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function generalAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -67,7 +67,7 @@ class ProfileController extends Controller
                 'itemId' => $itemId
             )),
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
@@ -128,7 +128,7 @@ class ProfileController extends Controller
                     $tempUserItem = $userList->getNext();
                 }
             }
-            
+
             return $this->redirectToRoute('app_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
@@ -144,10 +144,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/address")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/address")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function addressAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
@@ -208,10 +208,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/contact")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/contact")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function contactAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
@@ -275,10 +275,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/notifications")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/notifications")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function notificationsAction($roomId, $itemId, Request $request)
     {
         $userService = $this->get('commsy_legacy.user_service');
@@ -315,10 +315,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/personal")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/personal")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function personalAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
@@ -353,10 +353,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/account")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/account")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function accountAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
@@ -387,10 +387,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/mergeaccounts")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/mergeaccounts")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function mergeAccountsAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -434,8 +434,8 @@ class ProfileController extends Controller
 
             $currentUser = $legacyEnvironment->getCurrentUserItem();
             if ( strtolower($currentUser->getUserID()) == strtolower($formData['combineUserId']) &&
-                 isset($formData['auth_source']) &&
-                 (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
+                isset($formData['auth_source']) &&
+                (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
             {
                 $form->get('combineUserId')->addError(new FormError('Invalid user'));
             }
@@ -486,10 +486,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/newsletter")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/newsletter")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function newsletterAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
@@ -522,10 +522,10 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/additional")
-    * @Template
-    * @Security("is_granted('ITEM_EDIT', itemId)")
-    */
+     * @Route("/room/{roomId}/user/{itemId}/additional")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
     public function additionalAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
@@ -561,9 +561,9 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/profileImage")
-    * @Template
-    */
+     * @Route("/room/{roomId}/user/profileImage")
+     * @Template
+     */
     public function imageAction($roomId, Request $request)
     {
         $userService = $this->get('commsy_legacy.user_service');
@@ -571,9 +571,9 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/dropdownmenu")
-    * @Template
-    */
+     * @Route("/room/{roomId}/user/dropdownmenu")
+     * @Template
+     */
     public function menuAction(
         $roomId,
         UserService $userService,
@@ -592,9 +592,9 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
-    * @Template
-    */
+     * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
+     * @Template
+     */
     public function deleteAccountAction($roomId, Request $request, ParameterBagInterface $parameterBag)
     {
 
@@ -658,9 +658,9 @@ class ProfileController extends Controller
 
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/changepassword")
-    * @Template
-    */
+     * @Route("/room/{roomId}/user/{itemId}/changepassword")
+     * @Template
+     */
     public function changePasswordAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -710,9 +710,9 @@ class ProfileController extends Controller
 
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
-    * @Template
-    */
+     * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
+     * @Template
+     */
     public function deleteRoomProfileAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService, ParameterBagInterface $parameterBag)
     {
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
@@ -728,7 +728,6 @@ class ProfileController extends Controller
         $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
 
         $roomItem = $roomService->getRoomItem($roomId);
-        $isLastModerator = $this->userIsLastGrouproomModerator($roomItem);
 
         // Lock room profile
         if ($request->request->has('lock_form')) {
@@ -745,43 +744,18 @@ class ProfileController extends Controller
         // Delete room profile
         elseif ($request->request->has('delete_form')) {
             $deleteForm->handleRequest($request);
+
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-
-                if($isLastModerator){
-                    $translator = $this->get('translator');
-                    $msg = $translator->trans('no moderators left first part', array(), 'user');
-                    $msg = $msg.$roomItem->getTitle()." ";
-                    $projectRooms = $roomItem->getProjectRoomList()->_data;
-                    if(sizeof($projectRooms)>0){
-                        $msg = $msg.$translator->trans('and project rooms', array(), 'user');
-                    }
-                    foreach($projectRooms as $projectRoom){
-                        $msg = $msg.$projectRoom->getTitle()." ";
-                    }
-                    $msg = $msg.". ";
-                    $msg = $msg.$translator->trans('no moderators left second part', array(), 'user');
-                    $deleteForm->get('confirm_field')->addError(new FormError($msg));
-
-                    return [
-                        'override' => $deleteParameter,
-                        'form_lock' => $lockForm->createView(),
-                        'form_delete' => $deleteForm->createView()
-                    ];
-
-                }else{
-                    $currentUser->delete();
-                    return $this->redirect($portalUrl);
-                }
+                $currentUser->delete();
+                return $this->redirect($portalUrl);
+            }
 
 
-                // get room from RoomService
-                $roomItem = $roomService->getRoomItem($roomId);
+            // get room from RoomService
+            $roomItem = $roomService->getRoomItem($roomId);
 
-                if (!$roomItem) {
-                    throw $this->createNotFoundException('No room found for id ' . $roomId);
-                }
-
-
+            if (!$roomItem) {
+                throw $this->createNotFoundException('No room found for id ' . $roomId);
             }
         }
 
@@ -790,23 +764,6 @@ class ProfileController extends Controller
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView()
         ];
-    }
-
-    private function userIsLastGrouproomModerator($groupRoom)
-    {
-
-        if (!empty($groupRoom)) {
-            $grouproomModerators = $groupRoom->getModeratorList();
-        } else {
-            return false;
-        }
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $relatedUsers = $legacyEnvironment->getCurrentUser()->getRelatedUserList();
-
-        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
-
-        return count($grouproomModeratorItemIds) == 1;
     }
 
     /**
