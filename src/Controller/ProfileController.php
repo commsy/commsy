@@ -749,7 +749,18 @@ class ProfileController extends Controller
 
                 if($isLastModerator){
                     $translator = $this->get('translator');
-                    $msg = $translator->trans('no moderators left', array(), 'user');
+                    $msg = $translator->trans('no moderators left first part', array(), 'user');
+                    $msg = $msg.$roomItem->getTitle()." ";
+                    $projectRooms = $roomItem->getProjectRoomList()->_data;
+                    if(sizeof($projectRooms)>0){
+                        $msg = $msg." und folgende Projekträume: ";
+                    }
+
+                    foreach($projectRooms as $projectRoom){
+                        $msg = $msg.$projectRoom->getTitle()." ";
+                    }
+                    $msg = $msg.". ";
+                    $msg = $msg.$translator->trans('no moderators left second part', array(), 'user');
                     $deleteForm->get('confirm_field')->addError(new FormError($msg));
 
                     return [
