@@ -182,6 +182,18 @@
                 <source>no moderators left</source>
                 <target>Durch diese Aktion gäbe es kein/e ModeratorInen mehr im Raum. Bitte ernenenn Sie ggf. eine/n Neue/n.</target>
             </trans-unit>
+            <trans-unit id="no moderators left group rooms first part">
+                <source>no moderators left first part</source>
+                <target>Sie können Ihren Kennung in diesem Raum NICHT löschen oder sperren. Die folgenden Räumen wären ansonsten ohne Moderation: </target>
+            </trans-unit>
+            <trans-unit id="no moderators left group rooms second part">
+                <source>no moderators left second part</source>
+                <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
+            </trans-unit>
+            <trans-unit id="and project rooms">
+                <source>and project rooms</source>
+                <target>und die folgenden Projekträume: </target>
+            </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
                 <target>E-Mail senden</target>

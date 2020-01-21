@@ -374,7 +374,6 @@ class SettingsController extends Controller
         return [
             'form' => $form->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,
-            'lastModeratorStanding' => $isLastModerator,
         ];
     }
 
