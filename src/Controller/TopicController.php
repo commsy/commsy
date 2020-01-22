@@ -682,7 +682,7 @@ class TopicController extends BaseController
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showHashTags' => $roomItem->withBuzzwords(),
-            'showAssociations' => $roomItem->withAssocations(),
+            'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
             'ratingList' => $ratingList,
             'showWorkflow' => $current_context->withWorkflow(),
