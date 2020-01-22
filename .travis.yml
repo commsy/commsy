@@ -56,7 +56,7 @@ before_install:
   - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
 
   # ChromeDriver
-  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/77.0.3865.40/chromedriver_linux64.zip
+  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip
   - unzip -o -q chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - chromedriver --url-base=/wd/hub &
