@@ -29,11 +29,13 @@
                                 {% endif %}
                             {% endif %}
                             <div class="uk-comment-meta">
-                                {% if releaseItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                    {{ 'today'|trans({})|capitalize }}, {{releaseItem.getModificationDate|date("H:i")}}
-                                {% else %}
-                                    {{releaseItem.getModificationDate|date("d.m.Y")}}
-                                {% endif %}
+                                <span class="uk-text-nowrap">
+                                    {% if releaseItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                        {{ 'today'|trans({})|capitalize }}, {{ releaseItem.modificationDate|date("H:i") }}
+                                    {% else %}
+                                        {{ releaseItem.modificationDate|craue_date }}
+                                    {% endif %}
+                                </span>
                             </div>
                         </div>
                         <div>
@@ -50,13 +52,13 @@
                             {% if releaseItem.itemType == 'announcement' %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
                             {% elseif releaseItem.itemType == 'date' %}
-                                <div class="uk-comment-meta">{{releaseItem.getDateListDescription}}{% if releaseItem.getPlace != '' %}, {{releaseItem.getPlace}}{% endif %}</div>
+                                <div class="uk-comment-meta">{{ formatDateTimeRange(releaseItem.wholeDay, releaseItem.dateTimeObject_Start, releaseItem.dateTimeObject_End) }}{% if releaseItem.place != '' %}, {{ releaseItem.place }}{% endif %}</div>
                             {% elseif releaseItem.itemType == 'material' %}
                                 <div class="uk-comment-meta">
                                     {% if releaseItem.author != '' %}
                                             {{ 'by'|trans({})|capitalize }}: {{releaseItem.author}} ({{releaseItem.publishingdate}})
                                         {% else %}
-                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }} ({{releaseItem.getCreationDate|date("d.m.Y")}})
+                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }} ({{ releaseItem.creationDate|craue_date }})
                                     {% endif %}                        
                                 </div>
                             {% elseif releaseItem.itemType == 'discussion' %}
@@ -101,11 +103,13 @@
                                 {% endif %}
                             {% endif %}
                             <div class="uk-comment-meta">
-                                {% if viewableItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                    {{ 'today'|trans({})|capitalize }}, {{viewableItem.getModificationDate|date("H:i")}}
-                                {% else %}
-                                    {{viewableItem.getModificationDate|date("d.m.Y")}}
-                                {% endif %}
+                                <span class="uk-text-nowrap">
+                                    {% if viewableItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                        {{ 'today'|trans({})|capitalize }}, {{ viewableItem.modificationDate|date("H:i") }}
+                                    {% else %}
+                                        {{ viewableItem.modificationDate|craue_date }}
+                                    {% endif %}
+                                </span>
                             </div>
                         </div>
                         <div>
@@ -122,13 +126,13 @@
                             {% if viewableItem.itemType == 'announcement' %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
                             {% elseif viewableItem.itemType == 'date' %}
-                                <div class="uk-comment-meta">{{viewableItem.getDateListDescription}}{% if viewableItem.getPlace != '' %}, {{viewableItem.getPlace}}{% endif %}</div>
+                                <div class="uk-comment-meta">{{ formatDateTimeRange(viewableItem.wholeDay, viewableItem.dateTimeObject_Start, viewableItem.dateTimeObject_End) }}{% if viewableItem.place != '' %}, {{ viewableItem.place }}{% endif %}</div>
                             {% elseif viewableItem.itemType == 'material' %}
                                 <div class="uk-comment-meta">
                                     {% if viewableItem.author != '' %}
                                             {{ 'by'|trans({})|capitalize }}: {{viewableItem.author}} ({{viewableItem.publishingdate}})
                                         {% else %}
-                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }} ({{viewableItem.getCreationDate|date("d.m.Y")}})
+                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }} ({{ viewableItem.creationDate|craue_date }})
                                     {% endif %}                        
                                 </div>
                             {% elseif viewableItem.itemType == 'discussion' %}

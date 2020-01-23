@@ -88,7 +88,7 @@
             </trans-unit>
             <trans-unit id="itemIsLocked">
                 <source>item is locked</source>
-                <target>This entry is currntlc edited by another user and is therefore locked for editing.</target>
+                <target>This entry is currently edited by another user and is therefore locked for editing.</target>
             </trans-unit>
          </body>
     </file>

@@ -473,9 +473,6 @@ class cs_statistic_view extends cs_view {
                   if ($sub_room_item->withRubric(CS_PROJECT_TYPE)) {
                      $temp_array2[CS_PROJECT_TYPE] = $sub_room_item->getCountProjects($this->_start_date,$this->_end_date);
                   }
-                  if ($sub_room_item->withRubric(CS_INSTITUTION_TYPE)) {
-                     $temp_array2[CS_INSTITUTION_TYPE] = $sub_room_item->getCountInstitutions($this->_start_date,$this->_end_date);
-                  }
                   $temp_array2['moderators'] = $this->_getContactModerators($sub_room_item);
 
                   ########################################################################

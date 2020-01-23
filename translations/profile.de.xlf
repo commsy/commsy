@@ -435,6 +435,14 @@
                 <source>has to change mail</source>
                 <target>Sie müssen Ihre E-Mail-Adresse ändern, bevor Sie mit der Nutzung fortfahren können</target>
             </trans-unit>
+            <trans-unit id="message">
+                <source>message</source>
+                <target>Nachricht</target>
+            </trans-unit>
+            <trans-unit id="sendMail">
+                <source>send mail</source>
+                <target>E-Mail schicken</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

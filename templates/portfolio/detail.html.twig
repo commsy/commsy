@@ -9,7 +9,7 @@
                 {# panel title bar #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ firstTag.title }} / {{ secondTag.title }}</div>
+                        <div class="uk-text-large">{{ firstTag.title }} / {{ secondTag.title }}</div>
                     </div>
                 </div>
 
@@ -57,15 +57,17 @@
                                         {% endif %}
                                     {% endif %}
                                     <div class="uk-comment-meta">
-                                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
-                                        {% else %}
-                                            {% if '9999-00-00' not in feedItem.getModificationDate %}
-                                                {{feedItem.getModificationDate|date("d.m.Y")}}
+                                        <span class="uk-text-nowrap">
+                                            {% if feedItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                {{ 'today'|trans({})|capitalize }}, {{ feedItem.modificationDate|date("H:i") }}
                                             {% else %}
-                                                {{feedItem.getCreationDate|date("d.m.Y")}}
+                                                {% if '9999-00-00' not in feedItem.modificationDate %}
+                                                    {{ feedItem.modificationDate|craue_date }}
+                                                {% else %}
+                                                    {{ feedItem.creationDate|craue_date }}
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}
+                                        </span>
                                     </div>
                                 </div>
                                 <div>
@@ -87,13 +89,13 @@
                                     {% if feedItem.itemType == 'announcement' %}
                                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                                     {% elseif feedItem.itemType == 'date' %}
-                                        <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
+                                        <div class="uk-comment-meta">{{ formatDateTimeRange(feedItem.wholeDay, feedItem.dateTimeObject_Start, feedItem.dateTimeObject_End) }}{% if feedItem.place != '' %}, {{ feedItem.place }}{% endif %}</div>
                                     {% elseif feedItem.itemType == 'material' %}
                                         <div class="uk-comment-meta">
                                             {% if feedItem.author != '' %}
                                                 {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
                                             {% else %}
-                                                {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                                                {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{ feedItem.creationDate|craue_date }})
                                             {% endif %}
                                         </div>
                                     {% elseif feedItem.itemType == 'discussion' %}

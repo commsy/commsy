@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="mailCopyToSender">
                 <source>Copy to sender</source>
-                <target>Kopie an Absender</target>
+                <target>Kopie an AbsenderIn</target>
             </trans-unit>
             <trans-unit id="mailSendToAttendees">
                 <source>Send to attendees</source>

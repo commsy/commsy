@@ -8,6 +8,7 @@ use App\Http\JsonRedirectResponse;
 use App\Entity\License;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -251,10 +252,11 @@ class MaterialController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
-    public function detailAction($roomId, $itemId, $versionId = null, Request $request, LegacyMarkup $legacyMarkup)
+    public function detailAction($roomId, $itemId, $versionId = null, Request $request, LegacyMarkup $legacyMarkup, AnnotationService $annotationService)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $materialService = $this->get('commsy_legacy.material_service');
         if ($versionId === null) {
@@ -309,9 +311,12 @@ class MaterialController extends BaseController
         $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(), null, null);
+
         return array(
             'roomId' => $roomId,
             'material' => $infoArray['material'],
+            'amountAnnotations' => sizeof($amountAnnotations),
             'sectionList' => $infoArray['sectionList'],
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
@@ -1064,6 +1069,7 @@ class MaterialController extends BaseController
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
@@ -1116,6 +1122,7 @@ class MaterialController extends BaseController
     {
         $materialService = $this->get('commsy_legacy.material_service');
         $material = $materialService->getMaterial($itemId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 

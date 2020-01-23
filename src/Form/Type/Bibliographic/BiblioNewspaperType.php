@@ -1,12 +1,20 @@
 <?php
 namespace App\Form\Type\Bibliographic;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BiblioNewspaperType extends AbstractType
 {
+    private $legacyEnvironment;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -18,6 +26,7 @@ class BiblioNewspaperType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $translationDomain = 'form';
+        $language = $this->legacyEnvironment->getSelectedLanguage();
 
         $builder
             ->add('author', TextType::class, array(
@@ -61,16 +70,23 @@ class BiblioNewspaperType extends AbstractType
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
                 'required' => false,
-                ))
-            ->add('url_date', TextType::class, array(
-                'label' => 'url date',
-                'translation_domain' => $translationDomain,
-                'required' => false,
-                'attr' => array(
-                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
-                )
             ))
         ;
+
+        if($language == 'en'){
+            $format = '{format:\'MM/DD/YYYY\'}';
+        } else{
+            $format = '{format:\'DD.MM.YYYY\'}';
+        }
+
+        $builder->add('url_date', TextType::class, array(
+            'label' => 'url date',
+            'translation_domain' => $translationDomain,
+            'required' => false,
+            'attr' => array(
+                'data-uk-datepicker' => $format
+            )
+        ));
     }
 
     /**

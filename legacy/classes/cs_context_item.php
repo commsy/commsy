@@ -1534,7 +1534,6 @@ class cs_context_item extends cs_item {
     $rubric_array[] = CS_PROJECT_TYPE;
     $rubric_array[] = CS_COMMUNITY_TYPE;
     $rubric_array[] = CS_TOPIC_TYPE;
-    $rubric_array[] = CS_INSTITUTION_TYPE;
     $rubric_array[] = CS_TIME_TYPE;
 
     foreach ($rubric_array as $rubric) {
@@ -1656,35 +1655,6 @@ class cs_context_item extends cs_item {
         $retour['RU']['GENPL']= 'temelor';
         $retour['RU']['AKKPL']= 'temele';
         $retour['RU']['DATPL']= 'temelor';
-      } elseif ($rubric == CS_INSTITUTION_TYPE) {
-        $retour['NAME'] = CS_INSTITUTION_TYPE;
-        $retour['DE']['GENUS']= 'F';
-        $retour['DE']['NOMS']= 'Institution';
-        $retour['DE']['GENS']= 'Institution';
-        $retour['DE']['AKKS']= 'Institution';
-        $retour['DE']['DATS']= 'Institution';
-        $retour['DE']['NOMPL']= 'Institutionen';
-        $retour['DE']['GENPL']= 'Institutionen';
-        $retour['DE']['AKKPL']= 'Institutionen';
-        $retour['DE']['DATPL']= 'Institutionen';
-        $retour['EN']['GENUS']= 'F';
-        $retour['EN']['NOMS']= 'institution';
-        $retour['EN']['GENS']= 'institution';
-        $retour['EN']['AKKS']= 'institution';
-        $retour['EN']['DATS']= 'institution';
-        $retour['EN']['NOMPL']= 'institutions';
-        $retour['EN']['GENPL']= 'institutions';
-        $retour['EN']['AKKPL']= 'institutions';
-        $retour['EN']['DATPL']= 'institutions';
-        $retour['RU']['GENUS']= 'F';
-        $retour['RU']['NOMS']= 'institutia';
-        $retour['RU']['GENS']= 'institutiei';
-        $retour['RU']['AKKS']= 'institutia';
-        $retour['RU']['DATS']= 'institutiei';
-        $retour['RU']['NOMPL']= 'institutiile';
-        $retour['RU']['GENPL']= 'institutiilor';
-        $retour['RU']['AKKPL']= 'institutiile';
-        $retour['RU']['DATPL']= 'institutiilor';
       } else {
         $retour['NAME'] = 'rubrics';
         $retour['DE']['GENUS']= 'F';
@@ -5325,10 +5295,7 @@ class cs_context_item extends cs_item {
   }
 
   function _is_perspective ($rubric) {
-    $in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE)) ;
-    if ($rubric == CS_INSTITUTION_TYPE) {
-      $in_array = $this->withRubric(CS_INSTITUTION_TYPE);
-    }
+    $in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE)) ;
     return $in_array;
   }
 
@@ -5642,39 +5609,6 @@ class cs_context_item extends cs_item {
       $this->_count_mod_topics = $manager->getCountModTopics($start,$end);
     }
     $retour = $this->_count_mod_topics;
-    return $retour;
-  }
-
-  function getCountInstitutions ($start,$end) {
-    if (!isset($this->_count_institutions)) {
-      $manager = $this->_environment->getInstitutionManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_institutions = $manager->getCountInstitutions($start,$end);
-    }
-    $retour = $this->_count_institutions;
-    return $retour;
-  }
-
-  function getCountNewInstitutions ($start,$end) {
-    if (!isset($this->_count_new_institutions)) {
-      $manager = $this->_environment->getInstitutionManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_institutions = $manager->getCountNewInstitutions($start,$end);
-    }
-    $retour = $this->_count_new_institutions;
-    return $retour;
-  }
-
-  function getCountModInstitutions ($start,$end) {
-    if (!isset($this->_count_mod_institutions)) {
-      $manager = $this->_environment->getInstitutionManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_institutions = $manager->getCountModInstitutions($start,$end);
-    }
-    $retour = $this->_count_mod_institutions;
     return $retour;
   }
 

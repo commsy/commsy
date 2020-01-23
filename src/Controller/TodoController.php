@@ -8,6 +8,7 @@ use App\Action\Download\DownloadAction;
 use App\Action\TodoStatus\TodoStatusAction;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -196,7 +197,7 @@ class TodoController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
-    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
+    public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup, AnnotationService $annotationService)
     {
         $todoService = $this->get('commsy_legacy.todo_service');
         $itemService = $this->get('commsy_legacy.item_service');
@@ -332,10 +333,12 @@ class TodoController extends BaseController
 
         $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $todoService->getTodo($itemId)->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
+            'amountAnnotations' => sizeof($amountAnnotations),
             'stepList' => $steps,
             'timeSpendSum' => $timeSpendSum,
             'readerList' => $readerList,
@@ -547,6 +550,8 @@ class TodoController extends BaseController
         if (!$todoItem) {
             throw $this->createNotFoundException('No todo found for id ' . $itemId);
         }
+
+
 
         $formData = $transformer->transform($todoItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;

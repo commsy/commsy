@@ -17,15 +17,17 @@
                         {{ macros.userIcon(project.modificatorItem) }}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if project.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{project.getModificationDate|date("H:i")}}
-                        {% else %}
-                            {% if '9999-00-00' not in project.getModificationDate %}
-                                {{project.getModificationDate|date("d.m.Y")}}
+                        <span class="uk-text-nowrap">
+                            {% if project.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ project.modificationDate|date("H:i") }}
                             {% else %}
-                                {{project.getCreationDate|date("d.m.Y")}}
+                                {% if '9999-00-00' not in project.modificationDate %}
+                                    {{ project.modificationDate|craue_date }}
+                                {% else %}
+                                    {{ project.creationDate|craue_date }}
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
+                        </span>
                     </div>
             </div>
             <div>
@@ -35,9 +37,9 @@
                 
                 <div class="uk-comment-meta">
                     {% if project.contactPersonString is not empty %}
-                        {{ project.contactPersonString }}
+                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.contactPersonString }}</a>
                     {% else %}
-                        {{ project.getContactModeratorListString }}
+                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.getContactModeratorListString }}</a>
                     {% endif %}
                 </div>
                 

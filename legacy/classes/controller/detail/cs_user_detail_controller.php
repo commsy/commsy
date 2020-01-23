@@ -220,7 +220,7 @@
 								$ids = $this->_item->getLinkedItemIDArray($module);
 								$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $module . '_index_ids', $ids);
 
-								if($module !== CS_TOPIC_TYPE && $module !== CS_INSTITUTION_TYPE && $module !== CS_GROUP_TYPE) {
+								if($module !== CS_TOPIC_TYPE && $module !== CS_GROUP_TYPE) {
 									$ids = $this->_item->getModifiedItemIDArray($module, $this->_item->getItemID());
 									// TODO: implement
 									//$detail_view->addModifiedItemIDArray($module,$ids);
@@ -254,7 +254,7 @@
 										}
 									}
 								} else {
-									if($module === CS_GROUP_TYPE || $module === CS_INSTITUTION_TYPE || $module === CS_TOPIC_TYPE) {
+									if($module === CS_GROUP_TYPE || $module === CS_TOPIC_TYPE) {
 										$ids = $this->_item->getLinkedItemIDArray($module);
 										$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $module . '_index_ids', $ids);
 									} else {

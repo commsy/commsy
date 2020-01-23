@@ -115,10 +115,8 @@ if ( isset($item) ) {
    }
 
    if ($environment->getCurrentModule() == CS_USER_TYPE){
-      if ($environment->inCommunityRoom()){
-         $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-      }else{
-         $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+      if (!$environment->inCommunityRoom()){
+          $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
       }
    } elseif ( $item->isA(CS_LABEL_TYPE)
               and $item->getLabelType() == CS_BUZZWORD_TYPE
@@ -346,9 +344,6 @@ if ($environment->getCurrentModule() == CS_USER_TYPE){
    $rubric_array = array();
    if ($context_item->withRubric(CS_GROUP_TYPE)){
       $rubric_array[] = CS_GROUP_TYPE;
-   }
-   if ($context_item->withRubric(CS_INSTITUTION_TYPE)){
-      $rubric_array[] = CS_INSTITUTION_TYPE;
    }
    $interval = 100;
 }

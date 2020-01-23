@@ -302,7 +302,6 @@
 						$rubric_array = array();
 							
 						if($current_context->withRubric(CS_GROUP_TYPE)) $rubric_array[] = CS_GROUP_TYPE;
-						if($current_context->withRubric(CS_INSTITUTION_TYPE)) $rubric_array[] = CS_INSTITUTION_TYPE;
 					}
 				}
 				
@@ -552,8 +551,9 @@
 			if(isset($item)) {
 				$type = $item->getItemType();
 				if($type == CS_USER_TYPE) {
-					if($this->_environment->inCommunityRoom()) $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-					else $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+					if(!$this->_environment->inCommunityRoom()) {
+                        $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+                    }
 				} elseif(isset($item) && $item->isA(CS_BUZZWORD_TYPE)) {
 					$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
 				} else {

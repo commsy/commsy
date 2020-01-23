@@ -44,7 +44,7 @@ class MailAssistant
         if ($this->legacyEnvironment->inProjectRoom() && !empty($groupArray)) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-            if ($currentContextItem->withRubric('group')) {
+            if ($currentContextItem->withRubric('group') && !$currentContextItem->withRubric('project')) {
                 return true;
             }
         }
@@ -94,13 +94,75 @@ class MailAssistant
     {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-        if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('institution') ||
+        if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('project') ||
             $currentContextItem->isGroupRoom()) {
 
             return true;
         }
 
         return false;
+    }
+
+    public function getSwiftMessageContactForm(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
+    {
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $formData = $form->getData();
+
+        $recipients = [
+            'to' => [],
+            'bcc' => [],
+        ];
+
+        $recipients['to'][$item->getEmail()] = $item->getFullName();
+
+        $to = $recipients['to'];
+        $toBCC = $recipients['bcc'];
+
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        $currentUserName = $currentUser->getFullName();
+        if ($currentUser->isEmailVisible()) {
+            $replyTo[$currentUserEmail] = $currentUserName;
+        }
+
+        $formDataSubject = $formData['subject'];
+
+        $formDataMessage = $formData['message'];
+
+        $message = (new \Swift_Message())
+            ->setSubject($formDataSubject)
+            ->setBody($formDataMessage, 'text/html')
+            ->setFrom([$this->from => $portalItem->getTitle()])
+            ->setReplyTo($replyTo);
+
+        // form option: copy_to_sender
+        $toCC = [];
+
+        $isCopyToSender = $form->has('copy_to_sender') && $formData['copy_to_sender'];
+
+        if ($isCopyToSender) {
+            $toCC[$currentUserEmail] = $currentUserName;
+        }
+
+        if ($forceBCCMail) {
+            $allRecipients = array_merge($to, $toCC, $toBCC);
+            $message->setBcc($allRecipients);
+        } else {
+            if (!empty($to)) {
+                $message->setTo($to);
+            }
+
+            if (!empty($toCC)) {
+                $message->setCC($toCC);
+            }
+
+            if (!empty($toBCC)) {
+                $message->setBcc($toBCC);
+            }
+        }
+
+        return $message;
     }
 
     public function getSwiftMessage(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
@@ -235,7 +297,7 @@ class MailAssistant
         $isSendToGroups = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
             ? false : $formData->getSendToGroups()) : $form->has('send_to_groups') && !empty($formData['send_to_groups']));
 
-        if ($isSendToGroups) {
+        if ($isSendToGroups && $form->has('send_to_groups')) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
             $groups = $labelManager->getItemList($formData->getSendToGroups());
 
@@ -253,30 +315,6 @@ class MailAssistant
                 $this->addRecipients($recipients, $userList);
 
                 $group = $groups->getNext();
-            }
-        }
-
-        // form option: send_to_institutions
-        $isSendToInstitutions = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
-            ? false : $formData->getSendToGroups()) : $form->has('send_to_groups') && !empty($formData['send_to_institutions']));
-
-        if ($isSendToInstitutions) {
-            $labelManager = $this->legacyEnvironment->getLabelManager();
-            $institutions = $labelManager->getItemList($formData->getSendToInstitutions());
-
-            $userManager = $this->legacyEnvironment->getUserManager();
-            $userManager->resetLimits();
-            $userManager->setUserLimit();
-
-            $institution = $institutions->getFirst();
-            while ($institution) {
-                $userManager->setInstitutionLimit($institution->getItemID());
-                $userManager->select();
-                $userList = $userManager->get();
-
-                $this->addRecipients($recipients, $userList);
-
-                $institution = $institutions->getNext();
             }
         }
 

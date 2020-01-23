@@ -10,13 +10,13 @@
                 </h4>
                 <div class="uk-comment-meta">
                     {% if announcement.secondDateTime != '' %}
-                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                        {% if "now"|date("U") <= announcement.secondDateTime|date("U") %}
                             <span class="uk-text-bold">
                         {% endif %}
                         
-                        {{ 'valid until'|trans({})}}: {{announcement.getSecondDateTime|date("d.m.Y")}}
+                        {{ 'valid until'|trans({})}}: {{ announcement.secondDateTime|craue_date }}
                         
-                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                        {% if "now"|date("U") <= announcement.secondDateTime|date("U") %}
                             </span>
                         {% endif %}
                     {% else %}
