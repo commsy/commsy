@@ -11,7 +11,17 @@
                         icons: false
                     },
                     multiple: true,
-                    dblclick_toggle: false
+                    dblclick_toggle: false,
+                    keyboard: {
+                        // overwrite the mapping of the enter key
+                        'enter': function (e) {
+                            // in CommSy, enter should submit the hosting form
+                            $(e.currentTarget).parents('form').submit();
+
+                            // disable jstree's default behavior where enter triggers a click on the selected control
+                            return false;
+                        }
+                    }
                 },
                 checkbox: {
                     keep_selected_style: false,
