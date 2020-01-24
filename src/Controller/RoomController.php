@@ -495,7 +495,10 @@ class RoomController extends Controller
                 $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
                 $contactUsers = $userRepository->getContactsByRoomId($room->getItemId());
                 $moderators = $userRepository->getModeratorsByRoomId($room->getItemId());
-                $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
+
+                if(empty($contactUsers)){
+                    $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
+                }
 
                 $contactsString = "";
                 $iDsString = "";

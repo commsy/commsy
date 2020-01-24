@@ -35,7 +35,7 @@ class UserRepository extends ServiceEntityRepository
      * @param int $roomId
      * @return mixed
      */
-    public function getContactsByRoomId(int $roomId)
+    public function getModeratorsByRoomId(int $roomId)
     {
         return $this->createQueryBuilder('u')
             ->where('u.status = 3')
@@ -50,7 +50,7 @@ class UserRepository extends ServiceEntityRepository
      * @param int $roomId
      * @return mixed
      */
-    public function getModeratorsByRoomId(int $roomId)
+    public function getContactsByRoomId(int $roomId)
     {
         return $this->createQueryBuilder('u')
             ->where('u.isContact = 1')
