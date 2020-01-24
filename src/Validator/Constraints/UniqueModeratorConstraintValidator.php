@@ -7,6 +7,7 @@ namespace App\Validator\Constraints;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraint;
 use Exception;
@@ -16,12 +17,14 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
     private $userService;
     private $roomService;
     private $legacyEnvironment;
+    private $translator;
 
-    public function __construct(UserService $userService, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
+    public function __construct(UserService $userService, LegacyEnvironment $legacyEnvironment, RoomService $roomService, TranslatorInterface $translator)
     {
         $this->userService = $userService;
         $this->legacyEnvironment = $legacyEnvironment;
         $this->roomService = $roomService;
+        $this->translator = $translator;
     }
 
     public function validate($submittedDeleteString, Constraint $constraint)
@@ -44,7 +47,13 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
 
 
         if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator){
-            $this->context->buildViolation($constraint->message)
+            if($isProjectRoom){
+                $roomName = " - ".$roomName." (".$this->translator->trans('project', [], 'room').")";
+            }
+            $this->context->buildViolation($constraint->messageBeginning)
+                ->addViolation();
+
+            $this->context->buildViolation($constraint->itemMessage)
                 ->setParameter('{{ criteria }}', $roomName)
                 ->addViolation();
 
@@ -54,12 +63,14 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
                     $hasModerators = $this->contextHasModerators($groupRoom->getItemId(), [$currentUser]);
                     $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($groupRoom->getItemId());
                     if(!$hasModerators or !$hasMoreThanOneModerator){
-                        $this->context->buildViolation($constraint->message)
-                            ->setParameter('{{ criteria }}', $groupRoom->getTitle())
+                        $this->context->buildViolation($constraint->itemMessage)
+                            ->setParameter('{{ criteria }}', " - ".$groupRoom->getTitle()." (".$this->translator->trans('grouproom', [], 'room').")")
                             ->addViolation();
                     }
                 }
             }
+            $this->context->buildViolation($constraint->messageEnd)
+                ->addViolation();
         }
     }
 
