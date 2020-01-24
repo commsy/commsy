@@ -67,7 +67,7 @@
                     {% if user.isEmailVisible %}
                         <td>{{ user.email }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'profile') }}</a>)</td>
                     {% else %}
-                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'profile') }}</a></td>
+                        <td>{{ 'emailHidden'|trans({}, 'user') }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'profile') }}</a>)</td>
                     {% endif %}
 
                 {% endif %}
