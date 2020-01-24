@@ -29,6 +29,7 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
 
     public function validate($submittedDeleteString, Constraint $constraint)
     {
+        $startedBeginningMessageFlag = False;
         $currentUser = $this->userService->getCurrentUserItem();
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
 
@@ -46,33 +47,39 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
         $isProjectRoom = $roomItem->getType() == 'project';
 
 
-        if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator){
-            if($isProjectRoom){
-                $roomName = " - ".$roomName." (".$this->translator->trans('project', [], 'room').")";
+        if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator) {
+            if ($isProjectRoom) {
+                $roomName = " - " . $roomName . " (" . $this->translator->trans('project', [], 'room') . ")";
             }
+            $startedBeginningMessageFlag = True;
             $this->context->buildViolation($constraint->messageBeginning)
                 ->addViolation();
 
             $this->context->buildViolation($constraint->itemMessage)
                 ->setParameter('{{ criteria }}', $roomName)
                 ->addViolation();
+        }
 
-            if($isProjectRoom){
-                $groupRooms = $roomItem->getGroupRoomList();
-                foreach($groupRooms as $groupRoom){
-                    $hasModerators = $this->contextHasModerators($groupRoom->getItemId(), [$currentUser]);
-                    $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($groupRoom->getItemId());
-                    if(!$hasModerators or !$hasMoreThanOneModerator){
-                        $this->context->buildViolation($constraint->itemMessage)
-                            ->setParameter('{{ criteria }}', " - ".$groupRoom->getTitle()." (".$this->translator->trans('grouproom', [], 'room').")")
+        if($isProjectRoom){
+            $groupRooms = $roomItem->getGroupRoomList();
+            foreach($groupRooms as $groupRoom){
+                $hasModerators = $this->contextHasModerators($groupRoom->getItemId(), [$currentUser]);
+                $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($groupRoom->getItemId());
+                if(!$hasModerators or !$hasMoreThanOneModerator){
+                    if(!$startedBeginningMessageFlag){
+                        $startedBeginningMessageFlag = True;
+                        $this->context->buildViolation($constraint->messageBeginning)
                             ->addViolation();
                     }
+                    $this->context->buildViolation($constraint->itemMessage)
+                        ->setParameter('{{ criteria }}', " - ".$groupRoom->getTitle()." (".$this->translator->trans('grouproom', [], 'room').")")
+                        ->addViolation();
                 }
             }
-            $this->context->buildViolation($constraint->messageEnd)
-                ->addViolation();
         }
-    }
+        $this->context->buildViolation($constraint->messageEnd)
+            ->addViolation();
+        }
 
     private function isCurrentUserModerator($roomId, $currentUsers){
         $moderatorIds = $this->accessModeratorIds($roomId);
@@ -104,7 +111,7 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
     }
 
     private function accessModeratorIds($roomId){
-        $moderators = $this->roomService->getContactModeratorItems($roomId);
+        $moderators = $this->roomService->getModeratorList($roomId);
         $moderatorIds = [];
         foreach ($moderators as $moderator) {
             $moderatorIds[] = $moderator->getItemId();
