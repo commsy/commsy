@@ -320,7 +320,6 @@ class ProjectController extends Controller
             'confirm_string' => $this->get('translator')->trans('delete', [], 'profile')
         ]);
 
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // get room from RoomService
