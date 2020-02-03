@@ -287,6 +287,7 @@ class ProfileController extends Controller
 
         $userData['mail_account'] = $userItem->getAccountWantMail() === 'yes' ? true : false;
         $userData['mail_room'] = $userItem->getOpenRoomWantMail() === 'yes' ? true : false;
+        $userData['mail_item_deleted'] = $userItem->getDeleteEntryWantMail();
 
         $form = $this->createForm(RoomProfileNotificationsType::class, $userData, array(
             'itemId' => $itemId,
@@ -295,23 +296,17 @@ class ProfileController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            if($formData['mail_account']) {
-                $userItem->setAccountWantMail('yes');
-            } else {
-                $userItem->setAccountWantMail('no');
-            }
 
-            if($formData['mail_room']) {
-                $userItem->setOpenRoomWantMail('yes');
-            } else {
-                $userItem->setOpenRoomWantMail('no');
-            }
+            $userItem->setAccountWantMail($formData['mail_account'] ? 'yes' : 'no');
+            $userItem->setOpenRoomWantMail($formData['mail_room'] ? 'yes' : 'no');
+            $userItem->setDeleteEntryWantMail($formData['mail_item_deleted']);
+
             $userItem->save();
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
