@@ -89,7 +89,8 @@ class cs_item {
       $this->_type = 'item';
    }
 
-   function getContextItem () {
+   public function getContextItem(): \cs_context_item
+   {
       if ($this->_context_item == null) {
          $context_id = $this->getContextID();
          if ( !empty($context_id) ) {
@@ -1893,13 +1894,21 @@ class cs_item {
      $manager->undeleteItemByItemID($this->getItemID());
    }
 
-   /** delete item
-    * this method deletes an item
-    */
-   function delete() {
-      $manager = $this->_environment->getManager($this->getItemType());
-      $this->_delete($manager);
-   }
+    /** delete item
+     * this method deletes an item
+     */
+    public function delete()
+    {
+        global $symfonyContainer;
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
+
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+
+        $manager = $this->_environment->getManager($this->getItemType());
+        $this->_delete($manager);
+    }
 
    function deleteAssociatedAnnotations() {
       $annotation_manager = $this->_environment->getAnnotationManager();
