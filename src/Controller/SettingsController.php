@@ -417,12 +417,10 @@ class SettingsController extends Controller
         }
 
         if ($lockForm->get('lock')->isClicked()) {
-            $form->clearErrors(true);
             $form = $this->createForm(DeleteType::class, $roomItem, [
                 'confirm_string' => $translator->trans('delete', [], 'profile')
             ]);
         }elseif($form->get('delete')->isClicked()){
-            $lockForm->clearErrors(true);
             $lockForm = $this->createForm(DeleteType::class, $roomItem, [
                 'confirm_string' => $translator->trans('lock', [], 'profile')
             ]);
