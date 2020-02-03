@@ -867,64 +867,70 @@ class cs_material_item extends cs_item {
       }
    }
 
-########################### DELETING
+    /** delete material
+     * this method deletes the material
+     */
+    public function delete($version = "current")
+    {
+        global $symfonyContainer;
 
-   /** delete material
-    * this method deletes the material
-    */
-   function delete ($version = "current") {
-      // delete associated tasks
-      $task_list = $this->_getTaskList();
-      if (isset($task_list)) {
-         $current_task = $task_list->getFirst();
-         while ($current_task) {
-            $current_task->delete();
-            $current_task = $task_list->getNext();
-         }
-      }
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
-      // delete sections
-      $section_list = $this->getSectionList();
-      if ( $section_list->isNotEmpty() ) {
-         $section_item = $section_list->getFirst();
-         while ($section_item) {
-            if ( $version == 'current' ) {
-               $section_item->delete($this->getVersionID());
-            } elseif ( $version = CS_ALL ) {
-               $section_item->delete($version); // CS_ALL -> delete all versions of the section
-            } else {
-               $section_item->delete();
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+
+        // delete associated tasks
+        $task_list = $this->_getTaskList();
+        if (isset($task_list)) {
+            $current_task = $task_list->getFirst();
+            while ($current_task) {
+                $current_task->delete();
+                $current_task = $task_list->getNext();
             }
-            $section_item = $section_list->getNext();
-         }
-      }
+        }
 
-      // delete material with versions
-      $material_manager = $this->_environment->getMaterialManager();
-      if ( $version == "current" ) {
-         $material_manager->delete($this->getItemID(),$this->getVersionID());
-      } else {
-         $material_manager->delete($this->getItemID());
-      }
+        // delete sections
+        $section_list = $this->getSectionList();
+        if ($section_list->isNotEmpty()) {
+            $section_item = $section_list->getFirst();
+            while ($section_item) {
+                if ($version == 'current') {
+                    $section_item->delete($this->getVersionID());
+                } elseif ($version = CS_ALL) {
+                    $section_item->delete($version); // CS_ALL -> delete all versions of the section
+                } else {
+                    $section_item->delete();
+                }
+                $section_item = $section_list->getNext();
+            }
+        }
 
-      // delete links
-      $link_manager = $this->_environment->getLinkItemManager();
-      $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
+        // delete material with versions
+        $material_manager = $this->_environment->getMaterialManager();
+        if ($version == "current") {
+            $material_manager->delete($this->getItemID(), $this->getVersionID());
+        } else {
+            $material_manager->delete($this->getItemID());
+        }
 
-      // delete links to files
-      $link_manager = $this->_environment->getLinkItemFileManager();
-      $link_manager->deleteByItem($this->getItemID(),$this->getVersionID());
+        // delete links
+        $link_manager = $this->_environment->getLinkItemManager();
+        $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
 
-      // delete associated annotations
-      $this->deleteAssociatedAnnotations();
+        // delete links to files
+        $link_manager = $this->_environment->getLinkItemFileManager();
+        $link_manager->deleteByItem($this->getItemID(), $this->getVersionID());
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Materials');
+        // delete associated annotations
+        $this->deleteAssociatedAnnotations();
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Materials');
+
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    /** delete a version of a material
     * this method deletes a version of a material

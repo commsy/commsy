@@ -429,6 +429,10 @@
                 <source>E-mail when a workspace is created</source>
                 <target>E-mail when a workspace is created</target>
             </trans-unit>
+            <trans-unit id="email_notification_item_deleted">
+                <source>E-mail when an item is deleted</source>
+                <target>E-mail when an item is deleted</target>
+            </trans-unit>
             <trans-unit id="email_to_commsy_description">
                 <source>email_to_commsy_description</source>
                 <target>This function allows to create materials in your stack by sending e-mails from your configured account e-mail address <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> to <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>. The mail's subject will be used as the title of the new material and the mail's body as the materials description text.</target>
