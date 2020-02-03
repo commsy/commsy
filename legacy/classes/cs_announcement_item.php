@@ -176,24 +176,31 @@ class cs_announcement_item extends cs_item {
        $this->replaceElasticItem($objectPersister, $repository);
    }
 
-   /** delete announcement
-    * this method deletes the announcement
-    */
-   function delete() {
-      $manager = $this->_environment->getAnnouncementManager();
-      $this->_delete($manager);
+    /** delete announcement
+     * this method deletes the announcement
+     */
+    public function delete()
+    {
+        global $symfonyContainer;
 
-      // delete associated annotations
-      $this->deleteAssociatedAnnotations();
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Announcement');
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $manager = $this->_environment->getAnnouncementManager();
+        $this->_delete($manager);
 
+        // delete associated annotations
+        $this->deleteAssociatedAnnotations();
+
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Announcement');
+
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    /** asks if item is editable by everybody or just creator
     *

@@ -1899,13 +1899,6 @@ class cs_item {
      */
     public function delete()
     {
-        global $symfonyContainer;
-        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
-        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
-
-        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
-        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
-
         $manager = $this->_environment->getManager($this->getItemType());
         $this->_delete($manager);
     }

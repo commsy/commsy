@@ -150,7 +150,7 @@ class UserService
         }
     }
 
-    public function getUser($userId)
+    public function getUser($userId):? \cs_user_item
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings
