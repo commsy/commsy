@@ -8,7 +8,6 @@ use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -59,6 +58,25 @@ class AccountContactFormType extends AbstractType
                 'required' => true,
                 'config_name' => 'cs_mail_config',
             ])
+            ->add('recipient', TextType::class, [
+                'label' => 'Additional recipients',
+                'translation_domain' => 'mail',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Additional recipients',
+                ],
+            ])
+            ->add('autoSaveStatus', ChoiceType::class, [
+                'label' => 'Copy to sender',
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false,
+                ],
+                'expanded' => true,
+                'translation_domain' => 'mail',
+                'choice_translation_domain' => 'form',
+                'required' => true,
+            ])
             ->add('save', SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button-primary',
@@ -90,6 +108,7 @@ class AccountContactFormType extends AbstractType
             ->setDefaults([
                 'users' => [],
                 'item' => null,
+                'copy_to_sender' => false,
                 'translation_domain' => 'profile',
             ])
         ;

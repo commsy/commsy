@@ -9,6 +9,7 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Repository\UserRepository;
 use App\Services\LegacyMarkup;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -72,7 +73,7 @@ class RoomController extends Controller
         $timeSpread = $roomItem->getTimeSpread();
         $numNewEntries = $roomItem->getNewEntries($timeSpread);
         $pageImpressions = $roomItem->getPageImpressions($timeSpread);
-        
+
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
 
@@ -91,7 +92,7 @@ class RoomController extends Controller
 
         $backgroundImage = null;
         if($roomItem->getBGImageFilename())
-            $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));            
+            $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
         else
             $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
 
@@ -243,7 +244,7 @@ class RoomController extends Controller
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
- 
+
         $readerList = array();
         foreach ($feedList as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
@@ -253,9 +254,9 @@ class RoomController extends Controller
             'feedList' => $feedList,
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive()
-         );
+        );
     }
-    
+
     /**
      * @Route("/room/{roomId}/moderationsupport", requirements={
      *     "roomId": "\d+"
@@ -270,18 +271,18 @@ class RoomController extends Controller
                 'roomId' => $roomId,
             ))
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            
+
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
             $currentUser = $legacyEnvironment->getCurrentUser();
 
             $roomManager = $legacyEnvironment->getRoomManager();
             $roomItem = $roomManager->getItem($roomId);
-            
+
             $moderatorEmailAdresses = array();
             $moderatorList = $roomItem->getModeratorList();
             $moderatorUserItem = $moderatorList->getFirst();
@@ -289,20 +290,20 @@ class RoomController extends Controller
                 $moderatorEmailAdresses[$moderatorUserItem->getEmail()] = $moderatorUserItem->getFullname();
                 $moderatorUserItem = $moderatorList->getNext();
             }
-            
+
             $message = (new \Swift_Message())
                 ->setSubject($data['subject'])
                 ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
                 ->setTo($moderatorEmailAdresses)
                 ->setBody($data['message'])
             ;
-            
+
             $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
-            
+
             $this->get('mailer')->send($message);
-            
+
             $translator = $this->get('translator');
-            
+
             return new JsonResponse([
                 'message' => $translator->trans('message was send'),
                 'timeout' => '5550',
@@ -310,7 +311,7 @@ class RoomController extends Controller
                 'data' => array(),
             ]);
         }
-        
+
         return array(
             'form' => $form->createView(),
         );
@@ -322,7 +323,7 @@ class RoomController extends Controller
      *     "roomId": "\d+"
      * })
      * @Template()
-     * 
+     *
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -424,7 +425,7 @@ class RoomController extends Controller
      * @Route("/room/{roomId}/all/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request, UserRepository $userRepository)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
@@ -456,7 +457,7 @@ class RoomController extends Controller
             $filterForm->submit($roomFilter);
 
             $this->get('lexik_form_filter.query_builder_updater')
-                    ->addFilterConditions($filterForm, $activeRoomQueryBuilder);
+                ->addFilterConditions($filterForm, $activeRoomQueryBuilder);
         }
 
         $rooms = $activeRoomQueryBuilder->getQuery()->getResult();
@@ -476,7 +477,7 @@ class RoomController extends Controller
                 ]);
                 $filterForm->submit($roomFilter);
                 $this->get('lexik_form_filter.query_builder_updater')
-                        ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+                    ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
             }
             $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
         }
@@ -492,17 +493,27 @@ class RoomController extends Controller
 
             try{
                 $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
-                $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
-                $users = $currentPortalItem->getUserList();
-                $contactUsers = $room->getContactPersons();
-                foreach($users as $user){
-                    if(strpos($contactUsers, $user->getFullName()) !== false){
-                        $contactItemId = $user->getItemID();
-                        if($user->isCommSyContact()) {
-                            $room->setContactPersons($contactUsers . ";" . $contactItemId);
-                            break;
-                        }
-                    }
+                $contactUsers = $userRepository->getContactsByRoomId($room->getItemId());
+                $moderators = $userRepository->getModeratorsByRoomId($room->getItemId());
+
+                if(empty($contactUsers)){
+                    $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
+                }
+
+                $contactsString = "";
+                $iDsString = "";
+
+                foreach($contactUsers as $contactUser){
+                    $contactsString .= $contactUser->getFullName();
+                    $iDsString .= $contactUser->getItemID();
+                    $contactsString .= ", ";
+                    $iDsString .= ",";
+                }
+
+                $contactsString = rtrim($contactsString, ", ");
+                $iDsString = rtrim($iDsString, ", ");
+                if(strlen($iDsString) > 1 and strlen($contactsString) > 1){
+                    $room->setContactPersons($contactsString . ";" . $iDsString);
                 }
             }catch (Exception $e){
                 // do nothing
@@ -1049,7 +1060,7 @@ class RoomController extends Controller
                     $roomManager = $legacyEnvironment->getProjectManager();
                 }
                 elseif ($formData['type_select'] == 'community') {
-                     $roomManager = $legacyEnvironment->getCommunityManager();
+                    $roomManager = $legacyEnvironment->getCommunityManager();
                 }
                 else {
                     throw new UnexpectedValueException("Error Processing Request: Unrecognized room type", 1);

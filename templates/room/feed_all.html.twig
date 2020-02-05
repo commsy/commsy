@@ -10,7 +10,7 @@
         {% set percentage = (activity / divisor + 1)|log %}
 
         {% if percentage < 0 %}
-           {% set percentage = 0 %}
+            {% set percentage = 0 %}
         {% endif %}
 
         {% set max = (maxActivity / divisor + 1)|log %}
@@ -61,18 +61,26 @@
                             {% endif %}
                             {% if room.template == 1 %}<span class="uk-text-muted"> &ndash; {{ 'Template'|trans({}, 'room') }}</span>{% endif %}
                         </h4>
-
                         <div class="uk-comment-meta">
-                            {% if room.contactPersons is not empty %}
+                            {% if room.contactPersons is not empty and room.contactPersons|length > 3 %}
                                 {% set splitText = room.contactPersons|split(';') %}
                                 {% if splitText|length > 1 %}
-
-                                    <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': splitText[1], 'originPath': 'app_room_listall'}) }}">{{ splitText[0] }} </a>
+                                    {% set splitContacts = splitText[0]|split(',') %}
+                                    {% set splitContactIds = splitText[1]|split(',') %}
+                                    {% set counter = 0 %}
+                                    {% for contactEntry in splitContacts %}
+                                        {% if splitContacts|length > 1 and counter + 1 < splitContacts|length %}
+                                            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': splitContactIds[counter], 'originPath': 'app_room_listall'}) }}">{{ contactEntry }}, </a>
+                                        {% else %}
+                                            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': splitContactIds[counter], 'originPath': 'app_room_listall'}) }}">{{ contactEntry }}</a>
+                                        {% endif %}
+                                        {% set counter = counter + 1 %}
+                                    {% endfor %}
                                 {% else %}
                                     {{ room.contactPersons }}
                                 {% endif %}
                             {% else %}
-                                {{ room.getContactModeratorListString }}
+                                {{ room.contactPersons }}
                             {% endif %}
                         </div>
 
