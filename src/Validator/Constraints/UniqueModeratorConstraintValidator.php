@@ -65,7 +65,8 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
             foreach($groupRooms as $groupRoom){
                 $hasModerators = $this->contextHasModerators($groupRoom->getItemId(), [$currentUser]);
                 $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($groupRoom->getItemId());
-                if(!$hasModerators or !$hasMoreThanOneModerator){
+                $currentUserIsModerator = $this->isCurrentUserModerator($groupRoom->getItemId(), [$currentUser]);
+                if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator){
                     if(!$startedBeginningMessageFlag){
                         $startedBeginningMessageFlag = True;
                         $this->context->buildViolation($constraint->messageBeginning)
