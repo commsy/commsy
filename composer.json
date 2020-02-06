@@ -36,6 +36,7 @@
         "symfony/flex": "^1.2",
         "symfony/form": "^4.4",
         "symfony/framework-bundle": "^4.4",
+        "symfony/ldap": "^4.4",
         "symfony/monolog-bundle": "^3.3",
         "symfony/orm-pack": "^1.0",
         "symfony/polyfill-apcu": "^1.10",
