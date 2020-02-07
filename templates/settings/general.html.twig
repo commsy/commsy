@@ -22,12 +22,7 @@
                             <div style="margin-bottom: 25px;">{{ 'Basic settings text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.title) }}
 
-                            <div class="uk-margin-top-remove uk-margin-bottom">
-                                <div class="uk-flex-inline uk-flex-middle">
-                                    {{ form_row(form.language) }}
-                                    <i class="uk-icon-info-circle uk-icon-small uk-margin-left" data-uk-tooltip="{pos:'right'}" title="{{ 'Room language tip'|trans({}, 'settings') }}"></i>
-                                </div>
-                            </div>
+                            {{ form_row(form.language) }}
 
                             <div class="uk-form-row">
                                 {{ form_label(form.access_check) }}
