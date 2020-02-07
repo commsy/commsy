@@ -50,9 +50,8 @@
                         <div class='uk-form-row'>
                             {{ form_errors(form.language) }}
                             <div class='uk-form-label'>{{ 'Language' | trans({} , 'settings') }}*</div>
-                            <div class="cs-form-controls-inline">
+                            <div>
                                 {{ form_widget(form.language) }}
-                                <i class="uk-icon-info-circle uk-icon-small uk-margin-left" data-uk-tooltip="{pos:'right'}" title="{{ 'Room language tip'|trans({}, 'settings') }}"></i>
                             </div>
                         </div>
                     {% endif %}
