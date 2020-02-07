@@ -49,7 +49,7 @@
                     {% if form.language is defined %}
                         <div class='uk-form-row'>
                             {{ form_errors(form.language) }}
-                            <div class='uk-form-label'>{{ 'Language' | trans({} , 'settings') }}*</div>
+                            {{ form_label(form.language) }}
                             <div>
                                 {{ form_widget(form.language) }}
                             </div>
