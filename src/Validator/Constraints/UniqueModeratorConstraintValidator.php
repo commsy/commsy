@@ -65,7 +65,7 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
             foreach($groupRooms as $groupRoom){
                 $hasModerators = $this->contextHasModerators($groupRoom->getItemId(), [$currentUser]);
                 $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($groupRoom->getItemId());
-                $currentUserIsModerator = $this->isCurrentUserModerator($groupRoom->getItemId(), [$currentUser]);
+                $currentUserIsModerator = $this->isCurrentUserMember($groupRoom, [$currentUser]);
                 if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator){
                     if(!$startedBeginningMessageFlag){
                         $startedBeginningMessageFlag = True;
@@ -90,6 +90,19 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
             }
         }
         return false;
+    }
+
+    private function isCurrentUserMember($room, $currentUsers){
+        $moderatorIDs = $this->accessModeratorIds($room->getItemId());
+        foreach ($currentUsers as $selectedId) {
+            $relatedUsers = $selectedId->getRelatedUserList()->to_array();
+            foreach($relatedUsers as $relatedUser){
+                if(($key = array_search($relatedUser->getItemId(), $moderatorIDs)) !== false){
+                    return true;
+                }
+            }
+        }
+       return false;
     }
 
     private function contextHasModerators($roomId, $selectedIds) {
