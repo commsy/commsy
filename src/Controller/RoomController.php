@@ -258,66 +258,6 @@ class RoomController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/moderationsupport", requirements={
-     *     "roomId": "\d+"
-     * })
-     * @Template()
-     */
-    public function moderationsupportAction($roomId, Request $request)
-    {
-        $moderationsupportData = array();
-        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, array(
-            'action' => $this->generateUrl('app_room_moderationsupport', array(
-                'roomId' => $roomId,
-            ))
-        ));
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-            $currentUser = $legacyEnvironment->getCurrentUser();
-
-            $roomManager = $legacyEnvironment->getRoomManager();
-            $roomItem = $roomManager->getItem($roomId);
-
-            $moderatorEmailAdresses = array();
-            $moderatorList = $roomItem->getModeratorList();
-            $moderatorUserItem = $moderatorList->getFirst();
-            while ($moderatorUserItem) {
-                $moderatorEmailAdresses[$moderatorUserItem->getEmail()] = $moderatorUserItem->getFullname();
-                $moderatorUserItem = $moderatorList->getNext();
-            }
-
-            $message = (new \Swift_Message())
-                ->setSubject($data['subject'])
-                ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
-                ->setTo($moderatorEmailAdresses)
-                ->setBody($data['message'])
-            ;
-
-            $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
-
-            $this->get('mailer')->send($message);
-
-            $translator = $this->get('translator');
-
-            return new JsonResponse([
-                'message' => $translator->trans('message was send'),
-                'timeout' => '5550',
-                'layout' => 'cs-notify-message',
-                'data' => array(),
-            ]);
-        }
-
-        return array(
-            'form' => $form->createView(),
-        );
-    }
-
-    /**
      *
      * @Route("/room/{roomId}/all", requirements={
      *     "roomId": "\d+"
