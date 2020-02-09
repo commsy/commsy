@@ -30,7 +30,7 @@
                             {{ form_row(form.workflow.traffic_light.status_view) }}
 
                             <div class='uk-form-row'>
-                                <div class='uk-form-label'>{{ 'Default status' | trans({} , 'settings') }}</div>
+                                {{ form_label(form.workflow.traffic_light.default_status) }}
                                 <div class='uk-form-controls'>
                                     <span style='width: 205px; display: inline-block;'>
                                         <label for='extension_settings_workflow_traffic_light_default_status_0'>
