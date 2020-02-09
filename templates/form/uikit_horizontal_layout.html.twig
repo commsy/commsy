@@ -97,7 +97,9 @@
 {# Labels #}
 
 {%- block checkbox_label -%}
-    {% if label is not same as(false) -%}
+    {%- if help is not empty -%}
+        {{ block('form_label') }}
+    {% elseif label is not same as(false) -%}
         {% if not compound -%}
             {% set label_attr = label_attr|merge({'for': id}) %}
         {%- endif -%}
