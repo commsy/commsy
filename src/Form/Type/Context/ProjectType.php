@@ -51,6 +51,7 @@ class ProjectType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'label' => 'Community rooms',
+                'help' => 'Community rooms tip',
                 'translation_domain' => 'settings',
             ])
         ;

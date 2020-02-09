@@ -176,6 +176,7 @@ class GeneralSettingsType extends AbstractType
                             'attr' => array(
                                 'style' => 'width: 90%',
                             ),
+                            'help' => 'Community rooms tip',
                         ))
                     ;
                 }
