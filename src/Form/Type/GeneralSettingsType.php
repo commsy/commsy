@@ -65,6 +65,7 @@ class GeneralSettingsType extends AbstractType
                 'attr' => array(
                     'style' => 'width: 250px;',
                 ),
+                'help' => 'Room language tip',
             ))
             ->add('access_check', ChoiceType::class, array(
                 'required' => false,
@@ -175,6 +176,7 @@ class GeneralSettingsType extends AbstractType
                             'attr' => array(
                                 'style' => 'width: 90%',
                             ),
+                            'help' => 'Community rooms tip',
                         ))
                     ;
                 }
