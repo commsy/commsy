@@ -258,15 +258,15 @@ class cs_auth_ldap extends cs_auth_manager
             /** @var \Symfony\Component\Ldap\Entry $ldapEntry */
             $ldapEntry = $this->userData[$uid];
 
-            if ($ldapEntry->has('givenName')) {
+            if ($ldapEntry->hasAttribte('givenName')) {
                 $data['firstname'] = $ldapEntry->getAttribute('givenName')[0];
             }
 
-            if ($ldapEntry->has('sn')) {
+            if ($ldapEntry->hasAttribte('sn')) {
                 $data['lastname'] = $ldapEntry->getAttribute('sn')[0];
             }
 
-            if ($ldapEntry->has('mail')) {
+            if ($ldapEntry->hasAttribte('mail')) {
                 $data['email'] = $ldapEntry->getAttribute('mail')[0];
             }
         }
