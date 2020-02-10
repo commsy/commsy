@@ -94,6 +94,50 @@
                 <source>Send mail</source>
                 <target>Send email</target>
             </trans-unit>
+            <trans-unit id="mail_subject_room_archived">
+                <source>%room_name% will be archived in %num_days% days.</source>
+                <target>%room_name% will be archived in %num_days% days.</target>
+            </trans-unit>
+            <trans-unit id="mail_body_auto_generated">
+                <source>[This email was generated automatically at %time_generated%.]</source>
+                <target>[This email was generated automatically at %time_generated%.]</target>
+            </trans-unit>
+            <trans-unit id="mail_footer_why">
+                <source>You received this email as one of the moderator/s in the workspace "%room_name%".</source>
+                <target>You received this email as one of the moderator/s in the workspace "%room_name%".</target>
+            </trans-unit>
+            <trans-unit id="mail_send_to">
+                <source>This email was send to: %recipients%</source>
+                <target>This email was send to: %recipients%</target>
+            </trans-unit>
+            <trans-unit id="mail_linked_project_community_workspaces">
+                <source>This project workspace is linked to the following community workspaces: %community_workspaces%</source>
+                <target>This project workspace is linked to the following community workspaces: %community_workspaces%</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_user_inactivity_upcoming_lock">
+                <source>%portal_name%: Your account will be locked in %num_days% days</source>
+                <target>%portal_name%: Your account will be locked in %num_days% days</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_item_deleted">
+                <source>Deleted entry (%room_name%)</source>
+                <target>Deleted entry (%room_name%)</target>
+            </trans-unit>
+            <trans-unit id="mail_body_common_title">
+                <source>Title: %title%</source>
+                <target>Title: %title%</target>
+            </trans-unit>
+            <trans-unit id="mail_body_common_rubric">
+                <source>Rubric: %rubric%</source>
+                <target>Rubric: %rubric%</target>
+            </trans-unit>
+            <trans-unit id="mail_body_common_deleter">
+                <source>Deleter: %deleter%</source>
+                <target>Deleter: %deleter%</target>
+            </trans-unit>
+            <trans-unit id="mail_body_common_workspace">
+                <source>Workspace: %workspace%</source>
+                <target>Workspace: %workspace%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

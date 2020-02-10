@@ -769,20 +769,19 @@ class cs_user_item extends cs_item
     }
 
 
-    function setDeleteEntryWantMail($value)
+    public function setDeleteEntryWantMail(bool $enabled)
     {
-        $this->_addExtra('DELETEENTRYMAIL', (string)$value);
-    }
-
-    function getDeleteEntryWantMail()
-    {
-        $retour = 'no';
-        if ($this->_issetExtra('DELETEENTRYMAIL')) {
-            $retour = $this->_getExtra('DELETEENTRYMAIL');
+        if ($enabled) {
+            $this->_addExtra('DELETEENTRYMAIL', 'yes');
+        } else if ($this->_issetExtra('DELETEENTRYMAIL')) {
+            $this->_unsetExtra('DELETEENTRYMAIL');
         }
-        return $retour;
     }
 
+    public function getDeleteEntryWantMail(): bool
+    {
+        return $this->_issetExtra('DELETEENTRYMAIL');
+    }
 
     /** get flag, if moderator wants a mail if he has to publish a material
      * this method returns the getaccountwantmail flag

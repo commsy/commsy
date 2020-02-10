@@ -1,0 +1,32 @@
+{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|craue_datetime('de-DE') }, 'mail') }}
+
+<br/><br/>
+
+{% if room.isCommunityRoom %}
+    {#$body .= $translator->getMessage('COMMUNITY_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));#}
+{% else %}
+    {#$body .= $translator->getEmailMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));#}
+{% endif %}
+
+{#$room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO');#}
+
+<br/><br/>
+
+<a href="{{ url('app_room_home', { 'roomId': room.itemId }) }}">{{ url('app_room_home', { 'roomId': room.itemId }) }}</a>
+
+{% if room.isProjectRoom %}
+    {% set communityRoomTitles = room.getCommunityList|map(room => "#{room.title}")|join(', ') %}
+
+    {% if communityRoomTitles is not empty %}
+        <br/><br/>
+        {{ 'This project workspace is linked to the following community workspaces: %community_workspaces%'|trans({ 'community_workspaces': communityRoomTitles }, 'mail') }}
+    {% endif %}
+{% endif %}
+
+<br/><br/>
+
+{{ 'This email was send to: %recipients%'|trans({ '%recipients%': 'TODO'}, 'mail') }}
+
+<br/><br/>
+
+{{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': room.title }, 'mail') }}

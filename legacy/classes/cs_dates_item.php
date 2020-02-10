@@ -529,20 +529,28 @@ class cs_dates_item extends cs_item {
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-   function delete() {
-      $date_manager = $this->_environment->getDatesManager();
-      $this->_delete($date_manager);
+    public function delete()
+    {
+        global $symfonyContainer;
 
-      // delete associated annotations
-      $this->deleteAssociatedAnnotations();
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Dates');
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $date_manager = $this->_environment->getDatesManager();
+        $this->_delete($date_manager);
+
+        // delete associated annotations
+        $this->deleteAssociatedAnnotations();
+
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Dates');
+
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    /** asks if item is editable by everybody or just creator
     *

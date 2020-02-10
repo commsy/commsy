@@ -427,6 +427,10 @@
                 <source>E-mail when a workspace is created</source>
                 <target>E-Mail bei Raumeröffnung</target>
             </trans-unit>
+            <trans-unit id="email_notification_item_deleted">
+                <source>E-mail when an item is deleted</source>
+                <target>E-Mail bei Löschen eines Eintrags</target>
+            </trans-unit>
             <trans-unit id="email_to_commsy_description">
                 <source>email_to_commsy_description</source>
                 <target>Diese Funktion erlaubt es Ihnen, Materialien in Ihrer Ablage mittles E-Mail-Versandes anzulegen. Schicken Sie hierzu eine E-Mail von Ihrer Account-E-Mail-Adresse <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> an <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>. Die Betreffzeile der E-Mail wird als Titel und der Nachrichtentext als Beschreibung des Materials übernommen.</target>

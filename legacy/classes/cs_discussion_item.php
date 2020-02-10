@@ -298,18 +298,25 @@ function getDescription(){
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-   // TBD
-   function delete() {
-      $discussion_manager = $this->_environment->getDiscussionManager();
-      $this->_delete($discussion_manager);
+    public function delete()
+    {
+        global $symfonyContainer;
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Discussions');
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+
+        $discussion_manager = $this->_environment->getDiscussionManager();
+        $this->_delete($discussion_manager);
+
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Discussions');
+
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    /** Checks and sets the data of the discussion_item.
     *
