@@ -972,7 +972,7 @@ class RoomController extends Controller
         }
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
-        $timesDisplay = $currentPortalItem->getCurrentTimeName();
+        $timesDisplay = ucfirst($currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();

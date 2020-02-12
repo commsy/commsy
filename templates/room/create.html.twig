@@ -23,7 +23,7 @@
                     {% if form.title is defined %}
                         <div class='uk-form-row'>
                             {{ form_errors(form.title) }}
-                            <div class='uk-form-label'>{{ 'Title' | trans({} , 'settings') }}*</div>
+                            {{ form_label(form.title) }}
                             <div class='uk-form-controls'>
                                 {{ form_widget(form.title) }}
                             </div>
@@ -32,7 +32,7 @@
                     {% if form.type_select is defined %}
                         <div class='uk-form-row'>
                             {{ form_errors(form.type_select) }}
-                            <div class='uk-form-label'>{{ 'context type' | trans({} , 'room') }}*</div>
+                            {{ form_label(form.type_select) }}
                             <div>
                                 {{ form_widget(form.type_select) }}
                             </div>
@@ -49,7 +49,7 @@
                     {% if form.language is defined %}
                         <div class='uk-form-row'>
                             {{ form_errors(form.language) }}
-                            <div class='uk-form-label'>{{ 'Language' | trans({} , 'settings') }}*</div>
+                            {{ form_label(form.language) }}
                             <div>
                                 {{ form_widget(form.language) }}
                             </div>
@@ -58,7 +58,7 @@
                     {% if form.room_description is defined %}
                         <div class='uk-form-row'>
                             {{ form_errors(form.room_description) }}
-                            <div class='uk-form-label'>{{ 'Room description' | trans({} , 'room') }}</div>
+                            {{ form_label(form.room_description) }}
                             <div>
                                 {{ form_widget(form.room_description) }}
                             </div>
@@ -67,7 +67,7 @@
                     {% if form.categories is defined %}
                         <div class='uk-form-row'>
                             {{ form_errors(form.categories) }}
-                            <div class='uk-form-label'>{{ 'Room categories' | trans({} , 'portal') }}*</div>
+                            {{ form_label(form.categories) }}
                             <div>
                                 {{ form_widget(form.categories) }}
                             </div>

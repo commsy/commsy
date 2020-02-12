@@ -47,7 +47,7 @@
                             <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
                             <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
                             <div class='uk-form-row'>
-                                <div class='uk-form-label'>{{ 'Status' | trans({} , 'settings') }}</div>
+                                {{ form_label(form.template.status) }}
                                 <div class='uk-form-controls'>
                                     {{ form_widget(form.template.status) }} {{ 'Template status'|trans({}, 'settings') }}
                                 </div>
