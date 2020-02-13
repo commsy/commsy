@@ -670,7 +670,6 @@
                 <source>Delete intro</source>
                 <target>Attention: The entire workspace and all data will be deleted. This action cannot be undone!</target>
             </trans-unit>
-            Wählen Sie diese Option, um disen Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Der Raum kann bei Bedarf wieder freigeschaltet werden.
             <trans-unit id="settings_lock_intro">
                 <source>Lock intro</source>
                 <target>Chose this option to lock this workspace. After this, you will no longer have access to this workspace. Posts will remain. If you wan to delete certain posts, please do this before locking the workspace. The workspace can be un-locked if necessary.</target>
