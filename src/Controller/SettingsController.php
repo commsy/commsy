@@ -331,9 +331,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/settings/delete")
+     * @Route("/room/{roomId}/settings/delete/{communityId?}")
      * @Template
-     * @Security("is_granted('MODERATOR')")
+     * @Security("is_granted('MODERATOR') or is_granted('PARENT_MODERATOR', communityId)")
      */
     public function deleteAction(
         $roomId,
@@ -356,24 +356,58 @@ class SettingsController extends Controller
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
+        $lockForm = $this->createForm(DeleteType::class, $roomItem, [
+            'confirm_string' => $translator->trans('lock', [], 'profile')
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $roomItem->delete();
-            $roomItem->save();
+if ($form->get('delete')->isClicked()) {
+                $roomItem->delete();
+                $roomItem->save();
 
 
             // redirect back to portal
             $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
             $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
 
-            return $this->redirect($url);
+                return $this->redirect($url);
+            }else{
+                $form->clearErrors(true);
+            }
+        }
+
+        $lockForm->handleRequest($request);
+        if ($lockForm->isSubmitted() && $form->isValid()) {
+            if ($lockForm->get('lock')->isClicked()) {
+                $roomItem->reject();
+                $roomItem->save();
+
+                // redirect back to portal
+                $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+                $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+                return $this->redirect($url);
+            }else{
+                $lockForm->clearErrors(true);
+            }
+        }
+
+        if ($lockForm->get('lock')->isClicked()) {
+            $form = $this->createForm(DeleteType::class, $roomItem, [
+                'confirm_string' => $translator->trans('delete', [], 'profile')
+            ]);
+        }elseif($form->get('delete')->isClicked()){
+            $lockForm = $this->createForm(DeleteType::class, $roomItem, [
+                'confirm_string' => $translator->trans('lock', [], 'profile')
+            ]);
         }
 
         return [
             'form' => $form->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,
+            'lock_form' => $lockForm->createView(),
         ];
     }
 
