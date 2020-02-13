@@ -354,9 +354,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/settings/delete")
+     * @Route("/room/{roomId}/settings/delete/{communityId?}")
      * @Template
-     * @Security("is_granted('MODERATOR')")
+     * @Security("is_granted('MODERATOR') or is_granted('PARENT_MODERATOR', communityId)")
      */
     public function deleteAction(
         $roomId,
@@ -385,7 +385,6 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             if ($form->get('delete')->isClicked()) {
                 $roomItem->delete();
                 $roomItem->save();
