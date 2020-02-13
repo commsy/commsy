@@ -60,26 +60,32 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
                 ->addViolation();
         }
 
+        $violationWasSet = false;
         if($isProjectRoom){
             $groupRooms = $roomItem->getGroupRoomList();
+
             foreach($groupRooms as $groupRoom){
                 $hasModerators = $this->contextHasModerators($groupRoom->getItemId(), [$currentUser]);
                 $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($groupRoom->getItemId());
                 $currentUserIsModerator = $this->isCurrentUserMember($groupRoom, [$currentUser]);
                 if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator){
                     if(!$startedBeginningMessageFlag){
-                        $startedBeginningMessageFlag = True;
+                        $startedBeginningMessageFlag = true;
+                        $violationWasSet = true;
                         $this->context->buildViolation($constraint->messageBeginning)
                             ->addViolation();
                     }
                     $this->context->buildViolation($constraint->itemMessage)
                         ->setParameter('{{ criteria }}', " - ".$groupRoom->getTitle()." (".$this->translator->trans('grouproom', [], 'room').")")
                         ->addViolation();
+                    $violationWasSet = true;
                 }
             }
         }
-        $this->context->buildViolation($constraint->messageEnd)
-            ->addViolation();
+            if($violationWasSet) {
+                $this->context->buildViolation($constraint->messageEnd)
+                    ->addViolation();
+            }
         }
 
     private function isCurrentUserModerator($roomId, $currentUsers){
