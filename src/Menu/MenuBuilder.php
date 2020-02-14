@@ -417,7 +417,7 @@ class MenuBuilder
 
             $rubrics = [];
             $label = "home";
-            $icon = "uk-icon-home";
+            $icon = "home";
             $route = "app_room_home";
 
             if (!$inPrivateRoom) {
@@ -455,7 +455,7 @@ class MenuBuilder
                     'label' => $label,
                     'route' => $route,
                     'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => $icon . ' uk-icon-small')
+                    'extras' => array('icon' => $icon)
                 ))
                 ->setExtra('translation_domain', 'menu');
 
@@ -489,7 +489,7 @@ class MenuBuilder
                             'label' => 'settings',
                             'route' => 'app_settings_general',
                             'routeParameters' => array('roomId' => $roomId),
-                            'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
+                            'extras' => array('icon' => 'cog')
                         ))
                             ->setExtra('translation_domain', 'menu');
                     }
@@ -503,25 +503,11 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
-            $menu->addChild('portal_configuration_announcements', array(
-                'label' => 'announcements',
-                'route' => 'app_portal_announcements',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-bullhorn uk-icon-small')
-            ))
-                ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_terms', array(
                 'label' => 'terms',
                 'route' => 'app_portal_terms',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
-            ))
-                ->setExtra('translation_domain', 'portal');
-            $menu->addChild('portal_configuration_help', array(
-                'label' => 'help',
-                'route' => 'app_portal_help',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-question-circle uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_translations', array(
@@ -575,40 +561,26 @@ class MenuBuilder
         // return uikit icon class for rubric
         switch ($rubric) {
             case 'announcement':
-                $class = "uk-icon-justify uk-icon-comment-o uk-icon-small";
-                break;
+                return 'comment';
             case 'date':
-                $class = "uk-icon-justify uk-icon-calendar uk-icon-small";
-                break;
+                return 'calendar';
             case 'material':
-                $class = "uk-icon-justify uk-icon-file-o uk-icon-small";
-                break;
+                return 'file-text';
             case 'discussion':
-                $class = "uk-icon-justify uk-icon-comments-o uk-icon-small";
-                break;
+                return 'comments';
             case 'user':
-                $class = "uk-icon-justify uk-icon-user uk-icon-small";
-                break;
+                return 'user';
             case 'group':
-                $class = "uk-icon-justify uk-icon-group uk-icon-small";
-                break;
+                return 'users';
             case 'todo':
-                $class = "uk-icon-justify uk-icon-check-square-o uk-icon-small";
-                break;
+                return 'future';
             case 'topic':
-                $class = "uk-icon-justify uk-icon-book uk-icon-small";
-                break;
+                return 'album';
             case 'project':
-                $class = "uk-icon-justify uk-icon-sitemap uk-icon-small";
-                break;
             case 'institution':
-                $class = "uk-icon-justify uk-icon-institution uk-icon-small";
-                break;
-            
+                return 'world';
             default:
-                $class = "uk-icon-justify uk-icon-home uk-icon-small";
-                break;
+                return 'home';
         }
-        return $class;
     }
 }
