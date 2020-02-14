@@ -49,30 +49,37 @@ class CommsyActivityListener
                     $environment = $this->legacyEnvironment->getEnvironment();
 
                     $activity_points = 1;
-                    $context_item_current = $environment->getCurrentContextItem();
-                    if (isset($context_item_current)) {
-                        $context_item_current->saveActivityPoints($activity_points);
-                        if ($context_item_current->isProjectRoom()
-                            or $context_item_current->isCommunityRoom()
-                            or $environment->inPrivateRoom()
-                            or $environment->inGroupRoom()
+                    $currentContextItem = $environment->getCurrentContextItem();
+
+                    if ($currentContextItem) {
+                        if ($currentContextItem->isPortal()) {
+                            $this->updatePortalActivity($currentContextItem->getItemID());
+                        }
+
+                        if (
+                            $currentContextItem->isProjectRoom() ||
+                            $currentContextItem->isCommunityRoom() ||
+                            $currentContextItem->isPrivateRoom() ||
+                            $currentContextItem->isGroupRoom()
                         ) {
-
-                            // archiving
-                            $context_item_current->saveLastLogin();
-
-                            $portalId = $context_item_current->getContextID();
-                            $portalRespository = $this->entityManager->getRepository(Portal::class);
-                            $portal = $portalRespository->find($portalId);
-                            if ($portal) {
-                                $portal->setActivity($portal->getActivity() + 1);
-                                $this->entityManager->persist($portal);
-                                $this->entityManager->flush();
-                            }
+                            $currentContextItem->saveLastLogin();
+                            $portalId = $currentContextItem->getContextID();
+                            $this->updatePortalActivity($portalId);
                         }
                     }
                 }
             }
+        }
+    }
+
+    private function updatePortalActivity(int $portalId)
+    {
+        $portalRespository = $this->entityManager->getRepository(Portal::class);
+        $portal = $portalRespository->find($portalId);
+        if ($portal) {
+            $portal->setActivity($portal->getActivity() + 1);
+            $this->entityManager->persist($portal);
+            $this->entityManager->flush();
         }
     }
 }

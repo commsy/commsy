@@ -8,7 +8,6 @@ use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Security;
@@ -36,33 +35,37 @@ class LegacySubscriber implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event)
     {
-        if ($event->getRequestType() != HttpKernelInterface::MASTER_REQUEST) {
+        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
             return;
         }
 
         $request = $event->getRequest();
-        if ($request->attributes->has('roomId')) {
-            $contextId = $request->attributes->get('roomId');
 
+        $contextId = null;
+        $contextId = $contextId ?? $request->attributes->get('roomId', null);
+        $contextId = $contextId ?? $request->attributes->get('portalId', null);
+
+        if ($contextId) {
             $this->legacyEnvironment->setCurrentContextID($contextId);
 
             /** @var Account $user */
             $user = $this->security->getUser();
+            if ($user) {
+                $userManager = $this->legacyEnvironment->getUserManager();
+                $userManager->resetLimits();
+                $userManager->setContextLimit($contextId);
+                $userManager->setUserIDLimit($user->getUsername());
+                $userManager->select();
 
-            $userManager = $this->legacyEnvironment->getUserManager();
-            $userManager->resetLimits();
-            $userManager->setContextLimit($contextId);
-            $userManager->setUserIDLimit($user->getUsername());
-            $userManager->select();
+                /** @var \cs_list $contextUserList */
+                $contextUserList = $userManager->get();
 
-            /** @var \cs_list $portalUserList */
-            $portalUserList = $userManager->get();
+                if ($contextUserList->getCount() != 1) {
+                    throw new \Exception();
+                }
 
-            if ($portalUserList->getCount() != 1) {
-                throw new \Exception();
+                $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
             }
-
-            $this->legacyEnvironment->setCurrentUser($portalUserList->getFirst());
         }
     }
 }
