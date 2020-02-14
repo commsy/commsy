@@ -1,0 +1,89 @@
+{% use "form_div_layout.html.twig" %}
+
+{# Widgets #}
+
+{%- block form_widget_simple -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-input')|trim}) %}
+    {%- if errors|length > 0 -%}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form-danger')|trim}) %}
+    {% endif %}
+    {{- parent() -}}
+{%- endblock form_widget_simple -%}
+
+{%- block textarea_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-textarea')|trim}) %}
+    {{- parent() -}}
+{%- endblock textarea_widget -%}
+
+{%- block choice_widget_collapsed -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-select')|trim}) %}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed -%}
+
+{%- block radio_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-radio')|trim}) %}
+    {{- parent() -}}
+{%- endblock radio_widget -%}
+
+{%- block checkbox_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-checkbox')|trim}) %}
+    {{- parent() -}}
+{%- endblock checkbox_widget -%}
+
+{%- block range_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-range')|trim}) %}
+    {{- parent() -}}
+{%- endblock range_widget %}
+
+{% block file_widget -%}
+    {% if image_url is defined and image_url is not null %}
+        <img src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/image"/>
+    {% endif %}
+
+    <div class="js-upload uk-placeholder uk-text-center">
+        <span uk-icon="icon: cloud-upload"></span>
+        <div class="uk-text-middle">{{ 'Attach files by dropping them here or'|trans({}, 'form') }}</div>
+        <div uk-form-custom>
+            {{ block('form_widget') }}
+            <span class="uk-link">{{ 'selecting one'|trans({}, 'form') }}</span>
+        </div>
+    </div>
+
+    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+{%- endblock %}
+
+{% block button_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('uk-button-default') ~ ' uk-button uk-margin-small-bottom uk-width-small')|trim}) -%}
+    {{- parent() -}}
+{%- endblock button_widget %}
+
+{% block submit_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('uk-button-primary'))|trim}) -%}
+    {{- parent() -}}
+{%- endblock submit_widget %}
+
+{% block flatpickr_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('js-flatpickr'))|trim}) -%}
+    {%- set attr = attr|merge({'data-flatpickr-options': flatPickrOptions|json_encode()}) -%}
+    {{- block('form_widget_simple') -}}
+{%- endblock flatpickr_widget %}
+
+{# Labels #}
+
+{# Rows #}
+
+{% block form_row -%}
+    {% set row_attr = row_attr|merge({class: (attr.class|default('') ~ ' uk-margin-small')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_row %}
+
+{# Misc #}
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="uk-list">
+            {%- for error in errors -%}
+                <li class="uk-text-danger">{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}

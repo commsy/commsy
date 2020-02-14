@@ -1,0 +1,47 @@
+<div class="uk-card uk-card-small uk-card-default uk-margin-small">
+    <div class="uk-card-header">
+        <div class="uk-flex">
+            <h3 class="uk-card-title uk-margin-remove">{% block feedTitle %}{% endblock %}</h3>
+            <div class="uk-margin-auto-left">
+                {% block sortbox %}
+                {% endblock %}
+
+                {% block editbox %}
+                {% endblock %}
+
+                {% block listAddons %}
+                {% endblock %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="uk-card-body">
+        {# will be displayed when selection mode is active #}
+        <div id="commsy-select-actions" class="uk-hidden" data-uk-sticky>
+            <div class="uk-grid uk-margin-remove">
+
+                {# change selection #}
+                <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
+                    <button id="commsy-select-actions-select-all" class="uk-button" type="button" data-uk-button>{{ 'select all entries'|trans({},'rubric')}}</button>
+                    <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'unselect entries'|trans({},'rubric')}}</button>
+                </div>
+
+                {# selection actions old code #}
+                <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
+                    <button id="commsy-select-actions-ok" class="uk-button">{{ 'execute'|trans({},'rubric')}}</button>
+                    <button id="commsy-select-actions-cancel" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
+                </div>
+
+            </div>
+        </div>
+
+        {% block taskinfo %}
+        {% endblock %}
+
+        <div class="feed">
+            {% block feed %}
+            {% endblock%}
+        </div>
+    </div>
+</div>

@@ -1,15 +1,69 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block content %}
+{% block top_navigation_left %}
+{#    <div class="uk-navbar-item uk-logo">Portalübersicht</div>#}
+{% endblock %}
+
+{% block main %}
+
     {% if app.user and app.user.username is same as('root') %}
         <div>
             <a href="{{ path('app_server_createportal') }}">Portal erstellen</a>
         </div>
     {% endif %}
 
-    {% for activePortal in activePortals %}
-        <a href="{{ path('app_login', { 'context': activePortal.id }) }}">{{ activePortal.title }}</a>
+    {% if activePortals is not empty %}
+        <div class="uk-grid-match uk-child-width-expand@m uk-flex uk-flex-center" uk-grid>
+
+            {% for activePortal in activePortals %}
+                <div class="uk-width-medium">
+                    <div class="uk-card uk-card-default uk-card-small">
+                        <div class="uk-card-body">
+                            <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                        </div>
+
+                        <div class="uk-card-header">
+                            <div class="uk-grid-small uk-child-width-1-2" uk-grid>
+                                <div>
+                                    <dl class="uk-description-list uk-text-meta uk-text">
+                                        <dt>Räume</dt>
+                                        <dd>3017</dd>
+                                    </dl>
+                                </div>
+                                <div>
+                                    <dl class="uk-description-list uk-text-meta uk-text">
+                                        <dt>Mitglieder</dt>
+                                        <dd>16895</dd>
+                                    </dl>
+                                </div>
+                            </div>
+
+                            <progress class="uk-progress" value="66" max="100"></progress>
+                        </div>
+
+                        <div class="uk-card-body uk-margin-large-bottom">
+                            <h3 class="uk-card-title">{{ activePortal.title }}</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
+
+                        <div class="uk-card-footer uk-position-bottom">
+                            <a href="{{ path('app_login', { 'context': activePortal.id }) }}" class="uk-button uk-button-text">Enter</a>
+                        </div>
+
+                        {#                    <div class="uk-card-body uk-margin-large-bottom">#}
+                        {#                        <h3 class="uk-card-title"><span class="uk-text-muted">Portal gelöscht / inaktiv (gelöscht)</span></h3>#}
+                        {#                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>#}
+                        {#                    </div>#}
+
+                        {#                    <div class="uk-card-footer uk-position-bottom">#}
+                        {#                        <span class="uk-text-muted" uk-tooltip="title: Dieses Portal ist nicht verfügbar">Enter</span>#}
+                        {#                    </div>#}
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
     {% else %}
-        No portals yet!
-    {% endfor %}
+        No portals yet! <a href="{{ path('app_login') }}">Admin Login</a>
+    {% endif %}
 {% endblock %}

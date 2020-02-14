@@ -1,17 +1,17 @@
-{% extends 'base/room.html.twig' %}
+{% extends 'base/list.html.twig' %}
 
-{% form_theme form 'form/uikit_horizontal_dynamic_layout.html.twig' %}
+{% form_theme form 'form/uikit3/uikit_layout.html.twig' %}
 
 {% block cover %}
-    <div id="cover" class="uk-cover-background uk-position-relative cs-cover-background" aria-hidden="false">
-        {% if bgImageFilepath is not empty %}
-            <img id="room_image" src="{{ bgImageFilepath }}">
-        {% endif %}
-        {% if bgImageFilepath is not empty and countAnnouncements > 0 %}
-            <div class="uk-position-cover uk-grid cs-cover-grid" style="padding-bottom: 0px;">
+<div id="cover" class="uk-cover-container uk-cover-background uk-position-relative cs-cover-background">
+    {% if bgImageFilepath is not empty %}
+        <img id="room_image" src="{{ bgImageFilepath }}">
+    {% endif %}
+    {% if bgImageFilepath is not empty and countAnnouncements > 0 %}
+    <div class="uk-position-cover uk-grid cs-cover-grid" style="padding-bottom: 0px;">
         {% else %}
-            <div class="uk-position-cover uk-grid cs-cover-grid">
-        {% endif %}
+        <div class="uk-position-cover uk-grid cs-cover-grid">
+            {% endif %}
             {# home information text #}
             <div class="uk-width-medium-2-3 cs-cover-height uk-margin-bottom">
                 {% if roomItem.withInformationBox %}
@@ -20,8 +20,8 @@
                             {{ homeInformationEntry.description|commsyMarkup|raw }}
                         </div>
                         <div class="uk-margin-top uk-align-right">
-                        {% set pathName = 'app_' ~ homeInformationEntry.type ~ '_detail' %}
-                        <a href="{{ path(pathName, {'roomId': roomItem.itemId, 'itemId': homeInformationEntry.itemId}) }}">{{ 'link to entry'|trans({}, "room") }}</a>
+                            {% set pathName = 'app_' ~ homeInformationEntry.type ~ '_detail' %}
+                            <a href="{{ path(pathName, {'roomId': roomItem.itemId, 'itemId': homeInformationEntry.itemId}) }}">{{ 'link to entry'|trans({}, "room") }}</a>
                         </div>
                     </div>
                 {% endif %}
@@ -60,175 +60,151 @@
     </div>
 {% endblock %}
 
+{% block sidebar_right %}
+    {% if usageInfo is defined and usageInfo is not empty %}
+        {% embed 'components/toggable_card.twig' %}
+            {% block title %}{{ usageInfo.title }}{% endblock %}
 
-{% block sidebar %}
+            {% block body %}
+                <div id="usage-info" class="uk-hidden-small">
+                    {{ usageInfo.text|raw }}
+                </div>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
 
-            {# usage notes #}
-            {% if roomItem.usageInfoTextForRubric('home') is not empty %}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-notice'}">
-                                <i class="uk-icon-chevron-up"></i>
+    {#            #}{# usage notes #}
+    {#            {% if roomItem.usageInfoTextForRubric('home') is not empty %}#}
+    {#            <div class="uk-card uk-card-default">#}
+    {#                <div class="uk-panel-teaser cs-panel-teaser-primary">#}
+    {#                    <div class="uk-clearfix">#}
+    {#                        <div class="uk-float-right">#}
+    {#                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-notice'}">#}
+    {#                                <i class="uk-icon-chevron-up"></i>#}
+    {#                            </a>#}
+    {#                        </div>#}
+    {#                        <div class="uk-text-large uk-float-left">#}
+    {#                            {% if roomItem.getUsageInfoHeaderForRubric('home') is not empty %}#}
+    {#                                {{ roomItem.getUsageInfoHeaderForRubric('home') }}#}
+    {#                            {% else %}#}
+    {#                                {{ 'Usage notes'|trans({}, "room") }}#}
+    {#                            {% endif %}#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <ul id="user-notice" class="uk-list uk-list-striped uk-hidden-small">#}
+    {#                    {{ roomItem.usageInfoTextForRubric('home')|raw }}#}
+    {#                </ul>#}
+    {#            </div>#}
+    {#            {% endif %}#}
+
+    {% embed 'components/toggable_card.twig' %}
+        {% block title %}{{ 'Room-Information'|trans({}, "room") }}{% endblock %}
+
+        {% block body %}
+            <div id="room-info" class="uk-list uk-list-striped uk-hidden-small">
+                {# RSS / Wiki #}
+                {% if rss.show or wiki.show %}
+                    <li>
+                        {% if rss.show %}
+                            <a href="{{ rss.url }}">
+                                RSS <span uk-icon="icon: rss"></span>
                             </a>
-                        </div>
-                        <div class="uk-text-large uk-float-left">
-                            {% if roomItem.getUsageInfoHeaderForRubric('home') is not empty %}
-                                {{ roomItem.getUsageInfoHeaderForRubric('home') }}
-                            {% else %}
-                                {{ 'Usage notes'|trans({}, "room") }}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <ul id="user-notice" class="uk-list uk-list-striped uk-hidden-small">
-                    {{ roomItem.usageInfoTextForRubric('home')|raw }}
-                </ul>
-            </div>
-            {% endif %}
+                        {% endif %}
 
-            {# room information #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-info'}">
-                                <i class="uk-icon-chevron-up"></i>
+                        {% if wiki.show %}
+                            <a href="{{ wiki.url }}">
+                                Wiki <span uk-icon="icon: link"></span>
                             </a>
-                        </div>
-                        <div class="uk-text-large uk-float-left">
-                            {{ 'Room-Information'|trans({}, "room") }}
-                        </div>
-                    </div>
-                </div>
-
-                <ul id="room-info" class="uk-list uk-list-striped uk-hidden-small">
-                    {# RSS / Wiki #}
-                    {% if rss.show or wiki.show %}
-                        <li>
-                            {% if rss.show %}
-                                <a href="{{ rss.url }}">
-                                    RSS <i class="uk-icon-rss uk-icon-small"></i>
-                                </a>
-                            {% endif %}
-
-                            {% if wiki.show %}
-                                <a href="{{ wiki.url }}">
-                                    Wiki <i class="uk-external-link uk-icon-small"></i>
-                                </a>
-                            {% endif %}
-                        </li>
-                    {% endif %}
-
-                    <li class="uk-flex">
-                        <div class="uk-width-1-3">{{ 'Entries:'|trans({}, "room") }}</div>
-                        <div class="uk-width-2-3">
-                            {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
-                            One new entry in the last %days% days|%num% new entries in the last %days% days
-                            {% endtranschoice %}
-                        </div>
+                        {% endif %}
                     </li>
-                    <li class="uk-flex">
-                        <div class="uk-width-1-3">{{ 'Persons:'|trans({}, "room") }}</div>
-                        <div class="uk-width-2-3">
-                            {% trans with {'%total%': numTotalMember, '%active%': numActiveMember} from "room" %}
-                            total %total% | active %active%
-                            {% endtrans %}
-                            <div class="uk-progress">
-                                {% set activePercent = (numActiveMember/numTotalMember*100)|round %}
-                                <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;"></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li  class="uk-flex">
-                        <div class="uk-width-1-3">{% trans from "room" %}Page Impressions:{% endtrans %}</div>
-                        <div class="uk-width-2-3">{{ pageImpressions }}</div>
-                    </li>
-                    <li  class="uk-flex uk-flex-column">
-                        <div class="uk-flex">
-                            <div class="uk-width-1-3">{{ 'Moderation:'|trans({}, "room") }}</div>
-                            <div class="uk-width-2-3 uk-text-truncate">
-                                {% for roomModerator in roomModerators %}
-                                    <a href="{{ path('app_user_detail', {'roomId': roomItem.itemId, 'itemId': roomModerator.itemId}) }}">{{ roomModerator.fullName }}</a>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                                <br/>
-                                <a id="cs-moderation-support-link" href="#" data-form-url="{{ path('app_room_moderationsupport', {'roomId': roomItem.itemId}) }}">{{ 'moderation support'|trans({}, "room") }}</a>
-                            </div>
-                        </div>
-                        <div class="uk-flex">
-                            <div id="cs-moderation-support-spinner" class="uk-margin-small-top uk-margin-small-bottom uk-container-center uk-hidden">
-                                <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
-                            </div>
-                        </div>
-                        <div class="uk-flex">
-                            <div id="cs-moderation-support" class="uk-width-1-1 uk-hidden">
-                            </div>
-                        </div>
-                    </li>
-                    {% if serviceContact.show %}
-                        <li  class="uk-flex">
-                            <div class="uk-width-1-3">{% trans from "room" %}Support:{% endtrans %}</div>
-                            <div class="uk-width-2-3">
-                                <a href="{{ serviceContact.link }}" target="_blank">{% trans from "room" %}E-Mail to support{% endtrans %}</a>
-                            </div>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-
-            {# filter #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#list-filter'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-text-large uk-float-left">
-                            {{ 'list filter'|trans({}, "room") }}
-                        </div>
-                    </div>
-                </div>
-                <div id="list-filter" class="uk-hidden-small">
-                    {{ form_start(form) }}
-                    {{ form_widget(form) }}
-                    {{ form_end(form) }}
-                </div>
-
-            </div>
-{% endblock %}
-
-{% block main_content %}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{ header|trans({}, "room") }}</div>
-                     </div>
-                </div>
-
-                {% if isModerator and userTasks|length > 0 %}
-                    <div class="uk-alert uk-alert-danger">
-                        {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('app_user_list', {'roomId': roomItem.itemId,'user_filter[user_status]':1}) }}">
-                            {{ 'show user'|trans({},'user') }}
-                        </a>
-                    </div>
                 {% endif %}
 
-                <div class="feed">
-                    <ul id="room-feed" class="uk-comment-list">
-                        {{ render(controller(
-                            'App\\Controller\\RoomController::feedAction',
-                            { 'roomId': roomItem.itemId }
-                        ))}}
-                    </ul>
-                    <div class="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true, topoffset: 0}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomItem.itemId }}/feed/", "target": "#room-feed"}'>
-                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                <li class="uk-flex">
+                    <div class="uk-width-1-3">{{ 'Entries:'|trans({}, "room") }}</div>
+                    <div class="uk-width-2-3">
+                        {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
+                            One new entry in the last %days% days|%num% new entries in the last %days% days
+                        {% endtranschoice %}
                     </div>
-                </div>
-                
+                </li>
+                <li class="uk-flex">
+                    <div class="uk-width-1-3">{{ 'Persons:'|trans({}, "room") }}</div>
+                    <div class="uk-width-2-3">
+                        {% trans with {'%total%': numTotalMember, '%active%': numActiveMember} from "room" %}
+                            total %total% | active %active%
+                        {% endtrans %}
+                        {% set activePercent = (numActiveMember/numTotalMember*100)|round %}
+                        <progress class="uk-progress" value="{{ activePercent }}" max="100">
+                        </progress>
+                    </div>
+                </li>
+                <li  class="uk-flex">
+                    <div class="uk-width-1-3">{% trans from "room" %}Page Impressions:{% endtrans %}</div>
+                    <div class="uk-width-2-3">{{ pageImpressions }}</div>
+                </li>
+                <li  class="uk-flex uk-flex-column">
+                    <div class="uk-flex">
+                        <div class="uk-width-1-3">{{ 'Moderation:'|trans({}, "room") }}</div>
+                        <div class="uk-width-2-3 uk-text-truncate">
+                            {% for roomModerator in roomModerators %}
+                                <a href="{{ path('app_user_detail', {'roomId': roomItem.itemId, 'itemId': roomModerator.itemId}) }}">{{ roomModerator.fullName }}</a>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                            <br/>
+                            <a id="cs-moderation-support-link" href="#" data-form-url="{{ path('app_room_moderationsupport', {'roomId': roomItem.itemId}) }}">{{ 'moderation support'|trans({}, "room") }}</a>
+                        </div>
+                    </div>
+                    <div class="uk-flex">
+                        <div id="cs-moderation-support-spinner" class="uk-margin-small-top uk-margin-small-bottom uk-container-center uk-hidden">
+                            <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
+                        </div>
+                    </div>
+                    <div class="uk-flex">
+                        <div id="cs-moderation-support" class="uk-width-1-1 uk-hidden">
+                        </div>
+                    </div>
+                </li>
+                {% if serviceContact.show %}
+                    <li  class="uk-flex">
+                        <div class="uk-width-1-3">{% trans from "room" %}Support:{% endtrans %}</div>
+                        <div class="uk-width-2-3">
+                            <a href="{{ serviceContact.link }}" target="_blank">{% trans from "room" %}E-Mail to support{% endtrans %}</a>
+                        </div>
+                    </li>
+                {% endif %}
             </div>
+        {% endblock %}
+    {% endembed %}
+
+    {{- parent() -}}
+{% endblock %}
+
+{% block content %}
+    {% embed 'components/feed_card.twig' %}
+        {% block feedTitle %}
+            {{ header|trans({}, "room") }}
+
+            {% if isModerator and userTasks|length > 0 %}
+                <div class="uk-alert uk-alert-danger">
+                    {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('app_user_list', {'roomId': roomItem.itemId,'user_filter[user_status]':1}) }}">
+                        {{ 'show user'|trans({},'user') }}
+                    </a>
+                </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block feed %}
+            <ul id="room-feed" class="uk-comment-list">
+                {{ render(controller(
+                    'App\\Controller\\RoomController::feedAction',
+                    { 'roomId': roomItem.itemId }
+                )) }}
+            </ul>
+
+            <div class="feed-load-more" uk-scrollspy="{cls: 'uk-animation-fade', repeat: true, topoffset: 0}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomItem.itemId }}/feed/", "target": "#room-feed"}' uk-spinner>
+            </div>
+        {% endblock%}
+    {% endembed %}
 {% endblock %}
 
 {% block javascripts %}

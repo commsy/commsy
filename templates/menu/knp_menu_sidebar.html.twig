@@ -11,7 +11,7 @@
 {% block list %}
 {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
     {% import _self as knp_menu %}
-    <ul id="commsy_fields" class="uk-nav uk-nav-side uk-nav-parent-icon"{{ knp_menu.attributes(listAttributes) }}>
+    <ul class="uk-nav uk-nav-default"{{ knp_menu.attributes(listAttributes) }}>
         {{ block('children') }}
     </ul>
 {% endif %}
@@ -22,8 +22,10 @@
 
     {% if not item.getExtra('showList', false) %}
         <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>
-            <i class="{% if item.extras.icon is defined %}{{ item.extras.icon }}{% endif %} cs-menue-padding"></i>
-            {{ block('label') }}
+            {% if item.extras.icon is defined %}
+                <span class="uk-margin-small-right" uk-icon="{{ item.extras.icon }}"></span>
+            {% endif %}
+            <span class="uk-visible@l">{{ block('label') }}</span>
         </a>
     {% else %}
         {{ block('label') }}

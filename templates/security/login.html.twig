@@ -1,109 +1,207 @@
-{#{% extends 'base.html.twig' %}#}
+{% extends 'layout.html.twig' %}
 
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block title %}
+    {{ portal.title|default('CommSy') }}
+{% endblock %}
 
-    <title>Login</title>
-
-    {% include 'stylesheets.html.twig' %}
-
-    <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
-</head>
-<body id="commsy" class="nav-collapsed">
-
-{% block body %}
-    <div>
-        <a href="{{ path('app_server_show') }}">Portalübersicht</a>
-    </div>
-
-    <div>
-        <a href="{{ path('app_account_signup', { 'id': context }) }}">Sign up</a>
-    </div>
-
-    <div>
-        <a href="{{ path('app_logout') }}">Logout</a>
-    </div>
-
-    {% if context is same as('server') %}
-        <h1>Login Systemadministration</h1>
-    {% endif %}
-
-<h1>Lokal</h1>
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-
-    <label for="inputEmail" class="sr-only">Email / Username</label>
-    <input type="text" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email / Username" required autofocus>
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-    <input type="hidden" name="context" value="{{ context }}">
-
-    {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
-
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
+{% block top_navigation_left %}
+    <div class="uk-navbar-item uk-text-large">
+        <div class="uk-navbar-item">
+            <a class="uk-text-large" href="{{ path('app_server_show') }}">
+                Portalübersicht
+            </a>
         </div>
-    #}
+    </div>
+{% endblock %}
 
-    <button class="btn btn-lg btn-primary" type="submit" name="login_local">
-        Sign in
-    </button>
-</form>
+{% block main %}
+    {% if portal.announcementEnabled|default(false) %}
+        <div{% if portal.announcementSeverity != 'normal' %} class="uk-alert-{{ portal.announcementSeverity }}"{% endif %} uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <h3>{{ portal.announcementTitle }}</h3>
+            <p>{{ portal.announcementText|raw }}</p>
 
-<h1>LDAP</h1>
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+            {% if portal.announcementLink is not empty %}
+                <p>{{ portal.announcementLink }}</p>
+            {% endif %}
+{#            <p class="uk-text-meta">Erstellt am ...</p>#}
+        </div>
+    {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="inputEmail" class="sr-only">Email / Username</label>
-        <input type="text" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email / Username" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <div class="uk-grid-match uk-flex uk-flex-center" uk-grid>
 
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
-        >
+        <div class="uk-width-large">
 
-        <input type="hidden" name="context" value="{{ context }}">
+            <div class="uk-card uk-card-default uk-card-small">
+                {% if portal is not null %}
+                    <div class="uk-card-body">
+                        <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                    </div>
+                {% else %}
+                    <div class="uk-card-header">
+                        <h3 class="uk-card-title">Login Systemadministration</h3>
+                    </div>
+                {% endif %}
 
-        {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
+                <div class="uk-card-body">
+                    <!-- Tabs -->
+                    <ul uk-tab>
+                        <li class="uk-active">
+                            <a href="">Lokal</a>
+                        </li>
+                        {% if portal is not null %}
+                            <li>
+                                <a href="">UHH</a>
+                            </li>
+                            <li>
+                                <a href="">Gast</a>
+                            </li>
+                       {% endif %}
+                    </ul>
 
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" name="_remember_me"> Remember me
-                </label>
+                    <div class="uk-switcher">
+                        <!-- Lokal -->
+                        <div>
+                            <p class="uk-text-small">Dies ist die lokale CommSy-Anmeldung...</p>
+
+                            <form class="uk-form-stacked" method="post">
+                                {% if error %}
+                                    <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                {% endif %}
+
+                                {# hidden #}
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                <input type="hidden" name="context" value="{{ context }}">
+
+                                {# username / email #}
+                                <div class="uk-margin">
+                                    <label class="uk-form-label" for="inputEmail">Email / Username</label>
+
+                                    <div class="uk-form-controls">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                            <input class="uk-input" id="inputEmail" type="text" name="email" value="{{ last_username }}" placeholder="Ihre Kennung" required autofocus>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# password #}
+                                <div class="uk-margin">
+                                    <label class="uk-form-label" for="inputPassword">Password</label>
+                                    <div class="uk-form-controls">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                            <input class="uk-input{# uk-form-danger#}" id="inputPassword" type="password" name="password" placeholder="Password" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="uk-margin">
+                                    <div class="uk-form-controls">
+                                        <label><input class="uk-checkbox" type="checkbox" name="checkbox1"> Ich akzeptiere die <a href="#modal-tou" uk-toggle>Nutzungsbedingungen</a></label>
+                                    </div>
+                                </div> -->
+
+                                {#
+                                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                                    See https://symfony.com/doc/current/security/remember_me.html
+
+                                    <div class="checkbox mb-3">
+                                        <label>
+                                            <input type="checkbox" name="_remember_me"> Remember me
+                                        </label>
+                                    </div>
+                                #}
+
+                                <div class="uk-margin">
+                                    <div class="uk-form-controls">
+                                        <div class="uk-inline uk-width-1-1">
+                                            <input class="uk-input uk-button uk-button-primary" id="form-stacked-submit" type="submit" name="login_local" value="Sign in">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if portal is not null %}
+                                    <div class="uk-margin">
+                                        <label class="uk-form-label" for="form-stacked-register">Noch keine Kennung?</label>
+                                        <div class="uk-form-controls">
+                                            <div class="uk-inline uk-width-1-1">
+                                                <a class="uk-button uk-button-default" href="{{ path('app_account_signup', { 'id': context }) }}">Sign up</a>
+    {#                                            <input class="uk-input uk-button uk-button-text" id="form-stacked-register" type="submit" value="Registrieren">#}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="uk-margin uk-text-small">
+                                        <div class="uk-flex uk-flex-around">
+                                            <div class="">
+                                                <a href="#">Passwort vergessen?</a>
+                                            </div>
+
+                                            <div class="">
+                                                <a href="#">Kennung vergessen?</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </form>
+                        </div>
+
+                        {% if portal is not null %}
+                                <!-- UHH -->
+                                <div>
+                                    <p class="uk-text-small">Dies ist die UHH-Anmeldung...</p>
+
+                                    <button class="uk-button uk-button-primary">Zum Login...</button>
+                                </div>
+
+                                <!-- Gast -->
+                                <div>
+                                    <p class="uk-text-small">Melden Sie sich ohne Registrierung als Gast an CommSy an.</p>
+
+                                    <button class="uk-button uk-button-primary">Als Gast anmelden</button>
+                                </div>
+                       {% endif %}
+                    </div>
+                </div>
             </div>
-        #}
+        </div>
+    </div>
 
-        <button class="btn btn-lg btn-primary" type="submit" name="login_ldap">
-            Sign in
-        </button>
-    </form>
+{#    <h1>LDAP</h1>#}
+{#    <form method="post">#}
+{#        {% if error %}#}
+{#            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>#}
+{#        {% endif %}#}
 
-<h1>Gast</h1>
+{#        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>#}
+{#        <label for="inputEmail" class="sr-only">Email / Username</label>#}
+            {#        <input type="text" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email / Username" required autofocus>#}
+{#        <label for="inputPassword" class="sr-only">Password</label>#}
+{#        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>#}
+
+{#        <input type="hidden" name="_csrf_token"#}
+{#               value="{{ csrf_token('authenticate') }}"#}
+{#        >#}
+
+{#        <input type="hidden" name="context" value="{{ context }}">#}
+
+
+{#            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.#}
+{#            See https://symfony.com/doc/current/security/remember_me.html#}
+
+{#            <div class="checkbox mb-3">#}
+{#                <label>#}
+{#                    <input type="checkbox" name="_remember_me"> Remember me#}
+{#                </label>#}
+{#            </div>#}
+
+
+{#        <button class="btn btn-lg btn-primary" type="submit" name="login_ldap">#}
+{#            Sign in#}
+{#        </button>#}
+{#    </form>#}
+
+{#    <h1>Gast</h1>#}
 {% endblock %}
-
-{% block javascripts %}
-    <script src="{{ absolute_url(asset('build/app.js') )}}"></script>
-{% endblock %}
-</body>
-</html>

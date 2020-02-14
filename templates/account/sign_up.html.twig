@@ -1,5 +1,69 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block content %}
-    {{ form(form) }}
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block main %}
+    <div class="uk-grid-match uk-flex uk-flex-center" uk-grid>
+
+        <div class="uk-width-large">
+
+            <div class="uk-card uk-card-default uk-card-small">
+                <div class="uk-card-body">
+                    <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                </div>
+
+                <div class="uk-card-body">
+                    <h3 class="uk-card-title">Agora</h3>
+
+                    <p class="uk-text-small">Neue Kennung registrieren</p>
+
+                    <form class="uk-form-stacked uk-grid-small" uk-grid>
+
+                        <div class="uk-width-1-2">
+                            <input class="uk-input" id="form-stacked-surname" type="text" placeholder="Vorname">
+                        </div>
+
+                        <div class="uk-width-1-2">
+                            <input class="uk-input" id="form-stacked-lastname" type="text" placeholder="Nachname">
+                        </div>
+
+                        <div class="uk-width-1-1">
+                            <input class="uk-input" id="form-stacked-username" type="text" placeholder="Ihre Kennung">
+                        </div>
+
+                        <div class="uk-width-1-2">
+                            <input class="uk-input" id="form-stacked-email" type="text" placeholder="E-Mail">
+                        </div>
+
+                        <div class="uk-width-1-2">
+                            <input class="uk-input" id="form-stacked-email-confirm" type="text" placeholder="E-Mail (wdh.)">
+                        </div>
+
+                        <div class="uk-width-1-2">
+                            <input class="uk-input" id="form-stacked-password" type="password" placeholder="Passwort">
+                        </div>
+
+                        <div class="uk-width-1-2">
+                            <input class="uk-input" id="form-stacked-password-confirm" type="password" placeholder="Passwort (wdh.)">
+                        </div>
+
+                        <div class="uk-margin-1-1">
+                            <label><input class="uk-checkbox" type="checkbox" name="checkbox1"> Ich akzeptiere die <a href="#modal-tou" uk-toggle>Nutzungsbedingungen</a></label>
+                        </div>
+
+                        <div class="uk-width-1-2">
+                            <input class="uk-input uk-button uk-button-primary" id="form-stacked-submit" type="submit" value="Registrieren">
+                        </div>
+
+                        <div class="uk-width-1-2 uk-text-right">
+                            <input class="uk-input uk-button uk-button-link" id="form-stacked-cancel" type="submit" value="Abbrechen">
+                        </div>
+
+                    </form>
+
+                    {{ form(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

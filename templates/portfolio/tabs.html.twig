@@ -1,4 +1,4 @@
-<ul id="portfolioTabs" class="uk-tab" data-uk-tab>
+<ul id="portfolioTabs" class="uk-tab" uk-tab>
     {% if portfolios %}
         {% for portfolio in portfolios %}
             <li {% if loop.first %}class="uk-active"{% endif %} data-portfolio-id="{{ portfolio.id }}"><a href="">{{ portfolio.title }}</a></li>

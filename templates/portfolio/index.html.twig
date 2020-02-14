@@ -13,7 +13,7 @@
 
                 {# panel title bar #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-between">
                         <div>{{ 'Portfolios'|trans({}, "portfolio") }}</div>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                 <div class="uk-grid">
                     <div class="uk-margin-large-top" style="padding-top: 0px; z-index:1;">
                         <div id="portfolio-source">
-                            <ul id="portfolioSourceTabs" class="uk-tab uk-tab-left" data-uk-tab>
+                            <ul id="portfolioSourceTabs" class="uk-tab uk-tab-left" uk-tab>
                                 <li class="uk-active" data-portfolio-source-id="my-portfolios"><a href="" data-uk-tooltip title="{{ 'my portfolios'|trans({}, 'portfolio') }}"><i class="uk-icon-archive"></i></a></li>
                                 <li data-portfolio-source-id="activated-portfolios"><a href="" data-uk-tooltip title="{{ 'activated portfolios'|trans({}, 'portfolio') }}"><i class="uk-icon-share-alt"></i></a></li>
                             </ul>

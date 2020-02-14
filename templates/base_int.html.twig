@@ -1,0 +1,50 @@
+<body id="commsy" class="nav-collapsed">
+    {# context navigation #}
+    <div id="commsy_navigation" class="uk-hidden-small">
+
+        {# CommSy Logo #}
+        {{ render(controller(
+            'App\\Controller\\RoomController::logoAction',
+            { 'roomId': app.request.attributes.get('roomId') }
+        ))}}
+
+        {# Context Navigation #}
+        {% block side_navigation %}
+        {% endblock %}
+    </div>
+
+    {# Off-canvase context navigation for small devices #}
+    <div id="commsy_offnavigation" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar" mode="slide">
+            {{ block('side_navigation') }}
+        </div>
+    </div>
+
+    <div id="content">
+        {# NavBar #}
+        <nav class="uk-navbar uk-navbar-attached">
+            {# right #}
+            </div>
+
+            {# Off-canvas toggle #}
+            <a href="#commsy_offnavigation" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
+
+            {# left #}
+
+
+        </nav>
+
+        <!-- breadcrumb -->
+        {% block breadcrumb %}
+        {% endblock %}
+
+        <!-- cover -->
+        {% block cover %}
+        {% endblock %}
+
+        <!-- container -->
+        <div id="container" class="uk-container uk-margin-large-bottom">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>

@@ -1,0 +1,49 @@
+{% use "form/uikit3/uikit_layout.html.twig" %}
+
+{# Labels #}
+
+{% block form_label -%}
+    {% set label_attr = label_attr|merge({class: (attr.class|default('') ~ ' uk-form-label')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_label %}
+
+{# Widgets #}
+
+{# Rows #}
+
+{%- block form_row -%}
+    {% set row_attr = row_attr|merge({class: (attr.class|default('') ~ ' uk-margin')|trim}) %}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_errors(form) -}}
+        {{- form_label(form) -}}
+        {{ row_attr.group_class|default('') }}
+        <div class="{{ block('form_group_class') }}">
+            {{- form_widget(form, widget_attr) -}}
+            {{- form_help(form) -}}
+        </div>
+    </div>
+{%- endblock form_row -%}
+
+{# Misc #}
+
+{% block form_group_class -%}
+    uk-form-controls
+{%- endblock form_group_class %}
+
+{%- block form_start -%}
+    {%- do form.setMethodRendered() -%}
+    {% set method = method|upper %}
+    {%- if method in ["GET", "POST"] -%}
+        {% set form_method = method %}
+    {%- else -%}
+        {% set form_method = "POST" %}
+    {%- endif -%}
+<form{% if name != '' %} name="{{ name }}"{% endif %} method="{{ form_method|lower }}"{% if action != '' %} action="{{ action }}"{% endif %}{{ block('attributes') }}{% if multipart %} enctype="multipart/form-data"{% endif %} class="uk-form-horizontal">
+    {%- if form_method != method -%}
+        <input type="hidden" name="_method" value="{{ method }}" />
+    {%- endif -%}
+{%- endblock form_start -%}

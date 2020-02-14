@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block top_navigation %}
+    <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left">
+            <a id="commsy_logo" class="uk-navbar-item uk-logo uk-visible@s" href="#">
+                <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_120.png') }}"/>
+            </a>
+
+            <a class="uk-navbar-item uk-logo" href="#">
+                <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_short.png')}}"/>
+            </a>
+
+            {% block top_navigation_left %}
+                {% include 'room/navigation.html.twig' %}
+            {% endblock %}
+        </div>
+
+        <div class="uk-navbar-center">
+            {% block top_navigation_center %}{% endblock %}
+            {# global search #}
+            {#                    {% if app.request.attributes.get('_route') is not same as('app_tou_accept') %}#}
+            {#                        {{ render(controller(#}
+            {#                            'App\\Controller\\SearchController::searchFormAction', {#}
+            {#                                'roomId': app.request.attributes.get('roomId'),#}
+            {#                                'requestData': app.request.request.get('search') ?? app.request.query.get('search_filter')#}
+            {#                            }#}
+            {#                        ))}}#}
+            {#                    {% endif %}#}
+        </div>
+
+        <div class="uk-navbar-right">
+            {% block top_navigation_right %}{% endblock %}
+
+            <a class="uk-navbar-toggle uk-hidden@s" href="#offcanvas" uk-navbar-toggle-icon uk-toggle="target: #offcanvas-navigation"></a>
+
+            <div id="offcanvas-navigation" uk-offcanvas>
+                <div class="uk-offcanvas-bar">
+                    {{ block('sidebar_left') }}
+
+                    <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+                </div>
+            </div>
+
+            <ul class="uk-navbar-nav uk-visible@s">
+                {% if app.request.attributes.has('roomId') %}
+                    {% set contextId = app.request.attributes.get('roomId') %}
+                {% else %}
+                    {% if app.request.attributes.has('portalId') %}
+                        {% set contextId = app.request.attributes.get('portalId') %}
+                    {% else %}
+                        {% if app.request.attributes.has('context') %}
+                            {% set contextId = app.request.attributes.get('context') %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                {# global actions #}
+                {% if contextId is defined %}
+                    {{ render(controller(
+                        'App\\Controller\\UserController::globalNavbarAction',
+                        { 'contextId': contextId }
+                    )) }}
+                {% endif %}
+
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {% if contextId is defined %}
+                        <li>
+                            <a href="#">
+                                {{ render(controller(
+                                    'App\\Controller\\ProfileController::imageAction',
+                                    { 'roomId': contextId }
+                                ))}}
+                            </a>
+                            <div class="uk-navbar-dropdown uk-padding-small">
+                                {{ render(controller(
+                                    'App\\Controller\\ProfileController::menuAction',
+                                    { 'roomId': contextId }
+                                ))}}
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block footer %}
+    <div class="uk-grid-divider" uk-grid>
+
+        <div class="uk-width-expand">
+            <div class="uk-flex uk-flex-center">
+                <div uk-grid>
+                    <div>
+                        <a href="#">Impressum</a>
+                    </div>
+                    <div>
+                        <a href="#">Data Privacy</a>
+                    </div>
+                    <div>
+                        <a href="#">Terms of Use</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="uk-width-auto">
+            <a href="https://commsy.net">CommSy 10.0.0</a>
+        </div>
+
+    </div>
+{% endblock %}

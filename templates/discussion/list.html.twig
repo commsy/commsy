@@ -13,7 +13,7 @@
         ))}}
     </ul>
 
-    <div class="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true, topoffset: 0}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/discussion/feed/", "target": "#discussions-feed"}'>
+    <div class="feed-load-more" uk-scrollspy="{cls: 'uk-animation-fade', repeat: true, topoffset: 0}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/discussion/feed/", "target": "#discussions-feed"}'>
         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
     </div>
 {% endblock %}

@@ -1,0 +1,22 @@
+{% set randomId = random(111111, 999999) %}
+
+<div class="uk-card uk-card-small uk-card-default uk-margin-small"{% if sticky is defined %}data-uk-sticky{% endif %}>
+    <div class="uk-card-header">
+        <div class="uk-flex">
+            <h3 class="uk-card-title uk-margin-remove">{% block title %}{% endblock %}</h3>
+            <div class="uk-margin-auto-left">
+                <a href="#" class="button-toggle uk-button-mini card_toggle_{{ randomId }}" uk-toggle="target: #card_body_{{ randomId }}, .card_toggle_{{ randomId }}">
+                    <span class="uk-icon-toggle" uk-icon="icon: chevron-up"></span>
+                </a>
+                <a href="#" class="button-toggle uk-button-mini card_toggle_{{ randomId }}" uk-toggle="target: #card_body_{{ randomId }}, .card_toggle_{{ randomId }}" hidden>
+                    <span class="uk-icon-toggle" uk-icon="icon: chevron-down"></span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="card_body_{{ randomId }}" class="uk-card-body js-card-toggled">
+        {% block body %}{% endblock %}
+    </div>
+</div>
