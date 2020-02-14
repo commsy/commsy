@@ -1180,6 +1180,11 @@ class cs_user_manager extends cs_manager {
      if ( empty($contact_status) ) {
         $contact_status = 0;
      }
+
+     $usePortalEmail = $user_item->getUsePortalEmail();
+     if (empty($usePortalEmail)) {
+         $usePortalEmail = 0;
+     }
   	 
      $query .= 'context_id="'.encode(AS_DB,$user_item->getContextID()).'",';
      $query .= 'status="'.encode(AS_DB,$user_item->getStatus()).'",';
@@ -1192,7 +1197,7 @@ class cs_user_manager extends cs_manager {
      $query .= 'city="'.encode(AS_DB,$user_item->getCity()).'",';
      $query .= 'visible="'.encode(AS_DB,$user_item->getVisible()).'",';
      $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
-     $query .= 'use_portal_email="'.encode(AS_DB,$user_item->getUsePortalEmail()).'",';
+     $query .= 'use_portal_email="'.encode(AS_DB,$usePortalEmail).'",';
      // Datenschutz
      $expire_date = $user_item->getPasswordExpireDate();
      

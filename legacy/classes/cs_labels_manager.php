@@ -884,10 +884,10 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
                'creation_date="'.$current_datetime.'",'.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",';
 
-     if(empty($modification_date) AND !isset($modification_date)){
-      $query .= 'modification_date="'.$current_datetime.'",';
+     if (empty($modification_date)) {
+         $query .= 'modification_date="'.$current_datetime.'",';
      } else {
-      $query .= 'modification_date="'.$modification_date.'",';
+         $query .= 'modification_date="'.$modification_date.'",';
      }
 
      $query .= 'name="'.encode(AS_DB,$item->getTitle()).'",'.
