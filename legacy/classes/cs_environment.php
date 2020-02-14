@@ -226,6 +226,16 @@ class cs_environment {
          if ( is_null($this->current_context)
               or $this->current_context->getItemID() != $this->current_context_id
             ) {
+             global $symfonyContainer;
+             /** @var EntityManagerInterface $entityManager */
+             $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+             $portal = $entityManager->getRepository(Portal::class)->find($this->current_context_id);
+
+             if ($portal) {
+                 $this->current_context = new PortalProxy($portal);
+                 return $this->current_context;
+             }
+
             $item_manager = $this->getItemManager();
             $item = $item_manager->getItem($this->current_context_id);
             if ( isset($item) ) {

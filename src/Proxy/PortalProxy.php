@@ -78,34 +78,124 @@ class PortalProxy
         $serverNewsExtra = ($this->portal->getExtras()['SERVER_NEWS']) ?? [];
         $show = $serverNewsExtra[strtoupper('show')] ?? '';
 
-        return ($show == 1) ? true : false;
+        return $show == 1;
     }
 
     public function withAGB(): bool
     {
         $agbStatus = ($this->portal->getExtras()['SERVER_NEWS']) ?? '2';
-        return ($agbStatus == 1) ? true : false;
+        return $agbStatus == 1;
     }
 
     public function getMaxRoomActivityPoints(): int
     {
-        return (int) $this->portal->getExtras()['MAX_ROOM_ACTIVITY'] ?? 0;
+        return (int) ($this->portal->getExtras()['MAX_ROOM_ACTIVITY'] ?? 0);
     }
 
     public function showServiceLink(): bool
     {
         $serviceLinkExtra = ($this->portal->getExtras()['SERVICELINK']) ?? '';
-        return ($serviceLinkExtra == 1) ? true : false;
+        return $serviceLinkExtra == 1;
     }
 
     public function isActivatedDeletingUnusedRooms(): bool
     {
         $deletingRoomExtra = ($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? -1;
-        return ($deletingRoomExtra == 1) ? true : false;
+        return $deletingRoomExtra == 1;
     }
 
     public function getDaysUnusedBeforeDeletingRooms(): int
     {
-        return (int) ($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? 365;
+        return (int) (($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? 365);
+    }
+
+    public function getSupportPageLink(): string
+    {
+        return ($this->portal->getExtras()['SUPPORTPAGELINK']) ?? '';
+    }
+
+    public function getSupportPageLinkTooltip(): string
+    {
+        return ($this->portal->getExtras()['SUPPORTPAGELINKTOOLTIP']) ?? '';
+    }
+
+    public function getCurrentTimeName(): string
+    {
+        $timeNamesByLanguage = ($this->portal->getExtras()['TIME_NAME_ARRAY']) ?? [];
+
+        return '';
+
+
+//        $lang = strtoupper($this->_environment->getSelectedLanguage());
+//
+//        $timeName = '';
+//        if ($timeNamesByLanguage && !empty($timeNamesByLanguage)) {
+//            if (isset($timeNamesByLanguage[$lang])) {
+//                $timeName = $timeNamesByLanguage[$lang];
+//            }
+//        }
+//
+//        return $timeName;
+    }
+
+    public function getProjectRoomLinkStatus(): string
+    {
+        return ($this->portal->getExtras()['PROJECTROOMLINKSTATUS']) ?? 'optional';
+    }
+
+    public function isTagMandatory(): bool
+    {
+        $tagStatus = ($this->portal->getExtras()['TAGMANDATORY']) ?? -1;
+        return $tagStatus == 1;
+    }
+
+    public function getDefaultProjectTemplateID(): string
+    {
+        return ($this->portal->getExtras()['DEFAULTPROJECTTEMPLATEID']) ?? '-1';
+    }
+
+    public function getDefaultCommunityTemplateID(): string
+    {
+        return ($this->portal->getExtras()['DEFAULTCOMMUNITYTEMPLATEID']) ?? '-1';
+    }
+
+    public function getLanguage(): string
+    {
+        return 'de';
+    }
+
+    public function isProjectRoom(): bool
+    {
+        return false;
+    }
+
+    public function isCommunityRoom(): bool
+    {
+        return false;
+    }
+
+    public function isPrivateRoom(): bool
+    {
+        return false;
+    }
+
+    public function isGroupRoom(): bool
+    {
+        return false;
+    }
+
+    public function isServer(): bool
+    {
+        return false;
+    }
+
+    public function getRubricTranslationArray(): array
+    {
+        return [];
+    }
+
+    public function getEmailTextArray(): array
+    {
+        return [];
     }
 }

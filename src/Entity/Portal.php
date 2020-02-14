@@ -62,7 +62,7 @@ class Portal
     private $title;
 
     /**
-     * @var string
+     * @var array
      *
      * @ORM\Column(name="extras", type="array", nullable=true)
      */
@@ -107,6 +107,11 @@ class Portal
      * @ORM\OneToMany(targetEntity="App\Entity\AuthSource", mappedBy="portal")
      */
     private $authSources;
+
+    /**
+     * @var
+     */
+    private $logoFilename;
 
     public function __construct()
     {
@@ -432,6 +437,112 @@ class Portal
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogoFilename():? string
+    {
+        return $this->logoFilename;
+    }
+
+    /**
+     * @param string $logoFilename
+     * @return Portal
+     */
+    public function setLogoFilename(string $logoFilename): self
+    {
+        $this->logoFilename = $logoFilename;
+        return $this;
+    }
+
+    public function getSupportPageLink():? string
+    {
+        return $this->extras['SUPPORTPAGELINK'] ?? '';
+    }
+
+    public function setSupportPageLink(?string $link): self
+    {
+        $this->extras['SUPPORTPAGELINK'] = $link;
+        return $this;
+    }
+
+    public function getSupportPageLinkTooltip():? string
+    {
+        return $this->extras['SUPPORTPAGELINKTOOLTIP'] ?? '';
+    }
+
+    public function setSupportPageLinkTooltip(?string $tooltip): self
+    {
+        $this->extras['SUPPORTPAGELINKTOOLTIP'] = $tooltip;
+        return $this;
+    }
+
+    public function getAnnouncementText():? string
+    {
+        return $this->extras['ANNOUNCEMENT_TEXT'] ?? '';
+    }
+
+    public function setAnnouncementText(?string $text): self
+    {
+        $this->extras['ANNOUNCEMENT_TEXT'] = $text;
+        return $this;
+    }
+
+    public function getAnnouncementLink():? string
+    {
+        return $this->extras['ANNOUNCEMENT_LINK'] ?? '';
+    }
+
+    public function setAnnouncementLink(?string $link): self
+    {
+        $this->extras['ANNOUNCEMENT_LINK'] = $link;
+        return $this;
+    }
+
+    public function getAnnouncementTitle():? string
+    {
+        return $this->extras['ANNOUNCEMENT_TITLE'] ?? '';
+    }
+
+    public function setAnnouncementTitle(string $title): self
+    {
+        $this->extras['ANNOUNCEMENT_TITLE'] = $title;
+        return $this;
+    }
+
+    public function getAnnouncementSeverity():? string
+    {
+        return $this->extras['ANNOUNCEMENT_SEVERITY'] ?? '';
+    }
+
+    public function setAnnouncementSeverity(string $severity): self
+    {
+        $this->extras['ANNOUNCEMENT_SEVERITY'] = $severity;
+        return $this;
+    }
+
+    public function hasAnnouncementEnabled(): bool
+    {
+        return $this->extras['ANNOUNCEMENT_ENABLED'] ?? false;
+    }
+
+    public function setAnnouncementEnabled(bool $enabled): self
+    {
+        $this->extras['ANNOUNCEMENT_ENABLED'] = $enabled;
+        return $this;
+    }
+
+    public function hasServerAnnouncementEnabled(): bool
+    {
+        return $this->extras['ANNOUNCEMENT_SERVER_ENABLED'] ?? false;
+    }
+
+    public function setServerAnnouncementEnabled(bool $enabled): self
+    {
+        $this->extras['ANNOUNCEMENT_SERVER_ENABLED'] = $enabled;
         return $this;
     }
 }
