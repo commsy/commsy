@@ -421,12 +421,13 @@ services:
     # Menu
     commsy.menu.builder:
         class: App\Menu\MenuBuilder
-        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker', '@commsy.invitations_service']
-        # tags:
-        #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
-        #     - { name: knp_menu.menu_builder, method: createSettingsMenu, alias: settings }
-        #     - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
-        #     - { name: knp_menu.menu_builder, method: createBreadcrumbMenu, alias: breadcrumb }
+        arguments:
+            - '@knp_menu.factory'
+            - '@commsy_legacy.room_service'
+            - '@commsy_legacy.environment'
+            - '@commsy_legacy.user_service'
+            - '@security.authorization_checker'
+            - '@commsy.invitations_service'
 
     commsy.menu.main:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
@@ -441,6 +442,13 @@ services:
         arguments: ['@request_stack']
         tags:
             - { name: knp_menu.menu, alias: settings }
+
+    commsy.menu.portal_settings:
+        class: Knp\Menu\MenuItem
+        factory: ['@commsy.menu.builder', createPortalSettingsMenu]
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.menu, alias: portal_settings }
 
     commsy.menu.account:
         class: Knp\Menu\MenuItem
