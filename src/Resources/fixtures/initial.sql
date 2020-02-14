@@ -1,16 +1,3 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Version 5446
-#
-# https://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: 127.0.0.1 (MySQL 5.5.5-10.3.20-MariaDB-1:10.3.20+maria~bionic)
-# Database: commsy
-# Generation Time: 2019-12-06 10:55:42 +0000
-# ************************************************************
-
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -995,7 +982,7 @@ CREATE TABLE `sessions` (
   `sess_id` varchar(128) COLLATE utf8mb4_bin NOT NULL,
   `sess_data` blob NOT NULL,
   `sess_time` int(10) unsigned NOT NULL,
-  `sess_lifetime` mediumint(9) NOT NULL,
+  `sess_lifetime` int(10) unsigned NOT NULL,
   PRIMARY KEY (`sess_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
