@@ -11,20 +11,18 @@ Encore
     .setPublicPath('/build')
 
     // entry points
-    .addStyleEntry('app_default', './assets/js/app_default.js')
-    .addStyleEntry('app_confetti', './assets/js/app_confetti.js')
-    .addStyleEntry('app_darkblue', './assets/js/app_darkblue.js')
-    .addStyleEntry('app_football', './assets/js/app_football.js')
-    .addStyleEntry('app_grey', './assets/js/app_grey.js')
-    .addStyleEntry('app_ocean', './assets/js/app_ocean.js')
-    .addStyleEntry('app_red', './assets/js/app_red.js')
-    .addStyleEntry('app_redgrey', './assets/js/app_redgrey.js')
-    .addStyleEntry('app_schulcommsyhh', './assets/js/app_schulcommsyhh.js')
-    .addStyleEntry('app_stars', './assets/js/app_stars.js')
-    .addStyleEntry('app_sun', './assets/js/app_sun.js')
-    .addStyleEntry('app_uhh', './assets/js/app_uhh.js')
-
     .addEntry('app_default', './assets/js/app_default.js')
+    .addEntry('app_confetti', './assets/js/app_confetti.js')
+    .addEntry('app_darkblue', './assets/js/app_darkblue.js')
+    .addEntry('app_football', './assets/js/app_football.js')
+    .addEntry('app_grey', './assets/js/app_grey.js')
+    .addEntry('app_ocean', './assets/js/app_ocean.js')
+    .addEntry('app_red', './assets/js/app_red.js')
+    .addEntry('app_redgrey', './assets/js/app_redgrey.js')
+    .addEntry('app_schulcommsyhh', './assets/js/app_schulcommsyhh.js')
+    .addEntry('app_stars', './assets/js/app_stars.js')
+    .addEntry('app_sun', './assets/js/app_sun.js')
+    .addEntry('app_uhh', './assets/js/app_uhh.js')
 
     .enableTypeScriptLoader()
 
