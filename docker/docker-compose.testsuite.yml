@@ -7,7 +7,7 @@ services:
       - commsy_test_db
 
   commsy_test_db:
-      image: mariadb:10.1
+      image: mariadb:10.3
       ports:
         - "3107:3306"
       environment:

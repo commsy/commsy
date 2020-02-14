@@ -1,5 +1,10 @@
+# the different stages of this Dockerfile are meant to be built into separate images
+# https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
+# https://docs.docker.com/compose/compose-file/#target
+
+# https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
 ARG PHP_VERSION=7.3-fpm-stretch
-ARG NGINX_VERSION=1.15
+ARG NGINX_VERSION=1.17
 
 FROM php:${PHP_VERSION} AS commsy_php
 
@@ -42,10 +47,16 @@ RUN apt-get install -y nodejs
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set up php configuration
+RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+COPY docker/php/conf.d/commsy.prod.ini $PHP_INI_DIR/conf.d/commsy.ini
+COPY docker/php/conf.d/commsy.pool.conf /usr/local/etc/php-fpm.d/
+
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
+# install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
 RUN set -eux; \
-	composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
+	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
@@ -58,19 +69,6 @@ RUN apt-get update && apt-get install -y yarn
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
-RUN { \
-        echo 'xdebug.remote_host=10.254.254.254'; \
-        echo 'xdebug.remote_autostart=1'; \
-        echo 'xdebug.idekey=PHPSTORM'; \
-        echo 'xdebug.default_enabled=0'; \
-        echo 'xdebug.remote_enable=1'; \
-        echo 'xdebug.remote_connect_back=0'; \
-        echo 'xdebug.profiler_enabled=1'; \
-        echo 'xdebug.profiler_enable_trigger=1'; \
-        echo 'xdebug.profiler_output_name=xdebug.out.%t'; \
-        echo 'xdebug.profiler_output_dir=/tmp'; \
-    } > /usr/local/etc/php/conf.d/xdebug.ini
-
 # wkhtmltopdf
 RUN apt-get update && apt-get install -y \
         xfonts-base \
@@ -82,22 +80,30 @@ RUN apt-get update && apt-get install -y \
 RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb \
         && dpkg -i /usr/src/wkhtmltopdf.deb
 
-# copy configurations
-COPY docker/php/commsy.ini /usr/local/etc/php/conf.d/
-COPY docker/php/commsy.pool.conf /usr/local/etc/php-fpm.d/
-
 WORKDIR /var/www/html
 
 # build for production
 ARG APP_ENV=prod
 
 # prevent the reinstallation of vendors at every changes in the source code
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --no-suggest; \
+	composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest; \
 	composer clear-cache
 
-COPY . ./
+# do not use .env files in production
+COPY .env ./
+RUN composer dump-env prod; \
+	rm .env
+
+# copy only specifically what we need
+COPY bin bin/
+COPY config config/
+COPY legacy legacy/
+COPY public public/
+COPY src src/
+COPY templates templates/
+COPY translations translations/
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
