@@ -36,10 +36,38 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * Class PortalController
  * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class PortalController extends AbstractController
 {
+    /**
+     * @Route("/portal/{roomId}/impressum")
+     * @Template()
+     */
+    public function impressum()
+    {
+        return [];
+    }
+
+    /**
+     * @Route("/portal/{roomId}/dp")
+     * @Template()
+     */
+    public function dataPrivacy()
+    {
+        return [];
+    }
+
+    /**
+     * @Route("/portal/{roomId}/tou")
+     * @Template()
+     */
+    public function termsOfUse()
+    {
+        return [];
+    }
+
+
+
     /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")
      * @Template()
@@ -250,67 +278,6 @@ class PortalController extends AbstractController
     ) {
         return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
     }
-
-    /**
-     * @Route("/portal/{roomId}/translations/{translationId}")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @param int $translationId
-     * @return array|RedirectResponse
-     */
-    public function translationsAction(
-        Request $request,
-        LegacyEnvironment $environment,
-        int $roomId,
-        int $translationId = null
-    ) {
-        $portalId = $roomId;
-
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Translation');
-
-        $form = null;
-
-        if ($translationId) {
-            $translation = $repository->findOneById($translationId);
-
-            $editForm = $this->createForm(TranslationType::class, $translation, []);
-
-            $editForm->handleRequest($request);
-            if ($editForm->isValid()) {
-
-                // tells Doctrine you want to (eventually) save the Product (no queries yet)
-                $em->persist($translation);
-
-                // actually executes the queries (i.e. the INSERT query)
-                $em->flush();
-
-                return $this->redirectToRoute('app_portal_translations', [
-                    'roomId' => $roomId,
-                ]);
-            }
-
-            $form = $editForm->createView();
-        }
-
-        $translations = $repository->findBy(array('contextId' => $portalId));
-
-        return [
-            'form' => $form,
-            'roomId' => $portalId,
-            'translations' => $translations,
-            'translationId' => $translationId,
-            'item' => $portalItem,
-        ];
-    }
-
 
     /**
      * @Route("/portal/{roomId}/licenses/{licenseId}")

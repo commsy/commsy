@@ -1,0 +1,41 @@
+{% extends 'layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% embed 'components/context_navigation.html.twig' %}
+        {% block menu %}{{ knp_menu_render('portal_settings') }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Translations'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            <div uk-grid>
+                {# form column #}
+                <div class="uk-width-1-3">
+                    {% if form %}
+                        {% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+                        {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        {{ form_end(form) }}
+                    {% endif %}
+                </div>
+                {# show existing categories #}
+                <div id="translations" class="uk-width-2-3">
+                    {% for translation in translations %}
+                        <span>
+                             <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if selectedTranslation.id == translation.id %} uk-button-primary{% endif %}" href="{{ path('app_portalsettings_translations', { 'portalId': portal.id, 'translationId': translation.id }) }}">
+                                 <span class="uk-vertical-align-middle">
+                                    {{- translation.translationkey|trans({},'translation') -}}
+                                </span>
+                            </a>
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+{#            {{ form(form) }}#}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

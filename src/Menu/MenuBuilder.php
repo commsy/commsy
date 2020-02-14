@@ -377,6 +377,15 @@ class MenuBuilder
                 'extras' => ['icon' => 'users']
             ])
             ->setExtra('translation_domain', 'portal');
+
+            // translations
+            $menu->addChild('Translations', [
+                'label' => 'Translations',
+                'route' => 'app_portalsettings_translations',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'location']
+            ])
+            ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;
@@ -508,13 +517,6 @@ class MenuBuilder
                 'route' => 'app_portal_terms',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
-            ))
-                ->setExtra('translation_domain', 'portal');
-            $menu->addChild('portal_configuration_translations', array(
-                'label' => 'Translations',
-                'route' => 'app_portal_translations',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-columns uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_licenses', array(
