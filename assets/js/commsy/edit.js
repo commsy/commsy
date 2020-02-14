@@ -115,6 +115,7 @@
             .done(function(result) {
                 // replace article html
                 article.html($(result));
+                registerDraftFormButtonEvents();
 
                 $this.handleFormSubmit(article);
 
@@ -259,22 +260,25 @@
         });
     });
 
-    $('#draft-save-combine-link').on('click', function(event){
-        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-        $(this).parents('article').find('form').each(function(){
-            let button = $(this).find('.uk-button-primary');
-            if (button.length) {
-                button.click();
-            }
+    let registerDraftFormButtonEvents = function() {
+        $('#draft-save-combine-link').one('click', function (event) {
+            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+            $(this).parents('article').find('form').each(function () {
+                let button = $(this).find('.uk-button-primary');
+                if (button.length) {
+                    button.click();
+                }
+            });
         });
-    });
 
-    $('#draft-cancel-link').on('click', function(event){
-        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-        let pathParts = window.location.pathname.split("/");
-        pathParts.pop();
-        window.location.href = pathParts.join("/");
-    });
+        $('#draft-cancel-link').one('click', function (event) {
+            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+            let pathParts = window.location.pathname.split("/");
+            pathParts.pop();
+            window.location.href = pathParts.join("/");
+        });
+    }
 
+    registerDraftFormButtonEvents();
 
 })(UIkit);
