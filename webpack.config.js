@@ -24,14 +24,14 @@ Encore
     .addStyleEntry('app_sun', './assets/js/app_sun.js')
     .addStyleEntry('app_uhh', './assets/js/app_uhh.js')
 
-    .addEntry('app', './assets/js/common_js.js')
+    .addEntry('app_default', './assets/js/app_default.js')
 
     .enableTypeScriptLoader()
 
     // allow less files to be processed
     .enableLessLoader(function(options) {
         options.paths = [
-            'node_modules/uikit/dist/less',
+            'node_modules/uikit/src/less',
             'assets/css'
         ]
     })
