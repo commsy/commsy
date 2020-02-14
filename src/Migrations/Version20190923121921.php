@@ -25,7 +25,7 @@ final class Version20190923121921 extends AbstractMigration
                 `sess_id` VARCHAR(128) NOT NULL PRIMARY KEY,
                 `sess_data` BLOB NOT NULL,
                 `sess_time` INTEGER UNSIGNED NOT NULL,
-                `sess_lifetime` MEDIUMINT NOT NULL
+                `sess_lifetime` INTEGER UNSIGNED NOT NULL
             ) COLLATE utf8mb4_bin, ENGINE = InnoDB;
         ');
         $this->addSql('DROP TABLE session');
