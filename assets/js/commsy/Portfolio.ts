@@ -1,5 +1,6 @@
 import * as $ from 'jquery';
 import * as URI from "urijs";
+import UIkit from 'uikit';
 
 'use strict';
 
@@ -68,7 +69,7 @@ export class Portfolio {
                 $('#portfolioTabs li').each(function() {
                     let $li = $(this);
                     if ($li.data('portfolio-id') == queryPortfolioId) {
-                        (UIkit as any).switcher($('#portfolioTabs')).show(tabIndex);
+                        UIkit.switcher($('#portfolioTabs')).show(tabIndex);
                         portfolioId = queryPortfolioId;
                     }
                     tabIndex++;

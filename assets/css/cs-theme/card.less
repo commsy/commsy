@@ -1,4 +1,49 @@
 //
+// Component: Card
+//
+// ========================================================================
+
+
+// Variables
+// ========================================================================
+
+@card-hover-background:                        @global-background;
+
+@card-default-background:                      @global-background;
+@card-default-hover-background:                @card-default-background;
+
+@card-primary-hover-background:                @card-primary-background;
+
+@card-secondary-hover-background:              @card-secondary-background;
+
+
+@card-small-header-padding-vertical: 10px;
+
+
+
+
+
+.hook-card-default-header() {
+    background-color: @cs-brand-color;
+
+    .uk-card-title {
+        color: #ffffff;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
 // Component: Panel
 //
 // ========================================================================
@@ -12,6 +57,9 @@
 @panel-box-padding: 10px;
 
 @panel-teaser-margin-top: @panel-title-margin-bottom;
+
+@panel-box-teaser-margin: 5px;
+@panel-title-margin-bottom: @panel-box-teaser-margin;
 
 
 // // Variables

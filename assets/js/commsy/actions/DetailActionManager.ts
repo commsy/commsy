@@ -2,6 +2,7 @@ import * as $ from 'jquery';
 
 'use strict';
 
+import UIkit from 'uikit';
 import {DetailActionData, ActionExecuter, createAction} from "./Actions";
 import {BaseAction} from "./AbstractAction";
 

@@ -1,5 +1,6 @@
 'use strict';
 
+import UIkit from 'uikit';
 import {ActionData, ActionRequest, ActionResponse} from "./Actions";
 import * as $ from "jquery";
 

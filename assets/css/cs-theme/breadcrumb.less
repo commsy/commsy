@@ -1,18 +1,9 @@
 // Name:            Breadcrumb
-// Description:     Defines styles for a breadcrumb navigation
+// Description:     Component to create a breadcrumb navigation
 //
 // Component:       `uk-breadcrumb`
 //
-// States:          `uk-active`
-//
-// Markup:
-//
-// <!-- uk-breadcrumb -->
-// <ul class="uk-breadcrumb">
-//     <li><a href=""></a></li>
-//     <li><span></span></li>
-//     <li class="uk-active"><span></span></li>
-// </ul>
+// States:          `uk-disabled`
 //
 // ========================================================================
 
@@ -21,19 +12,10 @@
 // ========================================================================
 
 @breadcrumb-font-size:                          1rem;
-
-/* Items
- ========================================================================== */
-
-.uk-breadcrumb > li,
-.uk-breadcrumb > li > a,
-.uk-breadcrumb > li > span {
-    color: #FFFFFF;
-}
-
-.uk-breadcrumb > li:not(.uk-active) > span {
-    color: #ccc;
-}
+@breadcrumb-divider-color:                      #fff;
+@breadcrumb-item-active-color:                  #ccc;
+@breadcrumb-item-color:                         #fff;
+@breadcrumb-divider-margin-horizontal:          10px;
 
 // Hooks
 // ========================================================================
@@ -41,5 +23,4 @@
 .hook-breadcrumb() {
     background-color: @cs-brand-color;
     padding: 10px;
-    margin: 0;
 }

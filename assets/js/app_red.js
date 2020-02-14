@@ -1,3 +1,3 @@
-require('./common_css');
+require('./common');
 
 require('../css/themes/red/theme.less');

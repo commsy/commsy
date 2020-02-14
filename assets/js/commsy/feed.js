@@ -1,3 +1,5 @@
+import UIkit from 'uikit';
+
 ;(function(UI) {
 
     'use strict';
@@ -6,15 +8,15 @@
 
     let lastRequest = '';
 
-    // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
-    $('.feed-load-more').on('inview.uk.scrollspy', function() {
+    // listen to "inview" event on "feed-load-more" classes
+    UIkit.util.on('.feed-load-more', 'inview', function() {
         let el = $(this);
 
         loadMore(el);
     });
 
-    // listen to "inview.uk.scrollspy" event on "feed-load-more-grid" classes
-    $('.feed-load-more-grid').on('inview.uk.scrollspy', function() {
+    // listen to "inview" event on "feed-load-more-grid" classesn
+    UIkit.util.on('.feed-load-more-grid', 'inview', function() {
         let el = $(this);
 
         loadMore(el);

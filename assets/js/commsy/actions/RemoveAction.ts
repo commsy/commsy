@@ -1,3 +1,4 @@
+import UIkit from 'uikit';
 import {ActionData, ActionResponse} from "./Actions";
 import {XHRAction} from "./AbstractAction";
 
