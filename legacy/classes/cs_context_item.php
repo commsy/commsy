@@ -5869,7 +5869,7 @@ class cs_context_item extends cs_item {
     $item_manager->setTypeArrayLimit($check_managers);
     $item_manager->select();
     $new_entries = $item_manager->getIDArray();
-    $count_total = count($new_entries);
+    $count_total = $new_entries ? count($new_entries) : 0;
     unset($item_manager);
     return $count_total;
   }
