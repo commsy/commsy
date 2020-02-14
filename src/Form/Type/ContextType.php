@@ -22,9 +22,6 @@ class ContextType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'attr' => [
-                    'class' => 'uk-form-width-large',
-                ],
             ])
             ->add('type_select', ChoiceType::class, array(
                 'placeholder' => false,
@@ -79,20 +76,18 @@ class ContextType extends AbstractType
             }
 
             $builder->add('save', SubmitType::class, [
-                'attr' => [
-                    'class' => 'uk-button-primary',
-                ],
                 'label' => 'save',
                 'translation_domain' => 'form',
             ])
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
+            ->add('cancel', SubmitType::class,[
+                'attr' => [
+                    'class' => 'uk-button-default',
                     'formnovalidate' => '',
-                ),
+                ],
                 'label' => 'cancel',
                 'translation_domain' => 'form',
                 'validation_groups' => false,
-            ));
+            ]);
     }
 
     /**
