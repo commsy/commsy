@@ -1013,7 +1013,7 @@ class RoomController extends AbstractController
         $legacyEnvironment = $environment->getEnvironment();
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
-        $type = null;
+        $type = '';
         $context = $request->get('context');
         if ($context) {
             if (isset($context['type_select'])) {
@@ -1035,7 +1035,10 @@ class RoomController extends AbstractController
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
-        $community_list = $currentPortalItem->getCommunityList();
+        $communityManager = $legacyEnvironment->getCommunityManager();
+        $communityManager->setContextLimit($currentPortalItem->getItemID());
+        $communityManager->select();
+        $community_list = $communityManager->get();
         $community_room_array = array();
         unset($temp_array);
         if ($community_list->isNotEmpty()) {

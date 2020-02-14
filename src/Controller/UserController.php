@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Portal;
 use App\Entity\User;
 use App\Filter\UserFilterType;
 use App\Form\DataTransformer\UserTransformer;
@@ -20,6 +21,7 @@ use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_room_item;
 use cs_user_item;
+use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
@@ -1130,16 +1132,20 @@ class UserController extends BaseController
      * @return array
      */
     public function globalNavbarAction(
+        $contextId,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        SessionInterface $session
+        SessionInterface $session,
+        EntityManagerInterface $entityManager
     ) {
         $currentUserItem = $userService->getCurrentUserItem();
-
         $privateRoomItem = $currentUserItem->getOwnRoom();
-
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalItem = $entityManager->getRepository(Portal::class)->find($contextId);
+        if (!$portalItem) {
+            $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        }
 
         $currentClipboardIds = $session->get('clipboard_ids', []);
         $showPortalConfigurationLink = false;
@@ -1162,8 +1168,8 @@ class UserController extends BaseController
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
             'roomId' => $legacyEnvironment->getCurrentContextId(),
-            'supportLink' => $portalItem->getSupportPageLink(),
-            'tooltip' => $portalItem->getSupportPageLinkTooltip(),
+            'supportLink' => $portalItem ? $portalItem->getSupportPageLink() : '',
+            'tooltip' => $portalItem ? $portalItem->getSupportPageLinkTooltip() : '',
             'showPortalConfigurationLink' => $showPortalConfigurationLink,
             'portal' => $portalItem,
         ];

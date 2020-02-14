@@ -32,14 +32,13 @@ use App\Form\Type\Profile\ProfilePersonalInformationType;
 /**
  * Class ProfileController
  * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class ProfileController extends AbstractController
 {
     /**
      * @Route("/room/{roomId}/user/{itemId}/general")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param DiscService $discService
      * @param RoomService $roomService
@@ -157,7 +156,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/address")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
@@ -232,7 +231,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/contact")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param PrivateRoomTransformer $privateRoomTransformer
      * @param UserService $userService
@@ -310,7 +309,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/notifications")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param int $itemId
@@ -357,7 +356,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/personal")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
@@ -408,7 +407,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/account")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
@@ -455,7 +454,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/mergeaccounts")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param LegacyEnvironment $environment
@@ -564,7 +563,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/newsletter")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
@@ -611,7 +610,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/additional")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
@@ -695,6 +694,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
      * @Template
+     * @Security("is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param UserService $userService
      * @param LegacyEnvironment $environment
@@ -761,6 +761,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/changepassword")
      * @Template
+     * @Security("is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param LegacyEnvironment $environment
      * @return array
@@ -817,6 +818,7 @@ class ProfileController extends AbstractController
     /**
      * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
      * @Template
+     * @Security("is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param LegacyEnvironment $legacyEnvironment
      * @param UserService $userService
