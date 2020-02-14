@@ -1,4 +1,4 @@
 white_october_breadcrumbs:
     separator:      ''
-    listClass:      'uk-breadcrumb'
+    listClass:      'uk-breadcrumb uk-margin-remove'
     itemClass:      'uk-display-inline'
