@@ -128,7 +128,7 @@ class FileController extends AbstractController
         if ($imageType == 'theme') {
 
             // is theme pre-defined in config?
-            $preDefinedTheme = $this->container->getParameter('liip_theme_pre_configuration.active_theme');
+            $preDefinedTheme = $this->getParameter('liip_theme_pre_configuration.active_theme');
             $themeName = $preDefinedTheme ?? $roomItem->getColorArray()['schema'];
             $completePath = $themesDir . "/" . $themeName . "/bg.jpg";
 
