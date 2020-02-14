@@ -1,9 +1,11 @@
 <?php
 namespace App\Security\Authorization\Voter;
 
+use App\Entity\Portal;
+use App\Proxy\PortalProxy;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 use App\Services\LegacyEnvironment;
@@ -20,12 +22,18 @@ class ItemVoter extends Voter
     private $legacyEnvironment;
     private $itemService;
     private $requestStack;
+    private $entityManager;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, RequestStack $requestStack)
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        ItemService $itemService,
+        RequestStack $requestStack,
+        EntityManagerInterface $entityManager)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
         $this->requestStack = $requestStack;
+        $this->entityManager = $entityManager;
     }
 
     protected function supports($attribute, $object)
@@ -52,6 +60,15 @@ class ItemVoter extends Voter
         $itemId = $object;
 
         $item = $this->itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            $portal = $this->entityManager->getRepository(Portal::class)->find($itemId);
+
+            if ($portal) {
+                $item = new PortalProxy($portal);
+            }
+        }
+
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         if ($item) {
             switch ($attribute) {

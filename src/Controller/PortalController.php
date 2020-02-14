@@ -19,8 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-use App\Form\Type\PortalAnnouncementsType;
-use App\Form\Type\PortalHelpType;
+use App\Form\Type\AnnouncementsType;
 use App\Form\Type\PortalTermsType;
 use App\Form\Type\RoomCategoriesEditType;
 use App\Form\Type\RoomCategoriesLinkType;
@@ -125,59 +124,6 @@ class PortalController extends AbstractController
             'roomCategories' => $roomCategories,
             'roomCategoryId' => $roomCategoryId,
             'item' => $legacyEnvironment->getCurrentPortalItem(),
-        ];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/announcements")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @return array
-     */
-    public function announcementsAction(
-        Request $request,
-        LegacyEnvironment $environment
-    ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $portalAnnouncementData = [];
-        $portalAnnouncementData['text'] = $portalItem->getServerNewsText();
-        $portalAnnouncementData['link'] = $portalItem->getServerNewsLink();
-        $portalAnnouncementData['show'] = $portalItem->showServerNews();
-        $portalAnnouncementData['title'] = $portalItem->getServerNewsTitle();
-        $portalAnnouncementData['showServerInfos'] = $portalItem->showNewsFromServer();
-
-        $announcementsForm = $this->createForm(PortalAnnouncementsType::class, $portalAnnouncementData, []);
-
-        $announcementsForm->handleRequest($request);
-        if ($announcementsForm->isSubmitted() && $announcementsForm->isValid()) {
-            if ($announcementsForm->getClickedButton()->getName() == 'save') {
-                $formData = $announcementsForm->getData();
-                $portalItem->setServerNewsText($formData['text']);
-                $portalItem->setServerNewsLink($formData['link']);
-                $portalItem->setServerNewsTitle($formData['title']);
-                if ($formData['show']) {
-                    $portalItem->setShowServerNews();
-                }
-                else {
-                    $portalItem->setDontShowServerNews();
-                }
-                if ($formData['showServerInfos']) {
-                    $portalItem->setShowNewsFromServer();
-                }
-                else {
-                    $portalItem->setDontShowNewsFromServer();
-                }
-                $portalItem->save();
-            }
-        }
-
-        return [
-            'form' => $announcementsForm->createView(),
         ];
     }
 
@@ -292,46 +238,6 @@ class PortalController extends AbstractController
             'termId' => $termId,
             'item' => $legacyEnvironment->getCurrentPortalItem(),
         ];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/help")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @return array
-     */
-    public function helpAction(
-        Request $request,
-        LegacyEnvironment $environment
-    ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $portalHelp = [];
-        $portalHelp['link'] = $portalItem->getSupportPageLink();
-        $portalHelp['alt'] = $portalItem->getSupportPageLinkTooltip();
-
-        $helpForm = $this->createForm(PortalHelpType::class, $portalHelp, []);
-
-        $helpForm->handleRequest($request);
-        if ($helpForm->isSubmitted() && $helpForm->isValid()) {
-            if ($helpForm->getClickedButton()->getName() == 'save') {
-                $formData = $helpForm->getData();
-
-                $portalItem->setSupportPageLink($formData['link']);
-                $portalItem->setSupportPageLinkTooltip($formData['alt']);
-
-                $portalItem->save();
-            }
-        }
-
-        return [
-            'form' => $helpForm->createView(),
-        ];
-
     }
 
     /**
