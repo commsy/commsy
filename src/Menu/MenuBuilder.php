@@ -334,6 +334,54 @@ class MenuBuilder
         return $menu;
     }
 
+    public function createPortalSettingsMenu(RequestStack $requestStack)
+    {
+        $menu = $this->factory->createItem('root');
+
+        $currentStack = $requestStack->getCurrentRequest();
+        if ($currentStack) {
+            $portalId = $currentStack->attributes->get('portalId');
+
+            // general
+            $menu->addChild('General', [
+                'label' => 'General',
+                'route' => 'app_portalsettings_general',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'server'],
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+            // support
+            $menu->addChild('Support', [
+                'label' => 'help',
+                'route' => 'app_portalsettings_support',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'question']
+            ])
+            ->setExtra('translation_domain', 'portal');
+
+            // announcements
+            $menu->addChild('Announcements', [
+                'label' => 'announcements',
+                'route' => 'app_portalsettings_announcements',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'bell']
+            ])
+            ->setExtra('translation_domain', 'portal');
+
+            // accounts
+            $menu->addChild('Accounts', [
+                'label' => 'accounts',
+                'route' => 'app_portalsettings_accounts',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'users']
+            ])
+            ->setExtra('translation_domain', 'portal');
+        }
+
+        return $menu;
+    }
+
     /**
      * creates rubric menu
      * @param  RequestStack $requestStack [description]
