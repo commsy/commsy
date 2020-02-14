@@ -1,15 +1,14 @@
 <?php
-namespace App\Form\Type;
+namespace App\Form\Type\Portal;
 
+use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Constraints as Assert;
 
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
-
-class PortalHelpType extends AbstractType
+class SupportType extends AbstractType
 {
     /**
      * Builds the form.
@@ -20,16 +19,19 @@ class PortalHelpType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('link', Types\TextType::class, [
+            ->add('supportPageLink', Types\UrlType::class, [
+                'label' => 'Link',
+                'constraints' => [
+                    new Assert\Url(),
+                ],
+                'required' => false,
             ])
-            ->add('alt', Types\TextType::class, [
+            ->add('supportPageLinkTooltip', Types\TextType::class, [
                 'label' => 'tooltip text',
+                'required' => false,
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
                 'translation_domain' => 'form',
             ])
         ;
@@ -42,21 +44,9 @@ class PortalHelpType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setRequired([])
-            ->setDefaults(array('translation_domain' => 'portal'))
-        ;
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'portalhelp';
+        $resolver->setDefaults([
+            'data_class' => Portal::class,
+            'translation_domain' => 'portal',
+        ]);
     }
 }

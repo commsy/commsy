@@ -1,15 +1,16 @@
 <?php
-namespace App\Form\Type;
+namespace App\Form\Type\Portal;
 
+use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
-class PortalAnnouncementsType extends AbstractType
+class AnnouncementsType extends AbstractType
 {
     /**
      * Builds the form.
@@ -20,35 +21,44 @@ class PortalAnnouncementsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('show' , Types\ChoiceType::class, [
+            ->add('announcementEnabled' , Types\ChoiceType::class, [
+                'label' => 'Show',
                 'expanded' => true,
-                'multiple' => false,
                 'choices' => [
                     'Yes' => true,
                     'No' => false,
                 ],
                 'choice_translation_domain' => 'form',
             ])
-            ->add('title', Types\TextType::class, [
+            ->add('announcementTitle', Types\TextType::class, [
                 'constraints' => [
-                    new Constraints\NotBlank(),
+                    new Assert\NotBlank(),
                 ],
-                'required' => true,
+                'label' => 'Title',
             ])
-            ->add('text', CKEditorType::class, [
-                'inline' => false,
-                'attr' => array(
-                    'class' => 'uk-form-width-large',
-                    'style' => 'width: 100%;',
-                ),
+            ->add('announcementSeverity', Types\ChoiceType::class, [
+                'label' => 'Severity',
+                'choices' => [
+                    'Normal' => 'normal',
+                    'Important' => 'warning',
+                    'Critical' => 'danger',
+                ],
+            ])
+            ->add('announcementText', CKEditorType::class, [
+                'label' => 'Message',
                 'translation_domain' => 'settings',
-            ])
-            ->add('link', Types\TextType::class, [
                 'required' => false,
             ])
-            ->add('showServerInfos', Types\ChoiceType::class, [
+            ->add('announcementLink', Types\UrlType::class, [
+                'constraints' => [
+                    new Assert\Url(),
+                ],
+                'label' => 'Link',
+                'required' => false,
+            ])
+            ->add('serverAnnouncementEnabled', Types\ChoiceType::class, [
+                'label' => 'Show server infos',
                 'expanded' => true,
-                'multiple' => false,
                 'choices' => [
                     'Yes' => true,
                     'No' => false,
@@ -57,9 +67,6 @@ class PortalAnnouncementsType extends AbstractType
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
                 'translation_domain' => 'form',
             ])
         ;
@@ -72,21 +79,9 @@ class PortalAnnouncementsType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setRequired([])
-            ->setDefaults(array('translation_domain' => 'portal'))
-        ;
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'portalannouncements';
+        $resolver->setDefaults([
+            'data_class' => Portal::class,
+            'translation_domain' => 'portal',
+        ]);
     }
 }
