@@ -8,8 +8,17 @@ use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Lexik\Bundle\FormFilterBundle\Filter\Query\QueryInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+use App\Services\LegacyEnvironment;
+
 class RoomFilterType extends AbstractType
 {
+    private $legacyEnvironment;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -80,15 +89,21 @@ class RoomFilterType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
-            ])
-            ->add('type', Filters\ChoiceFilterType::class, [
-                'choices' => [
-                    'Project Rooms' => 'project',
-                    'Community Rooms' => 'community',
-                ],
-                'placeholder' => 'All',
-                'translation_domain' => 'room',
             ]);
+
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $showRooms = $portalItem->getShowRoomsOnHome();
+        if ($showRooms !== 'onlyprojectrooms' && $showRooms !== 'onlycommunityrooms') {
+            $builder
+                ->add('type', Filters\ChoiceFilterType::class, [
+                    'choices' => [
+                        'Project Rooms' => 'project',
+                        'Community Rooms' => 'community',
+                    ],
+                    'placeholder' => 'All',
+                    'translation_domain' => 'room',
+                ]);
+        }
 
         if ($options['showTime']) {
             $builder

@@ -274,6 +274,19 @@ class RoomController extends Controller
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
+        $showRooms = $portalItem->getShowRoomsOnHome();
+        switch ($showRooms) {
+            case 'onlyprojectrooms':
+                $roomTypes = [CS_PROJECT_TYPE];
+                break;
+            case 'onlycommunityrooms':
+                $roomTypes = [CS_COMMUNITY_TYPE];
+                break;
+            default:
+                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
+                break;
+        }
+
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portalItem->showTime(),
             'timePulses' => $roomService->getTimePulses(),
@@ -286,7 +299,7 @@ class RoomController extends Controller
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository(Room::class);
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -307,7 +320,7 @@ class RoomController extends Controller
         // to use the form validation below, instead of manually checking for a
         // specific value
         $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
-        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -372,6 +385,19 @@ class RoomController extends Controller
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
+        $showRooms = $portalItem->getShowRoomsOnHome();
+        switch ($showRooms) {
+            case 'onlyprojectrooms':
+                $roomTypes = [CS_PROJECT_TYPE];
+                break;
+            case 'onlycommunityrooms':
+                $roomTypes = [CS_COMMUNITY_TYPE];
+                break;
+            default:
+                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
+                break;
+        }
+
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $roomFilter = $request->get('roomFilter');
@@ -381,7 +407,7 @@ class RoomController extends Controller
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository('App:Room');
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
 
@@ -406,7 +432,7 @@ class RoomController extends Controller
         if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
             $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
-            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);
 
