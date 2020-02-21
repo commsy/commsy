@@ -3,6 +3,7 @@ namespace App\Repository;
 
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class RoomRepository extends ServiceEntityRepository
@@ -12,25 +13,28 @@ class RoomRepository extends ServiceEntityRepository
         parent::__construct($registry, Room::class);
     }
 
-    public function getMainRoomQueryBuilder($portalId)
+    /**
+     * Returns a new QueryBuilder instance with a query that returns all non-deleted project and/or community rooms
+     * for the given portal ID.
+     *
+     * @param int $portalId portal ID
+     * @param array $roomTypes array of room type strings ('project' and/or 'community'), indicating which rooms shall be returned
+     * @return QueryBuilder
+     */
+    public function getMainRoomQueryBuilder(int $portalId, array $roomTypes = ['project', 'community']): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');
 
         return $qb
             ->where($qb->expr()->andX(
                 $qb->expr()->eq('r.contextId', ':contextId'),
-                $qb->expr()->orX(
-                    $qb->expr()->eq('r.type', ':type_project'),
-                    $qb->expr()->eq('r.type', ':type_community')
-                ),
+                $qb->expr()->in('r.type', $roomTypes),
                 $qb->expr()->isNull('r.deletionDate'),
                 $qb->expr()->isNull('r.deleter')
             ))
             ->orderBy('r.activity', 'DESC')
             ->setParameters([
                 'contextId' => $portalId,
-                'type_project' => 'project',
-                'type_community' => 'community',
             ]);
     }
 }
