@@ -480,6 +480,30 @@ class Portal
         return $this;
     }
 
+    public function getConfigurationSelection():? int
+    {
+        return $this->extras['CONFIGURATION_SELECTION'] ?? 0;
+    }
+
+    public function setConfigurationSelection(?int $configurationSelection): self
+    {
+        $this->extras['CONFIGURATION_SELECTION'] = $configurationSelection;
+        return $this;
+    }
+
+    //CONFIGURATION_ROOM_LIST_TEMPLATES
+
+    public function hasConfigurationRoomListTemplates(): bool
+    {
+        return $this->extras['CONFIGURATION_ROOM_LIST_TEMPLATES'] ?? true;
+    }
+
+    public function setConfigurationRoomListTemplates(?bool $configurationRoomListTemplates): self
+    {
+        $this->extras['CONFIGURATION_ROOM_LIST_TEMPLATES'] = $configurationRoomListTemplates;
+        return $this;
+    }
+
     public function getAnnouncementText():? string
     {
         return $this->extras['ANNOUNCEMENT_TEXT'] ?? '';

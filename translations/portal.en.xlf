@@ -129,6 +129,32 @@
                 <target>Translations</target>
             </trans-unit>
 
+            <!-- portal home -->
+            <trans-unit id="portal_menu_home_title">
+                <source>Portalhome</source>
+                <target>Configure 'all workspaces'</target>
+            </trans-unit>
+            <trans-unit id="portal_breadcrumb_home_title">
+                <source>portalhome</source>
+                <target>configure portal start page</target>
+            </trans-unit>
+            <trans-unit id="all_open_workspaces">
+                <source>all open workspaces</source>
+                <target>alle offenen Räume anzeigen (Standard)</target>
+            </trans-unit>
+            <trans-unit id="all_community_workspaces">
+                <source>all community workspaces</source>
+                <target>nur Gemeinschaftsräume anzeigen (keine Projekträume)</target>
+            </trans-unit>
+            <trans-unit id="only_project_workspaces">
+                <source>only project workspaces</source>
+                <target>nur Projekträume anzeigen (keine Gemeinschaftsräume)</target>
+            </trans-unit>
+            <trans-unit id="workspace_display">
+                <source>Workspace display</source>
+                <target>Raumanzeige</target>
+            </trans-unit>
+
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">
                 <source>Licenses</source>

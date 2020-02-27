@@ -386,6 +386,15 @@ class MenuBuilder
                 'extras' => ['icon' => 'location']
             ])
             ->setExtra('translation_domain', 'portal');
+
+            // translations
+            $menu->addChild('Portalhome', [
+                'label' => 'Portalhome',
+                'route' => 'app_portalsettings_portalhome',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'play-circle']
+            ])
+                ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;

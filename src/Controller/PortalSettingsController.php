@@ -6,8 +6,10 @@ use App\Entity\Portal;
 use App\Entity\Translation;
 use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\GeneralType;
+use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\TranslationType;
+use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -71,6 +73,47 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
+     * @Route("/portal/{portalId}/settings/portalhome")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @ParamConverter("environment", class="App\Services\LegacyEnvironment")
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function portalhome(Portal $portal, Request $request, EntityManagerInterface $entityManager, LegacyEnvironment $environment)
+    {
+        $form = $this->createForm(PortalhomeType::class, $portal);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $legacyEnvironment = $environment->getEnvironment();
+            $room_item = $legacyEnvironment->getCurrentPortalItem();
+            $choice = $portal->getConfigurationSelection();
+            if($choice == 1){
+                $room_item->setShowRoomsOnHome('preselectcommunityrooms');
+            }elseif($choice == 2){
+                $room_item->setShowRoomsOnHome('onlycommunityrooms');
+            }elseif($choice == 3){
+                $room_item->setShowRoomsOnHome('onlyprojectrooms');
+            }else{
+                $room_item->setShowRoomsOnHome('normal');
+            }
+
+            $chosen_templates = $portal->hasConfigurationRoomListTemplates();
+            if($chosen_templates){
+                $room_item->setShowTemplatesInRoomListON();
+            }else{
+                $room_item->setShowTemplatesInRoomListOFF();
+            }
+
+            $entityManager->persist($portal);
+            $entityManager->flush();
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
      * @Route("/portal/{portalId}/settings/announcements")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -79,7 +122,6 @@ class PortalSettingsController extends AbstractController
     public function announcements(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
             $form = $this->createForm(AnnouncementsType::class, $portal);
-
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $entityManager->persist($portal);
