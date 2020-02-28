@@ -850,7 +850,7 @@ class ProfileController extends Controller
 
                 $currentUser->reject();
                 $currentUser->save();
-
+                $userService->blockPossibleCommunityAccess($currentUser, $roomId);
                 return $this->redirect($portalUrl);
             }
         }
