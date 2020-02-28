@@ -374,6 +374,7 @@ class UserController extends BaseController
                             foreach ($users as $user) {
                                 $user->setStatus(0);
                                 $user->save();
+                                $userService->blockPossibleCommunityAccess($user, $roomId);
                             }
                             break;
 
