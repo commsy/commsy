@@ -289,7 +289,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('MODERATOR')")
      */
-    public function changeStatusAction($roomId, Request $request)
+    public function changeStatusAction($roomId, Request $request, UserService $userService)
     {
         $room = $this->getRoom($roomId);
 
@@ -354,6 +354,7 @@ class UserController extends BaseController
                             foreach ($users as $user) {
                                 $user->setStatus(0);
                                 $user->save();
+                                $userService->blockPossibleCommunityAccess($user, $roomId);
                             }
                             break;
 

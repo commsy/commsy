@@ -418,4 +418,26 @@ class UserService
             }
         }
     }
+
+    public function blockPossibleCommunityAccess($user, $roomId)
+    {
+        $legacyEnvironment = $this->legacyEnvironment;
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        $groupRooms = $roomItem->getGroupRoomList();
+        $relatedRooms = $roomManager->getAllRelatedRoomListForUser($user);
+
+        foreach($relatedRooms as $relatedRoom){
+            if(in_array($relatedRoom->getItemID(), $groupRooms->getIDArray())){
+                $relatedUsers = $user->getRelatedUserList();
+                $roomUserList = $relatedRoom->getUserList();
+                foreach($relatedUsers as $relatedUser){
+                    if(in_array($relatedUser->getItemID(), $roomUserList->getIdArray())){
+                        $relatedUser->reject();
+                        $relatedUser->save();
+                    }
+                }
+            }
+        }
+    }
 }
