@@ -13,6 +13,7 @@ use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\UserService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Component\Routing\Annotation\Route;
@@ -289,7 +290,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('MODERATOR')")
      */
-    public function changeStatusAction($roomId, Request $request)
+    public function changeStatusAction($roomId, Request $request, UserService $userService)
     {
         $room = $this->getRoom($roomId);
 
@@ -354,6 +355,7 @@ class UserController extends BaseController
                             foreach ($users as $user) {
                                 $user->setStatus(0);
                                 $user->save();
+                                $userService->blockPossibleCommunityAccess($user, $roomId);
                             }
                             break;
 
