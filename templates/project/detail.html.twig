@@ -41,10 +41,10 @@
                                             {# // FIXME: popup confirm-cancel dialog does not work, yet! #}
                                             {#{ path('app_user_delete', {'roomId': roomId, 'itemId': user.itemId}) }}" id="delete" data-uk-button data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}#}
                                             <li>
-                                                <a href="{{ path('app_settings_delete', {'roomId': project.itemId, 'communityId': roomId}) }}" id="delete">
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': roomId}) }}" id="delete">
                                                     <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'delete'|trans({},'project') }}
                                                 </a>
-                                                <a href="{{ path('app_settings_delete', {'roomId': project.itemId, 'communityId': roomId}) }}">
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': roomId}) }}">
                                                     <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'lock'|trans({},'project') }}
                                                 </a>
                                             </li>
