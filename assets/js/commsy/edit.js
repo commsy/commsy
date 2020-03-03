@@ -104,7 +104,7 @@
                 $(this).find('a').attr('title', 'close the current form to edit this section');
             });
 
-            $("#cs-additional-actions")
+            $(".cs-additional-actions")
                 .addClass('uk-hidden')
                 .parent().find("button.uk-button").addClass("uk-text-muted");
 
