@@ -356,10 +356,13 @@ class SettingsController extends Controller
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
             $roomItem->delete();
             $roomItem->save();
+
 
             // redirect back to portal
             $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();

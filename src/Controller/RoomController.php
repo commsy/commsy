@@ -258,66 +258,6 @@ class RoomController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/moderationsupport", requirements={
-     *     "roomId": "\d+"
-     * })
-     * @Template()
-     */
-    public function moderationsupportAction($roomId, Request $request)
-    {
-        $moderationsupportData = array();
-        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, array(
-            'action' => $this->generateUrl('app_room_moderationsupport', array(
-                'roomId' => $roomId,
-            ))
-        ));
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-            $currentUser = $legacyEnvironment->getCurrentUser();
-
-            $roomManager = $legacyEnvironment->getRoomManager();
-            $roomItem = $roomManager->getItem($roomId);
-
-            $moderatorEmailAdresses = array();
-            $moderatorList = $roomItem->getModeratorList();
-            $moderatorUserItem = $moderatorList->getFirst();
-            while ($moderatorUserItem) {
-                $moderatorEmailAdresses[$moderatorUserItem->getEmail()] = $moderatorUserItem->getFullname();
-                $moderatorUserItem = $moderatorList->getNext();
-            }
-
-            $message = (new \Swift_Message())
-                ->setSubject($data['subject'])
-                ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
-                ->setTo($moderatorEmailAdresses)
-                ->setBody($data['message'])
-            ;
-
-            $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
-
-            $this->get('mailer')->send($message);
-
-            $translator = $this->get('translator');
-
-            return new JsonResponse([
-                'message' => $translator->trans('message was send'),
-                'timeout' => '5550',
-                'layout' => 'cs-notify-message',
-                'data' => array(),
-            ]);
-        }
-
-        return array(
-            'form' => $form->createView(),
-        );
-    }
-
-    /**
      *
      * @Route("/room/{roomId}/all", requirements={
      *     "roomId": "\d+"
@@ -334,6 +274,19 @@ class RoomController extends Controller
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
+        $showRooms = $portalItem->getShowRoomsOnHome();
+        switch ($showRooms) {
+            case 'onlyprojectrooms':
+                $roomTypes = [CS_PROJECT_TYPE];
+                break;
+            case 'onlycommunityrooms':
+                $roomTypes = [CS_COMMUNITY_TYPE];
+                break;
+            default:
+                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
+                break;
+        }
+
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portalItem->showTime(),
             'timePulses' => $roomService->getTimePulses(),
@@ -346,7 +299,7 @@ class RoomController extends Controller
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository(Room::class);
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -367,7 +320,7 @@ class RoomController extends Controller
         // to use the form validation below, instead of manually checking for a
         // specific value
         $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
-        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -432,6 +385,19 @@ class RoomController extends Controller
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
+        $showRooms = $portalItem->getShowRoomsOnHome();
+        switch ($showRooms) {
+            case 'onlyprojectrooms':
+                $roomTypes = [CS_PROJECT_TYPE];
+                break;
+            case 'onlycommunityrooms':
+                $roomTypes = [CS_COMMUNITY_TYPE];
+                break;
+            default:
+                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
+                break;
+        }
+
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $roomFilter = $request->get('roomFilter');
@@ -441,7 +407,7 @@ class RoomController extends Controller
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository('App:Room');
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
 
@@ -466,7 +432,7 @@ class RoomController extends Controller
         if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
             $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
-            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);
 
@@ -972,7 +938,7 @@ class RoomController extends Controller
         }
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
-        $timesDisplay = $currentPortalItem->getCurrentTimeName();
+        $timesDisplay = ucfirst($currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
