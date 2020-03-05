@@ -501,7 +501,7 @@ if ( empty($command) and empty($command_delete) ) {
          if($environment->getCurrentPortalItem()->getHideAccountname()){
          	$userid = $translator->getMessage('MAIL_ONLY_VISIBLE_FOR',$user->getFullName());
          	$session->setValue('status', $status);
-         	$session->setValue('userAccount',$user->getUserID());
+         	$session->setValue('userAccount',$user->getItemID());
          } else {
          	$userid = $user->getUserID();
          }
