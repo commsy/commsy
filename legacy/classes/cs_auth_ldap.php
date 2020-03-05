@@ -212,7 +212,7 @@ class cs_auth_ldap extends cs_auth_manager
     public function delete($user_id)
     {
         include_once('functions/error_functions.php');
-        trigger_error('The methode DELETE [LDAP] is not implemented!', E_USER_ERROR);
+        trigger_error('The methode DELETE [LDAP] is not implemented!', E_USER_NOTICE);
     }
 
     /** get authentication item for a user (user_id) - NOT IMPLEMENTED YET
