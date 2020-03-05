@@ -327,7 +327,7 @@ class PortalController extends Controller
             $editForm = $this->createForm(TranslationType::class, $translation, []);
 
             $editForm->handleRequest($request);
-            if ($editForm->isValid()) {
+            if ($editForm->isSubmitted() && $editForm->isValid()) {
 
                 // tells Doctrine you want to (eventually) save the Product (no queries yet)
                 $em->persist($translation);
