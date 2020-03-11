@@ -274,7 +274,7 @@
         $('#draft-cancel-link').one('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             let $itemType = $(this).parents('#draft-buttons-wrapper').data("item-type");
-            if ($itemType == "section" || $itemType == "step") {
+            if ($itemType == "section" || $itemType == "step" || $itemType == "article") {
                 // return to detail view of the entry
                 window.location.reload(true);
             } else {
