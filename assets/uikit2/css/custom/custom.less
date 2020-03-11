@@ -1,0 +1,385 @@
+@import "base.less";
+@import "cover.less";
+@import "detail.less";
+@import "selectable.less";
+@import "navigation.less";
+@import "list.less";
+@import "dashboard.less";
+@import "rubrics.less";
+@import "progress.less";
+@import "select2.less";
+
+
+@media (max-width: 768px) {
+    .cs-addon-navigation {
+      display:none;
+    }
+}
+
+@media (max-width: 960px) {
+    .cs-avatar-user-detail {
+      width:180px;
+      height:180px;
+    }
+}
+@media (min-width: 960px) {
+    .cs-avatar-user-detail {
+      width:200px;
+      height:200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cs-avatar-user-detail {
+      width:150px;
+      height:150px;
+    }
+}
+
+@media (max-width: 640px) {
+    .cs-avatar-user-detail {
+      width:100px;
+      height:100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cs-avatar-user-detail {
+      width:50px;
+      height:50px;
+    }
+}
+
+div.cs-edit-spinner,
+div.cs-save-spinner {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 150px;
+    > div {
+        background-color: rgba(150, 150, 150, 0.75);
+        padding: 10px;
+        border-radius: 10px;
+        width: 24px
+    }
+}
+
+div.cs-toggle-preview {
+    max-height: 140px;
+    overflow: hidden;
+
+    .uk-margin-bottom;
+}
+
+div.cs-toggle-preview-small {
+    max-height: 100px;
+    overflow: hidden;
+
+    .uk-margin-small-bottom;
+
+    .cs-comment-head {
+        .uk-hidden;
+    }
+}
+
+div.cs-toggle-full {
+    max-height: 100%;
+    overflow: auto !important;
+
+    .uk-margin-bottom-remove;
+
+    .cs-comment-head {
+        display: block !important;
+        visibility: visible !important;
+    }
+}
+
+div.cs-toggle-content {
+    min-height: 120px;
+}
+
+div.cs-toggle-empty {
+    min-height: 60px;
+}
+
+div.cs-toggle-preview-filter {
+    display:none;
+
+    .uk-margin-bottom;
+}
+
+div.cs-toggle-full-filter {
+    display: block;
+}
+
+
+.cs-icon-xxl-large {
+    font-size: 80px;
+    margin-left: auto;
+    margin-right: auto; 
+    vertical-align: -22%;
+}
+
+
+.cs-file-panel-box {
+   padding: 0 5px 5px;
+}
+
+.cs-file-grid > *{
+   padding-left: 10px;
+   margin-bottom:5px;
+}
+
+.cs-file-grid{
+   margin-left: 0px;
+}
+
+
+.cs-accordion-detail {
+    background: none;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 18px;
+    margin-bottom: 10px 0px 10px 5px;
+    margin-top: 0;
+    padding: 5px 0px;
+}
+
+
+.cs-icon-medium {
+    font-size: 28px;
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+.cs-icon-xs-small {
+  font-size: 100%;
+  vertical-align: -10%;
+}
+
+.cs-icon-star-small {
+  font-size: 100%;
+  vertical-align: -10%;
+}
+
+@media (max-width: 960px) {
+    .cs-icon-star-small {
+      font-size: 90%;
+      vertical-align: -10%;
+    }
+}
+
+@media (max-width: 768px) {
+    .cs-icon-star-small {
+      font-size: 80%;
+      vertical-align: -10%;
+    }
+}
+
+@media (max-width: 480px) {
+    .cs-icon-star-small {
+      font-size: 60%;
+      vertical-align: -10%;
+    }
+}
+
+.cs-icon-xs-small-workflow {
+  font-size: 100%;
+  vertical-align: 2px;;
+}
+
+.cs-slider {
+    margin-top: -10px;
+}
+
+.cs-align-center {
+    margin-left: auto;
+    margin-right: auto; 
+    display: block;   
+    text-align: center;
+    margin-bottom: 2px !important;
+}
+
+.cs-list-divider{
+    position:relative;
+    top:27px;
+    color: @cs-brand-color;
+    border-color: @cs-brand-color;    
+}
+
+.cs-detail-section-header-background {
+    background-color: #FFFFFF;
+    position:relative;
+}
+
+.cs-detail-section-header {
+    color: @cs-brand-color;
+    margin-bottom: 25px;
+}
+
+.cs-list-section-header {
+    color: @cs-brand-color;
+    margin-bottom:10px;
+    margin-top:0px;
+    margin-left: 0px;
+}
+
+.cs-remove-border {
+    border: 0px !important;
+}
+
+.cs-padding-10 {
+    padding: 10px;
+}
+
+.cs-padding-5 {
+    padding: 5px;
+}
+
+.cs-padding-left-20 {
+    padding-left: 20px;
+}
+
+.cs-remove-padding {
+    padding: 0px !important;
+}
+
+.cs-brand-color {
+    color: @cs-brand-color;
+}
+
+.required:after {
+    content: "*";
+}
+
+.treeitem .jstree-wholerow,
+.treeitem .jstree-anchor {
+    cursor: default !important;
+}
+
+.cs-icon-mute {
+    color: #dddddd;
+}
+
+.page-break-inside {
+  page-break-inside: avoid;
+}
+
+.page-break-before {
+  page-break-before: always;
+}
+
+a.cs-link-highlight {
+  color: #6491B1 !important;
+}
+
+.cs-date-color-no-color {
+}
+
+.cs-date-color-01 {
+    color: @cs-date-color-01;
+}
+
+.cs-date-color-02 {
+    color: @cs-date-color-02;
+}
+
+.cs-date-color-03 {
+    color: @cs-date-color-03;
+}
+
+.cs-date-color-04 {
+    color: @cs-date-color-04;
+}
+
+.cs-date-color-05 {
+    color: @cs-date-color-05;
+}
+
+.cs-date-color-06 {
+    color: @cs-date-color-06;
+}
+
+.cs-date-color-07 {
+    color: @cs-date-color-07;
+}
+
+.cs-date-color-08 {
+    color: @cs-date-color-08;
+}
+
+.cs-date-color-09 {
+    color: @cs-date-color-09;
+}
+
+.cs-date-color-10 {
+    color: @cs-date-color-10;
+}
+
+.cs-form-input-inline {
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    display: inline;
+}
+
+.cs-moderation-warning {
+    color: #FF7077;
+}
+
+@media (max-width: 960px) {
+  .uk-invisible {
+    visibility: visible !important;
+  }
+
+  .cs-toggle .cs-toggle-icon {
+    visibility: visible !important;
+  }
+
+  .cs-comment-thumbnail{
+    height: 45px !important;
+    width: 45px !important;
+  }
+
+  #room-logo-navbar {
+    display: block;
+  }
+
+  #room-logo-wrapper {
+    display: none;
+  }
+}
+
+.cs-always-invisible {
+  visibility: hidden !important;
+}
+
+.uk-dropdown, .uk-dropdown-blank {
+  z-index: 1000;
+}
+
+.uk-modal {
+  z-index: 10000; /* keep this above menu, to disable clicks on any link -> term of content modal dialog */
+}
+
+#modalMessage {
+  display: none;
+}
+
+.user-comment-info {
+    background-color: @cs-brand-color;
+    color: #fff;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+@media only screen  and (max-width : 1224px) {
+    /* Styles */
+    .responsive-icon-only {
+        width: 30px;
+        height: 25px;
+        overflow: hidden;
+        margin-right: 10px;
+    }
+}

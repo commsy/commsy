@@ -1,0 +1,77 @@
+// Name:            Notify
+// Description:     Defines styles for toggleable notifications
+//
+// Component:       `uk-notify`
+//
+// Sub-objects:     `uk-notify-message`
+//
+// Modifiers:       `uk-notify-top-center`
+//                  `uk-notify-top-right`
+//                  `uk-notify-bottom-left`
+//                  `uk-notify-bottom-center`
+//                  `uk-notify-bottom-right`
+//                  `uk-notify-message-primary`
+//                  `uk-notify-message-success`
+//                  `uk-notify-message-warning`
+//                  `uk-notify-message-danger`
+//
+// Uses:            Close: `uk-close`
+//
+// ========================================================================
+
+
+// Variables
+// ========================================================================
+
+@notify-width: 400px;
+
+@notify-message-primary-background: @notify-message-background;
+@notify-message-primary-color: @notify-message-color;
+@notify-message-primary-highlight: #2d7091;
+
+@notify-message-success-background: @notify-message-background;
+@notify-message-success-color: @notify-message-color;
+@notify-message-success-highlight: #659f13;
+
+@notify-message-warning-background: @notify-message-background;
+@notify-message-warning-color: @notify-message-color;
+@notify-message-warning-highlight: #e28327;
+
+@notify-message-danger-background: @notify-message-background;
+@notify-message-danger-color: @notify-message-color;
+@notify-message-danger-highlight: #d85030;
+
+
+/* ========================================================================
+   Component: Notify
+ ========================================================================== */
+
+// Hooks
+// ========================================================================
+
+.hook-notify-message() {
+    border-radius: 4px;
+    opacity: 0.75 !important;
+}
+
+.hook-notify-message-primary() {
+}
+
+.hook-notify-message-success() {
+}
+
+.hook-notify-message-warning() {
+    box-shadow: 3px 3px @notify-message-warning-highlight;
+
+    i {
+        color: @notify-message-warning-highlight;
+    }
+}
+
+.hook-notify-message-danger() {
+    box-shadow: 3px 3px @notify-message-danger-highlight;
+
+    i {
+        color: @notify-message-danger-highlight;
+    }
+}

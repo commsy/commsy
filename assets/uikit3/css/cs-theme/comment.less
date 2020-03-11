@@ -1,0 +1,110 @@
+// Name:            Comment
+// Description:     Defines styles for comment threads
+//
+// Component:       `uk-comment`
+//
+// Sub-objects:     `uk-comment-header`
+//                  `uk-comment-avatar`
+//                  `uk-comment-title`
+//                  `uk-comment-meta`
+//                  `uk-comment-body`
+//                  `uk-comment-list`
+//                  `uk-comment-primary`
+//
+// Markup:
+//
+// <!-- uk-comment -->
+// <article class="uk-comment">
+//     <header class="uk-comment-header">
+//         <img class="uk-comment-avatar" src="avatar.svg" width="50" height="50" alt="">
+//         <h4 class="uk-comment-title"></h4>
+//         <div class="uk-comment-meta"></div>
+//     </header>
+//     <div class="uk-comment-body">
+//         <p></p>
+//     </div>
+// </article>
+//
+// ========================================================================
+
+//overwritten variables
+@comment-title-font-size: 14px;
+@comment-title-margin-top: 0px;
+@comment-header-margin-bottom: 0px;
+
+@comment-info-color-new: #fc4350;
+@comment-info-color-changed: yellow;
+@comment-padding: 5px;
+
+
+.hook-comment {
+    padding: @comment-padding;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.hook-comment-primary {
+    border: 1px solid rgba(45, 112, 145, 0.3);
+    background-color: rgba(45, 112, 145, 0.2) !important;
+    margin-bottom: 1px;
+    opacity: 1.0 !important;
+}
+
+.uk-comment:nth-of-type(even) {
+  background: #F5F5F5;
+}
+
+.fade-preview {
+    position: absolute;
+    height: 100px;
+    left: 10px;
+    right: 10px;
+    background-image: linear-gradient(rgba(255,255,255,0) 50%, rgba(255, 255, 255, 1));
+    pointer-events: none;
+}
+
+.uk-comment:nth-of-type(even) .fade-preview {
+    background-image: linear-gradient(rgba(241,241,241,0) 50%, rgba(245, 245, 245, 1));
+}
+
+article.uk-comment {
+    > i:first-child {
+        position: absolute;
+        right: 16px;
+    }
+}
+
+.cs-comment-change-info {
+    position: absolute;
+    left:12px;
+    margin-top: -3px;
+    width: 12px;
+    height: 12px;
+    -webkit-transform:rotate(360deg);
+}
+
+.cs-grid-change-info {
+    height: 4px;
+    margin-bottom: 12px;
+    margin-left: -10px;
+    margin-top: -16px;
+    position: relative;
+    width: 12px;    -webkit-transform:rotate(360deg);
+}
+
+.cs-comment-new {
+    background-image: url("/img/flag_neu.gif");
+    width: 12px;
+    height: 12px;
+}
+
+.cs-comment-changed {
+    background-image: url("/img/flag_neu_2.gif");
+    width: 12px;
+    height: 12px;
+}
+
+.cs-comment-thumbnail{
+    margin: 0px 0px 0px 10px;
+    height:42px;
+    width:42px;
+}
