@@ -273,9 +273,16 @@
 
         $('#draft-cancel-link').one('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-            let pathParts = window.location.pathname.split("/");
-            pathParts.pop();
-            window.location.href = pathParts.join("/");
+            let $itemType = $(this).parents('#draft-buttons-wrapper').data("item-type");
+            if ($itemType == "section" || $itemType == "step") {
+                // return to detail view of the entry
+                window.location.reload(true);
+            } else {
+                // return to list view
+                let pathParts = window.location.pathname.split("/");
+                pathParts.pop();
+                window.location.href = pathParts.join("/");
+            }
         });
     }
 
