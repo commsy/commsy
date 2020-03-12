@@ -39,13 +39,12 @@
         {% if new is defined and new %}
             {# description #}
             <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
-                {# NOTE: for now, we have to pass `edit=true` into macrosItem.itemDescription() so that edit.js can auto-click the edit buttons in order to display all sub-forms for editing #}
-                {{ macrosItem.itemDescription('description', step, true, step.description, true) }}
+                {{ macrosItem.itemDescription('description', step, true, step.description, step.draft) }}
             </div>
 
             {# files #}
             <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
-                {{ macrosItem.files(step, true) }}
+                {{ macrosItem.files(step, step.draft) }}
             </div>
 
             <div id="draft-buttons-wrapper" data-item-type="step">

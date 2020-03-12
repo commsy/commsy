@@ -28,12 +28,12 @@
         
         {# description #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-            {{ macrosItem.itemDescription('description', section, true, section.description, true) }}
+            {{ macrosItem.itemDescription('description', section, true, section.description, section.draft) }}
         </div>
 
         {# files #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-            {{ macrosItem.files(section, true) }}
+            {{ macrosItem.files(section, section.draft) }}
         </div>
 
         <div id="draft-buttons-wrapper" data-item-type="section">
