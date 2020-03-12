@@ -101,7 +101,7 @@
             let editButtons = $('.cs-edit');
             editButtons.removeClass('cs-edit');
             editButtons.each(function(){
-                $(this).find('a').attr('title', 'close the current form to edit this section');
+                $(this).find('a').addClass('uk-hidden');
             });
 
             $(".cs-additional-actions")
