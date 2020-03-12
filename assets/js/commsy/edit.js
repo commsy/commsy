@@ -101,10 +101,10 @@
             let editButtons = $('.cs-edit');
             editButtons.removeClass('cs-edit');
             editButtons.each(function(){
-                $(this).find('a').attr('title', 'close the current form to edit this section');
+                $(this).find('a').addClass('uk-hidden');
             });
 
-            $("#cs-additional-actions")
+            $(".cs-additional-actions")
                 .addClass('uk-hidden')
                 .parent().find("button.uk-button").addClass("uk-text-muted");
 
@@ -273,9 +273,16 @@
 
         $('#draft-cancel-link').one('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-            let pathParts = window.location.pathname.split("/");
-            pathParts.pop();
-            window.location.href = pathParts.join("/");
+            let $itemType = $(this).parents('#draft-buttons-wrapper').data("item-type");
+            if ($itemType == "section" || $itemType == "step" || $itemType == "article") {
+                // return to detail view of the entry
+                window.location.reload(true);
+            } else {
+                // return to list view
+                let pathParts = window.location.pathname.split("/");
+                pathParts.pop();
+                window.location.href = pathParts.join("/");
+            }
         });
     }
 
