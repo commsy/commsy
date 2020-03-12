@@ -65,7 +65,7 @@
                     {{ 'no email'|trans({}) }}
                 {% endif %}
             </span><br/>
-            <div class="uk-flex uk-flex-between">
+            <div class="uk-flex uk-flex-space-between">
                 <div>
                     {% if user.telephone %}
                         <a href="tel:{{user.telephone}}">{{ user.telephone|truncate(20) }}</a><br/>

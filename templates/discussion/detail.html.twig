@@ -12,7 +12,7 @@
         <div class="uk-width-medium-4-5">
 
             {# material content panel #}
-            <div class="uk-card uk-card-default">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
                 {# panel teaser #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
@@ -328,7 +328,7 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#articles{{ discussion.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#articles{{ discussion.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ discussion.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ discussion.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ discussion.itemId }}">{{ 'links'|trans({})}}</a></li>

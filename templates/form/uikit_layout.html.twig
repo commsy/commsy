@@ -2,11 +2,6 @@
 
 {# Widgets #}
 
-{%- block form_widget_simple -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-input')|trim}) %}
-    {{- parent() -}}
-{%- endblock form_widget_simple -%}
-
 {%- block form_widget_compound -%}
     <fieldset>
         {{- parent() -}}
@@ -63,6 +58,11 @@
 {%- endblock button_row -%}
 
 {# Misc #}
+
+{% block form_start -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_start %}
 
 {% macro nestedChoiceTree(choices, level) %}
     {% import _self as nestedMacro %}

@@ -1,121 +1,100 @@
+{% import 'utils/macros.html.twig' as macros %}
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
-        {% embed 'components/feed_item.twig' %}
-            {% import 'utils/macros.html.twig' as macros %}
-
-            {% block item_id %}{{ feedItem.itemId }}{% endblock %}
-
-            {% block left %}
-                {% if feedItem.itemType != 'user' %}
-                    {% if feedItem.type != 'date' %}
-                        {% if not feedItem.modificatorItem.isDeleted and feedItem.modificatorItem.isUser %}
-                            {{ macros.userIconLink(feedItem.modificatorItem) }}
-                        {% else %}
-                            {{ macros.userIcon(feedItem.modificatorItem) }}
-                        {% endif %}
-                    {% else %}
-                        {% if not feedItem.isExternal %}
+        <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
+            <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
+            {% if feedItem.type != 'date' %}
+                {{ macros.statusColor(readerList, feedItem.itemId) }}
+            {% else %}
+                {% if not feedItem.isExternal %}
+                    {{ macros.statusColor(readerList, feedItem.itemId) }}
+                {% endif %}
+            {% endif %}
+            <header class="uk-comment-header uk-flex">
+                <div class="uk-margin-right uk-flex-item-none">
+                    {% if feedItem.itemType != 'user' %}
+                        {% if feedItem.type != 'date' %}
                             {% if not feedItem.modificatorItem.isDeleted and feedItem.modificatorItem.isUser %}
                                 {{ macros.userIconLink(feedItem.modificatorItem) }}
                             {% else %}
                                 {{ macros.userIcon(feedItem.modificatorItem) }}
                             {% endif %}
                         {% else %}
-                            <div class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ feedItem.calendar.title }}">
-                                <div class="uk-container-center uk-margin-small-top" style="width:24px; height:24px;">
-                                    <i class="uk-icon-medium uk-icon-calendar" style="color:{{ feedItem.calendar.color }}; width:24px; height:24px;"></i>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% else %}
-                    {% if not feedItem.isDeleted and feedItem.isUser %}
-                        {{ macros.userIconLink(feedItem) }}
-                    {% else %}
-                        {{ macros.userIcon(feedItem) }}
-                    {% endif %}
-                {% endif %}
-                <div class="uk-comment-meta">
-                    {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
-                    {% else %}
-                        {% if '9999-00-00' not in feedItem.getModificationDate %}
-                            {{feedItem.getModificationDate|date("d.m.Y")}}
-                        {% else %}
-                            {{feedItem.getCreationDate|date("d.m.Y")}}
-                        {% endif %}
-                    {% endif %}
-                </div>
-            {% endblock %}
-
-            {% block meta_above %}
-                <a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title|decodeHtmlEntity}}</a>
-            {% endblock %}
-
-            {% block title %}
-                {% set feedItemType = feedItem.type %}
-                {% if feedItem.type == 'label' %}
-                    {% set feedItemType = feedItem.labelType %}
-                {% endif %}
-
-                <a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}/{{ feedItemType }}/{{ feedItem.itemID }}">
-                    {% if feedItem.itemType != 'user' %}
-                        {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType == 'date' and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
-                    {% else %}
-                        {{ macros.userFullname(feedItem) }}
-                    {% endif %}
-                </a>
-            {% endblock %}
-
-            {% block meta_top %}
-                {% if feedItem.itemType == 'announcement' %}
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}
-                {% elseif feedItem.itemType == 'date' %}
-                    {{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}
-                {% elseif feedItem.itemType == 'material' %}
-                        {% if feedItem.author != '' %}
-                                {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
+                            {% if not feedItem.isExternal %}
+                                {% if not feedItem.modificatorItem.isDeleted and feedItem.modificatorItem.isUser %}
+                                    {{ macros.userIconLink(feedItem.modificatorItem) }}
+                                {% else %}
+                                    {{ macros.userIcon(feedItem.modificatorItem) }}
+                                {% endif %}
                             {% else %}
-                                {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                                <div class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ feedItem.calendar.title }}">
+                                    <div class="uk-container-center uk-margin-small-top" style="width:24px; height:24px;">
+                                        <i class="uk-icon-medium uk-icon-calendar" style="color:{{ feedItem.calendar.color }}; width:24px; height:24px;"></i>
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% endif %}
-                {% elseif feedItem.itemType == 'discussion' %}
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}
-                {% elseif feedItem.itemType == 'user' %}
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem) }}
-                {% elseif feedItem.itemType == 'group' %}
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}
-                {% elseif feedItem.itemType == 'todo' %}
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}
-                {% elseif feedItem.itemType == 'task' %}
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}
-                {% endif %}
-            {% endblock %}
-
-            {% block meta_bottom %}
-                {{ macros.fileListShort(feedItem) }}
-            {% endblock %}
-
-            {% block right %}
-                <div class="uk-text-right">
-                    <span uk-icon="icon: {{- macros.iconClassForItemType(feedItem.itemType) -}}"></span>
-                    {% if feedItem.type != 'date' %}
-                        {{ macros.statusColor(readerList, feedItem.itemId) }}
                     {% else %}
-                        {% if not feedItem.isExternal %}
-                            {{ macros.statusColor(readerList, feedItem.itemId) }}
+                        {% if not feedItem.isDeleted and feedItem.isUser %}
+                            {{ macros.userIconLink(feedItem) }}
+                        {% else %}
+                            {{ macros.userIcon(feedItem) }}
                         {% endif %}
                     {% endif %}
+                    <div class="uk-comment-meta">
+                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
+                        {% else %}
+                            {% if '9999-00-00' not in feedItem.getModificationDate %}
+                                {{feedItem.getModificationDate|date("d.m.Y")}}
+                            {% else %}
+                                {{feedItem.getCreationDate|date("d.m.Y")}}
+                            {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
-            {% endblock %}
-        {% endembed %}
+                <div>
+                    <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title|decodeHtmlEntity}}</a></div>
+                    <h4 class="uk-comment-title">
+                        {% set feedItemType = feedItem.type %}
+                        {% if feedItem.type == 'label' %}
+                            {% set feedItemType = feedItem.labelType %}
+                        {% endif %}
 
-
-{#        <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">#}
-{#            <header class="uk-comment-header uk-flex">#}
-{#                <div class="uk-margin-right uk-flex-item-none">#}
-
-{#                </div>#}
-{#            </header>#}
-{#        </article>#}
+                        <a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}/{{ feedItemType }}/{{ feedItem.itemID }}">
+                            {% if feedItem.itemType != 'user' %}
+                                {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType == 'date' and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
+                            {% else %}
+                                {{ macros.userFullname(feedItem) }}
+                            {% endif %}
+                        </a>
+                    </h4>
+                    {% if feedItem.itemType == 'announcement' %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                    {% elseif feedItem.itemType == 'date' %}
+                        <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
+                    {% elseif feedItem.itemType == 'material' %}
+                        <div class="uk-comment-meta">
+                            {% if feedItem.author != '' %}
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
+                                {% else %}
+                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                            {% endif %}                        
+                        </div>
+                    {% elseif feedItem.itemType == 'discussion' %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                    {% elseif feedItem.itemType == 'user' %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem) }}</div>
+                    {% elseif feedItem.itemType == 'group' %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                    {% elseif feedItem.itemType == 'todo' %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                    {% elseif feedItem.itemType == 'task' %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.creator) }}</div>
+                    {% endif %}
+                    <div class="uk-comment-meta">{{ macros.fileListShort(feedItem) }}</div>
+                </div>
+            </header>
+        </article>
     {% endfor %}
 {% endif %}

@@ -11,11 +11,7 @@
         {% set userCount = 1 %}
     {% endif %}
     
-    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{{ {
-        'editUrl': path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}),
-        'cancelEditUrl': path('app_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}),
-        'draft' : draft
-    }|json_encode|e('html_attr') }}">
+    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >

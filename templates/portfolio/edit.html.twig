@@ -7,7 +7,7 @@
 
                 {# panel title bar #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{% if item.draft %}{{ 'Create new portfolio'|trans({}, 'portfolio') }}{% else %}{{ 'Edit Portfolio'|trans({}, 'portfolio') }}{% endif %}</div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
 
-                    <div class="uk-flex uk-flex-between uk-margin-top">
+                    <div class="uk-flex uk-flex-space-between uk-margin-top">
                         <div class="uk-flex">
                             <div class="uk-margin-small-left">
                                 {{ form_row(form.save) }}

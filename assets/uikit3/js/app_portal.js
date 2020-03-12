@@ -16,8 +16,8 @@ require('moment/moment');
 require('expose-loader?URI!urijs/src/URI');
 require('select2/dist/js/select2');
 
-import UIkit from 'uikit';
-import Icons from 'uikit/dist/js/uikit-icons';
+import UIkit from 'uikit3';
+import Icons from 'uikit3/dist/js/uikit-icons';
 
 // loads the Icon plugin
 UIkit.use(Icons);

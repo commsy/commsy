@@ -1,17 +1,21 @@
-{% extends 'base/sidebar_layout.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
 {% import 'dashboard/macros.html.twig' as macros %}
 
-{% block title %}
+{% block roomTitle %}
     {{ 'Dashboard'|trans({}, "room") }}
 {% endblock %}
 
-{% block main %}
+{% block breadcrumb %}
+    {{ wo_render_breadcrumbs({ viewTemplate: "breadcrumbs/breadcrumbs.html.twig" }) }}
+{% endblock %}
+
+{% block content %}
     <div id="dashboard-cover" aria-hidden="false">
         <h1 class="uk-h2">{{ 'my home'|trans({}, "menu") }}</h1>
     </div>
 
-    <div class="uk-grid">
+    <div class="uk-grid uk-grid-match" data-uk-grid-margin>
         {% set showServerNews = server.showServerNews %}
         {% if showServerNews and not portal.showNewsFromServer %}
             {% set showServerNews = false %}
@@ -49,13 +53,13 @@
         {% endif %}
 
         {# right column #}
-        <div class="uk-width-1-2@m">
+        <div class="uk-width-medium-1-2 uk-push-1-2">
             {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
             {{ macros.dashboardExternalAccess(roomItem) }}
         </div>
 
         {# left column #}
-        <div class="uk-width-1-2@m uk-flex-first@m">
+        <div class="uk-width-medium-1-2 uk-pull-1-2 uk-row-first">
             {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
             {{ macros.dashboardFeed(roomItem) }}
         </div>

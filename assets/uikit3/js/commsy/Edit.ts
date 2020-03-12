@@ -1,6 +1,6 @@
 'use strict';
 
-import * as UIkit from 'uikit';
+import * as UIkit from 'uikit3';
 import htmlString = JQuery.htmlString;
 import {DatePicker} from "./DatePicker";
 

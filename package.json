@@ -41,8 +41,8 @@
     "tooltipster": "^4.2.5",
     "ts-loader": "^5.3.0",
     "typescript": "^3.7.3",
-    "uikit2": "npm:uikit@2.27.4",
-    "uikit": "^3.3.3",
+    "uikit": "npm:uikit@2.27.4",
+    "uikit3": "npm:uikit@^3.3.3",
     "urijs": "^1.18.10",
     "video.js": "^5.19.2",
     "webpack-notifier": "^1.8.0"

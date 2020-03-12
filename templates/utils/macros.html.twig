@@ -1,26 +1,26 @@
 {% macro iconClassForItemType(type) %}
     {% if type == 'announcement' %}
-        comment
+        uk-icon-comment-o
     {% elseif type == 'date' %}
-        calendar
+        uk-icon-calendar
     {% elseif type == 'material' %}
-        file-text
+        uk-icon-file-o
     {% elseif type == 'section' %}
-        file-text
+        uk-icon-file-o
     {% elseif type == 'discussion' %}
-        comments
+        uk-icon-comments-o
     {% elseif type == 'user' %}
-        user
+        uk-icon-user
     {% elseif type == 'group' %}
-        users
+        uk-icon-group
     {% elseif type == 'todo' %}
-        future
+        uk-icon-check-square-o
     {% elseif type == 'task' %}
-        check
+        uk-icon-home
     {% elseif type == 'topic' %}
-        album
+        uk-icon-book
     {% elseif type == 'room' %}
-        world
+        uk-icon-sitemap
     {% endif %}
 {% endmacro %}
 
@@ -607,7 +607,7 @@
 
         <div class="uk-form-label">{{ 'categoriesAndBuzzwords'|trans({}, "messages")|capitalize }}</div>
         <div class="uk-form-controls">
-            <ul id="mandatoryLinkFormTabs" class="uk-tab" uk-tab="{connect:'#mandatoryLinksForm'}">
+            <ul id="mandatoryLinkFormTabs" class="uk-tab" data-uk-tab="{connect:'#mandatoryLinksForm'}">
                 {% if showCategories %}
                     <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
                 {% endif %}

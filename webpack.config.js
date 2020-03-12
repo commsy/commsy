@@ -32,8 +32,8 @@ Encore
     // allow less files to be processed
     .enableLessLoader(function(options) {
         options.paths = [
-            'node_modules/uikit2/src/less',
             'node_modules/uikit/src/less',
+            'node_modules/uikit3/src/less',
             'assets/uikit2/css'
         ]
     })
@@ -43,7 +43,7 @@ Encore
         includeSubdirectories: false
     })
 
-    .addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /uikit2\/dist\/js\/components$/))
+    .addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /uikit\/dist\/js\/components$/))
     .addPlugin(new HardSourceWebpackPlugin())
 
     // will require an extra script tag for runtime.js

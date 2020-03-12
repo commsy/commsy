@@ -1,6 +1,6 @@
 'use strict';
 
-import * as UIkit from 'uikit';
+import * as UIkit from 'uikit3';
 
 export class Upload {
     private options = {
