@@ -176,25 +176,31 @@ class cs_announcement_item extends cs_item {
        $this->replaceElasticItem($objectPersister, $repository);
    }
 
-   /** delete announcement
-    * this method deletes the announcement
-    */
-   function delete() {
-      $manager = $this->_environment->getAnnouncementManager();
-      $this->_delete($manager);
+    /** delete announcement
+     * this method deletes the announcement
+     */
+    public function delete()
+    {
+        global $symfonyContainer;
 
-      // delete associated annotations
-      $this->deleteAssociatedAnnotations();
-      $this->SendDeleteEntryMailToModerators();
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Announcement');
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $manager = $this->_environment->getAnnouncementManager();
+        $this->_delete($manager);
 
+        // delete associated annotations
+        $this->deleteAssociatedAnnotations();
+
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Announcement');
+
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    /** asks if item is editable by everybody or just creator
     *
@@ -230,7 +236,6 @@ class cs_announcement_item extends cs_item {
       $copy->setModificatorItem($user);
       $list = new cs_list();
       $copy->setGroupList($list);
-      $copy->setInstitutionList($list);
       $copy->setTopicList($list);
       $copy->save();
       return $copy;
@@ -240,8 +245,6 @@ class cs_announcement_item extends cs_item {
       $clone_item = clone $this; // "clone" needed for php5
       $group_list = $this->getGroupList();
       $clone_item->setGroupList($group_list);
-      $institution_list = $this->getInstitutionList();
-      $clone_item->setInstitutionList($institution_list);
       $topic_list = $this->getTopicList();
       $clone_item->setTopicList($topic_list);
       return $clone_item;

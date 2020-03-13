@@ -1,0 +1,287 @@
+// Name:            Form
+// Description:     Defines styles for forms
+//
+// Component:       `uk-form`
+//
+// Sub-objects:     `uk-form-row`
+//                  `uk-form-help-inline`
+//                  `uk-form-help-block`
+//                  `uk-form-label`
+//                  `uk-form-controls`
+//                  `uk-form-controls-condensed`
+//                  `uk-form-icon`
+//
+// Modifiers:       `uk-form-stacked`
+//                  `uk-form-horizontal`
+//
+// Sub-modifiers:   `uk-form-danger`
+//                  `uk-form-success`
+//                  `uk-form-small`
+//                  `uk-form-large`
+//                  `uk-form-blank`
+//                  `uk-form-width-mini`
+//                  `uk-form-width-small`
+//                  `uk-form-width-medium`
+//                  `uk-form-width-large`
+//                  `uk-form-controls-text`
+//
+// Markup:
+//
+// <!-- uk-form -->
+// <form class="uk-form">
+//     <div class="uk-form-row">
+//         <label class="uk-form-label" for="form-input-1"></label>
+//         <div class="uk-form-controls">
+//             <input type="text" id="form-input-1" placeholder="Text">
+//         </div>
+//     </div>
+// </form>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+@form-tiny-height: 19px;
+@form-tiny-padding: 3px 3px;
+@form-tiny-font-size: 12px;
+
+@form-horizontal-label-width: 150px;
+@form-horizontal-controls-margin-left: 150px;
+
+@form-horizontal-label-width: 150px;
+@form-horizontal-controls-margin-left: 150px;
+
+@form-stacked-dynamic-font-weight: normal;
+
+@form-horizontal-dynamic-label: 40%;
+
+/* Size modifiers
+ * Higher specificity needed to override defaults
+ ========================================================================== */
+
+select.uk-form-tiny,
+textarea.uk-form-tiny,
+input[type].uk-form-tiny,
+input:not([type]).uk-form-tiny {
+    height: @form-tiny-height;
+    padding: @form-tiny-padding;
+    font-size: @form-tiny-font-size;
+}
+
+/* Style modifiers
+ * Using !important to keep the selector simple
+ ========================================================================== */
+
+/*
+ * Blank form
+ */
+
+.form-transparent {
+    color: white !important;
+    border-color: white !important;
+    border-style: solid !important;
+    background: none !important;
+    .hook-form-blank;
+}
+
+.form-transparent:focus {
+    border-color: @form-blank-border !important;
+    .hook-form-blank-focus;
+}
+
+.uk-form input[type="checkbox"] {
+    vertical-align:bottom;
+}
+
+/* Tablet portrait and smaller */
+@media (max-width: @breakpoint-medium-max) {
+
+    /* Behave like `uk-form-stacked` */
+    .cs-form-horizontal-dynamic .uk-form-label {
+        margin-bottom: @form-stacked-margin-bottom;
+        font-weight: @form-stacked-dynamic-font-weight;
+        width: @form-horizontal-dynamic-label;
+        display: inline;
+    }
+
+}
+
+/* Desktop and bigger */
+@media (min-width: @breakpoint-large) {
+
+    .cs-form-horizontal-dynamic .uk-form-label {
+        width: @form-horizontal-dynamic-label;
+        margin-top: @form-horizontal-label-margin-top;
+        float: left;
+     }
+
+    .cs-form-horizontal-dynamic .uk-form-controls { 
+        margin-left: @form-horizontal-dynamic-label; 
+        width: 60%;
+    }
+    
+    .cs-form-horizontal-full-width{
+        width: 100%;
+    }
+
+}
+
+.cs-form-scroll {
+    height: 300px;
+    overflow: scroll;
+}
+
+.cs-form-scroll ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+.cs-form-scroll ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+.cs-upload-form {
+    min-height: 100px;
+    text-align:center;
+}
+
+.cs-button-margin-top{
+    margin-top:25px !important;
+}
+
+form[name="upload"] {
+    div[data-prototype] .uk-form-controls {
+        float:left;
+    }
+
+    .uk-form-label {
+        padding: 3px 0px 0px 20px;
+        font-weight:normal;
+    }
+}
+
+#material_title {
+    height:40px;
+    font-size:28px;
+    width:100% !important;
+}
+
+textarea[id*=descriptionedit] {
+    display:none !important;
+}
+
+#material_biblio_sub_url_date {
+    float:left;
+}
+
+#linksSubTab ul li {
+    cursor: pointer;
+}
+
+#itemsLinkedList li {
+    cursor: pointer;
+}
+
+#itemsLinkedList li div:hover {
+    border-color: #73A0C0;
+    background: #73A0C0;
+    color: #059;
+    outline: none;
+}
+
+.cs-linked-item:hover {
+    border-color: #f5f5f5;
+    background: #f5f5f5;
+    color: #059;
+    outline: none;
+}
+
+.cs-linked-item-selected {
+    border-color: @cs-brand-color;
+    background: @cs-brand-color;
+    color: white;
+    outline: none;
+}
+
+.cs-linked-item-selected a {
+    color: white;
+}
+
+.cs-linked-item-preselected div {
+    border-color: @cs-brand-color;
+    border: 1px solid @cs-brand-color;
+    background-color: @cs-brand-color;
+    color: white;
+}
+
+.cs-form-title {
+    height: 40px !important;
+    font-size: 28px !important;
+    width: 100% !important;
+}
+
+.cs-form-label-help {
+    text-decoration: underline;
+}
+
+.uk-form-horizontal .cke,
+.uk-form-horizontal .cke_editable {
+    margin-left: 150px;
+}
+
+.uk-form-controls textarea {
+    resize: vertical;
+}
+
+#profile_form_user_image, #profile_form_user_initials{
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    margin-top: 30px;
+}
+
+#profile_form_user_image + div.uk-position-cover{
+    height: 200px;
+    width: 200px;
+    opacity: 0;
+    margin-top: 30px;
+}
+
+#additional_status_list span.uk-icon-small:hover{
+    cursor: pointer; 
+    cursor: hand;
+}
+
+.feed article.uk-comment div.uk-width-6-10{
+    max-width: 435px;
+}
+
+.feed article.uk-comment div.uk-flex-item-none{
+    width: 63px;
+}
+
+.form-errors {
+    color: #ff0000;
+}
+
+.form-errors li {
+    list-style-type: none;
+}
+
+.cs-user-calendars-settings .uk-form-controls {
+    margin-left: 20px;
+}
+
+ul#linksForm, ul#mandatoryLinksForm {
+    input {
+        vertical-align: text-bottom;
+    }
+
+    label {
+        float: inherit;
+    }
+}
+
+// Hooks
+// ========================================================================

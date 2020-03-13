@@ -180,6 +180,10 @@
                 <source>Rubric selection tip</source>
                 <target>In order to be able to manage the workspace membership of individual users, workspace moderators like yourself will always see the rubric "<![CDATA[<span class='uk-text-bold'>]]>Users<![CDATA[</span>]]>", even if it is deactivated for normal users.</target>
             </trans-unit>
+            <trans-unit id="community_rooms_tip">
+                <source>Community rooms tip</source>
+                <target>Assigning this project workspace to community workspaces will allow the moderator(s) of the community workspace(s) to delete this project workspace and its related group workspaces.</target>
+            </trans-unit>
             <trans-unit id="room_language_tip">
                 <source>Room language tip</source>
                 <target>Use a workspace specific system language or fall back to the user's preferences.</target>
@@ -551,7 +555,7 @@
             </trans-unit>
             <trans-unit id="workflow_validity">
                 <source>Validity</source>
-                <target>Validity date</target>
+                <target>2nd resubmission</target>
             </trans-unit>
             <trans-unit id="workflow_trafic_light">
                 <source>Status view</source>

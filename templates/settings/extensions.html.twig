@@ -6,9 +6,9 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
-            <div class="uk-card uk-card-default">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ 'Extensions configuration'|trans({}, 'settings') }}</div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                             {{ form_row(form.workflow.traffic_light.status_view) }}
 
                             <div class='uk-form-row'>
-                                <div class='uk-form-label'>{{ 'Default status' | trans({} , 'settings') }}</div>
+                                {{ form_label(form.workflow.traffic_light.default_status) }}
                                 <div class='uk-form-controls'>
                                     <span style='width: 205px; display: inline-block;'>
                                         <label for='extension_settings_workflow_traffic_light_default_status_0'>

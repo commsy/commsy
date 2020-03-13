@@ -444,7 +444,7 @@ class MenuBuilder
 
             $rubrics = [];
             $label = "home";
-            $icon = "home";
+            $icon = "uk-icon-home";
             $route = "app_room_home";
 
             if (!$inPrivateRoom) {
@@ -482,7 +482,7 @@ class MenuBuilder
                     'label' => $label,
                     'route' => $route,
                     'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => $icon)
+                    'extras' => array('icon' => $icon . ' uk-icon-small')
                 ))
                 ->setExtra('translation_domain', 'menu');
 
@@ -516,7 +516,7 @@ class MenuBuilder
                             'label' => 'settings',
                             'route' => 'app_settings_general',
                             'routeParameters' => array('roomId' => $roomId),
-                            'extras' => array('icon' => 'cog')
+                            'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
                         ))
                             ->setExtra('translation_domain', 'menu');
                     }
@@ -581,26 +581,40 @@ class MenuBuilder
         // return uikit icon class for rubric
         switch ($rubric) {
             case 'announcement':
-                return 'comment';
+                $class = "uk-icon-justify uk-icon-comment-o uk-icon-small";
+                break;
             case 'date':
-                return 'calendar';
+                $class = "uk-icon-justify uk-icon-calendar uk-icon-small";
+                break;
             case 'material':
-                return 'file-text';
+                $class = "uk-icon-justify uk-icon-file-o uk-icon-small";
+                break;
             case 'discussion':
-                return 'comments';
+                $class = "uk-icon-justify uk-icon-comments-o uk-icon-small";
+                break;
             case 'user':
-                return 'user';
+                $class = "uk-icon-justify uk-icon-user uk-icon-small";
+                break;
             case 'group':
-                return 'users';
+                $class = "uk-icon-justify uk-icon-group uk-icon-small";
+                break;
             case 'todo':
-                return 'future';
+                $class = "uk-icon-justify uk-icon-check-square-o uk-icon-small";
+                break;
             case 'topic':
-                return 'album';
+                $class = "uk-icon-justify uk-icon-book uk-icon-small";
+                break;
             case 'project':
+                $class = "uk-icon-justify uk-icon-sitemap uk-icon-small";
+                break;
             case 'institution':
-                return 'world';
+                $class = "uk-icon-justify uk-icon-institution uk-icon-small";
+                break;
+            
             default:
-                return 'home';
+                $class = "uk-icon-justify uk-icon-home uk-icon-small";
+                break;
         }
+        return $class;
     }
 }

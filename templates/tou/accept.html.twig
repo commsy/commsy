@@ -1,12 +1,12 @@
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 {% form_theme form 'form/uikit_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
         <div class="uk-width-1-1">
-            <div class="uk-card uk-card-default">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         {% if context.portal %}
                             {% set title = 'Portal'|trans({}, 'portal') %}
                         {% else %}
@@ -25,7 +25,7 @@
                     <blockquote>{{ touText|raw }}</blockquote>
 
                     {{ form_start(form) }}
-                        <div class="uk-flex uk-flex-between">
+                        <div class="uk-flex uk-flex-space-between">
                             {{ form_widget(form.accept) }}
                             {{ form_widget(form.decline) }}
                         </div>

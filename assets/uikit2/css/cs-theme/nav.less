@@ -1,0 +1,242 @@
+// Name:            Nav
+// Description:     Defines styles for list navigations
+//
+// Component:       `uk-nav`
+//
+// Sub-objects:     `uk-nav-header`
+//                  `uk-nav-divider`
+//                  `uk-nav-sub`
+//
+// Modifiers:       `uk-nav-parent-icon`
+//                  `uk-nav-side`
+//                  `uk-nav-dropdown`
+//                  `uk-nav-navbar`
+//                  `uk-nav-offcanvas`
+//
+// States:          `uk-active`
+//                  `uk-parent`
+//                  `uk-open`
+//                  `uk-touch`
+//
+// Uses:            Icon: FontAwesome
+//
+// Used by:         Panel
+//                  Dropdown
+//
+// Markup:
+//
+// <!-- uk-nav -->
+// <ul class="uk-nav">
+//     <li class="uk-active"><a href=""></a></li>
+//     <li><a href=""></a></li>
+// </ul>
+//
+// ========================================================================
+
+
+// Variables
+// ========================================================================
+
+@nav-padding-horizontal: 10px;
+
+@nav-divider-margin-horizontal: 0px;
+
+@nav-side-color: #CFCFCF;
+@nav-side-hover-background: rgba(0,0,0,0.15);
+@nav-side-hover-color: #989898;
+@nav-side-nested-color: #CFCFCF;
+@nav-side-nested-hover-color: #989898;
+
+
+// @nav-padding-vertical:                          5px;
+// @nav-padding-horizontal:                        15px;
+
+// @nav-header-padding-vertical:                   @nav-padding-vertical;
+// @nav-header-padding-horizontal:                 @nav-padding-horizontal;
+// @nav-header-font-size:                          12px;
+// @nav-header-font-weight:                        bold;
+// @nav-header-text-transform:                     uppercase;
+// @nav-header-margin-top:                         15px;
+
+// @nav-divider-margin-vertical:                   9px;
+// @nav-divider-margin-horizontal:                 @nav-padding-horizontal;
+
+// @nav-subtitle-font-size:                        12px;
+// @nav-subtitle-line-height:                      18px;
+
+// @nav-nested-padding-left:                       15px;
+// @nav-nested-padding-vertical:                   2px;
+// @nav-nested-padding-horizontal:                 0;
+
+// @nav-sub-padding-vertical:                      5px;
+// @nav-sub-padding-left:                          @nav-padding-horizontal;
+
+// @nav-parent-icon:                               "\f104";
+// @nav-parent-open-icon:                          "\f107";
+// @nav-parent-icon-width:                         20px;
+// @nav-parent-icon-margin-right:                  -10px;
+
+// @nav-side-color:                                #444;
+// @nav-side-hover-background:                     rgba(0,0,0,0.05);
+// @nav-side-hover-color:                          #444;
+// @nav-side-active-background:                    #00a8e6;
+// @nav-side-active-color:                         #fff;
+// @nav-side-header-color:                         #444;
+// @nav-side-divider-border:                       #ddd;
+// @nav-side-divider-border-width:                 1px;
+// @nav-side-nested-color:                         #07D;
+// @nav-side-nested-hover-color:                   #059;
+
+// @nav-dropdown-color:                            #444;
+// @nav-dropdown-hover-background:                 #00a8e6;
+// @nav-dropdown-hover-color:                      #fff;
+// @nav-dropdown-header-color:                     #999;
+// @nav-dropdown-divider-border:                   #ddd;
+// @nav-dropdown-divider-border-width:             1px;
+// @nav-dropdown-nested-color:                     #07D;
+// @nav-dropdown-nested-hover-color:               #059;
+
+// @nav-navbar-color:                              #444;
+// @nav-navbar-hover-background:                   #00a8e6;
+// @nav-navbar-hover-color:                        #fff;
+// @nav-navbar-header-color:                       #999;
+// @nav-navbar-divider-border:                     #ddd;
+// @nav-navbar-divider-border-width:               1px;
+// @nav-navbar-nested-color:                       #07D;
+// @nav-navbar-nested-hover-color:                 #059;
+
+// @nav-offcanvas-padding-vertical:                10px;
+// @nav-offcanvas-padding-horizontal:              15px;
+// @nav-offcanvas-color:                           #ccc;
+// @nav-offcanvas-hover-background:                #404040;
+// @nav-offcanvas-hover-color:                     #fff;
+// @nav-offcanvas-active-background:               #1a1a1a;
+// @nav-offcanvas-active-color:                    #fff;
+// @nav-offcanvas-header-color:                    #777;
+// @nav-offcanvas-divider-border:                  #1a1a1a;
+// @nav-offcanvas-divider-border-width:            1px;
+// @nav-offcanvas-nested-color:                    #ccc;
+// @nav-offcanvas-nested-hover-color:              #fff;
+
+/* Modifier `uk-nav-side`
+ ========================================================================== */
+
+/*
+    Active
+    allow uk-active not only for children, but all successors
+ */
+#cs-nav-quick .uk-nav-side li.uk-active > a {
+    background: @base-link-color;
+    color: white;
+    .hook-nav-side-active;
+}
+
+#cs-nav-quick .uk-nav-side li.uk-active > a:hover {
+    background: @base-link-color;
+    color: white;
+    .hook-nav-side-active;
+}
+
+#cs-nav-quick .uk-nav-side > li > a {
+    color: black;
+}
+
+#cs-nav-quick .uk-nav-side > li > a:hover {
+    color: white;
+}
+
+#cs-nav-quick .uk-nav-side > li:hover {
+    background: @base-link-color;
+    color: white;
+}
+
+#cs-nav-quick .uk-list ul {
+   background: white;
+}
+
+#cs-nav-quick .uk-list ul > li:hover{
+   background: @base-link-color;
+}
+
+#cs-nav-quick .uk-nav-side ul a {
+    color: black;
+}
+
+#cs-nav-quick .uk-nav-side ul a:hover {
+    color: white;
+}
+
+
+#cs-entry-navigation {
+    min-width: 175px;
+}
+
+#cs-entry-navigation .uk-nav-side li.uk-active > a , #cs-additional-actions .uk-nav-side li.uk-active > a {
+    background: @base-link-color;
+    color: white;
+    .hook-nav-side-active;
+}
+
+#cs-entry-navigation .uk-nav-dropdown li.uk-active > a:hover, #cs-additional-actions .uk-nav-dropdown li.uk-active > a:hover {
+    background: @base-link-color;
+    color: white;
+    .hook-nav-side-active;
+}
+
+#cs-entry-navigation .uk-nav-side > li > a, #cs-additional-actions .uk-nav-side > li > a {
+    color: black;
+}
+
+#cs-entry-navigation .uk-nav-side > li > a:hover , #cs-additional-actions .uk-nav-side > li > a:hover {
+    color: white;
+}
+
+#cs-entry-navigation .uk-nav-dropdown > li > a:hover, #cs-additional-actions .uk-nav-dropdown > li > a:hover {
+    background: @base-link-color;
+    color: white;
+}
+
+#cs-entry-navigation .uk-nav-dropdown > li > a:focus, #cs-additional-actions .uk-nav-dropdown > li > a:focus {
+    background: @base-link-color;
+    color: white;
+}
+
+#cs-entry-navigation .uk-dropdown .uk-nav > ul, #cs-additional-actions .uk-dropdown .uk-nav > ul{
+    margin: 0px !important;
+}
+
+#cs-entry-navigation .uk-list-striped > li:nth-of-type(2n+1), #cs-additional-actions .uk-list-striped > li:nth-of-type(2n+1) {
+    background: white none repeat scroll 0 0;
+}
+
+.uk-dropdown{
+    border: 1px outset grey;
+}
+
+
+
+#cs-entry-navigation, #cs-additional-actions .uk-nav-dropdown > ul >  li:hover {
+    background: @base-link-color;
+    color: white;
+}
+
+#cs-entry-navigation, #cs-additional-actions .uk-nav-dropdown > ul > li {
+    background: @base-link-color;
+    color: black;
+}
+
+.cs-remove-padding li {
+    padding: 0px;
+}
+
+.cs-padding li {
+    padding: 1px;
+}
+
+
+/* Modifier `cs-nav-quick`
+ ========================================================================== */
+.cs-nav-quick {
+    max-height: 340px;
+    overflow: auto;
+}

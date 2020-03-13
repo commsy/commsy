@@ -10,19 +10,22 @@ Encore
     // the public path used by the web server to access the previous directory
     .setPublicPath('/build')
 
-    // entry points
-    .addEntry('app_default', './assets/js/app_default.js')
-    .addEntry('app_confetti', './assets/js/app_confetti.js')
-    .addEntry('app_darkblue', './assets/js/app_darkblue.js')
-    .addEntry('app_football', './assets/js/app_football.js')
-    .addEntry('app_grey', './assets/js/app_grey.js')
-    .addEntry('app_ocean', './assets/js/app_ocean.js')
-    .addEntry('app_red', './assets/js/app_red.js')
-    .addEntry('app_redgrey', './assets/js/app_redgrey.js')
-    .addEntry('app_schulcommsyhh', './assets/js/app_schulcommsyhh.js')
-    .addEntry('app_stars', './assets/js/app_stars.js')
-    .addEntry('app_sun', './assets/js/app_sun.js')
-    .addEntry('app_uhh', './assets/js/app_uhh.js')
+    // entry points UiKit2
+    .addEntry('app_default', './assets/uikit2/js/app_default.js')
+    .addEntry('app_confetti', './assets/uikit2/js/app_confetti.js')
+    .addEntry('app_darkblue', './assets/uikit2/js/app_darkblue.js')
+    .addEntry('app_football', './assets/uikit2/js/app_football.js')
+    .addEntry('app_grey', './assets/uikit2/js/app_grey.js')
+    .addEntry('app_ocean', './assets/uikit2/js/app_ocean.js')
+    .addEntry('app_red', './assets/uikit2/js/app_red.js')
+    .addEntry('app_redgrey', './assets/uikit2/js/app_redgrey.js')
+    .addEntry('app_schulcommsyhh', './assets/uikit2/js/app_schulcommsyhh.js')
+    .addEntry('app_stars', './assets/uikit2/js/app_stars.js')
+    .addEntry('app_sun', './assets/uikit2/js/app_sun.js')
+    .addEntry('app_uhh', './assets/uikit2/js/app_uhh.js')
+
+    // entry points UiKit3
+    .addEntry('app_portal', './assets/uikit3/js/app_portal.js')
 
     .enableTypeScriptLoader()
 
@@ -30,12 +33,13 @@ Encore
     .enableLessLoader(function(options) {
         options.paths = [
             'node_modules/uikit/src/less',
-            'assets/css'
+            'node_modules/uikit3/src/less',
+            'assets/uikit2/css'
         ]
     })
 
     .copyFiles({
-        from: './assets/img',
+        from: './assets/uikit2/img',
         includeSubdirectories: false
     })
 

@@ -59,13 +59,13 @@
             <span>
                 {% if user.email %}
                     {% if user.isEmailVisible %}
-                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{ user.name }}</a></td>
                     {% endif %}
                 {% else %}
                     {{ 'no email'|trans({}) }}
                 {% endif %}
             </span><br/>
-            <div class="uk-flex uk-flex-between">
+            <div class="uk-flex uk-flex-space-between">
                 <div>
                     {% if user.telephone %}
                         <a href="tel:{{user.telephone}}">{{ user.telephone|truncate(20) }}</a><br/>

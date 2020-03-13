@@ -1,44 +1,59 @@
-{% extends 'layout.html.twig' %}
+{% import 'utils/macros.html.twig' as macros %}
 
-{#{% import 'utils/macros.html.twig' as macros %}#}
+<div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
+    {% include 'utils/save_spinner.html.twig' %}
+    <div class="uk-form-horizontal">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="uk-flex">
+            <div class="uk-width-9-10">
+                    {{ form_widget(form.title) }}
+            </div>
+        </div>
+        <div class="uk-margin-small-left uk-margin-small-top uk-flex">
+            <label class="uk-form-label">{{ 'valid until'|trans }}</label>
+            <div>
+                {{ form_widget(form.validdate) }}
+            </div>
+        </div>
 
-{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+        {% if announcement.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+        <div class="uk-margin-small-left uk-flex">
+            <label class="uk-form-label">
+                <span data-uk-tooltip title="{{ macros.userFullname(announcement.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
+            </label>
+            <div>
+                {{ form_widget(form.permission) }}
+                <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(announcement.creator) }, 'form') }}"></i>
+            </div>
+        </div>
+        <div class="uk-margin-small-left uk-flex">
+            <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+            <div>
+                {{ form_widget(form.hidden) }}
+            </div>
+        </div>
+        <div class="uk-margin-small-left uk-flex">
+            <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+            <div class="uk-margin-small-top">
+                {{ form_widget(form.hiddendate) }}
+            </div>
+        </div>
+        {% endif %}
 
-{% block sidebar_left %}
-    {% embed 'components/context_navigation.html.twig' %}
-        {% block menu %}{{ knp_menu_render('main') }}{% endblock %}
-    {% endembed %}
-{% endblock %}
+        {% if isDraft and (showHashtags or showCategories) %}
+            {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+        {% endif %}
 
-{% block main %}
-    {% embed 'components/card.html.twig' %}
-        {% block title %}Neue Ankündigung erstellen{% endblock %}
-
-        {% block body %}
-            {{ form(form) }}
-        {% endblock %}
-    {% endembed %}
-{% endblock %}
-
-{#<div class="uk-padding-small">#}
-{#    {% include 'utils/save_spinner.html.twig' %}#}
-
-{#    {{ form_start(form) }}#}
-{#    {{ form_errors(form) }}#}
-
-{#        {{ form_row(form.title) }}#}
-{#        {{ form_row(form.validdate) }}#}
-
-{#        {% if form.permission is defined %}{{ form_row(form.permission) }}{% endif %}#}
-{#        {% if form.hidden is defined %}{{ form_row(form.hidden) }}{% endif %}#}
-{#        {% if form.hiddendate is defined %}{{ form_row(form.hiddendate) }}{% endif %}#}
-
-{#        {% if isDraft and (showHashtags or showCategories) %}#}
-{#            {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}#}
-{#        {% endif %}#}
-
-{#        {{ form_row(form.save) }}#}
-{#        {{ form_row(form.cancel) }}#}
-
-{#    {{ form_end(form) }}#}
-{#</div>#}
+        <div class="uk-flex uk-margin-small-top">
+            <div>
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
+    </div>
+</div>

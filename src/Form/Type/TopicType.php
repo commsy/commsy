@@ -10,13 +10,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\MandatoryCategoryMappingType;
 use App\Form\Type\Custom\MandatoryHashtagMappingType;
-
-use App\Form\Type\Event\AddBibliographicFieldListener;
 
 class TopicType extends AbstractType
 {

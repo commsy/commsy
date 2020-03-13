@@ -62,7 +62,7 @@ class DiscussionController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = ''
+        string $sort = 'latest'
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -829,6 +829,7 @@ class DiscussionController extends BaseController
         
         $formData = array();
         $discussionItem = NULL;
+        $discussionArticleItem = NULL;
 
         $isDraft = $item->isDraft();
 
@@ -936,6 +937,7 @@ class DiscussionController extends BaseController
         return array(
             'form' => $form->createView(),
             'discussion' => $discussionItem,
+            'discussionArticle' => $discussionArticleItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,

@@ -7,9 +7,9 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
-            <div class="uk-card uk-card-default">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-danger">
-                    <div class="uk-flex uk-flex-middle uk-flex-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ 'Delete room'|trans({}, 'settings') }}</div>
                     </div>
                 </div>
@@ -40,7 +40,15 @@
                         {{ form_start(form) }}
 
                         <div class="uk-form-row">
-                            {{ form_errors(form.confirm) }}
+                            {% for error in form.confirm.vars.errors  %}
+                                {% if ' ' not in error.message %}
+                                    <br /><a href="/room/{{ error.message}}">
+                                    {{ error.message | roomtitle}}
+                                </a><br />
+                                {% else %}
+                                    {{ error.message | trans({}, "validators")}}<br/>
+                                {% endif %}
+                            {% endfor %}
                             {{ form_label(form.confirm) }}
                             {{ form_widget(form.confirm) }}
                         </div>

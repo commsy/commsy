@@ -67,13 +67,19 @@ class PrintService
     private function setOptions() {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
 
+        if($this->legacyEnvironment->getSelectedLanguage() == 'en'){
+            $dateFormat = 'm/d/y';
+        }else{
+            $dateFormat = 'd.m.y';
+        }
+
         $this->pdf->setOptions([
             'footer-line' => true,
             'footer-spacing' => 1,
             'footer-center' => '[page] / [toPage]',
             'header-line' => true,
             'header-spacing' => 1,
-            'header-right' => date('d.m.y'),
+            'header-right' => date($dateFormat),
             'header-left' => $roomItem->getTitle(),
             'header-center' => 'CommSy',
             'images' => true,

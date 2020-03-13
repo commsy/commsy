@@ -396,7 +396,7 @@
                                                 {% endif %}
                                             </div>
                                             <div>
-                                                &nbsp{{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                &nbsp{{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 &nbsp{{ utilsMacros.userFullname(item.modificatorItem) }}<br/>
                                                 
                                             </div>
@@ -659,7 +659,7 @@
                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}
                         </div>   
                         <div class="uk-comment-meta uk-margin-bottom">
-                            {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}
+                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}
                         </div>
                     </div>
 
@@ -708,7 +708,7 @@
                         <strong>{{ "date"|trans({},'date') }}</strong>
                     </td>
                     <td class="uk-text-top">
-                        {{ date.dateDescription }}
+                        {{ formatDateTimeRange(date.wholeDay, date.dateTimeObject_Start, date.dateTimeObject_End, true) }}
                     </td>
                 </tr>
                 <tr>
@@ -867,7 +867,7 @@
                                                 {% endif %}
                                             </div>
                                             <div >
-                                                  &nbsp&nbsp{{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                  &nbsp&nbsp{{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                   &nbsp&nbsp{{ 'changed by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
@@ -925,7 +925,7 @@
                         {'no email'|trans({}) }
                     {% endif %}
                 </span><br/>
-                <div class="uk-flex uk-flex-between">
+                <div class="uk-flex uk-flex-space-between">
                     <div>
                         {% if member.telephone %}
                             <a>{{ member.telephone}}</a><br/>

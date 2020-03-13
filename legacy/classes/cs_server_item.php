@@ -495,10 +495,6 @@ class cs_server_item extends cs_guide_item
         $mail = new cs_mail();
 
         $to = $user->getEmail();
-        $to_name = $user->getFullname();
-        if (!empty($to_name)) {
-            $to = $to_name . " <" . $to . ">";
-        }
         $mod_contact_list = $portal_item->getContactModeratorList();
         $mod_user_first = $mod_contact_list->getFirst();
 

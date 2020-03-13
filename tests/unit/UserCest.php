@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Facade\AccountCreatorFacade;
 use App\Facade\PortalCreatorFacade;
 use App\Services\LegacyEnvironment;
+use App\Form\DataTransformer\UserTransformer;
 use App\Tests\UnitTester;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -103,5 +104,63 @@ class UserCest
         $I->assertEquals(1, sizeof($I->grabEntitiesFromRepository(RoomPrivat::class, [])));
         // 3. Two entries in the user table (private room user + portal user)
         $I->assertEquals(2, sizeof($I->grabEntitiesFromRepository(User::class, ['userId' => 'username'])));
+    }
+
+    /**
+     * Check that changing the account email address will affect the auth table, the portal user and the private room,
+     * but not normal workspace users.
+     *
+     * @param UnitTester $I
+     */
+    public function changeAccountEmailTest(UnitTester $I)
+    {
+        /** @var \cs_environment $legacyEnvironment */
+        $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
+
+        /** @var \cs_user_item $rootUser */
+        $rootUser = $legacyEnvironment->getRootUserItem();
+
+        $portalItem = $I->createPortal('Portal', $rootUser);
+        $legacyEnvironment->setCurrentContextID($portalItem->getItemId());
+
+        $portalUser = $I->createPortalUser('portalUser', 'Vorname', 'Nachname', 'user@commsy.net', 'passwort', $portalItem);
+        $legacyEnvironment->setCurrentUser($portalUser);
+
+        $projectRoom = $I->createProjectRoom('Project Room', $portalUser, $portalItem);
+
+        /** @var UserTransformer $userTransformer */
+        $userTransformer = $I->grabService(UserTransformer::class);
+        $userData = $userTransformer->transform($portalUser);
+        $userData['emailAccount'] = 'new@commsy.net';
+        $userTransformer->applyTransformation($portalUser, $userData);
+        $portalUser->save();
+
+
+        // Check private room user
+        $privateRoomUser = $portalUser->getRelatedPrivateRoomUserItem();
+        $I->seeInDatabase('user', [
+            'item_id' => $privateRoomUser->getItemID(),
+            'email' => 'new@commsy.net',
+        ]);
+
+        // Check portal user
+        $I->seeInDatabase('user', [
+            'item_id' => $portalUser->getItemID(),
+            'email' => 'new@commsy.net',
+        ]);
+
+        // Check auth table
+        $I->seeInDatabase('auth', [
+            'commsy_id' => $portalUser->getContextID(),
+            'user_id' => $portalUser->getUserID(),
+            'email' => 'new@commsy.net',
+        ]);
+
+        // Check projet user
+        $projectRoomUser = $portalUser->getRelatedUserItemInContext($projectRoom->getItemID());
+        $I->seeInDatabase('user', [
+            'item_id' => $projectRoomUser->getItemID(),
+            'email' => 'user@commsy.net',
+        ]);
     }
 }

@@ -513,10 +513,12 @@ class DateController extends BaseController
         }
 
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $dateService->getDate($itemId)->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
+            'amountAnnotations' => sizeof($amountAnnotations),
             'readerList' => $readerList,
             'modifierList' => $modifierList,
             'user' => $legacyEnvironment->getCurrentUserItem(),
@@ -527,6 +529,7 @@ class DateController extends BaseController
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'showAssociations' => $current_context->isAssociationShowExpanded(),
             'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
             'catzExpanded' => $current_context->isTagsShowExpanded(),
@@ -1028,6 +1031,7 @@ class DateController extends BaseController
         $formData = $transformer->transform($dateItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
+        $formData['language'] = $legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $formData['draft'] = $isDraft;
@@ -1172,6 +1176,7 @@ class DateController extends BaseController
             'form' => $form->createView(),
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
+            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
             'withRecurrence' => $dateItem->getRecurrencePattern() != '',
@@ -1669,6 +1674,7 @@ class DateController extends BaseController
             'showCategories' => $current_context->withTags(),
             'showAssociations' => $current_context->isAssociationShowExpanded(),
             'showHashtags' => $current_context->withBuzzwords(),
+            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
             'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,

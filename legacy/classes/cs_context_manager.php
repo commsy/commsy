@@ -126,10 +126,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $this->_status_limit = 5;
    }
 
-   function setInstitutionLimit ($limit) {
-      $this->_institution_limit = (int)$limit;
-   }
-
    function setTopicLimit ($limit) {
       $this->_topic_limit = (int)$limit;
    }

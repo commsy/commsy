@@ -47,9 +47,9 @@
                             <tr>
                                 <td class="uk-text-bold">{{ 'email'|trans({}, 'user')}}:</td>
                                 {% if item.isEmailVisible %}
-                                    <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
+                                    <td>{{ item.email }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.contextItem.itemId, 'itemId': item.itemId, 'originPath': 'app_user_detail'}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
                                 {% else %}
-                                    <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('app_user_send', {'roomId': item.contextId, 'itemId': item.itemId}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
+                                    <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.contextItem.itemId, 'itemId': item.itemId, 'originPath': 'app_user_detail'}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
                                 {% endif %}
                             </tr>
                             {% endif %}
@@ -191,7 +191,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
@@ -219,7 +219,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
@@ -353,9 +353,9 @@
                         <tr>
                             <td class="uk-text-bold">{{ 'email'|trans({}, 'user')}}:</td>
                             {% if item.isEmailVisible %}
-                                <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
+                                <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.contextItem.itemId, 'itemId': item.itemId, 'originPath': 'app_user_detail'}) }}">{{ item.fullname|decodeHtmlEntity }}</a></td>
                             {% else %}
-                                <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="">ToDo: "send email"-link</a>)</td>
+                                <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('app_user_send', {'roomId': item.contextId, 'itemId': item.itemId}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
                             {% endif %}
                         </tr>
                         {% endif %}
@@ -490,7 +490,7 @@
                                             {% endif %}
                                         </div>
                                         <div class="uk-margin-right">
-                                            {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                             {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                         </div>
                                     </div>
@@ -511,7 +511,7 @@
                                             {% endif %}
                                         </div>
                                         <div class="uk-margin-right">
-                                            {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                             {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                             {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                         </div>

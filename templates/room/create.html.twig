@@ -1,110 +1,98 @@
-{% extends 'base/sidebar_layout.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
-{% form_theme form 'form/uikit3/uikit_layout.html.twig' %}
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
-    {% embed 'components/toggable_card.twig' %}
-        {% block title %}{{ 'Create new context'|trans({}, "room") }}{% endblock %}
-        {% block header_right %}{% endblock %}
+    <div class="uk-grid">
 
-        {% block body %}
-            {{ form(form) }}
-        {% endblock %}
-    {% endembed %}
+        <div class="uk-width-1-1">
 
+            {# new project room#}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Create new context'|trans({}, "room") }}</div>
+                    </div>
+                </div>
 
+                <div>
 
+                    {{ form_start(form) }}
+                    {{ form_errors(form) }}
 
-{#    <div class="uk-grid">#}
+                    {% if form.title is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.title) }}
+                            {{ form_label(form.title) }}
+                            <div class='uk-form-controls'>
+                                {{ form_widget(form.title) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.type_select is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.type_select) }}
+                            {{ form_label(form.type_select) }}
+                            <div>
+                                {{ form_widget(form.type_select) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.type_sub is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.type_sub) }}
+                            <div>
+                                {{ form_widget(form.type_sub) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.language is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.language) }}
+                            {{ form_label(form.language) }}
+                            <div>
+                                {{ form_widget(form.language) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.room_description is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.room_description) }}
+                            {{ form_label(form.room_description) }}
+                            <div>
+                                {{ form_widget(form.room_description) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.categories is defined %}
+                        <div class='uk-form-row'>
+                            {{ form_errors(form.categories) }}
+                            {{ form_label(form.categories) }}
+                            <div>
+                                {{ form_widget(form.categories) }}
+                            </div>
+                        </div>
+                    {% endif %}
 
-{#        <div class="uk-width-1-1">#}
+                    {# buttons #}
+                    {% if form.save is defined%}
+                        <div class="uk-form-row">
+                            <div >
+                                {{ form_widget(form.save) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if form.cancel is defined%}
+                    <div class="uk-form-row">
+                        <div>
+                            {{ form_widget(form.cancel) }}
+                        </div>
+                    {% endif %}
+                    {{ form_end(form) }}
+                </div>
+            </div>
 
-{#            #}{# new project room#}
-{#            <div class="uk-card uk-card-default">#}
-{#                <div class="uk-panel-teaser cs-panel-teaser-primary">#}
-{#                    <div class="uk-flex uk-flex-middle uk-flex-between">#}
-{#                        <div class="uk-text-large">{{ 'Create new context'|trans({}, "room") }}</div>#}
-{#                    </div>#}
-{#                </div>#}
+        </div>
 
-{#                <div>#}
-
-{#                    {{ form_start(form) }}#}
-{#                    {{ form_errors(form) }}#}
-
-{#                    {% if form.title is defined %}#}
-{#                        <div class='uk-form-row'>#}
-{#                            {{ form_errors(form.title) }}#}
-{#                            <div class='uk-form-label'>{{ 'Title' | trans({} , 'settings') }}*</div>#}
-{#                            <div class='uk-form-controls'>#}
-{#                                {{ form_widget(form.title) }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    {% if form.type_select is defined %}#}
-{#                        <div class='uk-form-row'>#}
-{#                            {{ form_errors(form.type_select) }}#}
-{#                            <div class='uk-form-label'>{{ 'context type' | trans({} , 'room') }}*</div>#}
-{#                            <div>#}
-{#                                {{ form_widget(form.type_select) }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    {% if form.type_sub is defined %}#}
-{#                        <div class='uk-form-row'>#}
-{#                            {{ form_errors(form.type_sub) }}#}
-{#                            <div>#}
-{#                                {{ form_widget(form.type_sub) }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    {% if form.language is defined %}#}
-{#                        <div class='uk-form-row'>#}
-{#                            {{ form_errors(form.language) }}#}
-{#                            <div class='uk-form-label'>{{ 'Language' | trans({} , 'settings') }}*</div>#}
-{#                            <div>#}
-{#                                {{ form_widget(form.language) }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    {% if form.room_description is defined %}#}
-{#                        <div class='uk-form-row'>#}
-{#                            {{ form_errors(form.room_description) }}#}
-{#                            <div class='uk-form-label'>{{ 'Room description' | trans({} , 'room') }}</div>#}
-{#                            <div>#}
-{#                                {{ form_widget(form.room_description) }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    {% if form.categories is defined %}#}
-{#                        <div class='uk-form-row'>#}
-{#                            {{ form_errors(form.categories) }}#}
-{#                            <div class='uk-form-label'>{{ 'Room categories' | trans({} , 'portal') }}*</div>#}
-{#                            <div>#}
-{#                                {{ form_widget(form.categories) }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-
-{#                    #}{# buttons #}
-{#                    {% if form.save is defined%}#}
-{#                        <div class="uk-form-row">#}
-{#                            <div >#}
-{#                                {{ form_widget(form.save) }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    {% if form.cancel is defined%}#}
-{#                    <div class="uk-form-row">#}
-{#                        <div>#}
-{#                            {{ form_widget(form.cancel) }}#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                    {{ form_end(form) }}#}
-{#                </div>#}
-{#            </div>#}
-
-{#        </div>#}
-
-{#    </div>#}
+    </div>
 {% endblock %}

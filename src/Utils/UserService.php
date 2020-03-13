@@ -114,12 +114,6 @@ class UserService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->userManager->setTopicLimit($relatedLabel->getItemId());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->userManager->setInstitutionLimit($relatedLabel->getItemId());
-            }
         }
         
         // hashtag
@@ -156,7 +150,7 @@ class UserService
         }
     }
 
-    public function getUser($userId)
+    public function getUser($userId):? \cs_user_item
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings

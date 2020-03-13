@@ -41,11 +41,13 @@
                         {% endif %}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
-                        {% else %}
-                            {{feedItem.getModificationDate|date("d.m.Y")}}
-                        {% endif %}
+                        <span class="uk-text-nowrap">
+                            {% if feedItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ feedItem.modificationDate|date("H:i") }}
+                            {% else %}
+                                {{ feedItem.modificationDate|craue_date }}
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
                 <div class="uk-width-8-10">
@@ -65,13 +67,13 @@
                     {% if feedItem.itemType == 'announcement' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
                     {% elseif feedItem.itemType == 'date' %}
-                        <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
+                        <div class="uk-comment-meta">{{ formatDateTimeRange(feedItem.wholeDay, feedItem.dateTimeObject_Start, feedItem.dateTimeObject_End) }}{% if feedItem.place != '' %}, {{ feedItem.place }}{% endif %}</div>
                     {% elseif feedItem.itemType == 'material' %}
                         <div class="uk-comment-meta">
                             {% if feedItem.author != '' %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
                                 {% else %}
-                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{ feedItem.creationDate|craue_date }})
                             {% endif %}                        
                         </div>
                     {% elseif feedItem.itemType == 'discussion' %}

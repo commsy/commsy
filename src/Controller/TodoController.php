@@ -389,10 +389,12 @@ class TodoController extends BaseController
         }
 
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $todoService->getTodo($itemId)->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
+            'amountAnnotations' => sizeof($amountAnnotations),
             'stepList' => $steps,
             'timeSpendSum' => $timeSpendSum,
             'readerList' => $readerList,
@@ -638,6 +640,8 @@ class TodoController extends BaseController
         if (!$todoItem) {
             throw $this->createNotFoundException('No todo found for id ' . $itemId);
         }
+
+
 
         $formData = $transformer->transform($todoItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;

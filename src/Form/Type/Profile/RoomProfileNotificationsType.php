@@ -49,6 +49,13 @@ class RoomProfileNotificationsType extends AbstractType
                     'class' => 'uk-form-label'
                 ]
             ))
+            ->add('mail_item_deleted', CheckboxType::class, [
+                'label' => 'E-mail when an item is deleted',
+                'required' => false,
+                'label_attr' => [
+                    'class' => 'uk-form-label'
+                ]
+            ])
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',

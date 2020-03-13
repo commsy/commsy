@@ -457,10 +457,6 @@ if ($current_user->isGuest()) {
             if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON')) ) {
                attach_redirect(CS_TOPIC_TYPE, $current_iid);
             }
-            // Redirect to attach institutions
-            if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON')) ) {
-               attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
-            }
          }
 
 
@@ -570,14 +566,6 @@ if ($current_user->isGuest()) {
             $attach_ids = attach_return(CS_TOPIC_TYPE, $current_iid);
             $with_anchor = true;
             $session_post_vars[CS_TOPIC_TYPE] = $attach_ids;
-            $form->setFormPost($session_post_vars);
-         }
-         // Back from attaching institutions
-         elseif ( $backfrom == CS_INSTITUTION_TYPE ) {
-            $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-            $attach_ids = attach_return(CS_INSTITUTION_TYPE, $current_iid);
-            $with_anchor = true;
-            $session_post_vars[CS_INSTITUTION_TYPE] = $attach_ids;
             $form->setFormPost($session_post_vars);
          }
 
@@ -935,12 +923,6 @@ if ($current_user->isGuest()) {
             } else {
                $item->setLinkedItemsByID(CS_PROJECT_TYPE,array());
             }
-
-          if ( isset($_POST[CS_INSTITUTION_TYPE]) ) {
-             $item->setInstitutionListByID($_POST[CS_INSTITUTION_TYPE]);
-          } else {
-             $item->setInstitutionListByID(array());
-          }
           if ( isset($_POST[CS_TOPIC_TYPE]) ) {
              $item->setTopicListByID($_POST[CS_TOPIC_TYPE]);
           } else {

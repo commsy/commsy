@@ -11,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Form\Type as Types;
-
 use App\Entity\Tag;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
@@ -25,7 +24,7 @@ class CategoryController extends AbstractController
      * @param int $roomId
      * @return array
      */
-    public function showAction(
+    public function show(
         CategoryService $categoryService,
         int $roomId
     ) {
@@ -52,11 +51,11 @@ class CategoryController extends AbstractController
      * @param int $roomId
      * @return array
      */
-    public function showDetailAction(
+    public function showDetail(
         CategoryService $categoryService,
         int $roomId
     ) {
-        // get categories from CategoryManager
+        // get categories
         $roomTags = $categoryService->getTags($roomId);
 
         $defaultData = array(
@@ -82,7 +81,7 @@ class CategoryController extends AbstractController
      * @param $roomId
      * @return RedirectResponse
      */
-    public function newAction(
+    public function new(
         Request $request,
         CategoryService $categoryService,
         $roomId
@@ -94,11 +93,24 @@ class CategoryController extends AbstractController
         if ($form->isSubmitted() &&$form->isValid()) {
             $data = $form->getData();
 
-            // persist new tag
+            // persist new category
             $categoryService->addTag($data['title'], $roomId);
 
             return $this->redirectToRoute('app_room_home', array('roomId' => $roomId));
         }
+    }
+
+    /**
+     * @Route("/room/{roomId}/category/delete/{categoryId}")
+     * @Security("is_granted('CATEGORY_EDIT')")
+     */
+    public function delete($roomId, $categoryId, CategoryService $categoryService)
+    {
+        $categoryService->removeTag($categoryId, $roomId);
+
+        return $this->redirectToRoute('app_category_edit', [
+            'roomId' => $roomId,
+        ]);
     }
 
     /**
@@ -113,7 +125,7 @@ class CategoryController extends AbstractController
      * @param int $categoryId
      * @return array|RedirectResponse
      */
-    public function editAction(
+    public function edit(
         Request $request,
         RoomService $roomService,
         CategoryService $categoryService,

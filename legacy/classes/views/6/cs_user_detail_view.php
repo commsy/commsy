@@ -1140,7 +1140,7 @@ class cs_user_detail_view extends cs_detail_view {
    }
 
    function _is_always_visible ($rubric) {
-      return ($rubric == CS_TOPIC_TYPE or $rubric == CS_INSTITUTION_TYPE);
+      return ($rubric == CS_TOPIC_TYPE);
    }
 
    function _getAllLinkedItemsAsHTML ($spaces=0) {
@@ -1156,7 +1156,7 @@ class cs_user_detail_view extends cs_detail_view {
       foreach ( $connections as $connection ) {
          $link_items = $item->getLinkItemList($connection);
          $context = $this->_environment->getCurrentContextItem();
-         if ($connection == CS_GROUP_TYPE OR $connection == CS_INSTITUTION_TYPE) {
+         if ($connection == CS_GROUP_TYPE) {
             $context = $this->_environment->getCurrentContextItem();
             $html .='		<div class="netnavigation_panel">     '.LF;
             $text = '';

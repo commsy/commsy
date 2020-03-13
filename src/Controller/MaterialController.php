@@ -22,6 +22,7 @@ use cs_room_item;
 use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use App\Utils\AnnotationService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -313,6 +314,7 @@ class MaterialController extends BaseController
         TopicService $topicService,
         WordpressExporter $wordpressExporter,
         LegacyMarkup $legacyMarkup,
+        AnnotationService $annotationService,
         int $roomId,
         int $itemId,
         int $versionId = null
@@ -367,9 +369,12 @@ class MaterialController extends BaseController
 
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(), null, null);
+
         return array(
             'roomId' => $roomId,
             'material' => $infoArray['material'],
+            'amountAnnotations' => sizeof($amountAnnotations),
             'sectionList' => $infoArray['sectionList'],
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
@@ -535,7 +540,7 @@ class MaterialController extends BaseController
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
+
         $readerManager = $legacyEnvironment->getReaderManager();
 
         $userManager = $legacyEnvironment->getUserManager();

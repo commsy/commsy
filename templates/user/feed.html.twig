@@ -25,15 +25,17 @@
                     {{ macros.userIcon(user) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if user.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{user.getModificationDate|date("H:i")}}
-                    {% else %}
-                        {% if '9999-00-00' not in user.getModificationDate %}
-                            {{user.getModificationDate|date("d.m.Y")}}
+                    <span class="uk-text-nowrap">
+                        {% if user.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{ user.modificationDate|date("H:i") }}
                         {% else %}
-                            {{user.getCreationDate|date("d.m.Y")}}
+                            {% if '9999-00-00' not in user.modificationDate %}
+                                {{ user.modificationDate|craue_date }}
+                            {% else %}
+                                {{ user.creationDate|craue_date }}
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -63,8 +65,11 @@
             <div class="uk-width-4-10">
                 {% if user.email %}
                     {% if user.isEmailVisible %}
-                        <td>{{ 'email'|trans({}, 'user')}}: <a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                        <td>{{ user.email }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'user') }}</a>)</td>
+                    {% else %}
+                        <td>{{ 'emailHidden'|trans({}, 'user') }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'user') }}</a>)</td>
                     {% endif %}
+
                 {% endif %}
                 <br/>
                 {% if user.telephone %}

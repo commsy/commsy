@@ -21,7 +21,13 @@ class AnnotationService
 
     public function getListAnnotations($roomId, $linkedItemId, $max, $start)
     {
-        $this->annotationManager->setContextLimit($roomId);
+        /**
+         * Annotating entries in a portfolio of another user results in annotations with the context id of the
+         * user's private room who annotated, not the context of the private room the item belongs to. Setting the
+         * context limit to null will remove the query restrictions on the context id.
+         */
+        $this->annotationManager->setContextLimit(null);
+
         $this->annotationManager->setLinkedItemID($linkedItemId);
 
         $this->annotationManager->select();

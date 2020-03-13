@@ -176,6 +176,10 @@
                 <source>Rubric selection tip</source>
                 <target>RaummoderatorInnen bekommen die Rubrik "<![CDATA[<span class='uk-text-bold'>]]>Personen<![CDATA[</span>]]>" zur Verwaltung der Raummitglieder immer angezeigt.</target>
             </trans-unit>
+            <trans-unit id="community_rooms_tip">
+                <source>Community rooms tip</source>
+                <target>Die Zuordnung des Projektraums zu Gemeinschaftsräumen ermöglicht der Moderation der Gemeinschaftsräume die Löschung des Projektraums und der dazugehörigen Gruppenräume.</target>
+            </trans-unit>
             <trans-unit id="room_language_tip">
                 <source>Room language tip</source>
                 <target>Wählen Sie, ob eine raumspezifische Systemsprache oder die persönliche Systemsprache der einzelnen Raummitglieder genutzt werden soll.</target>
@@ -551,7 +555,7 @@
             </trans-unit>
             <trans-unit id="workflow_validity">
                 <source>Validity</source>
-                <target>Gültigkeitsdatum</target>
+                <target>2. Wiedervorlage</target>
             </trans-unit>
             <trans-unit id="workflow_trafic_light">
                 <source>Status view</source>

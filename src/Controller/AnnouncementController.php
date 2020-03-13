@@ -14,6 +14,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnouncementService;
+use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\ItemService;
@@ -387,6 +388,7 @@ class AnnouncementController extends BaseController
         LegacyMarkup $legacyMarkup,
         ItemService $itemService,
         TopicService $topicService,
+        AnnotationService $annotationService,
         int $roomId,
         int $itemId
     ) {
@@ -409,10 +411,12 @@ class AnnouncementController extends BaseController
         }
 
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['announcement']->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
+            'amountAnnotations' => sizeof($amountAnnotations),
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
             'announcementList' => $infoArray['announcementList'],

@@ -389,47 +389,14 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       // LDAP
       elseif ( $this->_auth_type == 'LDAP' ) {
          $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
-         $this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
-         
-         // additional server
-         if ( !empty($this->_current_additional_server) ) {
-         	if ( !empty($this->_select_server) ) {
-               $this->_form->addSelect( 'select_server',
-                                        $this->_select_server,
-                                        '',
-                                        $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_SERVER'),
-                                        '',
-                                        '',
-                                        '',
-                                        '',
-                                        false);
-         	}
-         	for ( $count = 1; $count <=  $this->_current_additional_server; $count++ ) {
-         		$this->_form->addTextfield('host'.$count,'',($count+1).'. '.$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST').' ('.$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT').')','','',35,false,'','','','','','',false,'');
-         		$this->_form->combine('horizontal');
-         		$this->_form->addTextfield('port'.$count,'',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',4,false,'','','','',':','',false,'');
-         	}
-         	$this->_form->addHidden('additional_server_count',$this->_current_additional_server);
-         }
-         if ( $this->_add_additional_server ) {
-         	$count = '_new';
-            $this->_form->addTextfield('host'.$count,'',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST').':'.$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',35,false,'','','','','','',false,'');
-            $this->_form->combine('horizontal');
-            $this->_form->addTextfield('port'.$count,'',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',4,false,'','','','',':','',false,'');
-         } else {
-         	$this->_form->addButton('option_additional_server',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADDITIONAL_SERVER'));
-         }
          
          $this->_form->addTextfield('dbsearchuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID'),'','',21,true,'','','','','','',false,'');
          $this->_form->combine();
          $this->_form->addText('dbsearchuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID_DESC'));
-         $this->_form->addTextfield('dbcolumnuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID'),'','',21,true,'','','','','','',false,'');
-         $this->_form->combine();
-         $this->_form->addText('dbcolumnuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC'));
          $this->_form->addTextfield('base','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE'),'','',21,true,'','','','','','',false,'');
          $this->_form->addText('choice','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE_OR'));
-         $this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,false,'','','','','','',false,'');
-         $this->_form->addPassword('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',22,false,'','','','','','',false,'');
+         $this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,true,'','','','','','',false,'');
+         $this->_form->addPassword('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',22,true,'','','','','','',false,'');
          $this->_form->addRadioGroup('encryption',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION'),'',$this->_encryption_array,'',true,true,'','','');
          $this->_form->combine();
          $this->_form->addText('encryption_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION'));
@@ -439,17 +406,6 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       // Typo3Web
       elseif ( $this->_auth_type == 'Typo3Web' ) {
          $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
-         #$this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
-         #$this->_form->addTextfield('dbcolumnuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID'),'','',21,true,'','','','','','',false,'');
-         #$this->_form->combine();
-         #$this->_form->addText('dbcolumnuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC'));
-         #$this->_form->addTextfield('base','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE'),'','',21,true,'','','','','','',false,'');
-         #$this->_form->addText('choice','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE_OR'));
-         #$this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,false,'','','','','','',false,'');
-         #$this->_form->addPassword('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',22,false,'','','','','','',false,'');
-         #$this->_form->addRadioGroup('encryption',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION'),'',$this->_encryption_array,'',true,true,'','','');
-         #$this->_form->combine();
-         #$this->_form->addText('encryption_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION'));
 
          $this->_form->addEmptyLine();
       }

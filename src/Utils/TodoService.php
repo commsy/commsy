@@ -123,12 +123,6 @@ class TodoService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->todoManager->setTopicLimit($relatedLabel->getItemId());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->todoManager->setInstitutionLimit($relatedLabel->getItemId());
-            }
         }
 
         // hashtag

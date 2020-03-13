@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}{{ pageTitle() }}{% endblock %}</title>
+
+        {{ encore_entry_link_tags('app_portal') }}
+
+        <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
+    </head>
+    <body>
+        <div class="uk-inline uk-width-1-1" uk-height-viewport>
+            {# Top navigation bar #}
+            <div id="top_navigation">
+                {% block top_navigation %}{% endblock %}
+            </div>
+
+            {# Left sidebar used for context navigation, if needed #}
+            {% block sidebar_left %}{% endblock %}
+
+            {# Main content area #}
+            <div id="main">
+                {% block breadcrumb %}{% endblock %}
+                {% block cover %}{% endblock %}
+
+                <div class="uk-section uk-section-small">
+                    <div class="uk-container uk-container-large">
+                        {% block main %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+
+            {# Footer #}
+            <div id="footer">
+                <div class="uk-section uk-section-default uk-padding-small uk-text-small">
+                    {% block footer %}{% endblock %}
+                </div>
+            </div>
+        </div>
+
+        {% block javascripts %}
+            {% include 'javascripts.html.twig' %}
+        {% endblock %}
+    </body>
+</html>

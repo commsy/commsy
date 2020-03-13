@@ -10,10 +10,10 @@
         <div class="uk-width-medium-2-3">
     {% endblock %}
 
-    <div class="uk-card uk-card-default">
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
     
     <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-text-large">
                             {% if not module is empty %}
                                 {{module|capitalize|transchoice(1, {}, "rubric") }}
@@ -126,8 +126,8 @@
                         </div>
                     </div>
                 </div>
-    
-    <div id='calendar' data-events='{"url": "{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('app_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}"}' data-options='{"locale": "de" }'></div>
+
+    <div id='calendar' data-events='{"url": "{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('app_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}", "date": "{{ 'date'|trans({}, 'date') }}", "recurringDate": "{{ 'recurring date'|trans({}, 'date') }}", "place": "{{ 'place'|trans({}, 'date') }}", "participants": "{{ 'participants'|trans({}, 'date') }}", "calendar": "{{ 'calendar'|trans({}, 'date') }}"}' data-options='{"locale": "{{ selectedLanguage() }}" }'></div>
     
     </div>
         </div>
@@ -138,7 +138,7 @@
         <div class="uk-width-medium-1-3 cs-right-column">
 
             {% if usageInfo is defined and usageInfo is not empty %}
-                <div class="uk-card uk-card-default">
+                <div class="uk-panel uk-panel-box uk-panel-box-primary">
                     <div class="uk-panel-teaser cs-panel-teaser-primary">
                         <div class="uk-clearfix">
                             <div class="uk-float-right">
@@ -157,7 +157,7 @@
                 </div>
             {% endif %}
 
-            <div class="uk-card uk-card-default">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-clearfix">
                         <div class="uk-float-right">

@@ -2,7 +2,7 @@
 
 {% block sidebar_left %}
     {% embed 'components/context_navigation.html.twig' %}
-        {% block menu %}{{ knp_menu_render('portal_settings') }}{% endblock %}
+        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
     {% endembed %}
 {% endblock %}
 

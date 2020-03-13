@@ -111,6 +111,17 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('datetime_start');
    }
 
+   /** get date and time of start as a proper \DateTime object
+    * this method returns the starting datetime of the dates
+    *
+    * @return \DateTime starting datetime of the dates
+    *
+    * @author CommSy Development Group
+    */
+   public function getDateTimeObject_start () {
+      return \DateTime::createFromFormat('Y-m-d H:i:s', $this->_getValue('datetime_start'));
+   }
+
    /** set date and time of end in the database time format
     * this method sets the ending datetime of the dates
     *
@@ -131,6 +142,17 @@ class cs_dates_item extends cs_item {
     */
    function getDateTime_end () {
       return $this->_getValue('datetime_end');
+   }
+
+   /** get date and time of end as a proper \DateTime object
+    * this method returns the ending datetime of the dates
+    *
+    * @return \DateTime ending datetime of the dates
+    *
+    * @author CommSy Development Group
+    */
+    public  function getDateTimeObject_end () {
+      return \DateTime::createFromFormat('Y-m-d H:i:s', $this->_getValue('datetime_end'));
    }
 
 
@@ -507,21 +529,28 @@ class cs_dates_item extends cs_item {
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-   function delete() {
-      $date_manager = $this->_environment->getDatesManager();
-      $this->_delete($date_manager);
+    public function delete()
+    {
+        global $symfonyContainer;
 
-      // delete associated annotations
-      $this->deleteAssociatedAnnotations();
-      $this->SendDeleteEntryMailToModerators();
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Dates');
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $date_manager = $this->_environment->getDatesManager();
+        $this->_delete($date_manager);
+
+        // delete associated annotations
+        $this->deleteAssociatedAnnotations();
+
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Dates');
+
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    /** asks if item is editable by everybody or just creator
     *
@@ -557,7 +586,6 @@ class cs_dates_item extends cs_item {
       $copy->setModificatorItem($user);
       $list = new cs_list();
       $copy->setGroupList($list);
-      $copy->setInstitutionList($list);
       $copy->setTopicList($list);
       $copy->save();
       return $copy;
@@ -571,8 +599,6 @@ class cs_dates_item extends cs_item {
       #}
       $group_list = $this->getGroupList();
       $clone_item->setGroupList($group_list);
-      $institution_list = $this->getInstitutionList();
-      $clone_item->setInstitutionList($institution_list);
       $topic_list = $this->getTopicList();
       $clone_item->setTopicList($topic_list);
       return $clone_item;
@@ -688,7 +714,7 @@ class cs_dates_item extends cs_item {
 			}
 		} else {
 			// without ending day
-			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+			$date_print = $translator->getMessage('DATES_ON_DAY_UPPER') . ' ' . $start_day_print;
 
 			if($start_time_print !== '' && $end_time_print == '' && !$this->isWholeDay()) {
 				// starting time given
@@ -719,7 +745,7 @@ class cs_dates_item extends cs_item {
 		}
 
 		if($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
-			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+			$date_print = $translator->getMessage('DATES_ON_DAY_UPPER') . ' ' . $start_day_print;
 
 			if (!$this->isWholeDay()) {
                 if ($start_time_print !== '' && $end_time_print === '') {
@@ -877,12 +903,16 @@ class cs_dates_item extends cs_item {
 					$start_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
 
-				$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+				if ($start_time_print === $end_time_print) {
+                    $time_print = $translator->getMessage('DATES_AT_TIME') . ' ' . $start_time_print;
+                } else {
+					$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                }
 			}
 		}
 
 		if($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
-			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+			$date_print = $translator->getMessage('DATES_ON_DAY_UPPER') . ' ' . $start_day_print;
 
             if (!$this->isWholeDay()) {
                 if ($start_time_print !== '' && $end_time_print === '') {
@@ -893,7 +923,11 @@ class cs_dates_item extends cs_item {
                     $time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
                 } elseif ($start_time_print !== '' && $end_time_print !== '') {
                     // all times given
-                    $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                    if ($start_time_print === $end_time_print) {
+                        $time_print = $translator->getMessage('DATES_AT_TIME') . ' ' . $start_time_print;
+                    } else {
+                        $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                    }
                 }
             }
 		}
@@ -904,7 +938,7 @@ class cs_dates_item extends cs_item {
 			$datetime .= ' ' . $time_print;
 		}
 
-        return $datetime;
+        return trim($datetime);
     }
 
     /** asks if item is a date in an external calendar

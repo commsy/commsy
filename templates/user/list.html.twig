@@ -13,7 +13,7 @@
                 }
             )) }}
         </ul>
-        <div class="feed-load-more" uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/user/feed/", "target": "#user-feed"}'>
+        <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/user/feed/", "target": "#user-feed"}'>
             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
             <div class="cs-toggle-class"></div>
         </div>
@@ -26,7 +26,7 @@
                 }
             )) }}
         </div>
-        <div class="feed-load-more-grid" uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/user/grid/", "target": "#user-feed"}'>
+        <div class="feed-load-more-grid" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/user/grid/", "target": "#user-feed"}'>
             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
             <div class="cs-toggle-class"></div>
         </div>

@@ -7,9 +7,9 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
-            <div class="uk-card uk-card-default">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ 'Additional configuration'|trans({}, 'settings') }}</div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                             <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
                             <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
                             <div class='uk-form-row'>
-                                <div class='uk-form-label'>{{ 'Status' | trans({} , 'settings') }}</div>
+                                {{ form_label(form.template.status) }}
                                 <div class='uk-form-controls'>
                                     {{ form_widget(form.template.status) }} {{ 'Template status'|trans({}, 'settings') }}
                                 </div>

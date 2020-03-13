@@ -43,6 +43,7 @@ class ContextType extends AbstractType
                 'required' => true,
                 'expanded' => false,
                 'multiple' => false,
+                'help' => 'Room language tip',
                 'translation_domain' => 'settings',
                 'choice_translation_domain' => 'settings',
             ))

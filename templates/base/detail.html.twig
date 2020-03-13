@@ -1,4 +1,4 @@
-{% extends 'base/list.html.twig' %}
+{% extends 'base/room.html.twig' %}
 
 {% import 'utils/macros.html.twig' as macros %}
 
@@ -8,7 +8,7 @@
             <div class="uk-panel uk-panel-box uk-margin-bottom">
                 {# panel title bar #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ item.itemType|trans({}, "room")|capitalize }}</div>
                     </div>
                 </div>

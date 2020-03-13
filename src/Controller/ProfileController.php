@@ -9,6 +9,11 @@ use App\Utils\UserService;
 use cs_user_item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Entity\Calendars;
+use App\Form\Type\Profile\DeleteAccountType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -78,7 +83,7 @@ class ProfileController extends AbstractController
                 'itemId' => $itemId
             )),
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
@@ -139,7 +144,7 @@ class ProfileController extends AbstractController
                     $tempUserItem = $userList->getNext();
                 }
             }
-            
+
             return $this->redirectToRoute('app_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
@@ -326,6 +331,7 @@ class ProfileController extends AbstractController
 
         $userData['mail_account'] = $userItem->getAccountWantMail() === 'yes' ? true : false;
         $userData['mail_room'] = $userItem->getOpenRoomWantMail() === 'yes' ? true : false;
+        $userData['mail_item_deleted'] = $userItem->getDeleteEntryWantMail();
 
         $form = $this->createForm(RoomProfileNotificationsType::class, $userData, array(
             'itemId' => $itemId,
@@ -334,23 +340,17 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            if($formData['mail_account']) {
-                $userItem->setAccountWantMail('yes');
-            } else {
-                $userItem->setAccountWantMail('no');
-            }
 
-            if($formData['mail_room']) {
-                $userItem->setOpenRoomWantMail('yes');
-            } else {
-                $userItem->setOpenRoomWantMail('no');
-            }
+            $userItem->setAccountWantMail($formData['mail_account'] ? 'yes' : 'no');
+            $userItem->setOpenRoomWantMail($formData['mail_room'] ? 'yes' : 'no');
+            $userItem->setDeleteEntryWantMail($formData['mail_item_deleted']);
+
             $userItem->save();
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
@@ -473,7 +473,6 @@ class ProfileController extends AbstractController
 
         // account administration page => set language to user preferences
         $userItem = $userService->getUser($itemId);
-        $request->setLocale($userItem->getLanguage());
 
         // external auth sources
         $current_portal_item = $legacyEnvironment->getCurrentPortalItem();
@@ -509,8 +508,8 @@ class ProfileController extends AbstractController
 
             $currentUser = $legacyEnvironment->getCurrentUserItem();
             if ( strtolower($currentUser->getUserID()) == strtolower($formData['combineUserId']) &&
-                 isset($formData['auth_source']) &&
-                 (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
+                isset($formData['auth_source']) &&
+                (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
             {
                 $form->get('combineUserId')->addError(new FormError('Invalid user'));
             }
@@ -685,6 +684,7 @@ class ProfileController extends AbstractController
         $environment = $legacyEnvironment->getEnvironment();
         return [
             'userId' => $userService->getCurrentUserItem()->getItemId(),
+            'portalUser' => $userService->getCurrentUserItem()->getRelatedPortalUserItem(),
             'roomId' => $roomId,
             'inPrivateRoom' => $environment->inPrivateRoom(),
             'inPortal' => $environment->inPortal(),
@@ -703,15 +703,20 @@ class ProfileController extends AbstractController
     public function deleteAccountAction(
         Request $request,
         UserService $userService,
-        LegacyEnvironment $environment
+        LegacyEnvironment $environment,
+        ParameterBagInterface $parameterBag
     ) {
-        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
-        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
+        $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
+
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteAccountType::class, [
+            'confirm_string' => $this->get('translator')->trans('lock', [], 'profile'),
+        ],[])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteAccountType::class, [
+            'confirm_string' => $this->get('translator')->trans('delete', [], 'profile'),
+        ], [])->getForm();
 
         $currentUser = $userService->getCurrentUserItem();
         $portalUser = $currentUser->getRelatedCommSyUserItem();
-
-        $request->setLocale($currentUser->getLanguage());
 
         $legacyEnvironment = $environment->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
@@ -752,6 +757,7 @@ class ProfileController extends AbstractController
         }
 
         return [
+            'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView()
         ];
@@ -778,8 +784,6 @@ class ProfileController extends AbstractController
         else {
             $portalUser = $legacyEnvironment->getCurrentUserItem();
         }
-
-        $request->setLocale($portalUser->getLanguage());
 
         $form = $this->createForm(ProfileChangePasswordType::class);
 
@@ -831,8 +835,10 @@ class ProfileController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         UserService $userService,
         RoomService $roomService,
+        ParameterBagInterface $parameterBag,
         int $roomId
     ) {
+        $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
 
@@ -842,6 +848,8 @@ class ProfileController extends AbstractController
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
         $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+        $roomItem = $roomService->getRoomItem($roomId);
 
         // Lock room profile
         if ($request->request->has('lock_form')) {
@@ -858,24 +866,135 @@ class ProfileController extends AbstractController
         // Delete room profile
         elseif ($request->request->has('delete_form')) {
             $deleteForm->handleRequest($request);
+
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-
                 $currentUser->delete();
-
-                // get room from RoomService
-                $roomItem = $roomService->getRoomItem($roomId);
-
-                if (!$roomItem) {
-                    throw $this->createNotFoundException('No room found for id ' . $roomId);
-                }
-
                 return $this->redirect($portalUrl);
+            }
+
+
+            // get room from RoomService
+            $roomItem = $roomService->getRoomItem($roomId);
+
+            if (!$roomItem) {
+                throw $this->createNotFoundException('No room found for id ' . $roomId);
             }
         }
 
         return [
+            'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView()
         ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/calendars")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function calendarsAction($roomId, $itemId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy_legacy.item_service');
+        $userItem = $legacyEnvironment->getCurrentUserItem();
+
+        $request->setLocale($userItem->getLanguage());
+
+        /**
+         * Workaround:
+         * Instead of calling getRelatedUserList directly on the current (room) user, we use the portal user.
+         * getRelatedUserList will exclude the current context and the list remains incomplete. As a portal
+         * cannot contain calenders, we make sure all relevant rooms are included.
+         */
+        $portalUser = $userItem->getRelatedPortalUserItem();
+        $relatedUsers = $portalUser->getRelatedUserList()->to_array();
+
+        $userContextIds = [];
+        foreach ($relatedUsers as $relatedUser) {
+            /** @var \cs_user_item $relatedUser */
+            if ($relatedUser->isModerator()) {
+                $userContextIds[] = $relatedUser->getContextID();
+            }
+        }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $repository = $this->getDoctrine()->getRepository(Calendars::class);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $calendars = $repository->findBy([
+            'context_id' => $userContextIds,
+            'external_url' => [
+                '',
+                null,
+            ],
+        ]);
+
+        $dashboard = [];
+        $caldav = [];
+        $roomTitles = [];
+
+        $privateRoomItem = $userItem->getOwnRoom();
+        $calendarSelection = $privateRoomItem->getCalendarSelection();
+
+        $options = [];
+        if ($calendarSelection) {
+            $options = $calendarSelection;
+        }
+
+        foreach ($calendars as $calendar) {
+            $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
+            $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
+
+            $dashboard[] = $calendar->getId();
+            $caldav[] = $calendar->getId();
+            $roomTitles[] = $roomItemCalendar->getTitle().' / '.$calendar->getTitle();
+            if ($calendarSelection === false) {
+                $options['calendarsDashboard'][] = $calendar->getId();
+                $options['calendarsCalDAV'][] = $calendar->getId();
+            }
+        }
+
+        $form = $this->createForm(ProfileCalendarsType::class, $options, array(
+            'itemId' => $itemId,
+            'dashboard' => $dashboard,
+            'caldav' => $caldav,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $privateRoomItem->setCalendarSelection($form->getData());
+            $privateRoomItem->save();
+        }
+
+        $protocoll = 'https://';
+        if ($_SERVER['HTTPS'] == 'off') {
+            $protocoll = 'http://';
+        }
+        $caldavUrl = $protocoll . $_SERVER['HTTP_HOST'];
+
+        $caldavPath = $this->generateUrl('app_caldav_caldavprincipal', array(
+            'portalId' => $legacyEnvironment->getCurrentPortalId(),
+            'userId' => $legacyEnvironment->getCurrentUser()->getUserId(),
+        ));
+
+        $allNoneDashboard = false;
+        if (isset($options['calendarsDashboard'])) {
+            $allNoneDashboard = (sizeof($calendars) == sizeof($options['calendarsDashboard']));
+        }
+
+        $allNoneCaldav = false;
+        if (isset($options['calendarsCalDAV'])) {
+            $allNoneCaldav = (sizeof($calendars) == sizeof($options['calendarsCalDAV']));
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'roomTitles' => $roomTitles,
+            'user' => $userItem,
+            'caldavUrl' => $caldavUrl,
+            'caldavPath' => $caldavPath,
+            'allNoneDashboard' => $allNoneDashboard,
+            'allNoneCaldav' => $allNoneCaldav,
+        );
     }
 }

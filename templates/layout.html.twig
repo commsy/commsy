@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_portal.html.twig' %}
 
 {% block top_navigation %}
     <nav class="uk-navbar-container" uk-navbar>
@@ -12,7 +12,7 @@
             </a>
 
             {% block top_navigation_left %}
-                {% include 'room/navigation.html.twig' %}
+{#                {% include 'room/navigation.html.twig' %}#}
             {% endblock %}
         </div>
 

@@ -12,7 +12,7 @@
         <div class="uk-width-medium-4-5">
 
             {# material content panel #}
-            <div class="uk-card uk-card-default">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
                 {# panel teaser #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
@@ -212,17 +212,25 @@
                 
                     {% if versions|length > 1 %}
                     <div class="">
-                        <div style="padding:20px 20px 40px 20px;">
+                        <div style="padding:40px 20px 40px 20px;">
                             <div style="width:100%;">
                                 <div style="width:100%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
+                                    {% set iconColor = '#b34400' %}
                                     {% for version in versions %}
                                         {% if loop.first %}
+                                            <div style="position:absolute; top:-40px; left:0px;">
+                                                {{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}
+                                            </div>
                                             <div style="position:absolute; top:-20px; left:0px;">
                                                 {{ version.date }}
                                             </div>
                                         {% endif %}
                                         
                                         {% if loop.last %}
+                                            {% set iconColor = '#4cb34d' %}
+                                            <div style="position:absolute; top:-40px; right:0px;">
+                                                {{ 'latest version'|trans({}, 'material') }}
+                                            </div>
                                             <div style="position:absolute; top:-20px; right:0px;">
                                                 {{ version.date }}
                                             </div>
@@ -230,9 +238,9 @@
                                     
                                         <div style="position:absolute; top:4px; left:{{ version.percent }}%;">
                                             {% if version.current %}
-                                                <a href="#" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
+                                                <a href="#" data-uk-tooltip title="{{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file" style="color:{{ iconColor }};"></i></a>
                                             {% else %}
-                                                <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
+                                                <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ '%count% version'|transchoice(loop.index, {'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
                                             {% endif %}
                                         </div>
                                     {% endfor %}
@@ -453,7 +461,7 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ material.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ material.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
@@ -476,7 +484,7 @@
                             </li>
                         {% endif %}
 
-                        <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
+                        <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
                     </ul>
                 </div>
             </div>

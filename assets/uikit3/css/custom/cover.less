@@ -1,0 +1,76 @@
+// Cover
+// ========================================================================
+
+html{
+    background-color:#ddd !important;
+}
+
+body {
+    max-width: 1500px;
+    margin: 0 auto !important;
+    /* bugfix for uikit lightbox adding padding right to containers with margin: auto! */
+    padding-right: 0px !important;
+}
+
+#cover {
+    height: 280px;
+    background-color: #6593B3;
+    width: 100%;
+    overflow:hidden;
+}
+
+#cover {
+    width: 100%;
+    /*background: url("../themes/default/bg.jpg") repeat-x;*/
+}
+
+#dashboard-cover {
+    background: linear-gradient(to bottom right, rgb(101, 147, 179), rgb(43, 47, 62)); 
+    margin-bottom: 15px;
+}
+
+#dashboard-cover > h1 {
+    color: white;
+    padding: 10px;
+}
+
+#room_image {
+    width: 100%;
+}
+
+#room-logo-wrapper > img {
+    max-height: 90%;
+    float: right;
+}
+
+#room-logo-navbar {
+    display: none;
+    height: 45px;
+}
+
+.cs-cover-grid{
+    padding:15px;    
+}
+
+.cs-cover-grid-opacity{
+    opacity:0.8;
+}
+
+
+.cs-cover-height{
+    max-height: 250px;
+    overflow: auto;    
+}
+
+
+@media (max-width: 768px) {
+    .cs-cover-height{
+           max-height: 122px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cs-cover-height{
+           max-height: 122px;
+    }
+}

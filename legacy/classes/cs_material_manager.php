@@ -271,9 +271,6 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       $this->_group_limit = (int)$limit;
    }
 
-   function setInstitutionLimit ($limit) {
-      $this->_institution_limit = (int)$limit;
-   }
    function setTopicLimit ($limit) {
       $this->_topics_limit = (int)$limit;
    }
@@ -528,10 +525,6 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('section').' ON ('.$this->addDatabasePrefix('section').'.material_item_id = '.$this->addDatabasePrefix('materials').'.item_id AND '.$this->addDatabasePrefix('section').'.version_id = '.$this->addDatabasePrefix('materials').'.version_id AND '.$this->addDatabasePrefix('section').'.context_id = "'.$this->_room_limit.'")';
       }
 
-     if ( isset($this->_institution_limit) ) {
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l11 ON ( l11.deletion_date IS NULL AND ((l11.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l11.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l12 ON ( l12.deletion_date IS NULL AND ((l12.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l12.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-     }
      if ( isset($this->_topics_limit) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';

@@ -15,6 +15,8 @@ use Exception;
 use FeedIo\Feed\Item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Form\Model\Send;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -714,20 +716,25 @@ class ItemController extends AbstractController
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
         $groupChoices = $mailAssistant->getGroupChoices($item);
-        $defaultGroupId = array_values($groupChoices)[0];
+        $defaultGroupId = null;
+        if(sizeof($groupChoices)>0){
+            $defaultGroupId = array_values($groupChoices)[0];
+        }
 
-        $formData = [
-            'additional_recipients' => [
-                '',
-            ],
-            'send_to_groups' => [
-                $defaultGroupId
-            ],
-            'send_to_group_all' => false,
-            'send_to_all' => false,
-            'message' => $mailAssistant->prepareMessage($item),
-            'copy_to_sender' => false,
-        ];
+        $isShowGroupAllRecipients = $mailAssistant->showGroupAllRecipients($request);
+
+        $formData = new Send();
+        $formData->setAdditionalRecipients(['']);
+        $formData->setSendToGroups([$defaultGroupId]);
+        if($isShowGroupAllRecipients){
+            $formData->setSendToGroupAll(false);
+        }else{
+            $formData->setSendToGroupAll(null);
+        }
+        $formData->setSendToAll(false);
+        $formData->setMessage($mailAssistant->prepareMessage($item));
+        $formData->setCopyToSender(false);
+
 
         $form = $this->createForm(SendType::class, $formData, [
             'item' => $item,
@@ -750,7 +757,7 @@ class ItemController extends AbstractController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessage($form->getData(), $item, true);
+            $message = $mailAssistant->getSwiftMessage($form, $item, true);
             $this->get('mailer')->send($message);
 
             $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());

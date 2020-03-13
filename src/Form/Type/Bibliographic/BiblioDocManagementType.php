@@ -1,12 +1,21 @@
 <?php
 namespace App\Form\Type\Bibliographic;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BiblioDocManagementType extends AbstractType
 {
+
+    private $legacyEnvironment;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -18,6 +27,7 @@ class BiblioDocManagementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $translationDomain = 'form';
+        $language = $this->legacyEnvironment->getSelectedLanguage();
 
         $builder
             ->add('document_editor', TextType::class, array(
@@ -32,14 +42,22 @@ class BiblioDocManagementType extends AbstractType
                 'label' => 'release number',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('document_release_date', TextType::class, array(
-                'label' => 'url date',
-                'translation_domain' => $translationDomain,
-                'attr' => array(
-                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
-                )
-            ))
         ;
+
+        if($language == 'en'){
+            $format = '{format:\'MM/DD/YYYY\'}';
+        } else{
+            $format = '{format:\'DD.MM.YYYY\'}';
+        }
+
+        $builder->add('document_release_date', TextType::class, array(
+            'label' => 'url date',
+            'translation_domain' => $translationDomain,
+            'required' => false,
+            'attr' => array(
+                'data-uk-datepicker' => $format
+            )
+        ));
     }
 
     /**

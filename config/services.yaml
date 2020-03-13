@@ -127,6 +127,8 @@ parameters:
 
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
+    craue_twig_extensions.formatDateTime.datetype: medium
+    craue_twig_extensions.formatDateTime.timetype: short
 
 services:
     # default configuration for services in *this* file
@@ -142,7 +144,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,DataFixtures,Proxy,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,DataFixtures,Proxy,Tests,Mail/Messages,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -193,7 +195,10 @@ services:
         arguments: ['%legacy.site_index%', '@service_container']
 
     commsy_legacy.category_service:
-        class: App\Utils\CategoryService
+        alias: App\Utils\CategoryService
+
+    App\Utils\CategoryService:
+        autowire: true
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.material_service:
@@ -922,6 +927,11 @@ services:
     commsy.item_controller:
         class: App\Controller\ItemController
 
+    # Mail
+    App\Mail\MessageBuilder:
+        arguments:
+            $emailFrom: '%commsy.email.from%'
+
     # Utils
     commsy.utils.mail_assistant:
         alias: App\Utils\MailAssistant
@@ -1222,6 +1232,9 @@ services:
     App\Event\CommsyEditEvent:
         autowire: false
 
+    App\Event\ItemDeletedEvent:
+        autowire: false
+
     # Response
     App\Http\JsonDataResponse:
         autowire: false
@@ -1270,3 +1283,10 @@ services:
         arguments: ["@service_container", "@commsy_legacy.material_service"]
         tags:
             - { name: kernel.event_subscriber }
+
+###############################
+## Craue\TwigExtensionsBundle
+###############################
+    # FormatDateTimeExtension
+    Craue\TwigExtensionsBundle\Twig\Extension\FormatDateTimeExtension:
+        alias: twig.extension.craue_formatDateTime

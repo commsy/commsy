@@ -23,6 +23,9 @@
     "symfony/http-client-contracts": {
         "version": "v1.1.6"
     },
+    "symfony/ldap": {
+        "version": "v4.4.5"
+    },
     "symfony/serializer": {
         "version": "v4.3.3"
     },
@@ -49,5 +52,8 @@
             "package.json",
             "webpack.config.js"
         ]
+    },
+    "whiteoctober/breadcrumbs-bundle": {
+        "version": "1.4.5"
     }
 }

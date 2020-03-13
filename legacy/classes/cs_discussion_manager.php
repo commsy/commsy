@@ -136,10 +136,6 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
       $this->_topic_limit = (int)$limit;
    }
 
-   function setInstitutionLimit ($limit) {
-      $this->_institution_limit = (int)$limit;
-   }
-
    function setSortOrder ($order) {
       $this->_sort_order = (string)$order;
    }
@@ -211,10 +207,7 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
      }
-     if ( isset($this->_institution_limit) ) {
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l41.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l42.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-     }
+
      if ( isset($this->_group_limit) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
@@ -366,9 +359,9 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
 
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'latest' ) {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC, ' . $this->addDatabasePrefix('discussions') . '.modification_date DESC';
         } elseif ( $this->_sort_order == 'latest_rev' ) {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date, ' . $this->addDatabasePrefix('discussions') . '.modification_date';
         } elseif ( $this->_sort_order == 'title' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title';
         } elseif ( $this->_sort_order == 'title_rev' ) {

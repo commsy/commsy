@@ -74,6 +74,7 @@ class AnnouncementTransformer implements DataTransformerInterface
             $announcementObject->setSecondDateTime($datetime->format('Y-m-d H:i:s'));
 
         }
+
         
         if (isset($announcementData['hidden'])) {
             if ($announcementData['hidden']) {
