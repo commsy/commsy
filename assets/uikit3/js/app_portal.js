@@ -22,8 +22,8 @@ import Icons from 'uikit3/dist/js/uikit-icons';
 // loads the Icon plugin
 UIkit.use(Icons);
 
-import {Edit} from "./commsy/Edit";
-Edit.bootstrap();
+// import {Edit} from "./commsy/Edit";
+// Edit.bootstrap();
 
 import {Upload} from "./commsy/Upload";
 Upload.bootstrap();

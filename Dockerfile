@@ -96,6 +96,15 @@ COPY .env ./
 RUN composer dump-env prod; \
 	rm .env
 
+# prevent the reinstallation of node modules at every changes in the source code
+COPY webpack.config.js tsconfig.json package.json yarn.lock ./
+COPY assets assets/
+RUN set -eux; \
+	yarn install; \
+	yarn build; \
+	rm -r assets; \
+	rm tsconfig.json
+
 # copy only specifically what we need
 COPY bin bin/
 COPY config config/
@@ -110,7 +119,6 @@ RUN set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
-#VOLUME /srv/api/var
 
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
