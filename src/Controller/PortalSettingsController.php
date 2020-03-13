@@ -8,6 +8,7 @@ use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\SupportType;
+use App\Form\Type\Portal\TimeType;
 use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
@@ -106,6 +107,28 @@ class PortalSettingsController extends AbstractController
 
             $entityManager->persist($portal);
             $entityManager->flush();
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/time")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @ParamConverter("environment", class="App\Services\LegacyEnvironment")
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function time(Portal $portal, Request $request, EntityManagerInterface $entityManager, LegacyEnvironment $environment)
+    {
+        $defaultData = ['showTime' => 0];
+        $form = $this->createForm(TimeType::class, $defaultData);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            //TODO: check if 'save' is clicked as there are multiple buttons
+            $sth = $request->getBasePath();
         }
 
         return [
