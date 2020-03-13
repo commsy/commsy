@@ -94,7 +94,7 @@ class cs_item {
    }
 
     public function getContextItem()
-    {
+   : \cs_context_item {
         if ($this->_context_item == null) {
             $contextId = $this->getContextID();
             if (!empty($contextId)) {
@@ -1135,7 +1135,6 @@ class cs_item {
             if ($changed_key != 'general' and $changed_key !='section_for' and $changed_key !='task_item' and $changed_key !='copy_of') {
                // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
                if ( in_array($changed_key, array(  CS_TOPIC_TYPE,
-                                                   CS_INSTITUTION_TYPE,
                                                    CS_GROUP_TYPE,
                                                    CS_PROJECT_TYPE,
                                                    CS_PRIVATEROOM_TYPE,
@@ -1436,7 +1435,7 @@ class cs_item {
                and ($user_item->isModerator()
                     or ($user_item->isUser()
                         and ($user_item->getItemID() == $this->getCreatorID()
-                             or $this->isPublic()))))
+                             or !$this->isPrivateEditing()))))
             ) {
             $access = true;
          }
@@ -1910,13 +1909,14 @@ class cs_item {
      $manager->undeleteItemByItemID($this->getItemID());
    }
 
-   /** delete item
-    * this method deletes an item
-    */
-   function delete() {
-      $manager = $this->_environment->getManager($this->getItemType());
-      $this->_delete($manager);
-   }
+    /** delete item
+     * this method deletes an item
+     */
+    public function delete()
+    {
+        $manager = $this->_environment->getManager($this->getItemType());
+        $this->_delete($manager);
+    }
 
    function deleteAssociatedAnnotations() {
       $annotation_manager = $this->_environment->getAnnotationManager();
@@ -2230,13 +2230,6 @@ class cs_item {
       $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
    }
 
-   function getInstitutionList() {
-      $institution_list = $this->getLinkedItemList(CS_INSTITUTION_TYPE);
-      $institution_list->sortBy('name');
-      return $institution_list;
-   }
-
-
    function setExternalViewerAccounts($user_id_array) {
        $this->_external_viewer_user_array = $user_id_array;
    }
@@ -2261,15 +2254,6 @@ function getExternalViewerArray(){
       $retour = $item_manager->getExternalViewerUserArrayForItem($this->getItemID());
       return $retour;
    }
-
-   function setInstitutionListByID ($value) {
-      $this->setLinkedItemsByID (CS_INSTITUTION_TYPE, $value);
-   }
-
-   function setInstitutionList($value) {
-      $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
-   }
-
    function getGroupList () {
       $group_list = $this->getLinkedItemList(CS_GROUP_TYPE);
       $group_list->sortBy('name');
@@ -2671,109 +2655,6 @@ function getExternalViewerArray(){
 
    public function isArchived () {
       return $this->_is_archived;
-   }
-
-   function SendDeleteEntryMailToModerators(){
-      /*
-         When an entry was deleted in the personal repository of a user, an email was send to the moderators of the context
-         the user was accessing before opening the repository. To prevent this behaviour, this functions checks if the item is
-         inside a repository. If so, no email is send.
-      */
-      $self_context_item = $this->getContextItem();
-      if (!$self_context_item->isPrivateRoom()) {
-   	   $translator = $this->_environment->getTranslationObject();
-         $default_language = 'de';
-
-          global $symfonyContainer;
-          $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
-
-         $current_context = $this->_environment->getCurrentContextItem();
-         $moderator_list = $current_context->getModeratorList();
-         $mod_item = $moderator_list->getFirst();
-         $receiver_array = array();
-         while($mod_item){
-            if ($mod_item->getDeleteEntryWantMail() == 'yes') {
-				   $language = $current_context->getLanguage();
-               if ($language == 'user') {
-					   $language = $mod_item->getLanguage();
-                  if ($language == 'browser') {
-						   $language = $default_language;
-                  }
-               }
-               $receiver_array[$language][] = $mod_item->getEmail();
-               $moderator_name_array[] = $mod_item->getFullname();
-            }
-            $mod_item = $moderator_list->getNext();
-         }
-
-         $context_item = $this->_environment->getCurrentContextItem();
-
-         // now email information
-         foreach ($receiver_array as $key => $value) {
-            $current_portal = $this->_environment->getCurrentPortalItem();
-            $current_user = $this->_environment->getCurrentUserItem();
-            $fullname = $current_user->getFullname();
-            $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($key);
-            $subject = '';
-            $subject .= $translator->getMessage('COMMON_DELETED_ENTRY',$context_item->getTitle());
-            $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-            $body .= LF.LF;
-            $body  .= $translator->getMessage('COMMON_DELETED_ENTRY_DESC',$this->getTitle(), $context_item->getTitle(), $fullname, $translator->getMessage('COMMON_'.strtoupper($this->getType())));
-            $body .= LF.LF;
-
-            $url_to_portal = '';
-            if ( !empty($current_portal) ) {
-               $url_to_portal = $current_portal->getURL();
-            }
-            $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
-            if ( isset($c_commsy_cron_path) ) {
-               $url = $c_commsy_cron_path.'commsy.php?cid=';
-            } elseif ( !empty($url_to_portal) ) {
-               $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
-               if ( stristr($c_commsy_domain,'https://') ) {
-                  $url = 'https://';
-               } else {
-                  $url = 'http://';
-               }
-               $url .= $url_to_portal;
-               $file = 'commsy.php';
-               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-               if ( !empty($c_single_entry_point) ) {
-                  $file = $c_single_entry_point;
-               }
-               $url .= '/'.$file.'?cid=';
-            } else {
-               $file = $_SERVER['PHP_SELF'];
-               $file = str_replace('cron','commsy',$file);
-               $url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
-            }
-            $url .= $context_item->getItemID();
-            $body .= $translator->getMessage('COMMON_LINK_WORKSPACE').' '.$url;
-            $body .= LF.LF;
-            $body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
-            $body .= LF.LF;
-
-            // send email
-            include_once('classes/cs_mail.php');
-            $mail = new cs_mail();
-            $mail->set_to(implode(',',$value));
-            $mail->set_from_email($default_sender_address);
-            if (isset($current_portal)){
-				   $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
-            }else{
-				   $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-            }
-            $mail->set_reply_to_name($current_user->getFullname());
-            $mail->set_reply_to_email($current_user->getEmail());
-            $mail->set_subject($subject);
-            $mail->set_message($body);
-            $retour = $mail->send();
-            unset($mail);
-            $translator->setSelectedLanguage($save_language);
-            unset($save_language);
-         }
-		}
    }
 
    ##########################################

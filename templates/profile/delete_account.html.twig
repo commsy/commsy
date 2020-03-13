@@ -28,7 +28,15 @@
                         </div>
 
                         <div class="uk-form-row">
-                            {{ form_errors(form_lock.confirm_field) }}
+                            {% for error in form_lock.confirm_field.vars.errors  %}
+                                {% if ' ' not in error.message %}
+                                    <br /><a href="/room/{{ error.message}}">
+                                    {{ error.message | roomtitle}}
+                                </a><br />
+                                {% else %}
+                                    {{ error.message |trans({}, "validators")}}<br/>
+                                {% endif %}
+                            {% endfor %}
                             {{ form_widget(form_lock.confirm_field) }}
                             {{ form_widget(form_lock.confirm_button) }}
                         </div>
@@ -46,7 +54,13 @@
                 </div>
                 <div class="uk-alert uk-alert-danger">
                     {{ form_start(form_delete) }}
+                    {% if override == 'FALSE' %}
+                        <span>{{ 'deleteAccountTextFalse'|trans({}, 'profile') }}</span>
+                    {% elseif override == 'FLAG' %}
+                        <span>{{ 'deleteAccountTextFlag'|trans({}, 'profile') }}</span>
+                    {% else %}
                         <span>{{ 'deleteAccountText'|trans({}, 'profile') }}</span>
+                    {% endif %}
 
                         <div class="uk-margin">
                             {{ 'Delete explanation start'|trans({}, 'settings') }}
@@ -55,7 +69,15 @@
                         </div>
 
                         <div class="uk-form-row">
-                            {{ form_errors(form_delete.confirm_field) }}
+                            {% for error in form_delete.confirm_field.vars.errors  %}
+                                {% if ' ' not in error.message %}
+                                    <br /><a href="/room/{{ error.message}}">
+                                    {{ error.message | roomtitle}}
+                                </a><br />
+                                    {% else %}
+                                        {{ error.message}}<br/>
+                                {% endif %}
+                            {% endfor %}
                             {{ form_widget(form_delete.confirm_field) }}
                             {{ form_widget(form_delete.confirm_button) }}
                             <span class="uk-margin-left uk-text-uppercase uk-text-bold">{{ 'warning'|trans({}, 'menu') }}</span> {{ 'irreversibleMessage'|trans({}, 'menu') }}

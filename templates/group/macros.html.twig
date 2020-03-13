@@ -50,9 +50,9 @@
                                             </div>
                                             <div class="uk-margin-right">
                                                 {% if '9999-00-00' not in item.getModificationDate %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 {% else %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}<br/>
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.creationDate|craue_date }} {{ item.creationDate|craue_time }}<br/>
                                                 {% endif %}
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
@@ -74,7 +74,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
@@ -199,7 +199,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
@@ -220,7 +220,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>

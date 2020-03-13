@@ -1515,7 +1515,7 @@ class cs_page_room_view extends cs_page_view {
                 foreach ($this->_views_right as $view) {
                   $view_name = $view->getViewName();
                   if($view_name != 'actions' and $view_name != 'activity' and $view_name != 'usageinfos' and $view_name != 'preferences' and $view_name != 'search' and $view_name != 'homeextratools'
-                     and ($view_name != 'netnavigation' or $context_item->withRubric(CS_GROUP_TYPE) or $context_item->withRubric(CS_TOPIC_TYPE) or $context_item->withRubric(CS_INSTITUTION_TYPE) )
+                     and ($view_name != 'netnavigation' or $context_item->withRubric(CS_GROUP_TYPE) or $context_item->withRubric(CS_TOPIC_TYPE) )
                   ){
                      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
                      $html .= $view->asHTML();

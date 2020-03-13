@@ -232,7 +232,7 @@
             </trans-unit>
             <trans-unit id="recurring date no chance hint">
                 <source>recurring date no chance hint</source>
-                <target>This settings cannot be changed</target>
+                <target>These settings cannot be changed</target>
             </trans-unit>
             <trans-unit id="every">
                 <source>every</source>
@@ -265,6 +265,30 @@
             <trans-unit id="saveAllDates">
                 <source>saveAllDates</source>
                 <target>Save for all dates of the series</target>
+            </trans-unit>
+            <trans-unit id="short date description">
+                <source>short date description</source>
+                <target>On %date%</target>
+            </trans-unit>
+            <trans-unit id="short date and time description">
+                <source>short date and time description</source>
+                <target>On %date% at %time%</target>
+            </trans-unit>
+            <trans-unit id="short date and time range description">
+                <source>short date and time range description</source>
+                <target>On %date% from %timeStart% till %timeEnd%</target>
+            </trans-unit>
+            <trans-unit id="short date range description">
+                <source>short date range description</source>
+                <target>%dateStart% till %dateEnd%</target>
+            </trans-unit>
+            <trans-unit id="short date range and time range description">
+                <source>short date range and time range description</source>
+                <target>%dateStart%, %timeStart% till %dateEnd%, %timeEnd%</target>
+            </trans-unit>
+            <trans-unit id="number of days description">
+                <source>number of days description</source>
+                <target>%numberOfDays% days</target>
             </trans-unit>
             <trans-unit id="add participant">
                 <source>add participant</source>

@@ -7,6 +7,9 @@ use App\Entity\User;
 use App\Filter\UserFilterType;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\SendType;
+use App\Form\Model\Send;
+use App\Form\Type\Profile\AccountContactFormType;
+use App\Form\Type\Profile\RoomProfileContactType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
@@ -85,7 +88,69 @@ class UserController extends BaseController
     {
         return $this->gatherUsers($roomId, $max, $start, $sort, 'gridView', $request);
     }
+/**
+     * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}")
+     * @Template
+     */
+    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request){
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = $userTransformer->transform($userItem);
+        $mailAssistant = $this->get('commsy.utils.mail_assistant');
+        $mail = $userItem->getEmail();
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        $form = $this->createForm(AccountContactFormType::class, $userData, array(
+            'item' => $item,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $formData = $form->getData();
+                $mail = $userItem->getEmail();
+                $message = $formData['message'];
+
+                // send mail
+                $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
+                if(strlen($formData['recipient'])>0){
+                    $message->setCc($formData['recipient']);
+                }
+                $copyToSender = $formData['autoSaveStatus']; // workaround
+                if($copyToSender){
+                    $message->addCc($currentUser->getEmail(), $currentUser->getFullName());
+                }
+                $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+                $this->addFlash('recipientCount', $recipientCount);
+                $this->get('mailer')->send($message);
+
+                $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+                $this->addFlash('recipientCount', $recipientCount);
+
+            }else{
+                return $this->redirectToRoute($originPath, [
+                    'roomId' => $roomId,
+                    'itemId' => $userItem->getItemId(),
+                ]);
+            }
+
+            return $this->redirectToRoute('app_user_sendsuccesscontact', [
+                'roomId' => $roomId,
+                'itemId' => $userItem->getItemId(),
+                'originPath' => $originPath,
+            ]);
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
     /**
      * @Route("/room/{roomId}/user/{view}", defaults={"view": "feedView"}, requirements={
      *       "view": "feedView|gridView"
@@ -251,7 +316,7 @@ class UserController extends BaseController
         // get user list from manager service 
         $itemsCountArray = $userService->getCountArray($roomId);
 
-        
+
         $html = $this->renderView('user/list_print.html.twig', [
             'roomId' => $roomId,
             'users' => $users,
@@ -453,7 +518,7 @@ class UserController extends BaseController
         foreach ($moderators as $moderator) {
             $moderatorIds[] = $moderator->getItemId();
         }
-        
+
         foreach ($selectedIds as $selectedId) {
             if (in_array($selectedId, $moderatorIds)) {
                 if(($key = array_search($selectedId, $moderatorIds)) !== false) {
@@ -461,6 +526,7 @@ class UserController extends BaseController
                 }
             }
         }
+
         return !empty($moderatorIds);
     }
 
@@ -544,7 +610,7 @@ class UserController extends BaseController
             'pathTopicItem' => $pathTopicItem,
             'isSelf' => $isSelf,
             'moderatorListLength' => $moderatorListLength,
-       );
+        );
     }
 
 
@@ -558,7 +624,7 @@ class UserController extends BaseController
     ) {
         $infoArray = array();
         $user = $userService->getUser($itemId);
-        
+
         $legacyEnvironment = $environment->getEnvironment();
         $item = $user;
         $reader_manager = $legacyEnvironment->getReaderManager();
@@ -588,8 +654,8 @@ class UserController extends BaseController
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
-           $id_array[] = $current_user->getItemID();
-           $current_user = $user_list->getNext();
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
         }
         $readerManager->getLatestReaderByUserIDArray($id_array,$user->getItemID());
         $current_user = $user_list->getFirst();
@@ -605,18 +671,17 @@ class UserController extends BaseController
             }
             $current_user = $user_list->getNext();
         }
-
         $readerList = array();
         $modifierList = array();
         $reader = $readerService->getLatestReader($user->getItemId());
         if ( empty($reader) ) {
-           $readerList[$item->getItemId()] = 'new';
+            $readerList[$item->getItemId()] = 'new';
         } elseif ( $reader['read_date'] < $user->getModificationDate() ) {
-           $readerList[$user->getItemId()] = 'changed';
+            $readerList[$user->getItemId()] = 'changed';
         }
-        
+
         $modifierList[$user->getItemId()] = $itemService->getAdditionalEditorsForItem($user);
-        
+
         $users = $userService->getListUsers($roomId);
         $userList = array();
         $counterBefore = 0;
@@ -662,7 +727,7 @@ class UserController extends BaseController
                 $lastItemId = $users[sizeof($users)-1]->getItemId();
             }
         }
-        
+
         $infoArray['user'] = $user;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -739,7 +804,6 @@ class UserController extends BaseController
 
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-
         $userItem = $userService->getuser($itemId);
         if (!$userItem) {
             throw $this->createNotFoundException('No user found for id ' . $itemId);
@@ -755,7 +819,7 @@ class UserController extends BaseController
             )),
         );
         $form = $this->createForm(UserType::class, $formData, $formOptions);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
@@ -766,7 +830,7 @@ class UserController extends BaseController
                 $userItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 $userItem->save();
-                
+
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
@@ -776,7 +840,7 @@ class UserController extends BaseController
             }
             return $this->redirectToRoute('app_user_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-        
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
@@ -799,23 +863,23 @@ class UserController extends BaseController
      */
     public function saveAction(
         ItemService $itemService,
-        ReaderService $readerService,
+ReaderService $readerService,
         UserService $userService,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $user = $userService->getUser($itemId);
-        
+
         $itemArray = array($user);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $legacyEnvironment = $environment->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
-        
+
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
@@ -828,13 +892,13 @@ class UserController extends BaseController
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$user->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(), $current_user->getItemID());
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array,$user->getItemID());
+        $current_user = $user_list->getFirst();
+        while ( $current_user ) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(), $current_user->getItemID());
             if ( !empty($current_reader) ) {
                 if ( $current_reader['read_date'] >= $user->getModificationDate() ) {
                     $read_count++;
@@ -845,20 +909,19 @@ class UserController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
+                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         return array(
             'roomId' => $roomId,
             'item' => $user,
@@ -1000,6 +1063,30 @@ class UserController extends BaseController
         ];
     }
 
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/send/success/contact/{originPath}")
+     * @Template()
+     **/
+    public function sendSuccessContactAction($roomId, $itemId, $originPath)
+    {
+        // get item
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        return [
+            'link' => $this->generateUrl($originPath, [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]),
+            'title' => $item->getFullname(),
+        ];
+    }
+
     /**
      * @Route("/room/user/guestimage")
      * @param AvatarService $avatarService
@@ -1049,7 +1136,7 @@ class UserController extends BaseController
         $user = $userService->getUser($itemId);
         $file = $user->getPicture();
         $foundUserImage = true;
-        
+
         if ($file != '') {
             $rootDir = $this->get('kernel')->getRootDir().'/';
 
@@ -1071,11 +1158,11 @@ class UserController extends BaseController
                 }
             }
             $filePath = $disc_manager->getFilePath().$file;
-    
+
             if (file_exists($rootDir.$filePath)) {
                 $processedImage = $this->container->get('liip_imagine.data.manager')->find('commsy_user_image', str_ireplace('../files', './', $filePath));
                 $content = $newimage_string = $this->container->get('liip_imagine.filter.manager')->applyFilter($processedImage, 'commsy_user_image')->getContent();
-                
+
                 if (!$content) {
                     $foundUserImage = false;
                     $file = 'user_unknown.gif';
@@ -1088,13 +1175,14 @@ class UserController extends BaseController
             $foundUserImage = false;
             $file = 'user_unknown.gif';
         }
-        
+
         if (!$foundUserImage) {
             $content = $avatarService->getAvatar($itemId);
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize($file));
         $response->headers->set('Content-Disposition', $contentDisposition);
+
         return $response;
     }
 
@@ -1340,6 +1428,7 @@ class UserController extends BaseController
 
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
+        $userService->resetLimits();
 
         if ($userFilter) {
             // setup filter form

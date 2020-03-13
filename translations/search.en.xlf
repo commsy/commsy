@@ -62,6 +62,14 @@
                 <source>Creator</source>
                 <target>Creator</target>
             </trans-unit>
+            <trans-unit id="search-filter-hashtags">
+                <source>Hashtags</source>
+                <target>Tags</target>
+            </trans-unit>
+            <trans-unit id="search-filter-categories">
+                <source>Categories</source>
+                <target>Categories</target>
+            </trans-unit>
             <trans-unit id="search-filter-created-range">
                 <source>Created from/until</source>
                 <target>Created from/until</target>

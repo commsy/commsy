@@ -32,15 +32,17 @@
                         </div>
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{date.getModificationDate|date("H:i")}}
-                        {% else %}
-                            {% if '9999-00-00' not in date.getModificationDate %}
-                                {{date.getModificationDate|date("d.m.Y")}}
+                        <span class="uk-text-nowrap">
+                            {% if date.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ date.modificationDate|date("H:i") }}
                             {% else %}
-                                {{date.getCreationDate|date("d.m.Y")}}
+                                {% if '9999-00-00' not in date.modificationDate %}
+                                    {{ date.modificationDate|craue_date }}
+                                {% else %}
+                                    {{ date.creationDate|craue_date }}
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
+                        </span>
                     </div>
             </div>
             <div class="uk-width-8-10">
@@ -52,7 +54,7 @@
                     {% endif %}
                 </h4>
 
-                <div class="uk-comment-meta">{{date.getDateListDescription}}{% if date.getPlace != '' %}, {{date.getPlace}}{% endif %}</div>
+                <div class="uk-comment-meta">{{ formatDateTimeRange(date.wholeDay, date.dateTimeObject_Start, date.dateTimeObject_End) }}{% if date.place != '' %}, {{ date.place }}{% endif %}</div>
                 
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(date) }}

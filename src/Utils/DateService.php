@@ -105,12 +105,6 @@ class DateService
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->dateManager->setTopicLimit($relatedLabel->getItemId());
             }
-            
-            // institution
-            if (isset($formData['rubrics']['institution'])) {
-                $relatedLabel = $formData['rubrics']['institution'];
-                $this->dateManager->setInstitutionLimit($relatedLabel->getItemId());
-            }
         }
         
         // participants

@@ -53,11 +53,13 @@
                                     {{ macros.userIcon(material.modificatorItem) }}
                                 {% endif %}
                                 <div class="uk-comment-meta">
-                                    {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                        {{ 'today'|trans({})|capitalize }}, {{material.getModificationDate|date("H:i")}}
-                                    {% else %}
-                                        {{material.getModificationDate|date("d.m.Y")}}
-                                    {% endif %}
+                                    <span class="uk-text-nowrap">
+                                        {% if material.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                            {{ 'today'|trans({})|capitalize }}, {{ material.modificationDate|date("H:i") }}
+                                        {% else %}
+                                            {{ material.modificationDate|craue_date }}
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
 
@@ -71,7 +73,7 @@
                                     {% if material.author != '' %}
                                         {{ 'by'|trans({})|capitalize }}: {{material.author}} ({{material.publishingdate}})
                                     {% else %}
-                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(material.modificatorItem) }} ({{material.getCreationDate|date("d.m.Y")}})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(material.modificatorItem) }} ({{ material.creationDate|craue_date }})
                                     {% endif %}
                                 </div>
                                

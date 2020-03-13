@@ -298,19 +298,25 @@ function getDescription(){
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-   // TBD
-   function delete() {
-      $discussion_manager = $this->_environment->getDiscussionManager();
-      $this->_delete($discussion_manager);
-      $this->SendDeleteEntryMailToModerators();
+    public function delete()
+    {
+        global $symfonyContainer;
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Discussions');
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
-      $this->deleteElasticItem($objectPersister, $repository);
-   }
+        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
+        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+
+        $discussion_manager = $this->_environment->getDiscussionManager();
+        $this->_delete($discussion_manager);
+
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('App:Discussions');
+
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
    /** Checks and sets the data of the discussion_item.
     *
@@ -380,7 +386,6 @@ function getDescription(){
       $copy->setModificatorItem($user);
       $list = new cs_list();
       $copy->setGroupList($list);
-      $copy->setInstitutionList($list);
       $copy->setTopicList($list);
       $copy->save();
       $copy_id = $copy->getItemID();
@@ -435,8 +440,6 @@ function getDescription(){
       $clone_item = clone $this; // "clone" needed for php5
       $group_list = $this->getGroupList();
       $clone_item->setGroupList($group_list);
-      $institution_list = $this->getInstitutionList();
-      $clone_item->setInstitutionList($institution_list);
       $topic_list = $this->getTopicList();
       $clone_item->setTopicList($topic_list);
       return $clone_item;

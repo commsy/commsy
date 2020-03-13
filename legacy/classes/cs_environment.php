@@ -1015,42 +1015,6 @@ class cs_environment {
       return $this->instance['zzz_group_manager'];
    }
 
-  /** get instance of cs_institution_manager
-   *
-   * @return cs_institution_manager
-   * @access public
-   */
-   function getInstitutionManager() {
-      if ( !$this->isArchiveMode() ) {
-         if (!isset($this->instance['institution_manager'])) {
-            $institution_manager = $this->_getInstance('cs_institution_manager');
-            $institution_manager->resetLimits();
-            $this->instance['institution_manager'] = $institution_manager;
-         } else {
-            #$this->instance['institution_manager']->resetLimits();
-         }
-         return $this->instance['institution_manager'];
-      } else {
-         return $this->getZzzInstitutionManager();
-      }
-   }
-
-  /** get instance of cs_zzz_institution_manager
-   *
-   * @return cs_zzz_institution_manager
-   * @access public
-   */
-   function getZzzInstitutionManager() {
-      if (!isset($this->instance['zzz_institution_manager'])) {
-         $institution_manager = $this->_getInstance('cs_zzz_institution_manager');
-         $institution_manager->resetLimits();
-         $this->instance['zzz_institution_manager'] = $institution_manager;
-      } else {
-         #$this->instance['zzz_institution_manager']->resetLimits();
-      }
-      return $this->instance['zzz_institution_manager'];
-   }
-
    /** get instance of cs_link_modifier_item_manager
    *
    * @return cs_link_modifier_item_manager
@@ -1674,8 +1638,6 @@ class cs_environment {
             return $this->getAnnouncementManager();
          } elseif ($type == 'portfolio' or $type == CS_PORTFOLIO_TYPE) {
             return $this->getPortfolioManager();
-         } elseif ($type == 'institution' or $type == 'institutions') {
-            return $this->getInstitutionManager();
          } elseif ($type == CS_TOPIC_TYPE) {
             return $this->getTopicManager();
          } elseif ($type == 'group' or $type == 'groups') {

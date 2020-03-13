@@ -67,6 +67,7 @@ class TopicTransformer implements DataTransformerInterface
             if ($topicData['hidden']) {
                 if ($topicData['hiddendate']['date']) {
                     // add validdate to validdate
+                    // TODO: the date-object ought to resepct the chosen system language
                     $datetime = $topicData['hiddendate']['date'];
                     if ($topicData['hiddendate']['time']) {
                         $time = explode(":", $topicData['hiddendate']['time']->format('H:i'));

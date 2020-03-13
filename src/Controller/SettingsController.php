@@ -63,11 +63,6 @@ class SettingsController extends AbstractController
         // get room from RoomService
         /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
-	
-        // $room = $this->getDoctrine()
-        //     ->getRepository('App:Room')
-        //     ->find($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -103,10 +98,6 @@ class SettingsController extends AbstractController
                 $roomCategoriesService->setRoomCategoriesLinkedToContext($roomItem->getItemId(), $formData['categories']);
             }
 
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
             return $this->redirectToRoute('app_settings_general', ["roomId" => $roomId]);
         }
 
@@ -148,11 +139,6 @@ class SettingsController extends AbstractController
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             $roomItem->save();
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         return array(
@@ -211,11 +197,6 @@ class SettingsController extends AbstractController
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             $roomItem->save();
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         $portalItem = $roomItem->getContextItem();
@@ -343,10 +324,6 @@ class SettingsController extends AbstractController
 
             $roomItem->save();
 
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
             return $this->redirectToRoute('app_settings_appearance', ["roomId" => $roomId]);
         }
 
@@ -428,14 +405,17 @@ class SettingsController extends AbstractController
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
-        $form = $this->createForm(DeleteType::class, [
+        $form = $this->createForm(DeleteType::class, $roomItem, [
             'confirm_string' => $translator->trans('delete', [], 'profile')
-        ], []);
+        ]);
+
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
             $roomItem->delete();
             $roomItem->save();
+
 
             // redirect back to portal
             $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();

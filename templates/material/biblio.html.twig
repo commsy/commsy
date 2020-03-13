@@ -58,7 +58,7 @@
     		{% if material.url %}
     		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
     		    {% if material.urlDate %}
-        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate|craue_date}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
         {% elseif material.bibKind == 'incollection' or material.bibKind == 'article' or material.bibKind == 'chapter' %}
@@ -102,7 +102,7 @@
     		{% if material.url %}
     		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
     		    {% if material.urlDate %}
-        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate|craue_date}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
         {% elseif material.bibKind == 'journal' %}
@@ -144,7 +144,7 @@
             {% if material.url %}
     		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
     		    {% if material.urlDate %}
-        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate|craue_date}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
         {% elseif material.bibKind == 'inpaper' or material.bibKind == 'newspaper' %}
@@ -172,7 +172,7 @@
             {% if material.url %}
     		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
     		    {% if material.urlDate %}
-        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate|craue_date}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
         {% elseif material.bibKind == 'thesis' %}
@@ -208,14 +208,14 @@
             {% if material.url %}
     		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
     		    {% if material.urlDate %}
-        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate|craue_date}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
         {% elseif material.bibKind == 'website' %}
             {% if material.url %}
     		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
     		    {% if material.urlDate %}
-        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate|craue_date}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
         {% elseif material.bibKind == 'manuscript' %}
@@ -226,7 +226,7 @@
             {% if material.url %}
     		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
     		    {% if material.urlDate %}
-        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate|craue_date}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
         {% elseif material.bibKind == 'document' or material.bibKind == 'docmanagement' %}
@@ -241,7 +241,7 @@
     		    {% set biblio = biblio ~ "#{'Version'|trans({}, 'material') }" ~ ": " ~ material.documentReleaseNumber ~ "<br/>" %}
     		{% endif %}
     		{% if material.documentReleaseDate %}
-    		    {% set biblio = biblio ~ "#{'Version date'|trans({}, 'material') }" ~ ": " ~ material.documentReleaseDate ~ "<br/>" %}
+    		    {% set biblio = biblio ~ "#{'Version date'|trans({}, 'material') }" ~ ": " ~ "#{ material.documentReleaseDate|craue_date }" ~ "<br/>" %}
     		{% endif %}
         {% elseif material.bibKind == 'foto' or material.bibKind == 'picture' %}
             {% if material.fotoCopyright %}
@@ -251,7 +251,7 @@
     		    {% set biblio = biblio ~ "#{'Reason'|trans({}) }" ~ ": " ~ material.fotoReason ~ "<br/>" %}
     		{% endif %}
     		{% if material.fotoDate %}
-    		    {% set biblio = biblio ~ "#{'Date'|trans({}) }" ~ ": " ~ material.fotoDate ~ "<br/>" %}
+    		    {% set biblio = biblio ~ "#{'Date'|trans({}) }" ~ ": " ~ "#{ material.fotoDate|craue_date }" ~ "<br/>" %}
     		{% endif %}
         {% elseif material.bibKind == 'none' %}
         {% else %}

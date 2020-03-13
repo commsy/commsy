@@ -32,11 +32,13 @@
                     {% endif %}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
-                    {% else %}
-                        {{ entity.modificationDate|date("d.m.Y") }}
-                    {% endif %}
+                    <span class="uk-text-nowrap">
+                        {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
+                        {% else %}
+                            {{ entity.modificationDate|craue_date }}
+                        {% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -55,11 +57,13 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if entity.author is defined and entity.author is not empty %}
+                    {% if result.type == 'date' %}
+                        {{ formatDateTimeRange(entity.wholeDay, entity.datetimeStart, entity.datetimeEnd) }}{% if entity.place != '' %}, {{ entity.place }}{% endif %}
+                    {% elseif entity.author is defined and entity.author is not empty %}
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
                     {% else %}
-                        {% if entity.modifier is defined and entity.modifier is not empty %}
-                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.modifier) }} ({{ entity.getCreationDate|date("d.m.Y") }})
+                        {% if entity.creator is defined and entity.creator is not empty %}
+                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.creator) }} ({{ entity.creationDate|craue_date }})
                         {% endif %}
                     {% endif %}
                 </div>

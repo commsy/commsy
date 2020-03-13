@@ -112,22 +112,6 @@ class cs_grouproom_item extends cs_room_item {
       }
       $this->_save($manager);
 
-      // sync group item
-      if ( $save_other ) {
-         $group_item = $this->getLinkedGroupItem();
-         if ( isset($group_item) and !empty($group_item) ) {
-            $group_item->setTitle($this->getTitle());
-            $group_item->setDescription($this->getDescription());
-            $logo = $this->getLogoFileName();
-            if ( isset($logo) and !empty($logo) ) {
-               $disc_manager = $this->_environment->getDiscManager();
-               $disc_manager->copyImageFromRoomToRoom($logo,$group_item->getContextID());
-               $group_item->setPicture($disc_manager->getLastSavedFileName());
-            }
-            $group_item->saveOnlyItem();
-         }
-      }
-
       if ( empty($item_id) ) {
          // create first moderator
          $current_user = $this->_environment->getCurrentUser();
@@ -150,8 +134,12 @@ class cs_grouproom_item extends cs_room_item {
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();
          $new_room_user->makeContactPerson();
+         if ($this->_environment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+            $new_room_user->setEmailNotVisible();
+         }
          $new_room_user->save();
          $new_room_user->setCreatorID2ItemID();
+
          $this->setServiceLinkActive();
          $this->_save($manager);
 
@@ -1180,8 +1168,14 @@ class cs_grouproom_item extends cs_room_item {
             ->setSubject($subject)
             ->setBody($body, 'text/plain')
             ->setFrom([$emailFrom => $fromName])
-            ->setReplyTo([$current_user->getEmail() => $current_user->getFullname()])
             ->setTo($value);
+
+         if ($current_user) {
+            $email = $current_user->getEmail();
+            if (!empty($email)) {
+               $message->setReplyTo([$email => $current_user->getFullname()]);
+            }
+         }
 
          $symfonyContainer->get('mailer')->send($message);
 

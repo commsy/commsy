@@ -216,20 +216,16 @@ class cs_auth_manager {
       return $this->_auth_source_item->isCommSyDefault();
    }
 
-   public function encryptPassword ($password) {
-      $retour = '';
-      if ( $this->_encryption == 'none'
-           or empty($this->_encryption)
-         ) {
-         $retour = $password;
-      } elseif ( $this->_encryption == 'md5' ) {
-         $retour = md5($password);
-      }
-      return $retour;
+   public function encryptPassword($password)
+   {
+       if ($this->_encryption === 'md5') {
+           return md5($password);
+       }
+
+       return $password;
    }
 
    public function get_data_for_new_account($uid, $password){
       return null;
    }
 }
-?>

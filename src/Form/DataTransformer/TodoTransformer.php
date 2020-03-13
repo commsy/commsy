@@ -48,6 +48,8 @@ class TodoTransformer implements DataTransformerInterface
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;
 
+                // $this->legacyEnvironment->getCurrentContextItem()->getLanguage()
+
                 $todoData['steps'] = array();
                 foreach($todoItem->getStepItemList()->to_array() as $id => $item){
                     $todoData['steps'][$id] = $item->getTitle();
@@ -86,13 +88,9 @@ class TodoTransformer implements DataTransformerInterface
      */
     public function applyTransformation($todoObject, $todoData)
     {
-        if(isset($todoData['title'])){
-            $todoObject->setTitle($todoData['title']);
-        }
-        if(isset($todoData['description'])){
-            $todoObject->setDescription($todoData['description']);
-        }
-        
+        $todoObject->setTitle($todoData['title']);
+        $todoObject->setDescription($todoData['description']);
+
         if(isset($todoData['permission'])){
             if ($todoData['permission']) {
                 $todoObject->setPrivateEditing('0');
@@ -143,7 +141,7 @@ class TodoTransformer implements DataTransformerInterface
                 $newStepOrder = explode(",", $todoData['stepOrder']);
             }
 
-            if (isset($todoData['due_date'])) {
+            if (isset($todoData['due_date']['date'])) {
                 $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
             }
         } else {

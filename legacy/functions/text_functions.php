@@ -76,12 +76,6 @@ function getRubricMessageTageName($rubric,$plural = false){
          }else{
             return $translator->getMessage('COMMON_TOPIC');
          }
-      case CS_INSTITUTION_TYPE :
-         if ($plural){
-            return $translator->getMessage('COMMON_INSTITUTION_INDEX');
-         }else{
-            return $translator->getMessage('COMMON_INSTITUTION');
-         }
       case CS_USER_TYPE :
          if ($plural){
             return $translator->getMessage('COMMON_USER_INDEX');

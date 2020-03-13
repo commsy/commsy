@@ -64,7 +64,6 @@ class cs_entry_index_view extends cs_index_view {
       $this->_dropdown_image_array[CS_GROUP_TYPE] = 'group';
       $this->_dropdown_image_array[CS_TODO_TYPE] = 'todo';
       $this->_dropdown_image_array[CS_TOPIC_TYPE] = 'topic';
-      $this->_dropdown_image_array[CS_INSTITUTION_TYPE] = 'institution';
 
       $this->_dropdown_message_array[CS_ANNOUNCEMENT_TYPE] = 'DROPDOWN_NEW_ANNOUNCEMENT';
       $this->_dropdown_message_array[CS_DATE_TYPE] = 'DROPDOWN_NEW_DATE';
@@ -73,7 +72,6 @@ class cs_entry_index_view extends cs_index_view {
       $this->_dropdown_message_array[CS_GROUP_TYPE] = 'DROPDOWN_NEW_GROUP';
       $this->_dropdown_message_array[CS_TODO_TYPE] = 'DROPDOWN_NEW_TODO';
       $this->_dropdown_message_array[CS_TOPIC_TYPE] = 'DROPDOWN_NEW_TOPIC';
-      $this->_dropdown_message_array[CS_INSTITUTION_TYPE] = 'DROPDOWN_NEW_INSTITUTION';
 
       $context_item = $this->_environment->getCurrentContextItem();
       $home_conf = $context_item->getHomeConf();

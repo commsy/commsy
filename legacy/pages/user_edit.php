@@ -119,10 +119,8 @@ if (!empty($iid) and $iid != 'NEW') {
    $current_user = $environment->getCurrentUserItem();
    if(empty($_POST)){
       $link_item_array = array();
-      if ($environment->inCommunityRoom()){
-         $link_item_array = $user_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-      }else{
-         $link_item_array = $user_item->getLinkedItemIDArray(CS_GROUP_TYPE);
+      if (!$environment->inCommunityRoom()){
+          $link_item_array = $user_item->getLinkedItemIDArray(CS_GROUP_TYPE);
       }
       $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
    }
@@ -175,25 +173,14 @@ if ($command != 'error') { // only if user is allowed to edit user
       // Define rubric connections
       if ($environment->inCommunityRoom()){
          $rubric_connection = array();
-         //$rubric_connection[] = CS_MATERIAL_TYPE;
-#         $rubric_connection[] = CS_TOPIC_TYPE;
-         if ( $room_item->withRubric(CS_INSTITUTION_TYPE) ) {
-            $rubric_connection[] = CS_INSTITUTION_TYPE;
-         }
       } else {
          $rubric_connection = array();
-         #if ( $room_item->withRubric(CS_MATERIAL_TYPE) ) {
-          #  $rubric_connection[] = CS_MATERIAL_TYPE;
-         #}
          $current_rubrics = $room_item->getAvailableRubrics();
          foreach ( $current_rubrics as $rubric ) {
             switch ( $rubric ) {
                case CS_GROUP_TYPE:
                   $rubric_connection[] = CS_GROUP_TYPE;
                   break;
-#               case CS_TOPIC_TYPE:
-#                  $rubric_connection[] = CS_TOPIC_TYPE;
-#                  break;
             }
          }
       }
@@ -544,10 +531,8 @@ if ($command != 'error') { // only if user is allowed to edit user
             #########################################################
             if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
                $id_array = array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids'));
-               if ($environment->inCommunityRoom()){
-                  $user_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,$id_array);
-               }else{
-                  $user_item->setLinkedItemsByID(CS_GROUP_TYPE,$id_array);
+               if (!$environment->inCommunityRoom()){
+                   $user_item->setLinkedItemsByID(CS_GROUP_TYPE,$id_array);
                }
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
             }
@@ -804,12 +789,6 @@ if ($command != 'error') { // only if user is allowed to edit user
             switch ( $rubric ) {
                case CS_GROUP_TYPE:
                   $rubric_connection[] = CS_GROUP_TYPE;
-                  break;
-#               case CS_TOPIC_TYPE:
-#                  $rubric_connection[] = CS_TOPIC_TYPE;
-#                  break;
-               case CS_INSTITUTION_TYPE:
-                  $rubric_connection[] = CS_INSTITUTION_TYPE;
                   break;
             }
       }

@@ -22,6 +22,7 @@ use cs_user_item;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\UserRepository;
 use App\Services\LegacyMarkup;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -102,7 +103,7 @@ class RoomController extends AbstractController
         $timeSpread = $roomItem->getTimeSpread();
         $numNewEntries = $roomItem->getNewEntries($timeSpread);
         $pageImpressions = $roomItem->getPageImpressions($timeSpread);
-        
+
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
 
@@ -121,7 +122,7 @@ class RoomController extends AbstractController
 
         $backgroundImage = null;
         if($roomItem->getBGImageFilename())
-            $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));            
+            $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
         else
             $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
 
@@ -287,7 +288,7 @@ class RoomController extends AbstractController
             'feedList' => $feedList,
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive()
-         );
+        );
     }
 
     /**
@@ -313,18 +314,18 @@ class RoomController extends AbstractController
                 'roomId' => $roomId,
             ))
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            
+
             $legacyEnvironment = $environment->getEnvironment();
 
             $currentUser = $legacyEnvironment->getCurrentUser();
 
             $roomManager = $legacyEnvironment->getRoomManager();
             $roomItem = $roomManager->getItem($roomId);
-            
+
             $moderatorEmailAdresses = array();
             $moderatorList = $roomItem->getModeratorList();
             $moderatorUserItem = $moderatorList->getFirst();
@@ -332,16 +333,16 @@ class RoomController extends AbstractController
                 $moderatorEmailAdresses[$moderatorUserItem->getEmail()] = $moderatorUserItem->getFullname();
                 $moderatorUserItem = $moderatorList->getNext();
             }
-            
+
             $message = (new \Swift_Message())
                 ->setSubject($data['subject'])
                 ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
                 ->setTo($moderatorEmailAdresses)
                 ->setBody($data['message'])
             ;
-            
+
             $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
-            
+
             $this->get('mailer')->send($message);
 
             return new JsonResponse([
@@ -380,6 +381,20 @@ class RoomController extends AbstractController
     ) {
         $legacyEnvironment = $environment->getEnvironment();
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $showRooms = $portalItem->getShowRoomsOnHome();
+        switch ($showRooms) {
+            case 'onlyprojectrooms':
+                $roomTypes = [CS_PROJECT_TYPE];
+                break;
+            case 'onlycommunityrooms':
+                $roomTypes = [CS_COMMUNITY_TYPE];
+                break;
+            default:
+                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
+                break;
+        }
+
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portalItem->showTime(),
             'timePulses' => $roomService->getTimePulses(),
@@ -392,7 +407,7 @@ class RoomController extends AbstractController
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository(Room::class);
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -412,7 +427,7 @@ class RoomController extends AbstractController
         // to use the form validation below, instead of manually checking for a
         // specific value
         $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
-        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -481,6 +496,7 @@ class RoomController extends AbstractController
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
+        UserRepository $userRepository,
         int $roomId,
         int $max = 10,
         int $start = 0
@@ -488,6 +504,19 @@ class RoomController extends AbstractController
         $legacyEnvironment = $environment->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $showRooms = $portalItem->getShowRoomsOnHome();
+        switch ($showRooms) {
+            case 'onlyprojectrooms':
+                $roomTypes = [CS_PROJECT_TYPE];
+                break;
+            case 'onlycommunityrooms':
+                $roomTypes = [CS_COMMUNITY_TYPE];
+                break;
+            default:
+                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
+                break;
+        }
 
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -498,9 +527,11 @@ class RoomController extends AbstractController
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository('App:Room');
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
+
+
 
         if ($roomFilter) {
             $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
@@ -520,7 +551,7 @@ class RoomController extends AbstractController
         if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
             $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
-            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);
 
@@ -532,9 +563,10 @@ class RoomController extends AbstractController
                 $filterForm->submit($roomFilter);
                 $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
             }
-
             $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
         }
+
+
 
         if ($legacyEnvironment->isArchiveMode()) {
             $legacyEnvironment->deactivateArchiveMode();
@@ -542,7 +574,34 @@ class RoomController extends AbstractController
 
         $projectsMemberStatus = array();
         foreach ($rooms as $room) {
-            $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room, $legacyEnvironment, $roomService);
+
+            try{
+                $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room, $legacyEnvironment, $roomService);
+                $contactUsers = $userRepository->getContactsByRoomId($room->getItemId());
+                $moderators = $userRepository->getModeratorsByRoomId($room->getItemId());
+
+                if(empty($contactUsers)){
+                    $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
+                }
+
+                $contactsString = "";
+                $iDsString = "";
+
+                foreach($contactUsers as $contactUser){
+                    $contactsString .= $contactUser->getFullName();
+                    $iDsString .= $contactUser->getItemID();
+                    $contactsString .= ", ";
+                    $iDsString .= ",";
+                }
+
+                $contactsString = rtrim($contactsString, ", ");
+                $iDsString = rtrim($iDsString, ", ");
+                if(strlen($iDsString) > 1 and strlen($contactsString) > 1){
+                    $room->setContactPersons($contactsString . ";" . $iDsString);
+                }
+            }catch (Exception $e){
+                // do nothing
+            }
         }
         return [
             'roomId' => $roomId,
@@ -1031,7 +1090,7 @@ class RoomController extends AbstractController
         }
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
-        $timesDisplay = $currentPortalItem->getCurrentTimeName();
+        $timesDisplay = ucfirst($currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
@@ -1086,10 +1145,23 @@ class RoomController extends AbstractController
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
+        $templates = $this->getAvailableTemplates($legacyEnvironment, $type);
+
+        // necessary, since the data field malfunctions when added via listener call (#2979)
+        $templates['No template'] = '-1';
+
+        // re-sort array by elements
+        foreach($templates as $index => $entry){
+            if(!($index == 'No template')){
+                unset($templates[$index]);
+                $templates[$index] = $entry;
+            }
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
-            'templates' => $this->getAvailableTemplates($legacyEnvironment, $type),
+            'templates' => $templates,
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
@@ -1108,7 +1180,7 @@ class RoomController extends AbstractController
                     $roomManager = $legacyEnvironment->getProjectManager();
                 }
                 elseif ($formData['type_select'] == 'community') {
-                     $roomManager = $legacyEnvironment->getCommunityManager();
+                    $roomManager = $legacyEnvironment->getCommunityManager();
                 }
                 else {
                     throw new UnexpectedValueException("Error Processing Request: Unrecognized room type", 1);

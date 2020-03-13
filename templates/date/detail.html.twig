@@ -291,7 +291,7 @@
                             {% if (showCategories or showHashtags) %}
                                 <li><a href="#categoriesAndBuzzwords{{ date.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
                             {% endif %}
-                            <li><a href="#annotations{{ date.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
+                            <li><a href="#annotations{{ date.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
                         {% endif %}
                     </ul>
                 </div>

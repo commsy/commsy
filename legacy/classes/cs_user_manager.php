@@ -368,9 +368,6 @@ class cs_user_manager extends cs_manager {
      $this->_name_limit = encode(AS_DB,$name);
   }
 
-   function setInstitutionLimit ($limit) {
-      $this->_institution_limit = (int)$limit;
-   }
    function setTopicLimit ($limit) {
       $this->_topic_limit = (int)$limit;
    }
@@ -593,10 +590,6 @@ class cs_user_manager extends cs_manager {
       }
 
      $query .= ' FROM '.$this->addDatabasePrefix('user');
-     if ( isset($this->_institution_limit) ) {
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l11 ON ( l11.deletion_date IS NULL AND ((l11.first_item_id='.$this->addDatabasePrefix('user').'.item_id AND l11.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l12 ON ( l12.deletion_date IS NULL AND ((l12.second_item_id='.$this->addDatabasePrefix('user').'.item_id AND l12.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-     }
      if ( isset($this->_topic_limit) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('user').'.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('user').'.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';

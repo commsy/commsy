@@ -235,7 +235,7 @@ class ProjectController extends AbstractController
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
-        $timesDisplay = $currentPortalItem->getCurrentTimeName();
+        $timesDisplay = ucfirst($currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
 
         $room = new Room();
