@@ -132,7 +132,7 @@
             <!-- portal home -->
             <trans-unit id="portal_menu_home_title">
                 <source>Portalhome</source>
-                <target>Configure 'all workspaces'</target>
+                <target>All workspaces</target>
             </trans-unit>
             <trans-unit id="portal_breadcrumb_home_title">
                 <source>portalhome</source>
@@ -154,6 +154,45 @@
                 <source>Workspace display</source>
                 <target>Raumanzeige</target>
             </trans-unit>
+
+            <!-- time -->
+            <trans-unit id="time">
+                <source>Time</source>
+                <target>Time cycle</target>
+            </trans-unit>
+            <trans-unit id="showtime">
+                <source>Show time</source>
+                <target>Show time cycles</target>
+            </trans-unit>
+            <trans-unit id="time_cycle_name">
+                <source>Time cycle name</source>
+                <target>Name of the time cycle</target>
+            </trans-unit>
+            <trans-unit id="future_time_cycles">
+                <source>Future time cycles</source>
+                <target>Future time cycles</target>
+            </trans-unit>
+            <trans-unit id="future_time_cycles">
+                <source>Add time cycle</source>
+                <target>Add time cycle</target>
+            </trans-unit>
+            <trans-unit id="add_life_cycle">
+                <source>Add life cycle</source>
+                <target>Add life cycle</target>
+            </trans-unit>
+            <trans-unit id="delete_time_cycle">
+                <source>Delete time cycle %company%</source>
+                <target>Delete time cycle %company%</target>
+            </trans-unit>
+            <trans-unit id="time_cycle_from">
+                <source>Time cycle from</source>
+                <target>Von</target>
+            </trans-unit>
+            <trans-unit id="time_cycle_to">
+                <source>Time cycle to</source>
+                <target>Bis</target>
+            </trans-unit>
+
 
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">

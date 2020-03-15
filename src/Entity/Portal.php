@@ -480,6 +480,28 @@ class Portal
         return $this;
     }
 
+    public function getShowTime():? int
+    {
+        return $this->extras['SHOW_TIME'] ?? 0;
+    }
+
+    public function setShowTime(?int $showTime): self
+    {
+        $this->extras['SHOW_TIME'] = $showTime;
+        return $this;
+    }
+
+    public function getFutureTimeCycles():? int
+    {
+        return $this->extras['FUTURE_TIME_CYCLES'] ?? 1;
+    }
+
+    public function setFutureTimeCycles(?int $futureCycles): self
+    {
+        $this->extras['FUTURE_TIME_CYCLES'] = $futureCycles;
+        return $this;
+    }
+
     public function getConfigurationSelection():? int
     {
         return $this->extras['CONFIGURATION_SELECTION'] ?? 0;
@@ -518,6 +540,28 @@ class Portal
     public function getAnnouncementLink():? string
     {
         return $this->extras['ANNOUNCEMENT_LINK'] ?? '';
+    }
+
+    public function setTimeCycleNameGerman(?string $text): self
+    {
+        $this->extras['TIME_CYCLE_NAME_GERMAN'] = $text;
+        return $this;
+    }
+
+    public function getTimeCycleNameGerman():? string
+    {
+        return $this->extras['TIME_CYCLE_NAME_GERMAN'] ?? '';
+    }
+
+    public function setTimeCycleNameEnglish(?string $text): self
+    {
+        $this->extras['TIME_CYCLE_NAME_ENGLISH'] = $text;
+        return $this;
+    }
+
+    public function getTimeCycleNameEnglish():? string
+    {
+        return $this->extras['TIME_CYCLE_NAME_ENGLISH'] ?? '';
     }
 
     public function setAnnouncementLink(?string $link): self

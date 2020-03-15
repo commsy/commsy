@@ -132,7 +132,7 @@
             <!-- portal home -->
             <trans-unit id="portal_menu_home_title">
                 <source>Portalhome</source>
-                <target>Gestaltung 'alle Räume'</target>
+                <target>Alle Räume</target>
             </trans-unit>
             <trans-unit id="portal_breadcrumb_home_title">
                 <source>portalhome</source>
@@ -161,6 +161,48 @@
             <trans-unit id="workspace_display">
                 <source>Workspace display</source>
                 <target>Raumanzeige</target>
+            </trans-unit>
+
+            <!-- time -->
+            <trans-unit id="time">
+                <source>Time</source>
+                <target>Zeittakte</target>
+            </trans-unit>
+            <trans-unit id="showtime">
+                <source>Show time</source>
+                <target>Zeittakte anzeigen</target>
+            </trans-unit>
+            <trans-unit id="yes">
+                <source>Yes</source>
+                <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="no">
+                <source>No</source>
+                <target>Nein</target>
+            </trans-unit>
+            <trans-unit id="time_cycle_name">
+                <source>Time cycle name</source>
+                <target>Name der Zeittakte</target>
+            </trans-unit>
+            <trans-unit id="future_time_cycles">
+                <source>Future time cycles</source>
+                <target>Zeittakte in der Zukunft</target>
+            </trans-unit>
+            <trans-unit id="add_life_cycle">
+                <source>Add life cycle</source>
+                <target>Zeittakt hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="delete_time_cycle">
+                <source>Delete time cycle %company%</source>
+                <target>Zeittakt %company% Löschen</target>
+            </trans-unit>
+            <trans-unit id="time_cycle_from">
+                <source>Time cycle from</source>
+                <target>Von</target>
+            </trans-unit>
+            <trans-unit id="time_cycle_to">
+                <source>Time cycle to</source>
+                <target>Bis</target>
             </trans-unit>
 
             <!-- portal licenses configuration -->

@@ -169,6 +169,16 @@ class PortalProxy
         $this->portal->getExtras()['SHOWROOMSONHOME'] = $text;
     }
 
+//    function getShowTime():? string
+//    {
+//        return ($this->portal->getExtras()['SHOW_TIME']) ?? '';
+//    }
+//
+//    function setShowTime(?string $text)
+//    {
+//        $this->portal->getExtras()['SHOW_TIME'] = $text;
+//    }
+
     public function setShowTemplatesInRoomListON ()
     {
         $this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST'] = 1;
