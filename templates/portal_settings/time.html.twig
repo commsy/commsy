@@ -14,6 +14,11 @@
 
         {% block body %}
             {{ form_start(form) }}
+            {{ form_row(form.showTime) }}
+            {{ form_row(form.timeCycleNameGerman) }}
+            {{ form_row(form.timeCycleNameEnglish) }}
+            {{ form_row(form.futureTimeCycles) }}
+            <hr />
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

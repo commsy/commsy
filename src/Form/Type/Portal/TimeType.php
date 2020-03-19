@@ -71,7 +71,51 @@ class TimeType extends AbstractType
                 'required' => true,
             ])
             ->add('token', HiddenType::class, [
+                'data' => "0",
+            ])
+            ->add('deleteLifecycle_0', SubmitType::class, [
+                'label' => 'Delete time cycle %company%',
+                'translation_domain' => 'portal',
+                'label_translation_parameters' => [
+                    '%company%' => 0,
+                ],
+            ])
+            ->add('name_field', HiddenType::class, [
                 'data' => "",
+                'label' => "# 0",
+            ])
+            ->add('timeCycleNameGerman_0', Types\TextType::class, [
+                'label' => 'Time cycle name',
+                'attr' => array(
+                    'placeholder' => 'de',
+                    'property_path' => false
+                ),
+                'required' => false,
+                "mapped" => false,
+                'translation_domain' => 'portal',
+            ])
+            ->add('timeCycleNameEnglish_0', Types\TextType::class, [
+                'label' => 'Time cycle name',
+                'attr' => array(
+                    'placeholder' => 'en',
+                    'property_path' => false,
+                ),
+                'required' => false,
+                'translation_domain' => 'portal',
+            ])
+            ->add('timeCycleFrom_0', DateType::class, [
+                'widget' => 'choice',
+                'label' =>'Time cycle from',
+                'input'  => 'datetime_immutable',
+                'required' => false,
+                'translation_domain' => 'portal',
+            ])
+            ->add('timeCycleTo_0', DateType::class, [
+                'widget' => 'choice',
+                'label' =>'Time cycle to',
+                'input'  => 'datetime_immutable',
+                'required' => false,
+                'translation_domain' => 'portal',
             ])
             ->add('add_lifecycle', SubmitType::class, [
                 'label' => 'Add life cycle',
