@@ -22,7 +22,7 @@ class SecureProjectDetailDeletionController extends AbstractController
 {
 
     /**
-     * @Route("/room/{roomId}/settings/securedelete/{communityId?}")
+     * @Route("/room/{roomId}/settings/securedelete/{communityId}")
      * @Template
      * @Security("is_granted('MODERATOR') or is_granted('PARENT_MODERATOR', communityId)")
      */
@@ -31,12 +31,13 @@ class SecureProjectDetailDeletionController extends AbstractController
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        $communityId
     )
     {
-        $roomItem = $roomService->getRoomItem($roomId);
+        $roomItem = $roomService->getRoomItem($communityId);
         if (!$roomItem) {
-            throw $this->createNotFoundException('No room found for id ' . $roomId);
+            throw $this->createNotFoundException('No room found for id ' . $communityId);
         }
 
         $relatedGroupRooms = [];
@@ -53,32 +54,35 @@ class SecureProjectDetailDeletionController extends AbstractController
         ]);
 
         $form->handleRequest($request);
+        if($form->get('cancel')->isClicked()){
+            return $this->redirectToRoute('app_project_list', [
+                'roomId' => $roomId,
+            ]);
+        }
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('delete')->isClicked()) {
                 $roomItem->delete();
                 $roomItem->save();
 
-                // redirect back to portal
-                $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
-                $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
-
-                return $this->redirect($url);
+                // redirect back to project ws list
+                return $this->redirectToRoute('app_project_list', [
+                    'roomId' => $roomId,
+                ]);
             }else{
                 $form->clearErrors(true);
             }
         }
 
         $lockForm->handleRequest($request);
-        if ($lockForm->isSubmitted() && $form->isValid()) {
+        if ($lockForm->isSubmitted() && $lockForm->isValid()) {
             if ($lockForm->get('lock')->isClicked()) {
-                $roomItem->reject();
+                $roomItem->setStatus(3);
                 $roomItem->save();
 
-                // redirect back to portal
-                $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
-                $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
-
-                return $this->redirect($url);
+                // redirect back to project ws list
+                return $this->redirectToRoute('app_project_list', [
+                    'roomId' => $roomId,
+                ]);
             }else{
                 $lockForm->clearErrors(true);
             }

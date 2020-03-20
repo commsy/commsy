@@ -753,6 +753,14 @@
                 <source>Portal terms</source>
                 <target>Vorlagen</target>
             </trans-unit>
+            <trans-unit id="Cancel securedelete">
+                <source>Cancel secure delete</source>
+                <target>Zurück zur Projektraumliste</target>
+            </trans-unit>
+            <trans-unit id="Delete or lock project">
+                <source>Delete or lock project</source>
+                <target>Raum sperren/löschen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

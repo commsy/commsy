@@ -354,9 +354,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/settings/delete/{communityId?}")
+     * @Route("/room/{roomId}/settings/delete/")
      * @Template
-     * @Security("is_granted('MODERATOR') or is_granted('PARENT_MODERATOR', communityId)")
+     * @Security("is_granted('MODERATOR')")
      */
     public function deleteAction(
         $roomId,
