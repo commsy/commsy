@@ -758,6 +758,14 @@
                 <source>Portal terms</source>
                 <target>Templates</target>
             </trans-unit>
+            <trans-unit id="Cancel securedelete">
+                <source>Cancel secure delete</source>
+                <target>Return to the project workspace list</target>
+            </trans-unit>
+            <trans-unit id="Delete or lock project">
+                <source>Delete or lock project</source>
+                <target>Delete/lock workspace</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

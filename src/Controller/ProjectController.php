@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\Type\ProjectType;
+use App\Form\Type\Room\SecureDeleteType;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Utils\RoomService;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\Type\Room\DeleteType;
 use App\Filter\ProjectFilterType;
 use App\Entity\Room;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ProjectController
@@ -123,8 +125,7 @@ class ProjectController extends Controller
             'userCanCreateContext' => $legacyEnvironment->getCurrentUserItem()->isAllowedToCreateContext(),
         );
     }
-    
-    
+
     /**
      * @Route("/room/{roomId}/project/{itemId}", requirements={
      *     "itemId": "\d+"
