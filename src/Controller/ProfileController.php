@@ -238,7 +238,11 @@ class ProfileController extends Controller
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
                 if ($formData['emailChangeInAllContexts']) {
-                    $tempUserItem->setEmail($formData['emailRoom']);
+                    // do not change the account email address (or private room) even if the user
+                    // wants to change all related room users
+                    if (!$tempUserItem->getContextItem()->isPortal() && !$tempUserItem->getContextItem()->isPrivateRoom()) {
+                        $tempUserItem->setEmail($formData['emailRoom']);
+                    }
                 }
                 if ($formData['hideEmailInAllContexts']) {
                     if ($formData['hideEmailInThisRoom']) {
