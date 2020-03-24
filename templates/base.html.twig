@@ -155,6 +155,8 @@
         
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+
+            <script src="{{ asset('build/tex-chtml.js') }}" async></script>
         {% endblock %}
     </body>
 </html>
