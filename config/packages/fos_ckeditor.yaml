@@ -57,6 +57,9 @@ fos_ck_editor:
         sourcedialog:
             path:     "/ckeditor/sourcedialog/"
             filename: "plugin.js"
+        mathjax:
+            path:     "/ckeditor/mathjax/"
+            filename: "plugin.js"
 
     toolbars:
         configs:
@@ -73,15 +76,16 @@ fos_ck_editor:
             style: [ "TextColor", "BGColor", "RemoveFormat" ]
             content: [ "Link", "Unlink", "Table", "HorizontalRule" ]
             language: [ "Language", "BidiLtr", "BidiRtl" ]
-            commsy: [ "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument", "Commsyhelp" ]
+            commsy: [ "Mathjax", "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument", "Commsyhelp" ]
 
     configs:
         cs_item_config:
             toolbar: "fullToolbar"
-            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp,mathjax"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,sharedspace,resize,elementspath'
             autoGrow_onStartup: true
+            mathJaxLib: "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML"
 
         cs_annotation_config:
             toolbar: "simpleToolbar"
