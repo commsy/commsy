@@ -310,6 +310,28 @@
                 <target>Here you can configure how often you want to receive the Newsletter of this workspace. The newsletter will be send to you account e-mail address <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>.</target>
             </trans-unit>
 
+            <!-- privacy settings -->
+            <trans-unit id="privacy">
+                <source>Privacy</source>
+                <target>Privacy</target>
+            </trans-unit>
+            <trans-unit id="self_assessment">
+                <source>Self assessment</source>
+                <target>Self assessment</target>
+            </trans-unit>
+            <trans-unit id="general_data">
+                <source>Master data</source>
+                <target>Master data</target>
+            </trans-unit>
+            <trans-unit id="privacy_text">
+                <source>privacy text</source>
+                <target>Here you can download your personal master data as a PDF file.</target>
+            </trans-unit>
+            <trans-unit id="download_pdf">
+                <source>Download PDF</source>
+                <target>Download PDF</target>
+            </trans-unit>
+
             <!-- delete / lock account / room profile -->
             <trans-unit id="lock_room_membership_title">
                 <source>lockRoomMembership</source>

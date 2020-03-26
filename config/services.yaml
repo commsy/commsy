@@ -784,6 +784,11 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.profile_privacy:
+        class: App\Form\Type\Profile\ProfilePrivacyType
+        tags:
+            - { name: form.type }
+
     commsy.form.type.profile_notifications:
         class: App\Form\Type\Profile\RoomProfileNotificationsType
         arguments: ['@commsy_legacy.environment']

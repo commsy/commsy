@@ -310,6 +310,28 @@
                 <target>Hier können Sie auswählen, in welchen Zeitabständen Sie den Newsletter empfangen möchten. Der Newsletter wird an Ihre Account-E-Mail-Adresse <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> geschickt.</target>
             </trans-unit>
 
+            <!-- privacy settings -->
+            <trans-unit id="privacy">
+                <source>Privacy</source>
+                <target>Datenschutz</target>
+            </trans-unit>
+            <trans-unit id="self_assessment">
+                <source>Self assessment</source>
+                <target>Selbstauskunft</target>
+            </trans-unit>
+            <trans-unit id="general_data">
+                <source>Master data</source>
+                <target>Stammdaten</target>
+            </trans-unit>
+            <trans-unit id="privacy_text">
+                <source>privacy text</source>
+                <target>Hier können Sie Ihre personenbezogenen Stammdaten als PDF Datei herunterladen.</target>
+            </trans-unit>
+            <trans-unit id="download_pdf">
+                <source>Download PDF</source>
+                <target>PDF herunterladen</target>
+            </trans-unit>
+
             <!-- delete / lock account / room profile -->
             <trans-unit id="lock_room_membership_title">
                 <source>lockRoomMembership</source>

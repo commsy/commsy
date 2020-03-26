@@ -28,6 +28,7 @@ use App\Form\Type\Profile\ProfileAccountType;
 use App\Form\Type\Profile\ProfileChangePasswordType;
 use App\Form\Type\Profile\ProfileMergeAccountsType;
 use App\Form\Type\Profile\ProfileNewsletterType;
+use App\Form\Type\Profile\ProfilePrivacyType;
 use App\Form\Type\Profile\ProfileCalendarsType;
 use App\Form\Type\Profile\ProfileAdditionalType;
 use App\Form\Type\Profile\ProfilePersonalInformationType;
@@ -513,6 +514,25 @@ class ProfileController extends Controller
         return array(
             'form' => $form->createView(),
             'portalEmail' => $userItem->getRelatedPortalUserItem()->getRoomEmail(),
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/privacy")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function privacyAction($roomId, $itemId, Request $request)
+    {
+        $form = $this->createForm(ProfilePrivacyType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // TODO: generate & serve PDF with the user's personal master data
+        }
+
+        return array(
+            'form' => $form->createView(),
         );
     }
 
