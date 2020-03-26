@@ -335,9 +335,20 @@ class UserController extends BaseController
 
                 // manual validation - moderator count check
                 if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
+                    if (!$this->contextHasModerators($roomId, $formData['userIds']))
+                    {
                         $translator = $this->get('translator');
                         $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
+                    }
+                    $groupRoomsInConflict = $this->underlyingGroupRoomHasModerators($roomId, $formData['userIds']);
+                    if (!empty($groupRoomsInConflict))
+                    {
+                        $translator = $this->get('translator');
+                        $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
+                        foreach($groupRoomsInConflict as $grpRoomName){
+                            $form->addError(new FormError("- ".$grpRoomName));
+                        }
+
                     }
                 }
 
@@ -453,7 +464,8 @@ class UserController extends BaseController
         ];
     }
 
-    private function contextHasModerators($roomId, $selectedIds) {
+    private function contextHasModerators($roomId, $selectedIds)
+    {
         $userService = $this->get('commsy_legacy.user_service');
         $moderators = $userService->getModeratorsForContext($roomId);
 
@@ -471,6 +483,28 @@ class UserController extends BaseController
         }
 
         return !empty($moderatorIds);
+    }
+
+    private function underlyingGroupRoomHasModerators($roomId, $selectedIds)
+    {
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+        $issueGrpRoomNames = [];
+
+        if($roomItem->isProjectRoom())
+        {
+            $groupRoomList = $roomItem->getGroupRoomList();
+            foreach($groupRoomList as $grpRoom)
+            {
+                $userIsModerators = $this->contextHasModerators($grpRoom->getItemID(), $selectedIds);
+                if($userIsModerators)
+                {
+                    array_push($issueGrpRoomNames, $grpRoom->_getItemData()['title']);
+                }
+            }
+        }
+
+        return $issueGrpRoomNames;
     }
 
     /**
