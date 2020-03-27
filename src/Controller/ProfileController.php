@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Calendars;
 use App\Form\Type\Profile\DeleteAccountType;
+use App\Services\PrintService;
 use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -528,12 +529,30 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO: generate & serve PDF with the user's personal master data
+            // generate & serve a PDF with the user's personal master data
+            return $this->redirectToRoute('app_profile_privacyprint', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
             'form' => $form->createView(),
         );
+    }
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/privacy/print")
+     */
+    public function privacyPrintAction($roomId, $itemId, UserService $userService, PrintService $printService)
+    {
+        // gather the user's personal master data
+        $dataArray = $userService->getPersonalMasterData($roomId, $itemId);
+
+        // generate HTML data
+        $html = $this->renderView('profile/privacy_print.html.twig', [
+            'roomId' => $roomId,
+            'user' => $dataArray['user'],
+        ]);
+
+        // return HTML Response containing a PDF generated from the HTML data
+        return $printService->buildPdfResponse($html);
     }
 
     /**

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% import 'base/printmacro.html.twig' as macros %}
+
+<html lang="{{ selectedLanguage() }}">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}CommSy{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css')) }}" />
+        {% endblock %}
+    </head>
+
+    <body>
+
+        {% block content %}
+        <div>
+            {# personal master data #}
+            <div class="">
+                {# content #}
+                <article>
+                    {# user data #}
+                    <header>
+                        <h4 class="cs-detail-section-header">User account: {{ user.fullName }}</h4>
+                    </header>
+                    <section class="">
+                        <p>User account data ...</p>
+                    </section>
+                    <footer class="">
+                        <p>user creation date, last login date, ...</p>
+                    </footer>
+                </article>
+            </div>
+        </div>
+        {% endblock %}
+
+    </body>
+</html>
