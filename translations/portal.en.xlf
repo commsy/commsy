@@ -172,10 +172,6 @@
                 <source>Future time cycles</source>
                 <target>Future time cycles</target>
             </trans-unit>
-            <trans-unit id="future_time_cycles">
-                <source>Add time cycle</source>
-                <target>Add time cycle</target>
-            </trans-unit>
             <trans-unit id="add_life_cycle">
                 <source>Add life cycle</source>
                 <target>Add life cycle</target>
