@@ -418,23 +418,4 @@ class UserService
             }
         }
     }
-
-    /**
-     * Returns the personal master data of the user with the given ID.
-     *
-     * @param int $roomId The ID of the containing context
-     * @param int $itemId The ID of the user whose personal master data shall be returned
-     * @return array An array of personal master data of the user with the given ID
-     */
-    public function getPersonalMasterData($roomId, $itemId)
-    {
-        $dataArray = [];
-
-        $user = $this->userManager->getItem($itemId);
-        $dataArray['user'] = $user;
-
-        // TODO: gather the user's personal master data
-
-        return $dataArray;
-    }
 }

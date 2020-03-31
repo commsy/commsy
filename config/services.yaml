@@ -949,6 +949,11 @@ services:
         arguments:
             $emailFrom: '%commsy.email.from%'
 
+    # Privacy
+    App\Privacy\PersonalDataCollector:
+        autowire: true
+        autoconfigure: true
+
     # Utils
     commsy.utils.mail_assistant:
         alias: App\Utils\MailAssistant
