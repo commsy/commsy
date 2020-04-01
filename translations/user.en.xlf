@@ -202,6 +202,14 @@
                 <source>no moderators left second part</source>
                 <target>Please assign a new moderation to this room or delete this/these rooms.</target>
             </trans-unit>
+            <trans-unit id="no moderators left community room first part">
+                <source>no moderators left community first</source>
+                <target>You cannot delete this user from the workspace, as the following group workspace would be without moderation:</target>
+            </trans-unit>
+            <trans-unit id="no moderators left community room second part">
+                <source>no moderators left community second</source>
+                <target>Please delete not needed group workspace by deleting the respective groups. Please address the moderator(s), if you want to assign a new moderation for the group workspace.</target>
+            </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
                 <target>Send mail</target>
