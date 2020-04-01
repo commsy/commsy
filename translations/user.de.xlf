@@ -198,6 +198,14 @@
                 <source>no moderators left second part</source>
                 <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
             </trans-unit>
+            <trans-unit id="no moderators left community room first part">
+                <source>no moderators left community first</source>
+                <target>Sie können diese Kennung nicht aus dem Raum löschen, da folgende Gruppenräume ohne Moderation wären:</target>
+            </trans-unit>
+            <trans-unit id="no moderators left community room second part">
+                <source>no moderators left community second</source>
+                <target>Bitte Löschen Sie nicht mehr benötigte Gruppenräume, indem Sie die dazugehörigen Gruppen löschen. Sollten Sie eine neue Moderation für einen Gruppenraum einsetzen wollen, wenden Sie sich bitte an die Portalmoderation.</target>
+            </trans-unit>
             <trans-unit id="and project rooms">
                 <source>and project rooms</source>
                 <target>und die folgenden Projekträume: </target>
