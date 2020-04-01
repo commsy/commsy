@@ -328,28 +328,33 @@ class UserController extends BaseController
                 }
             }
         }
-
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
 
                 // manual validation - moderator count check
                 if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    if (!$this->contextHasModerators($roomId, $formData['userIds']))
+                    $otherModerators = $this->otherContextModerators($roomId, $formData['userIds']);
+                    if (empty($otherModerators))
                     {
                         $translator = $this->get('translator');
                         $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
                     }
+
                     $groupRoomsInConflict = $this->underlyingGroupRoomHasModerators($roomId, $formData['userIds']);
                     if (!empty($groupRoomsInConflict))
                     {
                         $translator = $this->get('translator');
-                        $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
+                        $form->addError(new FormError($translator->trans('no moderators left community first', [], 'user')));
+
                         foreach($groupRoomsInConflict as $grpRoomName){
                             $form->addError(new FormError("- ".$grpRoomName));
                         }
 
+                        $translator = $this->get('translator');
+                        $form->addError(new FormError($translator->trans('no moderators left community second', [], 'user')));
                     }
+
                 }
 
                 if ($form->isSubmitted() && $form->isValid()) {
@@ -464,7 +469,14 @@ class UserController extends BaseController
         ];
     }
 
-    private function contextHasModerators($roomId, $selectedIds)
+    /**
+     * @param $roomId
+     * @param $selectedIds
+     * @return array
+     *
+     * Returns all moderators except the one ID given in.
+     */
+    private function otherContextModerators($roomId, $selectedIds)
     {
         $userService = $this->get('commsy_legacy.user_service');
         $moderators = $userService->getModeratorsForContext($roomId);
@@ -475,14 +487,25 @@ class UserController extends BaseController
         }
 
         foreach ($selectedIds as $selectedId) {
-            if (in_array($selectedId, $moderatorIds)) {
-                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
+            $user = $userService->getUser($selectedId);
+            $relatedUsers = $user->getRelatedUserList();
+            foreach($relatedUsers as $relatedUser)
+            {
+                if (in_array($relatedUser->getItemID(), $moderatorIds)) {
+                    if(($key = array_search($relatedUser->getItemID(), $moderatorIds)) !== false) {
+                        unset($moderatorIds[$key]);
+                    }
+                }
+            }
+
+            if (in_array($user->getItemID(), $moderatorIds)) {
+                if(($key = array_search($user->getItemID(), $moderatorIds)) !== false) {
                     unset($moderatorIds[$key]);
                 }
             }
         }
 
-        return !empty($moderatorIds);
+        return $moderatorIds;
     }
 
     private function underlyingGroupRoomHasModerators($roomId, $selectedIds)
@@ -496,8 +519,8 @@ class UserController extends BaseController
             $groupRoomList = $roomItem->getGroupRoomList();
             foreach($groupRoomList as $grpRoom)
             {
-                $userIsModerators = $this->contextHasModerators($grpRoom->getItemID(), $selectedIds);
-                if($userIsModerators)
+                $otherModerators = $this->otherContextModerators($grpRoom->getItemID(), $selectedIds);
+                if(empty($otherModerators))
                 {
                     array_push($issueGrpRoomNames, $grpRoom->_getItemData()['title']);
                 }
