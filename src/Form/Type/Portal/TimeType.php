@@ -104,14 +104,24 @@ class TimeType extends AbstractType
                 'translation_domain' => 'portal',
             ])
             ->add('timeCycleFrom_0', DateType::class, [
-                'widget' => 'choice',
+                'format' => 'dd.MM.yyyy',
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                ),
+                'widget' => 'single_text',
+                'placeholder' => 'dd.MM.yyyy',
                 'label' =>'Time cycle from',
                 'input'  => 'datetime_immutable',
                 'required' => false,
                 'translation_domain' => 'portal',
             ])
             ->add('timeCycleTo_0', DateType::class, [
-                'widget' => 'choice',
+                'format' => 'dd.MM.yyyy',
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                ),
+                'widget' => 'single_text',
+                'placeholder' => 'dd.MM.yyyy',
                 'label' =>'Time cycle to',
                 'input'  => 'datetime_immutable',
                 'required' => false,
@@ -224,14 +234,24 @@ class TimeType extends AbstractType
                                     'translation_domain' => 'portal',
                                 ])
                                 ->add('timeCycleFrom_'.$i, DateType::class, [
-                                    'widget' => 'choice',
+                                    'format' => 'dd.MM.yyyy',
+                                    'attr' => array(
+                                        'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                                    ),
+                                    'widget' => 'single_text',
+                                    'placeholder' => 'dd.MM.yyyy',
                                     'label' =>'Time cycle from',
                                     'input'  => 'datetime_immutable',
                                     'required' => false,
                                     'translation_domain' => 'portal',
                                 ])
                                 ->add('timeCycleTo_'.$i, DateType::class, [
-                                    'widget' => 'choice',
+                                    'format' => 'dd.MM.yyyy',
+                                    'attr' => array(
+                                        'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                                    ),
+                                    'placeholder' => 'dd.MM.yyyy',
+                                    'widget' => 'single_text',
                                     'label' =>'Time cycle to',
                                     'input'  => 'datetime_immutable',
                                     'required' => false,
