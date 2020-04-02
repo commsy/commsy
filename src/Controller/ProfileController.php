@@ -549,6 +549,7 @@ class ProfileController extends Controller
         // generate HTML data
         $html = $this->renderView('profile/privacy_print.html.twig', [
             'roomId' => $roomId,
+            'printProfileImages' => true, // set to `false` to omit profile images when generating the PDF (much faster)
             'accountData' => $personalData->getAccountData(),
             'roomProfileDataArray' => $personalData->getRoomProfileDataArray(),
         ]);
