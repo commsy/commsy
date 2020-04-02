@@ -73,6 +73,30 @@ class PersonalDataCollector
 
         $accountData->setItemID($portalUser->getItemID());
         $accountData->setUserID($portalUser->getUserID());
+        $accountData->setCreationDate(new \DateTime($portalUser->getCreationDate()));
+
+        $lastLogin = $portalUser->getLastLogin();
+        if (isset($lastLogin) && !empty($lastLogin)) {
+            $accountData->setLastLoginDate(new \DateTime($lastLogin));
+        }
+
+        $accountData->setEmail($portalUser->getEmail());
+
+        $accountData->setFirstName($portalUser->getFirstname());
+        $accountData->setLastName($portalUser->getLastname());
+
+        $accountData->setLanguage($portalUser->getLanguage());
+
+        $birthdate = $portalUser->getBirthday();
+        if (isset($birthdate) && !empty($birthdate)) {
+            $accountData->setBirthdate(new \DateTime($birthdate));
+        }
+
+        /**
+         * @var \cs_privateroom_item $privateRoom
+         */
+        $privateRoom = $portalUser->getOwnRoom($portal->getItemID());
+        $accountData->setNewsletterStatus($privateRoom->getPrivateRoomNewsletterActivity());
 
         return $accountData;
     }
@@ -89,12 +113,45 @@ class PersonalDataCollector
          */
         $roomProfileDataArray = [];
 
-        $rooms = $this->userService->getRoomList($user);
+        // TODO: to get all related users, should we better start from the portalUser (`$portalUser->getRelatedPortalUserItem()`) instead?
+        //       see comment in `ProfileController->calendarsAction()` which likely also applies here
+        /**
+         * @var \cs_user_item[] $relatedUsers
+         */
+        $relatedUsers = $user->getRelatedUserList()->to_array();
 
-        foreach ($rooms as $room) {
+        foreach ($relatedUsers as $relatedUser) {
             $roomProfileData = new RoomProfileData();
+            $roomItem = $relatedUser->getContextItem();
 
-            // TODO: get the appropriate user object for this room and extract the profile data
+            $roomProfileData->setRoomID($roomItem->getItemID());
+            $roomProfileData->setRoomName($roomItem->getTitle());
+
+            $roomProfileData->setItemID($relatedUser->getItemID());
+            $roomProfileData->setCreationDate(new \DateTime($relatedUser->getCreationDate()));
+
+            $roomProfileData->setStatus($relatedUser->getStatus());
+            $roomProfileData->setIsContact($relatedUser->isContact());
+
+            $roomProfileData->setTitle($relatedUser->getTitle());
+
+            $roomProfileData->setEmail($relatedUser->getEmail());
+            $roomProfileData->setIsEmailVisible($relatedUser->isEmailVisible());
+
+            $roomProfileData->setStreet($relatedUser->getStreet());
+            $roomProfileData->setZipcode($relatedUser->getZipcode());
+            $roomProfileData->setCity($relatedUser->getCity());
+
+            $roomProfileData->setWorkspace($relatedUser->getRoom());
+            $roomProfileData->setOrganisation($relatedUser->getOrganisation());
+            $roomProfileData->setPosition($relatedUser->getPosition());
+
+            $roomProfileData->setPhoneNumber($relatedUser->getTelephone());
+            $roomProfileData->setCellphoneNumber($relatedUser->getCellularphone());
+            $roomProfileData->setSkypeID($relatedUser->getSkype());
+            $roomProfileData->setHomepage($relatedUser->getHomepage());
+
+            $roomProfileData->setDescription($relatedUser->getDescription());
 
             $roomProfileDataArray[] = $roomProfileData;
         }

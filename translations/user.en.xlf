@@ -266,6 +266,22 @@
                 <source>Manage users</source>
                 <target>Manage users</target>
             </trans-unit>
+            <trans-unit id="user item ID">
+                <source>User item ID</source>
+                <target>User</target>
+            </trans-unit>
+            <trans-unit id="created">
+                <source>created</source>
+                <target>created</target>
+            </trans-unit>
+            <trans-unit id="modified">
+                <source>modified</source>
+                <target>modified</target>
+            </trans-unit>
+            <trans-unit id="last login">
+                <source>last login</source>
+                <target>last login</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

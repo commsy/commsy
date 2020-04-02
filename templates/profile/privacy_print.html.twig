@@ -10,29 +10,126 @@
         <title>{% block title %}CommSy{% endblock %}</title>
 
         {% block stylesheets %}
-            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css')) }}" />
+            {{ macros.encore_absolute_link_tags('app_default') }}
         {% endblock %}
     </head>
 
     <body>
 
         {% block content %}
-        <div>
-            {# personal master data #}
-            <div class="">
+        <div class="">
+            <div class="uk-panel uk-panel-box-secondary uk-panel-space">
+                <h1 class="uk-article-title">{{ 'Self assessment'|trans({}, 'profile') }} &ndash; {{ 'Master data'|trans({},'profile') }}</h1>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-header uk-panel-space">
                 {# content #}
-                <article>
-                    {# user data #}
-                    <header>
-                        <h4 class="cs-detail-section-header">User account: {{ accountData.userID }}</h4>
-                    </header>
-                    <section class="">
-                        <p>User account data ...</p>
-                    </section>
-                    <footer class="">
-                        <p>user creation date, last login date, ...</p>
-                    </footer>
-                </article>
+                {# personal master data #}
+                <div>
+                    {# account data #}
+                    <article class="uk-margin-top">
+                        <header>
+                            <h2 class="uk-panel uk-panel-title">
+                                <i class="uk-icon-user"></i>
+                                {{ 'Account'|trans({},'profile') }} {{ accountData.itemID }}: {{ accountData.userID }}
+                            </h2>
+                        </header>
+                        <div class="uk-grid uk-grid-divider">
+                            <div class="uk-width-1-2">
+                                <div class="uk-grid">
+                                    <div class="uk-width-4-10">{{ 'firstname'|trans({},'profile')|capitalize }}:</div>
+                                    <div class="uk-width-6-10">{{ accountData.firstName }}</div>
+                                    <div class="uk-width-4-10">{{ 'lastname'|trans({},'profile')|capitalize }}:</div>
+                                    <div class="uk-width-6-10">{{ accountData.lastName }}</div>
+                                    <div class="uk-width-4-10">{{ 'dateOfBirth'|trans({},'profile')|capitalize }}:</div>
+                                    <div class="uk-width-6-10">{{ accountData.birthdate|craue_date }}</div>
+                                    <div class="uk-width-4-10">{{ 'email'|trans({},'user') }}:</div>
+                                    <div class="uk-width-6-10">{{ accountData.email }}</div>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2">
+                                <div class="uk-grid">
+{# TODO: localize labels #}
+                                    <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.creationDate|craue_datetime }}</div>
+                                    <div class="uk-width-3-10">{{ 'last login'|trans({},'user')|capitalize }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.lastLoginDate|craue_datetime }}</div>
+                                    <div class="uk-width-3-10">{{ 'language'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.language|trans({},'profile') }}</div>
+                                    <div class="uk-width-3-10">{{ 'newsletter'|trans({},'profile') }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.newsletterStatus|trans({},'profile') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% for roomProfileData in roomProfileDataArray %}
+                    {# room profile data #}
+                    <article class="uk-margin-large-top">
+                        <header>
+                            <h2 class="uk-panel uk-panel-title">
+                                <i class="uk-icon-justify uk-icon-th-list"></i>
+                                {{ 'room'|trans({},'profile')|capitalize }} {{ roomProfileData.roomID }}: {{ roomProfileData.roomName|raw }}
+                                {# NOTE: including profile images significantly increases load times! #}
+                                <span class="uk-float-right"><img class="uk-comment-avatar uk-thumbnail uk-border-circle uk-margin-small-right" style="height:24px; width:24px" src="{{ absolute_url(path('app_user_image', {'roomId': roomProfileData.roomID, 'itemId': roomProfileData.itemID}) )}}"></span>
+                            </h2>
+                        </header>
+                        <div class="uk-grid uk-grid-divider">
+                            <div class="uk-width-1-2">
+                                <div class="uk-grid">
+                                    <div class="uk-width-3-10">{{ 'user status'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ ('status_' ~ roomProfileData.status)|trans({},'user') }}{% if roomProfileData.contact == true %}/{{ 'is contact'|trans({},'user') }}{% endif %}</div>
+                                    <div class="uk-width-3-10">{{ 'email'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.email }}{% if roomProfileData.emailVisible == false %} <i class="uk-icon-eye-slash"></i>{% endif %}</div>
+                                </div>
+                                <div class="uk-grid uk-margin-top">
+                                    <div class="uk-width-3-10">{{ 'phone'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.phoneNumber }}</div>
+                                    <div class="uk-width-3-10">{{ 'mobile'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.cellphoneNumber }}</div>
+                                </div>
+                                <div class="uk-grid uk-margin-top">
+                                    <div class="uk-width-3-10">{{ 'street'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.street }}</div>
+                                    <div class="uk-width-3-10">{{ 'zipCode'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.zipcode }}</div>
+                                    <div class="uk-width-3-10">{{ 'city'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.city }}</div>
+                                </div>
+                                <div class="uk-grid uk-margin-top">
+                                    <div class="uk-width-3-10">{{ 'title'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.title }}</div>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2">
+                                <div class="uk-grid">
+                                    <div class="uk-width-3-10">{{ 'User item ID'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.itemID }}</div>
+                                    <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.creationDate|craue_datetime }}</div>
+                                </div>
+                                <div class="uk-grid uk-margin-top">
+                                    <div class="uk-width-3-10">{{ 'skype'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.skypeID }}</div>
+                                    <div class="uk-width-3-10">{{ 'homepage'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.homepage }}</div>
+                                </div>
+                                <div class="uk-grid uk-margin-top">
+                                    <div class="uk-width-3-10">{{ 'room'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.workspace }}</div>
+                                    <div class="uk-width-3-10">{{ 'organisation'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.organisation }}</div>
+                                    <div class="uk-width-3-10">{{ 'position'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.position }}</div>
+                                </div>
+                                <div class="uk-grid uk-margin-top">
+                                    <div class="uk-width-3-10">{{ 'description'|trans({},'profile') }}:</div>
+                                    <div class="uk-width-7-10">{{ roomProfileData.description }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+                </div>
             </div>
         </div>
         {% endblock %}
