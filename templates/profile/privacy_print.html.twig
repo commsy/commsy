@@ -38,18 +38,17 @@
                             <div class="uk-width-1-2">
                                 <div class="uk-grid">
                                     <div class="uk-width-4-10">{{ 'firstname'|trans({},'profile')|capitalize }}:</div>
-                                    <div class="uk-width-6-10">{{ accountData.firstName }}</div>
+                                    <div class="uk-width-6-10">{% if not accountData.firstName is empty %}{{ accountData.firstName }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-4-10">{{ 'lastname'|trans({},'profile')|capitalize }}:</div>
-                                    <div class="uk-width-6-10">{{ accountData.lastName }}</div>
+                                    <div class="uk-width-6-10">{% if not accountData.lastName is empty %}{{ accountData.lastName }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-4-10">{{ 'dateOfBirth'|trans({},'profile')|capitalize }}:</div>
-                                    <div class="uk-width-6-10">{{ accountData.birthdate|craue_date }}</div>
+                                    <div class="uk-width-6-10">{% if not accountData.birthdate|craue_date is empty %}{{ accountData.birthdate|craue_date }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-4-10">{{ 'email'|trans({},'user') }}:</div>
-                                    <div class="uk-width-6-10">{{ accountData.email }}</div>
+                                    <div class="uk-width-6-10">{% if not accountData.email is empty %}{{ accountData.email }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                             </div>
                             <div class="uk-width-1-2">
                                 <div class="uk-grid">
-{# TODO: localize labels #}
                                     <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
                                     <div class="uk-width-7-10">{{ accountData.creationDate|craue_datetime }}</div>
                                     <div class="uk-width-3-10">{{ 'last login'|trans({},'user')|capitalize }}:</div>
@@ -81,25 +80,25 @@
                                     <div class="uk-width-3-10">{{ 'user status'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{{ ('status_' ~ roomProfileData.status)|trans({},'user') }}{% if roomProfileData.contact == true %}/{{ 'is contact'|trans({},'user') }}{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'email'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.email }}{% if roomProfileData.emailVisible == false %} <i class="uk-icon-eye-slash"></i>{% endif %}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.email is empty %}{{ roomProfileData.email }}{% if roomProfileData.emailVisible == false %} <i class="uk-icon-eye-slash"></i>{% endif %}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'phone'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.phoneNumber }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.phoneNumber is empty %}{{ roomProfileData.phoneNumber }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'mobile'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.cellphoneNumber }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.cellphoneNumber is empty %}{{ roomProfileData.cellphoneNumber }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'street'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.street }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.street is empty %}{{ roomProfileData.street }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'zipCode'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.zipcode }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.zipcode is empty %}{{ roomProfileData.zipcode }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'city'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.city }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.city is empty %}{{ roomProfileData.city }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'title'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.title }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.title is empty %}{{ roomProfileData.title }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                             </div>
                             <div class="uk-width-1-2">
@@ -111,21 +110,21 @@
                                 </div>
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'skype'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.skypeID }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.skypeID is empty %}{{ roomProfileData.skypeID }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'homepage'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.homepage }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.homepage is empty %}{{ roomProfileData.homepage }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'room'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.workspace }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.workspace is empty %}{{ roomProfileData.workspace }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'organisation'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.organisation }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.organisation is empty %}{{ roomProfileData.organisation }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'position'|trans({},'user') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.position }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.position is empty %}{{ roomProfileData.position }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'description'|trans({},'profile') }}:</div>
-                                    <div class="uk-width-7-10">{{ roomProfileData.description }}</div>
+                                    <div class="uk-width-7-10">{% if not roomProfileData.description is empty %}{{ roomProfileData.description }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
                             </div>
                         </div>
