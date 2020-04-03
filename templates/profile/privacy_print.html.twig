@@ -82,12 +82,17 @@
                                     <div class="uk-width-3-10">{{ 'email'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.email is empty %}{{ roomProfileData.email }}{% if roomProfileData.emailVisible == false %} <i class="uk-icon-eye-slash"></i>{% endif %}{% else %}&nbsp;{% endif %}</div>
                                 </div>
+                            {# NOTE: the PDF layout uses two-column blocks, one block consisting of a left column (e.g. phone & mobile) and a right column (e.g. skype & homepage);
+                                     we omit entire blocks if *all* of its fields are empty; but if at least one of the block's fields has content, we print the entire block  #}
+                            {% if not ((roomProfileData.phoneNumber is empty) and (roomProfileData.cellphoneNumber is empty) and (roomProfileData.skypeID is empty) and (roomProfileData.homepage is empty)) %}
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'phone'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.phoneNumber is empty %}{{ roomProfileData.phoneNumber }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'mobile'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.cellphoneNumber is empty %}{{ roomProfileData.cellphoneNumber }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
+                            {% endif %}
+                            {% if not ((roomProfileData.street is empty) and (roomProfileData.zipcode is empty) and (roomProfileData.city is empty) and (roomProfileData.workspace is empty) and (roomProfileData.organisation is empty) and (roomProfileData.position is empty)) %}
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'street'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.street is empty %}{{ roomProfileData.street }}{% else %}&nbsp;{% endif %}</div>
@@ -96,10 +101,13 @@
                                     <div class="uk-width-3-10">{{ 'city'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.city is empty %}{{ roomProfileData.city }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
+                            {% endif %}
+                            {% if not ((roomProfileData.title is empty) and (roomProfileData.description is empty)) %}
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'title'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.title is empty %}{{ roomProfileData.title }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
+                            {% endif %}
                             </div>
                             <div class="uk-width-1-2">
                                 <div class="uk-grid">
@@ -108,12 +116,15 @@
                                     <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
                                     <div class="uk-width-7-10">{{ roomProfileData.creationDate|craue_datetime }}</div>
                                 </div>
+                            {% if not ((roomProfileData.phoneNumber is empty) and (roomProfileData.cellphoneNumber is empty) and (roomProfileData.skypeID is empty) and (roomProfileData.homepage is empty)) %}
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'skype'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.skypeID is empty %}{{ roomProfileData.skypeID }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-3-10">{{ 'homepage'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.homepage is empty %}{{ roomProfileData.homepage }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
+                            {% endif %}
+                            {% if not ((roomProfileData.street is empty) and (roomProfileData.zipcode is empty) and (roomProfileData.city is empty) and (roomProfileData.workspace is empty) and (roomProfileData.organisation is empty) and (roomProfileData.position is empty)) %}
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'room'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.workspace is empty %}{{ roomProfileData.workspace }}{% else %}&nbsp;{% endif %}</div>
@@ -122,10 +133,13 @@
                                     <div class="uk-width-3-10">{{ 'position'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.position is empty %}{{ roomProfileData.position }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
+                            {% endif %}
+                            {% if not ((roomProfileData.title is empty) and (roomProfileData.description is empty)) %}
                                 <div class="uk-grid uk-margin-top">
                                     <div class="uk-width-3-10">{{ 'description'|trans({},'profile') }}:</div>
                                     <div class="uk-width-7-10">{% if not roomProfileData.description is empty %}{{ roomProfileData.description }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
+                            {% endif %}
                             </div>
                         </div>
                     </article>
