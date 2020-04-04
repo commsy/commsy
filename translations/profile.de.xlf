@@ -80,7 +80,7 @@
             </trans-unit>
             <trans-unit id="isEmailVisible">
                 <source>isEmailVisible</source>
-                <target>E-Mail-Adresse verbergen</target>
+                <target>E-Mail-Adresse sichtbar?</target>
             </trans-unit>
             <trans-unit id="phone">
                 <source>phone</source>
