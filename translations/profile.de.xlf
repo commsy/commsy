@@ -94,8 +94,8 @@
                 <source>street</source>
                 <target>Straße</target>
             </trans-unit>
-            <trans-unit id="zipcode">
-                <source>zipcode</source>
+            <trans-unit id="zipCode">
+                <source>zipCode</source>
                 <target>Postleitzahl</target>
             </trans-unit>
             <trans-unit id="city">

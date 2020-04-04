@@ -64,11 +64,11 @@ class RoomProfileAddressType extends AbstractType
                 'data' => true,
             ))
             
-            ->add('zipcode', TextType::class, array(
-                'label'    => 'zipcode',
+            ->add('zipCode', TextType::class, array(
+                'label'    => 'zipCode',
                 'required' => false,
             ))
-            ->add('zipcodeChangeInAllContexts', CheckboxType::class, array(
+            ->add('zipCodeChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
