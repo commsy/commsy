@@ -44,7 +44,6 @@ class UserType extends AbstractType
                     'placeholder' => 'email',
                     'class' => '',
                 ),
-                'translation_domain' => 'material',
                 'required' => true,
             )) 
             ->add('hideEmailInThisRoom', CheckboxType::class, array(
