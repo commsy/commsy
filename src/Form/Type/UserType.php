@@ -134,8 +134,8 @@ class UserType extends AbstractType
                 'placeholder' => false,
                 'choices' => array(
                     'browser' => 'browser',
-                    'german' => 'german',
-                    'english' => 'english',
+                    'german' => 'de',
+                    'english' => 'en',
                 ),
                 'label' => 'language',
                 'required' => false,
