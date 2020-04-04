@@ -183,8 +183,8 @@ class ProfileController extends Controller
                 if ($formData['streetChangeInAllContexts']) {
                     $tempUserItem->setStreet($formData['street']);
                 }
-                if ($formData['zipcodeChangeInAllContexts']) {
-                    $tempUserItem->setZipcode($formData['zipcode']);
+                if ($formData['zipCodeChangeInAllContexts']) {
+                    $tempUserItem->setZipcode($formData['zipCode']);
                 }
                 if ($formData['cityChangeInAllContexts']) {
                     $tempUserItem->setCity($formData['city']);
