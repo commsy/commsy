@@ -65,14 +65,14 @@
                     {# room profile data #}
                     <article class="uk-margin-large-top">
                         <header>
-                            <h2 class="uk-panel uk-panel-title">
+                            <h4 class="uk-panel uk-panel-title" style="font-size:16px; line-height:22px">
                                 <i class="uk-icon-justify uk-icon-th-list"></i>
                                 {{ roomProfileData.roomType|trans({},'room') }} {{ roomProfileData.roomID }}: {{ roomProfileData.roomName|raw }}
                                 {%- if printProfileImages == true -%}
                                     {# NOTE: including profile images significantly increases load times! #}
-                                    <span class="uk-float-right"><img class="uk-comment-avatar uk-thumbnail uk-border-circle uk-margin-small-right" style="height:24px; width:24px" src="{{ absolute_url(path('app_user_image', {'roomId': roomProfileData.roomID, 'itemId': roomProfileData.itemID}) )}}"></span>
+                                    <span class="uk-float-right"><img class="uk-comment-avatar uk-thumbnail uk-border-circle uk-margin-small-right" style="height:22px; width:22px" src="{{ absolute_url(path('app_user_image', {'roomId': roomProfileData.roomID, 'itemId': roomProfileData.itemID}) )}}"></span>
                                 {%- endif %}
-                            </h2>
+                            </h4>
                         </header>
                         <div class="uk-grid uk-grid-divider">
                             <div class="uk-width-1-2">
