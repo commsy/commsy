@@ -18,6 +18,11 @@ class RoomProfileData
     /**
      * @var string
      */
+    private $roomType;
+
+    /**
+     * @var string
+     */
     private $roomName;
 
     /**
@@ -125,6 +130,24 @@ class RoomProfileData
     public function setRoomID(int $roomID): RoomProfileData
     {
         $this->roomID = $roomID;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoomType(): string
+    {
+        return $this->roomType;
+    }
+
+    /**
+     * @param string $roomType
+     * @return RoomProfileData
+     */
+    public function setRoomType(string $roomType): RoomProfileData
+    {
+        $this->roomType = $roomType;
         return $this;
     }
 

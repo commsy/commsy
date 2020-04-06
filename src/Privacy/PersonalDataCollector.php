@@ -125,6 +125,7 @@ class PersonalDataCollector
             $roomItem = $relatedUser->getContextItem();
 
             $roomProfileData->setRoomID($roomItem->getItemID());
+            $roomProfileData->setRoomType($roomItem->getRoomType());
             $roomProfileData->setRoomName($roomItem->getTitle());
 
             $roomProfileData->setItemID($relatedUser->getItemID());

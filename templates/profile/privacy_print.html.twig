@@ -67,7 +67,7 @@
                         <header>
                             <h2 class="uk-panel uk-panel-title">
                                 <i class="uk-icon-justify uk-icon-th-list"></i>
-                                {{ 'room'|trans({},'profile')|capitalize }} {{ roomProfileData.roomID }}: {{ roomProfileData.roomName|raw }}
+                                {{ roomProfileData.roomType|trans({},'room') }} {{ roomProfileData.roomID }}: {{ roomProfileData.roomName|raw }}
                                 {%- if printProfileImages == true -%}
                                     {# NOTE: including profile images significantly increases load times! #}
                                     <span class="uk-float-right"><img class="uk-comment-avatar uk-thumbnail uk-border-circle uk-margin-small-right" style="height:24px; width:24px" src="{{ absolute_url(path('app_user_image', {'roomId': roomProfileData.roomID, 'itemId': roomProfileData.itemID}) )}}"></span>
