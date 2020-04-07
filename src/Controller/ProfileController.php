@@ -540,6 +540,7 @@ class ProfileController extends Controller
     }
     /**
      * @Route("/room/{roomId}/user/{itemId}/privacy/print")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function privacyPrintAction($roomId, $itemId, PersonalDataCollector $dataCollector, PrintService $printService)
     {
