@@ -551,7 +551,9 @@ class ProfileController extends Controller
             'roomId' => $roomId,
             'printProfileImages' => true, // set to `false` to omit profile images when generating the PDF (much faster)
             'accountData' => $personalData->getAccountData(),
-            'roomProfileDataArray' => $personalData->getRoomProfileDataArray(),
+            'communityRoomProfileDataArray' => $personalData->getCommunityRoomProfileDataArray(),
+            'projectRoomProfileDataArray' => $personalData->getProjectRoomProfileDataArray(),
+            'groupRoomProfileDataArray' => $personalData->getGroupRoomProfileDataArray(),
         ]);
 
         // return HTML Response containing a PDF generated from the HTML data

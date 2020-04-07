@@ -11,14 +11,24 @@ namespace App\Privacy;
 class PersonalData
 {
     /**
-     * @var AccountData|null
+     * @var AccountData|null holds the user's account data
      */
     private $accountData;
 
     /**
-     * @var RoomProfileData[]|null
+     * @var RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each community room
      */
-    private $roomProfileDataArray;
+    private $communityRoomProfileDataArray;
+
+    /**
+     * @var RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each project room
+     */
+    private $projectRoomProfileDataArray;
+
+    /**
+     * @var RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each group room
+     */
+    private $groupRoomProfileDataArray;
 
     /**
      * @return AccountData|null the user's account data
@@ -39,20 +49,56 @@ class PersonalData
     }
 
     /**
-     * @return RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each room
+     * @return RoomProfileData[]|null
      */
-    public function getRoomProfileDataArray(): ?array
+    public function getCommunityRoomProfileDataArray(): ?array
     {
-        return $this->roomProfileDataArray;
+        return $this->communityRoomProfileDataArray;
     }
 
     /**
-     * @param RoomProfileData[]|null $roomProfileDataArray
+     * @param RoomProfileData[]|null $communityRoomProfileDataArray
      * @return PersonalData
      */
-    public function setRoomProfileDataArray(?array $roomProfileDataArray): PersonalData
+    public function setCommunityRoomProfileDataArray(?array $communityRoomProfileDataArray): PersonalData
     {
-        $this->roomProfileDataArray = $roomProfileDataArray;
+        $this->communityRoomProfileDataArray = $communityRoomProfileDataArray;
+        return $this;
+    }
+
+    /**
+     * @return RoomProfileData[]|null
+     */
+    public function getProjectRoomProfileDataArray(): ?array
+    {
+        return $this->projectRoomProfileDataArray;
+    }
+
+    /**
+     * @param RoomProfileData[]|null $projectRoomProfileDataArray
+     * @return PersonalData
+     */
+    public function setProjectRoomProfileDataArray(?array $projectRoomProfileDataArray): PersonalData
+    {
+        $this->projectRoomProfileDataArray = $projectRoomProfileDataArray;
+        return $this;
+    }
+
+    /**
+     * @return RoomProfileData[]|null
+     */
+    public function getGroupRoomProfileDataArray(): ?array
+    {
+        return $this->groupRoomProfileDataArray;
+    }
+
+    /**
+     * @param RoomProfileData[]|null $groupRoomProfileDataArray
+     * @return PersonalData
+     */
+    public function setGroupRoomProfileDataArray(?array $groupRoomProfileDataArray): PersonalData
+    {
+        $this->groupRoomProfileDataArray = $groupRoomProfileDataArray;
         return $this;
     }
 }
