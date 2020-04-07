@@ -526,7 +526,11 @@ class ProfileController extends Controller
      */
     public function privacyAction($roomId, $itemId, Request $request)
     {
-        $form = $this->createForm(ProfilePrivacyType::class);
+        $form = $this->createForm(ProfilePrivacyType::class, null, [
+            'attr' => array(
+                'target' => '_blank'
+            )
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
