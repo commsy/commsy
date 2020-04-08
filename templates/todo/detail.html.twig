@@ -38,13 +38,17 @@
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {# new entry #}
-                                        {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                            <li>
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
                                                 <a href="{{ path('app_todo_create', {'roomId': roomId }) }}" id="newEntry">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                                 </a>
-                                            </li>
-                                        {% endif %}
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
 
                                         {# print #}
                                         <li>
@@ -87,9 +91,9 @@
                                             </a>
                                         </li>
 
-                                        {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                            {# delete #}
-                                            <li>
+                                        {# delete #}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a  href="#" data-cs-action="{{ {
                                                     'url': path('app_todo_xhrdelete', {'roomId': roomId, 'itemId': todo.itemId}),
                                                     'action': 'delete',
@@ -105,10 +109,16 @@
                                                 }|json_encode|e('html_attr') }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
-                                            </li>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
 
-                                            {# participant #}
-                                            <li>
+                                        {# participant #}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                     {% if not isParticipating %}
                                                         <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
@@ -116,18 +126,28 @@
                                                         <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'remove responsibility'|trans({}, 'todo')|capitalize }}
                                                     {% endif %}
                                                 </a>
-                                            </li>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
 
-                                            {# separator #}
-                                            <li>&nbsp;</li>
+                                        {# separator #}
+                                        <li>&nbsp;</li>
 
-                                            {# new step #}
-                                            <li>
+                                        {# new step #}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="newStep" href="#" id="newStep" data-step-url="{{ path('app_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
                                                 </a>
-                                            </li>
-                                        {% endif %}
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
