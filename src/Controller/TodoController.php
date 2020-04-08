@@ -847,6 +847,7 @@ class TodoController extends BaseController
     
     /**
      * @Route("/room/{roomId}/todo/{itemId}/participate")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function participateAction($roomId, $itemId)
     {

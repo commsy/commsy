@@ -150,7 +150,7 @@
                                         {# participant #}
                                         {% if not date.isExternal %}
                                             <li>
-                                                {% if is_granted('ITEM_SEE', item.itemId) %}
+                                                {% if is_granted('ITEM_PARTICIPATE', item.itemId) %}
                                                     <a href="{{ path('app_date_participate', {'roomId': roomId, 'itemId': date.itemId}) }}">
                                                         {% if not isParticipating %}
                                                             <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add participant'|trans({}, 'date')|capitalize }}
