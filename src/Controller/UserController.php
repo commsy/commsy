@@ -690,6 +690,7 @@ class UserController extends BaseController
 
     /**
      * @Route("/room/{roomId}/user/create")
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'user')")
      */
     public function createAction($roomId)
     {

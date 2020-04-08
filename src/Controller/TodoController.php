@@ -92,6 +92,7 @@ class TodoController extends BaseController
     
     /**
      * @Route("/room/{roomId}/todo/create")
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createAction($roomId)
     {

@@ -1168,6 +1168,7 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/create")
      * @Template()
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'material')")
      */
     public function createAction($roomId, Request $request)
     {

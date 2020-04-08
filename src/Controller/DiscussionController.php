@@ -536,6 +536,7 @@ class DiscussionController extends BaseController
     
     /**
      * @Route("/room/{roomId}/discussion/create")
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function createAction($roomId, Request $request)
     {

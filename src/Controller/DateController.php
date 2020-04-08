@@ -763,6 +763,7 @@ class DateController extends BaseController
     
     /**
      * @Route("/room/{roomId}/date/create/{dateDescription}")
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'date')")
      */
     public function createAction($roomId, $dateDescription)
     {

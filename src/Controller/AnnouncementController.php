@@ -415,6 +415,7 @@ class AnnouncementController extends BaseController
 
     /**
      * @Route("/room/{roomId}/announcement/create")
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function createAction($roomId)
     {
