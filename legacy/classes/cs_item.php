@@ -1450,6 +1450,7 @@ class cs_item {
               }
           }
       } else {
+        // NOTE: for guest users, $privateRoomUserItem will be null
       	$privateRoomUserItem = $user_item->getRelatedPrivateRoomUserItem();
 
       	// check for sub-types
@@ -1458,7 +1459,11 @@ class cs_item {
       		case CS_SECTION_TYPE:
       		case CS_STEP_TYPE:
       			$linkedItem = $this->getLinkedItem();
-      			return $linkedItem->mayEdit($user_item) || $linkedItem->mayEdit($privateRoomUserItem);
+      			$mayEdit = $linkedItem->mayEdit($user_item);
+      			if (!$mayEdit && $privateRoomUserItem) {
+                    $mayEdit = $linkedItem->mayEdit($privateRoomUserItem);
+                }
+      			return $mayEdit;
       			break;
       	}
       }
