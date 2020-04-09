@@ -1549,6 +1549,10 @@ class cs_item {
    }
 
 
+    /** is the given user allowed to see this item?
+     *
+     * @param \cs_user_item $userItem
+     */
     public function maySee($userItem)
     {
         // Deny access, if the item's context is deleted
@@ -1561,6 +1565,7 @@ class cs_item {
         }
 
         if ($userItem->isUser() && $userItem->getContextID() == $this->_environment->getCurrentContextID()) {
+           // deactivated entries can be only viewed by a moderator or by their creator
            if ($this->isNotActivated()) {
               if ($userItem->isModerator()) {
                  return true;
@@ -1574,10 +1579,13 @@ class cs_item {
            }
         }
 
-        if ($userItem->isGuest()) {
-           if (!$this->isNotActivated()) {
-              return true;
-           }
+        $currentContextItem = $this->_environment->getCurrentContextItem();
+        if ($currentContextItem->isOpenForGuests()) {
+            if ($userItem->isGuest() || $userItem->isRequested()) {
+                if (!$this->isNotActivated()) {
+                    return true;
+                }
+            }
         }
 
         return false;

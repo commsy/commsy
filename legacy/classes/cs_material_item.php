@@ -1441,14 +1441,23 @@ function _copySectionList ($copy_id) {
 
 
 
+   /** is the given user allowed to see this material item?
+    *
+    * @param \cs_user_item $user_item
+    */
    function maySee ($user_item) {
-      if ( $this->_environment->inProjectRoom()
-           or $user_item->isUser() or $this->isWorldPublic() ) {
-         $access = parent::maySee($user_item);
+      if ($this->_environment->inProjectRoom()
+           or $user_item->isUser() or $this->isWorldPublic()) {
+         return parent::maySee($user_item);
+
       } else {
-         $access = false;
+          $currentContextItem = $this->_environment->getCurrentContextItem();
+          if ($currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests()) {
+              return parent::maySee($user_item);
+          }
       }
-      return $access;
+
+      return false;
    }
 
    /** asks if item is editable by everybody or just creator
