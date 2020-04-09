@@ -77,7 +77,7 @@ class ItemVoter extends Voter
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
-                if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser()) {
+                if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
                     return false;
                 }
 
