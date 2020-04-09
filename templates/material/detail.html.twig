@@ -361,7 +361,7 @@
 
                                                 {# new section #}
                                                 <li>
-                                                    {% if not user.isReadOnlyUser %}
+                                                    {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                         <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
                                                             <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                         </a>
