@@ -589,6 +589,7 @@ class GroupController extends BaseController
     /**
      * @Route("/room/{roomId}/group/create")
      * @Template()
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'group')")
      */
     public function createAction($roomId, Request $request)
     {
