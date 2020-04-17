@@ -58,7 +58,7 @@
 
                                 <div class="uk-comment-meta">
 
-                                        {% if user.email %}
+                                        {% if (user.email and user.isEmailVisible) %}
                                             <span>{{ user.email }}</span>
                                         {% endif %}
 
