@@ -325,11 +325,11 @@
             </trans-unit>
             <trans-unit id="privacy_text">
                 <source>privacy text</source>
-                <target>Hier können Sie Ihre personenbezogenen Stammdaten als PDF Datei herunterladen.</target>
+                <target>Hier können Sie sich Ihre personenbezogenen Stammdaten als PDF Datei anzeigen lassen und herunterladen.</target>
             </trans-unit>
-            <trans-unit id="download_pdf">
-                <source>Download PDF</source>
-                <target>PDF herunterladen</target>
+            <trans-unit id="display_pdf">
+                <source>Display PDF</source>
+                <target>PDF anzeigen</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->
