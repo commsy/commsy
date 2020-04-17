@@ -325,11 +325,11 @@
             </trans-unit>
             <trans-unit id="privacy_text">
                 <source>privacy text</source>
-                <target>Here you can download your personal master data as a PDF file.</target>
+                <target>Here you can view and download your personal master data as a PDF file.</target>
             </trans-unit>
-            <trans-unit id="download_pdf">
-                <source>Download PDF</source>
-                <target>Download PDF</target>
+            <trans-unit id="display_pdf">
+                <source>Display PDF</source>
+                <target>Display PDF</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->

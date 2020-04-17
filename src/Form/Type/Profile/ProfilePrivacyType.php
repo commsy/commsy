@@ -22,7 +22,7 @@ class ProfilePrivacyType extends AbstractType
     {
         $builder
             ->add('download', SubmitType::class, array(
-                'label' => 'Download PDF',
+                'label' => 'Display PDF',
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 )
