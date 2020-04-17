@@ -167,6 +167,7 @@ class MaterialController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getCurrentUserItem(),
+            'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
         );
     }
 
