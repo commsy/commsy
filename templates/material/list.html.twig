@@ -80,27 +80,39 @@
                 </li>
 
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('app_material_xhrcopy', {'roomId': roomId}),
-                        'action': 'copy',
-                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                        'mode': 'selection',
-                        'noSelectionMessage': 'no entry selected'|trans({},'item')
-                    }|json_encode|e('html_attr') }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
-                    </a>
+                    {% if user.isUser or isMaterialOpenForGuests == true %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_material_xhrcopy', {'roomId': roomId}),
+                            'action': 'copy',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item')
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                        </span>
+                    {% endif %}
                 </li>
 
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('app_material_download', {'roomId': roomId}),
-                        'action': 'save',
-                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                        'mode': 'selection',
-                        'noSelectionMessage': 'no entry selected'|trans({},'item')
-                    }|json_encode|e('html_attr') }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
-                    </a>
+                    {% if user.isUser or isMaterialOpenForGuests == true %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_material_download', {'roomId': roomId}),
+                            'action': 'save',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item')
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                        </span>
+                    {% endif %}
                 </li>
 
                 <li>

@@ -297,7 +297,7 @@ class UserService
     }
 
     /**
-     * @param $room
+     * @param \cs_context_item $room
      * @param \cs_user_item $currentUser
      * @return string
      */
@@ -338,7 +338,7 @@ class UserService
             } else {
                 // in case of the guest user, $roomUser is null
                 if ($currentUser->isReallyGuest()) {
-                    return 'forbidden';
+                    return ($room->isOpenForGuests()) ? 'enter' : 'forbidden';
                 }
             }
         }

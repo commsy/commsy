@@ -171,25 +171,35 @@
                                             </li>
                                         {% endif %}
 
-                                        {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                            {# separator #}
-                                            <li>&nbsp;</li>
+                                        {# separator #}
+                                        <li>&nbsp;</li>
 
-                                            {# new section #}
-                                             <li>
+                                        {# new section #}
+                                         <li>
+                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                 </a>
-                                            </li>
+                                             {% else %}
+                                                 <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                </span>
+                                             {% endif %}
+                                        </li>
 
-                                            {# new version #}
-                                            {% if material.isCurrentVersion %}
-                                                 <li>
+                                        {# new version #}
+                                        {% if material.isCurrentVersion %}
+                                             <li>
+                                                {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                     <a class="newVersion" href="{{ path('app_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
                                                         <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
                                                     </a>
-                                                </li>
-                                            {% endif %}
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
+                                                    </span>
+                                                {% endif %}
+                                            </li>
                                         {% endif %}
                                     </ul>
                                 </div>
@@ -351,7 +361,7 @@
 
                                                 {# new section #}
                                                 <li>
-                                                    {% if not user.isReadOnlyUser %}
+                                                    {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                         <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
                                                             <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                         </a>

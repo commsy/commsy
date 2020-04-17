@@ -388,6 +388,7 @@ class TopicController extends BaseController
 
     /**
      * @Route("/room/{roomId}/topic/create")
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function createAction($roomId, Request $request)
     {

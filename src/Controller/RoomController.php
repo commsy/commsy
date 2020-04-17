@@ -913,6 +913,7 @@ class RoomController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
     public function createAction($roomId, Request $request)
     {
