@@ -3,7 +3,7 @@
 {% import 'item/macros.html.twig' as macrosItem %}
 
 <div class="uk-panel uk-panel-box uk-margin-top">
-    <article class="uk-article uk-position-relative">
+    <article class="uk-article uk-position-relative cs-edit-draft">
         {# title #}
         <div class="cs-toggle" data-uk-observe>
             {{ form_start(form) }}
@@ -28,12 +28,21 @@
         
         {# description #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-            {{ macrosItem.itemDescription('description', section, true, section.description) }}
+            {{ macrosItem.itemDescription('description', section, true, section.description, section.draft) }}
         </div>
 
         {# files #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-            {{ macrosItem.files(section) }}
+            {{ macrosItem.files(section, section.draft) }}
+        </div>
+
+        <div id="draft-buttons-wrapper" data-item-type="section">
+            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                {{ 'create entry'|trans({}, "form") }}
+            </a>
+            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                {{ 'cancel'|trans({}, "form") }}
+            </a>
         </div>
     </article>
 </div>
