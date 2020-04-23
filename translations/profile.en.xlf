@@ -319,13 +319,17 @@
                 <source>Self assessment</source>
                 <target>Self assessment</target>
             </trans-unit>
-            <trans-unit id="general_data">
+            <trans-unit id="master_data">
                 <source>Master data</source>
                 <target>Master data</target>
             </trans-unit>
+            <trans-unit id="person-related_data">
+                <source>Person-related data</source>
+                <target>Personal data</target>
+            </trans-unit>
             <trans-unit id="privacy_text">
                 <source>privacy text</source>
-                <target>Here you can view and download your personal master data as a PDF file.</target>
+                <target>Here you can view and download your personal data as a PDF file.</target>
             </trans-unit>
             <trans-unit id="display_pdf">
                 <source>Display PDF</source>
