@@ -54,6 +54,11 @@ class CategoryFilterType extends AbstractType
                 $builder
                     ->add('category', CategoryType::class, array(
                         'choices' => $formCategories,
+                        'choice_label' => function ($choice, $key, $value) {
+                            // remove the trailing category (aka tag) ID from $key (which was used in transformTagArray() to uniquify the key)
+                            $label = implode('_', explode('_', $key, -1));
+                            return $label;
+                        },
                         'multiple' => true,
                         'expanded' => true,
                         'label' => false,
@@ -92,10 +97,12 @@ class CategoryFilterType extends AbstractType
         $array = [];
 
         foreach ($tagArray as $tag) {
-            $array[$tag['title']] = $tag['item_id'];
+            // NOTE: in order to form unique array keys, we append the category (aka tag) ID to the category title;
+            // the category ID will be stripped again from the title via the `choice_label` field option
+            $array[$tag['title'] . '_' . $tag['item_id']] = $tag['item_id'];
 
             if (!empty($tag['children'])) {
-                $array[$tag['title'] . 'sub'] = $this->transformTagArray($tag['children']);
+                $array[$tag['title'] . '_sub' . '_' . $tag['item_id']] = $this->transformTagArray($tag['children']);
             }
         }
 

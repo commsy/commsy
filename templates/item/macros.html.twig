@@ -423,12 +423,12 @@
         {% endfor %}
     
         {% if child.children is defined and not child.children is empty %}
-            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
+            <li id="tag_{{ child.title|decodeHtmlEntity }}_{{ child.item_id }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
                 {{ itemMacros.nestedTagList(tags, child.children, level+1) }}
             </li>
         {% else %}
-            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
+            <li id="tag_{{ child.title|decodeHtmlEntity }}_{{ child.item_id }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
             </li>
         {% endif %}

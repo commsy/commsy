@@ -18,6 +18,11 @@ class MandatoryCategoryMappingType extends AbstractType
             ->add('categories', TreeChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['categories'],
+                'choice_label' => function ($choice, $key, $value) {
+                    // remove the trailing category ID from $key (which was used in ItemController->transformTagArray() to uniquify the key)
+                    $label = implode('_', explode('_', $key, -1));
+                    return $label;
+                },
                 'required' => true,
                 'expanded' => true,
                 'multiple' => true,
