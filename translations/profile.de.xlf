@@ -319,13 +319,17 @@
                 <source>Self assessment</source>
                 <target>Selbstauskunft</target>
             </trans-unit>
-            <trans-unit id="general_data">
+            <trans-unit id="master_data">
                 <source>Master data</source>
                 <target>Stammdaten</target>
             </trans-unit>
+            <trans-unit id="person-related_data">
+                <source>Person-related data</source>
+                <target>Personenbezogene Daten</target>
+            </trans-unit>
             <trans-unit id="privacy_text">
                 <source>privacy text</source>
-                <target>Hier können Sie sich Ihre personenbezogenen Stammdaten als PDF Datei anzeigen lassen und herunterladen.</target>
+                <target>Hier können Sie sich Ihre personenbezogenen Daten als PDF Datei anzeigen lassen und herunterladen.</target>
             </trans-unit>
             <trans-unit id="display_pdf">
                 <source>Display PDF</source>
