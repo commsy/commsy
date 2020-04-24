@@ -71,6 +71,9 @@ class PrintService
      */
     private function setOptions() {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
+        if ($roomItem->getRoomType() === CS_PRIVATEROOM_TYPE) {
+            $roomItem = $this->legacyEnvironment->getCurrentPortalItem();
+        }
 
         if($this->legacyEnvironment->getSelectedLanguage() == 'en'){
             $dateFormat = 'm/d/y';
