@@ -104,11 +104,12 @@ class RoomProfileType extends AbstractType
             ))
             
             ->add('hideEmailInThisRoom', CheckboxType::class, array(
-                'label'    => 'isEmailVisible',
+                'label'    => 'hideEmailInThisRoom',
                 'required' => false,
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'translation_domain' => 'user',
             ))
             ->add('hideEmailInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',

@@ -378,7 +378,7 @@ class cs_user_item extends cs_item
     function setHomepage($value)
     {
         if (!empty($value) and $value != '-1') {
-            if (!mb_ereg("http://([a-z0-9_./?&=#:@]|-)*", $value)) {
+            if (!mb_ereg("https?://([a-z0-9_./?&=#:@]|-)*", $value)) {
                 $value = "http://" . $value;
             }
         }

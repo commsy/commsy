@@ -12,15 +12,15 @@
             </trans-unit>
             <trans-unit id="firstname">
                 <source>firstname</source>
-                <target>first name</target>
+                <target>First name</target>
             </trans-unit>
             <trans-unit id="lastname">
                 <source>lastname</source>
-                <target>last name</target>
+                <target>Last name</target>
             </trans-unit>
             <trans-unit id="userId">
                 <source>userId</source>
-                <target>user id</target>
+                <target>User id</target>
             </trans-unit>
             <trans-unit id="changePassword">
                 <source>changePassword</source>
@@ -28,15 +28,15 @@
             </trans-unit>
             <trans-unit id="currentPassword">
                 <source>currentPassword</source>
-                <target>current password</target>
+                <target>Current password</target>
             </trans-unit>
             <trans-unit id="newPassword">
                 <source>newPassword</source>
-                <target>new password</target>
+                <target>New password</target>
             </trans-unit>
             <trans-unit id="newPasswordConfirm">
                 <source>newPasswordConfirm</source>
-                <target>confirm new password</target>
+                <target>Confirm new password</target>
             </trans-unit>
             <trans-unit id="passwordChanged">
                 <source>passwordChanged</source>
@@ -56,19 +56,19 @@
             </trans-unit>
             <trans-unit id="combineUserId">
                 <source>combineUserId</source>
-                <target>user id</target>
+                <target>User id</target>
             </trans-unit>
             <trans-unit id="combinePassword">
                 <source>combinePassword</source>
-                <target>password</target>
+                <target>Password</target>
             </trans-unit>
             <trans-unit id="title">
                 <source>title</source>
-                <target>title</target>
+                <target>Title</target>
             </trans-unit>
             <trans-unit id="dateOfBirth">
                 <source>dateOfBirth</source>
-                <target>date of birth</target>
+                <target>Date of birth</target>
             </trans-unit>
             <trans-unit id="profileimage">
                 <source>profileimage</source>
@@ -76,71 +76,71 @@
             </trans-unit>
             <trans-unit id="email">
                 <source>email</source>
-                <target>email</target>
+                <target>Email</target>
             </trans-unit>
             <trans-unit id="isEmailVisible">
                 <source>isEmailVisible</source>
-                <target>is email visible</target>
+                <target>Email address visible?</target>
             </trans-unit>
             <trans-unit id="phone">
                 <source>phone</source>
-                <target>phone</target>
+                <target>Phone</target>
             </trans-unit>
             <trans-unit id="mobile">
                 <source>mobile</source>
-                <target>mobile</target>
+                <target>Mobile</target>
             </trans-unit>
             <trans-unit id="street">
                 <source>street</source>
-                <target>street</target>
+                <target>Street</target>
             </trans-unit>
             <trans-unit id="zipCode">
                 <source>zipCode</source>
-                <target>zipcode</target>
+                <target>Zipcode</target>
             </trans-unit>
             <trans-unit id="city">
                 <source>city</source>
-                <target>city</target>
+                <target>City</target>
             </trans-unit>
             <trans-unit id="room">
                 <source>room</source>
-                <target>workspace</target>
+                <target>Workspace</target>
             </trans-unit>
             <trans-unit id="organisation">
                 <source>organisation</source>
-                <target>organisation</target>
+                <target>Organisation</target>
             </trans-unit>
             <trans-unit id="position">
                 <source>position</source>
-                <target>position</target>
+                <target>Position</target>
             </trans-unit>
             <trans-unit id="icq">
                 <source>icq</source>
-                <target>icq</target>
+                <target>ICQ</target>
             </trans-unit>
             <trans-unit id="msn">
                 <source>msn</source>
-                <target>msn</target>
+                <target>MSN</target>
             </trans-unit>
             <trans-unit id="skype">
                 <source>skype</source>
-                <target>skype</target>
+                <target>Skype</target>
             </trans-unit>
             <trans-unit id="yahoo">
                 <source>yahoo</source>
-                <target>yahoo</target>
+                <target>Yahoo</target>
             </trans-unit>
             <trans-unit id="jabber">
                 <source>jabber</source>
-                <target>jabber</target>
+                <target>Jabber</target>
             </trans-unit>
             <trans-unit id="homepage">
                 <source>homepage</source>
-                <target>homepage</target>
+                <target>Homepage</target>
             </trans-unit>
             <trans-unit id="description">
                 <source>description</source>
-                <target>description</target>
+                <target>Description</target>
             </trans-unit>
             <trans-unit id="newsletterStatus">
                 <source>newsletterStatus</source>
@@ -160,7 +160,7 @@
             </trans-unit>
             <trans-unit id="portfolioStatus">
                 <source>portfolioStatus</source>
-                <target>portfolio</target>
+                <target>Portfolio</target>
             </trans-unit>
             <trans-unit id="switchRoomStatus">
                 <source>switchRoomStatus</source>
@@ -308,6 +308,32 @@
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>
                 <target>Here you can configure how often you want to receive the Newsletter of this workspace. The newsletter will be send to you account e-mail address <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>.</target>
+            </trans-unit>
+
+            <!-- privacy settings -->
+            <trans-unit id="privacy">
+                <source>Privacy</source>
+                <target>Privacy</target>
+            </trans-unit>
+            <trans-unit id="self_assessment">
+                <source>Self assessment</source>
+                <target>Self assessment</target>
+            </trans-unit>
+            <trans-unit id="master_data">
+                <source>Master data</source>
+                <target>Master data</target>
+            </trans-unit>
+            <trans-unit id="person-related_data">
+                <source>Person-related data</source>
+                <target>Personal data</target>
+            </trans-unit>
+            <trans-unit id="privacy_text">
+                <source>privacy text</source>
+                <target>Here you can view and download your personal data as a PDF file.</target>
+            </trans-unit>
+            <trans-unit id="display_pdf">
+                <source>Display PDF</source>
+                <target>Display PDF</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->

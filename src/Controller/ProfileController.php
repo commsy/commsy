@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Calendars;
 use App\Form\Type\Profile\DeleteAccountType;
+use App\Privacy\PersonalDataCollector;
+use App\Services\PrintService;
 use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,6 +30,7 @@ use App\Form\Type\Profile\ProfileAccountType;
 use App\Form\Type\Profile\ProfileChangePasswordType;
 use App\Form\Type\Profile\ProfileMergeAccountsType;
 use App\Form\Type\Profile\ProfileNewsletterType;
+use App\Form\Type\Profile\ProfilePrivacyType;
 use App\Form\Type\Profile\ProfileCalendarsType;
 use App\Form\Type\Profile\ProfileAdditionalType;
 use App\Form\Type\Profile\ProfilePersonalInformationType;
@@ -514,6 +517,58 @@ class ProfileController extends Controller
             'form' => $form->createView(),
             'portalEmail' => $userItem->getRelatedPortalUserItem()->getRoomEmail(),
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/privacy")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function privacyAction($roomId, $itemId, Request $request)
+    {
+        $form = $this->createForm(ProfilePrivacyType::class, null, [
+            'attr' => array(
+                'target' => '_blank'
+            )
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // generate & serve a PDF with the user's personal master data
+            return $this->redirectToRoute('app_profile_privacyprint', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/privacy/print")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function privacyPrintAction($roomId, $itemId, LegacyEnvironment $legacyEnvironment, PersonalDataCollector $dataCollector, PrintService $printService)
+    {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+
+        // gather the user's personal master data
+        $personalData = $dataCollector->getPersonalDataForUserID($itemId);
+
+        // generate HTML data
+        $html = $this->renderView('profile/privacy_print.html.twig', [
+            'roomId' => $roomId,
+            'printProfileImages' => true, // set to `false` to omit profile images when generating the PDF (much faster)
+            'accountData' => $personalData->getAccountData(),
+            'communityRoomProfileDataArray' => $personalData->getCommunityRoomProfileDataArray(),
+            'projectRoomProfileDataArray' => $personalData->getProjectRoomProfileDataArray(),
+            'groupRoomProfileDataArray' => $personalData->getGroupRoomProfileDataArray(),
+        ]);
+
+        $fileName = $this->get('translator')->trans('Self assessment', [], 'profile')
+            . ' (' . $portal->getTitle() . ').pdf';
+
+        // return HTML Response containing a PDF generated from the HTML data
+        return $printService->buildPdfResponse($html, false, $fileName);
     }
 
     /**

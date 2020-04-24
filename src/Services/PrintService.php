@@ -45,19 +45,24 @@ class PrintService
      * Generates a pdf response, converting the given html content.
      *
      * @param string $html HTML content
-     * @param bool $debug Return plain html, instead of a pdf document (helps debugging)
+     * @param bool $debug Return plain html, instead of a pdf document (helps debugging); defaults to false
+     * @param string $fileName the file name for the generated PDF document; defaults to "print.pdf"
      *
      * @return Response HTML Response containing the generated PDF
      */
-    public function buildPdfResponse($html, $debug = false)
+    public function buildPdfResponse($html, $debug = false, $fileName = 'print.pdf')
     {
         if ($debug) {
             return new Response($html);
         }
 
+        // escape any quotes or backslashes in the file name
+        // NOTE: with >=PHP7.3, we could also use `filter_var($fileName, FILTER_SANITIZE_ADD_SLASHES)`;
+        $fileName = addslashes($fileName);
+
         return new Response($this->getPdfContent($html), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="print.pdf"',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
         ]);
     }
 
@@ -66,6 +71,9 @@ class PrintService
      */
     private function setOptions() {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
+        if ($roomItem->getRoomType() === CS_PRIVATEROOM_TYPE) {
+            $roomItem = $this->legacyEnvironment->getCurrentPortalItem();
+        }
 
         if($this->legacyEnvironment->getSelectedLanguage() == 'en'){
             $dateFormat = 'm/d/y';
