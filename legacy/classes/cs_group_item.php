@@ -182,7 +182,7 @@ class cs_group_item extends cs_label_item {
                   $new_member_item->makeUser();
 
                   if ($portal_item->getConfigurationHideMailByDefault()) {
-                     $new_member_item->setEmailNotVisibile();
+                     $new_member_item->setEmailNotVisible();
                   }
 
                   $picture = $private_room_user_item->getPicture();
