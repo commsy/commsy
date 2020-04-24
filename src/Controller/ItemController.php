@@ -714,10 +714,13 @@ class ItemController extends Controller
         $array = [];
 
         foreach ($tagArray as $tag) {
-            $array[$tag['title']] = $tag['item_id'];
+            // NOTE: in order to form unique array keys, we append the category (aka tag) ID to the category title;
+            // note that, in any form that makes use of this tag array, the category ID must be stripped again
+            // from the title (e.g. via a `choice_label` field option)
+            $array[$tag['title'] . '_' . $tag['item_id']] = $tag['item_id'];
 
             if (!empty($tag['children'])) {
-                $array[$tag['title'] . 'sub'] = $this->transformTagArray($tag['children']);
+                $array[$tag['title'] . '_sub' . '_' . $tag['item_id']] = $this->transformTagArray($tag['children']);
             }
         }
 
