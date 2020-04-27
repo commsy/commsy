@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Services\LegacyEnvironment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -113,9 +114,17 @@ class Portal
      */
     private $logoFilename;
 
+    /**
+     * array - containing the data of this item, including lists of linked items
+     */
+    var $_data = array();
+    private $_environment;
+    var $_room_list_continuous = NULL;
+
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
+        $this->_environment = $this;
     }
 
     /**
@@ -612,5 +621,114 @@ class Portal
     {
         $this->extras['ANNOUNCEMENT_SERVER_ENABLED'] = $enabled;
         return $this;
+    }
+
+    /** is room a normal open ?
+     * this method returns a boolean explaining if a room is open
+     *
+     * @return boolean true, if a room is open
+     *                 false, if a room is not open
+     */
+    function isOpen () {
+        $retour = false;
+        if ( !empty($this->_data['status'])
+            and $this->_data['status'] == CS_ROOM_OPEN
+        ) {
+            $retour = true;
+        }
+        return $retour;
+    }
+
+    /** open the room for usage
+     * this method sets the status of the room to open
+     */
+    function open () {
+        $this->_data['status'] = CS_ROOM_OPEN;
+    }
+
+    /** close a room
+     * this method sets the status of the room to closed
+     */
+    function close () {
+        $this->_data['status'] = CS_ROOM_CLOSED;
+    }
+
+    public function setNotShowTime ()
+    {
+        $this->getExtras()['SHOW_TIME'] = 0;
+    }
+
+    function getTimeNameArray () : array
+    {
+        $retour = array();
+        if ($this->getExtras()['TIME_NAME_ARRAY']) {
+            $retour = $this->getExtras()['TIME_NAME_ARRAY'];
+        }
+        return $retour;
+    }
+
+    function setTimeNameArray ($value) {
+        $this->getExtras()['TIME_NAME_ARRAY'] = $value;
+
+        $value2 = array();
+        $value2['NAME'] = CS_TIME_TYPE;
+
+        foreach ($value as $lang => $name) {
+            $value2[mb_strtoupper($lang, 'UTF-8')]['NOMPL'] = $name;
+        }
+        $this->setRubricArray(CS_TIME_TYPE, $value2);
+    }
+
+    /** set RubricArray
+     * this method sets the Rubric Name
+     *
+     * @param array value name cases
+     */
+    function setRubricArray ($rubric, $array) {
+
+        $rubricTranslationArray = array();
+        try{
+            $rubricTranslationArray = $this->getExtras()['RUBRIC_TRANSLATION_ARRAY'];
+        }catch(\ErrorException $e){
+        }
+
+        if(empty($rubricTranslationArray) or sizeof($rubricTranslationArray) > 1){
+            $rubricTranslationArray = array();
+        }
+        $extras = $this->getExtras();
+        $rubricTranslationArray[cs_strtoupper($rubric)] = $array;
+        $extras['RUBRIC_TRANSLATION_ARRAY'] = $rubricTranslationArray;
+        $this->setExtras($extras);
+    }
+
+    function getTimeInFuture () {
+        return ($this->getExtras()['TIME_IN_FUTURE']) ?? 0;
+    }
+
+    function setTimeInFuture ($value) {
+        $this->getExtras()['TIME_IN_FUTURE'] = $value;
+    }
+
+    function setTimeTextArray ($value) {
+        $this->getExtras()['TIME_TEXT_ARRAY'] = $value;
+    }
+
+    function getContinuousRoomList (LegacyEnvironment $environment) {
+        if (!isset($this->_room_list_continuous)) {
+            $manager = $environment->getEnvironment()->getRoomManager();
+            $manager->setContextLimit($this->getId());
+            $manager->setContinuousLimit();
+            $manager->select();
+            $this->_room_list_continuous = $manager->get();
+            unset($manager);
+        }
+        return $this->_room_list_continuous;
+    }
+
+    function saveWithoutChangingModificationInformation (LegacyEnvironment $environment) {
+        $manager = $environment->getEnvironment()->getPortalManager();
+        $manager->saveWithoutChangingModificationInformation();
+        $this->_save($manager);
+        $this->_changes = array();
     }
 }

@@ -77,7 +77,7 @@ class TimeType extends AbstractType
                 'label' => 'Delete time cycle %company%',
                 'translation_domain' => 'portal',
                 'label_translation_parameters' => [
-                    '%company%' => 0,
+                    '%company%' => 1,
                 ],
             ])
             ->add('name_field', HiddenType::class, [
@@ -85,17 +85,16 @@ class TimeType extends AbstractType
                 'label' => "# 0",
             ])
             ->add('timeCycleNameGerman_0', Types\TextType::class, [
-                'label' => 'Time cycle name',
+                'label' => ' ',
                 'attr' => array(
                     'placeholder' => 'de',
                     'property_path' => false
                 ),
                 'required' => false,
-                "mapped" => false,
                 'translation_domain' => 'portal',
             ])
             ->add('timeCycleNameEnglish_0', Types\TextType::class, [
-                'label' => 'Time cycle name',
+                'label' => ' ',
                 'attr' => array(
                     'placeholder' => 'en',
                     'property_path' => false,
@@ -207,7 +206,7 @@ class TimeType extends AbstractType
                                     'label' => 'Delete time cycle %company%',
                                     'translation_domain' => 'portal',
                                     'label_translation_parameters' => [
-                                        '%company%' => $i,
+                                        '%company%' => $i+1,
                                     ],
                                 ])
                                 ->add('name_field', HiddenType::class, [
@@ -215,17 +214,16 @@ class TimeType extends AbstractType
                                     'label' => "#".$i,
                                 ])
                                 ->add('timeCycleNameGerman_'.$i, Types\TextType::class, [
-                                    'label' => 'Time cycle name',
+                                    'label' => ' ',
                                     'attr' => array(
                                         'placeholder' => 'de',
                                         'property_path' => false
                                     ),
                                     'required' => false,
-                                    "mapped" => false,
                                     'translation_domain' => 'portal',
                                 ])
                                 ->add('timeCycleNameEnglish_'.$i, Types\TextType::class, [
-                                    'label' => 'Time cycle name',
+                                    'label' => ' ',
                                     'attr' => array(
                                         'placeholder' => 'en',
                                         'property_path' => false,
