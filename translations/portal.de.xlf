@@ -205,6 +205,29 @@
                 <target>Bis</target>
             </trans-unit>
 
+            <!-- inactive -->
+            <trans-unit id="lock_user">
+                <source>Lock user</source>
+                <target>Nach x Tagen Inaktivität sperren:</target>
+            </trans-unit>
+            <trans-unit id="email_before_lock">
+                <source>Email before lock</source>
+                <target>x Tage vor dem Sperren eine Email schreiben:</target>
+            </trans-unit>
+            <trans-unit id="delete_user">
+                <source>Delete user</source>
+                <target>Nach x Tagen Inaktivität löschen:</target>
+            </trans-unit>
+            <trans-unit id="email_before_delete">
+                <source>Email before delete</source>
+                <target>x Tage vor dem Löschen eine Email schreiben:</target>
+            </trans-unit>
+            <trans-unit id="inactive">
+                <source>Inactive</source>
+                <target>Löschen inaktiver Kennungen</target>
+            </trans-unit>
+
+
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">
                 <source>Licenses</source>

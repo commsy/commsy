@@ -189,6 +189,27 @@
                 <target>Bis</target>
             </trans-unit>
 
+            <!-- inactive -->
+            <trans-unit id="lock_user">
+                <source>Lock user</source>
+                <target>Lock user after x days of inactivity:</target>
+            </trans-unit>
+            <trans-unit id="email_before_lock">
+                <source>Email before lock</source>
+                <target>Send an email x days before locking a user:</target>
+            </trans-unit>
+            <trans-unit id="delete_user">
+                <source>Delete user</source>
+                <target>Delete users after x days of inactivity:</target>
+            </trans-unit>
+            <trans-unit id="email_before_delete">
+                <source>Email before delete</source>
+                <target>Write an email x days before deleting a user:</target>
+            </trans-unit>
+            <trans-unit id="inactive">
+                <source>Inactive</source>
+                <target>Deleting inactive users</target>
+            </trans-unit>
 
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">

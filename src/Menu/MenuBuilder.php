@@ -404,6 +404,15 @@ class MenuBuilder
                 'extras' => ['icon' => 'calendar']
             ])
                 ->setExtra('translation_domain', 'portal');
+
+            // inactive
+            $menu->addChild('Inactive', [
+                'label' => 'Inactive',
+                'route' => 'app_portalsettings_inactive',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'minus-circle']
+            ])
+                ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;
