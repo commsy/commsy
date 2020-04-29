@@ -126,6 +126,10 @@
                 <source>emailHidden</source>
                 <target>verborgen</target>
             </trans-unit>
+            <trans-unit id="emailAddressIsHidden">
+                <source>emailAddressIsHidden</source>
+                <target>E-Mail Adresse verborgen</target>
+            </trans-unit>
             <trans-unit id="userEmailSend">
                 <source>send email</source>
                 <target>E-Mail senden</target>
