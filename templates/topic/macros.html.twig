@@ -312,7 +312,6 @@
 
     {% set preview = '' %}
     {% set content = '' %}
- 
 
     {% if not members is empty %}
        {% set preview %}
@@ -361,9 +360,13 @@
                 </div>
                 <span>
                     {% if member.email %}
-                        <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                        {% if member.isEmailVisible %}
+                            <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                        {% else %}
+                            {{ 'emailAddressIsHidden'|trans({}, 'user') }}
+                        {% endif %}
                     {% else %}
-                        {'no email'|trans({}) }
+                        {{ 'no email'|trans({}) }}
                     {% endif %}
                 </span><br/>
                 <div class="uk-flex uk-flex-space-between">
