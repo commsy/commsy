@@ -55,6 +55,13 @@ class CommsyBreadcrumbListener
         // Longest case:
         // Portal / CommunityRoom / ProjectRooms / ProjectRoomName / Groups / GroupName / Grouproom / Rubric / Entry
 
+//        $requestUri = $request->getRequestUri();
+//        if (strpos($requestUri, 'securedelete') !== false) {
+//            $lastSlashPos = strrpos($requestUri, '/');
+//            $newRoomId = substr($requestUri, $lastSlashPos+1);
+//            $roomItem = $this->roomService->getRoomItem(intval($newRoomId));
+//        }
+
         $this->addPortalCrumb($request);
 
         // portal settings
@@ -89,6 +96,16 @@ class CommsyBreadcrumbListener
         elseif ($controller == 'hashtag') {
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addItem($this->translator->trans('hashtags', [], 'room'));
+        }
+        elseif ($controller == 'secureprojectdetaildeletion') {
+            $requestUri = $request->getRequestUri();
+            if (strpos($requestUri, 'securedelete') !== false) {
+                $lastSlashPos = strrpos($requestUri, '/');
+                $newRoomId = substr($requestUri, $lastSlashPos+1);
+                $projectRoomItem = $this->roomService->getRoomItem(intval($newRoomId));
+            }
+            $this->addRoom($roomItem, true);
+            $this->addRoom($projectRoomItem, true);
         }
         else {
             $this->addRoom($roomItem, true);
