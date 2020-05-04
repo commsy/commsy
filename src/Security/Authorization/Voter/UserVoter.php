@@ -12,6 +12,7 @@ class UserVoter extends Voter
 {
     const MODERATOR = 'MODERATOR';
     const PARENT_MODERATOR = 'PARENT_MODERATOR';
+    const UNDERLAYING_PROJECT_MODERATOR = 'UNDERLAYING_PROJECT_MODERATOR';
 
     private $legacyEnvironment;
     private $itemService;
@@ -29,18 +30,12 @@ class UserVoter extends Voter
         return in_array($attribute, array(
             self::MODERATOR,
             self::PARENT_MODERATOR,
+            self::UNDERLAYING_PROJECT_MODERATOR,
         ));
     }
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
-        // get current logged in user
-        // $user = $token->getUser();
-
-        // make sure there is a user object (i.e. that the user is logged in)
-        // if (!$user instanceof User) {
-        //     return false
-        // }
 
         $itemId = $object;
         $item = $this->itemService->getTypedItem($itemId);
@@ -51,7 +46,10 @@ class UserVoter extends Voter
                 return $this->isModerator($currentUser);
 
             case self::PARENT_MODERATOR:
-                return $this->isParentModerator($currentUser, $item, $item);
+                return $this->isParentModerator($currentUser, $item);
+
+            case self::UNDERLAYING_PROJECT_MODERATOR:
+                return $this->isModeratorOfUnderlyingProjectRoom($currentUser, $item);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -66,6 +64,17 @@ class UserVoter extends Voter
         return false;
     }
 
+    /**
+     * @param $currentUser
+     * @param $item
+     * @return bool
+     */
+    private function isModeratorOfUnderlyingProjectRoom($currentUser, $item):bool
+    {
+        //TODO: to be implemented (formally Ticket #3055)
+        $roomType = $item->getType();
+        $currentRoomId = $item->getItemId();
+    }
 
     /**
      * @param $item

@@ -35,10 +35,9 @@
                                 </button>
 
                                 <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
-                                    {% if is_granted('MODERATOR') %}
+                                    {# {% if (is_granted('MODERATOR') or is_granted('UNDERLAYING_PROJECT_MODERATOR')) %} #}
+                                    {% if is_granted('MODERATOR')  %}
                                         <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
-                                            {# delete #}
-                                            {# // FIXME: popup confirm-cancel dialog does not work, yet! #}
                                             {#{ path('app_user_delete', {'roomId': roomId, 'itemId': user.itemId}) }}" id="delete" data-uk-button data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}#}
                                             <li>
                                                 <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'communityId': project.itemId}) }}">
