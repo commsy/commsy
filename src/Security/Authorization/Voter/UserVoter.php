@@ -12,6 +12,7 @@ class UserVoter extends Voter
 {
     const MODERATOR = 'MODERATOR';
     const PARENT_MODERATOR = 'PARENT_MODERATOR';
+    const PROJECT_MODERATOR = 'PROJECT_MODERATOR';
 
     private $legacyEnvironment;
     private $itemService;
@@ -29,6 +30,7 @@ class UserVoter extends Voter
         return in_array($attribute, array(
             self::MODERATOR,
             self::PARENT_MODERATOR,
+            self::PROJECT_MODERATOR,
         ));
     }
 
@@ -44,6 +46,9 @@ class UserVoter extends Voter
 
             case self::PARENT_MODERATOR:
                 return $this->isParentModerator($currentUser, $item);
+
+            case self::PROJECT_MODERATOR:
+                return $this->isProjectModerator($currentUser, $item);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -56,6 +61,10 @@ class UserVoter extends Voter
         }
 
         return false;
+    }
+
+    private function isProjectModerator($currentUser, $item){
+        return $this->isCurrentUserModerator($item->getItemId(), [$currentUser]);
     }
 
     /**

@@ -26,7 +26,6 @@
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
 
-
                             {# additional actions #}
                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
@@ -36,12 +35,16 @@
 
                                 <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
                                     {# {% if (is_granted('MODERATOR') or is_granted('UNDERLAYING_PROJECT_MODERATOR')) %} #}
-                                    {% if is_granted('MODERATOR') %}
+                                    {% if (is_granted('MODERATOR') or is_granted('PROJECT_MODERATOR', project.itemId)) %}
                                         <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
-                                            {#{ path('app_user_delete', {'roomId': roomId, 'itemId': user.itemId}) }}" id="delete" data-uk-button data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}#}
                                             <li>
-                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'communityId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'Delete or lock project'|trans({},'settings') }}
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'delete'|trans({},'project') }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'lock'|trans({},'project') }}
                                                 </a>
                                             </li>
                                         </ul>
