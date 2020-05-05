@@ -12,7 +12,6 @@ class UserVoter extends Voter
 {
     const MODERATOR = 'MODERATOR';
     const PARENT_MODERATOR = 'PARENT_MODERATOR';
-    const UNDERLAYING_PROJECT_MODERATOR = 'UNDERLAYING_PROJECT_MODERATOR';
 
     private $legacyEnvironment;
     private $itemService;
@@ -30,13 +29,11 @@ class UserVoter extends Voter
         return in_array($attribute, array(
             self::MODERATOR,
             self::PARENT_MODERATOR,
-            self::UNDERLAYING_PROJECT_MODERATOR,
         ));
     }
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
-
         $itemId = $object;
         $item = $this->itemService->getTypedItem($itemId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -47,9 +44,6 @@ class UserVoter extends Voter
 
             case self::PARENT_MODERATOR:
                 return $this->isParentModerator($currentUser, $item);
-
-            case self::UNDERLAYING_PROJECT_MODERATOR:
-                return $this->isModeratorOfUnderlyingProjectRoom($currentUser, $item);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -65,18 +59,6 @@ class UserVoter extends Voter
     }
 
     /**
-     * @param $currentUser
-     * @param $item
-     * @return bool
-     */
-    private function isModeratorOfUnderlyingProjectRoom($currentUser, $item):bool
-    {
-        //TODO: to be implemented (formally Ticket #3055)
-        $roomType = $item->getType();
-        $currentRoomId = $item->getItemId();
-    }
-
-    /**
      * @param $item
      * @param $currentUser
      * @return bool
@@ -84,16 +66,25 @@ class UserVoter extends Voter
     private function isParentModerator($currentUser, $item):bool
     {
         $roomType = $item->getType();
-        $currentRoomId = $item->getItemId();
-        $currentUserIsModerator = $this->isCurrentUserModerator($currentRoomId, [$currentUser]);
-
-        if($currentUserIsModerator and $roomType == 'community'){
-            return true;
+        if($roomType == 'project'){
+            $linkedCommunities = $item->getCommunityList();
+            foreach($linkedCommunities as $linkedCommunity){
+                $communityId = $linkedCommunity->getItemId();
+                if($this->isCurrentUserModerator($communityId, [$currentUser])){
+                    return true;
+                }
+            }
         }
-
         return false;
     }
 
+    /**
+     * @param $roomId int
+     * @param $currentUsers array
+     * @return bool
+     *
+     * Delivers a boolean answer whether the current user is moderator of given roomId.
+     */
     private function isCurrentUserModerator($roomId, $currentUsers){
         $moderatorIds = $this->accessModeratorIds($roomId);
         foreach ($currentUsers as $selectedId) {
@@ -108,13 +99,13 @@ class UserVoter extends Voter
     }
 
     private function accessModeratorIds($roomId){
-        $moderators = $this->userService->getModeratorsForContext($roomId);
-
+        $userService = $this->userService;
+        $userService->resetLimits();
+        $moderators = $userService->getModeratorsForContext($roomId);
         $moderatorIds = [];
         foreach ($moderators as $moderator) {
             $moderatorIds[] = $moderator->getItemId();
         }
-
         return $moderatorIds;
     }
 }
