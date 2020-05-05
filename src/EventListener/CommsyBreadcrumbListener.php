@@ -103,9 +103,8 @@ class CommsyBreadcrumbListener
                 $lastSlashPos = strrpos($requestUri, '/');
                 $newRoomId = substr($requestUri, $lastSlashPos+1);
                 $projectRoomItem = $this->roomService->getRoomItem(intval($newRoomId));
+                $this->addRoom($projectRoomItem, true);
             }
-            $this->addRoom($roomItem, true);
-            $this->addRoom($projectRoomItem, true);
         }
         else {
             $this->addRoom($roomItem, true);

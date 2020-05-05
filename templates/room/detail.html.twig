@@ -57,7 +57,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                            {% elseif is_granted('PARENT_MODERATOR',item.itemId) %}
+                            {% elseif (is_granted('PARENT_MODERATOR',project.itemId) or is_granted('PROJECT_MODERATOR', project.itemId)) %}
                                 <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                                     <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }}
                                         <i class="uk-icon-caret-down"></i></button>
