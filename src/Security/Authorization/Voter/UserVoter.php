@@ -5,6 +5,7 @@ use App\Utils\ItemService;
 use App\Utils\UserService;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use cs_list;
 
 use App\Services\LegacyEnvironment;
 
@@ -76,7 +77,19 @@ class UserVoter extends Voter
     {
         $roomType = $item->getType();
         if($roomType == 'project'){
-            $linkedCommunities = $item->getCommunityList();
+            $link_item_manager = $this->legacyEnvironment->getLinkItemManager();
+            $link_item_manager->setLinkedItemLimit($item);
+            $link_item_manager->setTypeLimit("community");
+            $link_item_manager->setRoomLimit($item->getContextID());
+            $link_item_manager->select();
+            $link_list = $link_item_manager->get();
+            $result_list = new cs_list();
+            $link_item = $link_list->getFirst();
+            while ($link_item) {
+                $result_list->add($link_item->getLinkedItem($item));
+                $link_item = $link_list->getNext();
+            }
+            $linkedCommunities = $result_list;
             foreach($linkedCommunities as $linkedCommunity){
                 $communityId = $linkedCommunity->getItemId();
                 if($this->isCurrentUserModerator($communityId, [$currentUser])){
