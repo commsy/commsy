@@ -57,6 +57,26 @@
                                         </ul>
                                     </div>
                                 </div>
+                            {% elseif ((is_granted('PARENT_MODERATOR',project.itemId) or is_granted('PROJECT_MODERATOR', project.itemId)) and item.isProjectRoom)  %}
+                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }}
+                                        <i class="uk-icon-caret-down"></i></button>
+                                    <div id="cs-entry-navigation"
+                                         class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                            <li>
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'delete'|trans({},'project') }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'lock'|trans({},'project') }}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             {% endif %}
                         </div>
                     </div>

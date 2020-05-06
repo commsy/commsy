@@ -5,6 +5,7 @@ use App\Utils\ItemService;
 use App\Utils\UserService;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use cs_list;
 
 use App\Services\LegacyEnvironment;
 
@@ -12,6 +13,7 @@ class UserVoter extends Voter
 {
     const MODERATOR = 'MODERATOR';
     const PARENT_MODERATOR = 'PARENT_MODERATOR';
+    const PROJECT_MODERATOR = 'PROJECT_MODERATOR';
 
     private $legacyEnvironment;
     private $itemService;
@@ -29,19 +31,12 @@ class UserVoter extends Voter
         return in_array($attribute, array(
             self::MODERATOR,
             self::PARENT_MODERATOR,
+            self::PROJECT_MODERATOR,
         ));
     }
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
-        // get current logged in user
-        // $user = $token->getUser();
-
-        // make sure there is a user object (i.e. that the user is logged in)
-        // if (!$user instanceof User) {
-        //     return false
-        // }
-
         $itemId = $object;
         $item = $this->itemService->getTypedItem($itemId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -51,7 +46,10 @@ class UserVoter extends Voter
                 return $this->isModerator($currentUser);
 
             case self::PARENT_MODERATOR:
-                return $this->isParentModerator($currentUser, $item, $item);
+                return $this->isParentModerator($currentUser, $item);
+
+            case self::PROJECT_MODERATOR:
+                return $this->isProjectModerator($currentUser, $item);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -66,6 +64,9 @@ class UserVoter extends Voter
         return false;
     }
 
+    private function isProjectModerator($currentUser, $item){
+        return $this->isCurrentUserModerator($item->getItemId(), [$currentUser]);
+    }
 
     /**
      * @param $item
@@ -75,16 +76,37 @@ class UserVoter extends Voter
     private function isParentModerator($currentUser, $item):bool
     {
         $roomType = $item->getType();
-        $currentRoomId = $item->getItemId();
-        $currentUserIsModerator = $this->isCurrentUserModerator($currentRoomId, [$currentUser]);
-
-        if($currentUserIsModerator and $roomType == 'community'){
-            return true;
+        if($roomType == 'project'){
+            $link_item_manager = $this->legacyEnvironment->getLinkItemManager();
+            $link_item_manager->setLinkedItemLimit($item);
+            $link_item_manager->setTypeLimit("community");
+            $link_item_manager->setRoomLimit($item->getContextID());
+            $link_item_manager->select();
+            $link_list = $link_item_manager->get();
+            $result_list = new cs_list();
+            $link_item = $link_list->getFirst();
+            while ($link_item) {
+                $result_list->add($link_item->getLinkedItem($item));
+                $link_item = $link_list->getNext();
+            }
+            $linkedCommunities = $result_list;
+            foreach($linkedCommunities as $linkedCommunity){
+                $communityId = $linkedCommunity->getItemId();
+                if($this->isCurrentUserModerator($communityId, [$currentUser])){
+                    return true;
+                }
+            }
         }
-
         return false;
     }
 
+    /**
+     * @param $roomId int
+     * @param $currentUsers array
+     * @return bool
+     *
+     * Delivers a boolean answer whether the current user is moderator of given roomId.
+     */
     private function isCurrentUserModerator($roomId, $currentUsers){
         $moderatorIds = $this->accessModeratorIds($roomId);
         foreach ($currentUsers as $selectedId) {
@@ -99,13 +121,13 @@ class UserVoter extends Voter
     }
 
     private function accessModeratorIds($roomId){
-        $moderators = $this->userService->getModeratorsForContext($roomId);
-
+        $userService = $this->userService;
+        $userService->resetLimits();
+        $moderators = $userService->getModeratorsForContext($roomId);
         $moderatorIds = [];
         foreach ($moderators as $moderator) {
             $moderatorIds[] = $moderator->getItemId();
         }
-
         return $moderatorIds;
     }
 }
