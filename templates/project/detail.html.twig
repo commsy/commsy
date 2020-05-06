@@ -34,7 +34,6 @@
                                 </button>
 
                                 <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
-                                    {# {% if (is_granted('MODERATOR') or is_granted('UNDERLAYING_PROJECT_MODERATOR')) %} #}
                                     {% if (is_granted('MODERATOR') or is_granted('PROJECT_MODERATOR', project.itemId)) %}
                                         <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
                                             <li>
