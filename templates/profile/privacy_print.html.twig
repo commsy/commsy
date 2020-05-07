@@ -73,6 +73,28 @@
                         {{ macros.roomProfileData(groupRoomProfileDataArray, printProfileImages) }}
                     {% endif %}
                 </div>
+            {% if not serviceLink is empty or not serviceEmail is empty %}
+                <div>
+                    {# footer text #}
+                    <article class="uk-margin-large-top">
+                        <header>
+                            <h4 class="uk-panel uk-panel-title" style="font-size:16px; line-height:22px">
+                                <i class="uk-icon-justify uk-icon-envelope-o"></i>
+                                {{ 'Contact service help'|trans({},'profile') }}
+                            </h4>
+                        </header>
+                        <div class="uk-grid uk-grid-divider">
+                            <div class="uk-width-1-1">
+                                {% if serviceEmail in serviceLink %}
+                                    {{ 'contact text with service email'|trans({},'profile')|format(serviceLink, serviceEmail)|raw }}
+                                {% else %}
+                                    {{ 'contact text with service link'|trans({},'profile')|format(serviceLink)|raw }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endif %}
             </div>
         </div>
         {% endblock %}
