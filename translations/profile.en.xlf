@@ -335,6 +335,18 @@
                 <source>Display PDF</source>
                 <target>Display PDF</target>
             </trans-unit>
+            <trans-unit id="contact_service_help">
+                <source>Contact service help</source>
+                <target>Contact</target>
+            </trans-unit>
+            <trans-unit id="contact_text_service_link">
+                <source>contact text with service link</source>
+                <target>If you have any questions concerning this self assessment, please <![CDATA[<a href=']]>%s<![CDATA['>]]>contact us<![CDATA[</a>]]>.</target>
+            </trans-unit>
+            <trans-unit id="contact_text_service_email">
+                <source>contact text with service email</source>
+                <target>If you have any questions concerning this self assessment, please write to <![CDATA[<a href=']]>%s<![CDATA['>]]>%s<![CDATA[</a>]]>.</target>
+            </trans-unit>
 
             <!-- delete / lock account / room profile -->
             <trans-unit id="lock_room_membership_title">
