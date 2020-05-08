@@ -145,6 +145,7 @@ class UserController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
+            //TODO: check here on last moderators?
             $userService->setFilterConditions($filterForm);
         } else {
             $userService->showNoNotActivatedEntries();
@@ -333,29 +334,31 @@ class UserController extends BaseController
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
 
-                // manual validation - moderator count check
                 if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    $otherModerators = $this->otherContextModerators($roomId, $formData['userIds']);
-                    if (empty($otherModerators))
-                    {
-                        $translator = $this->get('translator');
-                        $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
-                    }
+                    if (in_array($formData['status'], ['user-delete', 'user-block'])) {
 
-                    $groupRoomsInConflict = $this->underlyingGroupRoomHasModerators($roomId, $formData['userIds']);
-                    if (!empty($groupRoomsInConflict))
-                    {
-                        $translator = $this->get('translator');
-                        $form->addError(new FormError($translator->trans('no moderators left community first', [], 'user')));
+                        $otherModerators = $this->otherContextModerators($roomId, $formData['userIds']);
+                        if (empty($otherModerators))
+                        {
+                            $translator = $this->get('translator');
+                            $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
+                            $groupRoomsInConflict = $this->underlyingGroupRoomHasModerators($roomId, $formData['userIds']);
+                            if (!empty($groupRoomsInConflict))
+                            {
+                                $translator = $this->get('translator');
+                                $form->addError(new FormError($translator->trans('no moderators left community first', [], 'user')));
 
-                        foreach($groupRoomsInConflict as $grpRoomName){
-                            $form->addError(new FormError("- ".$grpRoomName));
+                                foreach($groupRoomsInConflict as $grpRoomName){
+                                    $form->addError(new FormError("- ".$grpRoomName));
+                                }
+
+                                $translator = $this->get('translator');
+                                $form->addError(new FormError($translator->trans('no moderators left community second', [], 'user')));
+                            }
+
                         }
 
-                        $translator = $this->get('translator');
-                        $form->addError(new FormError($translator->trans('no moderators left community second', [], 'user')));
                     }
-
                 }
 
                 if ($form->isSubmitted() && $form->isValid()) {
@@ -476,10 +479,11 @@ class UserController extends BaseController
      * @param $selectedIds
      * @return array
      *
-     * Returns all moderators except the one ID given in.
+     * Returns all moderators for the roomId, except the ones associated to the ID given.
      */
     private function otherContextModerators($roomId, $selectedIds)
     {
+        // get every moderator for the context
         $userService = $this->get('commsy_legacy.user_service');
         $moderators = $userService->getModeratorsForContext($roomId);
 
@@ -488,6 +492,7 @@ class UserController extends BaseController
             $moderatorIds[] = $moderator->getItemId();
         }
 
+        // get all related users and remove them from moderators 'hypothetically'
         foreach ($selectedIds as $selectedId) {
             $user = $userService->getUser($selectedId);
             $relatedUsers = $user->getRelatedUserList();
@@ -500,6 +505,7 @@ class UserController extends BaseController
                 }
             }
 
+            // create an array without each associated user object
             if (in_array($user->getItemID(), $moderatorIds)) {
                 if(($key = array_search($user->getItemID(), $moderatorIds)) !== false) {
                     unset($moderatorIds[$key]);
@@ -507,6 +513,7 @@ class UserController extends BaseController
             }
         }
 
+        // the returning array could e.g. be checked on whether at least one moderator is left
         return $moderatorIds;
     }
 
