@@ -217,8 +217,11 @@ class RoomFeedGenerator
      */
     private function sortByModificationDate(\cs_item $a, \cs_item $b)
     {
-        $modDateA = $a->getModificationDate();
-        $modDateB = $b->getModificationDate();
+        $isUserA = $a->getItemType() === CS_USER_TYPE;
+        $isUserB = $a->getItemType() === CS_USER_TYPE;
+
+        $modDateA = ($isUserA) ? $a->getCreationDate() : $a->getModificationDate();
+        $modDateB = ($isUserB) ? $b->getCreationDate() : $b->getModificationDate();
 
         if ($modDateA == $modDateB) {
             return 0;
