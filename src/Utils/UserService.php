@@ -416,6 +416,7 @@ class UserService
      */
     public function getModeratorsForContext($contextId)
     {
+        $this->userManager->reset();
         $this->userManager->setContextLimit($contextId);
         $this->userManager->setStatusLimit(3);
         $this->userManager->select();
