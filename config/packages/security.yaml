@@ -1,24 +1,42 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory: { memory: ~ }
+        in_memory:
+            memory:
+                users:
+                    api: { password: '%env(API_SECRET)%' }
+
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        api_v2_login:
+            pattern: ^/api/v2/login
+            stateless: true
+            anonymous: lazy
+            json_login:
+                check_path: /api/v2/login_check
+                provider: in_memory
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api_v2:
+            pattern: ^/api/v2(?!/doc$)
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
         main:
             anonymous: true
-
-            # activate different ways to authenticate
-
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/v2/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v2/doc,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v2,       roles: IS_AUTHENTICATED_FULLY }
