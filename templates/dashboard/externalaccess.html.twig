@@ -41,7 +41,7 @@
                         <div>
                             <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/dashboard/{{ releaseItem.contextItem.itemId }}">{{releaseItem.contextItem.title|decodeHtmlEntity}}</a></div>
                             <h4 class="uk-comment-title">
-                                <a href="{{ app.request.baseURL }}/dashboard/{{ app.request.attributes.get('roomId') }}/{{ releaseItem.type }}/{{ releaseItem.itemID }}">
+                                <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ releaseItem.type }}/{{ releaseItem.itemID }}">
                                 {% if releaseItem.itemType != 'user' %}
                                     {{ releaseItem.title|decodeHtmlEntity }}
                                 {% else %}
@@ -115,7 +115,7 @@
                         <div>
                             <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/dashboard/{{ viewableItem.contextItem.itemId }}">{{viewableItem.contextItem.title|decodeHtmlEntity}}</a></div>
                             <h4 class="uk-comment-title">
-                                <a href="{{ app.request.baseURL }}/dashboard/{{ app.request.attributes.get('roomId') }}/{{ viewableItem.type }}/{{ viewableItem.itemID }}">
+                                <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ viewableItem.type }}/{{ viewableItem.itemID }}">
                                 {% if viewableItem.itemType != 'user' %}
                                     {{ viewableItem.title|decodeHtmlEntity }}
                                 {% else %}
