@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+
 /**
  * Room
  *
@@ -88,7 +89,7 @@ class Room
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      *
-     * @Groups({"api_read", "api_write"})
+     * @Groups({"api_read"})
      * @SWG\Property(type="string", maxLength=255)
      */
     private $title;
@@ -119,7 +120,7 @@ class Room
      *
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
      *
-     * @Groups({"api_read", "api_write"})
+     * @Groups({"api_read"})
      * @SWG\Property(description="Either project or community")
      */
     private $type = 'project';
@@ -164,7 +165,7 @@ class Room
      *
      * @ORM\Column(name="room_description", type="string", length=10000, nullable=true)
      *
-     * @Groups({"api_read", "api_write"})
+     * @Groups({"api_read"})
      */
     private $roomDescription;
 
