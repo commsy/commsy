@@ -46,6 +46,10 @@
                 <source>Send to selected room members</source>
                 <target>An ausgewählte Raummitglieder versenden</target>
             </trans-unit>
+            <trans-unit id="mailAdditionalRecipient">
+                <source>Additional recipient</source>
+                <target>Zusätzliche(r) EmpfängerIn</target>
+            </trans-unit>
             <trans-unit id="mailAdditionalRecipients">
                 <source>Additional recipients</source>
                 <target>Zusätzliche Empfänger</target>

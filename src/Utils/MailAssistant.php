@@ -142,7 +142,17 @@ class MailAssistant
         $isCopyToSender = $form->has('copy_to_sender') && $formData['copy_to_sender'];
 
         if ($isCopyToSender) {
-            $toCC[$currentUserEmail] = $currentUserName;
+            if ($currentUser->isEmailVisible()) {
+                $toCC[$currentUserEmail] = $currentUserName;
+            } else {
+                $toBCC[$currentUserEmail] = $currentUserName;
+            }
+        }
+
+        $hasAdditionalRecipient = $form->has('additional_recipient') && !empty($formData['additional_recipient']);
+
+        if ($hasAdditionalRecipient) {
+            $toCC[$formData['additional_recipient']] = $formData['additional_recipient'];
         }
 
         if ($forceBCCMail) {
@@ -201,7 +211,11 @@ class MailAssistant
             ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
 
         if ($isCopyToSender) {
-            $toCC[$currentUserEmail] = $currentUserName;
+            if ($currentUser->isEmailVisible()) {
+                $toCC[$currentUserEmail] = $currentUserName;
+            } else {
+                $toBCC[$currentUserEmail] = $currentUserName;
+            }
         }
 
         // form option: additional_recipients
