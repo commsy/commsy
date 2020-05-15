@@ -41,6 +41,9 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
             if($values->getSendToAll()){
                 $foundRecipient = true;
             }
+            if($values->getSendToCreator()){
+                $foundRecipient = true;
+            }
             if($values->getCopyToSender()){
                 $foundRecipient = true;
             }
@@ -58,6 +61,9 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
                 $foundRecipient = true;
             }
             if ($values['send_to_all']) {
+                $foundRecipient = true;
+            }
+            if ($values['send_to_creator']) {
                 $foundRecipient = true;
             }
             if ($values['copy_to_sender']) {
