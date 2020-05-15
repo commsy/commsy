@@ -18,6 +18,10 @@
                 <source>This email has been sent by ... from community room ...</source>
                 <target>Diese E-Mail wurde von %sender_name% über den Gemeinschaftsraum "%room_name%" versendet.</target>
             </trans-unit>
+            <trans-unit id="mailSendToCreator">
+                <source>Send to creator</source>
+                <target>An ErstellerIn versenden</target>
+            </trans-unit>
             <trans-unit id="mailCopyToSender">
                 <source>Copy to sender</source>
                 <target>Kopie an AbsenderIn</target>
