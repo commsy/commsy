@@ -1328,7 +1328,7 @@ class cs_user_item extends cs_item
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_user.user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:User');
 
@@ -1409,7 +1409,7 @@ class cs_user_item extends cs_item
         }
 
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_user.user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:User');
 
