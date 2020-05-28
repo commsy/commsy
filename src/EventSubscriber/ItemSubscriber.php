@@ -8,16 +8,19 @@ use App\Event\ItemDeletedEvent;
 use App\Mail\Mailer;
 use App\Mail\Messages\ItemDeletedMessage;
 use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ItemSubscriber implements EventSubscriberInterface
 {
     private $mailer;
+    private $itemService;
     private $legacyEnvironment;
 
-    public function __construct(Mailer $mailer, LegacyEnvironment $legacyEnvironment)
+    public function __construct(Mailer $mailer, LegacyEnvironment $legacyEnvironment, ItemService $itemService)
     {
         $this->mailer = $mailer;
+        $this->itemService = $itemService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -30,8 +33,14 @@ class ItemSubscriber implements EventSubscriberInterface
 
     public function onItemDeleted(ItemDeletedEvent $event)
     {
-        $item = $event->getItem();
-        $context = $item->getContextItem();
+        $typedItem = $event->getItem();
+
+        $item = $this->itemService->getItem($typedItem->getItemID());
+        if ($item->isDraft()) {
+            return;
+        }
+
+        $context = $typedItem->getContextItem();
 
         // Ignore events in a private room
         if ($context->isPrivateRoom()) {
@@ -40,16 +49,16 @@ class ItemSubscriber implements EventSubscriberInterface
 
         // According to the legacy implementation we are only looking for the following types
         $allowedTypes = ['material', 'discussion', 'date', 'announcement'];
-        if (!in_array($item->getType(), $allowedTypes)) {
+        if (!in_array($typedItem->getType(), $allowedTypes)) {
             return;
         }
 
-        // Grab all moderators who wants to get informed about room openings
+        // Grab all moderators who want to get informed about item deletions
         $moderatorRecipients = \App\Mail\RecipientFactory::createModerationRecipients($context, function (\cs_user_item $moderator) {
             return $moderator->getDeleteEntryWantMail();
         });
 
-        $message = new ItemDeletedMessage($item, $this->legacyEnvironment->getCurrentUserItem());
+        $message = new ItemDeletedMessage($typedItem, $this->legacyEnvironment->getCurrentUserItem());
         $this->mailer->sendMultiple($message, $moderatorRecipients);
     }
 }
