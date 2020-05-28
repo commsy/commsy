@@ -752,7 +752,9 @@ class DiscussionController extends BaseController
         $itemController = $this->get('commsy.item_controller');
         if ($item->getItemType() == 'discussion') {
             // get discussion from DiscussionService
+            /** @var \cs_discussion_item $discussionItem */
             $discussionItem = $discussionService->getDiscussion($itemId);
+            $discussionItem->setDraftStatus($isDraft);
             if (!$discussionItem) {
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
