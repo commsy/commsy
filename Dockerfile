@@ -1,5 +1,5 @@
 ARG PHP_VERSION=7.1
-ARG NGINX_VERSION=1.15
+ARG NGINX_VERSION=1.19
 
 FROM php:7.1-fpm-jessie AS commsy_php
 
