@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Portal
@@ -18,6 +20,9 @@ class Portal
      * @ORM\Column(name="item_id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @Groups({"api"})
+     * @SWG\Property(description="The unique identifier.")
      */
     private $itemId = '0';
 
@@ -62,6 +67,8 @@ class Portal
      * @var \DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     *
+     * @Groups({"api"})
      */
     private $creationDate = '0000-00-00 00:00:00';
 
@@ -69,6 +76,8 @@ class Portal
      * @var \DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
+     *
+     * @Groups({"api"})
      */
     private $modificationDate = '0000-00-00 00:00:00';
 
@@ -83,6 +92,9 @@ class Portal
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     *
+     * @Groups({"api"})
+     * @SWG\Property(type="string", maxLength=255)
      */
     private $title;
 

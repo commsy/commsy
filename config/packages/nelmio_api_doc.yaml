@@ -1,0 +1,22 @@
+nelmio_api_doc:
+    documentation:
+#        basePath: /api/v2
+        info:
+            title: CommSy
+            description: A web-based community system.
+            version: 0.1.0
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                description: 'Value: Bearer {jwt}'
+                name: Authorization
+                in: header
+        security:
+            - Bearer: []
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api/v2(?!/doc$) # Accepts routes under /api/v2 except /api/v2/doc
+
+    models:
+        use_jms: false

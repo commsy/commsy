@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * User
@@ -18,6 +20,9 @@ class User
      * @ORM\Column(name="item_id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @Groups({"api_read"})
+     * @SWG\Property(description="The unique identifier.")
      */
     public $itemId = '0';
 
@@ -55,6 +60,8 @@ class User
      * @var \DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     *
+     * @Groups({"api_read"})
      */
     private $creationDate = '0000-00-00 00:00:00';
 
@@ -62,6 +69,8 @@ class User
      * @var \DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=true)
+     *
+     * @Groups({"api_read"})
      */
     private $modificationDate;
 
@@ -76,6 +85,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="user_id", type="string", length=100, nullable=false)
+     *
+     * @Groups({"api_read"})
      */
     public $userId;
 
@@ -83,6 +94,8 @@ class User
      * @var boolean
      *
      * @ORM\Column(name="status", type="smallint", nullable=false)
+     *
+     * @Groups({"api_read"})
      */
     private $status = '0';
 
@@ -97,6 +110,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=50, nullable=false)
+     *
+     * @Groups({"api_read"})
      */
     private $firstname;
 
@@ -104,6 +119,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=100, nullable=false)
+     *
+     * @Groups({"api_read"})
      */
     private $lastname;
 
