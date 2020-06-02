@@ -21,6 +21,15 @@ class PortalRepository extends ServiceEntityRepository
         parent::__construct($registry, Portal::class);
     }
 
+    public function findActivePortals()
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.deleter IS NULL')
+            ->andWhere('p.deletionDate IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param int $portalId
      * @return mixed
