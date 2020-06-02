@@ -329,11 +329,23 @@
             </trans-unit>
             <trans-unit id="privacy_text">
                 <source>privacy text</source>
-                <target>Hier können Sie sich Ihre personenbezogenen Daten als PDF Datei anzeigen lassen und herunterladen.</target>
+                <target>Hier können Sie sich Ihre von uns gespeicherten personenbezogenen Daten als PDF Datei anzeigen lassen und sie herunterladen.</target>
             </trans-unit>
             <trans-unit id="display_pdf">
                 <source>Display PDF</source>
                 <target>PDF anzeigen</target>
+            </trans-unit>
+            <trans-unit id="contact_service_help">
+                <source>Contact service help</source>
+                <target>Kontakt</target>
+            </trans-unit>
+            <trans-unit id="contact_text_service_link">
+                <source>contact text with service link</source>
+                <target>Falls Sie Fragen zu dieser Selbstauskunft haben, <![CDATA[<a href=']]>%s<![CDATA['>]]>kontaktieren Sie uns<![CDATA[</a>]]> bitte.</target>
+            </trans-unit>
+            <trans-unit id="contact_text_service_email">
+                <source>contact text with service email</source>
+                <target>Falls Sie Fragen zu dieser Selbstauskunft haben, schreiben Sie bitte an <![CDATA[<a href=']]>%s<![CDATA['>]]>%s<![CDATA[</a>]]>.</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->

@@ -546,10 +546,13 @@ class ProfileController extends Controller
      * @Route("/room/{roomId}/user/{itemId}/privacy/print")
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function privacyPrintAction($roomId, $itemId, LegacyEnvironment $legacyEnvironment, PersonalDataCollector $dataCollector, PrintService $printService)
+    public function privacyPrintAction($roomId, $itemId, LegacyEnvironment $legacyEnvironment, PersonalDataCollector $dataCollector, PrintService $printService, RoomService $roomService)
     {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
+
+        $serviceLink = $roomService->buildServiceLink();
+        $serviceEmail = $roomService->getServiceEmail();
 
         // gather the user's personal master data
         $personalData = $dataCollector->getPersonalDataForUserID($itemId);
@@ -562,6 +565,8 @@ class ProfileController extends Controller
             'communityRoomProfileDataArray' => $personalData->getCommunityRoomProfileDataArray(),
             'projectRoomProfileDataArray' => $personalData->getProjectRoomProfileDataArray(),
             'groupRoomProfileDataArray' => $personalData->getGroupRoomProfileDataArray(),
+            'serviceLink' => $serviceLink,
+            'serviceEmail' => $serviceEmail,
         ]);
 
         $fileName = $this->get('translator')->trans('Self assessment', [], 'profile')

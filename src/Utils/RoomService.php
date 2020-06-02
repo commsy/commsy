@@ -227,17 +227,7 @@ class RoomService
 
             return $remoteServiceLink;
         } else {
-            $serviceEmail = '';
-
-            if ($portalItem) {
-                $serviceEmail = $portalItem->getServiceEmail();
-            }
-
-            if (empty($serviceEmail)) {
-                $serverItem = $this->legacyEnvironment->getServerItem();
-
-                $serviceEmail = $serverItem->getServiceEmail();
-            }
+            $serviceEmail = $this->getServiceEmail();
 
             if (!empty($serviceEmail)) {
                 return 'mailto:' . $serviceEmail;
@@ -245,5 +235,26 @@ class RoomService
         }
 
         return '';
+    }
+
+    /**
+     * Returns the service email address specified for the current portal or server
+     * @return string service email address
+     */
+    public function getServiceEmail()
+    {
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $serviceEmail = '';
+
+        if ($portalItem) {
+            $serviceEmail = $portalItem->getServiceEmail();
+        }
+
+        if (empty($serviceEmail)) {
+            $serverItem = $this->legacyEnvironment->getServerItem();
+            $serviceEmail = $serverItem->getServiceEmail();
+        }
+
+        return $serviceEmail;
     }
 }
