@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Form\Model\Send;
+use App\Utils\ItemService;
+use App\Utils\MailAssistant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -608,10 +610,13 @@ class ItemController extends Controller
      * @Route("/room/{roomId}/{itemId}/send")
      * @Template()
      **/
-    public function sendAction($roomId, $itemId, Request $request)
-    {
-        // get item
-        $itemService = $this->get('commsy_legacy.item_service');
+    public function sendAction(
+        $roomId,
+        $itemId,
+        Request $request,
+        ItemService $itemService,
+        MailAssistant $mailAssistant
+    ) {
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -619,11 +624,9 @@ class ItemController extends Controller
         }
 
         // prepare form
-        $mailAssistant = $this->get('commsy.utils.mail_assistant');
-
         $groupChoices = $mailAssistant->getGroupChoices($item);
         $defaultGroupId = null;
-        if(sizeof($groupChoices)>0){
+        if (count($groupChoices) > 0) {
             $defaultGroupId = array_values($groupChoices)[0];
         }
 
@@ -652,7 +655,7 @@ class ItemController extends Controller
             if ($form->get('cancel')->isClicked()) {
 
                 $itemType = $item->getType();
-                if ($item->getType() == 'label') {
+                if ($item->getType() === 'label') {
                     $itemType = $item->getLabelType();
                 }
 
@@ -677,7 +680,7 @@ class ItemController extends Controller
         }
 
         return [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ];
     }
 
