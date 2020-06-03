@@ -2,6 +2,7 @@
 namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
@@ -18,13 +19,24 @@ use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use App\Utils\MailAssistant;
 
 use App\Validator\Constraints\SendRecipientsConstraint;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SendType extends AbstractType
 {
+    /**
+     * @var MailAssistant
+     */
     private $mailAssistant;
 
-    public function __construct(MailAssistant $mailAssistant) {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(MailAssistant $mailAssistant, TranslatorInterface $translator)
+    {
         $this->mailAssistant = $mailAssistant;
+        $this->translator = $translator;
     }
 
     /**
@@ -38,6 +50,9 @@ class SendType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $mailAssistant = $this->mailAssistant;
+
+        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
+        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
 
         $builder
             ->add('subject', TextType::class, [
@@ -62,7 +77,7 @@ class SendType extends AbstractType
 
                 if(isset($options['item']) && !empty($options['item'])) {
                     $item = $options['item'];
-                    if ($item->getType() == 'date') {
+                    if ($item->getType() === 'date') {
                         $form
                             ->add('send_to_attendees', ChoiceType::class, [
                                 'label' => 'Send to attendees',
@@ -78,7 +93,7 @@ class SendType extends AbstractType
                         ;
                     }
 
-                    if ($item->getType() == 'todo') {
+                    if ($item->getType() === 'todo') {
                         $form
                             ->add('send_to_assigned', ChoiceType::class, [
                                 'label' => 'Send to assigned',
@@ -203,6 +218,14 @@ class SendType extends AbstractType
                     new SendRecipientsConstraint(),
                 ),
             ])
+            ->add('attachments', FileType::class, [
+                'attr' => [
+                    'data-uk-csupload' => '{"path": "' . $options['attachmentUploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
+                ],
+                'required' => false,
+                'multiple' => true,
+                'translation_domain' => 'mail',
+            ])
             ->add('save', SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button-primary',
@@ -229,8 +252,9 @@ class SendType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired('item')
+            ->setRequired(['item', 'attachmentUploadUrl'])
             ->setAllowedTypes('item', 'cs_item')
+            ->setAllowedTypes('attachmentUploadUrl', 'string')
             ->setDefaults([
                 'users' => [],
                 'item' => null,

@@ -417,4 +417,12 @@ class UploadController extends Controller
 
         exit;
     }
+
+    /**
+     * @Route("/room/{roomId}/upload/attachments")
+     */
+    public function mailAttachments()
+    {
+
+    }
 }

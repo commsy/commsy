@@ -7,7 +7,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Send
 {
-
     private $subject;
 
     private $message;
@@ -29,6 +28,8 @@ class Send
     private $copyToSender;
 
     private $additionalRecipients;
+
+    private $attachments;
 
     /**
      * @return mixed
@@ -206,4 +207,21 @@ class Send
         $this->additionalRecipients = $additionalRecipients;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * @param mixed $attachments
+     * @return Send
+     */
+    public function setAttachments($attachments)
+    {
+        $this->attachments = $attachments;
+        return $this;
+    }
 }
