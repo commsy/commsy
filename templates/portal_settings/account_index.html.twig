@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% embed 'components/context_navigation.html.twig' %}
+        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Accounts'|trans({}, "portal") }}{% endblock %}
+        {% block body %}
+            {{ form_start(form) }}
+            {{ form_row(form.accountIndexSearchString) }}
+            {{ form_row(form.userIndexFilterChoice) }}
+            {{ form_row(form.search) }}
+            {% if not userList is empty %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>{{ 'Name (user id)'|trans({},"portal")}}</th>
+                            <th>{{ 'Last login'|trans({},"portal")}}</th>
+                            <th>{{ 'Mail'|trans({},"portal")}}</th>
+                        </tr>
+                    </thead>
+                {% for user in userList %}
+                    <tr>
+                        <td><input type="checkbox" name="check_{{ user.userid }}" /><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
+                        <td>{{ user.lastlogin }}</td>
+                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portal_settings_accountindex'}) }}">{{ user.email }}</a></td>
+                    </tr>
+                {% endfor %}
+                </table>
+            {% endif %}
+            {{ form_row(form.indexViewAction) }}
+            {{ form_row(form.execute) }}
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

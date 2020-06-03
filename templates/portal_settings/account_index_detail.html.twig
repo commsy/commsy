@@ -1,0 +1,62 @@
+{% extends 'layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% embed 'components/context_navigation.html.twig' %}
+        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Accounts'|trans({}, "portal") }}{% endblock %}
+        {% block body %}
+            {{ form_start(form) }}
+            {{ form_row(form.previous) }}
+            {{ form_row(form.next) }}
+            <h1>{{ user.firstname }} {{ user.lastname }}</h1>
+            <hr />
+            <div style="border: 1px solid black; padding: 10px; width: 50%;">
+                <ul style="list-style: none;">
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> Bearbeiten</a></li>
+                    <li><a href="">> Seite drucken</a></li>
+                    <li><a href="">> Seite speichern</a></li>
+                    <li><a href="">> Als {{ user.firstname }} {{ user.lastname }} einloggen</a></li>
+                </ul>
+            </div>
+            <hr />
+            <h3>Einstellungen (nur für {{ user.firstname }} sichtbar)</h3>
+            <div style="border: 1px solid black; padding: 10px; width: 50%;">
+                <ul style="list-style: none;">
+                    <li><a href="">> Passwort ändern</a></li>
+                    <li><a href="">> Status ändern</a></li>
+                    <li><a href="">> Raum zuordnen</a></li>
+                    <li><a href="">> Teilnahme beenden</a></li>
+                    <li><a href="">> E-Mail verbergen</a></li>
+                    <li><a href="">> E-Mail in allen Räumen verbergen</a></li>
+                    <li><a href="">> E-Mail anzeigen</a></li>
+                    <li><a href="">> E-Mail in allen Räumen anzeigen</a></li>
+                </ul>
+            </div>
+                <table>
+                    <tr>
+                        <td> Kennung: </td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td> Status: </td>
+                        <td>{{ user.getStatus() }}</td>
+                    </tr>
+                    <tr>
+                        <td> AnsprechpartnerIn: </td>
+                        {%  if(user.isContact()) %}
+                            <td>Ja</td>
+                        {%  else %}
+                            <td>Nein</td>
+                        {% endif %}
+                    </tr>
+                </table>
+            {{ form_row(form.back) }}
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

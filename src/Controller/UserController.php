@@ -92,9 +92,9 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}")
      * @Template
      */
-    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request){
+    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request, LegacyEnvironment $legacyEnvironment){
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userService = $this->get('commsy_legacy.user_service');

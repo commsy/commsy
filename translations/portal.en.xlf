@@ -155,6 +155,172 @@
                 <target>Raumanzeige</target>
             </trans-unit>
 
+            <!-- Portal Account Index -->
+            <trans-unit id="portal_accounts">
+                <source>Accounts</source>
+                <target>Accounts</target>
+            </trans-unit>
+            <trans-unit id="execute">
+                <source>Execute</source>
+                <target>execute</target>
+            </trans-unit>
+            <trans-unit id="action">
+                <source>Action</source>
+                <target>action</target>
+            </trans-unit>
+            <trans-unit id="name_userID">
+                <source>Name (user id)</source>
+                <target>Name (user id)</target>
+            </trans-unit>
+            <trans-unit id="last_login">
+                <source>Last login</source>
+                <target>Last login</target>
+            </trans-unit>
+            <trans-unit id="mail">
+                <source>Mail</source>
+                <target>Mail</target>
+            </trans-unit>
+            <trans-unit id="no_action">
+                <source>No action</source>
+                <target>No action</target>
+            </trans-unit>
+            <trans-unit id="delete_ids">
+                <source>Delete user id(s)</source>
+                <target>Delete user id(s)</target>
+            </trans-unit>
+            <trans-unit id="lock_ids">
+                <source>Lock user id(s)</source>
+                <target>Lock user id(s)</target>
+            </trans-unit>
+            <trans-unit id="activate_user">
+                <source>Activate user id(s)</source>
+                <target>Activate user id(s)</target>
+            </trans-unit>
+            <trans-unit id="mail_change_login">
+                <source>Email change login</source>
+                <target>User id(s): change mails on next login</target>
+            </trans-unit>
+            <trans-unit id="status_user">
+                <source>Satus user</source>
+                <target>Satus: user</target>
+            </trans-unit>
+            <trans-unit id="status_moderator">
+                <source>Satus moderator</source>
+                <target>Status: moderator</target>
+            </trans-unit>
+            <trans-unit id="make_contact">
+                <source>Make contact</source>
+                <target>Make contact</target>
+            </trans-unit>
+            <trans-unit id="remove_contact">
+                <source>Remove contact</source>
+                <target>Remove the status to be contact</target>
+            </trans-unit>
+            <trans-unit id="send_mail">
+                <source>Send mail</source>
+                <target>Send mail</target>
+            </trans-unit>
+            <trans-unit id="mail_id_password">
+                <source>Mail id password</source>
+                <target>Mail: id and password</target>
+            </trans-unit>
+            <trans-unit id="mail_combine_ids">
+                <source>Mail combine ids</source>
+                <target>Mail: merge ids</target>
+            </trans-unit>
+            <trans-unit id="hide_mail">
+                <source>Hide mail</source>
+                <target>Hide mail</target>
+            </trans-unit>
+            <trans-unit id="hide_mail_all_wrks">
+                <source>Hide mail all wrks</source>
+                <target>Hide mail in all workspaces</target>
+            </trans-unit>
+            <trans-unit id="show_mail">
+                <source>Show mail</source>
+                <target>Show mail</target>
+            </trans-unit>
+            <trans-unit id="show_mail_all_wrks">
+                <source>Show mail all wrks</source>
+                <target>Show mail in all workspaces</target>
+            </trans-unit>
+            <trans-unit id="status">
+                <source>Status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="all">
+                <source>All</source>
+                <target>All</target>
+            </trans-unit>
+            <trans-unit id="members">
+                <source>Members</source>
+                <target>Members</target>
+            </trans-unit>
+            <trans-unit id="locked">
+                <source>Locked</source>
+                <target>locked</target>
+            </trans-unit>
+            <trans-unit id="in_activation">
+                <source>In activation</source>
+                <target>In request</target>
+            </trans-unit>
+            <trans-unit id="user">
+                <source>User</source>
+                <target>User</target>
+            </trans-unit>
+            <trans-unit id="moderator">
+                <source>Moderator</source>
+                <target>Moderator</target>
+            </trans-unit>
+            <trans-unit id="contact">
+                <source>Contact</source>
+                <target>Contact</target>
+            </trans-unit>
+            <trans-unit id="community_moderator">
+                <source>Community moderators</source>
+                <target>Community moderators</target>
+            </trans-unit>
+            <trans-unit id="community_contacts">
+                <source>Community contacts</source>
+                <target>Community contacts</target>
+            </trans-unit>
+            <trans-unit id="project_moderator">
+                <source>Project moderators</source>
+                <target>Project moderators</target>
+            </trans-unit>
+            <trans-unit id="project_contacts">
+                <source>Project contacts</source>
+                <target>Project contacts</target>
+            </trans-unit>
+            <trans-unit id="moderators_of_workspaces">
+                <source>Moderators of workspaces</source>
+                <target>Moderators of workspaces</target>
+            </trans-unit>
+            <trans-unit id="contacts_of_workspaces">
+                <source>Contacts of workspaces</source>
+                <target>Contacts of workspaces</target>
+            </trans-unit>
+            <trans-unit id="no_workspace_participation">
+                <source>No workspaces participation</source>
+                <target>No workspaces participation</target>
+            </trans-unit>
+            <trans-unit id="search">
+                <source>Search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="account_next">
+                <source>Next</source>
+                <target>next/r</target>
+            </trans-unit>
+            <trans-unit id="account_previous">
+                <source>Previous</source>
+                <target>previous</target>
+            </trans-unit>
+            <trans-unit id="account_back">
+                <source>Back</source>
+                <target>Back/r</target>
+            </trans-unit>
+
             <!-- time -->
             <trans-unit id="time">
                 <source>Time</source>
@@ -187,6 +353,76 @@
             <trans-unit id="time_cycle_to">
                 <source>Time cycle to</source>
                 <target>Bis</target>
+            </trans-unit>
+
+            <!-- user edit -->
+            <trans-unit id="firstName">
+                <source>First name</source>
+                <target>First name</target>
+            </trans-unit>
+            <trans-unit id="lastName">
+                <source>Last name</source>
+                <target>Last name</target>
+            </trans-unit>
+            <trans-unit id="academicDegree">
+                <source>AcademicDegree</source>
+                <target>Academic degree</target>
+            </trans-unit>
+            <trans-unit id="birthday">
+                <source>Birthday</source>
+                <target>Date of birth</target>
+            </trans-unit>
+            <trans-unit id="street">
+                <source>Street</source>
+                <target>Streetname</target>
+            </trans-unit>
+            <trans-unit id="zip">
+                <source>Zip</source>
+                <target>Zip code</target>
+            </trans-unit>
+            <trans-unit id="city">
+                <source>City</source>
+                <target>City name</target>
+            </trans-unit>
+            <trans-unit id="workspace">
+                <source>Workspace</source>
+                <target>Workspace</target>
+            </trans-unit>
+            <trans-unit id="telephone">
+                <source>Telephone</source>
+                <target>Telephone number</target>
+            </trans-unit>
+            <trans-unit id="secondTelephone">
+                <source>Second Telephone</source>
+                <target>Secondy telephone number</target>
+            </trans-unit>
+            <trans-unit id="email">
+                <source>E-mail</source>
+                <target>E-mail address</target>
+            </trans-unit>
+            <trans-unit id="description">
+                <source>Description</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="user_is_allowed_to_create_context">
+                <source>User is allowed to create context</source>
+                <target>The user is allowed to create context</target>
+            </trans-unit>
+            <trans-unit id="may_create_context">
+                <source>May create context</source>
+                <target>The user may create context</target>
+            </trans-unit>
+            <trans-unit id="may_use_caldav">
+                <source>May use caldav</source>
+                <target>The user may use CalDAV</target>
+            </trans-unit>
+            <trans-unit id="user_is_allowed_to_use_caldav">
+                <source>User is allowed to use caldav</source>
+                <target>The user is allowed to use CalDAV</target>
+            </trans-unit>
+            <trans-unit id="save">
+                <source>Save</source>
+                <target>Save</target>
             </trans-unit>
 
             <!-- inactive -->

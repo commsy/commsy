@@ -713,6 +713,31 @@ class Portal
         $this->getExtras()['TIME_TEXT_ARRAY'] = $value;
     }
 
+    function getIndexViewAction () {
+        return ($this->getExtras()['INDEX_VIEW_ACTION']) ?? 0;
+    }
+
+    function setIndexViewAction ($value) {
+        $this->getExtras()['INDEX_VIEW_ACTION'] = $value;
+    }
+
+    function getUserIndexFilterChoice () {
+        return ($this->getExtras()['INDEX_FILTER_CHOICE']) ?? 0;
+    }
+
+    function setUserIndexFilterChoice ($value) {
+        $this->getExtras()['INDEX_FILTER_CHOICE'] = $value;
+    }
+
+    function getAccountIndexSearchString () {
+        return ($this->getExtras()['ACCOUNT_INDEX_SEARCH_STRING']) ?? "";
+    }
+
+    function setAccountIndexSearchString ($value) {
+        $this->getExtras()['ACCOUNT_INDEX_SEARCH_STRING'] = $value;
+    }
+
+
     function getContinuousRoomList (LegacyEnvironment $environment) {
         if (!isset($this->_room_list_continuous)) {
             $manager = $environment->getEnvironment()->getRoomManager();

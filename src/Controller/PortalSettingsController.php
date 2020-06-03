@@ -3,7 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Portal;
+use App\Entity\PortalUserEdit;
 use App\Entity\Translation;
+use App\Form\Type\Portal\AccountIndexDetailEditType;
+use App\Form\Type\Portal\AccountIndexDetailType;
+use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
@@ -12,6 +16,7 @@ use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TimeType;
 use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -554,14 +559,115 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/accounts")
+     * @Route("/portal/{portalId}/settings/accountindex")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      */
-    public function accounts(Portal $portal, Request $request)
+    public function accountIndex(Portal $portal, Request $request, LegacyEnvironment $environment, UserService $userService)
+    {
+        $userList = $userService->getListUsers($portal->getId());
+
+        $form = $this->createForm(AccountIndexType::class, $portal);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+                $data = $form->getData();
+        }
+        return [
+            'form' => $form->createView(),
+            'userList' => $userList,
+            'portal' => $portal,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountindex/detail/{userId}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexDetail(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+            $userList = $userService->getListUsers($portal->getId());
+
+            $form = $this->createForm(AccountIndexDetailType::class, $portal);
+            $form->handleRequest($request);
+            $user = $userService->getUser($request->get('userId'));
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $key = 0;
+                if ($form->get('next')->isClicked() or $form->get('previous')->isClicked()) {
+                    $counter = 0;
+                    foreach ($userList as $userItem) {
+                        if ($userItem->getItemID() == $user->getItemID()) {
+                            $key = $counter;
+                            break;
+                        }
+                        $counter = $counter + 1;
+                    }
+                    if ($form->get('next')->isClicked()) {
+                        if ($key < sizeof($userList)) {
+                            $user = $userList[$key + 1];
+                        }
+                    }
+                    if ($form->get('previous')->isClicked()) {
+                        if ($key > 0) {
+                            $user = $userList[$key - 1];
+                        }
+                    }
+                    return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                        'portal' => $portal,
+                        'portalId' => $portal->getId(),
+                        'userId' => $user->getItemID(),
+                    ]);
+                }
+
+
+                if ($form->get('back')->isClicked()) {
+                    return $this->redirectToRoute('app_portalsettings_accountindex', [
+                        'portal' => $portal,
+                        'portalId' => $portal->getId(),
+                    ]);
+                }
+            }
+
+            return [
+                'user' => $user,
+                'form' => $form->createView(),
+                'portal' => $portal,
+            ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountindex/detail/{userId}/edit")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexDetailEdit(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
 
+        $user = $userService->getUser($request->get('userId'));
+        $userEdit = new PortalUserEdit();
+        $userEdit->setFirstName($user->getFirstname());
+        $userEdit->setLastName($user->getLastName());
+        $userEdit->setEmail($user->getEmail());
+        $userEdit->setMayCreateContext($user->getIsAllowedToCreateContext());
+        $userEdit->setMayUseCaldav('standard');
+
+        $form = $this->createForm(AccountIndexDetailEditType::class, $userEdit);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $var = 0;
+        }
+
+        return [
+            'form' => $form->createView(),
+            'portal' => $portal,
+        ];
     }
 
     /**

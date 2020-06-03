@@ -371,8 +371,8 @@ class MenuBuilder
 
             // accounts
             $menu->addChild('Accounts', [
-                'label' => 'accounts',
-                'route' => 'app_portalsettings_accounts',
+                'label' => 'Accounts',
+                'route' => 'app_portalsettings_accountindex',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'users']
             ])

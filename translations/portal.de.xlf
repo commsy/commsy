@@ -163,6 +163,178 @@
                 <target>Raumanzeige</target>
             </trans-unit>
 
+            <!-- Portal Account Index -->
+            <trans-unit id="portal_accounts">
+                <source>Accounts</source>
+                <target>Kennungen</target>
+            </trans-unit>
+            <trans-unit id="execute">
+                <source>Execute</source>
+                <target>Ausführen</target>
+            </trans-unit>
+            <trans-unit id="action">
+                <source>Action</source>
+                <target>Aktion</target>
+            </trans-unit>
+            <trans-unit id="name_userID">
+                <source>Name (user id)</source>
+                <target>Name (Kennung)</target>
+            </trans-unit>
+            <trans-unit id="last_login">
+                <source>Last login</source>
+                <target>Zuletzt online</target>
+            </trans-unit>
+            <trans-unit id="mail">
+                <source>Mail</source>
+                <target>E-Mail</target>
+            </trans-unit>
+            <trans-unit id="no_action">
+                <source>No action</source>
+                <target>Keine Aktion</target>
+            </trans-unit>
+            <trans-unit id="delete_ids">
+                <source>Delete user id(s)</source>
+                <target>Kennung(en) löschen</target>
+            </trans-unit>
+            <trans-unit id="lock_ids">
+                <source>Lock user id(s)</source>
+                <target>Kennung(en) sperren</target>
+            </trans-unit>
+            <trans-unit id="activate_user">
+                <source>Activate user id(s)</source>
+                <target>Kennung(en) freischalten</target>
+            </trans-unit>
+            <trans-unit id="mail_change_login">
+                <source>Email change login</source>
+                <target>Kennung(en): E-Mail ändern bei nächstem Login</target>
+            </trans-unit>
+            <trans-unit id="status_user">
+                <source>Satus user</source>
+                <target>Status: BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="status_moderator">
+                <source>Satus moderator</source>
+                <target>Status: ModeratorIn</target>
+            </trans-unit>
+            <trans-unit id="make_contact">
+                <source>Make contact</source>
+                <target>Zur AnsprechpartnerIn machen</target>
+            </trans-unit>
+            <trans-unit id="remove_contact">
+                <source>Remove contact</source>
+                <target>Status AnsprechpartnerIn entfernen</target>
+            </trans-unit>
+            <trans-unit id="send_mail">
+                <source>Send mail</source>
+                <target>E-Mail schicken</target>
+            </trans-unit>
+            <trans-unit id="mail_id_password">
+                <source>Mail id password</source>
+                <target>E-Mail: Kennung u. Passwort</target>
+            </trans-unit>
+            <trans-unit id="mail_combine_ids">
+                <source>Mail combine ids</source>
+                <target>E-Mail: Kennungen zusammenführen</target>
+            </trans-unit>
+            <trans-unit id="hide_mail">
+                <source>Hide mail</source>
+                <target>E-Mail verbergen</target>
+            </trans-unit>
+            <trans-unit id="hide_mail_all_wrks">
+                <source>Hide mail all wrks</source>
+                <target>E-Mail in allen Räumen verbergen</target>
+            </trans-unit>
+            <trans-unit id="show_mail">
+                <source>Show mail</source>
+                <target>E-Mail anzeigen</target>
+            </trans-unit>
+            <trans-unit id="show_mail_all_wrks">
+                <source>Show mail all wrks</source>
+                <target>E-Mail in allen Räumen anzeigen</target>
+            </trans-unit>
+            <trans-unit id="account_next">
+                <source>Next</source>
+                <target>Nächste/r</target>
+            </trans-unit>
+            <trans-unit id="account_previous">
+                <source>Previous</source>
+                <target>Vorherige/r</target>
+            </trans-unit>
+            <trans-unit id="account_back">
+                <source>Back</source>
+                <target>Zurück</target>
+            </trans-unit>
+
+            <!-- user edit -->
+            <trans-unit id="firstName">
+                <source>First name</source>
+                <target>Vorname</target>
+            </trans-unit>
+            <trans-unit id="lastName">
+                <source>Last name</source>
+                <target>Nachname</target>
+            </trans-unit>
+            <trans-unit id="academicDegree">
+                <source>AcademicDegree</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="birthday">
+                <source>Birthday</source>
+                <target>Geburtstag</target>
+            </trans-unit>
+            <trans-unit id="street">
+                <source>Street</source>
+                <target>Straße</target>
+            </trans-unit>
+            <trans-unit id="zip">
+                <source>Zip</source>
+                <target>Postleitzahl</target>
+            </trans-unit>
+            <trans-unit id="city">
+                <source>City</source>
+                <target>Stadt</target>
+            </trans-unit>
+            <trans-unit id="workspace">
+                <source>Workspace</source>
+                <target>Raum</target>
+            </trans-unit>
+            <trans-unit id="telephone">
+                <source>Telephone</source>
+                <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="secondTelephone">
+                <source>Second Telephone</source>
+                <target>2. Telefonnummer</target>
+            </trans-unit>
+            <trans-unit id="email">
+                <source>E-mail</source>
+                <target>E-Mail</target>
+            </trans-unit>
+            <trans-unit id="description">
+                <source>Description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="user_is_allowed_to_create_context">
+                <source>User is allowed to create context</source>
+                <target>Standardeinstellung der Authentifizierungsquelle (Ja)</target>
+            </trans-unit>
+            <trans-unit id="may_create_context">
+                <source>May create context</source>
+                <target>Darf neue Räume anlegen</target>
+            </trans-unit>
+            <trans-unit id="may_use_caldav">
+                <source>May use caldav</source>
+                <target>Darf CalDAV nutzen</target>
+            </trans-unit>
+            <trans-unit id="user_is_allowed_to_use_caldav">
+                <source>User is allowed to use caldav</source>
+                <target>Standardeinstellung des Portals (Sperren)</target>
+            </trans-unit>
+            <trans-unit id="save">
+                <source>Save</source>
+                <target>Speichern</target>
+            </trans-unit>
+
             <!-- time -->
             <trans-unit id="time">
                 <source>Time</source>
@@ -226,7 +398,70 @@
                 <source>Inactive</source>
                 <target>Löschen inaktiver Kennungen</target>
             </trans-unit>
-
+            <trans-unit id="status">
+                <source>Status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="all">
+                <source>All</source>
+                <target>Alle</target>
+            </trans-unit>
+            <trans-unit id="members">
+                <source>Members</source>
+                <target>Mitglieder</target>
+            </trans-unit>
+            <trans-unit id="locked">
+                <source>Locked</source>
+                <target>gesperrt</target>
+            </trans-unit>
+            <trans-unit id="in_activation">
+                <source>In activation</source>
+                <target>In Beantragung</target>
+            </trans-unit>
+            <trans-unit id="user">
+                <source>User</source>
+                <target>BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="moderator">
+                <source>Moderator</source>
+                <target>ModeratorIn</target>
+            </trans-unit>
+            <trans-unit id="contact">
+                <source>Contact</source>
+                <target>AnsprechpartnerIn</target>
+            </trans-unit>
+            <trans-unit id="community_moderator">
+                <source>Community moderators</source>
+                <target>Gemeinschaftsräume: ModeratorInnen</target>
+            </trans-unit>
+            <trans-unit id="community_contacts">
+                <source>Community contacts</source>
+                <target>Gemeinschaftsräume: AnsprechpartnerInnen</target>
+            </trans-unit>
+            <trans-unit id="project_moderator">
+                <source>Project moderators</source>
+                <target>Projekträume: ModeratorInnen</target>
+            </trans-unit>
+            <trans-unit id="project_contacts">
+                <source>Project contacts</source>
+                <target>Projekträume: AnsprechpartnerInnen</target>
+            </trans-unit>
+            <trans-unit id="moderators_of_workspaces">
+                <source>Moderators of workspaces</source>
+                <target>ModeratorInnen von Räumen</target>
+            </trans-unit>
+            <trans-unit id="contacts_of_workspaces">
+                <source>Contacts of workspaces</source>
+                <target>AnsprechpartnerInnen von Räumen</target>
+            </trans-unit>
+            <trans-unit id="no_workspace_participation">
+                <source>No workspaces participation</source>
+                <target>Keine Raumteilnahme</target>
+            </trans-unit>
+            <trans-unit id="search">
+                <source>Search</source>
+                <target>Suchen</target>
+            </trans-unit>
 
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">
