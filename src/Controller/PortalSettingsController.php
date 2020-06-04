@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Portal;
 use App\Entity\PortalUserEdit;
 use App\Entity\Translation;
+use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailEditType;
 use App\Form\Type\Portal\AccountIndexDetailType;
 use App\Form\Type\Portal\AccountIndexType;
@@ -667,6 +668,29 @@ class PortalSettingsController extends AbstractController
         return [
             'form' => $form->createView(),
             'portal' => $portal,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/changePassword")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexDetailChangePassword(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $form_data = ['userName' => $user->getFullName(), 'userId' => $user->getUserID()];
+        $form = $this->createForm(AccountIndexDetailChangePasswordType::class, $form_data);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $var = 0;
+        }
+
+        return [
+            'form' => $form->createView(),
+            'user' => $user,
         ];
     }
 
