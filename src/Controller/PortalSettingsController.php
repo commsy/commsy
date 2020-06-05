@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Portal;
+use App\Entity\PortalUserAssignWorkspace;
+use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
 use App\Entity\Translation;
+use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
+use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
 use App\Form\Type\Portal\AccountIndexDetailEditType;
 use App\Form\Type\Portal\AccountIndexDetailType;
 use App\Form\Type\Portal\AccountIndexType;
@@ -668,6 +672,64 @@ class PortalSettingsController extends AbstractController
         return [
             'form' => $form->createView(),
             'portal' => $portal,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/changeStatus")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexDetailChangeStatus(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $userChangeStatus = new PortalUserChangeStatus();
+        $userChangeStatus->setName($user->getFullName());
+        $userChangeStatus->setUserID($user->getUserID());
+        $userChangeStatus->setLastLogin($user->getLastLogin());
+        $userChangeStatus->setCurrentStatus($user->getStatus());
+        $userChangeStatus->setNewStatus('user');
+        $userChangeStatus->setContact($user->isContact());
+        $userChangeStatus->setLoginIsDeactivated('2');
+
+        $form = $this->createForm(AccountIndexDetailChangeStatusType::class, $userChangeStatus);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $var = 0;
+        }
+
+        return [
+            'form' => $form->createView(),
+            'user' => $user,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/assignWorkspace")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexDetailAssignWorkspace(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $userAssignWorkspace = new PortalUserAssignWorkspace();
+        $userAssignWorkspace->setUserID($user->getUserID());
+        $userAssignWorkspace->setName($user->getFullName());
+        $userAssignWorkspace->setWorkspaceSelection('0');
+        $form = $this->createForm(AccountIndexDetailAssignWorkspaceType::class, $userAssignWorkspace);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $var = 0;
+        }
+
+        return [
+            'form' => $form->createView(),
+            'user' => $user,
         ];
     }
 

@@ -19,89 +19,89 @@
             <hr />
             <div style="border: 1px solid black; padding: 10px; width: 50%;">
                 <ul style="list-style: none;">
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> Bearbeiten</a></li>
-                    <li><a href="">> Seite drucken</a></li>
-                    <li><a href="">> Seite speichern</a></li>
-                    <li><a href="">> Als {{ user.firstname }} {{ user.lastname }} einloggen</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Edit'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Print page'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Save page'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
                 </ul>
             </div>
             <hr />
             <h3>Einstellungen (nur für {{ user.firstname }} sichtbar)</h3>
             <div style="border: 1px solid black; padding: 10px; width: 50%;">
                 <ul style="list-style: none;">
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'userId': user.itemId}) }}">> Passwort ändern</a></li>
-                    <li><a href="">> Status ändern</a></li>
-                    <li><a href="">> Raum zuordnen</a></li>
-                    <li><a href="">> Teilnahme beenden</a></li>
-                    <li><a href="">> E-Mail verbergen</a></li>
-                    <li><a href="">> E-Mail in allen Räumen verbergen</a></li>
-                    <li><a href="">> E-Mail anzeigen</a></li>
-                    <li><a href="">> E-Mail in allen Räumen anzeigen</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change password'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangestatus', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change status'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailassignworkspace', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Assign workspace'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Terminate membership'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Hide mail'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Hide mail all wrks'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Show mail'|trans({},'portal') }}</a></li>
+                    <li><a href="">> {{'Show mail all wrks'|trans({},'portal') }}</a></li>
                 </ul>
             </div>
                 <table>
                     <tr>
-                        <td> Kennung: </td>
+                        <td> {{'User ID'|trans({},'portal') }}: </td>
                         <td>{{ user.email }}</td>
                     </tr>
                     <tr>
-                        <td> Status: </td>
+                        <td> {{'Status'|trans({},'portal') }}: </td>
                         <td>{{ user.getStatus() }}</td>
                     </tr>
                     <tr>
-                        <td>Sprache</td>
+                        <td>{{'Language'|trans({},'portal') }}</td>
                         <td>{{ user.getLanguage() }}</td>
                     </tr>
                     <tr>
-                        <td>Einloggen als ... aktiv</td>
+                        <td>{{'Login as... active'|trans({},'portal') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Zustimmung der Nutzungsbedingungen am:</td>
+                        <td>{{'Agreed to the terms of service on the...'|trans({},'portal') }}:</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>E-Mail verbergen</td>
+                        <td>{{'Hide mail'|trans({},'portal') }}</td>
                         <td>{{ user.isEmailVisible() }}</td>
                     </tr>
                     <tr>
-                        <td>Darf neue Räume anlegen</td>
+                        <td>{{'User is allowed to create context'|trans({},'portal') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Standardeinstellung der Authentifizierungsquelle</td>
+                        <td>{{'Default settings for authentification sources'|trans({},'portal') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Darf CalDAV nutzen:</td>
+                        <td>{{'May use caldav'|trans({},'portal') }}:</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Standardeinstellung des Portals</td>
+                        <td>{{'Default settings of the portal'|trans({},'portal') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Raumteilnahmen</td>
+                        <td>{{'Workspace membership'|trans({},'portal') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Gemeinschaftsräume</td>
+                        <td>{{'Community workspaces'|trans({},'portal') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Projekträume</td>
+                        <td>{{'Project workspaces'|trans({},'portal') }}</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>Archivierte Räume</td>
+                        <td>{{'Archived workspaces'|trans({},'portal') }}</td>
                         <td>(keine)</td>
                     </tr>
                     <tr>
-                        <td>Gemeinschaftsräume</td>
+                        <td>{{'Community workspaces'|trans({},'portal') }}</td>
                         <td>(keine)</td>
                     </tr>
                     <tr>
-                        <td>Projekträume</td>
+                        <td>{{'Project workspaces'|trans({},'portal') }}</td>
                         <td>(keine)</td>
                     </tr>
                 </table>

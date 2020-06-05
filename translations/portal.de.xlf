@@ -316,6 +316,10 @@
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
                 <source>User is allowed to create context</source>
+                <target>Nutzer darf Räume anlegen</target>
+            </trans-unit>
+            <trans-unit id="standard_authentication">
+                <source>Default settings for authentification sources</source>
                 <target>Standardeinstellung der Authentifizierungsquelle (Ja)</target>
             </trans-unit>
             <trans-unit id="may_create_context">
@@ -326,13 +330,123 @@
                 <source>May use caldav</source>
                 <target>Darf CalDAV nutzen</target>
             </trans-unit>
-            <trans-unit id="user_is_allowed_to_use_caldav">
-                <source>User is allowed to use caldav</source>
+            <trans-unit id="default_settings_portal">
+                <source>Default settings of the portal</source>
                 <target>Standardeinstellung des Portals (Sperren)</target>
+            </trans-unit>
+            <trans-unit id="change_mail_everywhere">
+                <source>Change mail everywhere</source>
+                <target>in allen Räumen ändern</target>
             </trans-unit>
             <trans-unit id="save">
                 <source>Save</source>
                 <target>Speichern</target>
+            </trans-unit>
+            <trans-unit id="cancel">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+
+            <!-- account index change status -->
+            <trans-unit id="is_login_deactivated">
+                <source>Is login deactivated?</source>
+                <target>Einloggen als ... deaktiviert</target>
+            </trans-unit>
+            <trans-unit id="new_state">
+                <source>New state</source>
+                <target>Neuer Status</target>
+            </trans-unit>
+            <trans-unit id="current_state">
+                <source>Current state</source>
+                <target>Aktueller Status</target>
+            </trans-unit>
+            <trans-unit id="user_id">
+                <source>User ID</source>
+                <target>Kennung</target>
+            </trans-unit>
+            <trans-unit id="login_as_for_x_days_activated">
+                <source>Login as for x days activated</source>
+                <target>Einloggen als ... für x Tage aktivieren</target>
+            </trans-unit>
+
+            <!-- user detail (account index) -->
+            <trans-unit id="edit">
+                <source>Edit</source>
+                <target>Bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="print_page">
+                <source>Print page</source>
+                <target>Seite drucken</target>
+            </trans-unit>
+            <trans-unit id="save_page">
+                <source>Save page</source>
+                <target>Seite speichern</target>
+            </trans-unit>
+            <trans-unit id="login_">
+                <source>Login...</source>
+                <target>Als</target>
+            </trans-unit>
+            <trans-unit id="_as">
+                <source>...As</source>
+                <target>einloggen</target>
+            </trans-unit>
+            <trans-unit id="change_password">
+                <source>Change password</source>
+                <target>Passwort ändern</target>
+            </trans-unit>
+            <trans-unit id="change_status">
+                <source>Change status</source>
+                <target>Status ändern</target>
+            </trans-unit>
+            <trans-unit id="assign_workspace">
+                <source>Assign workspace</source>
+                <target>Raum zuordnen</target>
+            </trans-unit>
+            <trans-unit id="terminate_membership">
+                <source>Terminate membership</source>
+                <target>Teilnahme beenden</target>
+            </trans-unit>
+            <trans-unit id="language">
+                <source>Language</source>
+                <target>Sprache</target>
+            </trans-unit>
+            <trans-unit id="login_as_active">
+                <source>Login as... active</source>
+                <target>Einloggen als ... aktiv</target>
+            </trans-unit>
+            <trans-unit id="agreed_to_the_tos">
+                <source>Agreed to the terms of service on the...</source>
+                <target>Zustimmung der Nutzungsvereinbarung am</target>
+            </trans-unit>
+            <trans-unit id="workspace_membership">
+                <source>Workspace membership</source>
+                <target>Raumteilnahme</target>
+            </trans-unit>
+            <trans-unit id="community_workspaces">
+                <source>Community workspaces</source>
+                <target>Gemeinschaftsräume</target>
+            </trans-unit>
+            <trans-unit id="project_workspaces">
+                <source>Project workspaces</source>
+                <target>Projekträume</target>
+            </trans-unit>
+            <trans-unit id="archived_workspaces">
+                <source>Archived workspaces</source>
+                <target>ARchivierte Räume</target>
+            </trans-unit>
+
+            <!-- assign workspace -->
+            <trans-unit id="searchForWorkspace">
+                <source>Search for workspace</source>
+                <target>Suche nach Raum</target>
+            </trans-unit>
+            <trans-unit id="workspaceSelection">
+                <source>Select workspace</source>
+                <target>Raumauswahl</target>
+            </trans-unit>
+            <trans-unit id="descriptionOfParticipation">
+                <source>Description of participation</source>
+                <target>Teilnahmebeschreibung</target>
             </trans-unit>
 
             <!-- time -->
