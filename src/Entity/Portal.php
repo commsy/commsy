@@ -122,7 +122,7 @@ class Portal
     private $authSources;
 
     /**
-     * @var
+     * @var string
      */
     private $logoFilename;
 
