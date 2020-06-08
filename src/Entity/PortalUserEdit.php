@@ -58,6 +58,12 @@ class PortalUserEdit
 
     private $mayUseCaldav;
 
+    /** @var bool */
+    private $changeMailEverywhere;
+
+    /** @var bool */
+    private $overrideExistingPicture;
+
     /**
      * @return string
      */
@@ -424,5 +430,53 @@ class PortalUserEdit
     public function setMayUseCaldav($mayUseCaldav): void
     {
         $this->mayUseCaldav = $mayUseCaldav;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChangeMailEverywhere(): bool
+    {
+        return $this->changeMailEverywhere;
+    }
+
+    /**
+     * @param bool $changeMailEverywhere
+     */
+    public function setChangeMailEverywhere(bool $changeMailEverywhere): void
+    {
+        $this->changeMailEverywhere = $changeMailEverywhere;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOverrideExistingPicture(): bool
+    {
+        return $this->overrideExistingPicture ?? 0;
+    }
+
+    /**
+     * @param bool $overrideExistingPicture
+     */
+    public function setOverrideExistingPicture(bool $overrideExistingPicture): void
+    {
+        $this->overrideExistingPicture = $overrideExistingPicture;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserIsAllowedToUseCaldav()
+    {
+        return $this->userIsAllowedToUseCaldav ?? 0;
+    }
+
+    /**
+     * @param mixed $userIsAllowedToUseCaldav
+     */
+    public function setUserIsAllowedToUseCaldav($userIsAllowedToUseCaldav): void
+    {
+        $this->userIsAllowedToUseCaldav = $userIsAllowedToUseCaldav;
     }
 }

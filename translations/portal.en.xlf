@@ -408,6 +408,10 @@
                 <source>User is allowed to create context</source>
                 <target>The user is allowed to create context</target>
             </trans-unit>
+            <trans-unit id="standard_authentication">
+                <source>Default settings for authentification sources</source>
+                <target>Default settings for authentication sources</target>
+            </trans-unit>
             <trans-unit id="may_create_context">
                 <source>May create context</source>
                 <target>The user may create context</target>
@@ -416,13 +420,145 @@
                 <source>May use caldav</source>
                 <target>The user may use CalDAV</target>
             </trans-unit>
-            <trans-unit id="user_is_allowed_to_use_caldav">
-                <source>User is allowed to use caldav</source>
-                <target>The user is allowed to use CalDAV</target>
+            <trans-unit id="default_settings_portal">
+                <source>Default settings of the portal</source>
+                <target>Default settings of the portal</target>
+            </trans-unit>
+            <trans-unit id="change_mail_everywhere">
+                <source>Change mail everywhere</source>
+                <target>Change mail everywhere</target>
             </trans-unit>
             <trans-unit id="save">
                 <source>Save</source>
                 <target>Save</target>
+            </trans-unit>
+            <trans-unit id="cancel">
+                <source>Cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+
+            <!-- account index change status -->
+            <trans-unit id="is_login_deactivated">
+                <source>Is login deactivated?</source>
+                <target>Einloggen als ... deaktiviert</target>
+            </trans-unit>
+            <trans-unit id="new_state">
+                <source>New state</source>
+                <target>Neuer Status</target>
+            </trans-unit>
+            <trans-unit id="current_state">
+                <source>Current state</source>
+                <target>Aktueller Status</target>
+            </trans-unit>
+            <trans-unit id="user_id">
+                <source>User ID</source>
+                <target>Kennung</target>
+            </trans-unit>
+            <trans-unit id="login_as_for_x_days_activated">
+                <source>Login as for x days activated</source>
+                <target>Einloggen als ... für x Tage aktivieren</target>
+            </trans-unit>
+
+            <!-- account index change status -->
+            <trans-unit id="is_login_deactivated">
+                <source>Is login deactivated?</source>
+                <target>Login als ... deactivated</target>
+            </trans-unit>
+            <trans-unit id="new_state">
+                <source>New state</source>
+                <target>New state</target>
+            </trans-unit>
+            <trans-unit id="current_state">
+                <source>Current state</source>
+                <target>Current state</target>
+            </trans-unit>
+            <trans-unit id="user_id">
+                <source>User ID</source>
+                <target>User ID</target>
+            </trans-unit>
+            <trans-unit id="login_as_for_x_days_activated">
+                <source>Login as for x days activated</source>
+                <target>Login as... deactivated for x days</target>
+            </trans-unit>
+
+            <!-- user detail (account index) -->
+            <trans-unit id="edit">
+                <source>Edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="print_page">
+                <source>Print page</source>
+                <target>Print page</target>
+            </trans-unit>
+            <trans-unit id="save_page">
+                <source>Save page</source>
+                <target>Save page</target>
+            </trans-unit>
+            <trans-unit id="login_">
+                <source>Login...</source>
+                <target>Login as</target>
+            </trans-unit>
+            <trans-unit id="_as">
+                <source>...As</source>
+                <target> </target>
+            </trans-unit>
+            <trans-unit id="change_password">
+                <source>Change password</source>
+                <target>Change password</target>
+            </trans-unit>
+            <trans-unit id="change_status">
+                <source>Change status</source>
+                <target>Change status</target>
+            </trans-unit>
+            <trans-unit id="assign_workspace">
+                <source>Assign workspace</source>
+                <target>Assign workspace</target>
+            </trans-unit>
+            <trans-unit id="terminate_membership">
+                <source>Terminate membership</source>
+                <target>Terminate membership</target>
+            </trans-unit>
+            <trans-unit id="language">
+                <source>Language</source>
+                <target>Language</target>
+            </trans-unit>
+            <trans-unit id="login_as_active">
+                <source>Login as... active</source>
+                <target>Login as... activated</target>
+            </trans-unit>
+            <trans-unit id="agreed_to_the_tos">
+                <source>Agreed to the terms of service on the...</source>
+                <target>Agreed to the terms of service on the...</target>
+            </trans-unit>
+            <trans-unit id="workspace_membership">
+                <source>Workspace membership</source>
+                <target>Workspace membership</target>
+            </trans-unit>
+            <trans-unit id="community_workspaces">
+                <source>Community workspaces</source>
+                <target>Community workspaces</target>
+            </trans-unit>
+            <trans-unit id="project_workspaces">
+                <source>Project workspaces</source>
+                <target>Project workspaces</target>
+            </trans-unit>
+            <trans-unit id="archived_workspaces">
+                <source>Archived workspaces</source>
+                <target>Archived workspaces</target>
+            </trans-unit>
+
+            <!-- assign workspace -->
+            <trans-unit id="searchForWorkspace">
+                <source>Search for workspace</source>
+                <target>Search for workspace</target>
+            </trans-unit>
+            <trans-unit id="workspaceSelection">
+                <source>Select workspace</source>
+                <target>Select workspace</target>
+            </trans-unit>
+            <trans-unit id="descriptionOfParticipation">
+                <source>Description of participation</source>
+                <target>Description of participation</target>
             </trans-unit>
 
             <!-- inactive -->

@@ -16,6 +16,7 @@
             {{ form_row(form.accountIndexSearchString) }}
             {{ form_row(form.userIndexFilterChoice) }}
             {{ form_row(form.search) }}
+
             {% if not userList is empty %}
                 <table>
                     <thead>
@@ -34,6 +35,16 @@
                 {% endfor %}
                 </table>
             {% endif %}
+
+            <ul>
+                {% for singleAccountIndexUser in form.accountIndexUsers %}
+                    <li>
+                        {{ form_widget(singleAccountIndexUser) }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+
             {{ form_row(form.indexViewAction) }}
             {{ form_row(form.execute) }}
             {{ form_end(form) }}

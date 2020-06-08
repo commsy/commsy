@@ -5,6 +5,7 @@ use App\Entity\Portal;
 use App\Entity\Portalportal;
 use App\Entity\PortalUserEdit;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
@@ -73,6 +74,10 @@ class AccountIndexDetailEditType extends AbstractType
                 'label' => 'E-mail',
                 'translation_domain' => 'portal',
             ])
+            ->add('emailChangeAll', Types\CheckboxType::class, [
+                'label' => 'Change mail everywhere',
+                'translation_domain' => 'portal',
+            ])
             ->add('icq', Types\TextType::class, [
                 'label' => 'ICQ',
                 'translation_domain' => 'portal',
@@ -102,6 +107,14 @@ class AccountIndexDetailEditType extends AbstractType
                 'label' => 'Description',
                 'translation_domain' => 'portal',
                 'required' => false,
+            ])
+            ->add('picture', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('overrideExistingPicture', Types\CheckboxType::class, [
+                'label' => 'Change mail everywhere',
+                'translation_domain' => 'portal',
             ])
             ->add('mayCreateContext', Types\ChoiceType::class, [
                 'label' => 'May create context',

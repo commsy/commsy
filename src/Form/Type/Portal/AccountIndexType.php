@@ -1,6 +1,8 @@
 <?php
 namespace App\Form\Type\Portal;
 
+use App\Entity\AccountIndex;
+use App\Entity\AccountIndexUser;
 use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,6 +51,9 @@ class AccountIndexType extends AbstractType
                 'label' => 'Search',
                 'translation_domain' => 'portal',
             ])
+            ->add('accountIndexUsers', Types\CollectionType::class, [
+                'entry_type' => AccountIndexUser::class,
+            ])
             ->add('indexViewAction', Types\ChoiceType::class, [
                 'choices'  => [
                     'No action' => 0,
@@ -87,7 +92,7 @@ class AccountIndexType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Portal::class,
+            'data_class' => AccountIndex::class,
             'translation_domain' => 'portal',
         ]);
     }
