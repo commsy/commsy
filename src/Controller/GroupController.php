@@ -668,6 +668,7 @@ class GroupController extends BaseController
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'group')")
      */
     public function createAction(
         GroupService $groupService,

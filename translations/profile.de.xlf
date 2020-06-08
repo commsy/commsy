@@ -80,7 +80,7 @@
             </trans-unit>
             <trans-unit id="isEmailVisible">
                 <source>isEmailVisible</source>
-                <target>E-Mail-Adresse verbergen</target>
+                <target>E-Mail-Adresse sichtbar?</target>
             </trans-unit>
             <trans-unit id="phone">
                 <source>phone</source>
@@ -94,8 +94,8 @@
                 <source>street</source>
                 <target>Straße</target>
             </trans-unit>
-            <trans-unit id="zipcode">
-                <source>zipcode</source>
+            <trans-unit id="zipCode">
+                <source>zipCode</source>
                 <target>Postleitzahl</target>
             </trans-unit>
             <trans-unit id="city">
@@ -308,6 +308,44 @@
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>
                 <target>Hier können Sie auswählen, in welchen Zeitabständen Sie den Newsletter empfangen möchten. Der Newsletter wird an Ihre Account-E-Mail-Adresse <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> geschickt.</target>
+            </trans-unit>
+
+            <!-- privacy settings -->
+            <trans-unit id="privacy">
+                <source>Privacy</source>
+                <target>Datenschutz</target>
+            </trans-unit>
+            <trans-unit id="self_assessment">
+                <source>Self assessment</source>
+                <target>Selbstauskunft</target>
+            </trans-unit>
+            <trans-unit id="master_data">
+                <source>Master data</source>
+                <target>Stammdaten</target>
+            </trans-unit>
+            <trans-unit id="person-related_data">
+                <source>Person-related data</source>
+                <target>Personenbezogene Daten</target>
+            </trans-unit>
+            <trans-unit id="privacy_text">
+                <source>privacy text</source>
+                <target>Hier können Sie sich Ihre von uns gespeicherten personenbezogenen Daten als PDF Datei anzeigen lassen und sie herunterladen.</target>
+            </trans-unit>
+            <trans-unit id="display_pdf">
+                <source>Display PDF</source>
+                <target>PDF anzeigen</target>
+            </trans-unit>
+            <trans-unit id="contact_service_help">
+                <source>Contact service help</source>
+                <target>Kontakt</target>
+            </trans-unit>
+            <trans-unit id="contact_text_service_link">
+                <source>contact text with service link</source>
+                <target>Falls Sie Fragen zu dieser Selbstauskunft haben, <![CDATA[<a href=']]>%s<![CDATA['>]]>kontaktieren Sie uns<![CDATA[</a>]]> bitte.</target>
+            </trans-unit>
+            <trans-unit id="contact_text_service_email">
+                <source>contact text with service email</source>
+                <target>Falls Sie Fragen zu dieser Selbstauskunft haben, schreiben Sie bitte an <![CDATA[<a href=']]>%s<![CDATA['>]]>%s<![CDATA[</a>]]>.</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->

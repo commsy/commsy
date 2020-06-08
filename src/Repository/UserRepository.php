@@ -60,4 +60,19 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param int $contextId
+     * @return mixed
+     */
+    public function findActiveUsers(int $contextId)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.contextId = :contextId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleterId IS NULL')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -115,6 +115,37 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
+            if(!$currentUser->isRoot()) {
+                $menu->addChild('privacy', [
+                    'label' => 'Privacy',
+                    'route' => 'app_profile_privacy',
+                    'routeParameters' => [
+                        'roomId' => $currentStack->attributes->get('roomId'),
+                        'itemId' => $currentUser->getItemId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                    ->setExtra('translation_domain', 'profile');
+            }
+
+            if ($currentUser->getRelatedPortalUserItem()->isAllowedToUseCalDAV()) {
+                $menu->addChild('calendars', [
+                    'route' => 'app_profile_calendars',
+                    'routeParameters' => [
+                        'roomId' => $currentStack->attributes->get('roomId'),
+                        'itemId' => $currentUser->getItemId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-calendar uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                    ->setExtra('translation_domain', 'menu');
+            }
+
             $menu->addChild('additional', [
                 'route' => 'app_profile_additional',
                 'routeParameters' => [

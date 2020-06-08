@@ -1465,6 +1465,7 @@ class cs_item {
               }
           }
       } else {
+        // NOTE: for guest users, $privateRoomUserItem will be null
       	$privateRoomUserItem = $user_item->getRelatedPrivateRoomUserItem();
 
       	// check for sub-types
@@ -1473,7 +1474,11 @@ class cs_item {
       		case CS_SECTION_TYPE:
       		case CS_STEP_TYPE:
       			$linkedItem = $this->getLinkedItem();
-      			return $linkedItem->mayEdit($user_item) || $linkedItem->mayEdit($privateRoomUserItem);
+      			$mayEdit = $linkedItem->mayEdit($user_item);
+      			if (!$mayEdit && $privateRoomUserItem) {
+                    $mayEdit = $linkedItem->mayEdit($privateRoomUserItem);
+                }
+      			return $mayEdit;
       			break;
       	}
       }
@@ -1564,6 +1569,10 @@ class cs_item {
    }
 
 
+    /** is the given user allowed to see this item?
+     *
+     * @param \cs_user_item $userItem
+     */
     public function maySee($userItem)
     {
         // Deny access, if the item's context is deleted
@@ -1576,6 +1585,7 @@ class cs_item {
         }
 
         if ($userItem->isUser() && $userItem->getContextID() == $this->_environment->getCurrentContextID()) {
+           // deactivated entries can be only viewed by a moderator or by their creator
            if ($this->isNotActivated()) {
               if ($userItem->isModerator()) {
                  return true;
@@ -1589,10 +1599,13 @@ class cs_item {
            }
         }
 
-        if ($userItem->isGuest()) {
-           if (!$this->isNotActivated()) {
-              return true;
-           }
+        $currentContextItem = $this->_environment->getCurrentContextItem();
+        if ($currentContextItem->isOpenForGuests()) {
+            if ($userItem->isGuest() || $userItem->isRequested()) {
+                if (!$this->isNotActivated()) {
+                    return true;
+                }
+            }
         }
 
         return false;

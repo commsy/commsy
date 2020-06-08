@@ -34,7 +34,7 @@
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
-                                <div id="cs-additional-actions" class="uk-dropdown uk-padding-remove" style="width: 220px;">
+                                <div class="cs-additional-actions uk-dropdown uk-padding-remove" style="width: 220px;">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {# new entry #}
@@ -150,7 +150,7 @@
                                         {# participant #}
                                         {% if not date.isExternal %}
                                             <li>
-                                                {% if is_granted('ITEM_SEE', item.itemId) %}
+                                                {% if is_granted('ITEM_PARTICIPATE', item.itemId) %}
                                                     <a href="{{ path('app_date_participate', {'roomId': roomId, 'itemId': date.itemId}) }}">
                                                         {% if not isParticipating %}
                                                             <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add participant'|trans({}, 'date')|capitalize }}

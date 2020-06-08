@@ -761,6 +761,7 @@ class UserController extends BaseController
      * @param TranslatorInterface $translator
      * @param int $roomId
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'user')")
      */
     public function createAction(
         UserService $userService,

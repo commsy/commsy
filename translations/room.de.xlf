@@ -126,10 +126,6 @@
                 <source>Group Rooms</source>
                 <target>Gruppenräume</target>
             </trans-unit>
-            <trans-unit id="grouproom">
-                <source>grouproom</source>
-                <target>Gruppenraum</target>
-            </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>
                 <target>Raum betreten</target>
@@ -250,8 +246,8 @@
                 <source>community</source>
                 <target>Gemeinschaftsraum</target>
             </trans-unit>
-            <trans-unit id="Group room">
-                <source>Group room</source>
+            <trans-unit id="grouproom">
+                <source>grouproom</source>
                 <target>Gruppenraum</target>
             </trans-unit>
             <trans-unit id="language">

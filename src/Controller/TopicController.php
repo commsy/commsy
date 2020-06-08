@@ -415,6 +415,7 @@ class TopicController extends BaseController
      * @param TopicService $topicService
      * @param int $roomId
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function createAction(
         TopicService $topicService,

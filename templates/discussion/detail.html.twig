@@ -34,7 +34,7 @@
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
-                                <div id="cs-additional-actions" class="uk-dropdown uk-padding-remove">
+                                <div class="cs-additional-actions uk-dropdown uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {# new entry #}
@@ -121,7 +121,7 @@
 
                                         {# new article #}
                                         <li>
-                                            {% if not user.isReadOnlyUser %}
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
                                                 </a>
@@ -247,12 +247,12 @@
                                                     <i class="uk-icon-caret-down"></i>
                                                 </button>
 
-                                                <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
+                                                <div class="cs-additional-actions uk-dropdown  uk-padding-remove">
                                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                                         {# answer #}
                                                         <li>
-                                                            {% if not user.isReadOnlyUser %}
+                                                            {% if is_granted('ITEM_EDIT', article.itemId) %}
                                                                 <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
                                                                     <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
                                                                 </a>

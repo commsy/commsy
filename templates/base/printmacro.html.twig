@@ -920,9 +920,13 @@
                 </div>
                 <span>
                     {% if member.email %}
-                        <a>{{ member.email }}</a>
+                        {% if member.isEmailVisible %}
+                            <a>{{ member.email }}</a>
+                        {% else %}
+                            {{ 'emailAddressIsHidden'|trans({}, 'user') }}
+                        {% endif %}
                     {% else %}
-                        {'no email'|trans({}) }
+                        {{ 'no email'|trans({}) }}
                     {% endif %}
                 </span><br/>
                 <div class="uk-flex uk-flex-space-between">
@@ -1027,4 +1031,12 @@
             {% endif %}
         {% endfor %}
     </div>
+{% endmacro %}
+
+{% macro encore_absolute_link_tags(entry_point) %}
+	{# use this macro instead of `encore_entry_link_tags` to generate link tags with absolute urls #}
+
+    {% for file in encore_entry_css_files(entry_point) %}
+        <link rel="stylesheet" href="{{ absolute_url(asset(file)) }}" />
+    {% endfor %}
 {% endmacro %}

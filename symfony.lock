@@ -166,6 +166,9 @@
     "eluceo/ical": {
         "version": "0.15.1"
     },
+    "exsyst/swagger": {
+        "version": "v0.4.1"
+    },
     "ezyang/htmlpurifier": {
         "version": "v4.12.0"
     },
@@ -194,6 +197,18 @@
         },
         "files": [
             "config/packages/fos_elastica.yaml"
+        ]
+    },
+    "friendsofsymfony/rest-bundle": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.2",
+            "ref": "cad41ef93d6150067ae2bb3c7fd729492dff6f0a"
+        },
+        "files": [
+            "config/packages/fos_rest.yaml"
         ]
     },
     "guzzlehttp/guzzle": {
@@ -268,8 +283,23 @@
             "config/packages/knp_snappy.yaml"
         ]
     },
+    "lcobucci/jwt": {
+        "version": "3.3.2"
+    },
     "lexik/form-filter-bundle": {
         "version": "v5.0.10"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+        },
+        "files": [
+            "config/packages/lexik_jwt_authentication.yaml"
+        ]
     },
     "liip/imagine-bundle": {
         "version": "1.8",
@@ -302,8 +332,24 @@
     "myclabs/deep-copy": {
         "version": "1.9.5"
     },
+    "namshi/jose": {
+        "version": "7.2.3"
+    },
     "nategood/httpful": {
         "version": "0.2.20"
+    },
+    "nelmio/api-doc-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
+        },
+        "files": [
+            "config/packages/nelmio_api_doc.yaml",
+            "config/routes/nelmio_api_doc.yaml"
+        ]
     },
     "nette/utils": {
         "version": "v3.1.1"
@@ -648,6 +694,9 @@
     "symfony/polyfill-php73": {
         "version": "v1.14.0"
     },
+    "symfony/polyfill-php80": {
+        "version": "v1.17.0"
+    },
     "symfony/process": {
         "version": "v4.4.5"
     },
@@ -656,6 +705,9 @@
     },
     "symfony/property-access": {
         "version": "v4.4.5"
+    },
+    "symfony/property-info": {
+        "version": "v4.4.9"
     },
     "symfony/routing": {
         "version": "4.2",
@@ -835,6 +887,12 @@
     "whiteoctober/breadcrumbs-bundle": {
         "version": "1.4.5"
     },
+    "willdurand/jsonp-callback-validator": {
+        "version": "v1.1.0"
+    },
+    "willdurand/negotiation": {
+        "version": "v2.3.1"
+    },
     "zendframework/zend-code": {
         "version": "3.4.1"
     },
@@ -858,5 +916,8 @@
     },
     "zendframework/zend-validator": {
         "version": "2.13.0"
+    },
+    "zircote/swagger-php": {
+        "version": "2.0.16"
     }
 }

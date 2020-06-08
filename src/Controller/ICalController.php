@@ -346,7 +346,9 @@ class ICalController extends AbstractController
         }
 
         if (!$export) {
-            $datesManager->setNotOlderThanMonthLimit(3);
+            // for external clients subscribing to our calendar content,
+            // show at least the last year of events (plus some more)
+            $datesManager->setNotOlderThanMonthLimit(13);
         }
 
         $datesManager->select();

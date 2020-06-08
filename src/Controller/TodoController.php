@@ -119,6 +119,7 @@ class TodoController extends BaseController
      * @param TodoService $todoService
      * @param int $roomId
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createAction(
         TodoService $todoService,
@@ -980,6 +981,7 @@ class TodoController extends BaseController
      * @param int $roomId
      * @param int $itemId
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function participateAction(
         TodoService $todoService,

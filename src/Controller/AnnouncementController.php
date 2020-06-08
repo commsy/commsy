@@ -499,6 +499,7 @@ class AnnouncementController extends BaseController
      * @param int $roomId
      * @return RedirectResponse
      * @throws Exception
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function createAction(
         AnnouncementService $announcementService,

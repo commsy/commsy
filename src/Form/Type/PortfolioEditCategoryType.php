@@ -37,6 +37,11 @@ class PortfolioEditCategoryType extends AbstractType
             ->add('categories', TreeChoiceType::class, [
                 'placeholder' => false,
                 'choices' => $choices,
+                'choice_label' => function ($choice, $key, $value) {
+                    // remove the trailing category ID from $key (which was used in buildChoices() to uniquify the key)
+                    $label = implode('_', explode('_', $key, -1));
+                    return $label;
+                },
                 'translation_domain' => 'portfolio',
                 'required' => false,
                 'expanded' => true,
@@ -125,10 +130,12 @@ class PortfolioEditCategoryType extends AbstractType
         $choices = [];
 
         foreach ($categories as $category) {
-            $choices[$category['title']] = $category['item_id'];
+            // NOTE: in order to form unique array keys, we append the category ID to the category title;
+            // the category ID will be stripped again from the title via the `choice_label` field option
+            $choices[$category['title'] . '_' . $category['item_id']] = $category['item_id'];
 
             if (!empty($category['children'])) {
-                $choices[$category['title'] . 'sub'] = $this->buildChoices($category['children']);
+                $choices[$category['title'] . '_sub' . '_' . $category['item_id']] = $this->buildChoices($category['children']);
             }
         }
 

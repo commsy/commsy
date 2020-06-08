@@ -52,7 +52,7 @@
             </trans-unit>
             <trans-unit id="form-edit-files">
                 <source>edit files</source>
-                <target>edit files</target>
+                <target>Edit files</target>
             </trans-unit>
             <trans-unit id="form-edit-description">
                 <source>edit description</source>

@@ -6,6 +6,8 @@ use App\Services\LegacyEnvironment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Portal
@@ -23,6 +25,9 @@ class Portal
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue
+     *
+     * @Groups({"api"})
+     * @SWG\Property(description="The unique identifier.")
      */
     private $id;
 
@@ -38,6 +43,8 @@ class Portal
      * @var \DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     *
+     * @Groups({"api"})
      */
     private $creationDate;
 
@@ -45,6 +52,8 @@ class Portal
      * @var \DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
+     *
+     * @Groups({"api"})
      */
     private $modificationDate;
 
@@ -59,6 +68,9 @@ class Portal
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     *
+     * @Groups({"api"})
+     * @SWG\Property(type="string", maxLength=255)
      */
     private $title;
 

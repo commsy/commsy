@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * AuthSource
@@ -20,6 +22,9 @@ class AuthSource
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Groups({"api"})
+     * @SWG\Property(description="The unique identifier.")
      */
     private $id;
 
@@ -27,12 +32,18 @@ class AuthSource
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=false)
+     *
+     * @Groups({"api"})
+     * @SWG\Property(type="string", maxLength=255)
      */
     private $title;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
      * @ORM\JoinColumn(name="portal_id", referencedColumnName="id")
+     *
+     * @Groups({"api"})
+     * @SWG\Property(description="The portal.")
      */
     private $portal;
 

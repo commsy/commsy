@@ -593,6 +593,7 @@ class DiscussionController extends BaseController
      * @param DiscussionService $discussionService
      * @param int $roomId
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function createAction(
         DiscussionService $discussionService,

@@ -1061,6 +1061,7 @@ class RoomController extends AbstractController
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
+     * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
     public function createAction(
         Request $request,

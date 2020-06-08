@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * Room
@@ -19,6 +22,9 @@ class Room
      * @ORM\Column(name="item_id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @Groups({"api_read"})
+     * @SWG\Property(description="The unique identifier.")
      */
     private $itemId = '0';
 
@@ -57,6 +63,8 @@ class Room
      * @var \DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     *
+     * @Groups({"api_read"})
      */
     private $creationDate = '0000-00-00 00:00:00';
 
@@ -64,6 +72,8 @@ class Room
      * @var \DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
+     *
+     * @Groups({"api_read"})
      */
     private $modificationDate = '0000-00-00 00:00:00';
 
@@ -78,6 +88,9 @@ class Room
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     *
+     * @Groups({"api_read"})
+     * @SWG\Property(type="string", maxLength=255)
      */
     private $title;
 
@@ -106,6 +119,9 @@ class Room
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     *
+     * @Groups({"api_read"})
+     * @SWG\Property(description="Either project or community")
      */
     private $type = 'project';
 
@@ -148,6 +164,8 @@ class Room
      * @var string
      *
      * @ORM\Column(name="room_description", type="string", length=10000, nullable=true)
+     *
+     * @Groups({"api_read"})
      */
     private $roomDescription;
 

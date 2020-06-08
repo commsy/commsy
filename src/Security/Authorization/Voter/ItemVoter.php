@@ -16,6 +16,7 @@ class ItemVoter extends Voter
     const SEE = 'ITEM_SEE';
     const EDIT = 'ITEM_EDIT';
     const ANNOTATE = 'ITEM_ANNOTATE';
+    const PARTICIPATE = 'ITEM_PARTICIPATE';
     const MODERATE = 'ITEM_MODERATE';
     const ENTER = 'ITEM_ENTER';
 
@@ -42,6 +43,7 @@ class ItemVoter extends Voter
             self::SEE,
             self::EDIT,
             self::ANNOTATE,
+            self::PARTICIPATE,
             self::MODERATE,
             self::ENTER,
         ));
@@ -81,6 +83,9 @@ class ItemVoter extends Voter
                 case self::ANNOTATE:
                     return $this->canAnnotate($item, $currentUser);
 
+                case self::PARTICIPATE:
+                    return $this->canParticipate($item, $currentUser);
+
                 case self::MODERATE:
                     return $this->canModerate($item, $currentUser);
 
@@ -89,7 +94,7 @@ class ItemVoter extends Voter
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
-                if ($currentUser->isOnlyReadUser()) {
+                if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
                     return false;
                 }
 
@@ -164,7 +169,19 @@ class ItemVoter extends Voter
 
     private function canAnnotate($item, $currentUser)
     {
-        if ($currentUser->getStatus() == 2 || $currentUser->getStatus() == 3) {
+        $userStatus = $currentUser->getStatus();
+        if ($userStatus == 2 || $userStatus == 3) { // user & moderator
+            $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+            return !$currentRoom->isArchived();
+        }
+
+        return false;
+    }
+
+    private function canParticipate($item, $currentUser)
+    {
+        $userStatus = $currentUser->getStatus();
+        if ($userStatus == 2 || $userStatus == 3 || $userStatus == 4) { // user, moderator & read-only user
             $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
             return !$currentRoom->isArchived();
         }

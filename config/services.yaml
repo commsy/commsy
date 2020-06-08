@@ -772,6 +772,11 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.profile_privacy:
+        class: App\Form\Type\Profile\ProfilePrivacyType
+        tags:
+            - { name: form.type }
+
     commsy.form.type.profile_notifications:
         class: App\Form\Type\Profile\RoomProfileNotificationsType
         arguments: ['@commsy_legacy.environment']
@@ -931,6 +936,11 @@ services:
     App\Mail\MessageBuilder:
         arguments:
             $emailFrom: '%commsy.email.from%'
+
+    # Privacy
+    App\Privacy\PersonalDataCollector:
+        autowire: true
+        autoconfigure: true
 
     # Utils
     commsy.utils.mail_assistant:

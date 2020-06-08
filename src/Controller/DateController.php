@@ -837,6 +837,7 @@ class DateController extends BaseController
      * @param $roomId
      * @param $dateDescription
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'date')")
      */
     public function createAction(
         DateService $dateService,
@@ -1690,6 +1691,7 @@ class DateController extends BaseController
      * @param int $roomId
      * @param int $itemId
      * @return RedirectResponse
+     * @Security("is_granted('ITEM_PARTICIPATE', itemId) and is_granted('RUBRIC_SEE', 'date')")
      */
     public function participateAction(
         DateService $dateService,

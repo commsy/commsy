@@ -50,7 +50,7 @@ before_install:
   - mysql -e 'USE mysql; UPDATE user SET password=PASSWORD("root") WHERE user="root"; FLUSH PRIVILEGES;'
 
   # ChromeDriver
-  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip
+  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/81.0.4044.69/chromedriver_linux64.zip
   - unzip -o -q chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - chromedriver --url-base=/wd/hub &

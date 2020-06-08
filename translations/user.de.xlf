@@ -126,6 +126,10 @@
                 <source>emailHidden</source>
                 <target>verborgen</target>
             </trans-unit>
+            <trans-unit id="emailAddressIsHidden">
+                <source>emailAddressIsHidden</source>
+                <target>E-Mail Adresse verborgen</target>
+            </trans-unit>
             <trans-unit id="userEmailSend">
                 <source>send email</source>
                 <target>E-Mail senden</target>
@@ -265,6 +269,22 @@
             <trans-unit id="manage_users">
                 <source>Manage users</source>
                 <target>Personen verwalten</target>
+            </trans-unit>
+            <trans-unit id="user item ID">
+                <source>User item ID</source>
+                <target>BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="created">
+                <source>created</source>
+                <target>erstellt</target>
+            </trans-unit>
+            <trans-unit id="modified">
+                <source>modified</source>
+                <target>geändert</target>
+            </trans-unit>
+            <trans-unit id="last login">
+                <source>last login</source>
+                <target>angemeldet</target>
             </trans-unit>
         </body>
     </file>

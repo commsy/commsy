@@ -12,15 +12,41 @@ security:
             encode_as_base64: false
             iterations: 1
 
+        # Rest API JWT
+        Symfony\Component\Security\Core\User\User: plaintext
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         commsy_user_provider:
             id: App\Security\UserProvider
 
+        in_memory:
+            memory:
+                users:
+                    api: { password: '%env(API_SECRET)%' }
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        api_v2_login:
+            pattern: ^/api/v2/login
+            stateless: true
+            anonymous: lazy
+            json_login:
+                check_path: /api/v2/login_check
+                provider: in_memory
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api_v2:
+            pattern: ^/api/v2(?!/doc$)
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+                provider: in_memory
 
         main:
             anonymous: true
@@ -31,18 +57,14 @@ security:
                     - App\Security\LoginFormAuthenticator
                     - App\Security\LdapAuthenticator
                 entry_point: App\Security\LoginFormAuthenticator
-
-            # activate different ways to authenticate
-
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
+                provider: commsy_user_provider
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/api/v2/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v2/doc,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v2,       roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 

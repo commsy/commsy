@@ -38,10 +38,11 @@ Encore
         ]
     })
 
-    .copyFiles({
-        from: './assets/uikit2/img',
-        includeSubdirectories: false
-    })
+    .copyFiles([
+        { from: './assets/uikit2/img', includeSubdirectories: false },
+        { from: './node_modules/mathjax/es5', pattern: /tex-chtml\.js/, includeSubdirectories: false },
+        { from: './node_modules/mathjax/es5/output/chtml/fonts/woff-v2', to: 'mathjax/fonts/[path][name].[ext]', includeSubdirectories: false },
+    ])
 
     .addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /uikit\/dist\/js\/components$/))
     .addPlugin(new HardSourceWebpackPlugin())
