@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\AccountIndex;
+use App\Entity\AccountIndexUser;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
@@ -572,8 +574,24 @@ class PortalSettingsController extends AbstractController
     public function accountIndex(Portal $portal, Request $request, LegacyEnvironment $environment, UserService $userService)
     {
         $userList = $userService->getListUsers($portal->getId());
+        $accountIndex = new AccountIndex();
 
-        $form = $this->createForm(AccountIndexType::class, $portal);
+        $accountIndexUserList = [];
+
+        foreach($userList as $singleUser) {
+            $singleAccountIndexUser = new AccountIndexUser();
+            $singleAccountIndexUser->setName($singleUser->getFullName());
+            $singleAccountIndexUser->setChecked(false);
+            $singleAccountIndexUser->setItemId($singleUser->getItemID());
+            $singleAccountIndexUser->setMail($singleUser->getEmail());
+            $singleAccountIndexUser->setUserId($singleUser->getUserID());
+            array_push($accountIndexUserList, $singleAccountIndexUser);
+        }
+
+        //TODO https://symfony.com/doc/current/reference/forms/types/collection.html
+
+        $accountIndex->setAccountIndexUsers($accountIndexUserList);
+        $form = $this->createForm(AccountIndexType::class, $accountIndex);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
