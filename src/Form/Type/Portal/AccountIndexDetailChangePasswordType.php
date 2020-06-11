@@ -1,14 +1,13 @@
 <?php
 namespace App\Form\Type\Portal;
 
-use App\Entity\Portal;
-use App\Entity\Portalportal;
-use App\Entity\PortalUserEdit;
+use App\Validator\Constraints\UserPasswordConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class AccountIndexDetailChangePasswordType extends AbstractType
 {
@@ -26,23 +25,19 @@ class AccountIndexDetailChangePasswordType extends AbstractType
                 'translation_domain' => 'portal',
             ])
             ->add('userId', Types\TextType::class, [
-                'label' => 'ID',
+                'label' => 'User ID',
                 'translation_domain' => 'portal',
             ])
-            ->add('password', Types\TextType::class, [
-                'label' => 'Password',
-                'translation_domain' => 'portal',
-            ])
-            ->add('repeatPassword', Types\TextType::class, [
-                'label' => 'Repeat password',
-                'translation_domain' => 'portal',
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'The password fields must match',
+                'options' => ['attr' => ['class' => 'password-field']],
+                'required' => true,
+                'first_options'  => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat password'],
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'Save',
-                'translation_domain' => 'portal',
-            ])
-            ->add('cancel', Types\SubmitType::class, [
-                'label' => 'Cancel',
                 'translation_domain' => 'portal',
             ])
         ;

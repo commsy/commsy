@@ -691,6 +691,14 @@ class PortalSettingsController extends AbstractController
             $var = 0;
         }
 
+        if($form->get('cancel')->isClicked()){
+            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                'portal' => $portal,
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
+        }
+
         return [
             'form' => $form->createView(),
             'portal' => $portal,
@@ -720,6 +728,15 @@ class PortalSettingsController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $var = 0;
+        }
+
+        if($form->get('cancel')->isClicked()){
+            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                'portal' => $portal,
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+                'user' => $user,
+            ]);
         }
 
         return [
@@ -912,6 +929,14 @@ class PortalSettingsController extends AbstractController
             $var = 0;
         }
 
+        if($form->get('cancel')->isClicked()){
+            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                'portal' => $portal,
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
+        }
+
         return [
             'form' => $form->createView(),
             'user' => $user,
@@ -937,27 +962,24 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         $accountRepo = $entityManager->getRepository(Account::class);
-        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
 
         if($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
             $submittedPassword = $data['password'];
-            $submittedPasswordRepeat = $data['repeatPassword'];
-            if(strcmp($submittedPassword,$submittedPasswordRepeat) == 0){
 
-                $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
-                    $user->getContextID());
-                $userPwUpdate->setPasswordMd5(null);
-                $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPasswordRepeat));
+            $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
+                $user->getContextID());
+            $userPwUpdate->setPasswordMd5(null);
+            $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPassword));
 
-                $entityManager->persist($userPwUpdate);
-                $entityManager->flush();
-            }
+            $entityManager->persist($userPwUpdate);
+            $entityManager->flush();
         }
 
         return [
             'form' => $form->createView(),
             'user' => $user,
+            'portal' => $portal,
         ];
     }
 

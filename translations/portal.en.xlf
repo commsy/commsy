@@ -475,6 +475,20 @@
                 <target>Login as... deactivated for x days</target>
             </trans-unit>
 
+            <!-- account index change password -->
+            <trans-unit id="password">
+                <source>Password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="repeat_password">
+                <source>Repeat password</source>
+                <target>User ID</target>
+            </trans-unit>
+            <trans-unit id="passwords_must_match">
+                <source>The password fields must match</source>
+                <target>The password fields must match</target>
+            </trans-unit>
+
             <!-- user detail (account index) -->
             <trans-unit id="edit">
                 <source>Edit</source>
