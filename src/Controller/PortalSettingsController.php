@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexUser;
+use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
 use App\Entity\Translation;
+use App\Entity\User;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
@@ -33,6 +36,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
 class PortalSettingsController extends AbstractController
@@ -725,6 +729,169 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/terminatemembership")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailTerminateMembership(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemail")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailHideMail(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailNotVisible();
+        $user->save();
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemailallwrks")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailHideMailAllWrks(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailNotVisible();
+        $user->save();
+
+        $relatedUsers = $user->getRelatedUserList();
+        foreach($relatedUsers as $relatedUser){
+            $relatedUser->setEmailNotVisible();
+            $relatedUser->save();
+        }
+
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmail")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailShowMail(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailVisible();
+        $user->save();
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmailallwroks")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailShowMailAllWroks(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailVisible();
+        $user->save();
+
+        $relatedUsers = $user->getRelatedUserList();
+        foreach($relatedUsers as $relatedUser){
+            $relatedUser->setMailVisible();
+            $relatedUser->save();
+        }
+
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/takeOver")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailTakeOver(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $session = $this->get('session');
+        $user = $userService->getUser($request->get('userId'));
+        $user_item = $user;
+        $environment = $legacyEnvironment->getEnvironment();
+
+        $legacyEnvironment = $environment;
+
+        $sessionManager = $legacyEnvironment->getSessionManager();
+        $sessionItem = $legacyEnvironment->getSessionItem();
+
+        If(!is_null($sessionItem)){
+            $sessionManager->delete($sessionItem->getSessionID());
+            $legacyEnvironment->setSessionItem(null);
+
+            $cookie = $session->get('cookie');
+            $javascript = $session->get('javascript');
+            $https = $session->get('https');
+            $flash = $session->get('flash');
+            $session_id = $session->getSessionID();
+            $session = new \cs_session_item();
+            $session->createSessionID($user_item->getUserID());
+            $session->setValue('auth_source',$user_item->getAuthSource());
+            $session->setValue('root_session_id',$session_id);
+            if ( $cookie == '1' ) {
+                $session->setValue('cookie',2);
+            } elseif ( empty($cookie) ) {
+                // do nothing, so CommSy will try to save cookie
+            } else {
+                $session->setValue('cookie',0);
+            }
+            if ($javascript == '1') {
+                $session->setValue('javascript',1);
+            } elseif ($javascript == '-1') {
+                $session->setValue('javascript',-1);
+            }
+            if ($https == '1') {
+                $session->setValue('https',1);
+            } elseif ($https == '-1') {
+                $session->setValue('https',-1);
+            }
+            if ($flash == '1') {
+                $session->setValue('flash',1);
+            } elseif ($flash == '-1') {
+                $session->setValue('flash',-1);
+            }
+
+            // save portal id in session to be sure, that user didn't
+            // switch between portals
+            if ( $environment->inServer() ) {
+                $session->setValue('commsy_id',$environment->getServerID());
+            } else {
+                $session->setValue('commsy_id',$environment->getCurrentPortalID());
+            }
+            $environment->setSessionItem($session);
+            redirect($environment->getCurrentContextID(),'home','index',array());
+        }
+
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+
+    }
+
+    /**
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/assignWorkspace")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -757,15 +924,35 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      */
-    public function accountIndexDetailChangePassword(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    public function accountIndexDetailChangePassword(Portal $portal,
+                                                     Request $request,
+                                                     UserService $userService,
+                                                     LegacyEnvironment $legacyEnvironment,
+                                                     UserPasswordEncoderInterface $passwordEncoder,
+                                                     EntityManagerInterface $entityManager)
     {
         $user = $userService->getUser($request->get('userId'));
         $form_data = ['userName' => $user->getFullName(), 'userId' => $user->getUserID()];
         $form = $this->createForm(AccountIndexDetailChangePasswordType::class, $form_data);
         $form->handleRequest($request);
 
+        $accountRepo = $entityManager->getRepository(Account::class);
+        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
+
         if($form->isSubmitted() && $form->isValid()){
-            $var = 0;
+            $data = $form->getData();
+            $submittedPassword = $data['password'];
+            $submittedPasswordRepeat = $data['repeatPassword'];
+            if(strcmp($submittedPassword,$submittedPasswordRepeat) == 0){
+
+                $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
+                    $user->getContextID());
+                $userPwUpdate->setPasswordMd5(null);
+                $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPasswordRepeat));
+
+                $entityManager->persist($userPwUpdate);
+                $entityManager->flush();
+            }
         }
 
         return [

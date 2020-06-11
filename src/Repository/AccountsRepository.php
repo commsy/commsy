@@ -38,4 +38,24 @@ class AccountsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param string $usernameOrEmail
+     * @param int $context
+     * @return mixed
+     * @throws NonUniqueResultException
+     */
+    public function findOneByCredentialsShort(string $usernameOrEmail, int $context)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.username = :query OR a.email = :query')
+            ->andWhere('a.contextId = :contextId')
+            ->setParameters([
+                'query' => $usernameOrEmail,
+                'contextId' => $context,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

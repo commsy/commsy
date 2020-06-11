@@ -94,7 +94,7 @@ class cs_item {
    }
 
     public function getContextItem()
-   : \cs_context_item {
+    {
         if ($this->_context_item == null) {
             $contextId = $this->getContextID();
             if (!empty($contextId)) {

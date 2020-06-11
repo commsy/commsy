@@ -264,6 +264,22 @@
                 <source>Back</source>
                 <target>Zurück</target>
             </trans-unit>
+            <trans-unit id="german_language">
+                <source>German</source>
+                <target>Deutsch</target>
+            </trans-unit>
+            <trans-unit id="english_language">
+                <source>English</source>
+                <target>Englisch</target>
+            </trans-unit>
+            <trans-unit id="settings_only_visible">
+                <source>Settings only visible...</source>
+                <target>Einstellungen (nur für </target>
+            </trans-unit>
+            <trans-unit id="_for">
+                <source>...for</source>
+                <target> sichtbar)</target>
+            </trans-unit>
 
             <!-- user edit -->
             <trans-unit id="firstName">
@@ -432,7 +448,7 @@
             </trans-unit>
             <trans-unit id="archived_workspaces">
                 <source>Archived workspaces</source>
-                <target>ARchivierte Räume</target>
+                <target>Archivierte Räume</target>
             </trans-unit>
 
             <!-- assign workspace -->

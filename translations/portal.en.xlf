@@ -436,6 +436,22 @@
                 <source>Cancel</source>
                 <target>Cancel</target>
             </trans-unit>
+            <trans-unit id="german_language">
+                <source>German</source>
+                <target>German</target>
+            </trans-unit>
+            <trans-unit id="english_language">
+                <source>English</source>
+                <target>English</target>
+            </trans-unit>
+            <trans-unit id="settings_only_visible">
+                <source>Settings only visible...</source>
+                <target>Settings (only visible for </target>
+            </trans-unit>
+            <trans-unit id="_for">
+                <source>...for</source>
+                <target> )</target>
+            </trans-unit>
 
             <!-- account index change status -->
             <trans-unit id="is_login_deactivated">

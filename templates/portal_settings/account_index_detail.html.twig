@@ -22,21 +22,21 @@
                     <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Edit'|trans({},'portal') }}</a></li>
                     <li><a href="">> {{'Print page'|trans({},'portal') }}</a></li>
                     <li><a href="">> {{'Save page'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
                 </ul>
             </div>
             <hr />
-            <h3>Einstellungen (nur für {{ user.firstname }} sichtbar)</h3>
+            <h3>{{'Settings only visible...'|trans({},'portal') }}{{ user.firstname }}{{'...for'|trans({},'portal') }}</h3>
             <div style="border: 1px solid black; padding: 10px; width: 50%;">
                 <ul style="list-style: none;">
                     <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change password'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailchangestatus', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change status'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailassignworkspace', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Assign workspace'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Terminate membership'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Hide mail'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Hide mail all wrks'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Show mail'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Show mail all wrks'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailterminatemembership', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Terminate membership'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailhidemail', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Hide mail'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailhidemailallwrks', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Hide mail all wrks'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailshowmail', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Show mail'|trans({},'portal') }}</a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailshowmailallwroks', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Show mail all wrks'|trans({},'portal') }}</a></li>
                 </ul>
             </div>
                 <table>
@@ -46,11 +46,21 @@
                     </tr>
                     <tr>
                         <td> {{'Status'|trans({},'portal') }}: </td>
-                        <td>{{ user.getStatus() }}</td>
+                        {% if(user.getStatus() == 2) %}
+                            <td>{{'Contact'|trans({},'portal') }}</td>
+                        {% elseif(user.getStatus() == 3) %}
+                            <td>{{'Moderator'|trans({},'portal') }}</td>
+                        {% else %}
+                            <td>{{'User'|trans({},'portal') }}</td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <td>{{'Language'|trans({},'portal') }}</td>
-                        <td>{{ user.getLanguage() }}</td>
+                        {% if(user.getLanguage() == 'de') %}
+                            <td>{{'German'|trans({},'portal') }}</td>
+                        {% else %}
+                            <td>{{'English'|trans({},'portal') }}</td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <td>{{'Login as... active'|trans({},'portal') }}</td>
@@ -62,7 +72,11 @@
                     </tr>
                     <tr>
                         <td>{{'Hide mail'|trans({},'portal') }}</td>
-                        <td>{{ user.isEmailVisible() }}</td>
+                        {% if user.isEmailVisible() %}
+                            <td>{{'No'|trans({},'portal') }}</td>
+                        {% else %}
+                            <td>{{'Yes'|trans({},'portal') }}</td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <td>{{'User is allowed to create context'|trans({},'portal') }}</td>
