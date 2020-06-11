@@ -61,9 +61,17 @@
                         if (responseData['userImage']) {
                             $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
                         } else if (responseData['base64']) {
-                            let $form = $($this.element).closest('form');
+                            let form = $($this.element).closest('form');
+                            if (!!form) {
+                                // NOTE: form is undefined when using the file dialog (instead of drag+drop) for upload
+                                // FIXME: dynamically get the form name in a less-hacky way
+                                let fileInputIdElements = $this.element.attr('id').split('_');
+                                fileInputIdElements.splice(-1,1);
+                                let formID = fileInputIdElements.join('_');
+                                form = $('form[name=' + formID + ']');
+                            }
 
-                            let prototypeNode = $form.find('div[data-prototype]');
+                            let prototypeNode = form.find('div[data-prototype]');
                             let prototype = prototypeNode.data('prototype');
 
                             let index = prototypeNode.find(':input[type="checkbox"]').length;
@@ -77,7 +85,7 @@
                                 prototypeInputNode.val(responseData['base64'][key]['content']);
 
                                 let labelNode = $('<label class="uk-form-label"></label>')
-                                    .attr('for', $form.attr('name') + '_base64' + index + '_checked')
+                                    .attr('for', form.attr('name') + '_base64_' + index + '_checked')
                                     .html(responseData['base64'][key]['filename']);
 
                                 index++;
