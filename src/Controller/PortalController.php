@@ -484,6 +484,12 @@ class PortalController extends Controller
 
         $importForm->handleRequest($request);
         if ($importForm->isSubmitted() && $importForm->isValid()) {
+            if ($importForm->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('app_portal_csvimport', [
+                    'roomId' => $roomId,
+                ]);
+            }
+
             $data = $importForm->getData();
             /** @var Base64CsvFile[] $base64CsvFiles */
             $base64CsvFiles = $data['base64'];
