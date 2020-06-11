@@ -456,29 +456,7 @@
             <!-- account index change status -->
             <trans-unit id="is_login_deactivated">
                 <source>Is login deactivated?</source>
-                <target>Einloggen als ... deaktiviert</target>
-            </trans-unit>
-            <trans-unit id="new_state">
-                <source>New state</source>
-                <target>Neuer Status</target>
-            </trans-unit>
-            <trans-unit id="current_state">
-                <source>Current state</source>
-                <target>Aktueller Status</target>
-            </trans-unit>
-            <trans-unit id="user_id">
-                <source>User ID</source>
-                <target>Kennung</target>
-            </trans-unit>
-            <trans-unit id="login_as_for_x_days_activated">
-                <source>Login as for x days activated</source>
-                <target>Einloggen als ... für x Tage aktivieren</target>
-            </trans-unit>
-
-            <!-- account index change status -->
-            <trans-unit id="is_login_deactivated">
-                <source>Is login deactivated?</source>
-                <target>Login als ... deactivated</target>
+                <target>Login as ... deactivated</target>
             </trans-unit>
             <trans-unit id="new_state">
                 <source>New state</source>
