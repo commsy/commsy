@@ -419,10 +419,37 @@ class UploadController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/upload/attachments")
+     * @Route("/room/{roomId}/upload/mailattachments/")
      */
-    public function mailAttachments()
+    public function mailAttachments($roomId, Request $request)
     {
+        $files = $request->files->all();
 
+        $response = new JsonResponse();
+        $responseData = [];
+
+        /** @var UploadedFile $file */
+        foreach ($files['files'] as $file) {
+            $tempUploadDir = $this->getParameter('kernel.project_dir') . '/files/temp/';
+            $fileId = md5(uniqid());
+            $fileName = $fileId . '.' . $file->guessExtension();
+            $filePath = $tempUploadDir . $fileName;
+            $fileDisplayName = $file->getClientOriginalName();
+
+            $file->move($tempUploadDir, $fileName);
+
+            $fileInfo = [
+                'fileId' => $fileId,
+                'filePath' => $filePath,
+                'filename' => htmlentities($fileDisplayName),
+            ];
+            $responseData[$fileId] = $fileInfo;
+        }
+
+        $response->setData([
+            'attachmentInfo' => $responseData,
+        ]);
+
+        return $response;
     }
 }

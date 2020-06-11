@@ -647,7 +647,7 @@ class ItemController extends Controller
 
         $form = $this->createForm(SendType::class, $formData, [
             'item' => $item,
-            'attachmentUploadUrl' => $this->generateUrl('app_upload_mailattachments', [
+            'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
                 'roomId' => $roomId,
             ]),
         ]);

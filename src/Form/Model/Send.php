@@ -29,7 +29,9 @@ class Send
 
     private $additionalRecipients;
 
-    private $attachments;
+    private $upload;
+
+    private $files;
 
     /**
      * @return mixed
@@ -210,18 +212,32 @@ class Send
     /**
      * @return mixed
      */
-    public function getAttachments()
+    public function getUpload()
     {
-        return $this->attachments;
+        return $this->upload;
     }
 
     /**
-     * @param mixed $attachments
-     * @return Send
+     * @param mixed $upload
      */
-    public function setAttachments($attachments)
+    public function setUpload($upload): void
     {
-        $this->attachments = $attachments;
-        return $this;
+        $this->upload = $upload;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param mixed $files
+     */
+    public function setFiles($files): void
+    {
+        $this->files = $files;
     }
 }

@@ -7,6 +7,8 @@ class File
 
     private $filename;
 
+    private $filePath;
+
     private $creationDate;
 
     private $checked;
@@ -33,6 +35,18 @@ class File
     public function getFilename()
     {
         return $this->filename;
+    }
+
+    public function setFilePath($filePath)
+    {
+        $this->filePath = $filePath;
+
+        return $this;
+    }
+
+    public function getFilePath()
+    {
+        return $this->filePath;
     }
 
     public function setCreationDate(\DateTime $creationDate)

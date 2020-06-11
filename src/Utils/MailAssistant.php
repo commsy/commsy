@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\FormInterface;
@@ -193,6 +194,30 @@ class MailAssistant
             ->setBody($formDataMessage, 'text/html')
             ->setFrom([$this->from => $portalItem->getTitle()])
             ->setReplyTo($replyTo);
+
+        // form option: files
+        $formDataFiles = (get_class($formData) == Send::class ? (is_null($formData->getFiles())
+            ? false : $formData->getFiles()) : $formData['files']);
+
+        if ($formDataFiles) {
+            /** @var File $file */
+            foreach ($formDataFiles as $file) {
+                $filePath = $file->getFilePath();
+                $attachFile = $file->getChecked();
+                if (!$attachFile || empty($filePath)) {
+                    continue;
+                }
+
+                $attachment = \Swift_Attachment::fromPath($filePath);
+
+                $fileName = $file->getFilename();
+                if (!empty($fileName)) {
+                    $attachment->setFilename($fileName);
+                }
+
+                $message->attach($attachment);
+            }
+        }
 
         // form option: copy_to_sender
         $toCC = [];

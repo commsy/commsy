@@ -218,13 +218,21 @@ class SendType extends AbstractType
                     new SendRecipientsConstraint(),
                 ),
             ])
-            ->add('attachments', FileType::class, [
+            ->add('upload', FileType::class, [
                 'attr' => [
-                    'data-uk-csupload' => '{"path": "' . $options['attachmentUploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
+                    'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
                 ],
                 'required' => false,
                 'multiple' => true,
+                'label' => 'Attachments',
                 'translation_domain' => 'mail',
+            ])
+            ->add('files', CollectionType::class, [
+                'allow_add' => true,
+                'entry_type' => CheckedFileType::class,
+                'entry_options' => [
+                ],
+                'label' => false
             ])
             ->add('save', SubmitType::class, [
                 'attr' => [
@@ -252,9 +260,9 @@ class SendType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['item', 'attachmentUploadUrl'])
+            ->setRequired(['item', 'uploadUrl'])
             ->setAllowedTypes('item', 'cs_item')
-            ->setAllowedTypes('attachmentUploadUrl', 'string')
+            ->setAllowedTypes('uploadUrl', 'string')
             ->setDefaults([
                 'users' => [],
                 'item' => null,
