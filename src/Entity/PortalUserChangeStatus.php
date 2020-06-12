@@ -154,4 +154,6 @@ class PortalUserChangeStatus
     {
         $this->loginAsActiveForDays = $loginAsActiveForDays;
     }
+
+
 }

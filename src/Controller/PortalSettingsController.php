@@ -5,13 +5,11 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexUser;
-use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
 use App\Entity\Translation;
-use App\Entity\User;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
@@ -718,7 +716,16 @@ class PortalSettingsController extends AbstractController
         $userChangeStatus->setName($user->getFullName());
         $userChangeStatus->setUserID($user->getUserID());
         $userChangeStatus->setLastLogin($user->getLastLogin());
-        $userChangeStatus->setCurrentStatus($user->getStatus());
+
+        $userStatus = $user->getStatus();
+        $currentStatus = 'Moderator';
+        if($userStatus == 0){
+            $currentStatus = 'User';
+        }elseif($userStatus == 0){
+            $currentStatus = 'Contact';
+        }
+
+        $userChangeStatus->setCurrentStatus($currentStatus);
         $userChangeStatus->setNewStatus('user');
         $userChangeStatus->setContact($user->isContact());
         $userChangeStatus->setLoginIsDeactivated('2');
@@ -727,21 +734,41 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $var = 0;
-        }
+            $user = $userService->getUser($request->get('userId'));
 
-        if($form->get('cancel')->isClicked()){
-            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-                'portal' => $portal,
-                'portalId' => $portal->getId(),
-                'userId' => $user->getItemID(),
-                'user' => $user,
-            ]);
+            /** @var PortalUserChangeStatus $data */
+            $data = $form->getData();
+            $newStatus = $data->getNewStatus();
+            if(strcmp($newStatus, 'user') == 0){
+                $user->makeUser();
+            }elseif(strcmp($newStatus, 'moderator') == 0){
+                $user->makeModerator();
+            }elseif(strcmp($newStatus, 'closed') == 0) {
+                $user->reject();
+            }
+
+            if($data->isContact()){
+                $user->makeContactPerson();
+            }
+
+            $deactivateTakeOver = $data->getLoginIsDeactivated();
+            if($deactivateTakeOver == '2'){
+                $user->deactivateLoginAsAnotherUser();
+            }
+
+            if(!empty($data->getLoginAsActiveForDays())){
+                $user->setDaysForLoginAs();
+            }
+
+            $user->save();
         }
 
         return [
             'form' => $form->createView(),
             'user' => $user,
+            'portal' => $portal,
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
         ];
     }
 
@@ -753,6 +780,9 @@ class PortalSettingsController extends AbstractController
     public function accountIndexDetailTerminateMembership(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
         $user = $userService->getUser($request->get('userId'));
+        $user->reject();
+        $user->save();
+
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
             'portalId' => $request->get('portalId'),
             'userId' => $request->get('userId'),

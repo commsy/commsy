@@ -272,6 +272,10 @@
                 <source>Moderator</source>
                 <target>Moderator</target>
             </trans-unit>
+            <trans-unit id="close">
+                <source>Close</source>
+                <target>Locked</target>
+            </trans-unit>
             <trans-unit id="contact">
                 <source>Contact</source>
                 <target>Contact</target>
