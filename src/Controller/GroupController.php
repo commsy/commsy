@@ -7,6 +7,7 @@ use App\Action\Download\DownloadAction;
 use App\Http\JsonDataResponse;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\MailAssistant;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -1113,7 +1114,7 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/sendMultiple")
      * @Template()
      */
-    public function sendMultipleAction($roomId, Request $request)
+    public function sendMultipleAction($roomId, Request $request, MailAssistant $mailAssistant)
     {
 
         $room = $this->getRoom($roomId);
@@ -1168,7 +1169,11 @@ class GroupController extends BaseController
             'groups' => $groupIds,
         ];
 
-        $form = $this->createForm(GroupSendType::class, $formData, []);
+        $form = $this->createForm(GroupSendType::class, $formData, [
+            'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
+                'roomId' => $roomId,
+            ]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1222,11 +1227,17 @@ class GroupController extends BaseController
                     }
                 }
 
+                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
                 $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
                     ->setReplyTo($replyTo);
+
+                $formDataFiles = $formData['files'];
+                if ($formDataFiles) {
+                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
+                }
 
                 $recipientCount = 0;
 
@@ -1305,7 +1316,7 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/{itemId}/send")
      * @Template()
      */
-    public function sendAction($roomId, $itemId, Request $request)
+    public function sendAction($roomId, $itemId, Request $request, MailAssistant $mailAssistant)
     {
         // get item
         $itemService = $this->get('commsy_legacy.item_service');
@@ -1333,7 +1344,11 @@ class GroupController extends BaseController
 
         $userService = $this->get('commsy_legacy.user_service');
 
-        $form = $this->createForm(GroupSendType::class, $formData, []);
+        $form = $this->createForm(GroupSendType::class, $formData, [
+            'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
+                'roomId' => $roomId,
+            ]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1390,11 +1405,17 @@ class GroupController extends BaseController
                     }
                 }
 
+                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
                 $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
                     ->setReplyTo($replyTo);
+
+                $formDataFiles = $formData['files'];
+                if ($formDataFiles) {
+                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
+                }
 
                 $recipientCount = 0;
 

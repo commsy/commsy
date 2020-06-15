@@ -7,7 +7,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Send
 {
-
     private $subject;
 
     private $message;
@@ -31,6 +30,10 @@ class Send
     private $copyToSender;
 
     private $additionalRecipients;
+
+    private $upload;
+
+    private $files;
 
     /**
      * @return mixed
@@ -224,4 +227,35 @@ class Send
         $this->additionalRecipients = $additionalRecipients;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getUpload()
+    {
+        return $this->upload;
+    }
+
+    /**
+     * @param mixed $upload
+     */
+    public function setUpload($upload): void
+    {
+        $this->upload = $upload;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param mixed $files
+     */
+    public function setFiles($files): void
+    {
+        $this->files = $files;
+    }
 }

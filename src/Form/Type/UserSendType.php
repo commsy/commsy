@@ -3,6 +3,7 @@ namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,9 +13,20 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserSendType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -25,6 +37,9 @@ class UserSendType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
+        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
+
         $builder
             ->add('subject', TextType::class, [
                 'constraints' => [
@@ -57,6 +72,22 @@ class UserSendType extends AbstractType
                 'choice_translation_domain' => 'form',
                 'required' => true,
             ])
+            ->add('upload', FileType::class, [
+                'attr' => [
+                    'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
+                ],
+                'required' => false,
+                'multiple' => true,
+                'label' => 'Attachments',
+                'translation_domain' => 'mail',
+            ])
+            ->add('files', CollectionType::class, [
+                'allow_add' => true,
+                'entry_type' => CheckedFileType::class,
+                'entry_options' => [
+                ],
+                'label' => false,
+            ])
             ->add('users', CollectionType::class, [
                 'entry_type' => HiddenType::class,
                 'label' => false,
@@ -87,6 +118,10 @@ class UserSendType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $resolver
+            ->setRequired(['uploadUrl'])
+            ->setAllowedTypes('uploadUrl', 'string')
+        ;
     }
 
     /**

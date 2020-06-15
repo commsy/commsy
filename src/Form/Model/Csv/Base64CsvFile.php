@@ -6,14 +6,14 @@
  * Time: 23:32
  */
 
-namespace App\Form\Model;
+namespace App\Form\Model\Csv;
 
 use App\Form\Model\Csv\CsvUserDataset;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Base64File
+class Base64CsvFile
 {
     /**
      * @var bool
@@ -37,7 +37,7 @@ class Base64File
     }
 
 
-    public function setChecked($checked): Base64File
+    public function setChecked($checked): Base64CsvFile
     {
         $this->checked = $checked;
 
@@ -54,7 +54,7 @@ class Base64File
         return "file123";
     }
 
-//    public function setBase64Content(array $base64Content): Base64File
+//    public function setBase64Content(array $base64Content): Base64CsvFile
 //    {
 //        $this->base64Content = $base64Content;
 //
@@ -66,7 +66,7 @@ class Base64File
 //        return $this->base64Content;
 //    }
 
-    public function setBase64Content(Collection $csvUserDatasets): Base64File
+    public function setBase64Content(Collection $csvUserDatasets): Base64CsvFile
     {
         $this->csvUserDatasets = $csvUserDatasets;
 
