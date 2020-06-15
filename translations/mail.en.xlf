@@ -46,6 +46,10 @@
                 <source>Send to selected room members</source>
                 <target>Send to selected workspace members</target>
             </trans-unit>
+            <trans-unit id="mailAdditionalRecipient">
+                <source>Additional recipient</source>
+                <target>Additional recipient</target>
+            </trans-unit>
             <trans-unit id="mailAdditionalRecipients">
                 <source>Additional recipients</source>
                 <target>Additional recipients</target>
