@@ -161,6 +161,20 @@ form[name="upload"] {
     }
 }
 
+form[name="send"], form[name="user_send"], form[name="group_send"], form[name="room_profile_contact"], form[name="csv_import"] {
+    div[data-prototype] .uk-form-controls {
+        float:left;
+        clear: both;
+    }
+
+    .uk-form-controls + .uk-form-label {
+        width: auto;
+        margin-top: 0;
+        padding: 3px 0px 0px 7px;
+        font-weight:normal;
+    }
+}
+
 #material_title {
     height:40px;
     font-size:28px;

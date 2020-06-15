@@ -40,17 +40,18 @@ class CsvImportType extends AbstractType
                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
                     'accept' => 'text/csv',
                 ],
-                'required' => false,
+                'required' => true,
                 'multiple' => true,
-                'label' => false,
+                'label' => 'Files'
             ])
             ->add('base64', CollectionType::class, [
                 'allow_add' => true,
                 'entry_type' => CheckedBase64CsvUserImportFileType::class,
-                'label' => 'Files'
+                'label' => false,
             ])
             ->add('auth_sources', EntityType::class, [
                 'class' => AuthSource::class,
+                'label' => 'authSource',
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     /** @var Portal $portal */
                     $portal = $options['portal'];
@@ -94,6 +95,7 @@ class CsvImportType extends AbstractType
                 ],
                 'label' => 'cancel',
                 'translation_domain' => 'form',
+                'validation_groups' => false,
             ])
         ;
     }
