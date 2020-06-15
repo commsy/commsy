@@ -188,6 +188,17 @@ class SendType extends AbstractType
                 }
 
             })
+            ->add('send_to_creator', ChoiceType::class, [
+                'label' => 'Send to creator',
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false,
+                ],
+                'expanded' => true,
+                'translation_domain' => 'mail',
+                'choice_translation_domain' => 'form',
+                'required' => true,
+            ])
             ->add('copy_to_sender', ChoiceType::class, [
                 'label' => 'Copy to sender',
                 'choices' => [

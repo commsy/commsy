@@ -18,6 +18,10 @@
                 <source>This email has been sent by ... from community room ...</source>
                 <target>This email has been sent by %sender_name% from community workspace "%room_name%".</target>
             </trans-unit>
+            <trans-unit id="mailSendToCreator">
+                <source>Send to creator</source>
+                <target>Send to creator</target>
+            </trans-unit>
             <trans-unit id="mailCopyToSender">
                 <source>Copy to sender</source>
                 <target>Copy to sender</target>
@@ -45,6 +49,10 @@
             <trans-unit id="mailSendSelectedAll">
                 <source>Send to selected room members</source>
                 <target>Send to selected workspace members</target>
+            </trans-unit>
+            <trans-unit id="mailAdditionalRecipient">
+                <source>Additional recipient</source>
+                <target>Additional recipient</target>
             </trans-unit>
             <trans-unit id="mailAdditionalRecipients">
                 <source>Additional recipients</source>

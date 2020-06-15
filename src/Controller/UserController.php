@@ -56,21 +56,12 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}")
      * @Template
      */
-    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request){
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
-        $userItem = $userService->getUser($itemId);
-        $userData = $userTransformer->transform($userItem);
-        $mailAssistant = $this->get('commsy.utils.mail_assistant');
-        $mail = $userItem->getEmail();
-
+    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request, MailAssistant $mailAssistant)
+    {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        $form = $this->createForm(AccountContactFormType::class, $userData, [
+        $form = $this->createForm(AccountContactFormType::class, null, [
             'item' => $item,
             'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
                 'roomId' => $roomId,
@@ -79,37 +70,24 @@ class UserController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('save')->isClicked()) {
-                $formData = $form->getData();
-                $mail = $userItem->getEmail();
-                $message = $formData['message'];
-
-                // send mail
-                $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
-                if(strlen($formData['recipient'])>0){
-                    $message->setCc($formData['recipient']);
-                }
-                $copyToSender = $formData['autoSaveStatus']; // workaround
-                if($copyToSender){
-                    $message->addCc($currentUser->getEmail(), $currentUser->getFullName());
-                }
-                $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
-                $this->addFlash('recipientCount', $recipientCount);
-                $this->get('mailer')->send($message);
-
-                $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
-                $this->addFlash('recipientCount', $recipientCount);
-
-            }else{
+            if ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute($originPath, [
                     'roomId' => $roomId,
-                    'itemId' => $userItem->getItemId(),
+                    'itemId' => $item->getItemId(),
                 ]);
             }
 
+            // send mail
+            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
+            $this->get('mailer')->send($message);
+
+            $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+            $this->addFlash('recipientCount', $recipientCount);
+
+            // redirect to success page
             return $this->redirectToRoute('app_user_sendsuccesscontact', [
                 'roomId' => $roomId,
-                'itemId' => $userItem->getItemId(),
+                'itemId' => $item->getItemId(),
                 'originPath' => $originPath,
             ]);
         }

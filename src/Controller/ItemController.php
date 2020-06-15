@@ -642,6 +642,7 @@ class ItemController extends Controller
         }
         $formData->setSendToAll(false);
         $formData->setMessage($mailAssistant->prepareMessage($item));
+        $formData->setSendToCreator(false);
         $formData->setCopyToSender(false);
 
 

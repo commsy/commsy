@@ -71,15 +71,12 @@ class AccountContactFormType extends AbstractType
                 'required' => true,
                 'config_name' => 'cs_mail_config',
             ])
-            ->add('recipient', TextType::class, [
-                'label' => 'Additional recipients',
+            ->add('additional_recipient', TextType::class, [
+                'label' => 'Additional recipient',
                 'translation_domain' => 'mail',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'Additional recipients',
-                ],
             ])
-            ->add('autoSaveStatus', ChoiceType::class, [
+            ->add('copy_to_sender', ChoiceType::class, [
                 'label' => 'Copy to sender',
                 'choices' => [
                     'Yes' => true,
@@ -89,6 +86,7 @@ class AccountContactFormType extends AbstractType
                 'translation_domain' => 'mail',
                 'choice_translation_domain' => 'form',
                 'required' => true,
+                'data' => false,
             ])
             ->add('upload', FileType::class, [
                 'attr' => [
@@ -138,7 +136,6 @@ class AccountContactFormType extends AbstractType
             ->setDefaults([
                 'users' => [],
                 'item' => null,
-                'copy_to_sender' => false,
                 'translation_domain' => 'profile',
             ])
         ;

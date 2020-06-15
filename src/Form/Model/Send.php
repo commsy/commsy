@@ -25,6 +25,8 @@ class Send
 
     private $sendToSelected;
 
+    private $sendToCreator;
+
     private $copyToSender;
 
     private $additionalRecipients;
@@ -175,6 +177,22 @@ class Send
     public function setSendToSelected($sendToSelected): void
     {
         $this->sendToSelected = $sendToSelected;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSendToCreator()
+    {
+        return $this->sendToCreator;
+    }
+
+    /**
+     * @param mixed $sendToCreator
+     */
+    public function setSendToCreator($sendToCreator): void
+    {
+        $this->sendToCreator = $sendToCreator;
     }
 
     /**
