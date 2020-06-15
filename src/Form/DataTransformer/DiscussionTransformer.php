@@ -25,7 +25,6 @@ class DiscussionTransformer implements DataTransformerInterface
 
         if ($discussionItem) {
             $discussionData['title'] = html_entity_decode($discussionItem->getTitle());
-            // FIXME: 'isDraft' never seems to be true for discussion items!
             $discussionData['draft'] = $discussionItem->isDraft();
             $discussionData['permission'] = $discussionItem->isPrivateEditing();
             

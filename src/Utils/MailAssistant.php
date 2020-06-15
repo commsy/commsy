@@ -142,7 +142,17 @@ class MailAssistant
         $isCopyToSender = $form->has('copy_to_sender') && $formData['copy_to_sender'];
 
         if ($isCopyToSender) {
-            $toCC[$currentUserEmail] = $currentUserName;
+            if ($currentUser->isEmailVisible()) {
+                $toCC[$currentUserEmail] = $currentUserName;
+            } else {
+                $toBCC[$currentUserEmail] = $currentUserName;
+            }
+        }
+
+        $hasAdditionalRecipient = $form->has('additional_recipient') && !empty($formData['additional_recipient']);
+
+        if ($hasAdditionalRecipient) {
+            $toCC[$formData['additional_recipient']] = $formData['additional_recipient'];
         }
 
         if ($forceBCCMail) {
@@ -165,7 +175,7 @@ class MailAssistant
         return $message;
     }
 
-    public function getSwiftMessage(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
+    public function getSwiftMessage(FormInterface $form, \cs_item $item, $forceBCCMail = false): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -197,11 +207,28 @@ class MailAssistant
         // form option: copy_to_sender
         $toCC = [];
 
+        $isSendToCreator = (get_class($formData) == Send::class ? (is_null($formData->getSendToCreator())
+            ? false : $formData->getSendToCreator()) : $form->has('send_to_creator') && $formData['send_to_creator']);
+
+        if ($isSendToCreator) {
+            /** @var \cs_user_item $itemCreator */
+            $itemCreator = $item->getCreatorItem();
+            if ($itemCreator->isEmailVisible()) {
+                $to[$itemCreator->getEmail()] = $itemCreator->getFullName();
+            } else {
+                $toBCC[$itemCreator->getEmail()] = $itemCreator->getFullName();
+            }
+        }
+
         $isCopyToSender = (get_class($formData) == Send::class ? (is_null($formData->getCopyToSender())
             ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
 
         if ($isCopyToSender) {
-            $toCC[$currentUserEmail] = $currentUserName;
+            if ($currentUser->isEmailVisible()) {
+                $toCC[$currentUserEmail] = $currentUserName;
+            } else {
+                $toBCC[$currentUserEmail] = $currentUserName;
+            }
         }
 
         // form option: additional_recipients
