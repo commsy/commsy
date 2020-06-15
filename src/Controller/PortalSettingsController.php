@@ -673,31 +673,113 @@ class PortalSettingsController extends AbstractController
     public function accountIndexDetailEdit(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
 
+        $environment = $legacyEnvironment->getEnvironment();
+
         $user = $userService->getUser($request->get('userId'));
         $userEdit = new PortalUserEdit();
         $userEdit->setFirstName($user->getFirstname());
         $userEdit->setLastName($user->getLastName());
+        $userEdit->setAcademicDegree($user->getTitle());
+
+        $userEdit->setBirthday($user->getBirthday());
+        $userEdit->setStreet($user->getStreet());
+        $userEdit->setZip($user->getZipcode());
+        $userEdit->setCity($user->getCity());
+        $userEdit->setWorkspace($user->getRoom());
+        $userEdit->setTelephone($user->getTelephone());
+        $userEdit->setSecondTelephone($user->getCellularphone());
         $userEdit->setEmail($user->getEmail());
+        $userEdit->setICQ($user->getIcq());
+        $userEdit->setMSN($user->getMsn());
+        $userEdit->setSkype($user->getSkype());
+        $userEdit->setYahoo($user->getYahoo());
+        $userEdit->setHomepage($user->getHomepage());
+        $userEdit->setDescription($user->getDescription());
         $userEdit->setMayCreateContext($user->getIsAllowedToCreateContext());
         $userEdit->setMayUseCaldav('standard');
+        $userEdit->setPicture($user->getPicture());
 
         $form = $this->createForm(AccountIndexDetailEditType::class, $userEdit);
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $var = 0;
-        }
+            /** @var PortalUserEdit $editAccountIndex */
+            $editAccountIndex = $form->getData();
+            $user->setFirstname($editAccountIndex->getFirstName());
+            $user->setLastname($editAccountIndex->getLastName());
+            $user->setTitle($editAccountIndex->getAcademicDegree());
+            $user->setBirthday($editAccountIndex->getBirthday());
+            $user->setStreet($editAccountIndex->getStreet());
+            $user->setZipcode($editAccountIndex->getZip());
+            $user->setCity($editAccountIndex->getCity());
+            $user->setRoom($editAccountIndex->getWorkspace());
+            $user->setTelephone($editAccountIndex->getTelephone());
+            $user->setCellularphone($editAccountIndex->getSecondTelephone());
+            $user->setEmail($editAccountIndex->getEmail());
 
-        if($form->get('cancel')->isClicked()){
-            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-                'portal' => $portal,
-                'portalId' => $portal->getId(),
-                'userId' => $user->getItemID(),
-            ]);
+            if($editAccountIndex->getEmailChangeAll()){
+                $relatedUsers = $user->getRelatedUserList();
+                foreach($relatedUsers as $relatedUser){
+                    $relatedUser->setEmail($editAccountIndex->getEmail());
+                    $relatedUser->save();
+                }
+            }
+            $user->setICQ($editAccountIndex->getIcq());
+            $user->setMSN($editAccountIndex->getMsn());
+            $user->setSkype($editAccountIndex->getSkype());
+            $user->setYahoo($editAccountIndex->getYahoo());
+            $user->setHomepage($editAccountIndex->getHomepage());
+            $user->setDescription($editAccountIndex->getDescription());
+
+            if(!empty($editAccountIndex->getPicture())){
+                //TODO: Does this piece of code make sense, if we set a new picture anyway?
+                if($editAccountIndex->isOverrideExistingPicture()){
+                    $disc_manager = $environment->getDiscManager();
+                    if ( $disc_manager->existsFile($user->getPicture()) ) {
+                        $disc_manager->unlinkFile($user->getPicture());
+                    }
+                    $user->setPicture('');
+                    if ( isset($portal_user_item) ) {
+                        $portal_user_item->setPicture('');
+                    }
+                }
+
+                $filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
+                $disc_manager = $environment->getDiscManager();
+                $disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
+                $user_item->setPicture($filename);
+                if ( isset($portal_user_item) ) {
+                    if ( $disc_manager->copyImageFromRoomToRoom($filename,$portal_user_item->getContextID()) ) {
+                        $value_array = explode('_',$filename);
+                        $old_room_id = $value_array[0];
+                        $old_room_id = str_replace('cid','',$old_room_id);
+                        $value_array[0] = 'cid'.$portal_user_item->getContextID();
+                        $new_picture_name = implode('_',$value_array);
+                        $portal_user_item->setPicture($new_picture_name);
+                    }
+                }
+
+                $user->setPicture($editAccountIndex->getPicture());
+            }
+
+            if($editAccountIndex->getMayCreateContext() == 'standard'){
+                $user->setIsAllowedToCreateContext(true); //TODO how do we get the pre-set portal value?
+            } elseif($editAccountIndex->getMayCreateContext() == '1'){
+                $user->setIsAllowedToCreateContext(true);
+                $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext(true);
+            }else{
+                $user->setIsAllowedToCreateContext(false);
+                $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext(false);
+            }
+
+            //TODO: What is with caldav? $user does not posess a field for that
+
+            $user->save();
         }
 
         return [
+            'user' => $user,
             'form' => $form->createView(),
             'portal' => $portal,
         ];

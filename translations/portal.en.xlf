@@ -410,7 +410,7 @@
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
                 <source>User is allowed to create context</source>
-                <target>The user is allowed to create context</target>
+                <target>Default settings of the portal (yes)</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
@@ -423,6 +423,10 @@
             <trans-unit id="may_use_caldav">
                 <source>May use caldav</source>
                 <target>The user may use CalDAV</target>
+            </trans-unit>
+            <trans-unit id="is_allowed_to_use_caldav">
+                <source>User is allowed to use caldav</source>
+                <target>Default settings of the portal (lock)</target>
             </trans-unit>
             <trans-unit id="default_settings_portal">
                 <source>Default settings of the portal</source>
@@ -455,6 +459,14 @@
             <trans-unit id="_for">
                 <source>...for</source>
                 <target> )</target>
+            </trans-unit>
+            <trans-unit id="picture">
+                <source>Picture</source>
+                <target>Picture</target>
+            </trans-unit>
+            <trans-unit id="override_existing_picture">
+                <source>Override existing picture</source>
+                <target>Delete old picture</target>
             </trans-unit>
 
             <!-- account index change status -->

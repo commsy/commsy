@@ -47,6 +47,7 @@
             {{ form_row(form.mayUseCaldav[2]) }}
             <hr />
             {{ form_row(form.save) }}
+            <a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}" class="data-uk-button">{{'Cancel'|trans({},'portal') }}</a>
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}
