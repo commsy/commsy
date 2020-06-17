@@ -694,7 +694,7 @@
     {% endif %}
 {% endmacro %}
 
-{% macro userNamesWithMailLinks(userItems) %}
+{% macro userNamesWithMailLinks(userItems, roomId = null) %}
     {# given an array of \cs_user_item, outputs the user names linked with their emal addresses (if not hidden) #}
 
     {% set suffix = ', ' %}
@@ -704,10 +704,12 @@
             {% set suffix = '' %}
         {% endif %}
 
-        {% if not user.email is empty and user.isEmailVisible %}
-            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': user.contextId, 'itemId': user.itemId, 'originPath': 'app_room_listall'}) }}">{{ user.fullname }}</a>{{ suffix }}
+        {% set userRoomId = roomId ?? user.contextId %}
+
+        {% if not user.email is empty %}
+            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': userRoomId, 'itemId': user.itemId, 'originPath': 'app_room_listall'}) }}">{{ user.fullname }}</a>{{ suffix }}
         {% else %}
-            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': user.contextId, 'itemId': user.itemId, 'originPath': 'app_room_listall'}) }}">{{ user.fullname ~ suffix }}</a>{{ suffix }}
+            {{ user.fullname ~ suffix }}
         {% endif %}
     {% endfor %}
 {% endmacro %}
