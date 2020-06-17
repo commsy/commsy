@@ -77,6 +77,7 @@ class AccountIndexDetailEditType extends AbstractType
             ->add('emailChangeAll', Types\CheckboxType::class, [
                 'label' => 'Change mail everywhere',
                 'translation_domain' => 'portal',
+                'required' => false,
             ])
             ->add('icq', Types\TextType::class, [
                 'label' => 'ICQ',
@@ -109,12 +110,15 @@ class AccountIndexDetailEditType extends AbstractType
                 'required' => false,
             ])
             ->add('picture', FileType::class, [
+                'label' => 'Picture',
+                'translation_domain' => 'portal',
                 'mapped' => false,
                 'required' => false,
             ])
             ->add('overrideExistingPicture', Types\CheckboxType::class, [
-                'label' => 'Change mail everywhere',
+                'label' => 'Override existing picture',
                 'translation_domain' => 'portal',
+                'required' => false,
             ])
             ->add('mayCreateContext', Types\ChoiceType::class, [
                 'label' => 'May create context',

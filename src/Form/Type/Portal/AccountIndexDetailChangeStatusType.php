@@ -39,7 +39,7 @@ class AccountIndexDetailChangeStatusType extends AbstractType
                 'required' => false,
             ])
             ->add('currentStatus', Types\TextType::class, [
-                'label' => 'current State',
+                'label' => 'Current state',
                 'translation_domain' => 'portal',
                 'required' => false,
             ])
@@ -61,6 +61,7 @@ class AccountIndexDetailChangeStatusType extends AbstractType
             ->add('loginIsDeactivated', Types\ChoiceType::class, [
                 'label' => 'Is login deactivated?',
                 'expanded' => true,
+                'placeholder' => false,
                 'choices'  => [
                     'Yes' => '1',
                     'No' => '2',
@@ -72,10 +73,6 @@ class AccountIndexDetailChangeStatusType extends AbstractType
                 'label' => 'Login as for x days activated',
                 'translation_domain' => 'portal',
                 'required' => false,
-            ])
-            ->add('cancel', Types\SubmitType::class, [
-                'label' => 'Cancel',
-                'translation_domain' => 'portal',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'Save',

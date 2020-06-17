@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexUser;
 use App\Entity\Portal;
@@ -33,6 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
 class PortalSettingsController extends AbstractController
@@ -671,23 +673,113 @@ class PortalSettingsController extends AbstractController
     public function accountIndexDetailEdit(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
 
+        $environment = $legacyEnvironment->getEnvironment();
+
         $user = $userService->getUser($request->get('userId'));
         $userEdit = new PortalUserEdit();
         $userEdit->setFirstName($user->getFirstname());
         $userEdit->setLastName($user->getLastName());
+        $userEdit->setAcademicDegree($user->getTitle());
+
+        $userEdit->setBirthday($user->getBirthday());
+        $userEdit->setStreet($user->getStreet());
+        $userEdit->setZip($user->getZipcode());
+        $userEdit->setCity($user->getCity());
+        $userEdit->setWorkspace($user->getRoom());
+        $userEdit->setTelephone($user->getTelephone());
+        $userEdit->setSecondTelephone($user->getCellularphone());
         $userEdit->setEmail($user->getEmail());
+        $userEdit->setICQ($user->getIcq());
+        $userEdit->setMSN($user->getMsn());
+        $userEdit->setSkype($user->getSkype());
+        $userEdit->setYahoo($user->getYahoo());
+        $userEdit->setHomepage($user->getHomepage());
+        $userEdit->setDescription($user->getDescription());
         $userEdit->setMayCreateContext($user->getIsAllowedToCreateContext());
         $userEdit->setMayUseCaldav('standard');
+        $userEdit->setPicture($user->getPicture());
 
         $form = $this->createForm(AccountIndexDetailEditType::class, $userEdit);
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $var = 0;
+            /** @var PortalUserEdit $editAccountIndex */
+            $editAccountIndex = $form->getData();
+            $user->setFirstname($editAccountIndex->getFirstName());
+            $user->setLastname($editAccountIndex->getLastName());
+            $user->setTitle($editAccountIndex->getAcademicDegree());
+            $user->setBirthday($editAccountIndex->getBirthday());
+            $user->setStreet($editAccountIndex->getStreet());
+            $user->setZipcode($editAccountIndex->getZip());
+            $user->setCity($editAccountIndex->getCity());
+            $user->setRoom($editAccountIndex->getWorkspace());
+            $user->setTelephone($editAccountIndex->getTelephone());
+            $user->setCellularphone($editAccountIndex->getSecondTelephone());
+            $user->setEmail($editAccountIndex->getEmail());
+
+            if($editAccountIndex->getEmailChangeAll()){
+                $relatedUsers = $user->getRelatedUserList();
+                foreach($relatedUsers as $relatedUser){
+                    $relatedUser->setEmail($editAccountIndex->getEmail());
+                    $relatedUser->save();
+                }
+            }
+            $user->setICQ($editAccountIndex->getIcq());
+            $user->setMSN($editAccountIndex->getMsn());
+            $user->setSkype($editAccountIndex->getSkype());
+            $user->setYahoo($editAccountIndex->getYahoo());
+            $user->setHomepage($editAccountIndex->getHomepage());
+            $user->setDescription($editAccountIndex->getDescription());
+
+            if(!empty($editAccountIndex->getPicture())){
+                //TODO: Does this piece of code make sense, if we set a new picture anyway?
+                if($editAccountIndex->isOverrideExistingPicture()){
+                    $disc_manager = $environment->getDiscManager();
+                    if ( $disc_manager->existsFile($user->getPicture()) ) {
+                        $disc_manager->unlinkFile($user->getPicture());
+                    }
+                    $user->setPicture('');
+                    if ( isset($portal_user_item) ) {
+                        $portal_user_item->setPicture('');
+                    }
+                }
+
+                $filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
+                $disc_manager = $environment->getDiscManager();
+                $disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
+                $user_item->setPicture($filename);
+                if ( isset($portal_user_item) ) {
+                    if ( $disc_manager->copyImageFromRoomToRoom($filename,$portal_user_item->getContextID()) ) {
+                        $value_array = explode('_',$filename);
+                        $old_room_id = $value_array[0];
+                        $old_room_id = str_replace('cid','',$old_room_id);
+                        $value_array[0] = 'cid'.$portal_user_item->getContextID();
+                        $new_picture_name = implode('_',$value_array);
+                        $portal_user_item->setPicture($new_picture_name);
+                    }
+                }
+
+                $user->setPicture($editAccountIndex->getPicture());
+            }
+
+            if($editAccountIndex->getMayCreateContext() == 'standard'){
+                $user->setIsAllowedToCreateContext(true); //TODO how do we get the pre-set portal value?
+            } elseif($editAccountIndex->getMayCreateContext() == '1'){
+                $user->setIsAllowedToCreateContext(true);
+                $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext(true);
+            }else{
+                $user->setIsAllowedToCreateContext(false);
+                $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext(false);
+            }
+
+            //TODO: What is with caldav? $user does not posess a field for that
+
+            $user->save();
         }
 
         return [
+            'user' => $user,
             'form' => $form->createView(),
             'portal' => $portal,
         ];
@@ -706,7 +798,16 @@ class PortalSettingsController extends AbstractController
         $userChangeStatus->setName($user->getFullName());
         $userChangeStatus->setUserID($user->getUserID());
         $userChangeStatus->setLastLogin($user->getLastLogin());
-        $userChangeStatus->setCurrentStatus($user->getStatus());
+
+        $userStatus = $user->getStatus();
+        $currentStatus = 'Moderator';
+        if($userStatus == 0){
+            $currentStatus = 'User';
+        }elseif($userStatus == 0){
+            $currentStatus = 'Contact';
+        }
+
+        $userChangeStatus->setCurrentStatus($currentStatus);
         $userChangeStatus->setNewStatus('user');
         $userChangeStatus->setContact($user->isContact());
         $userChangeStatus->setLoginIsDeactivated('2');
@@ -715,13 +816,208 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $var = 0;
+            $user = $userService->getUser($request->get('userId'));
+
+            /** @var PortalUserChangeStatus $data */
+            $data = $form->getData();
+            $newStatus = $data->getNewStatus();
+            if(strcmp($newStatus, 'user') == 0){
+                $user->makeUser();
+            }elseif(strcmp($newStatus, 'moderator') == 0){
+                $user->makeModerator();
+            }elseif(strcmp($newStatus, 'closed') == 0) {
+                $user->reject();
+            }
+
+            if($data->isContact()){
+                $user->makeContactPerson();
+            }
+
+            $deactivateTakeOver = $data->getLoginIsDeactivated();
+            if($deactivateTakeOver == '2'){
+                $user->deactivateLoginAsAnotherUser();
+            }
+
+            if(!empty($data->getLoginAsActiveForDays())){
+                $user->setDaysForLoginAs();
+            }
+
+            $user->save();
         }
 
         return [
             'form' => $form->createView(),
             'user' => $user,
+            'portal' => $portal,
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
         ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/terminatemembership")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailTerminateMembership(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->reject();
+        $user->save();
+
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemail")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailHideMail(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailNotVisible();
+        $user->save();
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemailallwrks")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailHideMailAllWrks(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailNotVisible();
+        $user->save();
+
+        $relatedUsers = $user->getRelatedUserList();
+        foreach($relatedUsers as $relatedUser){
+            $relatedUser->setEmailNotVisible();
+            $relatedUser->save();
+        }
+
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmail")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailShowMail(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailVisible();
+        $user->save();
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmailallwroks")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailShowMailAllWroks(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $user = $userService->getUser($request->get('userId'));
+        $user->setEmailVisible();
+        $user->save();
+
+        $relatedUsers = $user->getRelatedUserList();
+        foreach($relatedUsers as $relatedUser){
+            $relatedUser->setMailVisible();
+            $relatedUser->save();
+        }
+
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/takeOver")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function accountIndexDetailTakeOver(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    {
+        $session = $this->get('session');
+        $user = $userService->getUser($request->get('userId'));
+        $user_item = $user;
+        $environment = $legacyEnvironment->getEnvironment();
+
+        $legacyEnvironment = $environment;
+
+        $sessionManager = $legacyEnvironment->getSessionManager();
+        $sessionItem = $legacyEnvironment->getSessionItem();
+
+        If(!is_null($sessionItem)){
+            $sessionManager->delete($sessionItem->getSessionID());
+            $legacyEnvironment->setSessionItem(null);
+
+            $cookie = $session->get('cookie');
+            $javascript = $session->get('javascript');
+            $https = $session->get('https');
+            $flash = $session->get('flash');
+            $session_id = $session->getSessionID();
+            $session = new \cs_session_item();
+            $session->createSessionID($user_item->getUserID());
+            $session->setValue('auth_source',$user_item->getAuthSource());
+            $session->setValue('root_session_id',$session_id);
+            if ( $cookie == '1' ) {
+                $session->setValue('cookie',2);
+            } elseif ( empty($cookie) ) {
+                // do nothing, so CommSy will try to save cookie
+            } else {
+                $session->setValue('cookie',0);
+            }
+            if ($javascript == '1') {
+                $session->setValue('javascript',1);
+            } elseif ($javascript == '-1') {
+                $session->setValue('javascript',-1);
+            }
+            if ($https == '1') {
+                $session->setValue('https',1);
+            } elseif ($https == '-1') {
+                $session->setValue('https',-1);
+            }
+            if ($flash == '1') {
+                $session->setValue('flash',1);
+            } elseif ($flash == '-1') {
+                $session->setValue('flash',-1);
+            }
+
+            // save portal id in session to be sure, that user didn't
+            // switch between portals
+            if ( $environment->inServer() ) {
+                $session->setValue('commsy_id',$environment->getServerID());
+            } else {
+                $session->setValue('commsy_id',$environment->getCurrentPortalID());
+            }
+            $environment->setSessionItem($session);
+            redirect($environment->getCurrentContextID(),'home','index',array());
+        }
+
+        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+            'portalId' => $request->get('portalId'),
+            'userId' => $request->get('userId'),
+        ]);
+
     }
 
     /**
@@ -745,6 +1041,14 @@ class PortalSettingsController extends AbstractController
             $var = 0;
         }
 
+        if($form->get('cancel')->isClicked()){
+            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                'portal' => $portal,
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
+        }
+
         return [
             'form' => $form->createView(),
             'user' => $user,
@@ -757,20 +1061,37 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      */
-    public function accountIndexDetailChangePassword(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    public function accountIndexDetailChangePassword(Portal $portal,
+                                                     Request $request,
+                                                     UserService $userService,
+                                                     LegacyEnvironment $legacyEnvironment,
+                                                     UserPasswordEncoderInterface $passwordEncoder,
+                                                     EntityManagerInterface $entityManager)
     {
         $user = $userService->getUser($request->get('userId'));
         $form_data = ['userName' => $user->getFullName(), 'userId' => $user->getUserID()];
         $form = $this->createForm(AccountIndexDetailChangePasswordType::class, $form_data);
         $form->handleRequest($request);
 
+        $accountRepo = $entityManager->getRepository(Account::class);
+
         if($form->isSubmitted() && $form->isValid()){
-            $var = 0;
+            $data = $form->getData();
+            $submittedPassword = $data['password'];
+
+            $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
+                $user->getContextID());
+            $userPwUpdate->setPasswordMd5(null);
+            $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPassword));
+
+            $entityManager->persist($userPwUpdate);
+            $entityManager->flush();
         }
 
         return [
             'form' => $form->createView(),
             'user' => $user,
+            'portal' => $portal,
         ];
     }
 

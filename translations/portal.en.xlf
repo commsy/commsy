@@ -272,6 +272,10 @@
                 <source>Moderator</source>
                 <target>Moderator</target>
             </trans-unit>
+            <trans-unit id="close">
+                <source>Close</source>
+                <target>Locked</target>
+            </trans-unit>
             <trans-unit id="contact">
                 <source>Contact</source>
                 <target>Contact</target>
@@ -406,7 +410,7 @@
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
                 <source>User is allowed to create context</source>
-                <target>The user is allowed to create context</target>
+                <target>Default settings of the portal (yes)</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
@@ -419,6 +423,10 @@
             <trans-unit id="may_use_caldav">
                 <source>May use caldav</source>
                 <target>The user may use CalDAV</target>
+            </trans-unit>
+            <trans-unit id="is_allowed_to_use_caldav">
+                <source>User is allowed to use caldav</source>
+                <target>Default settings of the portal (lock)</target>
             </trans-unit>
             <trans-unit id="default_settings_portal">
                 <source>Default settings of the portal</source>
@@ -435,6 +443,30 @@
             <trans-unit id="cancel">
                 <source>Cancel</source>
                 <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="german_language">
+                <source>German</source>
+                <target>German</target>
+            </trans-unit>
+            <trans-unit id="english_language">
+                <source>English</source>
+                <target>English</target>
+            </trans-unit>
+            <trans-unit id="settings_only_visible">
+                <source>Settings only visible...</source>
+                <target>Settings (only visible for </target>
+            </trans-unit>
+            <trans-unit id="_for">
+                <source>...for</source>
+                <target> )</target>
+            </trans-unit>
+            <trans-unit id="picture">
+                <source>Picture</source>
+                <target>Picture</target>
+            </trans-unit>
+            <trans-unit id="override_existing_picture">
+                <source>Override existing picture</source>
+                <target>Delete old picture</target>
             </trans-unit>
 
             <!-- account index change status -->
@@ -457,6 +489,20 @@
             <trans-unit id="login_as_for_x_days_activated">
                 <source>Login as for x days activated</source>
                 <target>Login as... deactivated for x days</target>
+            </trans-unit>
+
+            <!-- account index change password -->
+            <trans-unit id="password">
+                <source>Password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="repeat_password">
+                <source>Repeat password</source>
+                <target>User ID</target>
+            </trans-unit>
+            <trans-unit id="passwords_must_match">
+                <source>The password fields must match</source>
+                <target>The password fields must match</target>
             </trans-unit>
 
             <!-- user detail (account index) -->

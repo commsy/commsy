@@ -264,6 +264,22 @@
                 <source>Back</source>
                 <target>Zurück</target>
             </trans-unit>
+            <trans-unit id="german_language">
+                <source>German</source>
+                <target>Deutsch</target>
+            </trans-unit>
+            <trans-unit id="english_language">
+                <source>English</source>
+                <target>Englisch</target>
+            </trans-unit>
+            <trans-unit id="settings_only_visible">
+                <source>Settings only visible...</source>
+                <target>Einstellungen (nur für </target>
+            </trans-unit>
+            <trans-unit id="_for">
+                <source>...for</source>
+                <target> sichtbar)</target>
+            </trans-unit>
 
             <!-- user edit -->
             <trans-unit id="firstName">
@@ -316,7 +332,7 @@
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
                 <source>User is allowed to create context</source>
-                <target>Nutzer darf Räume anlegen</target>
+                <target>Standardeinstellung des Portals (Ja)</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
@@ -329,6 +345,10 @@
             <trans-unit id="may_use_caldav">
                 <source>May use caldav</source>
                 <target>Darf CalDAV nutzen</target>
+            </trans-unit>
+            <trans-unit id="is_allowed_to_use_caldav">
+                <source>User is allowed to use caldav</source>
+                <target>Standardeinstellung des Portals (Sperren)</target>
             </trans-unit>
             <trans-unit id="default_settings_portal">
                 <source>Default settings of the portal</source>
@@ -345,6 +365,14 @@
             <trans-unit id="cancel">
                 <source>Cancel</source>
                 <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="picture">
+                <source>Picture</source>
+                <target>Bild</target>
+            </trans-unit>
+            <trans-unit id="override_existing_picture">
+                <source>Override existing picture</source>
+                <target>Altes Bild löschen</target>
             </trans-unit>
 
             <!-- account index change status -->
@@ -367,6 +395,20 @@
             <trans-unit id="login_as_for_x_days_activated">
                 <source>Login as for x days activated</source>
                 <target>Einloggen als ... für x Tage aktivieren</target>
+            </trans-unit>
+
+            <!-- account index change password -->
+            <trans-unit id="password">
+                <source>Password</source>
+                <target>Passwort</target>
+            </trans-unit>
+            <trans-unit id="repeat_password">
+                <source>Repeat password</source>
+                <target>Passwort widerholen</target>
+            </trans-unit>
+            <trans-unit id="passwords_must_match">
+                <source>The password fields must match</source>
+                <target>Die beiden Felder müssen übereinstimmen.</target>
             </trans-unit>
 
             <!-- user detail (account index) -->
@@ -432,7 +474,7 @@
             </trans-unit>
             <trans-unit id="archived_workspaces">
                 <source>Archived workspaces</source>
-                <target>ARchivierte Räume</target>
+                <target>Archivierte Räume</target>
             </trans-unit>
 
             <!-- assign workspace -->
@@ -539,6 +581,10 @@
             <trans-unit id="moderator">
                 <source>Moderator</source>
                 <target>ModeratorIn</target>
+            </trans-unit>
+            <trans-unit id="close">
+                <source>Close</source>
+                <target>Gesperrt</target>
             </trans-unit>
             <trans-unit id="contact">
                 <source>Contact</source>
