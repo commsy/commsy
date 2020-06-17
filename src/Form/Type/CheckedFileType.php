@@ -26,6 +26,10 @@ class CheckedFileType extends AbstractType
             ])
             ->add('fileId', HiddenType::class, [
             ])
+            ->add('filename', HiddenType::class, [
+            ])
+            ->add('filePath', HiddenType::class, [
+            ])
         ;
     }
 

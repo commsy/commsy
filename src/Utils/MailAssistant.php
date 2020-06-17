@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\FormInterface;
@@ -136,6 +137,13 @@ class MailAssistant
             ->setFrom([$this->from => $portalItem->getTitle()])
             ->setReplyTo($replyTo);
 
+        // form option: files
+        $formDataFiles = $formData['files'];
+
+        if (!empty($formDataFiles)) {
+            $message = $this->addAttachments($formDataFiles, $message);
+        }
+
         // form option: copy_to_sender
         $toCC = [];
 
@@ -203,6 +211,14 @@ class MailAssistant
             ->setBody($formDataMessage, 'text/html')
             ->setFrom([$this->from => $portalItem->getTitle()])
             ->setReplyTo($replyTo);
+
+        // form option: files
+        $formDataFiles = (get_class($formData) == Send::class ? (is_null($formData->getFiles())
+            ? false : $formData->getFiles()) : $formData['files']);
+
+        if ($formDataFiles) {
+            $message = $this->addAttachments($formDataFiles, $message);
+        }
 
         // form option: copy_to_sender
         $toCC = [];
@@ -364,6 +380,38 @@ class MailAssistant
 
             $user = $userList->getNext();
         }
+    }
+
+    /**
+     * Adds the given files as attachments to the given message.
+     * @param File[] $files The array of File objects which shall be added as attachments to the given message.
+     * @param \Swift_Message $message The message to which the given files shall be added as attachments.
+     * @return \Swift_Message The message with added attachments.
+     */
+    public function addAttachments(array $files, \Swift_Message $message): \Swift_Message
+    {
+        if (empty($files)) {
+            return $message;
+        }
+
+        foreach ($files as $file) {
+            $filePath = $file->getFilePath();
+            $attachFile = $file->getChecked();
+            if (!$attachFile || empty($filePath)) {
+                continue;
+            }
+
+            $attachment = \Swift_Attachment::fromPath($filePath);
+
+            $fileName = $file->getFilename();
+            if (!empty($fileName)) {
+                $attachment->setFilename($fileName);
+            }
+
+            $message->attach($attachment);
+        }
+
+        return $message;
     }
 
     /** Retrieves all form choices by label type in the current context

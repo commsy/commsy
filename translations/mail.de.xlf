@@ -62,6 +62,10 @@
                 <source>Add another recipient</source>
                 <target>Einen weiteren Empfänger hinzufügen</target>
             </trans-unit>
+            <trans-unit id="mailAttachments">
+                <source>Attachments</source>
+                <target>Anhänge</target>
+            </trans-unit>
             <trans-unit id="mailSend">
                 <source>Send</source>
                 <target>Versenden</target>

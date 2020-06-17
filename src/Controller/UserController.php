@@ -13,6 +13,7 @@ use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\MailAssistant;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Component\Routing\Annotation\Route;
@@ -55,16 +56,17 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}")
      * @Template
      */
-    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request)
+    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request, MailAssistant $mailAssistant)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        $mailAssistant = $this->get('commsy.utils.mail_assistant');
-
-        $form = $this->createForm(AccountContactFormType::class, null, array(
+        $form = $this->createForm(AccountContactFormType::class, null, [
             'item' => $item,
-        ));
+            'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
+                'roomId' => $roomId,
+            ]),
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -836,7 +838,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
-    public function sendAction($roomId, $itemId, Request $request)
+    public function sendAction($roomId, $itemId, Request $request, MailAssistant $mailAssistant)
     {
         // get item
         $itemService = $this->get('commsy_legacy.item_service');
@@ -861,7 +863,11 @@ class UserController extends BaseController
             'copy_to_sender' => false,
         ];
 
-        $form = $this->createForm(UserSendType::class, $formData, []);
+        $form = $this->createForm(UserSendType::class, $formData, [
+            'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
+                'roomId' => $roomId,
+            ]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -878,10 +884,16 @@ class UserController extends BaseController
                 $sender = [$currentUser->getEmail() => $currentUser->getFullName()];
                 $recipient = [$item->getEmail() => $item->getFullName()];
 
+                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
                 $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()]);
+
+                $formDataFiles = $formData['files'];
+                if ($formDataFiles) {
+                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
+                }
 
                 if ($currentUser->isEmailVisible()) {
                     $message->setReplyTo($sender);
@@ -1322,7 +1334,7 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/sendMultiple")
      * @Template()
      */
-    public function sendMultipleAction($roomId, Request $request)
+    public function sendMultipleAction($roomId, Request $request, MailAssistant $mailAssistant)
     {
         $room = $this->getRoom($roomId);
 
@@ -1372,7 +1384,11 @@ class UserController extends BaseController
             'users' => $userIds,
         ];
 
-        $form = $this->createForm(UserSendType::class, $formData, []);
+        $form = $this->createForm(UserSendType::class, $formData, [
+            'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
+                'roomId' => $roomId,
+            ]),
+        ]);
         $form->handleRequest($request);
 
         // get all affected user
@@ -1434,11 +1450,17 @@ class UserController extends BaseController
                     }
                 }
 
+                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
                 $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
                     ->setReplyTo($replyTo);
+
+                $formDataFiles = $formData['files'];
+                if ($formDataFiles) {
+                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
+                }
 
                 $recipientCount = 0;
 
