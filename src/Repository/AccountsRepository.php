@@ -18,20 +18,20 @@ class AccountsRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $usernameOrEmail
+     * @param string $username
      * @param int $context
      * @param int $authSourceId
      * @return mixed
      * @throws NonUniqueResultException
      */
-    public function findOneByCredentials(string $usernameOrEmail, int $context, AuthSource $authSource)
+    public function findOneByCredentials(string $username, int $context, AuthSource $authSource)
     {
         return $this->createQueryBuilder('a')
-            ->where('a.username = :query OR a.email = :query')
+            ->where('a.username = :username')
             ->andWhere('a.authSource = :authSource')
             ->andWhere('a.contextId = :contextId')
             ->setParameters([
-                'query' => $usernameOrEmail,
+                'username' => $username,
                 'contextId' => $context,
                 'authSource' => $authSource,
             ])
