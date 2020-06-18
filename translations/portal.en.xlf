@@ -584,6 +584,10 @@
                 <source>Description of participation</source>
                 <target>Description of participation</target>
             </trans-unit>
+            <trans-unit id="please_choose">
+                <source>Please choose</source>
+                <target>Please choose (possibly search workspaces before)</target>
+            </trans-unit>
 
             <!-- inactive -->
             <trans-unit id="lock_user">

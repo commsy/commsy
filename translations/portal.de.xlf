@@ -490,6 +490,10 @@
                 <source>Description of participation</source>
                 <target>Teilnahmebeschreibung</target>
             </trans-unit>
+            <trans-unit id="please_choose">
+                <source>Please choose</source>
+                <target>Bitte wählen Sie aus (ggf. zunächst Räume suchen)</target>
+            </trans-unit>
 
             <!-- time -->
             <trans-unit id="time">
