@@ -37,4 +37,16 @@ class RoomRepository extends ServiceEntityRepository
                 'contextId' => $portalId,
             ]);
     }
+
+    public function getNumActiveRoomsByPortal(int $portalId): int
+    {
+        return $this->createQueryBuilder('r')
+            ->select('COUNT(r.itemId) as num')
+            ->where('r.contextId = :portalId')
+            ->andWhere('r.deletionDate IS NULL')
+            ->andWhere('r.deleter IS NULL')
+            ->setParameter('portalId', $portalId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

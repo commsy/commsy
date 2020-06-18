@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Portal;
+use App\Entity\Room;
+use App\Entity\User;
 use App\Facade\PortalCreatorFacade;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\PortalType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,13 +24,27 @@ class ServerController extends AbstractController
      * @Route("/portal/show")
      * @Template()
      */
-    public function show()
+    public function show(EntityManagerInterface $entityManager)
     {
         $activePortals = $this->getDoctrine()->getRepository(Portal::class)
             ->findAllActive();
 
+        $userRepository = $entityManager->getRepository(User::class);
+        $roomRepository = $entityManager->getRepository(Room::class);
+
+        $usageInformation = [];
+        foreach ($activePortals as $activePortal) {
+            /** @var Portal $activePortal */
+            $portalId = $activePortal->getId();
+            $usageInformation[$portalId] = [
+                'users' => $userRepository->getNumActiveUsersByContext($portalId),
+                'rooms' => $roomRepository->getNumActiveRoomsByPortal($portalId),
+            ];
+        }
+
         return [
             'activePortals' => $activePortals,
+            'usageInformation' => $usageInformation,
         ];
     }
 

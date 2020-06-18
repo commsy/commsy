@@ -12,22 +12,27 @@
             {% for activePortal in activePortals %}
                 <div class="uk-width-medium">
                     <div class="uk-card uk-card-default uk-card-small">
-                        <div class="uk-card-body">
-                            <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
-                        </div>
+                        {% if activePortal.logoFilename is not empty %}
+                            <div class="uk-card-body uk-padding-remove">
+                                {# TODO: Just a placeholder from the mockup, please replace #}
+                                {# TODO: try images in 220px by 80 px and play around with uk-padding-remove #}
+                                {# TODO: of parent element, cheers #}
+                                <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                            </div>
+                        {% endif %}
 
                         <div class="uk-card-header">
                             <div class="uk-grid-small uk-child-width-1-2" uk-grid>
                                 <div>
                                     <dl class="uk-description-list uk-text-meta uk-text">
                                         <dt>Räume</dt>
-                                        <dd>3017</dd>
+                                        <dd>{{ usageInformation[activePortal.id].rooms }}</dd>
                                     </dl>
                                 </div>
                                 <div>
                                     <dl class="uk-description-list uk-text-meta uk-text">
                                         <dt>Mitglieder</dt>
-                                        <dd>16895</dd>
+                                        <dd>{{ usageInformation[activePortal.id].users }}</dd>
                                     </dl>
                                 </div>
                             </div>
@@ -37,21 +42,20 @@
 
                         <div class="uk-card-body uk-margin-large-bottom">
                             <h3 class="uk-card-title">{{ activePortal.title }}</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                            {% if app.request.locale is same as("de") %}
+                                {% set description = activePortal.descriptionGerman %}
+                            {% else %}
+                                {% set description = activePortal.descriptionEnglish %}
+                            {% endif %}
+
+                            {% if description is not empty %}
+                                <p>{{ description }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="uk-card-footer uk-position-bottom">
                             <a href="{{ path('app_login', { 'context': activePortal.id }) }}" class="uk-button uk-button-text">{{ 'portal.enter'|trans({}, 'portal') }}</a>
                         </div>
-
-                        {#                    <div class="uk-card-body uk-margin-large-bottom">#}
-                        {#                        <h3 class="uk-card-title"><span class="uk-text-muted">Portal gelöscht / inaktiv (gelöscht)</span></h3>#}
-                        {#                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>#}
-                        {#                    </div>#}
-
-                        {#                    <div class="uk-card-footer uk-position-bottom">#}
-                        {#                        <span class="uk-text-muted" uk-tooltip="title: Dieses Portal ist nicht verfügbar">Enter</span>#}
-                        {#                    </div>#}
                     </div>
                 </div>
 
