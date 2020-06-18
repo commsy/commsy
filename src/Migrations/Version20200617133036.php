@@ -36,7 +36,7 @@ final class Version20200617133036 extends Migration
         foreach ($portals as $portal) {
             $extras = $this->convertToPHPValue($portal['extras']);
 
-            $this->connection->update('auth_source', [
+            $this->connection->update('portal', [
                 'description_de' => $extras['DESCRIPTION']['de'] ?? '',
                 'description_en' => $extras['DESCRIPTION']['en'] ?? '',
             ], [
