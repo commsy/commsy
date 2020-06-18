@@ -690,6 +690,28 @@
                 <source>Legacy configuration</source>
                 <target>Alte Portalkonfiguration</target>
             </trans-unit>
+            <trans-unit id="portal_none">
+                <source>portal.none</source>
+                <target>Bisher wurden noch keine Portale angelegt.</target>
+            </trans-unit>
+            <trans-unit id="portal_create">
+                <source>portal.create</source>
+                <target>Portal erstellen</target>
+            </trans-unit>
+
+            <!-- form -->
+            <trans-unit id="portal_form_title">
+                <source>portal.form_title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="portal_form_desc_de">
+                <source>portal.form_desc_de</source>
+                <target>Beschreibung Deutsch</target>
+            </trans-unit>
+            <trans-unit id="portal_form_desc_en">
+                <source>portal.form_desc_en</source>
+                <target>Beschreibung Englisch</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
