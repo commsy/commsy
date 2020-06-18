@@ -2001,7 +2001,7 @@ class cs_user_manager extends cs_manager {
         }
 
         $this->setUserLimit();
-        $this->setSortOrder('mod_date');
+        $this->setSortOrder('date');
 
         $this->select();
         return $this->get();
