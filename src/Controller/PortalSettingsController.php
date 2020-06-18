@@ -1049,15 +1049,17 @@ class PortalSettingsController extends AbstractController
                 $userAssignWorkspace->setUserID($user->getUserID());
                 $userAssignWorkspace->setName($user->getFullName());
                 $userAssignWorkspace->setWorkspaceSelection('0');
+
                 $form = $this->createForm(AccountIndexDetailAssignWorkspaceType::class, $userAssignWorkspace);
                 $allRooms = $portal->getContinuousRoomList($legacyEnvironment);
+
+
                 $choiceArray = array();
-                for ($i = 0; $i < 10; $i++) {
-                    $choiceArray['key_'.$i] = 'val_'.$i;
-                }
+
                 foreach($allRooms as $room){
-                    $choiceArray[$room->getName()] = $room->getItemID();
+                    $choiceArray[$room->getTitle()] = $room->getItemID();
                 }
+
                 $formOptions = [
                     'label' => 'Select workspace',
                     'expanded' => false,
