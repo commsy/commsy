@@ -682,6 +682,10 @@
                 <source>portal.create</source>
                 <target>Create portal</target>
             </trans-unit>
+            <trans-unit id="portal_enter">
+                <source>portal.enter</source>
+                <target>enter</target>
+            </trans-unit>
 
             <!-- form -->
             <trans-unit id="portal_form_title">
