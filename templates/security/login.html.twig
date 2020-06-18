@@ -39,7 +39,7 @@
                     </div>
                 {% else %}
                     <div class="uk-card-header">
-                        <h3 class="uk-card-title">Login Systemadministration</h3>
+                        <h3 class="uk-card-title">{{ 'login.system_admin'|trans({}, 'login') }}</h3>
                     </div>
                 {% endif %}
 
@@ -75,23 +75,23 @@
 
                                 {# username / email #}
                                 <div class="uk-margin">
-                                    <label class="uk-form-label" for="inputEmail">Email / Username</label>
+                                    <label class="uk-form-label" for="inputEmail">{{ 'login.label_username'|trans({}, 'login') }}</label>
 
                                     <div class="uk-form-controls">
                                         <div class="uk-inline uk-width-1-1">
                                             <span class="uk-form-icon" uk-icon="icon: user"></span>
-                                            <input class="uk-input" id="inputEmail" type="text" name="email" value="{{ last_username }}" placeholder="Ihre Kennung" required autofocus>
+                                            <input class="uk-input" id="inputEmail" type="text" name="email" value="{{ last_username }}" placeholder="{{ 'login.placeholder_username'|trans({}, 'login') }}" required autofocus>
                                         </div>
                                     </div>
                                 </div>
 
                                 {# password #}
                                 <div class="uk-margin">
-                                    <label class="uk-form-label" for="inputPassword">Password</label>
+                                    <label class="uk-form-label" for="inputPassword">{{ 'login.label_password'|trans({}, 'login') }}</label>
                                     <div class="uk-form-controls">
                                         <div class="uk-inline uk-width-1-1">
                                             <span class="uk-form-icon" uk-icon="icon: lock"></span>
-                                            <input class="uk-input{# uk-form-danger#}" id="inputPassword" type="password" name="password" placeholder="Password" required>
+                                            <input class="uk-input" id="inputPassword" type="password" name="password" placeholder="{{ 'login.placeholder_password'|trans({}, 'login') }}" required>
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                                 <div class="uk-margin">
                                     <div class="uk-form-controls">
                                         <div class="uk-inline uk-width-1-1">
-                                            <input class="uk-input uk-button uk-button-primary" id="form-stacked-submit" type="submit" name="login_local" value="Sign in">
+                                            <input class="uk-input uk-button uk-button-primary" id="form-stacked-submit" type="submit" name="login_local" value="{{ 'login.sign_in'|trans({}, 'login') }}">
                                         </div>
                                     </div>
                                 </div>

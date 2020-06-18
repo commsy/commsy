@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Portal;
 use App\Facade\PortalCreatorFacade;
+use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\PortalType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,6 +35,7 @@ class ServerController extends AbstractController
      * Creates a new portal
      *
      * @Route("/portal/create")
+     * @IsGranted("ROOT")
      * @Template()
      * @param PortalCreatorFacade $portalCreator
      * @param Request $request
@@ -44,7 +47,7 @@ class ServerController extends AbstractController
     ) {
         $portal = new Portal();
 
-        $form = $this->createForm(PortalType::class, $portal);
+        $form = $this->createForm(GeneralType::class, $portal);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

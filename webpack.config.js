@@ -3,6 +3,12 @@ let Encore = require('@symfony/webpack-encore');
 let webpack = require('webpack');
 let HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
+// Manually configure the runtime environment if not already configured yet by the "encore" command.
+// It's useful when you use tools that rely on webpack.config.js file.
+if (!Encore.isRuntimeEnvironmentConfigured()) {
+    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
+}
+
 Encore
     // the project directory where all compiled assets will be stored
     .setOutputPath('public/build/')
@@ -63,7 +69,13 @@ Encore
     .enableBuildNotifications()
 
     // create hashed filenames (e.g. app.abc123.css)
-    .enableVersioning()
+    .enableVersioning(Encore.isProduction())
+
+    // enables @babel/preset-env polyfills
+    .configureBabelPresetEnv((config) => {
+        config.useBuiltIns = 'usage';
+        config.corejs = 3;
+    })
 ;
 
 // export the final configuration

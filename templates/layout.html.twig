@@ -80,6 +80,9 @@
                                 ))}}
                             </div>
                         </li>
+                    {% else %}
+                        {# root outside of portal #}
+                        <a href="{{ path('app_logout') }}">Logout</a>
                     {% endif %}
                 {% endif %}
             </ul>
@@ -88,27 +91,27 @@
 {% endblock %}
 
 {% block footer %}
-    <div class="uk-grid-divider" uk-grid>
+{#    <div class="uk-grid-divider" uk-grid>#}
 
-        <div class="uk-width-expand">
-            <div class="uk-flex uk-flex-center">
-                <div uk-grid>
-                    <div>
-                        <a href="#">Impressum</a>
-                    </div>
-                    <div>
-                        <a href="#">Data Privacy</a>
-                    </div>
-                    <div>
-                        <a href="#">Terms of Use</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+{#        <div class="uk-width-expand">#}
+{#            <div class="uk-flex uk-flex-center">#}
+{#                <div uk-grid>#}
+{#                    <div>#}
+{#                        <a href="#">Impressum</a>#}
+{#                    </div>#}
+{#                    <div>#}
+{#                        <a href="#">Data Privacy</a>#}
+{#                    </div>#}
+{#                    <div>#}
+{#                        <a href="#">Terms of Use</a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
 
-        <div class="uk-width-auto">
-            <a href="https://commsy.net">CommSy 10.0.0</a>
-        </div>
+{#        <div class="uk-width-auto">#}
+{#            <a href="https://commsy.net">CommSy 10.0.0</a>#}
+{#        </div>#}
 
-    </div>
+{#    </div>#}
 {% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Entity\Portal;
 use App\Entity\RoomPrivat;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +14,26 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    /**
+     * @Route("/admin")
+     * @return Response
+     */
+    public function admin(): Response
+    {
+        /** @var Account $user */
+        $user = $this->getUser();
+
+        // If the user is not authenticated, redirect to admin login
+        if ($user === null) {
+            return $this->redirectToRoute('app_login', [
+                'context' => 'server',
+            ]);
+        }
+
+        // Redirect to portal overview for now
+        return $this->redirectToRoute('app_server_show');
+    }
+
     /**
      * @Route("/login/{context}", name="app_login")
      * @param AuthenticationUtils $authenticationUtils

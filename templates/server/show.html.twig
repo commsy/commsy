@@ -6,12 +6,6 @@
 
 {% block main %}
 
-    {% if app.user and app.user.username is same as('root') %}
-        <div>
-            <a href="{{ path('app_server_createportal') }}">Portal erstellen</a>
-        </div>
-    {% endif %}
-
     {% if activePortals is not empty %}
         <div class="uk-grid-match uk-child-width-expand@m uk-flex uk-flex-center" uk-grid>
 
@@ -64,6 +58,23 @@
             {% endfor %}
         </div>
     {% else %}
-        No portals yet! <a href="{{ path('app_login') }}">Admin Login</a>
+        <div class="uk-section uk-section-muted">
+            <div class="uk-container uk-container-xsmall">
+                <p>
+                    {{ 'portal.none'|trans({}, 'portal') }}
+
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% if is_granted('ROOT') %}
+                            <div>
+                                <a href="{{ path('app_server_createportal') }}">{{ 'portal.create'|trans({}, 'portal') }}</a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}">{{ 'login.system_admin'|trans({}, 'login') }}</a>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
     {% endif %}
 {% endblock %}

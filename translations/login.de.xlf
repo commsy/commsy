@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="login_system_admin">
+                <source>login.system_admin</source>
+                <target>Login Systemadministration</target>
+            </trans-unit>
+            <trans-unit id="login_button_sign_in">
+                <source>login.sign_in</source>
+                <target>Anmelden</target>
+            </trans-unit>
+            <trans-unit id="login_label_password">
+                <source>login.label_password</source>
+                <target>Passwort</target>
+            </trans-unit>
+            <trans-unit id="login_placeholder_password">
+                <source>login.placeholder_password</source>
+                <target>Passwort</target>
+            </trans-unit>
+            <trans-unit id="login_label_username">
+                <source>login.label_username</source>
+                <target>Kennung</target>
+            </trans-unit>
+            <trans-unit id="login_placeholder_username">
+                <source>login.placeholder_username</source>
+                <target>Ihre Kennung</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
