@@ -2790,7 +2790,7 @@ function getExternalViewerArray(){
 
     protected function replaceElasticItem($objectPersister, $repository)
     {
-        $elasticHost = $_ENV['ELASTIC_HOST'];
+        $elasticHost = $_ENV['ELASTICSEARCH_URL'];
 
         if ($elasticHost) {
             if ($repository instanceof \App\Repository\MaterialsRepository) {
