@@ -30,6 +30,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -1038,18 +1040,47 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $var = 0;
-        }
 
-        if($form->get('cancel')->isClicked()){
-            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-                'portal' => $portal,
-                'portalId' => $portal->getId(),
-                'userId' => $user->getItemID(),
-            ]);
+            if($form->get('save')->isClicked()){
+                $var = 0;
+            }elseif($form->get('search')->isClicked()){
+                $user = $userService->getUser($request->get('userId'));
+                $userAssignWorkspace = new PortalUserAssignWorkspace();
+                $userAssignWorkspace->setUserID($user->getUserID());
+                $userAssignWorkspace->setName($user->getFullName());
+                $userAssignWorkspace->setWorkspaceSelection('0');
+
+                $form = $this->createForm(AccountIndexDetailAssignWorkspaceType::class, $userAssignWorkspace);
+                $allRooms = $portal->getContinuousRoomList($legacyEnvironment);
+
+
+                $choiceArray = array();
+
+                foreach($allRooms as $room){
+                    $choiceArray[$room->getTitle()] = $room->getItemID();
+                }
+
+                $formOptions = [
+                    'label' => 'Select workspace',
+                    'expanded' => false,
+                    'placeholder' => false,
+                    'choices'  => $choiceArray,
+                    'translation_domain' => 'portal',
+                    'required' => false,
+                ];
+
+                $form->add('workspaceSelection', ChoiceType::class, $formOptions);
+
+                return [
+                    'portal' => $portal,
+                    'form' => $form->createView(),
+                    'user' => $user,
+                ];
+            }
         }
 
         return [
+            'portal' => $portal,
             'form' => $form->createView(),
             'user' => $user,
         ];

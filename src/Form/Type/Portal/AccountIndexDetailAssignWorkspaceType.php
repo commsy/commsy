@@ -46,8 +46,9 @@ class AccountIndexDetailAssignWorkspaceType extends AbstractType
             ->add('workspaceSelection', Types\ChoiceType::class, [
                 'label' => 'Select workspace',
                 'expanded' => false,
+                'placeholder' => false,
                 'choices'  => [
-                    'Please chose' => '0',
+                    'Please choose' => '0',
                 ],
                 'translation_domain' => 'portal',
                 'required' => false,
@@ -56,10 +57,6 @@ class AccountIndexDetailAssignWorkspaceType extends AbstractType
                 'label' => 'Description of participation',
                 'translation_domain' => 'portal',
                 'required' => false,
-            ])
-            ->add('cancel', Types\SubmitType::class, [
-                'label' => 'Cancel',
-                'translation_domain' => 'portal',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'Save',
