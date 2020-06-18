@@ -23,6 +23,11 @@ class PortalProxy
         return $this->portal->getId();
     }
 
+    public function getId(): int
+    {
+        return $this->getItemId();
+    }
+
     public function getTitle(): string
     {
         return $this->portal->getTitle();
