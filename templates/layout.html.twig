@@ -80,6 +80,9 @@
                                 ))}}
                             </div>
                         </li>
+                    {% else %}
+                        {# root outside of portal #}
+                        <a href="{{ path('app_logout') }}">Logout</a>
                     {% endif %}
                 {% endif %}
             </ul>
