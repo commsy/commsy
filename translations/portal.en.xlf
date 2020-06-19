@@ -698,6 +698,14 @@
                 <source>portal.enter</source>
                 <target>enter</target>
             </trans-unit>
+            <trans-unit id="portal_num_members">
+                <source>portal.num_members</source>
+                <target># Members</target>
+            </trans-unit>
+            <trans-unit id="portal_num_rooms">
+                <source>portal.num_rooms</source>
+                <target># Rooms</target>
+            </trans-unit>
 
             <!-- form -->
             <trans-unit id="portal_form_title">

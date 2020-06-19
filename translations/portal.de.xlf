@@ -714,6 +714,14 @@
                 <source>portal.enter</source>
                 <target>betreten</target>
             </trans-unit>
+            <trans-unit id="portal_num_members">
+                <source>portal.num_members</source>
+                <target># Mitglieder</target>
+            </trans-unit>
+            <trans-unit id="portal_num_rooms">
+                <source>portal.num_rooms</source>
+                <target># Räume</target>
+            </trans-unit>
 
             <!-- form -->
             <trans-unit id="portal_form_title">

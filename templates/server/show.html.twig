@@ -25,13 +25,13 @@
                             <div class="uk-grid-small uk-child-width-1-2" uk-grid>
                                 <div>
                                     <dl class="uk-description-list uk-text-meta uk-text">
-                                        <dt>Räume</dt>
+                                        <dt>{{ 'portal.num_rooms'|trans({}, 'portal') }}</dt>
                                         <dd>{{ usageInformation[activePortal.id].rooms }}</dd>
                                     </dl>
                                 </div>
                                 <div>
                                     <dl class="uk-description-list uk-text-meta uk-text">
-                                        <dt>Mitglieder</dt>
+                                        <dt>{{ 'portal.num_members'|trans({}, 'portal') }}</dt>
                                         <dd>{{ usageInformation[activePortal.id].users }}</dd>
                                     </dl>
                                 </div>
@@ -87,15 +87,7 @@
                 <p>
                     {{ 'portal.none'|trans({}, 'portal') }}
 
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        {% if is_granted('ROOT') %}
-                            <div>
-                                <a href="{{ path('app_server_createportal') }}">{{ 'portal.create'|trans({}, 'portal') }}</a>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        <a href="{{ path('app_login') }}">{{ 'login.system_admin'|trans({}, 'login') }}</a>
-                    {% endif %}
+                    <a href="{{ path('app_server_createportal') }}">{{ 'portal.create'|trans({}, 'portal') }}</a>
                 </p>
             </div>
         </div>
