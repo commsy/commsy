@@ -9,6 +9,7 @@ use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
+use App\Entity\Room;
 use App\Entity\Translation;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
@@ -1051,13 +1052,15 @@ class PortalSettingsController extends AbstractController
                 $userAssignWorkspace->setWorkspaceSelection('0');
 
                 $form = $this->createForm(AccountIndexDetailAssignWorkspaceType::class, $userAssignWorkspace);
-                $allRooms = $portal->getContinuousRoomList($legacyEnvironment);
+//                $allRooms = $portal->getContinuousRoomList($legacyEnvironment); TODO this causes a 'can't serialize PDO' error.
 
+                $repository = $this->getDoctrine()->getRepository(Room::class);
+                $allRooms = $repository->findAll();
 
                 $choiceArray = array();
 
-                foreach($allRooms as $room){
-                    $choiceArray[$room->getTitle()] = $room->getItemID();
+                foreach($allRooms as $currentRoom){
+                    $choiceArray[$currentRoom->getTitle()] = $currentRoom->getItemID();
                 }
 
                 $formOptions = [
