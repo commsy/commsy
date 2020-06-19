@@ -26,6 +26,34 @@
                 <source>login.placeholder_username</source>
                 <target>Username</target>
             </trans-unit>
+            <trans-unit id="login_migration_change_password">
+                <source>login.migration_change_password</source>
+                <target>Change password</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_intro01">
+                <source>login.migration_change_password_intro01</source>
+                <target>With this update, the password encryption has become much stronger. To continue you must change your password and sign in again.</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_intro02">
+                <source>login.migration_change_password_intro02</source>
+                <target>To protect you against weak and compromised passwords, we will check your input against known data leaks. Your password will not be exposed.</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_current">
+                <source>login.migration_change_password_current</source>
+                <target>Current password</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_new">
+                <source>login.migration_change_password_new</source>
+                <target>New password</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_confirm">
+                <source>login.migration_change_password_confirm</source>
+                <target>Password confirm</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_submit">
+                <source>login.migration_change_password_submit</source>
+                <target>Change password</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

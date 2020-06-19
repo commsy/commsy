@@ -13,17 +13,28 @@ class PasswordMigrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('currentPassword', PasswordType::class)
-            ->add('password', PasswordType::class)
-            ->add('passwordConfirm', PasswordType::class)
-            ->add('save', SubmitType::class)
+            ->add('currentPassword', PasswordType::class, [
+                'label' => 'login.migration_change_password_current',
+            ])
+            ->add('password', PasswordType::class, [
+                'label' => 'login.migration_change_password_new',
+            ])
+            ->add('passwordConfirm', PasswordType::class, [
+                'label' => 'login.migration_change_password_confirm',
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'login.migration_change_password_submit',
+                'attr' => [
+                    'class' => 'uk-button-primary uk-width-medium',
+                ],
+            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'translation_domain' => 'login',
         ]);
     }
 }

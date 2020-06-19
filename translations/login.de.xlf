@@ -26,6 +26,34 @@
                 <source>login.placeholder_username</source>
                 <target>Ihre Kennung</target>
             </trans-unit>
+            <trans-unit id="login_migration_change_password">
+                <source>login.migration_change_password</source>
+                <target>Passwort aktualisieren</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_intro01">
+                <source>login.migration_change_password_intro01</source>
+                <target>Mit diesem Update von CommSy haben wir die Speicherung Ihrer Passwörtern sicherer gemacht. Für die weitere Nutzung ist es erforderlich, dass Sie Ihr Passwort aktualisieren. Nach der Änderung müssen Sie sich erneut anmelden.</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_intro02">
+                <source>login.migration_change_password_intro02</source>
+                <target>Um eine hohe Sicherheit an Passwörter sicherzustellen prüfen wir Ihre Eingabe gegen öffentlich verfügbare Datenbanken von bekannten Datenlecks. Ihr Passwort wird dabei nicht preisgegeben.</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_current">
+                <source>login.migration_change_password_current</source>
+                <target>Aktuelles Passwort</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_new">
+                <source>login.migration_change_password_new</source>
+                <target>Neues Passwort</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_confirm">
+                <source>login.migration_change_password_confirm</source>
+                <target>Passwort bestätigen</target>
+            </trans-unit>
+            <trans-unit id="login_migration_change_password_submit">
+                <source>login.migration_change_password_submit</source>
+                <target>Passwort aktualisieren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
