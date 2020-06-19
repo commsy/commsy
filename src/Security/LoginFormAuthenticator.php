@@ -5,8 +5,6 @@ namespace App\Security;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
-use App\Entity\RoomPrivat;
-use App\Repository\AuthSourceRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -138,18 +136,8 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // The default redirect to the dashboard.
-        $privateRoom = $this->entityManager->getRepository(RoomPrivat::class)
-            ->findByContextIdAndUsername($context, $user->getUsername());
-
-        // If unable to find a private room this is very likely a root login (which does not own a private room)
-        // so we will redirect to the list of all portals
-        if (!$privateRoom) {
-            return new RedirectResponse($this->urlGenerator->generate('app_server_show'));
-        }
-
-        return new RedirectResponse($this->urlGenerator->generate('app_dashboard_overview', [
-            'roomId' => $privateRoom->getItemId(),
+        return new RedirectResponse($this->urlGenerator->generate('app_helper_portalenter', [
+            'context' => $request->request->get('context'),
         ]));
     }
 

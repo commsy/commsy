@@ -45,23 +45,6 @@ class SecurityController extends AbstractController
         EntityManagerInterface $entityManager,
         string $context = 'server'
     ): Response {
-        // Redirect if the user is already logged in
-        $currentUser = $this->getUser();
-        if ($currentUser) {
-            $privateRoom = $entityManager->getRepository(RoomPrivat::class)
-                ->findByContextIdAndUsername($context, $currentUser->getUsername());
-
-            // If unable to find a private room this is very likely a root login (which does not own a private room)
-            // so we will redirect to the list of all portals
-            if (!$privateRoom) {
-                return $this->redirectToRoute('app_server_show');
-            }
-
-            return $this->redirectToRoute('app_dashboard_overview', [
-                'roomId' => $privateRoom->getItemId(),
-            ]);
-        }
-
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
