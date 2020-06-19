@@ -243,4 +243,14 @@ class PortalProxy
     {
         return false;
     }
+
+    public function isLocked(): bool
+    {
+        return $this->portal->getStatus() === 3;
+    }
+
+    public function isOpenForGuests(): bool
+    {
+        return $this->portal->getIsOpenForGuests();
+    }
 }
