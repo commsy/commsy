@@ -4,16 +4,20 @@
 namespace App\Form\Type\Profile;
 
 
+use App\Form\Type\CheckedFileType;
 use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountContactFormType extends AbstractType
 {
@@ -23,10 +27,16 @@ class AccountContactFormType extends AbstractType
 
     private $userItem;
 
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->translator = $translator;
     }
 
     /**
@@ -39,6 +49,9 @@ class AccountContactFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
+        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
 
         $builder
             ->add('subject', TextType::class, [
@@ -58,15 +71,12 @@ class AccountContactFormType extends AbstractType
                 'required' => true,
                 'config_name' => 'cs_mail_config',
             ])
-            ->add('recipient', TextType::class, [
-                'label' => 'Additional recipients',
+            ->add('additional_recipient', TextType::class, [
+                'label' => 'Additional recipient',
                 'translation_domain' => 'mail',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'Additional recipients',
-                ],
             ])
-            ->add('autoSaveStatus', ChoiceType::class, [
+            ->add('copy_to_sender', ChoiceType::class, [
                 'label' => 'Copy to sender',
                 'choices' => [
                     'Yes' => true,
@@ -76,6 +86,23 @@ class AccountContactFormType extends AbstractType
                 'translation_domain' => 'mail',
                 'choice_translation_domain' => 'form',
                 'required' => true,
+                'data' => false,
+            ])
+            ->add('upload', FileType::class, [
+                'attr' => [
+                    'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
+                ],
+                'required' => false,
+                'multiple' => true,
+                'label' => 'Attachments',
+                'translation_domain' => 'mail',
+            ])
+            ->add('files', CollectionType::class, [
+                'allow_add' => true,
+                'entry_type' => CheckedFileType::class,
+                'entry_options' => [
+                ],
+                'label' => false,
             ])
             ->add('save', SubmitType::class, [
                 'attr' => [
@@ -103,12 +130,12 @@ class AccountContactFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired('item')
+            ->setRequired(['item', 'uploadUrl'])
             ->setAllowedTypes('item', 'cs_item')
+            ->setAllowedTypes('uploadUrl', 'string')
             ->setDefaults([
                 'users' => [],
                 'item' => null,
-                'copy_to_sender' => false,
                 'translation_domain' => 'profile',
             ])
         ;

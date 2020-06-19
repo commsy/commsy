@@ -342,7 +342,7 @@
                                             {% else %}
                                                 {{ 'Moderation:'|trans({}, 'room') }}
                                             {% endif %}
-                                            {{ macros.userNamesWithMailLinks(contactModeratorItems) }}
+                                            {{ macros.userNamesWithMailLinks(contactModeratorItems, roomId) }}
                                         </p>
                                         <p>
                                             {{ macros.contextLink(roomId, project, memberStatus) }}

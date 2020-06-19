@@ -921,8 +921,8 @@
                 <span>
                     {% if member.email %}
                         {% if member.isEmailVisible %}
-                            <a>{{ member.email }}</a>
-                        {% else %}
+                        <a>{{ member.email }}</a>
+                    {% else %}
                             {{ 'emailAddressIsHidden'|trans({}, 'user') }}
                         {% endif %}
                     {% else %}
@@ -1034,7 +1034,7 @@
 {% endmacro %}
 
 {% macro encore_absolute_link_tags(entry_point) %}
-	{# use this macro instead of `encore_entry_link_tags` to generate link tags with absolute urls #}
+    {# use this macro instead of `encore_entry_link_tags` to generate link tags with absolute urls #}
 
     {% for file in encore_entry_css_files(entry_point) %}
         <link rel="stylesheet" href="{{ absolute_url(asset(file)) }}" />

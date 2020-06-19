@@ -16,6 +16,8 @@ use FeedIo\Feed\Item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Form\Model\Send;
+use App\Utils\ItemService;
+use App\Utils\MailAssistant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -715,9 +717,11 @@ class ItemController extends AbstractController
         if (!$item) {
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
+
+        // prepare form
         $groupChoices = $mailAssistant->getGroupChoices($item);
         $defaultGroupId = null;
-        if(sizeof($groupChoices)>0){
+        if (count($groupChoices) > 0) {
             $defaultGroupId = array_values($groupChoices)[0];
         }
 
@@ -733,11 +737,15 @@ class ItemController extends AbstractController
         }
         $formData->setSendToAll(false);
         $formData->setMessage($mailAssistant->prepareMessage($item));
+        $formData->setSendToCreator(false);
         $formData->setCopyToSender(false);
 
 
         $form = $this->createForm(SendType::class, $formData, [
             'item' => $item,
+            'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
+                'roomId' => $roomId,
+            ]),
         ]);
         $form->handleRequest($request);
 
@@ -746,7 +754,7 @@ class ItemController extends AbstractController
             if ($form->get('cancel')->isClicked()) {
 
                 $itemType = $item->getType();
-                if ($item->getType() == 'label') {
+                if ($item->getType() === 'label') {
                     $itemType = $item->getLabelType();
                 }
 
@@ -771,7 +779,7 @@ class ItemController extends AbstractController
         }
 
         return [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ];
     }
 

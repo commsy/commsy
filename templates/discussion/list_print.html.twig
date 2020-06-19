@@ -11,7 +11,7 @@
         <title>{% block title %}CommSy{% endblock %}</title>
 
         {% block stylesheets %}
-            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css')) }}" />
+            {{ macros.encore_absolute_link_tags('app_default') }}
         {% endblock %}
 </head>
 <body>

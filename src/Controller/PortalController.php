@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Portal;
-use App\Form\Model\Base64File;
+use App\Form\Model\Csv\Base64CsvFile;
 use App\Form\Model\CsvImport;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\LicenseSortType;
@@ -477,15 +477,21 @@ class PortalController extends AbstractController
 
         $importForm->handleRequest($request);
         if ($importForm->isSubmitted() && $importForm->isValid()) {
+            if ($importForm->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('app_portal_csvimport', [
+                    'roomId' => $roomId,
+                ]);
+            }
+
             $data = $importForm->getData();
-            /** @var Base64File[] $base64FilesContent */
-            $base64FilesContent = $data['base64'];
+            /** @var Base64CsvFile[] $base64CsvFiles */
+            $base64CsvFiles = $data['base64'];
 
             $userDatasets = [];
-            if ($base64FilesContent) {
-                foreach ($base64FilesContent as $base64FileContent) {
-                    if ($base64FileContent->getChecked()) {
-                        $rows = $base64FileContent->getBase64Content();
+            if ($base64CsvFiles) {
+                foreach ($base64CsvFiles as $base64CsvFile) {
+                    if ($base64CsvFile->getChecked()) {
+                        $rows = $base64CsvFile->getBase64Content();
                         foreach ($rows as $row) {
                             $userDatasets[] = $row;
                         }

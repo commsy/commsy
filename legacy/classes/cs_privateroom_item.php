@@ -504,10 +504,20 @@ class cs_privateroom_item extends cs_room_item
                                 $rubric_manager = $this->_environment->getManager($rubric_array[0]);
                                 $rubric_manager->reset();
                                 $rubric_manager->setContextLimit($roomItem->getItemID());
+
+                                // NOTE: we only include newly created users (i.e., when they have requested room membership)
                                 if ($mail_sequence == 'daily') {
-                                    $rubric_manager->setAgeLimit(1);
+                                    if ($rubric_manager instanceof cs_user_manager) {
+                                        $rubric_manager->setExistenceLimit(1);
+                                    } else {
+                                        $rubric_manager->setAgeLimit(1);
+                                    }
                                 } else {
-                                    $rubric_manager->setAgeLimit(7);
+                                    if ($rubric_manager instanceof cs_user_manager) {
+                                        $rubric_manager->setExistenceLimit(7);
+                                    } else {
+                                        $rubric_manager->setAgeLimit(7);
+                                    }
                                 }
 
                                 if ($rubric_manager instanceof cs_dates_manager) {

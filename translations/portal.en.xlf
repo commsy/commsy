@@ -662,8 +662,16 @@
                 <source>Import users from csv file</source>
                 <target>Import users from csv file</target>
             </trans-unit>
+            <trans-unit id="Files">
+                <source>Files</source>
+                <target>Files</target>
+            </trans-unit>
 
             <!-- auth -->
+            <trans-unit id="authentication_source">
+                <source>authSource</source>
+                <target>Authentification source</target>
+            </trans-unit>
             <trans-unit id="portal_auth_default_source">
                 <source>Default Source</source>
                 <target>Default Source</target>

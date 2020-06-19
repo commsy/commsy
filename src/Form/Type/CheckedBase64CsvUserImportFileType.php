@@ -2,7 +2,7 @@
 namespace App\Form\Type;
 
 use App\Form\DataTransformer\Base64ToCsvDatasetTransformer;
-use App\Form\Model\Base64File;
+use App\Form\Model\Csv\Base64CsvFile;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -43,13 +43,13 @@ class CheckedBase64CsvUserImportFileType extends AbstractType
             ->addModelTransformer($this->transformer);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var Base64File $base64File */
-            $base64File = $event->getData();
+            /** @var Base64CsvFile $base64CsvFile */
+            $base64CsvFile = $event->getData();
             $form = $event->getForm();
 
             $form->add('checked', CheckboxType::class, [
                 'required' => false,
-                'label' => $base64File ? $base64File->getFilename() : '',
+                'label' => $base64CsvFile ? $base64CsvFile->getFilename() : '',
             ]);
         });
     }
@@ -62,7 +62,7 @@ class CheckedBase64CsvUserImportFileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Base64File::class
+            'data_class' => Base64CsvFile::class
         ]);
     }
 }
