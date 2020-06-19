@@ -34,9 +34,14 @@
 
             <div class="uk-card uk-card-default uk-card-small">
                 {% if portal is not null %}
-                    <div class="uk-card-body">
-                        <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
-                    </div>
+                    {% if portal.logoFilename is not empty %}
+                        <div class="uk-card-body uk-padding-remove">
+                            {# TODO: Just a placeholder from the mockup, please replace #}
+                            {# TODO: try images in 220px by 80 px and play around with uk-padding-remove #}
+                            {# TODO: of parent element, cheers #}
+                            <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                        </div>
+                    {% endif %}
                 {% else %}
                     <div class="uk-card-header">
                         <h3 class="uk-card-title">{{ 'login.system_admin'|trans({}, 'login') }}</h3>
