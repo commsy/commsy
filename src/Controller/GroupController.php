@@ -3,42 +3,39 @@
 namespace App\Controller;
 
 use App\Action\Download\DownloadAction;
+use App\Event\CommsyEditEvent;
+use App\Filter\GroupFilterType;
 use App\Form\DataTransformer\GroupTransformer;
+use App\Form\Type\AnnotationType;
+use App\Form\Type\GrouproomType;
+use App\Form\Type\GroupSendType;
+use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
-use App\Utils\AnnouncementService;
 use App\Utils\CategoryService;
 use App\Utils\GroupService;
 use App\Utils\ItemService;
+use App\Utils\MailAssistant;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_room_item;
 use cs_user_item;
-use App\Utils\MailAssistant;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use App\Filter\GroupFilterType;
-use App\Form\Type\GroupType;
-use App\Form\Type\GrouproomType;
-use App\Form\Type\AnnotationType;
-use App\Form\Type\GroupSendType;
-
-use App\Event\CommsyEditEvent;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
