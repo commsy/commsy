@@ -238,4 +238,9 @@ class PortalProxy
     {
         return [];
     }
+
+    public function isArchived(): bool
+    {
+        return false;
+    }
 }
