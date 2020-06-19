@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 
 
 use App\Entity\Account;
+use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -48,23 +49,28 @@ class LegacySubscriber implements EventSubscriberInterface
         if ($contextId) {
             $this->legacyEnvironment->setCurrentContextID($contextId);
 
-            /** @var Account $user */
-            $user = $this->security->getUser();
-            if ($user) {
-                $userManager = $this->legacyEnvironment->getUserManager();
-                $userManager->resetLimits();
-                $userManager->setContextLimit($contextId);
-                $userManager->setUserIDLimit($user->getUsername());
-                $userManager->select();
+            $userManager = $this->legacyEnvironment->getUserManager();
 
-                /** @var \cs_list $contextUserList */
-                $contextUserList = $userManager->get();
+            if ($this->security->isGranted(RootVoter::ROOT)) {
+                $this->legacyEnvironment->setCurrentUser($userManager->getRootUser());
+            } else {
+                /** @var Account $user */
+                $user = $this->security->getUser();
+                if ($user !== null) {
+                    $userManager->resetLimits();
+                    $userManager->setContextLimit($contextId);
+                    $userManager->setUserIDLimit($user->getUsername());
+                    $userManager->select();
 
-                if ($contextUserList->getCount() != 1) {
-                    throw new \Exception();
+                    /** @var \cs_list $contextUserList */
+                    $contextUserList = $userManager->get();
+
+                    if ($contextUserList->getCount() != 1) {
+                        throw new \Exception();
+                    }
+
+                    $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
                 }
-
-                $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
             }
         }
     }
