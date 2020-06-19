@@ -33,6 +33,7 @@ class ServerController extends AbstractController
         $roomRepository = $entityManager->getRepository(Room::class);
 
         $usageInformation = [];
+        $totalMaxActivity = 0;
         foreach ($activePortals as $activePortal) {
             /** @var Portal $activePortal */
             $portalId = $activePortal->getId();
@@ -40,11 +41,14 @@ class ServerController extends AbstractController
                 'users' => $userRepository->getNumActiveUsersByContext($portalId),
                 'rooms' => $roomRepository->getNumActiveRoomsByPortal($portalId),
             ];
+
+            $totalMaxActivity = max($totalMaxActivity, $activePortal->getActivity());
         }
 
         return [
             'activePortals' => $activePortals,
             'usageInformation' => $usageInformation,
+            'totalMaxActivity' => $totalMaxActivity,
         ];
     }
 
