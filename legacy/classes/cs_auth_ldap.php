@@ -147,6 +147,7 @@ class cs_auth_ldap extends cs_auth_manager
 
             if (!$userEntry) {
                 $this->_error_array[] = $this->translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD', $uid);
+                return false;
             }
 
             try {
