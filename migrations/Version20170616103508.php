@@ -2,24 +2,16 @@
 
 namespace DoctrineMigrations;
 
-use App\Migrations\Migration;
+use App\Utils\DbConverter;
 use Doctrine\DBAL\Schema\Schema;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20170616103508 extends Migration implements ContainerAwareInterface
+final class Version20170616103508 extends AbstractMigration
 {
-    private $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @param Schema $schema
      */
@@ -116,8 +108,21 @@ final class Version20170616103508 extends Migration implements ContainerAwareInt
         $this->migrateColorsToCalendars('room_privat');
     }
 
-    private function migrateColorsToCalendars ($dTable) {
-        $translator = $this->container->get('translator');
+    private function migrateColorsToCalendars ($dTable)
+    {
+        $translations = [
+            'Standard' => ['en' => 'Standard', 'de' => 'Standard'],
+            'Grey' => ['en' => 'Grey', 'de' => 'Grau'],
+            'Red' => ['en' => 'Red', 'de' => 'Rot'],
+            'Orange' => ['en' => 'Orange', 'de' => 'Orange'],
+            'Gold' => ['en' => 'Gold', 'de' => 'Gold'],
+            'Yellow' => ['en' => 'Yellow', 'de' => 'Gelb'],
+            'Green' => ['en' => 'Green', 'de' => 'Grün'],
+            'Turquoise' => ['en' => 'Turquoise', 'de' => 'Türkis'],
+            'Blue' => ['en' => 'Blue', 'de' => 'Blau'],
+            'Purple' => ['en' => 'Purple', 'de' => 'Violett'],
+            'Magenta' => ['en' => 'Magenta', 'de' => 'Magenta'],
+        ];
 
         $queryBuilder = $this->connection->createQueryBuilder();
 
@@ -133,12 +138,8 @@ final class Version20170616103508 extends Migration implements ContainerAwareInt
         foreach ($rooms as $room) {
             $queryBuilderDates = $this->connection->createQueryBuilder();
 
-            $extras = $this->convertToPHPValue($room['extras']);
-            $language = 'de';
-            if (isset($extras['LANGUAGE'])) {
-                $language = $extras['LANGUAGE'];
-            }
-            $translator->setLocale($language);
+            $extras = DbConverter::convertToPHPValue($room['extras']);
+            $language = $extras['LANGUAGE'] ?? 'de';
 
             $queryBuilder
                 ->insert('calendars')
@@ -152,7 +153,7 @@ final class Version20170616103508 extends Migration implements ContainerAwareInt
                     )
                 )
                 ->setParameter(0, $room['item_id'])
-                ->setParameter(1, $translator->trans('Standard', array(), 'date'))
+                ->setParameter(1, $translations['standard'][$language])
                 ->setParameter(2, '#ffffff')
                 ->setParameter(3, '')
                 ->setParameter(4, '1')
@@ -170,31 +171,30 @@ final class Version20170616103508 extends Migration implements ContainerAwareInt
 
             $colorsInContext = [];
             foreach ($dates as $date) {
-                if (!$date['color'] || $date['color'] == 'cs-date-color-no-color') {
+                if (!$date['color'] || $date['color'] === 'cs-date-color-no-color') {
                     $this->addDateToCalendar($date['item_id'], $calendarId);
                 }
-                if ($date['color'] && $date['color'] != 'cs-date-color-no-color') {
+                if ($date['color'] && $date['color'] !== 'cs-date-color-no-color') {
                     $colorsInContext[] = $date['color'];
                 }
             }
             $colorsInContext = array_unique($colorsInContext);
 
             $colorArray = [
-                            'Grey'      => ['#999999', 'cs-date-color-01'],
-                            'Red'       => ['#CC0000', 'cs-date-color-02'],
-                            'Orange'    => ['#FF6600', 'cs-date-color-03'],
-                            'Gold'      => ['#FFCC00', 'cs-date-color-04'],
-                            'Yellow'    => ['#FFFF66', 'cs-date-color-05'],
-                            'Green'     => ['#33CC00', 'cs-date-color-06'],
-                            'Turquoise' => ['#00CCCC', 'cs-date-color-07'],
-                            'Blue'      => ['#3366FF', 'cs-date-color-08'],
-                            'Purple'    => ['#6633FF', 'cs-date-color-09'],
-                            'Magenta'   => ['#CC33CC', 'cs-date-color-10']
-                          ];
+                'Grey'      => ['#999999', 'cs-date-color-01'],
+                'Red'       => ['#CC0000', 'cs-date-color-02'],
+                'Orange'    => ['#FF6600', 'cs-date-color-03'],
+                'Gold'      => ['#FFCC00', 'cs-date-color-04'],
+                'Yellow'    => ['#FFFF66', 'cs-date-color-05'],
+                'Green'     => ['#33CC00', 'cs-date-color-06'],
+                'Turquoise' => ['#00CCCC', 'cs-date-color-07'],
+                'Blue'      => ['#3366FF', 'cs-date-color-08'],
+                'Purple'    => ['#6633FF', 'cs-date-color-09'],
+                'Magenta'   => ['#CC33CC', 'cs-date-color-10']
+              ];
 
             foreach ($colorsInContext as $colorInContext) {
                 $currentColorName = '';
-                $currentColor = '#ffffff';
                 $currentColors = [];
                 foreach ($colorArray as $name => $colors) {
                     if (in_array($colorInContext, $colors)) {
@@ -202,9 +202,7 @@ final class Version20170616103508 extends Migration implements ContainerAwareInt
                         $currentColors = $colors;
                     }
                 }
-                if (isset($currentColors[0])) {
-                    $currentColor = $currentColors[0];
-                }
+                $currentColor = $currentColors[0] ?? '#ffffff';
                 
                 $queryBuilder
                     ->insert('calendars')
@@ -218,7 +216,7 @@ final class Version20170616103508 extends Migration implements ContainerAwareInt
                         )
                     )
                     ->setParameter(0, $room['item_id'])
-                    ->setParameter(1, $translator->trans($currentColorName, array(), 'date'))
+                    ->setParameter(1, $translations[$currentColorName][$language])
                     ->setParameter(2, $currentColor)
                     ->setParameter(3, '')
                     ->setParameter(4, '0')

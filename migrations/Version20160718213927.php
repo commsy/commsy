@@ -2,24 +2,15 @@
 
 namespace DoctrineMigrations;
 
+use App\Utils\DbConverter;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
-
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20160718213927 extends AbstractMigration implements ContainerAwareInterface
+final class Version20160718213927 extends AbstractMigration
 {
-    private $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @param Schema $schema
      */
@@ -55,9 +46,6 @@ final class Version20160718213927 extends AbstractMigration implements Container
 
     private function updateFilePath($table)
     {
-        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
-        $discManager = $legacyEnvironment->getDiscManager();
-
         $queryBuilder = $this->connection->createQueryBuilder();
 
         $qb = $queryBuilder
@@ -77,7 +65,7 @@ final class Version20160718213927 extends AbstractMigration implements Container
                 if ($lastSubstringBeginningWithDot) {
                     $fileExtension = substr($lastSubstringBeginningWithDot, 1);
 
-                    $filePath = $discManager->getFilePath($portalId, $fileContextId);
+                    $filePath = DbConverter::getFilePath($portalId, $fileContextId);
                     $filePath .= $file['files_id'];
                     $filePath .= '.' . $fileExtension;
 

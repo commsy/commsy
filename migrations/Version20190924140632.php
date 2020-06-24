@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use App\Migrations\Migration;
+use App\Utils\DbConverter;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190924140632 extends Migration
+final class Version20190924140632 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -39,7 +40,7 @@ final class Version20190924140632 extends Migration
         $authSources = $qb->execute();
 
         foreach ($authSources as $authSource) {
-            $extras = $this->convertToPHPValue($authSource['extras']);
+            $extras = DbConverter::convertToPHPValue($authSource['extras']);
 
             // TODO: Migrate other source types
             $type = null;

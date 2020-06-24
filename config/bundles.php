@@ -8,7 +8,6 @@ return [
     Circle\RestClientBundle\CircleRestClientBundle::class => ['all' => true],
     Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle::class => ['all' => true],
     Debril\RssAtomBundle\DebrilRssAtomBundle::class => ['all' => true],
-    Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle::class => ['all' => true],
     FOS\ElasticaBundle\FOSElasticaBundle::class => ['all' => true],
     IDCI\Bundle\ColorSchemeBundle\IDCIColorSchemeBundle::class => ['all' => true],
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
