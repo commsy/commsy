@@ -10,7 +10,9 @@ use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
 use App\Entity\Room;
+use App\Entity\RoomCategories;
 use App\Entity\Translation;
+use App\Event\CommsyEditEvent;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
@@ -21,10 +23,12 @@ use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\PortalhomeType;
+use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TimeType;
 use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
+use App\Services\RoomCategoriesService;
 use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -38,6 +42,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 
 class PortalSettingsController extends AbstractController
@@ -130,6 +135,74 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/roomcategories/{roomCategoryId?}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param int $roomCategoryId
+     * @param Request $request
+     * @param RoomCategoriesService $roomCategoriesService
+     * @param EventDispatcherInterface $dispatcher
+     * @param EntityManagerInterface $entityManager
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function roomcategories(
+        Portal $portal,
+        $roomCategoryId,
+        Request $request,
+        RoomCategoriesService $roomCategoriesService,
+        EventDispatcherInterface $dispatcher,
+        EntityManagerInterface $entityManager
+    ) {
+        $editForm = null;
+        $portalId = $portal->getId();
+        $repository = $entityManager->getRepository(RoomCategories::class);
+
+        if ($roomCategoryId) {
+            $roomCategory = $repository->find($roomCategoryId);
+        } else {
+            $roomCategory = new RoomCategories();
+            $roomCategory->setContextId($portalId);
+        }
+
+        $editForm = $this->createForm(RoomCategoriesType::class, $roomCategory);
+
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+
+            $clickedButtonName = $editForm->getClickedButton()->getName();
+
+            if ($clickedButtonName === 'new' || $clickedButtonName === 'update') {
+                $entityManager->persist($roomCategory);
+            } else if ($clickedButtonName === 'delete') {
+                $roomCategoriesService->removeRoomCategory($roomCategory);
+            }
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_portalsettings_roomcategories', [
+                'portalId' => $portal->getId(),
+            ]);
+        }
+
+        $roomCategories = $repository->findBy([
+            'context_id' => $portalId,
+        ]);
+
+        $dispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
+
+// TODO: add mandatory links form
+
+        return [
+            'editForm' => $editForm ? $editForm->createView() : null,
+            'portal' => $portal,
+            'roomCategoryId' => $roomCategoryId,
+            'roomCategories' => $roomCategories,
         ];
     }
 
