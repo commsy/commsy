@@ -3,15 +3,21 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Auth
+ * Account
  *
  * @ORM\Table(name="accounts")
- * @ORM\Entity(repositoryClass="App\Repository\AccountsRepository")"
+ * @ORM\Entity(repositoryClass="App\Repository\AccountsRepository")
+ * @UniqueEntity(
+ *     fields={"contextId", "username", "authSource"},
+ *     errorPath="username",
+ *     repositoryMethod="findOnByCredentials"
+ * )
  */
 class Account implements UserInterface, EncoderAwareInterface
 {
@@ -30,6 +36,9 @@ class Account implements UserInterface, EncoderAwareInterface
      * @ORM\Column(type="string", length=100)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
+     *
+     * @Assert\NotBlank()
+     * @Assert\Regex(pattern="/^(root|guest)$/i", match=false, message="{{ value }} is a reserved name")
      */
     private $username;
 
@@ -56,6 +65,8 @@ class Account implements UserInterface, EncoderAwareInterface
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=false)
+     *
+     * @Assert\NotBlank()
      */
     private $firstname;
 
@@ -63,6 +74,8 @@ class Account implements UserInterface, EncoderAwareInterface
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=false)
+     *
+     * @Assert\NotBlank()
      */
     private $lastname;
 
@@ -70,6 +83,8 @@ class Account implements UserInterface, EncoderAwareInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=100, nullable=false)
+     *
+     * @Assert\Email()
      */
     private $email;
 

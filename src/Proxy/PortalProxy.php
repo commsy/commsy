@@ -45,7 +45,7 @@ class PortalProxy
 
     public function getType(): string
     {
-        return $this->portal->getType();
+        return 'portal';
     }
 
     public function isPortal(): bool
@@ -237,5 +237,20 @@ class PortalProxy
     public function getEmailTextArray(): array
     {
         return [];
+    }
+
+    public function isArchived(): bool
+    {
+        return false;
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->portal->getStatus() === 3;
+    }
+
+    public function isOpenForGuests(): bool
+    {
+        return $this->portal->getIsOpenForGuests();
     }
 }

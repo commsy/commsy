@@ -1,6 +1,7 @@
 <?php
 namespace App\Security\Authorization\Voter;
 
+use App\Entity\Account;
 use App\Entity\Portal;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use Symfony\Component\Security\Core\User\User;
 
 class ItemVoter extends Voter
 {
@@ -52,7 +54,7 @@ class ItemVoter extends Voter
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
         // get current logged in user
-        // $user = $token->getUser();
+        $user = $token->getUser();
 
         // make sure there is a user object (i.e. that the user is logged in)
         // if (!$user instanceof User) {
@@ -90,7 +92,7 @@ class ItemVoter extends Voter
                     return $this->canModerate($item, $currentUser);
 
                 case self::ENTER:
-                    return $this->canEnter($item, $currentUser);
+                    return $this->canEnter($item, $currentUser, $user);
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
@@ -198,19 +200,36 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canEnter($item, $currentUser)
+    private function canEnter($item, $currentUser, $user)
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($item->getItemID());
 
         if ($item->isPrivateRoom()) {
             return true;
-        } else if ($roomItem) {
+        }
+
+        if ($roomItem) {
             if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
                 return true;
             }
-        } else if ($item->isPortal() && $item->mayEnter($currentUser)) {
-            return true;
+        }
+
+        if ($item->isPortal()) {
+            if ($currentUser->isRoot()) {
+                return true;
+            }
+
+            if ($item->isLocked()) {
+                return false;
+            }
+
+            if ($item->isOpenForGuests()) {
+                return true;
+            }
+
+            // allow access if user is authenticated
+            return $user instanceof User;
         }
 
         return false;

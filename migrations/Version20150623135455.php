@@ -2,24 +2,16 @@
 
 namespace DoctrineMigrations;
 
-use App\Migrations\Migration;
+use App\Utils\DbConverter;
 use Doctrine\DBAL\Schema\Schema;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20150623135455 extends Migration implements ContainerAwareInterface
+final class Version20150623135455 extends AbstractMigration
 {
-    private $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @param Schema $schema
      */
@@ -155,7 +147,7 @@ final class Version20150623135455 extends Migration implements ContainerAwareInt
         $rooms = $qb->execute();
 
         foreach ($rooms as $room) {
-            $extras = $this->convertToPHPValue($room['extras']);
+            $extras = DbConverter::convertToPHPValue($room['extras']);
 
             if (isset($extras['HOMECONF']) && !empty($extras['HOMECONF'])) {
                 $homeConf = $this->migrateHomeConf($extras['HOMECONF']);

@@ -1124,15 +1124,17 @@ class PortalSettingsController extends AbstractController
                 $userAssignWorkspace->setName($user->getFullName());
                 $userAssignWorkspace->setWorkspaceSelection('0');
 
+                $formData = $form->getData();
+
                 $form = $this->createForm(AccountIndexDetailAssignWorkspaceType::class, $userAssignWorkspace);
 //                $allRooms = $portal->getContinuousRoomList($legacyEnvironment); TODO this causes a 'can't serialize PDO' error.
 
-                $repository = $this->getDoctrine()->getRepository(Room::class);
-                $allRooms = $repository->findAll();
+                $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
+                $projectRooms = $projectRoomManager->getRoomsByTitle($formData->getSearchForWorkspace(), $portal->getId());
 
                 $choiceArray = array();
 
-                foreach($allRooms as $currentRoom){
+                foreach($projectRooms as $currentRoom){
                     $choiceArray[$currentRoom->getTitle()] = $currentRoom->getItemID();
                 }
 
