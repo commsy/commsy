@@ -122,11 +122,10 @@
 
                                 {% if portal is not null %}
                                     <div class="uk-margin">
-                                        <label class="uk-form-label" for="form-stacked-register">Noch keine Kennung?</label>
+                                        <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
                                         <div class="uk-form-controls">
                                             <div class="uk-inline uk-width-1-1">
-                                                <a class="uk-button uk-button-default" href="{{ path('app_account_signup', { 'id': context }) }}">Sign up</a>
-    {#                                            <input class="uk-input uk-button uk-button-text" id="form-stacked-register" type="submit" value="Registrieren">#}
+                                                <a class="uk-button uk-button-default" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
                                             </div>
                                         </div>
                                     </div>
