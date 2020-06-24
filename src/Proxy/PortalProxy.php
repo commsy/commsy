@@ -45,7 +45,7 @@ class PortalProxy
 
     public function getType(): string
     {
-        return $this->portal->getType();
+        return 'portal';
     }
 
     public function isPortal(): bool
