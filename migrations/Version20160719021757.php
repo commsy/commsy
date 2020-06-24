@@ -2,25 +2,16 @@
 
 namespace DoctrineMigrations;
 
-use App\Migrations\Migration;
+use App\Utils\DbConverter;
 use Doctrine\DBAL\Schema\Schema;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20160719021757 extends Migration implements ContainerAwareInterface
+final class Version20160719021757 extends AbstractMigration
 {
-
-    private $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @param Schema $schema
      */
@@ -55,7 +46,7 @@ final class Version20160719021757 extends Migration implements ContainerAwareInt
         $materials = $qb->execute();
 
         foreach ($materials as $material) {
-            $extras = $this->convertToPHPValue($material['extras']);
+            $extras = DbConverter::convertToPHPValue($material['extras']);
 
             $update = false;
 

@@ -101,12 +101,6 @@
                                     </div>
                                 </div>
 
-                                <!-- <div class="uk-margin">
-                                    <div class="uk-form-controls">
-                                        <label><input class="uk-checkbox" type="checkbox" name="checkbox1"> Ich akzeptiere die <a href="#modal-tou" uk-toggle>Nutzungsbedingungen</a></label>
-                                    </div>
-                                </div> -->
-
                                 {#
                                     Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
                                     See https://symfony.com/doc/current/security/remember_me.html
@@ -128,11 +122,10 @@
 
                                 {% if portal is not null %}
                                     <div class="uk-margin">
-                                        <label class="uk-form-label" for="form-stacked-register">Noch keine Kennung?</label>
+                                        <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
                                         <div class="uk-form-controls">
                                             <div class="uk-inline uk-width-1-1">
-                                                <a class="uk-button uk-button-default" href="{{ path('app_account_signup', { 'id': context }) }}">Sign up</a>
-    {#                                            <input class="uk-input uk-button uk-button-text" id="form-stacked-register" type="submit" value="Registrieren">#}
+                                                <a class="uk-button uk-button-default" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
                                             </div>
                                         </div>
                                     </div>

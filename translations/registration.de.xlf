@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="registration_no_account">
+                <source>registration.no_account</source>
+                <target>Noch keine Kennung?</target>
+            </trans-unit>
+            <trans-unit id="registration_sign_up">
+                <source>registration.sign_up</source>
+                <target>Registrieren</target>
+            </trans-unit>
+            <trans-unit id="registration_about">
+                <source>registration.about</source>
+                <target>Neue Kennung registrieren</target>
+            </trans-unit>
+            <trans-unit id="registration_firstname">
+                <source>registration.firstname</source>
+                <target>Vorname</target>
+            </trans-unit>
+            <trans-unit id="registration_lastname">
+                <source>registration.lastname</source>
+                <target>Nachname</target>
+            </trans-unit>
+            <trans-unit id="registration.username">
+                <source>registration.username</source>
+                <target>Ihre Kennung</target>
+            </trans-unit>
+            <trans-unit id="registration.email">
+                <source>registration.email</source>
+                <target>E-Mail</target>
+            </trans-unit>
+            <trans-unit id="registration.email_confirm">
+                <source>registration.email_confirm</source>
+                <target>E-Mail (wdh.)</target>
+            </trans-unit>
+            <trans-unit id="registration.password">
+                <source>registration.password</source>
+                <target>Passwort</target>
+            </trans-unit>
+            <trans-unit id="registration.password_confirm">
+                <source>registration.password_confirm</source>
+                <target>Passwort (wdh.)</target>
+            </trans-unit>
+            <trans-unit id="registration.submit">
+                <source>registration.submit</source>
+                <target>Registrieren</target>
+            </trans-unit>
+            <trans-unit id="registration.cancel">
+                <source>registration.cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

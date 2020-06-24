@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use App\Migrations\Migration;
+use App\Utils\DbConverter;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200617133036 extends Migration
+final class Version20200617133036 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -34,7 +35,7 @@ final class Version20200617133036 extends Migration
         $portals = $qb->execute();
 
         foreach ($portals as $portal) {
-            $extras = $this->convertToPHPValue($portal['extras']);
+            $extras = DbConverter::convertToPHPValue($portal['extras']);
 
             $this->connection->update('portal', [
                 'description_de' => $extras['DESCRIPTION']['de'] ?? '',

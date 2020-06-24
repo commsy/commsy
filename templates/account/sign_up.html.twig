@@ -8,60 +8,104 @@
         <div class="uk-width-large">
 
             <div class="uk-card uk-card-default uk-card-small">
-                <div class="uk-card-body">
-                    <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
-                </div>
+                {% if portal.logoFilename is not empty %}
+                    <div class="uk-card-body uk-padding-remove">
+                        {# TODO: Just a placeholder from the mockup, please replace #}
+                        {# TODO: try images in 220px by 80 px and play around with uk-padding-remove #}
+                        {# TODO: of parent element, cheers #}
+                        <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                    </div>
+                {% endif %}
 
                 <div class="uk-card-body">
-                    <h3 class="uk-card-title">Agora</h3>
+                    <h3 class="uk-card-title">{{ portal.title }}</h3>
 
-                    <p class="uk-text-small">Neue Kennung registrieren</p>
+                    <p class="uk-text-small">{{ 'registration.about'|trans({}, 'registration') }}</p>
 
-                    <form class="uk-form-stacked uk-grid-small" uk-grid>
+                    {{ form_start(form, {
+                        'attr': {
+                            'class': 'uk-form-stacked uk-grid-small',
+                            'uk-grid': ''
+                        }
+                    }) }}
+                        {{ form_errors(form) }}
 
                         <div class="uk-width-1-2">
-                            <input class="uk-input" id="form-stacked-surname" type="text" placeholder="Vorname">
+                            {{ form_row(form.firstname) }}
                         </div>
 
                         <div class="uk-width-1-2">
-                            <input class="uk-input" id="form-stacked-lastname" type="text" placeholder="Nachname">
+                            {{ form_row(form.lastname) }}
                         </div>
 
                         <div class="uk-width-1-1">
-                            <input class="uk-input" id="form-stacked-username" type="text" placeholder="Ihre Kennung">
+                            {{ form_row(form.username) }}
                         </div>
 
-                        <div class="uk-width-1-2">
-                            <input class="uk-input" id="form-stacked-email" type="text" placeholder="E-Mail">
+                        <div class="uk-width-1-1">
+                            {{ form_row(form.email.first) }}
                         </div>
 
-                        <div class="uk-width-1-2">
-                            <input class="uk-input" id="form-stacked-email-confirm" type="text" placeholder="E-Mail (wdh.)">
+                        <div class="uk-width-1-1">
+                            {{ form_row(form.email.second) }}
                         </div>
 
-                        <div class="uk-width-1-2">
-                            <input class="uk-input" id="form-stacked-password" type="password" placeholder="Passwort">
+                        <div class="uk-width-1-1">
+                            {{ form_row(form.plainPassword.first) }}
                         </div>
 
-                        <div class="uk-width-1-2">
-                            <input class="uk-input" id="form-stacked-password-confirm" type="password" placeholder="Passwort (wdh.)">
+                        <div class="uk-width-1-1">
+                            {{ form_row(form.plainPassword.second) }}
                         </div>
 
                         <div class="uk-margin-1-1">
-                            <label><input class="uk-checkbox" type="checkbox" name="checkbox1"> Ich akzeptiere die <a href="#modal-tou" uk-toggle>Nutzungsbedingungen</a></label>
+                            <label><input class="uk-checkbox" type="checkbox" name="checkbox1"> Ich akzeptiere die <a href="#modal_sign_up_tou" uk-toggle>Nutzungsbedingungen</a></label>
+
+                            <div id="modal_sign_up_tou" uk-modal>
+                                <div class="uk-modal-dialog">
+                                    <button class="uk-modal-close-default" type="button" uk-close></button>
+
+                                    <div class="uk-modal-header">
+                                        <h2 class="uk-modal-title">Nutzungsbedingungen</h2>
+                                    </div>
+
+                                    <div class="uk-modal-body" uk-overflow-auto>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                                    </div>
+
+                                    <div class="uk-modal-footer uk-text-right">
+                                        <button class="uk-button uk-button-primary uk-modal-close" type="button">Close</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="uk-width-1-2">
-                            <input class="uk-input uk-button uk-button-primary" id="form-stacked-submit" type="submit" value="Registrieren">
+                            {{ form_row(form.submit) }}
                         </div>
 
                         <div class="uk-width-1-2 uk-text-right">
-                            <input class="uk-input uk-button uk-button-link" id="form-stacked-cancel" type="submit" value="Abbrechen">
+                            {{ form_row(form.cancel) }}
                         </div>
-
-                    </form>
-
-                    {{ form(form) }}
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>

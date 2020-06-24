@@ -1,14 +1,12 @@
 <?php
 
 
-namespace App\Migrations;
+namespace App\Utils;
 
 
-use Doctrine\Migrations\AbstractMigration;
-
-abstract class Migration extends AbstractMigration
+class DbConverter
 {
-    protected function convertToPHPValue($value)
+    public static function convertToPHPValue($value)
     {
         if ($value === null) {
             return null;
@@ -36,5 +34,22 @@ abstract class Migration extends AbstractMigration
         }
 
         return $val;
+    }
+
+    public static function getFilePath(int $portalId, int $fileContextId)
+    {
+        $secondContext = (string) $fileContextId;
+        $secondContextLength = strlen($secondContext);
+        $secondFolder = '';
+        for ($i = 0; $i < $secondContextLength; $i++) {
+            if ($i > 0 && $i % 4 == 0) {
+                $secondFolder .= '/';
+            }
+
+            $secondFolder .= $secondContext[$i];
+        }
+        $secondFolder .= '_';
+
+        return '../files/' . $portalId . '/' . $secondFolder . '/';
     }
 }
