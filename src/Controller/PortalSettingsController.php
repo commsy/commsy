@@ -1113,10 +1113,25 @@ class PortalSettingsController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if($form->isSubmitted()){
 
-            if($form->get('save')->isClicked()){
-                $var = 0;
+            if($form->get('save')->isClicked()){ //TODO: $form->isValid() returns false, even if it is.
+
+                $user = $userService->getUser($request->get('userId'));
+                $formData = $form->getData();
+                $choiceWorkspaceId = $formData->getWorkspaceSelection();
+                $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
+                $newAssignedRoom = $projectRoomManager->getItem($choiceWorkspaceId);
+                $user->setRoom($newAssignedRoom);
+                $user->save();
+
+                $message = (new \Swift_Message())
+                    ->setFrom([$this->getParameter('commsy.email.from') => 'a title'])
+                    ->setReplyTo([$user->getEmail() => $user->getFullName()]);
+                $message->setBody('a body', 'text/plain');
+
+                $this->get('mailer')->send($message);
+
             }elseif($form->get('search')->isClicked()){
                 $user = $userService->getUser($request->get('userId'));
                 $userAssignWorkspace = new PortalUserAssignWorkspace();
