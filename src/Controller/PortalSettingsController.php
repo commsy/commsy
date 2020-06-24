@@ -151,7 +151,7 @@ class PortalSettingsController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function roomcategories(
+    public function roomCategories(
         Portal $portal,
         $roomCategoryId,
         Request $request,
