@@ -24,9 +24,6 @@ class PasswordMigrationType extends AbstractType
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'login.migration_change_password_submit',
-                'attr' => [
-                    'class' => 'uk-button-primary uk-width-medium',
-                ],
             ])
         ;
     }
