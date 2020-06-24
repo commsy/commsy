@@ -38,6 +38,11 @@ class AccountsRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findOnByCredentials(array $fields)
+    {
+        return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);
+    }
+
     /**
      * @param string $usernameOrEmail
      * @param int $context

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="registration_about">
+                <source>registration.about</source>
+                <target>Create new account</target>
+            </trans-unit>
+            <trans-unit id="registration_firstname">
+                <source>registration.firstname</source>
+                <target>Firstname</target>
+            </trans-unit>
+            <trans-unit id="registration_lastname">
+                <source>registration.lastname</source>
+                <target>Lastname</target>
+            </trans-unit>
+            <trans-unit id="registration.username">
+                <source>registration.username</source>
+                <target>Username</target>
+            </trans-unit>
+            <trans-unit id="registration.email">
+                <source>registration.email</source>
+                <target>E-Mail</target>
+            </trans-unit>
+            <trans-unit id="registration.email_confirm">
+                <source>registration.email_confirm</source>
+                <target>E-Mail (repeat)</target>
+            </trans-unit>
+            <trans-unit id="registration.password">
+                <source>registration.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="registration.password_confirm">
+                <source>registration.password_confirm</source>
+                <target>Password (repeat)</target>
+            </trans-unit>
+            <trans-unit id="registration.submit">
+                <source>registration.submit</source>
+                <target>Register</target>
+            </trans-unit>
+            <trans-unit id="registration.cancel">
+                <source>registration.cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
