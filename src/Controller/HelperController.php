@@ -63,12 +63,14 @@ class HelperController extends AbstractController
             }
 
             // The default redirect to the dashboard.
-            $privateRoom = $entityManager->getRepository(RoomPrivat::class)
-                ->findByContextIdAndUsername($context, $user->getUsername());
-            if ($privateRoom !== null) {
-                return $this->redirectToRoute('app_dashboard_overview', [
-                    'roomId' => $privateRoom->getItemId(),
-                ]);
+            if (is_numeric($context)) {
+                $privateRoom = $entityManager->getRepository(RoomPrivat::class)
+                    ->findByContextIdAndUsername($context, $user->getUsername());
+                if ($privateRoom !== null) {
+                    return $this->redirectToRoute('app_dashboard_overview', [
+                        'roomId' => $privateRoom->getItemId(),
+                    ]);
+                }
             }
         }
 
