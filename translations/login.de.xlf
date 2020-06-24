@@ -54,6 +54,14 @@
                 <source>login.migration_change_password_submit</source>
                 <target>Passwort aktualisieren</target>
             </trans-unit>
+            <trans-unit id="login_forget_password">
+                <source>login.forget_password</source>
+                <target>Passwort vergessen?</target>
+            </trans-unit>
+            <trans-unit id="login_forget_account">
+                <source>login.forget_account</source>
+                <target>Kennung vergessen?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
