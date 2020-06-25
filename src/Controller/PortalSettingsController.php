@@ -179,11 +179,11 @@ class PortalSettingsController extends AbstractController
 
             if ($clickedButtonName === 'new' || $clickedButtonName === 'update') {
                 $entityManager->persist($roomCategory);
+                $entityManager->flush();
             } else if ($clickedButtonName === 'delete') {
                 $roomCategoriesService->removeRoomCategory($roomCategory);
+                $entityManager->flush();
             }
-
-            $entityManager->flush();
 
             return $this->redirectToRoute('app_portalsettings_roomcategories', [
                 'portalId' => $portal->getId(),

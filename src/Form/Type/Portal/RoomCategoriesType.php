@@ -20,32 +20,38 @@ class RoomCategoriesType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('title', Types\TextType::class, [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-                'label' => 'Title',
-                'required' => true,
-            ]);
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
             $roomCategory = $event->getData();
             $form = $event->getForm();
 
             // check if this is a "new" object
             if (!$roomCategory->getId()) {
-                $form->add('new', Types\SubmitType::class, [
-                    'label' => 'Create new category',
-                ]);
+                $form
+                    ->add('title', Types\TextType::class, [
+                        'constraints' => [
+                            new Assert\NotBlank(),
+                        ],
+                        'label' => 'New category',
+                        'required' => true,
+                    ])
+                    ->add('new', Types\SubmitType::class, [
+                        'label' => 'Create new category',
+                    ]);
             } else {
                 $form
+                    ->add('title', Types\TextType::class, [
+                        'constraints' => [
+                            new Assert\NotBlank(),
+                        ],
+                        'label' => 'Edit category',
+                        'required' => true,
+                    ])
                     ->add('update', Types\SubmitType::class, [
                         'label' => 'Update category',
                     ])
                     ->add('delete', Types\SubmitType::class, [
                         'attr' => array(
-                            'class' => 'uk-button-danger',
+                            'class' => 'uk-button-danger uk-width-auto',
                         ),
                         'label' => 'Delete category',
                         'validation_groups' => false,   // disable validation
