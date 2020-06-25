@@ -115,7 +115,7 @@
                                 <div class="uk-margin">
                                     <div class="uk-form-controls">
                                         <div class="uk-inline uk-width-1-1">
-                                            <input class="uk-input uk-button uk-button-primary" id="form-stacked-submit" type="submit" name="login_local" value="{{ 'login.sign_in'|trans({}, 'login') }}">
+                                            <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +125,7 @@
                                         <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
                                         <div class="uk-form-controls">
                                             <div class="uk-inline uk-width-1-1">
-                                                <a class="uk-button uk-button-default" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
+                                                <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -133,11 +133,11 @@
                                     <div class="uk-margin uk-text-small">
                                         <div class="uk-flex uk-flex-around">
                                             <div class="">
-                                                <a href="#">Passwort vergessen?</a>
+                                                <a href="#">{{ 'login.forget_password'|trans({}, 'login') }}</a>
                                             </div>
 
                                             <div class="">
-                                                <a href="#">Kennung vergessen?</a>
+                                                <a href="#">{{ 'login.forget_account'|trans({}, 'login') }}</a>
                                             </div>
                                         </div>
                                     </div>

@@ -80,13 +80,13 @@ class SignUpFormType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'registration.submit',
                 'attr' => [
-                    'class' => 'uk-input uk-width-medium uk-button-primary',
+                    'class' => 'uk-button-primary uk-width-medium',
                 ]
             ])
             ->add('cancel', SubmitType::class, [
                 'label' => 'registration.cancel',
                 'attr' => [
-                    'class' => 'uk-input uk-width-medium uk-button-link',
+                    'class' => 'uk-button-default uk-width-medium',
                     'formnovalidate' => '',
                 ],
                 'validation_groups' => false,
