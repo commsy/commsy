@@ -1,0 +1,32 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme editForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% embed 'components/context_navigation.html.twig' %}
+        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Room categories'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            {% for roomCategory in roomCategories %}
+                <span>
+                    <a class="uk-button uk-button-default uk-margin-bottom uk-margin-small-right{% if roomCategoryId == roomCategory.id %} uk-button-primary{% endif %}"
+                       title="{{- 'Edit category'|trans({}, 'portal') -}}"
+                       href="{{ path('app_portalsettings_roomcategories', { 'portalId': portal.id, 'roomCategoryId': roomCategory.id }) }}">
+                        <span class="uk-vertical-align-middle">
+                            {{- roomCategory.title|trans({}, 'portal') -}}
+                        </span>
+                    </a>
+                </span>
+            {% endfor %}
+
+            {{ form(editForm) }}
+
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

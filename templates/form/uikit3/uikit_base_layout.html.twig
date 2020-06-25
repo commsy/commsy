@@ -58,7 +58,7 @@
 {%- endblock button_widget %}
 
 {% block submit_widget -%}
-    {%- set attr = attr|merge({class: (attr.class|default('uk-button-primary'))|trim}) -%}
+    {%- set attr = attr|merge({class: (attr.class|default('uk-button-primary uk-width-auto'))|trim}) -%}
     {{- parent() -}}
 {%- endblock submit_widget %}
 

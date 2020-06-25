@@ -14,6 +14,14 @@
                 <source>Title</source>
                 <target>Titel</target>
             </trans-unit>
+            <trans-unit id="New category">
+                <source>New category</source>
+                <target>New category</target>
+            </trans-unit>
+            <trans-unit id="Edit category">
+                <source>Edit category</source>
+                <target>Edit category</target>
+            </trans-unit>
             <trans-unit id="Create new category">
                 <source>Create new category</source>
                 <target>Neue Kategorie anlegen</target>

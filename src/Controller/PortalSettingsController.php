@@ -151,7 +151,7 @@ class PortalSettingsController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function roomcategories(
+    public function roomCategories(
         Portal $portal,
         $roomCategoryId,
         Request $request,
@@ -179,11 +179,11 @@ class PortalSettingsController extends AbstractController
 
             if ($clickedButtonName === 'new' || $clickedButtonName === 'update') {
                 $entityManager->persist($roomCategory);
+                $entityManager->flush();
             } else if ($clickedButtonName === 'delete') {
                 $roomCategoriesService->removeRoomCategory($roomCategory);
+                $entityManager->flush();
             }
-
-            $entityManager->flush();
 
             return $this->redirectToRoute('app_portalsettings_roomcategories', [
                 'portalId' => $portal->getId(),
