@@ -1119,18 +1119,24 @@ class PortalSettingsController extends AbstractController
 
                 $user = $userService->getUser($request->get('userId'));
                 $formData = $form->getData();
-                $choiceWorkspaceId = $formData->getWorkspaceSelection();
+                $newUser = $user->cloneData();
+                $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
                 $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
                 $newAssignedRoom = $projectRoomManager->getItem($choiceWorkspaceId);
-                $user->setRoom($newAssignedRoom);
-                $user->save();
+                $newUser->setContextID($newAssignedRoom->getItemID());
+                $newUser->setUserComment($formData->getDescriptionOfParticipation());
+                try{
+                    $newUser->save();
+                }catch(\Exception $e){
+                    //do nothing
+                }
 
-                $message = (new \Swift_Message())
-                    ->setFrom([$this->getParameter('commsy.email.from') => 'a title'])
-                    ->setReplyTo([$user->getEmail() => $user->getFullName()]);
-                $message->setBody('a body', 'text/plain');
-
-                $this->get('mailer')->send($message);
+//                $message = (new \Swift_Message())
+//                    ->setFrom([$this->getParameter('commsy.email.from') => 'a title'])
+//                    ->setReplyTo([$user->getEmail() => $user->getFullName()]);
+//                $message->setBody('a body', 'text/plain');
+//
+//                $this->get('mailer')->send($message);
 
             }elseif($form->get('search')->isClicked()){
                 $user = $userService->getUser($request->get('userId'));
@@ -1146,6 +1152,12 @@ class PortalSettingsController extends AbstractController
 
                 $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
                 $projectRooms = $projectRoomManager->getRoomsByTitle($formData->getSearchForWorkspace(), $portal->getId());
+
+                if($projectRooms->getCount()< 1){
+                    $repository = $this->getDoctrine()->getRepository(Room::class);
+                    $projectRooms = $repository->findAll();
+
+                }
 
                 $choiceArray = array();
 
