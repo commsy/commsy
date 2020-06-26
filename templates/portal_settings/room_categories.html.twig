@@ -1,6 +1,7 @@
 {% extends 'layout.html.twig' %}
 
 {% form_theme editForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme linkForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% embed 'components/context_navigation.html.twig' %}
@@ -27,6 +28,14 @@
 
             {{ form(editForm) }}
 
+        {% endblock %}
+    {% endembed %}
+
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Assignments'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            {{ form(linkForm) }}
         {% endblock %}
     {% endembed %}
 {% endblock %}
