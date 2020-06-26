@@ -198,6 +198,14 @@ class PortalSettingsController extends AbstractController
         $dispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
 
+        // ensure that room categories aren't mandatory if there currently aren't any room categories
+        if (empty($roomCategories)) {
+            $portal->setTagMandatory(false);
+            $entityManager->persist($portal);
+            $entityManager->flush();
+        }
+
+
         // mandatory links form
         $linkForm = $this->createForm(MandatoryAssignmentType::class, $portal);
 

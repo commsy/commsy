@@ -18,12 +18,18 @@ class MandatoryAssignmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('tagMandatory', Types\CheckboxType::class, [
+            ->add('tagMandatory', Types\ChoiceType::class, [
                 'label' => 'Mandatory assignment',
-                'required' => false,
+                'expanded' => true,
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false,
+                ],
+                'choice_translation_domain' => 'form',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
+                'translation_domain' => 'form',
             ])
         ;
     }
