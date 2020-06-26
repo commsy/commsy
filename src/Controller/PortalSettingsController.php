@@ -22,6 +22,7 @@ use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
+use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportType;
@@ -196,10 +197,23 @@ class PortalSettingsController extends AbstractController
 
         $dispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
-// TODO: add mandatory links form
+
+        // mandatory links form
+        $linkForm = $this->createForm(MandatoryAssignmentType::class, $portal);
+
+        $linkForm->handleRequest($request);
+        if ($linkForm->isSubmitted() && $linkForm->isValid()) {
+
+            if ($linkForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
 
         return [
-            'editForm' => $editForm ? $editForm->createView() : null,
+            'editForm' => $editForm->createView(),
+            'linkForm' => $linkForm->createView(),
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,

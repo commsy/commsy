@@ -6,6 +6,8 @@
                 <source>Portal</source>
                 <target>Portal</target>
             </trans-unit>
+
+            <!-- room categories -->
             <trans-unit id="Edit room categories">
                 <source>Edit room categories</source>
                 <target>Edit workspace categories</target>
@@ -41,6 +43,14 @@
             <trans-unit id="Room categories">
                 <source>Room categories</source>
                 <target>Workspace categories</target>
+            </trans-unit>
+            <trans-unit id="Mandatory assignment">
+                <source>Mandatory assignment</source>
+                <target>Mandatory</target>
+            </trans-unit>
+            <trans-unit id="Assignments">
+                <source>Assignments</source>
+                <target>Assignments</target>
             </trans-unit>
 
             <trans-unit id="Portal settings">
