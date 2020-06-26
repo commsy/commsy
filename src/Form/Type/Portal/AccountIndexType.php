@@ -51,8 +51,10 @@ class AccountIndexType extends AbstractType
                 'label' => 'Search',
                 'translation_domain' => 'portal',
             ])
-            ->add('accountIndexUsers', Types\CollectionType::class, [
-                'entry_type' => AccountIndexUser::class,
+            ->add('ids', Types\CollectionType::class, [
+                // each entry in the array will be an "Checkbox" field
+                'entry_type' => Types\CheckboxType::class,
+                'required' => false,
             ])
             ->add('indexViewAction', Types\ChoiceType::class, [
                 'choices'  => [

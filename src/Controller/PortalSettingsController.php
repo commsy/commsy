@@ -655,6 +655,7 @@ class PortalSettingsController extends AbstractController
         $accountIndex = new AccountIndex();
 
         $accountIndexUserList = [];
+        $accountIndexUserIds = array();
 
         foreach($userList as $singleUser) {
             $singleAccountIndexUser = new AccountIndexUser();
@@ -664,15 +665,26 @@ class PortalSettingsController extends AbstractController
             $singleAccountIndexUser->setMail($singleUser->getEmail());
             $singleAccountIndexUser->setUserId($singleUser->getUserID());
             array_push($accountIndexUserList, $singleAccountIndexUser);
+            $accountIndexUserIds[$singleUser->getItemID()] = false;
         }
 
         //TODO https://symfony.com/doc/current/reference/forms/types/collection.html
 
         $accountIndex->setAccountIndexUsers($accountIndexUserList);
+        $accountIndex->setIds($accountIndexUserIds);
         $form = $this->createForm(AccountIndexType::class, $accountIndex);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $var0 = 0;
+
+            if($form->get('search')->isClicked()){
                 $data = $form->getData();
+                $var0 = 0;
+            }elseif($form->get('save')->isClicked()){
+                $data = $form->getData();
+                $var0 = 0;
+            }
         }
         return [
             'form' => $form->createView(),

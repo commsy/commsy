@@ -21,6 +21,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th></th>
                             <th>{{ 'Name (user id)'|trans({},"portal")}}</th>
                             <th>{{ 'Last login'|trans({},"portal")}}</th>
                             <th>{{ 'Mail'|trans({},"portal")}}</th>
@@ -28,22 +29,15 @@
                     </thead>
                 {% for user in userList %}
                     <tr>
-                        <td><input type="checkbox" name="check_{{ user.userid }}" /><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
-                        <td>{{ user.lastlogin }}</td>
+                        {# <td><input type="checkbox" name="check_{{ user.userid }}" /><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td> #}
+                        <td>{{ form_widget(form.ids[user.itemId]) }}</td>
+                        <td><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
+                        <td>{{ user.lastlogin|craue_date }}</td>
                         <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portal_settings_accountindex'}) }}">{{ user.email }}</a></td>
                     </tr>
                 {% endfor %}
                 </table>
             {% endif %}
-
-            <ul>
-                {% for singleAccountIndexUser in form.accountIndexUsers %}
-                    <li>
-                        {{ form_widget(singleAccountIndexUser) }}
-                    </li>
-                {% endfor %}
-            </ul>
-
 
             {{ form_row(form.indexViewAction) }}
             {{ form_row(form.execute) }}

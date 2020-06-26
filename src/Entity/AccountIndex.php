@@ -15,6 +15,8 @@ class AccountIndex
 
     private $accountIndexUsers;
 
+    private $ids;
+
     /**
      * @return mixed
      */
@@ -79,5 +81,20 @@ class AccountIndex
         $this->accountIndexUsers = $accountIndexUsers;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getIds()
+    {
+        return $this->ids;
+    }
+
+    /**
+     * @param mixed $ids
+     */
+    public function setIds($ids): void
+    {
+        $this->ids = $ids;
+    }
 
 }
