@@ -22,6 +22,7 @@ use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
+use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportType;
@@ -179,11 +180,11 @@ class PortalSettingsController extends AbstractController
 
             if ($clickedButtonName === 'new' || $clickedButtonName === 'update') {
                 $entityManager->persist($roomCategory);
+                $entityManager->flush();
             } else if ($clickedButtonName === 'delete') {
                 $roomCategoriesService->removeRoomCategory($roomCategory);
+                $entityManager->flush();
             }
-
-            $entityManager->flush();
 
             return $this->redirectToRoute('app_portalsettings_roomcategories', [
                 'portalId' => $portal->getId(),
@@ -196,10 +197,23 @@ class PortalSettingsController extends AbstractController
 
         $dispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
-// TODO: add mandatory links form
+
+        // mandatory links form
+        $linkForm = $this->createForm(MandatoryAssignmentType::class, $portal);
+
+        $linkForm->handleRequest($request);
+        if ($linkForm->isSubmitted() && $linkForm->isValid()) {
+
+            if ($linkForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
 
         return [
-            'editForm' => $editForm ? $editForm->createView() : null,
+            'editForm' => $editForm->createView(),
+            'linkForm' => $linkForm->createView(),
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,
@@ -1119,18 +1133,24 @@ class PortalSettingsController extends AbstractController
 
                 $user = $userService->getUser($request->get('userId'));
                 $formData = $form->getData();
-                $choiceWorkspaceId = $formData->getWorkspaceSelection();
+                $newUser = $user->cloneData();
+                $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
                 $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
                 $newAssignedRoom = $projectRoomManager->getItem($choiceWorkspaceId);
-                $user->setRoom($newAssignedRoom);
-                $user->save();
+                $newUser->setContextID($newAssignedRoom->getItemID());
+                $newUser->setUserComment($formData->getDescriptionOfParticipation());
+                try{
+                    $newUser->save();
+                }catch(\Exception $e){
+                    //do nothing
+                }
 
-                $message = (new \Swift_Message())
-                    ->setFrom([$this->getParameter('commsy.email.from') => 'a title'])
-                    ->setReplyTo([$user->getEmail() => $user->getFullName()]);
-                $message->setBody('a body', 'text/plain');
-
-                $this->get('mailer')->send($message);
+//                $message = (new \Swift_Message())
+//                    ->setFrom([$this->getParameter('commsy.email.from') => 'a title'])
+//                    ->setReplyTo([$user->getEmail() => $user->getFullName()]);
+//                $message->setBody('a body', 'text/plain');
+//
+//                $this->get('mailer')->send($message);
 
             }elseif($form->get('search')->isClicked()){
                 $user = $userService->getUser($request->get('userId'));
@@ -1146,6 +1166,12 @@ class PortalSettingsController extends AbstractController
 
                 $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
                 $projectRooms = $projectRoomManager->getRoomsByTitle($formData->getSearchForWorkspace(), $portal->getId());
+
+                if($projectRooms->getCount()< 1){
+                    $repository = $this->getDoctrine()->getRepository(Room::class);
+                    $projectRooms = $repository->findAll();
+
+                }
 
                 $choiceArray = array();
 

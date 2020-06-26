@@ -594,6 +594,23 @@ class Portal
     }
 
     /**
+     * Are room categories mandatory?
+     * If room categories are mandatory, at least one room category must be assigned when creating a new room.
+     *
+     * @return boolean whether room categories are mandatory (true) or not (false)
+     */
+    public function isTagMandatory(): bool
+    {
+        return $this->extras['TAGMANDATORY'] ?? false;
+    }
+
+    public function setTagMandatory(bool $isTagMandatory): Portal
+    {
+        $this->extras['TAGMANDATORY'] = $isTagMandatory;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getDescriptionGerman():? string
