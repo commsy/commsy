@@ -400,6 +400,15 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
+            // terms
+            $menu->addChild('Terms', [
+                'label' => 'terms',
+                'route' => 'app_portalsettings_terms',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'file-text']
+            ])
+                ->setExtra('translation_domain', 'portal');
+
             // accounts
             $menu->addChild('Accounts', [
                 'label' => 'Accounts',

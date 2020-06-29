@@ -95,6 +95,20 @@ class Portal
     private $descriptionEnglish;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="terms_de", type="text")
+     */
+    private $termsGerman;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="terms_en", type="text")
+     */
+    private $termsEnglish;
+
+    /**
      * @var array
      *
      * @ORM\Column(name="extras", type="array", nullable=true)
@@ -593,6 +607,37 @@ class Portal
         return $this;
     }
 
+    public function getAGBChangeDate(): ?\DateTime
+    {
+        $agbChangeDateString = $this->extras['AGB_CHANGE_DATE'] ?? '';
+        $agbChangeDate = !empty($agbChangeDateString) ? \DateTime::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) : null;
+        return $agbChangeDate;
+    }
+
+    public function setAGBChangeDate(?\DateTime $agbChangeDate): Portal
+    {
+        $agbChangeDateString = $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : '';
+        $this->extras['AGB_CHANGE_DATE'] = $agbChangeDateString;
+        return $this;
+    }
+
+    public function hasAGBEnabled(): bool
+    {
+        /**
+         * agb status 1 = yes, 2 = no
+         * @var integer
+         */
+        $agbStatus = $this->extras['AGBSTATUS'] ?? 2;
+
+        return $agbStatus === 1 ? true : false;
+    }
+
+    public function setAGBEnabled(bool $enabled): Portal
+    {
+        $this->extras['AGBSTATUS'] = $enabled ? 1 : 2;
+        return $this;
+    }
+
     /**
      * Are room categories mandatory?
      * If room categories are mandatory, at least one room category must be assigned when creating a new room.
@@ -646,6 +691,27 @@ class Portal
         return $this;
     }
 
+    public function getTermsGerman():? string
+    {
+        return $this->termsGerman;
+    }
+
+    public function setTermsGerman(string $termsGerman): Portal
+    {
+        $this->termsGerman = $termsGerman;
+        return $this;
+    }
+
+    public function getTermsEnglish():? string
+    {
+        return $this->termsEnglish;
+    }
+
+    public function setTermsEnglish(string $termsEnglish): Portal
+    {
+        $this->termsEnglish = $termsEnglish;
+        return $this;
+    }
 
 
 

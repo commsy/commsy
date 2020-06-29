@@ -97,6 +97,10 @@
                 <source>terms</source>
                 <target>Nutzungsbedingungen</target>
             </trans-unit>
+            <trans-unit id="Notes">
+                <source>Notes</source>
+                <target>Hinweise</target>
+            </trans-unit>
             <trans-unit id="termsUpdateNote">
                 <source>terms update note</source>
                 <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
@@ -119,11 +123,11 @@
             </trans-unit>
             <trans-unit id="content_de">
                 <source>content_de</source>
-                <target>Inhalt (DE)</target>
+                <target>Inhalt (Deutsch)</target>
             </trans-unit>
             <trans-unit id="content_en">
                 <source>content_en</source>
-                <target>Inhalt (EN)</target>
+                <target>Inhalt (Englisch)</target>
             </trans-unit>
             <trans-unit id="Create new term">
                 <source>Create new term</source>
