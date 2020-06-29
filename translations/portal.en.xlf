@@ -67,6 +67,22 @@
                 <source>Show</source>
                 <target>Show?</target>
             </trans-unit>
+            <trans-unit id="Priority">
+                <source>Priority</source>
+                <target>Priority</target>
+            </trans-unit>
+            <trans-unit id="Normal">
+                <source>Normal</source>
+                <target>Normal</target>
+            </trans-unit>
+            <trans-unit id="Important">
+                <source>Important</source>
+                <target>Important</target>
+            </trans-unit>
+            <trans-unit id="Critical">
+                <source>Critical</source>
+                <target>Critical</target>
+            </trans-unit>
             <trans-unit id="Show server information">
                 <source>Show server infos</source>
                 <target>Show server infos?</target>
