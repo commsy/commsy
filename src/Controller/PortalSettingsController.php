@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AccountIndex;
+use App\Entity\AccountIndexSendMail;
 use App\Entity\AccountIndexUser;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
@@ -13,6 +14,7 @@ use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
+use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
@@ -27,11 +29,17 @@ use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TimeType;
+use App\Form\Type\Profile\AccountContactFormType;
+use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
+use App\Utils\ItemService;
+use App\Utils\MailAssistant;
 use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -663,7 +671,12 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      */
-    public function accountIndex(Portal $portal, Request $request, LegacyEnvironment $environment, UserService $userService)
+    public function accountIndex(
+        $portalId,
+        Portal $portal,
+        Request $request,
+        LegacyEnvironment $environment,
+        UserService $userService)
     {
         $userList = $userService->getListUsers($portal->getId());
         $accountIndex = new AccountIndex();
@@ -682,8 +695,6 @@ class PortalSettingsController extends AbstractController
             $accountIndexUserIds[$singleUser->getItemID()] = false;
         }
 
-        //TODO https://symfony.com/doc/current/reference/forms/types/collection.html
-
         $accountIndex->setAccountIndexUsers($accountIndexUserList);
         $accountIndex->setIds($accountIndexUserIds);
         $form = $this->createForm(AccountIndexType::class, $accountIndex);
@@ -695,15 +706,254 @@ class PortalSettingsController extends AbstractController
             if($form->get('search')->isClicked()){
                 $data = $form->getData();
                 $var0 = 0;
-            }elseif($form->get('save')->isClicked()){
+            }elseif($form->get('execute')->isClicked()){
                 $data = $form->getData();
-                $var0 = 0;
+                $ids = $data->getIds();
+
+                switch ($data->getIndexViewAction()) {
+                    case 0:
+                        break;
+                    case 1: // user-delete
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                                $user = $userService->getUser($id);
+                                $user->delete();
+                                $user->save();
+                            }
+                        }
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-delete');
+                        break;
+                    case 2: // user-block
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                                $user = $userService->getUser($id);
+                                $user->lock();
+                                $user->save();
+                            }
+                        }
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-block');
+                        break;
+                    case 3: // user-confirm
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                                $user = $userService->getUser($id);
+                                $user->isNotActivated(); //TODO which function?
+                                $user->save();
+                            }
+                        }
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-confirm');
+                        break;
+                    case 4: // change user mail the next time he/she logs in
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                $user = $userService->getUser($id);
+                                $user->setHasToChangeEmail();
+                                $user->save();
+                            }
+                        }
+                        break;
+                    case 'user-status-reading-user':
+                        foreach ($ids as $id) {
+                            $user = $userService->getUser($id);
+                            $user->setStatus(4);
+                            $user->save();
+                        }
+                        break;
+
+                    case 5: // 'user-status-user
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                                $user = $userService->getUser($id);
+                                $user->makeUser();
+                                $user->save();
+                            }
+                        }
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-user');
+                        break;
+                    case 6: // user-status-moderator
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                                $user = $userService->getUser($id);
+                                $user->setStatus(3);
+                                $user->save();
+                            }
+                        }
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-moderator');
+                        break;
+                    case 7: //user-contact
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                                $user = $userService->getUser($id);
+                                $user->makeContactPerson();
+                                $user->save();
+                            }
+                        }
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact');
+                        break;
+                    case 8: // user-contact-remove
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                                $user = $userService->getUser($id);
+                                $user->makeContactPerson();
+                                $user->save();
+                            }
+                        }
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact-remove');
+                        break;
+                    case 9: // send mail
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                            }
+                        }
+                        return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
+                            'portalId' => $portalId,
+                            'recipients' => implode(", ",$IdsMailRecipients),
+                        ]);
+                        break;
+                    case 10: // send mail userID and password
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                            }
+                        }
+                        //TODO send mail for userID and password
+                        break;
+                    case 11: // send mail merge userIDs
+                        $IdsMailRecipients = [];
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                array_push($IdsMailRecipients, $id);
+                            }
+                        }
+                        //TODO send mail for send mail merge userIDs
+                        break;
+                    case 12: // hide mail
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                $user = $userService->getUser($id);
+                                $user->setDefaultMailNotVisible();
+                                $user->save();
+                            }
+                        }
+                        break;
+                    case 13: // hide mail everywhere
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                $user = $userService->getUser($id);
+                                $user->setDefaultMailNotVisible();
+                                $user->save();
+                                $allRelatedUsers = $user->getRelatedPortalUserItem();
+                                foreach($allRelatedUsers as $relatedUser){
+                                    $relatedUser->setDefaultMailNotVisible();
+                                    $relatedUser->save();
+                                }
+                            }
+                        }
+                        break;
+                    case 14: // show mail
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                $user = $userService->getUser($id);
+                                $user->setDefaultMailVisible();
+                                $user->save();
+                            }
+                        }
+                        break;
+                    case 15: // hide mail everywhere
+                        foreach ($ids as $id => $checked) {
+                            if($checked){
+                                $user = $userService->getUser($id);
+                                $user->setDefaultMailVisible();
+                                $user->save();
+                                $allRelatedUsers = $user->getRelatedPortalUserItem();
+                                foreach($allRelatedUsers as $relatedUser){
+                                    $relatedUser->setDefaultMailVisible();
+                                    $relatedUser->save();
+                                }
+                            }
+                        }
+                        break;
+                }
             }
         }
         return [
             'form' => $form->createView(),
             'userList' => $userList,
             'portal' => $portal,
+        ];
+    }
+
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountindex/sendmail/{recipients}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexSendMail(
+        $portalId,
+        $recipients,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        MailAssistant $mailAssistant,
+        UserService $userService,
+        UserTransformer $userTransformer,
+        ItemService $itemService,
+        \Swift_Mailer $mailer
+    ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $recipientArray = [];
+        $recipients = explode(', ', $recipients);
+        foreach($recipients as $recipient){
+            $currentUser = $userService->getUser($recipient);
+            array_push($recipientArray, $currentUser);
+        }
+
+        $sendMail = new AccountIndexSendMail();
+        $sendMail->setRecipients($recipientArray);
+
+        $form = $this->createForm(AccountIndexSendMailType::class, $sendMail);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $data = $form->getData();
+            $mailRecipients = $data->getRecipients();
+
+            foreach($mailRecipients as $mailRecipient){
+
+                $userItem = $userService->getUser($mailRecipient->getItemID());
+                $userData = $userTransformer->transform($userItem);
+                $mail = $mailRecipient->getEmail();
+                $item = $itemService->getTypedItem($mailRecipient->getItemId());
+
+                $message = $mailAssistant->getSwiftMailForAccountIndexSendMail($form, $item, true);
+
+                $sent = $mailer->send($message);
+                $car0 = 0;
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+            'recipients' => $recipientArray,
         ];
     }
 
@@ -1309,5 +1559,72 @@ class PortalSettingsController extends AbstractController
             'translations' => $translations,
             'selectedTranslation' => $translation,
         ];
+    }
+
+    private function sendUserInfoMail($userIds, $action)
+    {
+        $accountMail = $this->get('commsy.utils.mail_account');
+        $mailer = $this->get('mailer');
+
+        $fromAddress = $this->getParameter('commsy.email.from');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+
+        $userService = $this->get('commsy_legacy.user_service');
+
+        $validator = new EmailValidator();
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+            if ($currentUser->isEmailVisible()) {
+                $replyTo[$currentUserEmail] = $currentUser->getFullName();
+            }
+        }
+
+        $users = [];
+        $failedUsers = [];
+        foreach ($userIds as $userId) {
+            $user = $userService->getUser($userId);
+
+            $userEmail = $user->getEmail();
+            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
+                $to = [$userEmail => $user->getFullname()];
+                $subject = $accountMail->generateSubject($action);
+                $body = $accountMail->generateBody($user, $action);
+
+                $mailMessage = (new \Swift_Message())
+                    ->setSubject($subject)
+                    ->setBody($body, 'text/plain')
+                    ->setFrom([$fromAddress => $fromSender])
+                    ->setReplyTo($replyTo);
+
+                if ($user->isEmailVisible()) {
+                    $mailMessage->setTo($to);
+                } else {
+                    $mailMessage->setBcc($to);
+                }
+
+                // send mail
+                $failedRecipients = [];
+                $mailer->send($mailMessage, $failedRecipients);
+            } else {
+                $failedUsers[] = $user;
+            }
+        }
+
+        foreach ($failedUsers as $failedUser) {
+            $this->addFlash('failedRecipients', $failedUser->getUserId());
+        }
+
+        foreach ($failedRecipients as $failedRecipient) {
+            $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                return $user->getEmail() == $failedRecipient;
+            });
+
+            if ($failedUser) {
+                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+            }
+        }
     }
 }
