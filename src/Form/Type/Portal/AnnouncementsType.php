@@ -37,7 +37,7 @@ class AnnouncementsType extends AbstractType
                 'label' => 'Title',
             ])
             ->add('announcementSeverity', Types\ChoiceType::class, [
-                'label' => 'Severity',
+                'label' => 'Priority',
                 'choices' => [
                     'Normal' => 'normal',
                     'Important' => 'warning',

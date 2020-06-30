@@ -28,6 +28,7 @@ use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportType;
+use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimeType;
 use App\Form\Type\Profile\AccountContactFormType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
@@ -204,6 +205,14 @@ class PortalSettingsController extends AbstractController
         ]);
 
         $dispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
+
+
+        // ensure that room categories aren't mandatory if there currently aren't any room categories
+        if (empty($roomCategories)) {
+            $portal->setTagMandatory(false);
+            $entityManager->persist($portal);
+            $entityManager->flush();
+        }
 
 
         // mandatory links form
@@ -662,6 +671,35 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/terms")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     */
+    public function terms(Portal $portal, Request $request, EntityManagerInterface $entityManager)
+    {
+        $form = $this->createForm(TermsType::class, $portal);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->getClickedButton()->getName() === 'save') {
+                $portal->setAGBChangeDate(new \DateTime());
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+            'portal' => $portal,
         ];
     }
 

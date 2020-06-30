@@ -18,7 +18,7 @@ class DbConverter
             return array();
         }
 
-        $value = preg_replace_callback('/s:(\d+):"(.*?)";(?=\}|i|s|a)/s', function($match) {
+        $value = preg_replace_callback('/s\:(\d+)\:\"(.*?)\";/s', function($match) {
             $length = strlen($match[2]);
             $data = $match[2];
 

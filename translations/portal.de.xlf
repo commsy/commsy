@@ -67,6 +67,22 @@
                 <source>Show</source>
                 <target>Anzeigen?</target>
             </trans-unit>
+            <trans-unit id="Priority">
+                <source>Priority</source>
+                <target>Priorität</target>
+            </trans-unit>
+            <trans-unit id="Normal">
+                <source>Normal</source>
+                <target>Normal</target>
+            </trans-unit>
+            <trans-unit id="Important">
+                <source>Important</source>
+                <target>Wichtig</target>
+            </trans-unit>
+            <trans-unit id="Critical">
+                <source>Critical</source>
+                <target>Kritisch</target>
+            </trans-unit>
             <trans-unit id="Show server information">
                 <source>Show server infos</source>
                 <target>Serverinfos anzeigen?</target>
@@ -80,6 +96,10 @@
             <trans-unit id="portal_agb">
                 <source>terms</source>
                 <target>Nutzungsbedingungen</target>
+            </trans-unit>
+            <trans-unit id="Notes">
+                <source>Notes</source>
+                <target>Hinweise</target>
             </trans-unit>
             <trans-unit id="termsUpdateNote">
                 <source>terms update note</source>
@@ -103,11 +123,11 @@
             </trans-unit>
             <trans-unit id="content_de">
                 <source>content_de</source>
-                <target>Inhalt (DE)</target>
+                <target>Inhalt (Deutsch)</target>
             </trans-unit>
             <trans-unit id="content_en">
                 <source>content_en</source>
-                <target>Inhalt (EN)</target>
+                <target>Inhalt (Englisch)</target>
             </trans-unit>
             <trans-unit id="Create new term">
                 <source>Create new term</source>
@@ -123,9 +143,21 @@
             </trans-unit>
 
             <!-- portal help link -->
-            <trans-unit id="support page link">
-                <source>help</source>
+            <trans-unit id="Support requests">
+                <source>Support requests</source>
+                <target>Supportanfragen</target>
+            </trans-unit>
+            <trans-unit id="Support page">
+                <source>Support page</source>
                 <target>Support-Seite</target>
+            </trans-unit>
+            <trans-unit id="Support page link">
+                <source>Support page link</source>
+                <target>Support Adresse</target>
+            </trans-unit>
+            <trans-unit id="Support page link help text">
+                <source>Support page link help text</source>
+                <target>Hier können Sie einen Link zu einer Support-Seite für dieses Portal hinterlegen.</target>
             </trans-unit>
             <trans-unit id="tooltip text">
                 <source>tooltip text</source>

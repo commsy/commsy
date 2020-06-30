@@ -384,7 +384,7 @@ class MenuBuilder
 
             // support
             $menu->addChild('Support', [
-                'label' => 'help',
+                'label' => 'Support requests',
                 'route' => 'app_portalsettings_support',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'question']
@@ -399,6 +399,15 @@ class MenuBuilder
                 'extras' => ['icon' => 'bell']
             ])
             ->setExtra('translation_domain', 'portal');
+
+            // terms
+            $menu->addChild('Terms', [
+                'label' => 'terms',
+                'route' => 'app_portalsettings_terms',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'file-text']
+            ])
+                ->setExtra('translation_domain', 'portal');
 
             // accounts
             $menu->addChild('Accounts', [
