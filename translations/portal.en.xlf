@@ -143,9 +143,21 @@
             </trans-unit>
 
             <!-- portal help link -->
-            <trans-unit id="support page link">
-                <source>help</source>
+            <trans-unit id="Support requests">
+                <source>Support requests</source>
+                <target>Support requests</target>
+            </trans-unit>
+            <trans-unit id="Support page">
+                <source>Support page</source>
                 <target>Support page</target>
+            </trans-unit>
+            <trans-unit id="Support page link">
+                <source>Support page link</source>
+                <target>Support Address</target>
+            </trans-unit>
+            <trans-unit id="Support page link help text">
+                <source>Support page link help text</source>
+                <target>Define a link to a support page for this portal.</target>
             </trans-unit>
             <trans-unit id="tooltip text">
                 <source>tooltip text</source>

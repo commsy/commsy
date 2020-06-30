@@ -20,11 +20,12 @@ class SupportType extends AbstractType
     {
         $builder
             ->add('supportPageLink', Types\UrlType::class, [
-                'label' => 'Link',
+                'label' => 'Support page link',
                 'constraints' => [
                     new Assert\Url(),
                 ],
                 'required' => false,
+                'help' => 'Support page link help text'
             ])
             ->add('supportPageLinkTooltip', Types\TextType::class, [
                 'label' => 'tooltip text',
