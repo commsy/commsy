@@ -33,22 +33,22 @@ final class Version20190924133007 extends AbstractMigration
 
         $this->addSql('RENAME TABLE auth TO accounts;');
         $this->addSql('ALTER TABLE accounts ADD auth_source_id INT NULL;');
+        $this->addSql('DELETE FROM accounts WHERE accounts.username = "";');
+        $this->addSql('DELETE accounts FROM accounts LEFT JOIN portal ON accounts.context_id = portal.item_id WHERE portal.item_id IS NULL AND accounts.username != "root";');
+        $this->addSql('DELETE FROM user WHERE user.auth_source = 0;');
         $this->addSql('
             UPDATE
                 accounts
             SET
                 accounts.auth_source_id =
                 (
-                    SELECT DISTINCT
-                        u.auth_source
+                    SELECT
+                        auth_source.id
                     FROM
-                        user AS u
+                        auth_source
                     WHERE
-                        u.user_id = accounts.username AND
-                        u.context_id = accounts.context_id AND
-                        u.deleter_id IS NULL AND
-                        u.deletion_date IS NULL AND
-                        u.auth_source != 0
+                        auth_source.portal_id = accounts.context_id AND
+                        auth_source.extras LIKE "%COMMSY_DEFAULT%"
                 )
         ');
 //        $this->addSql('UPDATE accounts INNER JOIN `user` AS u ON accounts.username = u.user_id AND accounts.context_id = u.context_id SET accounts.auth_source_id = u.auth_source;');

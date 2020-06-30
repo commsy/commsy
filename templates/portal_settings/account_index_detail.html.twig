@@ -20,8 +20,6 @@
             <div style="border: 1px solid black; padding: 10px; width: 50%;">
                 <ul style="list-style: none;">
                     <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Edit'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Print page'|trans({},'portal') }}</a></li>
-                    <li><a href="">> {{'Save page'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
                 </ul>
             </div>
