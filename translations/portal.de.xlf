@@ -142,7 +142,7 @@
                 <target>Nutzungsbedigungen löschen</target>
             </trans-unit>
 
-            <!-- portal help link -->
+            <!-- portal support requests -->
             <trans-unit id="Support requests">
                 <source>Support requests</source>
                 <target>Supportanfragen</target>
@@ -157,11 +157,27 @@
             </trans-unit>
             <trans-unit id="Support page link help text">
                 <source>Support page link help text</source>
-                <target>Hier können Sie einen Link zu einer Support-Seite für dieses Portal hinterlegen.</target>
+                <target>Link zu einer Support-Seite für dieses Portal (erscheint als Hilfe-Icon in der CommSy Navigationsleiste)</target>
             </trans-unit>
             <trans-unit id="tooltip text">
                 <source>tooltip text</source>
                 <target>Tooltip-Text</target>
+            </trans-unit>
+            <trans-unit id="Support email">
+                <source>Support email</source>
+                <target>Support E-mail</target>
+            </trans-unit>
+            <trans-unit id="Support email help text">
+                <source>Support email help text</source>
+                <target>Diese Support E-mail erscheint auf der Einstiegsseite eines Raumes falls kein eigenes Support-Formular definiert wurde</target>
+            </trans-unit>
+            <trans-unit id="Own support form">
+                <source>Own support form</source>
+                <target>Eigenes Support-Formular</target>
+            </trans-unit>
+            <trans-unit id="Own support form help text">
+                <source>Own support form help text</source>
+                <target>Link zu einem eigenen Support-Formular (erscheint auf der Einstiegsseite eines Raumes anstatt der Support E-mail). Verfügbare Variablen:<![CDATA[<br /><br />]]>%FIRSTNAME% = Vorname<![CDATA[<br />]]>%LASTNAME% = Nachname<![CDATA[<br />]]>%EMAIL% = E-Mail-Adresse<![CDATA[<br />]]>%USERID% = Kennung<![CDATA[<br />]]>%PORTAL% = Name des Portals<![CDATA[<br />]]>%TITLE% = Name des aktuellen Raumes</target>
             </trans-unit>
 
             <trans-unit id="roomcategories">

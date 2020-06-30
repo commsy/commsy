@@ -142,7 +142,7 @@
                 <target>Delete term</target>
             </trans-unit>
 
-            <!-- portal help link -->
+            <!-- portal support requests -->
             <trans-unit id="Support requests">
                 <source>Support requests</source>
                 <target>Support requests</target>
@@ -157,11 +157,27 @@
             </trans-unit>
             <trans-unit id="Support page link help text">
                 <source>Support page link help text</source>
-                <target>Define a link to a support page for this portal.</target>
+                <target>Define a link to a support page for this portal; it will appear as a help icon in the CommSy navigation bar</target>
             </trans-unit>
             <trans-unit id="tooltip text">
                 <source>tooltip text</source>
                 <target>Tooltip text</target>
+            </trans-unit>
+            <trans-unit id="Support email">
+                <source>Support email</source>
+                <target>Support email</target>
+            </trans-unit>
+            <trans-unit id="Support email help text">
+                <source>Support email help text</source>
+                <target>This support email will appear on a workspace's home page if no own support form has been defined below</target>
+            </trans-unit>
+            <trans-unit id="Own support form">
+                <source>Own support form</source>
+                <target>Own support form</target>
+            </trans-unit>
+            <trans-unit id="Own support form help text">
+                <source>Own support form help text</source>
+                <target>Define a link to your own support form; it will appear on a workspace's home page instead of the support email. Available variables:<![CDATA[<br /><br />]]>%FIRSTNAME% = firstname<![CDATA[<br />]]>%LASTNAME% = lastname<![CDATA[<br />]]>%EMAIL% = email address<![CDATA[<br />]]>%USERID% = account<![CDATA[<br />]]>%PORTAL% = name of the portal<![CDATA[<br />]]>%TITLE% = name of the current workspace</target>
             </trans-unit>
 
             <trans-unit id="roomcategories">
@@ -451,8 +467,8 @@
                 <target>Secondy telephone number</target>
             </trans-unit>
             <trans-unit id="email">
-                <source>E-mail</source>
-                <target>E-mail address</target>
+                <source>Email</source>
+                <target>Email address</target>
             </trans-unit>
             <trans-unit id="description">
                 <source>Description</source>
@@ -754,7 +770,7 @@
             </trans-unit>
             <trans-unit id="portal_num_rooms">
                 <source>portal.num_rooms</source>
-                <target># Rooms</target>
+                <target># Workspaces</target>
             </trans-unit>
 
             <!-- form -->

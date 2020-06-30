@@ -97,12 +97,6 @@ class PortalProxy
         return (int) ($this->portal->getExtras()['MAX_ROOM_ACTIVITY'] ?? 0);
     }
 
-    public function showServiceLink(): bool
-    {
-        $serviceLinkExtra = ($this->portal->getExtras()['SERVICELINK']) ?? '';
-        return $serviceLinkExtra == 1;
-    }
-
     public function isActivatedDeletingUnusedRooms(): bool
     {
         $deletingRoomExtra = ($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? -1;
@@ -122,6 +116,22 @@ class PortalProxy
     public function getSupportPageLinkTooltip(): string
     {
         return ($this->portal->getExtras()['SUPPORTPAGELINKTOOLTIP']) ?? '';
+    }
+
+    public function showServiceLink(): bool
+    {
+        $serviceLinkExtra = ($this->portal->getExtras()['SERVICELINK']) ?? '';
+        return $serviceLinkExtra == 1;
+    }
+
+    public function getServiceLinkExternal(): string
+    {
+        return ($this->portal->getExtras()['SERVICELINKEXTERNAL']) ?? '';
+    }
+
+    public function getServiceEmail(): string
+    {
+        return ($this->portal->getExtras()['SERVICEEMAIL']) ?? '';
     }
 
     public function getCurrentTimeName(): string

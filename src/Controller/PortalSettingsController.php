@@ -25,6 +25,7 @@ use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\RoomCategoriesType;
+use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimeType;
@@ -84,18 +85,39 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
      */
     public function support(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(SupportType::class, $portal);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($portal);
-            $entityManager->flush();
+        // support page form
+        $supportPageForm = $this->createForm(SupportType::class, $portal);
+
+        $supportPageForm->handleRequest($request);
+        if ($supportPageForm->isSubmitted() && $supportPageForm->isValid()) {
+
+            if ($supportPageForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        // support requests form
+        $supportRequestsForm = $this->createForm(SupportRequestsType::class, $portal);
+
+        $supportRequestsForm->handleRequest($request);
+        if ($supportRequestsForm->isSubmitted() && $supportRequestsForm->isValid()) {
+
+            if ($supportRequestsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
         }
 
         return [
-            'form' => $form->createView(),
+            'supportPageForm' => $supportPageForm->createView(),
+            'supportRequestsForm' => $supportRequestsForm->createView(),
         ];
     }
 
