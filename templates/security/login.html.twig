@@ -137,28 +137,28 @@
                                                     </div>
                                                 </div>
 
-                                                {% if portal is not null %}
-                                                    <div class="uk-margin">
-                                                        <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
-                                                        <div class="uk-form-controls">
-                                                            <div class="uk-inline uk-width-1-1">
-                                                                <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
-                                                            </div>
+                                                {% if authSource.addAccount %}
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
+                                                    <div class="uk-form-controls">
+                                                        <div class="uk-inline uk-width-1-1">
+                                                            <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
                                                         </div>
                                                     </div>
-
-                                                    <div class="uk-margin uk-text-small">
-                                                        <div class="uk-flex uk-flex-around">
-                                                            <div class="">
-                                                                <a href="#">{{ 'login.forget_password'|trans({}, 'login') }}</a>
-                                                            </div>
-
-                                                            <div class="">
-                                                                <a href="#">{{ 'login.forget_account'|trans({}, 'login') }}</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                </div>
                                                 {% endif %}
+
+                                                <div class="uk-margin uk-text-small">
+                                                    <div class="uk-flex uk-flex-around">
+                                                        <div class="">
+                                                            <a href="#">{{ 'login.forget_password'|trans({}, 'login') }}</a>
+                                                        </div>
+
+                                                        <div class="">
+                                                            <a href="#">{{ 'login.forget_account'|trans({}, 'login') }}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                                             </form>
                                         </div>
