@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block main %}
-
     {% if activePortals is not empty %}
         <div class="uk-grid-match uk-child-width-expand@m uk-flex uk-flex-center" uk-grid>
 
@@ -37,27 +36,27 @@
                                 </div>
                             </div>
 
-                            {% macro activityPercentage(activity, maxActivity) %}
-                                {% set percentage = 0 %}
+                            {%- macro activityPercentage(activity, maxActivity) -%}
+                                {%- set percentage = 0 -%}
 
-                                {% if maxActivity > 0 %}
-                                    {% set divisor = maxActivity / 20 %}
+                                {%- if maxActivity > 0 -%}
+                                    {%- set divisor = maxActivity / 20 -%}
 
-                                    {% set percentage = (activity / divisor + 1)|log %}
+                                    {%- set percentage = (activity / divisor + 1)|log -%}
 
-                                    {% if percentage < 0 %}
-                                        {% set percentage = 0 %}
-                                    {% endif %}
+                                    {%- if percentage < 0 -%}
+                                        {%- set percentage = 0 -%}
+                                    {%- endif -%}
 
-                                    {% set max = (maxActivity / divisor + 1)|log %}
+                                    {%- set max = (maxActivity / divisor + 1)|log -%}
 
-                                    {% set percentage = (percentage / max) * 100 %}
-                                {% endif %}
+                                    {%- set percentage = (percentage / max) * 100 -%}
+                                {%- endif -%}
 
-                                {{ percentage }}
-                            {% endmacro %}
+                                {{- percentage -}}
+                            {%- endmacro -%}
 
-                            <progress class="uk-progress" value="{{ _self.activityPercentage(activePortal.activity, totalMaxActivity) }}" max="100"></progress>
+                            <progress class="uk-progress" value="{{- _self.activityPercentage(activePortal.activity, totalMaxActivity) -}}" max="100"></progress>
                         </div>
 
                         <div class="uk-card-body uk-margin-large-bottom">
