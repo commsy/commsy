@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexSendMail;
+use App\Entity\AccountIndexSendMergeMail;
+use App\Entity\AccountIndexSendPasswordMail;
 use App\Entity\AccountIndexUser;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
@@ -20,6 +22,8 @@ use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
 use App\Form\Type\Portal\AccountIndexDetailEditType;
 use App\Form\Type\Portal\AccountIndexDetailType;
+use App\Form\Type\Portal\AccountIndexSendMergeMailType;
+use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\GeneralType;
@@ -761,11 +765,41 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $var0 = 0;
-
             if($form->get('search')->isClicked()){
-                $data = $form->getData();
-                $var0 = 0;
+                $tempUserList = $userService->getListUsers($portal->getId());
+                $userList = [];
+                $searchParam = $data->getAccountIndexSearchString();
+
+                if(empty($searchParam)){
+                    $userList = $tempUserList;
+                }else{
+                    foreach($tempUserList as $singleUser){
+                        //TODO check here on chosen criteria e.g. is moderator - add a boolean flag
+                        if(strpos($singleUser->getUserID(), $searchParam) !== false){ //TODO here the flag && criteria
+                            array_push($userList, $singleUser); //remove users not fitting the search string
+                        }
+                    }
+                }
+
+                $accountIndex = new AccountIndex();
+
+                $accountIndexUserList = [];
+                $accountIndexUserIds = array();
+
+                foreach($userList as $singleUser) {
+                    $singleAccountIndexUser = new AccountIndexUser();
+                    $singleAccountIndexUser->setName($singleUser->getFullName());
+                    $singleAccountIndexUser->setChecked(false);
+                    $singleAccountIndexUser->setItemId($singleUser->getItemID());
+                    $singleAccountIndexUser->setMail($singleUser->getEmail());
+                    $singleAccountIndexUser->setUserId($singleUser->getUserID());
+                    array_push($accountIndexUserList, $singleAccountIndexUser);
+                    $accountIndexUserIds[$singleUser->getItemID()] = false;
+                }
+
+                $accountIndex->setAccountIndexUsers($accountIndexUserList);
+                $accountIndex->setIds($accountIndexUserIds);
+                $form = $this->createForm(AccountIndexType::class, $accountIndex);
             }elseif($form->get('execute')->isClicked()){
                 $data = $form->getData();
                 $ids = $data->getIds();
@@ -893,7 +927,10 @@ class PortalSettingsController extends AbstractController
                                 array_push($IdsMailRecipients, $id);
                             }
                         }
-                        //TODO send mail for userID and password
+                        return $this->redirectToRoute('app_portalsettings_accountindexsendpasswordmail', [
+                            'portalId' => $portalId,
+                            'recipients' => implode(", ",$IdsMailRecipients),
+                        ]);
                         break;
                     case 11: // send mail merge userIDs
                         $IdsMailRecipients = [];
@@ -902,7 +939,10 @@ class PortalSettingsController extends AbstractController
                                 array_push($IdsMailRecipients, $id);
                             }
                         }
-                        //TODO send mail for send mail merge userIDs
+                        return $this->redirectToRoute('app_portalsettings_accountindexsendpmergemail', [
+                            'portalId' => $portalId,
+                            'recipients' => implode(", ",$IdsMailRecipients),
+                        ]);
                         break;
                     case 12: // hide mail
                         foreach ($ids as $id => $checked) {
@@ -978,7 +1018,6 @@ class PortalSettingsController extends AbstractController
         ItemService $itemService,
         \Swift_Mailer $mailer
     ) {
-        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $recipientArray = [];
         $recipients = explode(', ', $recipients);
         foreach($recipients as $recipient){
@@ -998,16 +1037,107 @@ class PortalSettingsController extends AbstractController
             $mailRecipients = $data->getRecipients();
 
             foreach($mailRecipients as $mailRecipient){
-
-                $userItem = $userService->getUser($mailRecipient->getItemID());
-                $userData = $userTransformer->transform($userItem);
-                $mail = $mailRecipient->getEmail();
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
-
                 $message = $mailAssistant->getSwiftMailForAccountIndexSendMail($form, $item, true);
+                $mailer->send($message);
+            }
+        }
 
-                $sent = $mailer->send($message);
-                $car0 = 0;
+        return [
+            'form' => $form->createView(),
+            'recipients' => $recipientArray,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountindex/sendpasswordmail/{recipients}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexSendPasswordMail(
+        $portalId,
+        $recipients,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        MailAssistant $mailAssistant,
+        UserService $userService,
+        UserTransformer $userTransformer,
+        ItemService $itemService,
+        \Swift_Mailer $mailer
+    ){
+        $recipientArray = [];
+        $recipients = explode(', ', $recipients);
+        foreach($recipients as $recipient){
+            $currentUser = $userService->getUser($recipient);
+            array_push($recipientArray, $currentUser);
+        }
+
+        $sendMail = new AccountIndexSendPasswordMail();
+        $sendMail->setRecipients($recipientArray);
+
+        $form = $this->createForm(AccountIndexSendPasswordMailType::class, $sendMail);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $data = $form->getData();
+            $mailRecipients = $data->getRecipients();
+
+            foreach($mailRecipients as $mailRecipient){
+
+                $item = $itemService->getTypedItem($mailRecipient->getItemId());
+                $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
+                $mailer->send($message);
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+            'recipients' => $recipientArray,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/accountindex/sendmergemail/{recipients}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexSendMergeMail(
+        $portalId,
+        $recipients,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        MailAssistant $mailAssistant,
+        UserService $userService,
+        UserTransformer $userTransformer,
+        ItemService $itemService,
+        \Swift_Mailer $mailer
+    ){
+        $recipientArray = [];
+        $recipients = explode(', ', $recipients);
+        foreach($recipients as $recipient){
+            $currentUser = $userService->getUser($recipient);
+            array_push($recipientArray, $currentUser);
+        }
+
+        $sendMail = new AccountIndexSendMergeMail();
+        $sendMail->setRecipients($recipientArray);
+
+        $form = $this->createForm(AccountIndexSendMergeMailType::class, $sendMail);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $data = $form->getData();
+            $mailRecipients = $data->getRecipients();
+
+            foreach($mailRecipients as $mailRecipient){
+
+                $item = $itemService->getTypedItem($mailRecipient->getItemId());
+                $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
+                $mailer->send($message);
             }
         }
 
