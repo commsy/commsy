@@ -347,6 +347,28 @@
                 <target> sichtbar)</target>
             </trans-unit>
 
+            <!-- Account Index send Password Mail -->
+            <trans-unit id="copy_cc_to_moderator">
+                <source>Copy CC to Moderator</source>
+                <target>Kopie im CC an die Moderation</target>
+            </trans-unit>
+            <trans-unit id="copy_bcc_to_moderator">
+                <source>Copy BCC to Moderator</source>
+                <target>Kopie in BCC an die Moderation</target>
+            </trans-unit>
+            <trans-unit id="copy_cc_to_sender">
+                <source>Copy CC to Sender</source>
+                <target>Kopie in CC an den/die SenderIn</target>
+            </trans-unit>
+            <trans-unit id="copy_bcc_to_sender">
+                <source>Copy BCC to sender</source>
+                <target>Kopie in BCC an den/die SenderIn</target>
+            </trans-unit>
+            <trans-unit id="bcc">
+                <source>Bcc</source>
+                <target>cc/bcc</target>
+            </trans-unit>
+
             <!-- user edit -->
             <trans-unit id="firstName">
                 <source>First name</source>
