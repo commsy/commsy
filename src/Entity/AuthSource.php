@@ -39,6 +39,16 @@ class AuthSource
     private $title;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @Groups({"api"})
+     * @SWG\Property(type="string", maxLength=255)
+     */
+    private $description;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
      * @ORM\JoinColumn(name="portal_id", referencedColumnName="id")
      *
@@ -55,7 +65,7 @@ class AuthSource
     private $type;
 
     /**
-     * @var string
+     * @var array
      *
      * @ORM\Column(name="extras", type="object", nullable=true)
      */
@@ -127,7 +137,7 @@ class AuthSource
      * @param int $id
      * @return AuthSource
      */
-    public function setId(int $id): self
+    public function setId(int $id): AuthSource
     {
         $this->id = $id;
         return $this;
@@ -145,9 +155,27 @@ class AuthSource
      * @param string $title
      * @return AuthSource
      */
-    public function setTitle(string $title): self
+    public function setTitle(string $title): AuthSource
     {
         $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return AuthSource
+     */
+    public function setDescription(string $description): AuthSource
+    {
+        $this->description = $description;
         return $this;
     }
 
@@ -156,7 +184,7 @@ class AuthSource
         return $this->portal;
     }
 
-    public function setPortal(?Portal $portal): self
+    public function setPortal(?Portal $portal): AuthSource
     {
         $this->portal = $portal;
 
@@ -164,18 +192,18 @@ class AuthSource
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getExtras(): string
+    public function getExtras(): array
     {
         return $this->extras;
     }
 
     /**
-     * @param string $extras
+     * @param array $extras
      * @return AuthSource
      */
-    public function setExtras(string $extras): self
+    public function setExtras(array $extras): AuthSource
     {
         $this->extras = $extras;
         return $this;
@@ -204,7 +232,7 @@ class AuthSource
         return $this->createRoom;
     }
 
-    public function setCreateRoom(bool $createRoom): self
+    public function setCreateRoom(bool $createRoom): AuthSource
     {
         $this->createRoom = $createRoom;
 

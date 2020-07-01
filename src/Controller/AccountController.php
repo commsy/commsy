@@ -40,9 +40,14 @@ class AccountController extends AbstractController
     ) {
         $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
+        /** @var AuthSource $localAuthSource */
         $localAuthSource = $portal->getAuthSources()->filter(function(AuthSource $authSource) {
             return $authSource->getType() === 'local';
         })->first();
+
+        if ($localAuthSource->isAddAccount() === false) {
+            throw $this->createAccessDeniedException('Self-Registration is disabled!');
+        }
 
         $account = new Account();
         $account->setAuthSource($localAuthSource);
