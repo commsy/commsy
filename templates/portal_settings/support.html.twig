@@ -1,6 +1,7 @@
 {% extends 'layout.html.twig' %}
 
-{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme supportPageForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme supportRequestsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% embed 'components/context_navigation.html.twig' %}
@@ -13,7 +14,15 @@
         {% block title %}{{ 'Support page'|trans({}, "portal") }}{% endblock %}
 
         {% block body %}
-            {{ form(form) }}
+            {{ form(supportPageForm) }}
+        {% endblock %}
+    {% endembed %}
+
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Support requests'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            {{ form(supportRequestsForm) }}
         {% endblock %}
     {% endembed %}
 {% endblock %}

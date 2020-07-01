@@ -150,6 +150,14 @@
                 <source>Workspace: %workspace%</source>
                 <target>Workspace: %workspace%</target>
             </trans-unit>
+            <trans-unit id="mail_yes">
+                <source>Yes</source>
+                <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="mail_no">
+                <source>No</source>
+                <target>No</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

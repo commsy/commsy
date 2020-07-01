@@ -473,6 +473,39 @@ class Portal
         return $this;
     }
 
+    public function hasSupportRequestsEnabled(): bool
+    {
+        return $this->extras['SERVICELINK'] ?? false;
+    }
+
+    public function setSupportRequestsEnabled(bool $enabled): Portal
+    {
+        $this->extras['SERVICELINK'] = $enabled;
+        return $this;
+    }
+
+    public function getSupportEmail():? string
+    {
+        return $this->extras['SERVICEEMAIL'] ?? '';
+    }
+
+    public function setSupportEmail(?string $email): Portal
+    {
+        $this->extras['SERVICEEMAIL'] = $email;
+        return $this;
+    }
+
+    public function getSupportFormLink():? string
+    {
+        return $this->extras['SERVICELINKEXTERNAL'] ?? '';
+    }
+
+    public function setSupportFormLink(?string $externalLink): Portal
+    {
+        $this->extras['SERVICELINKEXTERNAL'] = $externalLink;
+        return $this;
+    }
+
     public function getShowTime():? int
     {
         return $this->extras['SHOW_TIME'] ?? 0;

@@ -183,6 +183,72 @@ class MailAssistant
         return $message;
     }
 
+    public function getSwiftMailForAccountIndexSendMail(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
+    {
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $formData = $form->getData();
+
+        $recipients = [
+            'to' => [],
+            'bcc' => [],
+        ];
+
+        $recipients['to'][$item->getEmail()] = $item->getFullName();
+
+        $to = $recipients['to'];
+        $toBCC = $recipients['bcc'];
+
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        $currentUserName = $currentUser->getFullName();
+        if ($currentUser->isEmailVisible()) {
+            $replyTo[$currentUserEmail] = $currentUserName;
+        }
+
+        $formDataSubject = $formData->getSubject();
+
+        $formDataMessage = $formData->getMessage();
+
+        $message = (new \Swift_Message())
+            ->setSubject($formDataSubject)
+            ->setBody($formDataMessage, 'text/html')
+            ->setFrom([$currentUserEmail => $portalItem->getTitle()])
+            ->setReplyTo($replyTo);
+
+        // form option: copy_to_sender
+        $toCC = [];
+
+        $isCopyToSender = $form->has('copy_to_sender') && $formData['copy_to_sender'];
+
+        if ($isCopyToSender) {
+            if ($currentUser->isEmailVisible()) {
+                $toCC[$currentUserEmail] = $currentUserName;
+            } else {
+                $toBCC[$currentUserEmail] = $currentUserName;
+            }
+        }
+
+        if ($forceBCCMail) {
+            $allRecipients = array_merge($to, $toCC, $toBCC);
+            $message->setBcc($allRecipients);
+        } else {
+            if (!empty($to)) {
+                $message->setTo($to);
+            }
+
+            if (!empty($toCC)) {
+                $message->setCC($toCC);
+            }
+
+            if (!empty($toBCC)) {
+                $message->setBcc($toBCC);
+            }
+        }
+
+        return $message;
+    }
+
     public function getSwiftMessage(FormInterface $form, \cs_item $item, $forceBCCMail = false): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
