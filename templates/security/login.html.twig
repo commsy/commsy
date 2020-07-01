@@ -51,155 +51,242 @@
                 <div class="uk-card-body">
                     <!-- Tabs -->
                     <ul uk-tab>
-                        <li class="uk-active">
-                            <a href="">Lokal</a>
-                        </li>
+
                         {% if portal is not null %}
-                            <li>
-                                <a href="">UHH</a>
+                            {% for authSource in portal.authSources %}
+                                {% if authSource.enabled %}
+                                    <li class="{% if authSource.default %}uk-active{% endif %}">
+                                        <a href="">
+                                            {{ authSource.title }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if portal.isOpenForGuests %}
+                                <li>
+                                    <a href="">{{ 'login.guest_tab'|trans({}, 'login') }}</a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="uk-active">
+                                <a href="">Admin</a>
                             </li>
-                            <li>
-                                <a href="">Gast</a>
-                            </li>
-                       {% endif %}
+                        {% endif %}
                     </ul>
 
                     <div class="uk-switcher">
-                        <!-- Lokal -->
-                        <div>
-                            <p class="uk-text-small">Dies ist die lokale CommSy-Anmeldung...</p>
+                        {% if portal is not null %}
+                            {% for authSource in portal.authSources %}
+                                {% if authSource.enabled %}
+                                    {% if authSource.type is same as('local') %}
+                                        <!-- Lokal -->
+                                        <div>
+                                            {% if authSource.description is not empty %}
+                                                <p class="uk-text-small">{{ authSource.description }}</p>
+                                            {% endif %}
 
-                            <form class="uk-form-stacked" method="post">
-                                {% if error %}
-                                    <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                            <form class="uk-form-stacked" method="post">
+                                                {% if error %}
+                                                    <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                                {% endif %}
+
+                                                {# hidden #}
+                                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                                <input type="hidden" name="context" value="{{ context }}">
+
+                                                {# username #}
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label" for="inputEmail">{{ 'login.label_username'|trans({}, 'login') }}</label>
+
+                                                    <div class="uk-form-controls">
+                                                        <div class="uk-inline uk-width-1-1">
+                                                            <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                                            <input class="uk-input" id="inputEmail" type="text" name="email" value="{{ last_username }}" placeholder="{{ 'login.placeholder_username'|trans({}, 'login') }}" required autofocus>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {# password #}
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label" for="inputPassword">{{ 'login.label_password'|trans({}, 'login') }}</label>
+                                                    <div class="uk-form-controls">
+                                                        <div class="uk-inline uk-width-1-1">
+                                                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                            <input class="uk-input" id="inputPassword" type="password" name="password" placeholder="{{ 'login.placeholder_password'|trans({}, 'login') }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {#
+                                                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                                                    See https://symfony.com/doc/current/security/remember_me.html
+
+                                                    <div class="checkbox mb-3">
+                                                        <label>
+                                                            <input type="checkbox" name="_remember_me"> Remember me
+                                                        </label>
+                                                    </div>
+                                                #}
+
+                                                <div class="uk-margin">
+                                                    <div class="uk-form-controls">
+                                                        <div class="uk-inline uk-width-1-1">
+                                                            <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {% if portal is not null %}
+                                                    <div class="uk-margin">
+                                                        <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
+                                                        <div class="uk-form-controls">
+                                                            <div class="uk-inline uk-width-1-1">
+                                                                <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="uk-margin uk-text-small">
+                                                        <div class="uk-flex uk-flex-around">
+                                                            <div class="">
+                                                                <a href="#">{{ 'login.forget_password'|trans({}, 'login') }}</a>
+                                                            </div>
+
+                                                            <div class="">
+                                                                <a href="#">{{ 'login.forget_account'|trans({}, 'login') }}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                            </form>
+                                        </div>
+                                    {% elseif authSource.type is same as('ldap') %}
+                                        <!-- LDAP -->
+                                        <div>
+                                            {% if authSource.description is not empty %}
+                                                <p class="uk-text-small">{{ authSource.description }}</p>
+                                            {% endif %}
+
+                                            <form class="uk-form-stacked" method="post">
+                                                {% if error %}
+                                                    <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                                {% endif %}
+
+                                                {# hidden #}
+                                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                                <input type="hidden" name="context" value="{{ context }}">
+
+                                                {# username #}
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label" for="inputEmail">{{ 'login.label_username'|trans({}, 'login') }}</label>
+
+                                                    <div class="uk-form-controls">
+                                                        <div class="uk-inline uk-width-1-1">
+                                                            <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                                            <input class="uk-input" id="inputEmail" type="text" name="email" value="{{ last_username }}" placeholder="{{ 'login.placeholder_username'|trans({}, 'login') }}" required autofocus>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {# password #}
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label" for="inputPassword">{{ 'login.label_password'|trans({}, 'login') }}</label>
+                                                    <div class="uk-form-controls">
+                                                        <div class="uk-inline uk-width-1-1">
+                                                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                            <input class="uk-input" id="inputPassword" type="password" name="password" placeholder="{{ 'login.placeholder_password'|trans({}, 'login') }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="uk-margin">
+                                                    <div class="uk-form-controls">
+                                                        <div class="uk-inline uk-width-1-1">
+                                                            <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_ldap">{{ 'login.sign_in'|trans({}, 'login') }}</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    {% elseif authSource.type is same as('shib') %}
+                                        <!-- Shibboleth -->
+                                        <div>
+                                            {% if authSource.description is not empty %}
+                                                <p class="uk-text-small">{{ authSource.description }}</p>
+                                            {% endif %}
+
+                                            <button class="uk-button uk-button-primary">Zum Login...</button>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
+                            {% endfor %}
 
-                                {# hidden #}
-                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                                <input type="hidden" name="context" value="{{ context }}">
+                            <!-- Gast -->
+                            {% if portal.isOpenForGuests %}
+                                <div>
+                                    <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>
 
-                                {# username / email #}
-                                <div class="uk-margin">
-                                    <label class="uk-form-label" for="inputEmail">{{ 'login.label_username'|trans({}, 'login') }}</label>
-
-                                    <div class="uk-form-controls">
-                                        <div class="uk-inline uk-width-1-1">
-                                            <span class="uk-form-icon" uk-icon="icon: user"></span>
-                                            <input class="uk-input" id="inputEmail" type="text" name="email" value="{{ last_username }}" placeholder="{{ 'login.placeholder_username'|trans({}, 'login') }}" required autofocus>
-                                        </div>
-                                    </div>
+                                    <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {
+                                        'context': portal.id
+                                    }) }}">
+                                        {{ 'login.guest_login'|trans({}, 'login') }}
+                                    </a>
                                 </div>
+                            {% endif %}
 
-                                {# password #}
-                                <div class="uk-margin">
-                                    <label class="uk-form-label" for="inputPassword">{{ 'login.label_password'|trans({}, 'login') }}</label>
-                                    <div class="uk-form-controls">
-                                        <div class="uk-inline uk-width-1-1">
-                                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
-                                            <input class="uk-input" id="inputPassword" type="password" name="password" placeholder="{{ 'login.placeholder_password'|trans({}, 'login') }}" required>
-                                        </div>
-                                    </div>
-                                </div>
+                        {% else %}
+                            <!-- Admin -->
+                            <div>
+                                <form class="uk-form-stacked" method="post">
+                                    {% if error %}
+                                        <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                    {% endif %}
 
-                                {#
-                                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                                    See https://symfony.com/doc/current/security/remember_me.html
+                                    {# hidden #}
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                    <input type="hidden" name="context" value="{{ context }}">
 
-                                    <div class="checkbox mb-3">
-                                        <label>
-                                            <input type="checkbox" name="_remember_me"> Remember me
-                                        </label>
-                                    </div>
-                                #}
-
-                                <div class="uk-margin">
-                                    <div class="uk-form-controls">
-                                        <div class="uk-inline uk-width-1-1">
-                                            <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {% if portal is not null %}
+                                    {# username / email #}
                                     <div class="uk-margin">
-                                        <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
+                                        <label class="uk-form-label" for="inputEmail">{{ 'login.label_username'|trans({}, 'login') }}</label>
+
                                         <div class="uk-form-controls">
                                             <div class="uk-inline uk-width-1-1">
-                                                <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
+                                                <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                                <input class="uk-input" id="inputEmail" type="text" name="email" value="{{ last_username }}" placeholder="{{ 'login.placeholder_username'|trans({}, 'login') }}" required autofocus>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="uk-margin uk-text-small">
-                                        <div class="uk-flex uk-flex-around">
-                                            <div class="">
-                                                <a href="#">{{ 'login.forget_password'|trans({}, 'login') }}</a>
-                                            </div>
-
-                                            <div class="">
-                                                <a href="#">{{ 'login.forget_account'|trans({}, 'login') }}</a>
+                                    {# password #}
+                                    <div class="uk-margin">
+                                        <label class="uk-form-label" for="inputPassword">{{ 'login.label_password'|trans({}, 'login') }}</label>
+                                        <div class="uk-form-controls">
+                                            <div class="uk-inline uk-width-1-1">
+                                                <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                                <input class="uk-input" id="inputPassword" type="password" name="password" placeholder="{{ 'login.placeholder_password'|trans({}, 'login') }}" required>
                                             </div>
                                         </div>
                                     </div>
-                                {% endif %}
 
-                            </form>
-                        </div>
+                                    <div class="uk-margin">
+                                        <div class="uk-form-controls">
+                                            <div class="uk-inline uk-width-1-1">
+                                                <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                        {% if portal is not null %}
-                                <!-- UHH -->
-                                <div>
-                                    <p class="uk-text-small">Dies ist die UHH-Anmeldung...</p>
+                                </form>
+                            </div>
+                        {% endif %}
 
-                                    <button class="uk-button uk-button-primary">Zum Login...</button>
-                                </div>
 
-                                <!-- Gast -->
-                                <div>
-                                    <p class="uk-text-small">Melden Sie sich ohne Registrierung als Gast an CommSy an.</p>
-
-                                    <button class="uk-button uk-button-primary">Als Gast anmelden</button>
-                                </div>
-                       {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-{#    <h1>LDAP</h1>#}
-{#    <form method="post">#}
-{#        {% if error %}#}
-{#            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>#}
-{#        {% endif %}#}
-
-{#        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>#}
-{#        <label for="inputEmail" class="sr-only">Email / Username</label>#}
-            {#        <input type="text" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email / Username" required autofocus>#}
-{#        <label for="inputPassword" class="sr-only">Password</label>#}
-{#        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>#}
-
-{#        <input type="hidden" name="_csrf_token"#}
-{#               value="{{ csrf_token('authenticate') }}"#}
-{#        >#}
-
-{#        <input type="hidden" name="context" value="{{ context }}">#}
-
-
-{#            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.#}
-{#            See https://symfony.com/doc/current/security/remember_me.html#}
-
-{#            <div class="checkbox mb-3">#}
-{#                <label>#}
-{#                    <input type="checkbox" name="_remember_me"> Remember me#}
-{#                </label>#}
-{#            </div>#}
-
-
-{#        <button class="btn btn-lg btn-primary" type="submit" name="login_ldap">#}
-{#            Sign in#}
-{#        </button>#}
-{#    </form>#}
-
-{#    <h1>Gast</h1>#}
 {% endblock %}
