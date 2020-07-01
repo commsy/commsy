@@ -52,7 +52,7 @@ class AccountController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('cancel')->isSubmitted()) {
+            if ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_login', [
                     'context' => $portal->getId(),
                 ]);
