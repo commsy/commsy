@@ -771,11 +771,14 @@ class PortalSettingsController extends AbstractController
                 $searchParam = $data->getAccountIndexSearchString();
 
                 if(empty($searchParam)){
-                    $userList = $tempUserList;
+                    foreach($tempUserList as $singleUser){
+                        if($this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser)){
+                            array_push($userList, $singleUser); //remove users not fitting the search string
+                        }
+                    }
                 }else{
                     foreach($tempUserList as $singleUser){
-                        //TODO check here on chosen criteria e.g. is moderator - add a boolean flag
-                        if(strpos($singleUser->getUserID(), $searchParam) !== false){ //TODO here the flag && criteria
+                        if((strpos($singleUser->getUserID(), $searchParam) !== false) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser)){
                             array_push($userList, $singleUser); //remove users not fitting the search string
                         }
                     }
@@ -1000,6 +1003,67 @@ class PortalSettingsController extends AbstractController
         ];
     }
 
+
+    private function meetsFilterChoiceCriteria($filterChoice, $userInQuestion){
+        $meetsCriteria = false;
+        switch ($filterChoice) {
+            case 0: //no selection
+                $meetsCriteria = true;
+                break;
+            case 1: // Members
+                if($userInQuestion->isRoomMember()){
+                    $meetsCriteria = true;
+                }
+                break;
+            case 2: // locked
+                if($userInQuestion->isLocked()){
+                    $meetsCriteria = true;
+                }
+                break;
+            case 3: // In activation
+                $meetsCriteria = true;
+                break;
+            case 4: // User
+                if($userInQuestion->isUser()){
+                    $meetsCriteria = true;
+                }
+                break;
+            case 5: // Moderator
+                if($userInQuestion->isModerator()){
+                    $meetsCriteria = true;
+                }
+                break;
+            case 6: // Contact
+                if($userInQuestion->isContact()){
+                    $meetsCriteria = true;
+                }
+                break;
+            case 7: // Community workspace moderator
+                $meetsCriteria = true;
+                break;
+            case 8: // Community workspace contact
+                $meetsCriteria = true;
+                break;
+            case 9: // Project workspace moderator
+                $meetsCriteria = true;
+                break;
+            case 10: // project workspace contact
+                $meetsCriteria = true;
+                break;
+            case 11: // moderator of any workspace
+                $meetsCriteria = true;
+                break;
+            case 12: // contact of any workspace
+                $meetsCriteria = true;
+                break;
+            case 13: // no workspace membership
+                if(!$userInQuestion->isRoomMember()){
+                    $meetsCriteria = true;
+                }
+                break;
+        }
+        return $meetsCriteria;
+    }
 
     /**
      * @Route("/portal/{portalId}/settings/accountindex/sendmail/{recipients}")
@@ -1751,6 +1815,7 @@ class PortalSettingsController extends AbstractController
         ];
     }
 
+    //TODO
     private function sendUserInfoMail($userIds, $action)
     {
         $accountMail = $this->get('commsy.utils.mail_account');
