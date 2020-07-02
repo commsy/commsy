@@ -13,6 +13,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Vich\UploaderBundle\Form\Type as VichTypes;
+
 class GeneralType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -31,6 +33,14 @@ class GeneralType extends AbstractType
                 'required' => false,
                 'config_name' => 'cs_mail_config',
             ])
+            ->add('logoFile', VichTypes\VichImageType::class, [
+                'required' => false,
+                'allow_delete' => true,
+                'download_label' => true,
+                'download_uri' => true,
+                'image_uri' => true,
+                'asset_helper' => true,
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'portal.create',
                 'attr' => [
@@ -38,28 +48,6 @@ class GeneralType extends AbstractType
                 ],
             ])
         ;
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var Portal $portal */
-            $portal = $event->getData();
-            $form = $event->getForm();
-
-            // Are editing an existing portal?
-            if ($portal !== null && $portal->getId() !== null) {
-                $form->add('logo', FileType::class, [
-                    'mapped' => false,
-                    'required' => false,
-                ]);
-
-                //        ->add('room_image_upload', FileType::class, array(
-//            'attr' => array(
-//                'required' => false,
-//                'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
-//            ),
-                //'image_path' => 'webPath',
-//    ))
-            }
-        });
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -1,7 +1,10 @@
 vich_uploader:
     db_driver: orm
 
-    #mappings:
-    #    products:
-    #        uri_prefix: /images/products
-    #        upload_destination: '%kernel.project_dir%/public/images/products'
+    mappings:
+        portal_logo:
+            uri_prefix: /files/portal/logos
+            upload_destination: '%kernel.project_dir%/files/portal/logos'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_remove: true  # determine whether to delete file upon removal of entity
+            delete_on_update: true  # determine wheter to delete the file upon update of entity
