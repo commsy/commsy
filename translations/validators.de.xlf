@@ -90,6 +90,10 @@
                 <source>The value {{ value }} should not be blank.</source>
                 <target>Der Wert {{ value }} sollte nicht leer sein.</target>
             </trans-unit>
+            <trans-unit id="violation_not_positive_or_empty">
+                <source>This value should be positive or empty.</source>
+                <target>Dieser Wert sollte entweder positiv oder leer sein.</target>
+            </trans-unit>
 
             <!-- csv user import -->
             <trans-unit id="violation_csv_user_import_firstname_not_blank">

@@ -628,19 +628,19 @@
             <!-- inactive -->
             <trans-unit id="lock_user">
                 <source>Lock user</source>
-                <target>Nach x Tagen Inaktivität sperren:</target>
+                <target>Nach x Tagen Inaktivität sperren</target>
             </trans-unit>
             <trans-unit id="email_before_lock">
                 <source>Email before lock</source>
-                <target>x Tage vor dem Sperren eine Email schreiben:</target>
+                <target>x Tage vor dem Sperren eine Email schreiben</target>
             </trans-unit>
             <trans-unit id="delete_user">
                 <source>Delete user</source>
-                <target>Nach x Tagen Inaktivität löschen:</target>
+                <target>Nach x Tagen Inaktivität löschen</target>
             </trans-unit>
             <trans-unit id="email_before_delete">
                 <source>Email before delete</source>
-                <target>x Tage vor dem Löschen eine Email schreiben:</target>
+                <target>x Tage vor dem Löschen eine Email schreiben</target>
             </trans-unit>
             <trans-unit id="inactive">
                 <source>Inactive</source>
@@ -811,7 +811,7 @@
                 <target># Räume</target>
             </trans-unit>
 
-            <!-- form -->
+            <!-- general form -->
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Titel</target>
@@ -823,6 +823,10 @@
             <trans-unit id="portal_form_desc_en">
                 <source>portal.form_desc_en</source>
                 <target>Beschreibung Englisch</target>
+            </trans-unit>
+            <trans-unit id="Portal logo">
+                <source>Portal logo</source>
+                <target>Logo</target>
             </trans-unit>
         </body>
     </file>

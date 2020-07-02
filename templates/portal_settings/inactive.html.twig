@@ -11,10 +11,9 @@
 {% block main %}
     {% embed 'components/card.html.twig' %}
         {% block title %}{{ 'Inactive'|trans({}, "portal") }}{% endblock %}
+
         {% block body %}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
+            {{ form(form) }}
         {% endblock %}
     {% endembed %}
 {% endblock %}

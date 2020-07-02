@@ -3,22 +3,20 @@
 namespace App\Form\Type\Portal;
 
 use App\Entity\Portal;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type as Types;
+
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Vich\UploaderBundle\Form\Type as VichTypes;
 
 class GeneralType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, [
+            ->add('title', Types\TextType::class, [
                 'label' => 'portal.form_title',
             ])
             ->add('descriptionGerman', CKEditorType::class, [
@@ -31,35 +29,19 @@ class GeneralType extends AbstractType
                 'required' => false,
                 'config_name' => 'cs_mail_config',
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'portal.create',
-                'attr' => [
-                    'class' => 'uk-button-primary uk-width-medium',
-                ],
+//            ->add('logoFile', VichTypes\VichImageType::class, [
+//                'required' => false,
+//                'allow_delete' => true,
+//                'download_label' => true,
+//                'download_uri' => true,
+//                'image_uri' => true,
+//                'asset_helper' => true,
+//            ])
+            ->add('save', Types\SubmitType::class, [
+                'label' => 'save',
+                'translation_domain' => 'form',
             ])
         ;
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var Portal $portal */
-            $portal = $event->getData();
-            $form = $event->getForm();
-
-            // Are editing an existing portal?
-            if ($portal !== null && $portal->getId() !== null) {
-                $form->add('logo', FileType::class, [
-                    'mapped' => false,
-                    'required' => false,
-                ]);
-
-                //        ->add('room_image_upload', FileType::class, array(
-//            'attr' => array(
-//                'required' => false,
-//                'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
-//            ),
-                //'image_path' => 'webPath',
-//    ))
-            }
-        });
     }
 
     public function configureOptions(OptionsResolver $resolver)
