@@ -24,7 +24,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
-class Portal
+class Portal implements \Serializable
 {
     /**
      * @ORM\Id
@@ -941,5 +941,27 @@ class Portal
         $manager->saveWithoutChangingModificationInformation();
         $this->_save($manager);
         $this->_changes = array();
+    }
+
+
+    // Serializable
+
+    public function serialize()
+    {
+        $serializableData = get_object_vars($this);
+
+        // exclude from serialization
+        unset($serializableData['logoFile']);
+
+        return serialize($serializableData);
+    }
+
+    public function unserialize($serialized)
+    {
+        $unserializedData = unserialize($serialized);
+
+        foreach ($unserializedData as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }
