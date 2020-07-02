@@ -808,6 +808,10 @@
                 <source>portal.form_desc_en</source>
                 <target>Description English</target>
             </trans-unit>
+            <trans-unit id="Portal logo">
+                <source>Portal logo</source>
+                <target>Logo</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

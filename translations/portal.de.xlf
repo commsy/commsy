@@ -811,7 +811,7 @@
                 <target># Räume</target>
             </trans-unit>
 
-            <!-- form -->
+            <!-- general form -->
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Titel</target>
@@ -823,6 +823,10 @@
             <trans-unit id="portal_form_desc_en">
                 <source>portal.form_desc_en</source>
                 <target>Beschreibung Englisch</target>
+            </trans-unit>
+            <trans-unit id="Portal logo">
+                <source>Portal logo</source>
+                <target>Logo</target>
             </trans-unit>
         </body>
     </file>
