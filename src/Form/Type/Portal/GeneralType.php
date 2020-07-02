@@ -29,14 +29,14 @@ class GeneralType extends AbstractType
                 'required' => false,
                 'config_name' => 'cs_mail_config',
             ])
-            ->add('logoFile', VichTypes\VichImageType::class, [
-                'required' => false,
-                'allow_delete' => true,
-                'download_label' => true,
-                'download_uri' => true,
-                'image_uri' => true,
-                'asset_helper' => true,
-            ])
+//            ->add('logoFile', VichTypes\VichImageType::class, [
+//                'required' => false,
+//                'allow_delete' => true,
+//                'download_label' => true,
+//                'download_uri' => true,
+//                'image_uri' => true,
+//                'asset_helper' => true,
+//            ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
