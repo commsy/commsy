@@ -57,15 +57,19 @@
                 <source>settings</source>
                 <target>Portaleinstellungen</target>
             </trans-unit>
+            <trans-unit id="Show">
+                <source>Show</source>
+                <target>Anzeigen</target>
+            </trans-unit>
+            <trans-unit id="Show?">
+                <source>Show?</source>
+                <target>Anzeigen?</target>
+            </trans-unit>
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
                 <source>announcements</source>
                 <target>Portal-Ankündigungen</target>
-            </trans-unit>
-            <trans-unit id="Show announcements">
-                <source>Show</source>
-                <target>Anzeigen?</target>
             </trans-unit>
             <trans-unit id="Priority">
                 <source>Priority</source>
@@ -202,26 +206,22 @@
             </trans-unit>
             <trans-unit id="portal_breadcrumb_home_title">
                 <source>portalhome</source>
-                <target>Gestaltung 'alle Räume'</target>
+                <target>Gestaltung 'Alle Räume'</target>
             </trans-unit>
-            <trans-unit id="all_open_workspaces">
-                <source>all open workspaces</source>
-                <target>alle offenen Räume anzeigen (Standard)</target>
+            <trans-unit id="All_open_workspaces">
+                <source>All open workspaces</source>
+                <target>Alle offenen Räume anzeigen (Standard)</target>
             </trans-unit>
-            <trans-unit id="preselcted_community_workspaces_from_all">
-                <source>preselected community workspaces from all</source>
-                <target>Vorauswahl der Gemeinschaftsräume in der Liste aller Räume</target>
+            <trans-unit id="Only_community_workspaces">
+                <source>Only community workspaces</source>
+                <target>Nur Gemeinschaftsräume anzeigen (keine Projekträume)</target>
             </trans-unit>
-            <trans-unit id="all_community_workspaces">
-                <source>all community workspaces</source>
-                <target>nur Gemeinschaftsräume anzeigen (keine Projekträume)</target>
+            <trans-unit id="Only_project_workspaces">
+                <source>Only project workspaces</source>
+                <target>Nur Projekträume anzeigen (keine Gemeinschaftsräume)</target>
             </trans-unit>
-            <trans-unit id="only_project_workspaces">
-                <source>only project workspaces</source>
-                <target>nur Projekträume anzeigen (keine Gemeinschaftsräume)</target>
-            </trans-unit>
-            <trans-unit id="show_template_in_workspace_feed">
-                <source>show template in workspace feed</source>
+            <trans-unit id="Show_templates_in_workspace_feed">
+                <source>Show templates in workspace feed</source>
                 <target>Vorlagen in der Raumliste anzeigen</target>
             </trans-unit>
             <trans-unit id="workspace_display">
@@ -628,19 +628,19 @@
             <!-- inactive -->
             <trans-unit id="lock_user">
                 <source>Lock user</source>
-                <target>Nach x Tagen Inaktivität sperren:</target>
+                <target>Nach x Tagen Inaktivität sperren</target>
             </trans-unit>
             <trans-unit id="email_before_lock">
                 <source>Email before lock</source>
-                <target>x Tage vor dem Sperren eine Email schreiben:</target>
+                <target>x Tage vor dem Sperren eine Email schreiben</target>
             </trans-unit>
             <trans-unit id="delete_user">
                 <source>Delete user</source>
-                <target>Nach x Tagen Inaktivität löschen:</target>
+                <target>Nach x Tagen Inaktivität löschen</target>
             </trans-unit>
             <trans-unit id="email_before_delete">
                 <source>Email before delete</source>
-                <target>x Tage vor dem Löschen eine Email schreiben:</target>
+                <target>x Tage vor dem Löschen eine Email schreiben</target>
             </trans-unit>
             <trans-unit id="inactive">
                 <source>Inactive</source>
@@ -811,7 +811,7 @@
                 <target># Räume</target>
             </trans-unit>
 
-            <!-- form -->
+            <!-- general form -->
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Titel</target>
@@ -823,6 +823,10 @@
             <trans-unit id="portal_form_desc_en">
                 <source>portal.form_desc_en</source>
                 <target>Beschreibung Englisch</target>
+            </trans-unit>
+            <trans-unit id="Portal logo">
+                <source>Portal logo</source>
+                <target>Logo</target>
             </trans-unit>
         </body>
     </file>

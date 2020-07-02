@@ -20,7 +20,7 @@ class SupportRequestsType extends AbstractType
     {
         $builder
             ->add('supportRequestsEnabled' , Types\ChoiceType::class, [
-                'label' => 'Show',
+                'label' => 'Show?',
                 'expanded' => true,
                 'choices' => [
                     'Yes' => true,

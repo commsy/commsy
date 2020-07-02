@@ -201,7 +201,7 @@ class PortalProxy
 
     public function setShowTemplatesInRoomListOFF ()
     {
-        $this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST'] = 0;
+        $this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST'] = -1;
     }
 
     public function getShowTemplatesInRoomList()

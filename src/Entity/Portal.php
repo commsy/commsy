@@ -7,7 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
+
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Portal
@@ -18,8 +22,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * })
  * @ORM\Entity(repositoryClass="App\Repository\PortalRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @Vich\Uploadable
  */
-class Portal
+class Portal implements \Serializable
 {
     /**
      * @ORM\Id
@@ -142,7 +147,18 @@ class Portal
     private $authSources;
 
     /**
-     * @var string
+     * NOTE: This is not a mapped field of entity metadata, just a simple property used by VichUploaderBundle.
+     *
+     * @Vich\UploadableField(mapping="portal_logo", fileNameProperty="logoFilename")
+     *
+     * @var File|null
+     */
+    private $logoFile;
+
+    /**
+     * @ORM\Column(name="logo_filename", type="string", length=255, nullable=true)
+     *
+     * @var string|null
      */
     private $logoFilename;
 
@@ -434,18 +450,41 @@ class Portal
     }
 
     /**
-     * @return string
+     * @return File|null
      */
-    public function getLogoFilename():? string
+    public function getLogoFile(): ?File
+    {
+        return $this->logoFile;
+    }
+
+    /**
+     * @param File|UploadedFile|null $logoFile
+     * @return Portal
+     */
+    public function setLogoFile(?File $logoFile = null): Portal
+    {
+        $this->logoFile = $logoFile;
+        if ($logoFile !== null) {
+            // VichUploaderBundle NOTE: it is required that at least one field changes if you are
+            // using Doctrine otherwise the event listeners won't be called and the file is lost
+            $this->modificationDate = new \DateTimeImmutable();
+        }
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLogoFilename(): ?string
     {
         return $this->logoFilename;
     }
 
     /**
-     * @param string $logoFilename
+     * @param string|null $logoFilename
      * @return Portal
      */
-    public function setLogoFilename(string $logoFilename): Portal
+    public function setLogoFilename(?string $logoFilename): Portal
     {
         $this->logoFilename = $logoFilename;
         return $this;
@@ -525,30 +564,6 @@ class Portal
     public function setFutureTimeCycles(?int $futureCycles): Portal
     {
         $this->extras['FUTURE_TIME_CYCLES'] = $futureCycles;
-        return $this;
-    }
-
-    public function getConfigurationSelection():? int
-    {
-        return $this->extras['CONFIGURATION_SELECTION'] ?? 0;
-    }
-
-    public function setConfigurationSelection(?int $configurationSelection): Portal
-    {
-        $this->extras['CONFIGURATION_SELECTION'] = $configurationSelection;
-        return $this;
-    }
-
-    //CONFIGURATION_ROOM_LIST_TEMPLATES
-
-    public function hasConfigurationRoomListTemplates(): bool
-    {
-        return $this->extras['CONFIGURATION_ROOM_LIST_TEMPLATES'] ?? true;
-    }
-
-    public function setConfigurationRoomListTemplates(?bool $configurationRoomListTemplates): Portal
-    {
-        $this->extras['CONFIGURATION_ROOM_LIST_TEMPLATES'] = $configurationRoomListTemplates;
         return $this;
     }
 
@@ -657,7 +672,7 @@ class Portal
     public function hasAGBEnabled(): bool
     {
         /**
-         * agb status 1 = yes, 2 = no
+         * agb status 1 = yes, 2 = no (default)
          * @var integer
          */
         $agbStatus = $this->extras['AGBSTATUS'] ?? 2;
@@ -668,6 +683,37 @@ class Portal
     public function setAGBEnabled(bool $enabled): Portal
     {
         $this->extras['AGBSTATUS'] = $enabled ? 1 : 2;
+        return $this;
+    }
+
+    public function getShowRoomsOnHome(): string
+    {
+        return $this->extras['SHOWROOMSONHOME'] ?? 'normal';
+    }
+
+    public function setShowRoomsOnHome(?string $text): Portal
+    {
+        if ($text !== 'onlycommunityrooms' && $text !== 'onlyprojectrooms') {
+            $text = 'normal';
+        }
+        $this->extras['SHOWROOMSONHOME'] = $text;
+        return $this;
+    }
+
+    public function getShowTemplatesInRoomList(): bool
+    {
+        /**
+         * show templates: 1 = yes (default), -1 = no
+         * @var integer
+         */
+        $showTemplates = $this->extras['SHOW_TEMPLATE_IN_ROOM_LIST'] ?? 1;
+
+        return $showTemplates === 1 ? true : false;
+    }
+
+    public function setShowTemplatesInRoomList(?bool $showTemplates): Portal
+    {
+        $this->extras['SHOW_TEMPLATE_IN_ROOM_LIST'] = $showTemplates ? 1 : -1;
         return $this;
     }
 
@@ -688,6 +734,49 @@ class Portal
         return $this;
     }
 
+    public function getInactivityLockDays():? int
+    {
+        return $this->extras['INACTIVITY_LOCK'] ?? null;
+    }
+
+    public function setInactivityLockDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_LOCK'] = $days;
+        return $this;
+    }
+
+    public function getInactivitySendMailBeforeLockDays():? int
+    {
+        return $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] ?? null;
+    }
+
+    public function setInactivitySendMailBeforeLockDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] = $days;
+        return $this;
+    }
+
+    public function getInactivityDeleteDays():? int
+    {
+        return $this->extras['INACTIVITY_DELETE'] ?? null;
+    }
+
+    public function setInactivityDeleteDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_DELETE'] = $days;
+        return $this;
+    }
+
+    public function getInactivitySendMailBeforeDeleteDays():? int
+    {
+        return $this->extras['INACTIVITY_MAIL_DELETE'] ?? null;
+    }
+
+    public function setInactivitySendMailBeforeDeleteDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_MAIL_DELETE'] = $days;
+        return $this;
+    }
     /**
      * @return string
      */
@@ -902,5 +991,27 @@ class Portal
         $manager->saveWithoutChangingModificationInformation();
         $this->_save($manager);
         $this->_changes = array();
+    }
+
+
+    // Serializable
+
+    public function serialize()
+    {
+        $serializableData = get_object_vars($this);
+
+        // exclude from serialization
+        unset($serializableData['logoFile']);
+
+        return serialize($serializableData);
+    }
+
+    public function unserialize($serialized)
+    {
+        $unserializedData = unserialize($serialized);
+
+        foreach ($unserializedData as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

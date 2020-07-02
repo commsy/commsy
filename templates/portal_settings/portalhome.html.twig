@@ -14,11 +14,10 @@
 
         {% block body %}
             {{ form_start(form) }}
-            {{ form_label(form.configurationSelection) }}
-            {{ form_row(form.configurationSelection[0]) }}
-            {{ form_row(form.configurationSelection[1]) }}
-            {{ form_row(form.configurationSelection[2]) }}
-            {{ form_row(form.configurationSelection[3]) }}
+            {{ form_label(form.showRoomsOnHome) }}
+            {{ form_row(form.showRoomsOnHome[0]) }}
+            {{ form_row(form.showRoomsOnHome[1]) }}
+            {{ form_row(form.showRoomsOnHome[2]) }}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

@@ -6,7 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class PortalhomeType extends AbstractType
 {
@@ -18,21 +17,18 @@ class PortalhomeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('configurationSelection', Types\ChoiceType::class, [
-                'label' => 'Workspace display',
+        $builder->add('showRoomsOnHome', Types\ChoiceType::class, [
+                'label' => 'Show',
                 'expanded' => true,
                 'choices'  => [
-                    'all open workspaces' => 0,
-                    'preselected community workspaces from all' => 1,
-                    'all community workspaces' => 2,
-                    'nur Gemeinschaftsräume anzeigen (keine Projekträume)' => 3,
+                    'All open workspaces' => 'normal',
+                    'Only community workspaces' => 'onlycommunityrooms',
+                    'Only project workspaces' => 'onlyprojectrooms',
                 ],
-                'translation_domain' => 'portal',
             ])
-            ->add('configurationRoomListTemplates', CheckboxType::class, [
-                'label' => 'show template in workspace feed',
-                'required' => true,
-                'translation_domain' => 'portal',
+            ->add('showTemplatesInRoomList', Types\CheckboxType::class, [
+                'label' => 'Show templates in workspace feed',
+                'required' => false,
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',

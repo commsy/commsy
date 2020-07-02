@@ -57,15 +57,19 @@
                 <source>settings</source>
                 <target>Portaleinstellungen</target>
             </trans-unit>
+            <trans-unit id="Show">
+                <source>Show</source>
+                <target>Show</target>
+            </trans-unit>
+            <trans-unit id="Show?">
+                <source>Show?</source>
+                <target>Show?</target>
+            </trans-unit>
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
                 <source>Portal announcements</source>
                 <target>announcements</target>
-            </trans-unit>
-            <trans-unit id="Show announcements">
-                <source>Show</source>
-                <target>Show?</target>
             </trans-unit>
             <trans-unit id="Priority">
                 <source>Priority</source>
@@ -202,23 +206,27 @@
             </trans-unit>
             <trans-unit id="portal_breadcrumb_home_title">
                 <source>portalhome</source>
-                <target>configure portal start page</target>
+                <target>Configure portal start page</target>
             </trans-unit>
-            <trans-unit id="all_open_workspaces">
-                <source>all open workspaces</source>
-                <target>alle offenen Räume anzeigen (Standard)</target>
+            <trans-unit id="All_open_workspaces">
+                <source>All open workspaces</source>
+                <target>Show all available workspaces (default)</target>
             </trans-unit>
-            <trans-unit id="all_community_workspaces">
-                <source>all community workspaces</source>
-                <target>nur Gemeinschaftsräume anzeigen (keine Projekträume)</target>
+            <trans-unit id="Only_community_workspaces">
+                <source>Only community workspaces</source>
+                <target>Show community workspaces only (no project workspaces)</target>
             </trans-unit>
-            <trans-unit id="only_project_workspaces">
-                <source>only project workspaces</source>
-                <target>nur Projekträume anzeigen (keine Gemeinschaftsräume)</target>
+            <trans-unit id="Only_project_workspaces">
+                <source>Only project workspaces</source>
+                <target>Show project workspaces only (no community workspaces)</target>
+            </trans-unit>
+            <trans-unit id="Show_templates_in_workspace_feed">
+                <source>Show templates in workspace feed</source>
+                <target>Show templates in workplace list</target>
             </trans-unit>
             <trans-unit id="workspace_display">
                 <source>Workspace display</source>
-                <target>Raumanzeige</target>
+                <target>Display workspaces</target>
             </trans-unit>
 
             <!-- Portal Account Index -->
@@ -680,19 +688,19 @@
             <!-- inactive -->
             <trans-unit id="lock_user">
                 <source>Lock user</source>
-                <target>Lock user after x days of inactivity:</target>
+                <target>Lock user after x days of inactivity</target>
             </trans-unit>
             <trans-unit id="email_before_lock">
                 <source>Email before lock</source>
-                <target>Send an email x days before locking a user:</target>
+                <target>Send an email x days before locking a user</target>
             </trans-unit>
             <trans-unit id="delete_user">
                 <source>Delete user</source>
-                <target>Delete users after x days of inactivity:</target>
+                <target>Delete users after x days of inactivity</target>
             </trans-unit>
             <trans-unit id="email_before_delete">
                 <source>Email before delete</source>
-                <target>Write an email x days before deleting a user:</target>
+                <target>Write an email x days before deleting a user</target>
             </trans-unit>
             <trans-unit id="inactive">
                 <source>Inactive</source>
@@ -807,6 +815,10 @@
             <trans-unit id="portal_form_desc_en">
                 <source>portal.form_desc_en</source>
                 <target>Description English</target>
+            </trans-unit>
+            <trans-unit id="Portal logo">
+                <source>Portal logo</source>
+                <target>Logo</target>
             </trans-unit>
         </body>
     </file>

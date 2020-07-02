@@ -21,7 +21,7 @@ class TermsType extends AbstractType
     {
         $builder
             ->add('AGBEnabled' , Types\ChoiceType::class, [
-                'label' => 'Show',
+                'label' => 'Show?',
                 'expanded' => true,
                 'choices' => [
                     'Yes' => true,

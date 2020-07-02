@@ -22,7 +22,7 @@ class AnnouncementsType extends AbstractType
     {
         $builder
             ->add('announcementEnabled' , Types\ChoiceType::class, [
-                'label' => 'Show',
+                'label' => 'Show?',
                 'expanded' => true,
                 'choices' => [
                     'Yes' => true,

@@ -21,7 +21,7 @@ class PortalTermsType extends AbstractType
     {
         $builder
             ->add('status' , Types\ChoiceType::class, [
-                'label' => 'Show',
+                'label' => 'Show?',
                 'expanded' => true,
                 'multiple' => false,
                 'choices' => [

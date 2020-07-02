@@ -10,7 +10,7 @@
 
 {% block main %}
     {% embed 'components/card.html.twig' %}
-        {% block title %}Portal - General{% endblock %}
+        {% block title %}{{ 'Portal'|trans({}, "portal") }}{% endblock %}
 
         {% block body %}
             {{ form(form) }}
