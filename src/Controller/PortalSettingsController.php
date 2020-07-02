@@ -77,14 +77,21 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
      */
-    public function general(Portal $portal, Request $request)
+    public function general(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
         $form = $this->createForm(GeneralType::class, $portal);
-        $form->handleRequest($request);
 
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
+            if ($form->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
         }
 
         return [

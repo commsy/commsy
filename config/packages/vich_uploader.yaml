@@ -8,3 +8,4 @@ vich_uploader:
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             delete_on_remove: true  # determine whether to delete file upon removal of entity
             delete_on_update: true  # determine wheter to delete the file upon update of entity
+            inject_on_load: true   # determine whether to inject a File instance upon load
