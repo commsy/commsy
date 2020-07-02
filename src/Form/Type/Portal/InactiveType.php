@@ -1,26 +1,15 @@
 <?php
 namespace App\Form\Type\Portal;
 
+use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class InactiveType extends AbstractType
 {
-
-    private $securityContext;
-
-    public function __construct(Security $securityContext)
-    {
-        $this->securityContext = $securityContext;
-    }
     /**
      * Builds the form.
      *
@@ -30,37 +19,46 @@ class InactiveType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('lock_user', Types\TextType::class, [
+            ->add('inactivityLockDays', Types\IntegerType::class, [
                 'label' => 'Lock user',
+                'constraints' => [
+                    new Assert\Positive([
+                        'message' => 'This value should be positive or empty.',
+                    ]),
+                ],
                 'required' => false,
-                'translation_domain' => 'portal',
             ])
-            ->add('email_before_lock', Types\TextType::class, [
+            ->add('inactivitySendMailBeforeLockDays', Types\IntegerType::class, [
                 'label' => 'Email before lock',
+                'constraints' => [
+                    new Assert\Positive([
+                        'message' => 'This value should be positive or empty.',
+                    ]),
+                ],
                 'required' => false,
-                'translation_domain' => 'portal',
             ])
-            ->add('delete_user', Types\TextType::class, [
+            ->add('inactivityDeleteDays', Types\IntegerType::class, [
                 'label' => 'Delete user',
+                'constraints' => [
+                    new Assert\Positive([
+                        'message' => 'This value should be positive or empty.',
+                    ]),
+                ],
                 'required' => false,
-                'translation_domain' => 'portal',
             ])
-            ->add('email_before_delete', Types\TextType::class, [
+            ->add('inactivitySendMailBeforeDeleteDays', Types\IntegerType::class, [
                 'label' => 'Email before delete',
+                'constraints' => [
+                    new Assert\Positive([
+                        'message' => 'This value should be positive or empty.',
+                    ]),
+                ],
                 'required' => false,
-                'translation_domain' => 'portal',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
             ]);
-    }
-
-    public function setDefaultOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class' => null
-        ));
     }
 
     /**
@@ -71,7 +69,7 @@ class InactiveType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => null,
+            'data_class' => Portal::class,
             'translation_domain' => 'portal',
         ]);
     }

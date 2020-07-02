@@ -727,6 +727,49 @@ class Portal implements \Serializable
         return $this;
     }
 
+    public function getInactivityLockDays():? int
+    {
+        return $this->extras['INACTIVITY_LOCK'] ?? null;
+    }
+
+    public function setInactivityLockDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_LOCK'] = $days;
+        return $this;
+    }
+
+    public function getInactivitySendMailBeforeLockDays():? int
+    {
+        return $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] ?? null;
+    }
+
+    public function setInactivitySendMailBeforeLockDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] = $days;
+        return $this;
+    }
+
+    public function getInactivityDeleteDays():? int
+    {
+        return $this->extras['INACTIVITY_DELETE'] ?? null;
+    }
+
+    public function setInactivityDeleteDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_DELETE'] = $days;
+        return $this;
+    }
+
+    public function getInactivitySendMailBeforeDeleteDays():? int
+    {
+        return $this->extras['INACTIVITY_MAIL_DELETE'] ?? null;
+    }
+
+    public function setInactivitySendMailBeforeDeleteDays(?int $days): Portal
+    {
+        $this->extras['INACTIVITY_MAIL_DELETE'] = $days;
+        return $this;
+    }
     /**
      * @return string
      */
