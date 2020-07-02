@@ -15,6 +15,7 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Translation;
+use App\Entity\User;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -40,6 +41,7 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
+use App\Utils\AccountMail;
 use App\Utils\ItemService;
 use App\Utils\MailAssistant;
 use App\Utils\UserService;
@@ -51,11 +53,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\FormError;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -740,8 +741,10 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         LegacyEnvironment $environment,
-        UserService $userService)
+        UserService $userService,
+        \Swift_Mailer $mailer)
     {
+        $user = $userService->getCurrentUserItem();
         $userList = $userService->getListUsers($portal->getId());
         $accountIndex = new AccountIndex();
 
@@ -820,7 +823,7 @@ class PortalSettingsController extends AbstractController
                                 $user->save();
                             }
                         }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-delete');
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-delete', $user, $mailer, $userService, $environment);
                         break;
                     case 2: // user-block
                         $IdsMailRecipients = [];
@@ -832,7 +835,7 @@ class PortalSettingsController extends AbstractController
                                 $user->save();
                             }
                         }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-block');
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-block', $user, $mailer, $userService, $environment);
                         break;
                     case 3: // user-confirm
                         $IdsMailRecipients = [];
@@ -844,7 +847,7 @@ class PortalSettingsController extends AbstractController
                                 $user->save();
                             }
                         }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-confirm');
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-confirm', $user, $mailer, $userService, $environment);
                         break;
                     case 4: // change user mail the next time he/she logs in
                         foreach ($ids as $id => $checked) {
@@ -873,7 +876,7 @@ class PortalSettingsController extends AbstractController
                                 $user->save();
                             }
                         }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-user');
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-user', $user, $mailer, $userService, $environment);
                         break;
                     case 6: // user-status-moderator
                         $IdsMailRecipients = [];
@@ -882,10 +885,10 @@ class PortalSettingsController extends AbstractController
                                 array_push($IdsMailRecipients, $id);
                                 $user = $userService->getUser($id);
                                 $user->setStatus(3);
-                                $user->save();
+                                //$user->save();
                             }
                         }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-moderator');
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-moderator', $user, $mailer, $userService, $environment);
                         break;
                     case 7: //user-contact
                         $IdsMailRecipients = [];
@@ -897,7 +900,7 @@ class PortalSettingsController extends AbstractController
                                 $user->save();
                             }
                         }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact');
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact', $user, $mailer, $userService, $environment);
                         break;
                     case 8: // user-contact-remove
                         $IdsMailRecipients = [];
@@ -909,7 +912,7 @@ class PortalSettingsController extends AbstractController
                                 $user->save();
                             }
                         }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact-remove');
+                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact-remove', $user, $mailer, $userService, $environment);
                         break;
                     case 9: // send mail
                         $IdsMailRecipients = [];
@@ -942,7 +945,7 @@ class PortalSettingsController extends AbstractController
                                 array_push($IdsMailRecipients, $id);
                             }
                         }
-                        return $this->redirectToRoute('app_portalsettings_accountindexsendpmergemail', [
+                        return $this->redirectToRoute('app_portalsettings_accountindexsendmergemail', [
                             'portalId' => $portalId,
                             'recipients' => implode(", ",$IdsMailRecipients),
                         ]);
@@ -1091,6 +1094,8 @@ class PortalSettingsController extends AbstractController
 
         $sendMail = new AccountIndexSendMail();
         $sendMail->setRecipients($recipientArray);
+        $body = $this->generateBody($userService->getCurrentUserItem(), 'user-account_send_mail', $legacyEnvironment);
+        $sendMail->setMessage($body);
 
         $form = $this->createForm(AccountIndexSendMailType::class, $sendMail);
 
@@ -1140,6 +1145,13 @@ class PortalSettingsController extends AbstractController
         $sendMail = new AccountIndexSendPasswordMail();
         $sendMail->setRecipients($recipientArray);
 
+        $user = $legacyEnvironment->getEnvironment()->getCurrentUser();
+        $action = 'user-account_password';
+        $subject = $this->generateSubject($legacyEnvironment, $action);
+        $body = $this->generateBody($user, $action, $legacyEnvironment);
+        $sendMail->setSubject($subject);
+        $sendMail->setMessage($body);
+
         $form = $this->createForm(AccountIndexSendPasswordMailType::class, $sendMail);
 
         $form->handleRequest($request);
@@ -1188,6 +1200,14 @@ class PortalSettingsController extends AbstractController
 
         $sendMail = new AccountIndexSendMergeMail();
         $sendMail->setRecipients($recipientArray);
+
+        $user = $legacyEnvironment->getEnvironment()->getCurrentUser();
+
+        $action = 'user-account-merge';
+        $subject = $this->generateSubject($legacyEnvironment, $action);
+        $body = $this->generateBody($user, $action, $legacyEnvironment);
+        $sendMail->setSubject($subject);
+        $sendMail->setMessage($body);
 
         $form = $this->createForm(AccountIndexSendMergeMailType::class, $sendMail);
 
@@ -1815,18 +1835,11 @@ class PortalSettingsController extends AbstractController
         ];
     }
 
-    //TODO
-    private function sendUserInfoMail($userIds, $action)
+    private function sendUserInfoMail($userIds, $action, \cs_user_item $user, \Swift_Mailer $mailer, UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
-        $accountMail = $this->get('commsy.utils.mail_account');
-        $mailer = $this->get('mailer');
-
-        $fromAddress = $this->getParameter('commsy.email.from');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
-
-        $userService = $this->get('commsy_legacy.user_service');
+        $fromAddress = $user->getEmail();
+        $currentUser = $user;
+        $fromSender = $user->getFullName();
 
         $validator = new EmailValidator();
         $replyTo = [];
@@ -1845,8 +1858,8 @@ class PortalSettingsController extends AbstractController
             $userEmail = $user->getEmail();
             if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
                 $to = [$userEmail => $user->getFullname()];
-                $subject = $accountMail->generateSubject($action);
-                $body = $accountMail->generateBody($user, $action);
+                $subject = $this->generateSubject($legacyEnvironment, $action);
+                $body = $this->generateBody($user, $action, $legacyEnvironment);
 
                 $mailMessage = (new \Swift_Message())
                     ->setSubject($subject)
@@ -1881,5 +1894,148 @@ class PortalSettingsController extends AbstractController
                 $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
             }
         }
+    }
+
+    public function generateSubject($legacyEnvironment, $action)
+    {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $legacyTranslator = $legacyEnvironment->getTranslationObject();
+        $room = $legacyEnvironment->getCurrentContextItem();
+
+        switch ($action) {
+            case 'user-delete':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE', $room->getTitle());
+
+                break;
+
+            case 'user-block':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK', $room->getTitle());
+
+                break;
+
+            case 'user-confirm':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE', $room->getTitle());
+
+                break;
+
+            case 'user-status-user':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_STATUS_USER', $room->getTitle());
+
+                break;
+
+            case 'user-status-moderator':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_STATUS_MODERATOR', $room->getTitle());
+
+                break;
+
+            case 'user-status-reading-user':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_STATUS_READ_ONLY_USER', $room->getTitle());
+
+                break;
+
+            case 'user-contact':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON', $room->getTitle());
+
+                break;
+
+            case 'user-contact-remove':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON', $room->getTitle());
+
+                break;
+
+            case 'user-account-merge':
+                $subject = $legacyTranslator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE', $room->getTitle());
+
+                break;
+
+            case 'user-account_password':
+                $subject = $legacyTranslator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD', $room->getTitle());
+
+                break;
+        }
+
+        return $subject;
+    }
+
+    private function generateBody($user, $action, $legacyEnvironment)
+    {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $legacyTranslator = $legacyEnvironment->getTranslationObject();
+        $room = $legacyEnvironment->getCurrentContextItem();
+
+        $body = $legacyTranslator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
+        $body .= "\n\n";
+
+        $moderator = $legacyEnvironment->getCurrentUserItem();
+
+        $absoluteRoomUrl = $this->generateUrl('app_room_home', [
+            'roomId' => $legacyEnvironment->getCurrentContextID(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        switch ($action) {
+            case 'user-delete':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE', $user->getUserID(), $room->getTitle());
+
+                break;
+
+            case 'user-block':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK', $user->getUserID(), $room->getTitle());
+
+                break;
+
+            case 'user-confirm':
+            case 'user-status-user':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $user->getUserID(), $room->getTitle());
+
+                break;
+
+            case 'user-status-moderator':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR', $user->getUserID(), $room->getTitle());
+
+                break;
+
+            case 'user-status-reading-user':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY', $user->getUserID(), $room->getTitle());
+
+                break;
+
+            case 'user-contact':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
+
+                break;
+
+            case 'user-contact-remove':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
+
+                break;
+            case 'user-account-merge':
+                $sameIDsPerRoom = [];
+                $relatedUsers = $user->getRelatedUserList();
+                foreach($relatedUsers as $relatedUser){
+                    if($relatedUser->isRoomMember()){
+                        array_push($sameIDsPerRoom, $relatedUser->getUserID());
+                    }
+                }
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_MERGE_PO',$user->getEmail(), $room->getTitle(), implode(", ", $sameIDsPerRoom));
+
+                break;
+
+            case 'user-account_password':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_PASSWORD_PO', $room->getTitle(), $user->getUserID());
+
+                break;
+
+            case 'user-account_send_mail':
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO_PO', $room->getTitle(), $user->getUserID());
+
+                break;
+        }
+
+        $body .= "\n\n";
+        $body .= $absoluteRoomUrl;
+        $body .= "\n\n";
+        $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO', $moderator->getFullname(), $room->getTitle());
+
+        return $body;
     }
 }

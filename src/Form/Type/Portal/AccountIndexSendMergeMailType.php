@@ -3,6 +3,7 @@
 
 namespace App\Form\Type\Portal;
 
+use App\Entity\AccountIndexSendMergeMail;
 use App\Entity\AccountIndexSendPasswordMail;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
@@ -107,7 +108,7 @@ class AccountIndexSendMergeMailType extends AbstractType
         $resolver
             ->setDefaults([
                 'users' => [],
-                'data_class' => AccountIndexSendPasswordMail::class,
+                'data_class' => AccountIndexSendMergeMail::class,
                 'item' => null,
                 'translation_domain' => 'portal',
             ])
