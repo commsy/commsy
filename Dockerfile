@@ -109,6 +109,7 @@ RUN set -eux; \
 COPY bin bin/
 COPY config config/
 COPY legacy legacy/
+COPY migrations migrations/
 COPY public public/
 COPY src src/
 COPY templates templates/
