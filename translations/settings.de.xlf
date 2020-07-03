@@ -276,7 +276,7 @@
             </trans-unit>
             <trans-unit id="terms">
                 <source>Terms</source>
-                <target>Nutzungsvereinbarungen</target>
+                <target>Nutzungsbedingungen</target>
             </trans-unit>
             <trans-unit id="status">
                 <source>Status</source>
@@ -324,7 +324,7 @@
             </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>
-                <target>Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs akzeptieren, um Zutritt zu diesem Raum zu erhalten.</target>
+                <target>Hiermit werden Nutzungsbedingungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs akzeptieren, um Zutritt zu diesem Raum zu erhalten.</target>
             </trans-unit>
 
             <!-- Appearance settings -->

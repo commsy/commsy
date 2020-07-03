@@ -550,7 +550,7 @@
             </trans-unit>
             <trans-unit id="agreed_to_the_tos">
                 <source>Agreed to the terms of service on the...</source>
-                <target>Zustimmung der Nutzungsvereinbarung am</target>
+                <target>Zustimmung der Nutzungsbedingungen am</target>
             </trans-unit>
             <trans-unit id="workspace_membership">
                 <source>Workspace membership</source>
