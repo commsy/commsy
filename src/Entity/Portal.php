@@ -734,6 +734,45 @@ class Portal implements \Serializable
         return $this;
     }
 
+    public function getHideAccountname(): bool
+    {
+        /**
+         * hide account name: 1 = yes, 2 = no (default)
+         * @var integer
+         */
+        $hideAccountName = $this->extras['HIDE_ACCOUNTNAME'] ?? null;
+        if (!isset($hideAccountName) && isset($this->extras['EXTRA_CONFIG'])) {
+            // NOTE: in CommSy9 and earlier, HIDE_ACCOUNTNAME was part of an EXTRA_CONFIG array
+            $hideAccountName = $this->extras['EXTRA_CONFIG']['HIDE_ACCOUNTNAME'] ?? 2;
+        }
+
+        return $hideAccountName === 1 ? true : false;
+    }
+
+    public function setHideAccountname(?bool $hideAccountName): Portal
+    {
+        // NOTE: for consistency reasons, we keep the behavior of CommSy9 and earlier where `2` was used to indicate `no`
+        $this->extras['HIDE_ACCOUNTNAME'] = $hideAccountName ? 1 : 2;
+        return $this;
+    }
+
+    public function getHideEmailAddressByDefault(): bool
+    {
+        /**
+         * hide mail by default: 1 = yes, 0 = no (default)
+         * @var integer
+         */
+        $hideEmailAddress = $this->extras['HIDE_MAIL_BY_DEFAULT'] ?? 0;
+
+        return $hideEmailAddress === 1 ? true : false;
+    }
+
+    public function setHideEmailAddressByDefault(?bool $hideEmailAddress): Portal
+    {
+        $this->extras['HIDE_MAIL_BY_DEFAULT'] = $hideEmailAddress ? 1 : 0;
+        return $this;
+    }
+
     public function getInactivityLockDays():? int
     {
         return $this->extras['INACTIVITY_LOCK'] ?? null;

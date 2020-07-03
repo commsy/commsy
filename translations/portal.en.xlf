@@ -689,6 +689,20 @@
                 <target>Please choose (possibly search workspaces before)</target>
             </trans-unit>
 
+            <!-- privacy -->
+            <trans-unit id="Privacy">
+                <source>Privacy</source>
+                <target>Privacy</target>
+            </trans-unit>
+            <trans-unit id="Hide_user_account_name">
+                <source>Hide user account name</source>
+                <target>Hide user login data</target>
+            </trans-unit>
+            <trans-unit id="Hide_email_address_by_default">
+                <source>Hide email address by default</source>
+                <target>Hide email address by default</target>
+            </trans-unit>
+
             <!-- inactive -->
             <trans-unit id="lock_user">
                 <source>Lock user</source>
