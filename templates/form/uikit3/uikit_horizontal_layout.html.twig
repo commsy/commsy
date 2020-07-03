@@ -3,7 +3,11 @@
 {# Labels #}
 
 {% block form_label -%}
-    {% set label_attr = label_attr|merge({class: (attr.class|default('') ~ ' uk-form-label')|trim}) %}
+    {% set commsy_class = '' %}
+    {% if 'choice' in block_prefixes and expanded %}
+        {% set commsy_class = 'cs-form-expanded-radio-label' %}
+    {%- endif -%}
+    {% set label_attr = label_attr|merge({class: (attr.class|default('') ~ ' uk-form-label' ~ ' ' ~ commsy_class)|trim}) %}
     {{- parent() -}}
 {%- endblock form_label %}
 

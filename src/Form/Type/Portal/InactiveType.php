@@ -58,6 +58,9 @@ class InactiveType extends AbstractType
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
+                'attr' => array(
+                    'style' => 'margin-top: 15px;',
+                ),
             ]);
     }
 
