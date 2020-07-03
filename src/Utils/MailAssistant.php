@@ -285,31 +285,47 @@ class MailAssistant
         // form option: copy_to_sender
         $toCC = [];
 
-        $isCopyToSender = $form->has('copy_to_sender') && $formData['copy_to_sender'];
-
-        if ($isCopyToSender) {
-            if ($currentUser->isEmailVisible()) {
-                $toCC[$currentUserEmail] = $currentUserName;
-            } else {
-                $toBCC[$currentUserEmail] = $currentUserName;
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setUserLimit();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+        $userManager->select();
+        $portaluserList = $userManager->get();
+        $moderators = [];
+        foreach($portaluserList as $portalUser){
+            if($portalUser->getStatus() == 3){
+                array_push($moderators, $portalUser);
             }
         }
 
-        if ($forceBCCMail) {
-            $allRecipients = array_merge($to, $toCC, $toBCC);
-            $message->setBcc($allRecipients);
-        } else {
-            if (!empty($to)) {
-                $message->setTo($to);
+        if($form->getData()->getCopyCCToModertor()){
+            foreach($moderators as $moderator){
+                $toCC[$moderator->getEmail()] = $moderator->getFullName();
             }
+        }
+        if($form->getData()->getCopyBCCToModerator()){
+            foreach($moderators as $moderator){
+                $toBCC[$moderator->getEmail()] = $moderator->getFullName();
+            }
+        }
+        if($form->getData()->getCopyCCToSender()){
+            $toCC[$currentUserEmail] = $currentUserName;
+        }
+        if($form->getData()->getCopyBCCToSender()){
+            $toBCC[$currentUserEmail] = $currentUserName;
+        }
 
-            if (!empty($toCC)) {
-                $message->setCC($toCC);
-            }
 
-            if (!empty($toBCC)) {
-                $message->setBcc($toBCC);
-            }
+        if (!empty($to)) {
+            $message->setTo($to);
+        }
+
+        if (!empty($toCC)) {
+            $message->setCC($toCC);
+        }
+
+        if (!empty($toBCC)) {
+            $message->setBcc($toBCC);
         }
 
         return $message;
