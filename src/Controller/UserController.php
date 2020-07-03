@@ -99,7 +99,9 @@ class UserController extends BaseController
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         UserService $userService,
-        UserTransformer $userTransformer
+        UserTransformer $userTransformer,
+        ItemService $itemService,
+        \Swift_Mailer $mailer
     ) {
 
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -108,7 +110,6 @@ class UserController extends BaseController
         $userData = $userTransformer->transform($userItem);
         $mail = $userItem->getEmail();
 
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $form = $this->createForm(AccountContactFormType::class, null, [
@@ -128,10 +129,25 @@ class UserController extends BaseController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
-            $this->get('mailer')->send($message);
+            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, false);
+            $mailer->send($message);
 
-            $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+
+            $countTo = 0;
+            $countCc = 0;
+            $countBcc = 0;
+
+            if(!is_null($message->getTo())){
+                $countTo = count($message->getTo());
+            }
+            if(!is_null($message->getCc())){
+                $countTo = count($message->getCc());
+            }
+            if(!is_null($message->getBcc())){
+                $countTo = count($message->getBcc());
+            }
+
+            $recipientCount = $countTo + $countCc + $countBcc;
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
@@ -1075,10 +1091,9 @@ ReaderService $readerService,
      * @Route("/room/{roomId}/user/{itemId}/send/success/contact/{originPath}")
      * @Template()
      **/
-    public function sendSuccessContactAction($roomId, $itemId, $originPath)
+    public function sendSuccessContactAction($roomId, $itemId, $originPath, ItemService $itemService)
     {
         // get item
-        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -1089,6 +1104,7 @@ ReaderService $readerService,
             'link' => $this->generateUrl($originPath, [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
+                'portalId' => $roomId,
             ]),
             'title' => $item->getFullname(),
         ];

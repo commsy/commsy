@@ -87,14 +87,6 @@ class AccountIndexSendMergeMailType extends AbstractType
                 'label' => 'Send',
                 'translation_domain' => 'mail',
             ])
-            ->add('cancel', SubmitType::class, [
-                'attr' => [
-                    'formnovalidate' => 'formnovalidate',
-                ],
-                'label' => 'cancel',
-                'translation_domain' => 'form',
-                'validation_groups' => false,
-            ])
         ;
     }
 

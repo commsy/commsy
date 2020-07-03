@@ -402,23 +402,27 @@
             <!-- Account Index send Password Mail -->
             <trans-unit id="copy_cc_to_moderator">
                 <source>Copy CC to Moderator</source>
-                <target>Copy CC to Moderator</target>
+                <target>cc and/or</target>
             </trans-unit>
             <trans-unit id="copy_bcc_to_moderator">
                 <source>Copy BCC to Moderator</source>
-                <target>Copy BCC to Moderator</target>
+                <target>bcc to Moderator</target>
             </trans-unit>
             <trans-unit id="copy_cc_to_sender">
                 <source>Copy CC to Sender</source>
-                <target>Copy CC to Sender</target>
+                <target>cc and/or</target>
             </trans-unit>
             <trans-unit id="copy_bcc_to_sender">
                 <source>Copy BCC to sender</source>
-                <target>Copy BCC to sender</target>
+                <target>bcc to sender</target>
             </trans-unit>
             <trans-unit id="bcc">
                 <source>Bcc</source>
                 <target>cc/bcc</target>
+            </trans-unit>
+            <trans-unit id="names">
+                <source>Names</source>
+                <target>Namen</target>
             </trans-unit>
 
             <!-- time -->
