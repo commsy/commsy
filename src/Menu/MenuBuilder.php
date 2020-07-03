@@ -436,6 +436,15 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
+            // room creation
+            $menu->addChild('Roomcreation', [
+                'label' => 'Rooms',
+                'route' => 'app_portalsettings_roomcreation',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'plus-circle']
+            ])
+            ->setExtra('translation_domain', 'portal');
+
             // time
             $menu->addChild('Time', [
                 'label' => 'Time',

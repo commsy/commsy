@@ -229,6 +229,44 @@
                 <target>Display workspaces</target>
             </trans-unit>
 
+            <!-- room creation -->
+            <trans-unit id="Rooms">
+                <source>Rooms</source>
+                <target>Workspaces</target>
+            </trans-unit>
+            <trans-unit id="Room_creation">
+                <source>Room creation</source>
+                <target>Workspace creation</target>
+            </trans-unit>
+            <trans-unit id="Project_rooms">
+                <source>Project rooms</source>
+                <target>Project workspaces</target>
+            </trans-unit>
+            <trans-unit id="Community_rooms">
+                <source>Community rooms</source>
+                <target>Community workspaces</target>
+            </trans-unit>
+            <trans-unit id="Community_room_creation_by_all">
+                <source>Community room creation by all</source>
+                <target>by all users</target>
+            </trans-unit>
+            <trans-unit id="Community_room_creation_by_moderators_only">
+                <source>Community room creation by moderators only</source>
+                <target>by all portal moderators</target>
+            </trans-unit>
+            <trans-unit id="Project_room_creation_on_portal">
+                <source>Project room creation on portal</source>
+                <target>in community workspaces and on portal level</target>
+            </trans-unit>
+            <trans-unit id="Project_room_creation_in_community_rooms_only">
+                <source>Project room creation in community rooms only</source>
+                <target>in community workspaces only</target>
+            </trans-unit>
+            <trans-unit id="Mandatory room assignment help text">
+                <source>Mandatory room assignment help text</source>
+                <target>Upon project workspace creation, should assignment to a community workspace be mandatory?</target>
+            </trans-unit>
+
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
                 <source>Accounts</source>

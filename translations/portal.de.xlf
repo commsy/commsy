@@ -229,6 +229,44 @@
                 <target>Raumanzeige</target>
             </trans-unit>
 
+            <!-- room creation -->
+            <trans-unit id="Rooms">
+                <source>Rooms</source>
+                <target>Räume</target>
+            </trans-unit>
+            <trans-unit id="Room_creation">
+                <source>Room creation</source>
+                <target>Raumeröffnung</target>
+            </trans-unit>
+            <trans-unit id="Project_rooms">
+                <source>Project rooms</source>
+                <target>Projekträume</target>
+            </trans-unit>
+            <trans-unit id="Community_rooms">
+                <source>Community rooms</source>
+                <target>Gemeinschaftsräume</target>
+            </trans-unit>
+            <trans-unit id="Community_room_creation_by_all">
+                <source>Community room creation by all</source>
+                <target>durch alle NutzerInnen</target>
+            </trans-unit>
+            <trans-unit id="Community_room_creation_by_moderators_only">
+                <source>Community room creation by moderators only</source>
+                <target>nur durch PortalmoderatorInnen</target>
+            </trans-unit>
+            <trans-unit id="Project_room_creation_on_portal">
+                <source>Project room creation on portal</source>
+                <target>in Gemeinschaftsräumen und dem Portal</target>
+            </trans-unit>
+            <trans-unit id="Project_room_creation_in_community_rooms_only">
+                <source>Project room creation in community rooms only</source>
+                <target>ausschließlich in Gemeinschaftsräumen</target>
+            </trans-unit>
+            <trans-unit id="Mandatory room assignment help text">
+                <source>Mandatory room assignment help text</source>
+                <target>Ist eine Zuordnung zu einem Gemeinschaftsraum bei der Eröffnung eines Projektraums zwingend erforderlich?</target>
+            </trans-unit>
+
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
                 <source>Accounts</source>

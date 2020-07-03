@@ -717,6 +717,61 @@ class Portal implements \Serializable
         return $this;
     }
 
+    /** Returns the community room creation status.
+     *
+     * @return string room creation status ("all" = all users (default), "moderator" = only portal moderators)
+     */
+    public function getCommunityRoomCreationStatus(): string
+    {
+        return $this->extras['COMMUNITYROOMCREATIONSTATUS'] ?? 'all';
+    }
+
+    public function setCommunityRoomCreationStatus(?string $status): Portal
+    {
+        if ($status !== 'moderator' && $status !== 'all') {
+            $status = 'all';
+        }
+        $this->extras['COMMUNITYROOMCREATIONSTATUS'] = $status;
+        return $this;
+    }
+
+    /** Returns the project room creation status.
+     *
+     * @return string room creation status ("portal" = in community rooms & portal (default), "communityroom" = only in community rooms)
+     */
+    public function getProjectRoomCreationStatus(): string
+    {
+        return $this->extras['PROJECTCREATIONSTATUS'] ?? 'portal';
+    }
+
+    public function setProjectRoomCreationStatus(?string $status): Portal
+    {
+        if ($status !== 'communityroom' && $status !== 'portal') {
+            $status = 'portal';
+        }
+        $this->extras['PROJECTCREATIONSTATUS'] = $status;
+        return $this;
+    }
+
+    /** Returns the project room link status.
+     *
+     * @return string room link status ("optional" = a project room can be created without assigning it to a community room (default),
+     * "mandatory" = upon room creation, a project room must be assigned to a community room)
+     */
+    public function getProjectRoomLinkStatus(): string
+    {
+        return $this->extras['PROJECTROOMLINKSTATUS'] ?? 'optional';
+    }
+
+    public function setProjectRoomLinkStatus(?string $status): Portal
+    {
+        if ($status !== 'mandatory' && $status !== 'optional') {
+            $status = 'optional';
+        }
+        $this->extras['PROJECTROOMLINKSTATUS'] = $status;
+        return $this;
+    }
+
     /**
      * Are room categories mandatory?
      * If room categories are mandatory, at least one room category must be assigned when creating a new room.
