@@ -33,7 +33,7 @@
                         <td>{{ form_widget(form.ids[user.itemId]) }}</td>
                         <td><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
                         <td>{{ user.lastlogin|craue_date }}</td>
-                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portal_settings_accountindex'}) }}">{{ user.email }}</a></td>
+                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portalsettings_accountindex'}) }}">{{ user.email }}</a></td>
                     </tr>
                 {% endfor %}
                 </table>

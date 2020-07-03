@@ -104,7 +104,11 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessageContactForm(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
+    public function getSwiftMessageContactForm(
+        FormInterface $form,
+        $item,
+        $forceBCCMail = false
+    ): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -131,10 +135,16 @@ class MailAssistant
 
         $formDataMessage = $formData['message'];
 
+        $from = '';
+        if(empty($this->from)){
+            $from = 'noreply@commsy.net';
+        }else{
+            $from = $this->from;
+        }
         $message = (new \Swift_Message())
             ->setSubject($formDataSubject)
             ->setBody($formDataMessage, 'text/html')
-            ->setFrom([$this->from => $portalItem->getTitle()])
+            ->setFrom([$from => $portalItem->getTitle()])
             ->setReplyTo($replyTo);
 
         // form option: files
