@@ -368,6 +368,10 @@
                 <source>Bcc</source>
                 <target>cc/bcc</target>
             </trans-unit>
+            <trans-unit id="names">
+                <source>Names</source>
+                <target>Names</target>
+            </trans-unit>
 
             <!-- user edit -->
             <trans-unit id="firstName">

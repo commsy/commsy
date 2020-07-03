@@ -950,6 +950,7 @@ class PortalSettingsController extends AbstractController
      * @Template()
      */
     public function accountIndexSendPasswordMail(
+        Portal $portal,
         $portalId,
         $recipients,
         Request $request,
@@ -994,6 +995,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return [
+            'portal' => $portal,
             'form' => $form->createView(),
             'recipients' => $recipientArray,
         ];
@@ -1006,6 +1008,7 @@ class PortalSettingsController extends AbstractController
      * @Template()
      */
     public function accountIndexSendMergeMail(
+        Portal $portal,
         $portalId,
         $recipients,
         Request $request,
@@ -1051,6 +1054,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return [
+            'portal' => $portal,
             'form' => $form->createView(),
             'recipients' => $recipientArray,
         ];

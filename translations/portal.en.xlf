@@ -412,6 +412,10 @@
                 <source>Bcc</source>
                 <target>cc/bcc</target>
             </trans-unit>
+            <trans-unit id="names">
+                <source>Names</source>
+                <target>Namen</target>
+            </trans-unit>
 
             <!-- time -->
             <trans-unit id="time">
