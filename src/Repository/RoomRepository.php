@@ -23,6 +23,8 @@ class RoomRepository extends ServiceEntityRepository
      */
     public function getMainRoomQueryBuilder(int $portalId, array $roomTypes = ['project', 'community']): QueryBuilder
     {
+        // TODO: support portal settings option "All workspaces > Show templates in workplace list"
+
         $qb = $this->createQueryBuilder('r');
 
         return $qb
