@@ -16,7 +16,6 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Translation;
-use App\Entity\User;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -42,12 +41,10 @@ use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimeType;
-use App\Form\Type\Profile\AccountContactFormType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
-use App\Utils\AccountMail;
 use App\Utils\ItemService;
 use App\Utils\MailAssistant;
 use App\Utils\RoomService;
@@ -508,184 +505,184 @@ class PortalSettingsController extends AbstractController
             $room_item = $portal;
             $data = $form->getData();
 
-                // Load form data from postvars
-                if ( !empty($data) ) {
-                    $values = $data;
+            // Load form data from postvars
+            if ( !empty($data) ) {
+                $values = $data;
 
-                    // show time
-                    $room_item->setShowTime($values['showTime']);
-
-
-                    // clock pulse names
-                    $clockPulseNames = array();
-                    array_push($clockPulseNames, $values['timeCycleNameGerman']);
-                    array_push($clockPulseNames, $values['timeCycleNameEnglish']);
-                    $room_item->setTimeNameArray($clockPulseNames);
-
-                    $room_item->setTimeInFuture($values['futureTimeCycles']);
+                // show time
+                $room_item->setShowTime($values['showTime']);
 
 
-                    $clockPulseTimeNames = explode(',',$values['token']);
-                    $clockPulseTimeTextArray = array();
-                    foreach($clockPulseTimeNames as $clockPulseCounter){
-                        $clockTextNameDeu = $values['timeCycleNameEnglish_'.$clockPulseCounter];
-                        $clockTextNameEng = $values['timeCycleNameGerman_'.$clockPulseCounter];
-                        array_push($clockPulseTimeTextArray, $clockTextNameDeu);
-                        array_push($clockPulseTimeTextArray, $clockTextNameEng);
+                // clock pulse names
+                $clockPulseNames = array();
+                array_push($clockPulseNames, $values['timeCycleNameGerman']);
+                array_push($clockPulseNames, $values['timeCycleNameEnglish']);
+                $room_item->setTimeNameArray($clockPulseNames);
+
+                $room_item->setTimeInFuture($values['futureTimeCycles']);
+
+
+                $clockPulseTimeNames = explode(',',$values['token']);
+                $clockPulseTimeTextArray = array();
+                foreach($clockPulseTimeNames as $clockPulseCounter){
+                    $clockTextNameDeu = $values['timeCycleNameEnglish_'.$clockPulseCounter];
+                    $clockTextNameEng = $values['timeCycleNameGerman_'.$clockPulseCounter];
+                    array_push($clockPulseTimeTextArray, $clockTextNameDeu);
+                    array_push($clockPulseTimeTextArray, $clockTextNameEng);
+                }
+                $room_item->setTimeTextArray($clockPulseTimeTextArray);
+
+                // save room_item
+                $entityManager->persist($room_item); // portalProxy
+                $entityManager->flush();
+
+                // change (insert) time labels
+                $clock_pulse_array = array();
+
+                $current_year = date('Y');
+                $current_date = getCurrentDate();
+                $ad_year = 0;
+                $first = true;
+                foreach($clockPulseTimeNames as $clockPulseCounter){
+                    $date_string = $values['timeCycleFrom_'.$clockPulseCounter];
+                    $month = $date_string->format("m");
+                    $day = $date_string->format("d");
+                    $begin = $month.$day;
+
+                    $date_string = $values['timeCycleTo_'.$clockPulseCounter];
+                    $month = $date_string->format("m");
+                    $day = $date_string->format("d");
+                    $end = $month.$day;
+
+                    $begin2 = ($current_year+$ad_year).$begin;
+                    if ($end < $begin) {
+                        $ad_year++;
+                        $ad_year_pos = $clockPulseCounter;
                     }
-                    $room_item->setTimeTextArray($clockPulseTimeTextArray);
+                    $end2 = ($current_year+$ad_year).$end;
 
-                    // save room_item
-                    $entityManager->persist($room_item); // portalProxy
-                    $entityManager->flush();
+                    if ($first) {
+                        $first = false;
+                        $begin_first = $begin2;
+                    }
 
-                    // change (insert) time labels
-                    $clock_pulse_array = array();
+                    if ( $begin2 <= $current_date
+                        and $current_date <= $end2) {
+                        $current_pos = $clockPulseCounter;
+                    }
+                }
 
-                        $current_year = date('Y');
-                        $current_date = getCurrentDate();
-                        $ad_year = 0;
-                        $first = true;
-                        foreach($clockPulseTimeNames as $clockPulseCounter){
-                            $date_string = $values['timeCycleFrom_'.$clockPulseCounter];
-                            $month = $date_string->format("m");
-                            $day = $date_string->format("d");
-                            $begin = $month.$day;
+                $year = $current_year;
 
-                            $date_string = $values['timeCycleTo_'.$clockPulseCounter];
-                            $month = $date_string->format("m");
-                            $day = $date_string->format("d");
-                            $end = $month.$day;
+                if ($current_date < $begin_first) {
+                    $year--;
+                    $current_pos = $clockPulseCounter;
+                }
 
-                            $begin2 = ($current_year+$ad_year).$begin;
-                            if ($end < $begin) {
-                                $ad_year++;
-                                $ad_year_pos = $clockPulseCounter;
-                            }
-                            $end2 = ($current_year+$ad_year).$end;
-
-                            if ($first) {
-                                $first = false;
-                                $begin_first = $begin2;
-                            }
-
-                            if ( $begin2 <= $current_date
-                                and $current_date <= $end2) {
-                                $current_pos = $clockPulseCounter;
-                            }
-                        }
-
-                        $year = $current_year;
-
-                        if ($current_date < $begin_first) {
-                            $year--;
-                            $current_pos = $clockPulseCounter;
-                        }
-
-                        $count = sizeof($clockPulseTimeNames);
+                $count = sizeof($clockPulseTimeNames);
+                $position = 1;
+                for ($i=0; $i<$values['futureTimeCycles']+$current_pos; $i++) {
+                    $clock_pulse_array[] = $year.'_'.$position;
+                    $position++;
+                    if ($position > $count) {
                         $position = 1;
-                        for ($i=0; $i<$values['futureTimeCycles']+$current_pos; $i++) {
-                            $clock_pulse_array[] = $year.'_'.$position;
-                            $position++;
-                            if ($position > $count) {
-                                $position = 1;
-                                $year++;
-                            }
-                        }
+                        $year++;
+                    }
+                }
 
 
-                    if (!empty($clock_pulse_array)) {
-                        $done_array = array();
-                        $time_manager = $environment->getEnvironment()->getTimeManager();
-                        $time_manager->reset();
-                        $time_manager->setContextLimit($portal->getId());
-                        $time_manager->setDeleteLimit(false);
-                        $time_manager->select();
-                        $time_list = $time_manager->get();
-                        if ($time_list->isNotEmpty()) {
-                            $time_label = $time_list->getFirst();
-                            while ($time_label) {
-                                if (!in_array($time_label->getTitle(),$clock_pulse_array)) {
-                                    $first_new_clock_pulse = $clock_pulse_array[0];
-                                    $last_new_clock_pulse = array_pop($clock_pulse_array);
-                                    $clock_pulse_array[] = $last_new_clock_pulse;
-                                    if ($time_label->getTitle() < $first_new_clock_pulse) {
-                                        $temp_clock_pulse_array = explode('_',$time_label->getTitle());
-                                        $clock_pulse_pos = $temp_clock_pulse_array[1];
-                                        if ($clock_pulse_pos > $count) {
-                                            if (!$time_label->isDeleted()) {
-                                                $time_label->setDeleterItem($environment->getCurrentUserItem());
-                                                $time_label->delete();
-                                            }
-                                        } else {
-                                            if ($time_label->isDeleted()) {
-                                                $time_label->setModificatorItem($environment->getCurrentUserItem());
-                                                $time_label->unDelete();
-                                            }
-                                        }
-                                    } elseif ($time_label->getTitle() > $last_new_clock_pulse) {
+                if (!empty($clock_pulse_array)) {
+                    $done_array = array();
+                    $time_manager = $environment->getEnvironment()->getTimeManager();
+                    $time_manager->reset();
+                    $time_manager->setContextLimit($portal->getId());
+                    $time_manager->setDeleteLimit(false);
+                    $time_manager->select();
+                    $time_list = $time_manager->get();
+                    if ($time_list->isNotEmpty()) {
+                        $time_label = $time_list->getFirst();
+                        while ($time_label) {
+                            if (!in_array($time_label->getTitle(),$clock_pulse_array)) {
+                                $first_new_clock_pulse = $clock_pulse_array[0];
+                                $last_new_clock_pulse = array_pop($clock_pulse_array);
+                                $clock_pulse_array[] = $last_new_clock_pulse;
+                                if ($time_label->getTitle() < $first_new_clock_pulse) {
+                                    $temp_clock_pulse_array = explode('_',$time_label->getTitle());
+                                    $clock_pulse_pos = $temp_clock_pulse_array[1];
+                                    if ($clock_pulse_pos > $count) {
                                         if (!$time_label->isDeleted()) {
                                             $time_label->setDeleterItem($environment->getCurrentUserItem());
                                             $time_label->delete();
                                         }
                                     } else {
-                                        if (!$time_label->isDeleted()) {
-                                            $time_label->setDeleterItem($environment->getCurrentUserItem());
-                                            $time_label->delete();
+                                        if ($time_label->isDeleted()) {
+                                            $time_label->setModificatorItem($environment->getCurrentUserItem());
+                                            $time_label->unDelete();
                                         }
                                     }
-                                } else {
-                                    if ($time_label->isDeleted()) {
-                                        $time_label->setModificatorItem($environment->getCurrentUserItem());
-                                        $time_label->unDelete();
+                                } elseif ($time_label->getTitle() > $last_new_clock_pulse) {
+                                    if (!$time_label->isDeleted()) {
+                                        $time_label->setDeleterItem($environment->getCurrentUserItem());
+                                        $time_label->delete();
                                     }
-                                    $done_array[] = $time_label->getTitle();
+                                } else {
+                                    if (!$time_label->isDeleted()) {
+                                        $time_label->setDeleterItem($environment->getCurrentUserItem());
+                                        $time_label->delete();
+                                    }
                                 }
-                                $time_label = $time_list->getNext();
+                            } else {
+                                if ($time_label->isDeleted()) {
+                                    $time_label->setModificatorItem($environment->getCurrentUserItem());
+                                    $time_label->unDelete();
+                                }
+                                $done_array[] = $time_label->getTitle();
                             }
-                        }
-
-                        foreach ($clock_pulse_array as $clock_pulse) {
-                            if (!in_array($clock_pulse,$done_array)) {
-                                $time_label = $time_manager->getNewItem();
-                                $time_label->setContextID($portal->getId());
-                                $user = $environment->getEnvironment()->getCurrentUserItem();
-                                $time_label->setCreatorItem($user);
-                                $time_label->setModificatorItem($user);
-                                $time_label->setTitle($clock_pulse);
-                                $time_label->save();
-                            }
-                        }
-                    } else {
-                        $time_manager = $environment->getEnvironment()->getTimeManager();
-                        $time_manager->reset();
-                        $time_manager->setContextLimit($portal->getId());
-                        $time_manager->select();
-                        $time_list = $time_manager->get();
-                        if ($time_list->isNotEmpty()) {
-                            $time_label = $time_list->getFirst();
-                            while ($time_label) {
-                                $time_label->setDeleterItem($environment->getEnvironment()->getCurrentUserItem());
-                                $time_label->delete();
-                                $time_label = $time_list->getNext();
-                            }
+                            $time_label = $time_list->getNext();
                         }
                     }
 
-                    // renew links to continuous rooms
-                    $current_context = $room_item;
-                    $room_list = $current_context->getContinuousRoomList($environment);
-                    if ($room_list->isNotEmpty()) {
-                        $room_item2 = $room_list->getFirst();
-                        while ($room_item2) {
-                            $room_item2->open();
-                            if ($room_item2->isOpen()) {
-                                $room_item2->setContinuous();
-                                $room_item2->saveWithoutChangingModificationInformation($environment);
-                            }
-                            $room_item2 = $room_list->getNext();
+                    foreach ($clock_pulse_array as $clock_pulse) {
+                        if (!in_array($clock_pulse,$done_array)) {
+                            $time_label = $time_manager->getNewItem();
+                            $time_label->setContextID($portal->getId());
+                            $user = $environment->getEnvironment()->getCurrentUserItem();
+                            $time_label->setCreatorItem($user);
+                            $time_label->setModificatorItem($user);
+                            $time_label->setTitle($clock_pulse);
+                            $time_label->save();
                         }
                     }
+                } else {
+                    $time_manager = $environment->getEnvironment()->getTimeManager();
+                    $time_manager->reset();
+                    $time_manager->setContextLimit($portal->getId());
+                    $time_manager->select();
+                    $time_list = $time_manager->get();
+                    if ($time_list->isNotEmpty()) {
+                        $time_label = $time_list->getFirst();
+                        while ($time_label) {
+                            $time_label->setDeleterItem($environment->getEnvironment()->getCurrentUserItem());
+                            $time_label->delete();
+                            $time_label = $time_list->getNext();
+                        }
+                    }
+                }
+
+                // renew links to continuous rooms
+                $current_context = $room_item;
+                $room_list = $current_context->getContinuousRoomList($environment);
+                if ($room_list->isNotEmpty()) {
+                    $room_item2 = $room_list->getFirst();
+                    while ($room_item2) {
+                        $room_item2->open();
+                        if ($room_item2->isOpen()) {
+                            $room_item2->setContinuous();
+                            $room_item2->saveWithoutChangingModificationInformation($environment);
+                        }
+                        $room_item2 = $room_list->getNext();
+                    }
+                }
                 $is_saved = true;
             }
         }
@@ -703,12 +700,12 @@ class PortalSettingsController extends AbstractController
      */
     public function announcements(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-            $form = $this->createForm(AnnouncementsType::class, $portal);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($portal);
-                $entityManager->flush();
-            }
+        $form = $this->createForm(AnnouncementsType::class, $portal);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($portal);
+            $entityManager->flush();
+        }
 
         return [
             'form' => $form->createView(),
@@ -759,7 +756,14 @@ class PortalSettingsController extends AbstractController
         \Swift_Mailer $mailer)
     {
         $user = $userService->getCurrentUserItem();
-        $userList = $userService->getListUsers($portal->getId());
+        $portalUsers = $userService->getListUsers($portal->getId());
+        $userList = [];
+        foreach($portalUsers as $portalUser){
+            $relatedUsers = $portalUser->getRelatedUserList();
+            foreach($relatedUsers as $relatedUser){
+                array_push($userList, $relatedUser);
+            }
+        }
         $accountIndex = new AccountIndex();
 
         $accountIndexUserList = [];
@@ -783,19 +787,27 @@ class PortalSettingsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             if($form->get('search')->isClicked()){
-                $tempUserList = $userService->getListUsers($portal->getId());
+
+                $portalUsers = $userService->getListUsers($portal->getId());
+                $tempUserList = [];
                 $userList = [];
+                foreach($portalUsers as $portalUser){
+                    $relatedUsers = $portalUser->getRelatedUserList();
+                    foreach($relatedUsers as $relatedUser){
+                        array_push($tempUserList, $relatedUser);
+                    }
+                }
                 $searchParam = $data->getAccountIndexSearchString();
 
                 if(empty($searchParam)){
                     foreach($tempUserList as $singleUser){
-                        if($this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser)){
+                        if($this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser, $portal, $environment)){
                             array_push($userList, $singleUser); //remove users not fitting the search string
                         }
                     }
                 }else{
                     foreach($tempUserList as $singleUser){
-                        if((strpos($singleUser->getUserID(), $searchParam) !== false) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser)){
+                        if((strpos($singleUser->getUserID(), $searchParam) !== false) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser, $portal, $environment)){
                             array_push($userList, $singleUser); //remove users not fitting the search string
                         }
                     }
@@ -1021,7 +1033,7 @@ class PortalSettingsController extends AbstractController
     }
 
 
-    private function meetsFilterChoiceCriteria($filterChoice, $userInQuestion){
+    private function meetsFilterChoiceCriteria($filterChoice, $userInQuestion, $portal, LegacyEnvironment $environment){
         $meetsCriteria = false;
         switch ($filterChoice) {
             case 0: //no selection
@@ -1056,22 +1068,68 @@ class PortalSettingsController extends AbstractController
                 }
                 break;
             case 7: // Community workspace moderator
-                $meetsCriteria = true;
+
+                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
+
+                foreach($continuousWorkspaces as $continuousWorkspace){
+                    if($continuousWorkspace->getItemID() == $userInQuestion->getContextItem()->getItemID()
+                    and $userInQuestion->isModerator()
+                    and $continuousWorkspace->getType() == 'community'){
+                        $meetsCriteria = true;
+                    }
+                }
                 break;
             case 8: // Community workspace contact
-                $meetsCriteria = true;
+                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
+
+                foreach($continuousWorkspaces as $continuousWorkspace){
+                    if($continuousWorkspace->getItemID() == $userInQuestion->getContextItem()->getItemID()
+                        and $userInQuestion->isContact()
+                        and $continuousWorkspace->getType() == 'community'){
+                        $meetsCriteria = true;
+                    }
+                }
                 break;
             case 9: // Project workspace moderator
-                $meetsCriteria = true;
+                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
+
+                foreach($continuousWorkspaces as $continuousWorkspace){
+                    if($continuousWorkspace->getItemID() == $userInQuestion->getContextItem()->getItemID()
+                        and $userInQuestion->isModerator()
+                        and $continuousWorkspace->getType() == 'project'){
+                        $meetsCriteria = true;
+                    }
+                }
                 break;
             case 10: // project workspace contact
-                $meetsCriteria = true;
+                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
+
+                foreach($continuousWorkspaces as $continuousWorkspace){
+                    if($continuousWorkspace->getItemID() == $userInQuestion->getContextItem()->getItemID()
+                        and $userInQuestion->isContact
+                        and $continuousWorkspace->getType() == 'project'){
+                        $meetsCriteria = true;
+                    }
+                }
                 break;
             case 11: // moderator of any workspace
-                $meetsCriteria = true;
+                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
+                foreach($continuousWorkspaces as $continuousWorkspace){
+                    if($continuousWorkspace->getItemID() == $userInQuestion->getContextItem()->getItemID()
+                        and $userInQuestion->isModerator()){
+                        $meetsCriteria = true;
+                    }
+                }
                 break;
             case 12: // contact of any workspace
-                $meetsCriteria = true;
+                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
+
+                foreach($continuousWorkspaces as $continuousWorkspace){
+                    if($continuousWorkspace->getItemID() == $userInQuestion->getContextItem()->getItemID()
+                        and $userInQuestion->isCOntact){
+                        $meetsCriteria = true;
+                    }
+                }
                 break;
             case 13: // no workspace membership
                 if(!$userInQuestion->isRoomMember()){
@@ -1080,6 +1138,16 @@ class PortalSettingsController extends AbstractController
                 break;
         }
         return $meetsCriteria;
+    }
+
+    private function getContinuousRoomList($environment, $portal){
+        $manager = $environment->getEnvironment()->getRoomManager();
+        $manager->reset();
+        $manager->resetLimits();
+        $manager->setContextLimit($portal->getId());
+        $manager->setContinuousLimit();
+        $manager->select();
+        return $manager->get();
     }
 
     /**
@@ -1257,55 +1325,55 @@ class PortalSettingsController extends AbstractController
      */
     public function accountIndexDetail(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
-            $userList = $userService->getListUsers($portal->getId());
+        $userList = $userService->getListUsers($portal->getId());
 
-            $form = $this->createForm(AccountIndexDetailType::class, $portal);
-            $form->handleRequest($request);
-            $user = $userService->getUser($request->get('userId'));
+        $form = $this->createForm(AccountIndexDetailType::class, $portal);
+        $form->handleRequest($request);
+        $user = $userService->getUser($request->get('userId'));
 
-            if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
-                $key = 0;
-                if ($form->get('next')->isClicked() or $form->get('previous')->isClicked()) {
-                    $counter = 0;
-                    foreach ($userList as $userItem) {
-                        if ($userItem->getItemID() == $user->getItemID()) {
-                            $key = $counter;
-                            break;
-                        }
-                        $counter = $counter + 1;
+            $key = 0;
+            if ($form->get('next')->isClicked() or $form->get('previous')->isClicked()) {
+                $counter = 0;
+                foreach ($userList as $userItem) {
+                    if ($userItem->getItemID() == $user->getItemID()) {
+                        $key = $counter;
+                        break;
                     }
-                    if ($form->get('next')->isClicked()) {
-                        if ($key < sizeof($userList)) {
-                            $user = $userList[$key + 1];
-                        }
-                    }
-                    if ($form->get('previous')->isClicked()) {
-                        if ($key > 0) {
-                            $user = $userList[$key - 1];
-                        }
-                    }
-                    return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-                        'portal' => $portal,
-                        'portalId' => $portal->getId(),
-                        'userId' => $user->getItemID(),
-                    ]);
+                    $counter = $counter + 1;
                 }
-
-
-                if ($form->get('back')->isClicked()) {
-                    return $this->redirectToRoute('app_portalsettings_accountindex', [
-                        'portal' => $portal,
-                        'portalId' => $portal->getId(),
-                    ]);
+                if ($form->get('next')->isClicked()) {
+                    if ($key < sizeof($userList)) {
+                        $user = $userList[$key + 1];
+                    }
                 }
+                if ($form->get('previous')->isClicked()) {
+                    if ($key > 0) {
+                        $user = $userList[$key - 1];
+                    }
+                }
+                return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                    'portal' => $portal,
+                    'portalId' => $portal->getId(),
+                    'userId' => $user->getItemID(),
+                ]);
             }
 
-            return [
-                'user' => $user,
-                'form' => $form->createView(),
-                'portal' => $portal,
-            ];
+
+            if ($form->get('back')->isClicked()) {
+                return $this->redirectToRoute('app_portalsettings_accountindex', [
+                    'portal' => $portal,
+                    'portalId' => $portal->getId(),
+                ]);
+            }
+        }
+
+        return [
+            'user' => $user,
+            'form' => $form->createView(),
+            'portal' => $portal,
+        ];
     }
 
     /**
