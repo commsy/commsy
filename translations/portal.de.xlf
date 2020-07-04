@@ -262,9 +262,21 @@
                 <source>Project room creation in community rooms only</source>
                 <target>ausschließlich in Gemeinschaftsräumen</target>
             </trans-unit>
-            <trans-unit id="Mandatory room assignment help text">
+            <trans-unit id="Mandatory_room_assignment_help_text">
                 <source>Mandatory room assignment help text</source>
                 <target>Ist eine Zuordnung zu einem Gemeinschaftsraum bei der Eröffnung eines Projektraums zwingend erforderlich?</target>
+            </trans-unit>
+            <trans-unit id="Default_template">
+                <source>Default template</source>
+                <target>Standard-Vorlage</target>
+            </trans-unit>
+            <trans-unit id="No_template">
+                <source>No template</source>
+                <target>*Keine Vorlage</target>
+            </trans-unit>
+            <trans-unit id="Default_template_help_text">
+                <source>Default template help text</source>
+                <target>Bei Auswahl einer Vorlage werden beim Eröffnen eines Raumes sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen</target>
             </trans-unit>
 
             <!-- Portal Account Index -->

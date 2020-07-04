@@ -262,9 +262,21 @@
                 <source>Project room creation in community rooms only</source>
                 <target>in community workspaces only</target>
             </trans-unit>
-            <trans-unit id="Mandatory room assignment help text">
+            <trans-unit id="Mandatory_room_assignment_help_text">
                 <source>Mandatory room assignment help text</source>
                 <target>Upon project workspace creation, should assignment to a community workspace be mandatory?</target>
+            </trans-unit>
+            <trans-unit id="Default_template">
+                <source>Default template</source>
+                <target>Default template</target>
+            </trans-unit>
+            <trans-unit id="No_template">
+                <source>No template</source>
+                <target>*No template</target>
+            </trans-unit>
+            <trans-unit id="Default_template_help_text">
+                <source>Default template help text</source>
+                <target>By choosing a template, a newly created workspace will be prepopulated with contents from the template workspace (except for user information)</target>
             </trans-unit>
 
             <!-- Portal Account Index -->

@@ -257,4 +257,94 @@ class RoomService
 
         return $serviceEmail;
     }
+
+    /**
+     * Returns the list of room templates available for the given room type
+     * @param string $roomType The type of the room (CS_PROJECT_TYPE or CS_COMMUNITY_TYPE)
+     * @return string service email address
+     */
+    public function getAvailableTemplates(string $roomType)
+    {
+        $templates = [];
+
+        $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
+
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomManager->setContextLimit($this->legacyEnvironment->getCurrentPortalItem()->getItemID());
+        $roomManager->setTemplateLimit();
+        $roomManager->select();
+
+        $templateList = $roomManager->get();
+        if ($templateList->isNotEmpty()) {
+            $template = $templateList->getFirst();
+            while ($template) {
+                $availability = $template->getTemplateAvailability(); // $roomType === CS_PROJECT_TYPE
+                if ($roomType === CS_COMMUNITY_TYPE) {
+                    $availability = $template->getCommunityTemplateAvailability();
+                }
+
+                $add = false;
+
+                // free for all?
+                if (!$add && $availability == '0') {
+                    $add = true;
+                }
+
+                // only in community rooms
+                if (!$add && $this->legacyEnvironment->inCommunityRoom() && $availability == '3') {
+                    $add = true;
+                }
+
+                // same as above, but from portal context
+                if (!$add && $this->legacyEnvironment->inPortal() && $availability == '3') {
+                    // check if user is member in one of the templates community rooms
+                    $communityList = $template->getCommunityList();
+                    if ($communityList->isNotEmpty()) {
+                        $userCommunityList = $currentUserItem->getRelatedCommunityList();
+                        if ($userCommunityList->isNotEmpty()) {
+                            $communityItem = $communityList->getFirst();
+                            while ($communityItem) {
+                                $userCommunityItem = $userCommunityList->getFirst();
+                                while ($userCommunityItem) {
+                                    if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
+                                        $add = true;
+                                        break;
+                                    }
+
+                                    $userCommunityItem = $userCommunityList->getNext();
+                                }
+
+                                $communityItem = $communityList->getNext();
+                            }
+                        }
+                    }
+                }
+
+                // only for members
+                if (!$add && $availability == '1' && $template->mayEnter($currentUserItem)) {
+                    $add = true;
+                }
+
+                // only mods
+                if (!$add && $availability == '2' && $template->mayEnter($currentUserItem)) {
+                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
+                        $add = true;
+                    }
+                }
+
+                if ($roomType != $template->getItemType()) {
+                    $add = false;
+                }
+
+                if ($add) {
+                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
+                    $templates[$label] = $template->getItemID();
+                }
+
+                $template = $templateList->getNext();
+            }
+        }
+
+        return $templates;
+    }
 }

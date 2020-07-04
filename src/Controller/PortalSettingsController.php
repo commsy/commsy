@@ -26,14 +26,12 @@ use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
-use App\Form\Type\Portal\CommunityRoomCreationType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
-use App\Form\Type\Portal\ProjectRoomCreationType;
 use App\Form\Type\Portal\ProjectRoomsCreationType;
 use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportRequestsType;
@@ -180,11 +178,16 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param RoomService $roomService
      */
-    public function roomCreation(Portal $portal, Request $request, EntityManagerInterface $entityManager)
+    public function roomCreation(Portal $portal, Request $request, EntityManagerInterface $entityManager, RoomService $roomService)
     {
         // community rooms creation form
-        $communityRoomsForm = $this->createForm(CommunityRoomsCreationType::class, $portal);
+        $templateChoices = array_merge(['No template' => '-1'], $roomService->getAvailableTemplates(CS_COMMUNITY_TYPE));
+
+        $communityRoomsForm = $this->createForm(CommunityRoomsCreationType::class, $portal, [
+            'templateChoices' => $templateChoices,
+        ]);
 
         $communityRoomsForm->handleRequest($request);
         if ($communityRoomsForm->isSubmitted() && $communityRoomsForm->isValid()) {
@@ -196,7 +199,11 @@ class PortalSettingsController extends AbstractController
         }
 
         // project rooms creation form
-        $projectRoomsForm = $this->createForm(ProjectRoomsCreationType::class, $portal);
+        $templateChoices = array_merge(['No template' => '-1'], $roomService->getAvailableTemplates(CS_PROJECT_TYPE));
+
+        $projectRoomsForm = $this->createForm(ProjectRoomsCreationType::class, $portal, [
+            'templateChoices' => $templateChoices,
+        ]);
 
         $projectRoomsForm->handleRequest($request);
         if ($projectRoomsForm->isSubmitted() && $projectRoomsForm->isValid()) {

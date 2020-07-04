@@ -772,6 +772,38 @@ class Portal implements \Serializable
         return $this;
     }
 
+    /** Returns the ID of the room that should be suggested as a room template when creating a new project room.
+     *
+     * @return int ID of the default room template, or -1 if no default room template has been defined
+     */
+    public function getDefaultProjectTemplateID(): int
+    {
+        $roomTemplateID = $this->extras['DEFAULTPROJECTTEMPLATEID'] ?? '-1';
+        return intval($roomTemplateID);
+    }
+
+    public function setDefaultProjectTemplateID(?int $id): Portal
+    {
+        $this->extras['DEFAULTPROJECTTEMPLATEID'] = !empty($id) ? strval($id) : '-1';
+        return $this;
+    }
+
+    /** Returns the ID of the room that should be suggested as a room template when creating a new community room.
+     *
+     * @return int ID of the default room template, or -1 if no default room template has been defined
+     */
+    public function getDefaultCommunityTemplateID(): int
+    {
+        $roomTemplateID = $this->extras['DEFAULTCOMMUNITYTEMPLATEID'] ?? '-1';
+        return intval($roomTemplateID);
+    }
+
+    public function setDefaultCommunityTemplateID(?int $id): Portal
+    {
+        $this->extras['DEFAULTCOMMUNITYTEMPLATEID'] = !empty($id) ? strval($id) : '-1';
+        return $this;
+    }
+
     /**
      * Are room categories mandatory?
      * If room categories are mandatory, at least one room category must be assigned when creating a new room.
