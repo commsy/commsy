@@ -15,7 +15,6 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Translation;
-use App\Entity\User;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -36,14 +35,13 @@ use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimeType;
-use App\Form\Type\Profile\AccountContactFormType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
-use App\Utils\AccountMail;
 use App\Utils\ItemService;
 use App\Utils\MailAssistant;
+use App\Utils\RoomService;
 use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
@@ -587,13 +585,13 @@ class PortalSettingsController extends AbstractController
 
                 if(empty($searchParam)){
                     foreach($tempUserList as $singleUser){
-                        if($this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser)){
+                        if($this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser, $portal)){
                             array_push($userList, $singleUser); //remove users not fitting the search string
                         }
                     }
                 }else{
                     foreach($tempUserList as $singleUser){
-                        if((strpos($singleUser->getUserID(), $searchParam) !== false) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser)){
+                        if((strpos($singleUser->getUserID(), $searchParam) !== false) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser, $portal)){
                             array_push($userList, $singleUser); //remove users not fitting the search string
                         }
                     }
@@ -819,7 +817,7 @@ class PortalSettingsController extends AbstractController
     }
 
 
-    private function meetsFilterChoiceCriteria($filterChoice, $userInQuestion){
+    private function meetsFilterChoiceCriteria($filterChoice, $userInQuestion, $portal){
         $meetsCriteria = false;
         switch ($filterChoice) {
             case 0: //no selection
