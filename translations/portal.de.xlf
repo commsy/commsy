@@ -229,6 +229,44 @@
                 <target>Raumanzeige</target>
             </trans-unit>
 
+            <!-- room creation -->
+            <trans-unit id="Rooms">
+                <source>Rooms</source>
+                <target>Räume</target>
+            </trans-unit>
+            <trans-unit id="Room_creation">
+                <source>Room creation</source>
+                <target>Raumeröffnung</target>
+            </trans-unit>
+            <trans-unit id="Project_rooms">
+                <source>Project rooms</source>
+                <target>Projekträume</target>
+            </trans-unit>
+            <trans-unit id="Community_rooms">
+                <source>Community rooms</source>
+                <target>Gemeinschaftsräume</target>
+            </trans-unit>
+            <trans-unit id="Community_room_creation_by_all">
+                <source>Community room creation by all</source>
+                <target>durch alle NutzerInnen</target>
+            </trans-unit>
+            <trans-unit id="Community_room_creation_by_moderators_only">
+                <source>Community room creation by moderators only</source>
+                <target>nur durch PortalmoderatorInnen</target>
+            </trans-unit>
+            <trans-unit id="Project_room_creation_on_portal">
+                <source>Project room creation on portal</source>
+                <target>in Gemeinschaftsräumen und dem Portal</target>
+            </trans-unit>
+            <trans-unit id="Project_room_creation_in_community_rooms_only">
+                <source>Project room creation in community rooms only</source>
+                <target>ausschließlich in Gemeinschaftsräumen</target>
+            </trans-unit>
+            <trans-unit id="Mandatory room assignment help text">
+                <source>Mandatory room assignment help text</source>
+                <target>Ist eine Zuordnung zu einem Gemeinschaftsraum bei der Eröffnung eines Projektraums zwingend erforderlich?</target>
+            </trans-unit>
+
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
                 <source>Accounts</source>
@@ -550,7 +588,7 @@
             </trans-unit>
             <trans-unit id="agreed_to_the_tos">
                 <source>Agreed to the terms of service on the...</source>
-                <target>Zustimmung der Nutzungsvereinbarung am</target>
+                <target>Zustimmung der Nutzungsbedingungen am</target>
             </trans-unit>
             <trans-unit id="workspace_membership">
                 <source>Workspace membership</source>
@@ -627,6 +665,20 @@
             <trans-unit id="time_cycle_to">
                 <source>Time cycle to</source>
                 <target>Bis</target>
+            </trans-unit>
+
+            <!-- privacy -->
+            <trans-unit id="Privacy">
+                <source>Privacy</source>
+                <target>Datenschutz</target>
+            </trans-unit>
+            <trans-unit id="Hide_user_account_name">
+                <source>Hide user account name</source>
+                <target>Benutzerkennung verstecken</target>
+            </trans-unit>
+            <trans-unit id="Hide_email_address_by_default">
+                <source>Hide email address by default</source>
+                <target>E-Mail Adresse standardmäßig verbergen</target>
             </trans-unit>
 
             <!-- inactive -->

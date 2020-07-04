@@ -407,7 +407,7 @@ class MenuBuilder
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'file-text']
             ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
 
             // accounts
             $menu->addChild('Accounts', [
@@ -434,7 +434,16 @@ class MenuBuilder
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'play-circle']
             ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
+
+            // room creation
+            $menu->addChild('Roomcreation', [
+                'label' => 'Rooms',
+                'route' => 'app_portalsettings_roomcreation',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'plus-circle']
+            ])
+            ->setExtra('translation_domain', 'portal');
 
             // time
             $menu->addChild('Time', [
@@ -443,7 +452,7 @@ class MenuBuilder
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'calendar']
             ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
 
             // room categories
             $menu->addChild('Roomcategories', [
@@ -452,7 +461,16 @@ class MenuBuilder
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'tag']
             ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
+
+            // privacy
+            $menu->addChild('Privacy', [
+                'label' => 'Privacy',
+                'route' => 'app_portalsettings_privacy',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'lock']
+            ])
+            ->setExtra('translation_domain', 'portal');
 
             // inactive
             $menu->addChild('Inactive', [
@@ -461,7 +479,7 @@ class MenuBuilder
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'minus-circle']
             ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;

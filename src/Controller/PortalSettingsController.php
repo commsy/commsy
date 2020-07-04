@@ -26,10 +26,15 @@ use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
+use App\Form\Type\Portal\CommunityRoomCreationType;
+use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
+use App\Form\Type\Portal\PrivacyType;
+use App\Form\Type\Portal\ProjectRoomCreationType;
+use App\Form\Type\Portal\ProjectRoomsCreationType;
 use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
@@ -168,6 +173,47 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
+     * @Route("/portal/{portalId}/settings/roomcreation")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     */
+    public function roomCreation(Portal $portal, Request $request, EntityManagerInterface $entityManager)
+    {
+        // community rooms creation form
+        $communityRoomsForm = $this->createForm(CommunityRoomsCreationType::class, $portal);
+
+        $communityRoomsForm->handleRequest($request);
+        if ($communityRoomsForm->isSubmitted() && $communityRoomsForm->isValid()) {
+
+            if ($communityRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        // project rooms creation form
+        $projectRoomsForm = $this->createForm(ProjectRoomsCreationType::class, $portal);
+
+        $projectRoomsForm->handleRequest($request);
+        if ($projectRoomsForm->isSubmitted() && $projectRoomsForm->isValid()) {
+
+            if ($projectRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        return [
+            'communityRoomsForm' => $communityRoomsForm->createView(),
+            'projectRoomsForm' => $projectRoomsForm->createView(),
+        ];
+    }
+
+    /**
      * @Route("/portal/{portalId}/settings/roomcategories/{roomCategoryId?}")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -253,6 +299,33 @@ class PortalSettingsController extends AbstractController
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/privacy")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     */
+    public function privacy(Portal $portal, Request $request, EntityManagerInterface $entityManager)
+    {
+        $form = $this->createForm(PrivacyType::class, $portal);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
         ];
     }
 

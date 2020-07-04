@@ -717,6 +717,61 @@ class Portal implements \Serializable
         return $this;
     }
 
+    /** Returns the community room creation status.
+     *
+     * @return string room creation status ("all" = all users (default), "moderator" = only portal moderators)
+     */
+    public function getCommunityRoomCreationStatus(): string
+    {
+        return $this->extras['COMMUNITYROOMCREATIONSTATUS'] ?? 'all';
+    }
+
+    public function setCommunityRoomCreationStatus(?string $status): Portal
+    {
+        if ($status !== 'moderator' && $status !== 'all') {
+            $status = 'all';
+        }
+        $this->extras['COMMUNITYROOMCREATIONSTATUS'] = $status;
+        return $this;
+    }
+
+    /** Returns the project room creation status.
+     *
+     * @return string room creation status ("portal" = in community rooms & portal (default), "communityroom" = only in community rooms)
+     */
+    public function getProjectRoomCreationStatus(): string
+    {
+        return $this->extras['PROJECTCREATIONSTATUS'] ?? 'portal';
+    }
+
+    public function setProjectRoomCreationStatus(?string $status): Portal
+    {
+        if ($status !== 'communityroom' && $status !== 'portal') {
+            $status = 'portal';
+        }
+        $this->extras['PROJECTCREATIONSTATUS'] = $status;
+        return $this;
+    }
+
+    /** Returns the project room link status.
+     *
+     * @return string room link status ("optional" = a project room can be created without assigning it to a community room (default),
+     * "mandatory" = upon room creation, a project room must be assigned to a community room)
+     */
+    public function getProjectRoomLinkStatus(): string
+    {
+        return $this->extras['PROJECTROOMLINKSTATUS'] ?? 'optional';
+    }
+
+    public function setProjectRoomLinkStatus(?string $status): Portal
+    {
+        if ($status !== 'mandatory' && $status !== 'optional') {
+            $status = 'optional';
+        }
+        $this->extras['PROJECTROOMLINKSTATUS'] = $status;
+        return $this;
+    }
+
     /**
      * Are room categories mandatory?
      * If room categories are mandatory, at least one room category must be assigned when creating a new room.
@@ -731,6 +786,45 @@ class Portal implements \Serializable
     public function setTagMandatory(bool $isTagMandatory): Portal
     {
         $this->extras['TAGMANDATORY'] = $isTagMandatory;
+        return $this;
+    }
+
+    public function getHideAccountname(): bool
+    {
+        /**
+         * hide account name: 1 = yes, 2 = no (default)
+         * @var integer
+         */
+        $hideAccountName = $this->extras['HIDE_ACCOUNTNAME'] ?? null;
+        if (!isset($hideAccountName) && isset($this->extras['EXTRA_CONFIG'])) {
+            // NOTE: in CommSy9 and earlier, HIDE_ACCOUNTNAME was part of an EXTRA_CONFIG array
+            $hideAccountName = $this->extras['EXTRA_CONFIG']['HIDE_ACCOUNTNAME'] ?? 2;
+        }
+
+        return $hideAccountName === 1 ? true : false;
+    }
+
+    public function setHideAccountname(?bool $hideAccountName): Portal
+    {
+        // NOTE: for consistency reasons, we keep the behavior of CommSy9 and earlier where `2` was used to indicate `no`
+        $this->extras['HIDE_ACCOUNTNAME'] = $hideAccountName ? 1 : 2;
+        return $this;
+    }
+
+    public function getHideEmailAddressByDefault(): bool
+    {
+        /**
+         * hide mail by default: 1 = yes, 0 = no (default)
+         * @var integer
+         */
+        $hideEmailAddress = $this->extras['HIDE_MAIL_BY_DEFAULT'] ?? 0;
+
+        return $hideEmailAddress === 1 ? true : false;
+    }
+
+    public function setHideEmailAddressByDefault(?bool $hideEmailAddress): Portal
+    {
+        $this->extras['HIDE_MAIL_BY_DEFAULT'] = $hideEmailAddress ? 1 : 0;
         return $this;
     }
 

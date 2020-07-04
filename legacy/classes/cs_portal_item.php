@@ -176,7 +176,7 @@ class cs_portal_item extends cs_guide_item {
        return $retour;
     }
 
-    /** get community room creation status
+    /** get project room creation status
     *
     * @return room creation status status "portal"= on portal, too, "communityroom"= only in communityrooms
     */
@@ -188,7 +188,7 @@ class cs_portal_item extends cs_guide_item {
        return $retour;
     }
 
-    /** set community room creation status
+    /** set project room creation status
     *
     * @param array value room creation status
     */
