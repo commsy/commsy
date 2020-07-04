@@ -8,6 +8,7 @@ use App\Entity\AccountIndexSendMail;
 use App\Entity\AccountIndexSendMergeMail;
 use App\Entity\AccountIndexSendPasswordMail;
 use App\Entity\AccountIndexUser;
+use App\Entity\License;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
@@ -30,6 +31,8 @@ use App\Form\Type\Portal\AnnouncementsType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
+use App\Form\Type\Portal\LicenseType;
+use App\Form\Type\Portal\LicenseSortType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
@@ -49,6 +52,7 @@ use App\Utils\ItemService;
 use App\Utils\MailAssistant;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
@@ -309,6 +313,123 @@ class PortalSettingsController extends AbstractController
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/licenses/{licenseId?}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param int|null $licenseId
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param RoomService $roomService
+     * @param EventDispatcherInterface $dispatcher
+     * @param LegacyEnvironment $environment
+     */
+    public function licenses(
+        Portal $portal,
+        $licenseId,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        RoomService $roomService,
+        EventDispatcherInterface $dispatcher,
+        LegacyEnvironment $environment
+    ) {
+        $portalId = $portal->getId();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(License::class);
+
+        $license = new License();
+        if ($licenseId) {
+            $license = $repository->findOneById($licenseId);
+            $license->setTitle(html_entity_decode($license->getTitle()));
+        }
+
+        $licenseForm = $this->createForm(LicenseType::class, $license);
+
+        // determine title
+        $pageTitle = '';
+        if ($licenseForm->has('new')) {
+            $pageTitle = 'Create new license';
+        } elseif($licenseForm->has('update')) {
+            $pageTitle = 'Edit license';
+        }
+
+        // handle new/edit form
+        $licenseForm->handleRequest($request);
+        if ($licenseForm->isSubmitted() && $licenseForm->isValid()) {
+            if (!$licenseForm->has('cancel') || !$licenseForm->get('cancel')->isClicked()) {
+                $license->setContextId($portalId);
+
+                if (!$license->getPosition()) {
+                    $position = 0;
+                    $highestPosition = $repository->findHighestPosition($portalId);
+
+                    if ($highestPosition) {
+                        $highestPosition = $highestPosition[0];
+                        $position = $highestPosition['position'] + 1;
+                    }
+
+                    $license->setPosition($position);
+                }
+
+                $em->persist($license);
+                $em->flush();
+
+                $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
+            }
+
+            return $this->redirectToRoute('app_portalsettings_licenses', [
+                'portalId' => $portalId,
+            ]);
+        }
+
+        // sort form
+        $sortForm = $this->createForm(LicenseSortType::class, null, [
+            'portalId' => $portalId,
+        ]);
+        $sortForm->handleRequest($request);
+
+        if ($sortForm->isSubmitted() && $sortForm->isValid()) {
+            $data = $sortForm->getData();
+
+            /** @var ArrayCollection $delete */
+            $delete = $data['license'];
+            if (!$delete->isEmpty()) {
+                $legacyEnvironment = $environment->getEnvironment();
+
+                $materialManager = $legacyEnvironment->getMaterialManager();
+                $materialManager->unsetLicenses($delete->get(0));
+
+                $zzzMaterialManager = $legacyEnvironment->getZzzMaterialManager();
+                $zzzMaterialManager->unsetLicenses($delete->get(0));
+
+                $em->remove($delete->get(0));
+                $em->flush();
+            }
+
+            $structure = $data['structure'];
+            if ($structure) {
+                $structure = json_decode($structure, true);
+
+                // update position
+                $repository->updatePositions($structure, $portalId);
+            }
+
+            return $this->redirectToRoute('app_portalsettings_licenses', [
+                'portalId' => $portalId,
+            ]);
+        }
+
+        return [
+            'licenseForm' => $licenseForm->createView(),
+            'licenseSortForm' => $sortForm->createView(),
+            'portalId' => $portalId,
+            'pageTitle' => $pageTitle,
         ];
     }
 

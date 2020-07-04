@@ -463,6 +463,15 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
+            // licenses
+            $menu->addChild('Licenses', [
+                'label' => 'Licenses',
+                'route' => 'app_portalsettings_licenses',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'ban']
+            ])
+            ->setExtra('translation_domain', 'portal');
+
             // privacy
             $menu->addChild('Privacy', [
                 'label' => 'Privacy',
