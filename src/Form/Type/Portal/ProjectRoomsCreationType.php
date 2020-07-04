@@ -25,6 +25,13 @@ class ProjectRoomsCreationType extends AbstractType
                     'Project room creation in community rooms only' => 'communityroom',
                 ],
             ])
+            ->add('defaultProjectTemplateID', Types\ChoiceType::class, [
+                'choices' => $options['templateChoices'] ?? [],
+                'placeholder' => false,
+                'required' => false,
+                'label' => 'Default template',
+                'help' => 'Default template help text',
+            ])
             ->add('projectRoomLinkStatus', Types\ChoiceType::class, [
                 'label' => 'Mandatory assignment',
                 'expanded' => true,
@@ -49,9 +56,13 @@ class ProjectRoomsCreationType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Portal::class,
-            'translation_domain' => 'portal',
-        ]);
+        $resolver
+            ->setRequired([
+                'templateChoices',
+            ])
+            ->setDefaults([
+                'data_class' => Portal::class,
+                'translation_domain' => 'portal',
+            ]);
     }
 }

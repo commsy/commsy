@@ -1146,7 +1146,7 @@ class RoomController extends AbstractController
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
-        $templates = $this->getAvailableTemplates($legacyEnvironment, $type);
+        $templates = $roomService->getAvailableTemplates($type);
 
         // necessary, since the data field malfunctions when added via listener call (#2979)
         $templates['No template'] = '-1';
@@ -1254,93 +1254,6 @@ class RoomController extends AbstractController
         return [
             'form' => $form->createView(),
         ];
-    }
-
-    private function getAvailableTemplates(
-        \cs_environment $legacyEnvironment,
-        string $type
-    ) {
-        $templates = [];
-
-        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomManager->setContextLimit($legacyEnvironment->getCurrentPortalItem()->getItemID());
-        $roomManager->setTemplateLimit();
-        $roomManager->select();
-
-        $templateList = $roomManager->get();
-        if ($templateList->isNotEmpty()) {
-            $template = $templateList->getFirst();
-            while ($template) {
-                $availability = $template->getTemplateAvailability(); // $type === 'project'
-                if ($type === 'community') {
-                    $availability = $template->getCommunityTemplateAvailability();
-                }
-
-                $add = false;
-
-                // free for all?
-                if (!$add && $availability == '0') {
-                    $add = true;
-                }
-
-                // only in community rooms
-                if (!$add && $legacyEnvironment->inCommunityRoom() && $availability == '3') {
-                    $add = true;
-                }
-
-                // same as above, but from portal context
-                if (!$add && $legacyEnvironment->inPortal() && $availability == '3') {
-                    // check if user is member in one of the templates community rooms
-                    $communityList = $template->getCommunityList();
-                    if ($communityList->isNotEmpty()) {
-                        $userCommunityList = $currentUserItem->getRelatedCommunityList();
-                        if ($userCommunityList->isNotEmpty()) {
-                            $communityItem = $communityList->getFirst();
-                            while ($communityItem) {
-                                $userCommunityItem = $userCommunityList->getFirst();
-                                while ($userCommunityItem) {
-                                    if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
-                                        $add = true;
-                                        break;
-                                    }
-
-                                    $userCommunityItem = $userCommunityList->getNext();
-                                }
-
-                                $communityItem = $communityList->getNext();
-                            }
-                        }
-                    }
-                }
-
-                // only for members
-                if (!$add && $availability == '1' && $template->mayEnter($currentUserItem)) {
-                    $add = true;
-                }
-
-                // only mods
-                if (!$add && $availability == '2' && $template->mayEnter($currentUserItem)) {
-                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
-                        $add = true;
-                    }
-                }
-
-                if ($type != $template->getItemType()) {
-                    $add = false;
-                }
-
-                if ($add) {
-                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
-                    $templates[$label] = $template->getItemID();
-                }
-
-                $template = $templateList->getNext();
-            }
-        }
-
-        return $templates;
     }
 
     private function memberStatus(

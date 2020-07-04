@@ -308,7 +308,7 @@
             </trans-unit>   
             <trans-unit id="template_text">
                 <source>Template text</source>
-                <target>Provide this workspace as a template for new workspaces. By choosing a template, you will get a prepopulated workspace with contents from an archived workspace except for user information.</target>
+                <target>Provide this workspace as a template for new workspaces. By choosing a template, a newly created workspace will be prepopulated with contents from the template workspace (except for user information).</target>
             </trans-unit>
             <trans-unit id="archive_text">
                 <source>Archive text</source>

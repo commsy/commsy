@@ -25,6 +25,13 @@ class CommunityRoomsCreationType extends AbstractType
                     'Community room creation by moderators only' => 'moderator',
                 ],
             ])
+            ->add('defaultCommunityTemplateID', Types\ChoiceType::class, [
+                'choices' => $options['templateChoices'] ?? [],
+                'placeholder' => false,
+                'required' => false,
+                'label' => 'Default template',
+                'help' => 'Default template help text',
+            ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
@@ -39,9 +46,13 @@ class CommunityRoomsCreationType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Portal::class,
-            'translation_domain' => 'portal',
-        ]);
+        $resolver
+            ->setRequired([
+                'templateChoices',
+            ])
+            ->setDefaults([
+                'data_class' => Portal::class,
+                'translation_domain' => 'portal',
+            ]);
     }
 }
