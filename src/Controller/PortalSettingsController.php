@@ -8,6 +8,7 @@ use App\Entity\AccountIndexSendMail;
 use App\Entity\AccountIndexSendMergeMail;
 use App\Entity\AccountIndexSendPasswordMail;
 use App\Entity\AccountIndexUser;
+use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
@@ -40,6 +41,7 @@ use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimeType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
+use App\Repository\AuthSourceRepository;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
@@ -1202,13 +1204,45 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      */
-    public function accountIndexDetail(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    public function accountIndexDetail(
+        Portal $portal,
+        Request $request,
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment)
     {
         $userList = $userService->getListUsers($portal->getId());
-
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
         $form->handleRequest($request);
         $user = $userService->getUser($request->get('userId'));
+        $authSource = $user->getAuthSource();
+        $authRepo = $this->getDoctrine()->getRepository(AuthSource::class);
+        $authSourceItem = $authRepo->find($authSource); //TODO: could be useful for authsource settings, but it is not even used in legacy code?
+
+        $communities = $user->getRelatedCommunityList();
+        $communityListNames = [];
+        foreach($communities as $community){
+            array_push($communityListNames, $community->getTitle());
+        }
+        $projects = $user->getRelatedProjectList();
+        $projectsListNames = [];
+        foreach($projects as $project){
+            array_push($projectsListNames, $project->getTitle());
+        }
+
+        $communities = $user->getRelatedCommunityList();
+        $communityArchivedListNames = [];
+        foreach($communities as $community){
+            if($community->getStatus() == '2'){
+                array_push($communityArchivedListNames, $community->getTitle());
+            };
+        }
+        $projects = $user->getRelatedProjectList();
+        $projectsArchivedListNames = [];
+        foreach($projects as $project){
+            if($project->getStatus() == '2'){
+                array_push($projectsArchivedListNames, $project->getTitle());
+            };
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -1236,6 +1270,10 @@ class PortalSettingsController extends AbstractController
                     'portal' => $portal,
                     'portalId' => $portal->getId(),
                     'userId' => $user->getItemID(),
+                    'communities'  => implode(', ', $communityListNames),
+                    'projects' => implode(', ', $projectsListNames),
+                    'communitiesArchived'  => implode(', ', $communityArchivedListNames),
+                    'projectsArchived' => implode(', ', $projectsArchivedListNames),
                 ]);
             }
 
@@ -1252,6 +1290,10 @@ class PortalSettingsController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
             'portal' => $portal,
+            'communities'  => implode(', ', $communityListNames),
+            'projects' => implode(', ', $projectsListNames),
+            'communitiesArchived'  => implode(', ', $communityArchivedListNames),
+            'projectsArchived' => implode(', ', $projectsArchivedListNames),
         ];
     }
 

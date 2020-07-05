@@ -40,7 +40,7 @@
                 <table>
                     <tr>
                         <td> {{'User ID'|trans({},'portal') }}: </td>
-                        <td>{{ user.email }}</td>
+                        <td>{{ user.userid }}</td>
                     </tr>
                     <tr>
                         <td> {{'Status'|trans({},'portal') }}: </td>
@@ -62,11 +62,23 @@
                     </tr>
                     <tr>
                         <td>{{'Login as... active'|trans({},'portal') }}</td>
-                        <td>-</td>
+                        <td>{% if user.isDeactivatedLoginAsAnotherUser() %}
+
+                        {% elseif user.isTemporaryAllowedToLoginAs() %}
+                            {{ user.getTimestampForLoginAs() }}
+                        {% else %}
+                            {{'No'|trans({},'portal') }}
+                        {%  endif %}</td>
                     </tr>
                     <tr>
                         <td>{{'Agreed to the terms of service on the...'|trans({},'portal') }}:</td>
-                        <td>-</td>
+                        <td>
+                            {% if user.getAGBAcceptanceDate() %}
+                                {{ user.getAGBAcceptanceDate()|craue_date }}
+                            {% else %}
+                                {{'Never'|trans({},'portal') }}
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td>{{'Hide mail'|trans({},'portal') }}</td>
@@ -78,43 +90,61 @@
                     </tr>
                     <tr>
                         <td>{{'User is allowed to create context'|trans({},'portal') }}</td>
-                        <td>-</td>
+                        <td>{% if user.isModerator() %}
+                                {% if user.isAllowedToCreateContext() == 'standard' %}
+                                    {{'Standard'|trans({},'portal') }}
+                                {% elseif user.isAllowedToCreateContext() == 1 %}
+                                    {{'Yes'|trans({},'portal') }}
+                                {% else %}
+                                    {{'No'|trans({},'portal') }}
+                                {% endif %}
+                        {% else %}
+                            {{'Standard'|trans({},'portal') }}
+                        {% endif %}</td>
                     </tr>
                     <tr>
                         <td>{{'Default settings for authentification sources'|trans({},'portal') }}</td>
-                        <td>-</td>
+                        <td>{% if user.isAllowedToCreateContext() == 'standard' %}
+                                {{'Standard'|trans({},'portal') }}
+                            {% elseif user.isAllowedToCreateContext() == 1 %}
+                                {{'Yes'|trans({},'portal') }}
+                            {% else %}
+                                {{'No'|trans({},'portal') }}
+                            {% endif %}</td>
                     </tr>
+                    <!--
                     <tr>
-                        <td>{{'May use caldav'|trans({},'portal') }}:</td>
+                        <td>{# {{'May use caldav'|trans({},'portal') }}#}:</td>
                         <td>-</td>
                     </tr>
+                    -->
                     <tr>
                         <td>{{'Default settings of the portal'|trans({},'portal') }}</td>
-                        <td>-</td>
+                        <td>{{'Lock'|trans({},'profile') }}</td>
                     </tr>
                     <tr>
                         <td>{{'Workspace membership'|trans({},'portal') }}</td>
-                        <td>-</td>
+                        <td> </td>
                     </tr>
                     <tr>
                         <td>{{'Community workspaces'|trans({},'portal') }}</td>
-                        <td>-</td>
+                        <td>{{communities}}</td>
                     </tr>
                     <tr>
                         <td>{{'Project workspaces'|trans({},'portal') }}</td>
-                        <td>-</td>
+                        <td>{{ projects }}</td>
                     </tr>
                     <tr>
                         <td>{{'Archived workspaces'|trans({},'portal') }}</td>
-                        <td>(keine)</td>
+                        <td> </td>
                     </tr>
                     <tr>
                         <td>{{'Community workspaces'|trans({},'portal') }}</td>
-                        <td>(keine)</td>
+                        <td>{{ communitiesArchived }}</td>
                     </tr>
                     <tr>
                         <td>{{'Project workspaces'|trans({},'portal') }}</td>
-                        <td>(keine)</td>
+                        <td>{{ projectsArchived }}</td>
                     </tr>
                 </table>
             {{ form_row(form.back) }}

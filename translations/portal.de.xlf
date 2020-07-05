@@ -422,6 +422,10 @@
                 <source>Names</source>
                 <target>Names</target>
             </trans-unit>
+            <trans-unit id="standard">
+                <source>Standard</source>
+                <target>Standard</target>
+            </trans-unit>
 
             <!-- user edit -->
             <trans-unit id="firstName">
@@ -474,11 +478,11 @@
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
                 <source>User is allowed to create context</source>
-                <target>Standardeinstellung des Portals (Ja)</target>
+                <target>Standardeinstellung des Portals</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
-                <target>Standardeinstellung der Authentifizierungsquelle (Ja)</target>
+                <target>Standardeinstellung der Authentifizierungsquelle</target>
             </trans-unit>
             <trans-unit id="may_create_context">
                 <source>May create context</source>
@@ -490,11 +494,11 @@
             </trans-unit>
             <trans-unit id="is_allowed_to_use_caldav">
                 <source>User is allowed to use caldav</source>
-                <target>Standardeinstellung des Portals (Sperren)</target>
+                <target>Standardeinstellung des Portals</target>
             </trans-unit>
             <trans-unit id="default_settings_portal">
                 <source>Default settings of the portal</source>
-                <target>Standardeinstellung des Portals (Sperren)</target>
+                <target>Standardeinstellung des Portals</target>
             </trans-unit>
             <trans-unit id="change_mail_everywhere">
                 <source>Change mail everywhere</source>
@@ -515,6 +519,10 @@
             <trans-unit id="override_existing_picture">
                 <source>Override existing picture</source>
                 <target>Altes Bild löschen</target>
+            </trans-unit>
+            <trans-unit id="never">
+                <source>Never</source>
+                <target>Noch nie</target>
             </trans-unit>
 
             <!-- account index change status -->

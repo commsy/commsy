@@ -267,7 +267,7 @@
                 <target>Sonstiges</target>
             </trans-unit>
             <trans-unit id="lock">
-                <source>lock</source>
+                <source>Lock</source>
                 <target>Sperren</target>
             </trans-unit>
             <trans-unit id="delete">
