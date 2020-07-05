@@ -17,6 +17,7 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Translation;
+use App\Entity\User;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -55,6 +56,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -755,7 +757,8 @@ class PortalSettingsController extends AbstractController
         Request $request,
         LegacyEnvironment $environment,
         UserService $userService,
-        \Swift_Mailer $mailer)
+        \Swift_Mailer $mailer,
+        PaginatorInterface $paginator)
     {
         $user = $userService->getCurrentUserItem();
         $portalUsers = $userService->getListUsers($portal->getId());
@@ -766,6 +769,7 @@ class PortalSettingsController extends AbstractController
                 array_push($userList, $relatedUser);
             }
         }
+
         $accountIndex = new AccountIndex();
 
         $accountIndexUserList = [];
@@ -1027,10 +1031,17 @@ class PortalSettingsController extends AbstractController
                 }
             }
         }
+        $pagination = $paginator->paginate(
+            $userList, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            2 /*limit per page*/
+        );
+
         return [
             'form' => $form->createView(),
             'userList' => $userList,
             'portal' => $portal,
+            'pagination' => $pagination,
         ];
     }
 

@@ -524,6 +524,10 @@
                 <source>Never</source>
                 <target>Noch nie</target>
             </trans-unit>
+            <trans-unit id="found_users">
+                <source>Found users</source>
+                <target>Gefundene Nutzer</target>
+            </trans-unit>
 
             <!-- account index change status -->
             <trans-unit id="is_login_deactivated">

@@ -19,28 +19,32 @@
 
             {% if not userList is empty %}
                 <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>{{ 'Name (user id)'|trans({},"portal")}}</th>
-                            <th>{{ 'Last login'|trans({},"portal")}}</th>
-                            <th>{{ 'Mail'|trans({},"portal")}}</th>
-                        </tr>
-                    </thead>
-                {% for user in userList %}
                     <tr>
-                        {# <td><input type="checkbox" name="check_{{ user.userid }}" /><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td> #}
-                        <td>{{ form_widget(form.ids[user.itemId]) }}</td>
-                        <td><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
-                        <td>{{ user.lastlogin|craue_date }}</td>
-                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portalsettings_accountindex'}) }}">{{ user.email }}</a></td>
+                        <th></th>
+                        <th>{{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'user.userid') }}</th>
+                        <th{% if pagination.isSorted('user.lastlogin') %} class="sorted"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Last login'|trans({},"portal"), 'user.lastlogin') }}
+                        </th>
+                        <th{% if pagination.isSorted('user.email') %} class="sorted"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'user.email') }}
+                        </th>
                     </tr>
-                {% endfor %}
+                    {% for user in pagination %}
+                        <tr>
+                            <td>{{ form_widget(form.ids[user.itemId]) }}</td>
+                            <td><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
+                            <td>{{ user.lastlogin|craue_date }}</td>
+                            <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portalsettings_accountindex'}) }}">{{ user.email }}</a></td>
+                        </tr>
+                    {% endfor %}
                 </table>
+                {{ 'Found users'|trans({},"portal") }}: {{ pagination.getTotalItemCount }}<br />
+                {{ knp_pagination_render(pagination) }}
             {% endif %}
 
             {{ form_row(form.indexViewAction) }}
             {{ form_row(form.execute) }}
+            {% do form.ids.setRendered %}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}
