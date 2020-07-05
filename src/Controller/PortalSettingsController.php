@@ -1034,7 +1034,7 @@ class PortalSettingsController extends AbstractController
         $pagination = $paginator->paginate(
             $userList, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            2 /*limit per page*/
+            20 /*limit per page*/
         );
 
         return [
