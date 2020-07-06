@@ -1029,6 +1029,13 @@ class PortalSettingsController extends AbstractController
                         }
                         break;
                 }
+
+                $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+                    'portalId' => $portal->getId(),
+                    'userId' => $user->getItemID(),
+                ]);
+
+                $this->addFlash('performedSuccessfully', $returnUrl);
             }
         }
         $pagination = $paginator->paginate(

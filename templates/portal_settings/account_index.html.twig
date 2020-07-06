@@ -12,6 +12,13 @@
     {% embed 'components/card.html.twig' %}
         {% block title %}{{ 'Accounts'|trans({}, "portal") }}{% endblock %}
         {% block body %}
+            {% set savingSuccessfull = app.flashes('performedSuccessfully')|first %}
+            {% if(savingSuccessfull) %}
+                <div class="uk-alert uk-alert-success">
+                    <i class="uk-icon-check-square-o uk-icon-medium"></i>
+                    {{ 'Performed action'|trans({},'portal') }}.
+                </div>
+            {% endif %}
             {{ form_start(form) }}
             {{ form_row(form.accountIndexSearchString) }}
             {{ form_row(form.userIndexFilterChoice) }}
