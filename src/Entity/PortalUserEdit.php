@@ -58,6 +58,8 @@ class PortalUserEdit
 
     private $mayUseCaldav;
 
+    private $uploadUrl;
+
     /** @var bool */
     private $changeMailEverywhere;
 
@@ -479,4 +481,22 @@ class PortalUserEdit
     {
         $this->userIsAllowedToUseCaldav = $userIsAllowedToUseCaldav;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUploadUrl()
+    {
+        return $this->uploadUrl;
+    }
+
+    /**
+     * @param mixed $uploadUrl
+     */
+    public function setUploadUrl($uploadUrl): void
+    {
+        $this->uploadUrl = $uploadUrl;
+    }
+
+
 }

@@ -12,6 +12,20 @@
     {% embed 'components/card.html.twig' %}
         {% block title %}{{ 'Accounts'|trans({}, "portal") }}{% endblock %}
         {% block body %}
+            {% set performedSuccessfully = app.flashes('performedSuccessfully')|first %}
+            {% set notYetImplemented = app.flashes('notYetImplemented')|first %}
+            {% if(performedSuccessfully) %}
+                <div class="uk-alert uk-alert-success">
+                    <i class="uk-icon-check-square-o uk-icon-medium"></i>
+                    {{ 'Performed action'|trans({},'portal') }}.  <a href="{{  performedSuccessfully }}">{{'Back to overview'|trans({},'portal') }}</a>
+                </div>
+            {% endif %}
+            {% if(notYetImplemented) %}
+                <div class="uk-alert uk-alert-success">
+                    <i class="uk-icon-check-square-o uk-icon-medium"></i>
+                    {{ 'Not yet implemented'|trans({},'portal') }}.  <a href="{{ notYetImplemented }}">{{'Back to overview'|trans({},'portal') }}</a>
+                </div>
+            {% endif %}
             {{ form_start(form) }}
             {{ form_row(form.previous) }}
             {{ form_row(form.next) }}

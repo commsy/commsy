@@ -2,9 +2,30 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <!-- general translations -->
             <trans-unit id="portal_general">
                 <source>Portal</source>
                 <target>Portal</target>
+            </trans-unit>
+            <trans-unit id="save_success">
+                <source>Save success</source>
+                <target>Saved successfully</target>
+            </trans-unit>
+            <trans-unit id="back_to_overview">
+                <source>Back to overview</source>
+                <target>Back to the account index overview</target>
+            </trans-unit>
+            <trans-unit id="performed_action">
+                <source>Performed action</source>
+                <target>Successfully performed action</target>
+            </trans-unit>
+            <trans-unit id="not_yet_implemented">
+                <source>Not yet implemented</source>
+                <target>This functionality has yet to be implemented</target>
+            </trans-unit>
+            <trans-unit id="back_to_user">
+                <source>Back to user %username%</source>
+                <target>Back to %username%</target>
             </trans-unit>
 
             <!-- room categories -->
@@ -629,6 +650,18 @@
             <trans-unit id="found_users">
                 <source>Found users</source>
                 <target>Gefundene Nutzer</target>
+            </trans-unit>
+            <trans-unit id="time_help">
+                <source>Time help</source>
+                <target>Placeholder für 4 digit dates:
+                        %1 = current year
+                        %2 = next year
+                        %3 = last year
+                        Placeholder for 2 digit dates:
+                        %4 = current year
+                        %5 = next year
+                        %6 = last year
+                        Format at "from to": DD.MM</target>
             </trans-unit>
 
             <!-- account index change status -->

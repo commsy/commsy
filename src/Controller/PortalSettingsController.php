@@ -754,9 +754,9 @@ class PortalSettingsController extends AbstractController
     public function accountIndex(
         $portalId,
         Portal $portal,
+        UserService $userService,
         Request $request,
         LegacyEnvironment $environment,
-        UserService $userService,
         \Swift_Mailer $mailer,
         PaginatorInterface $paginator)
     {
@@ -1178,8 +1178,10 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         UserTransformer $userTransformer,
         ItemService $itemService,
-        \Swift_Mailer $mailer
+        \Swift_Mailer $mailer,
+        Portal $portal
     ) {
+        $user = $userService->getCurrentUserItem();
         $recipientArray = [];
         $recipients = explode(', ', $recipients);
         foreach($recipients as $recipient){
@@ -1200,14 +1202,38 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $mailRecipients = $data->getRecipients();
 
+            $countTo = 0;
+            $countCc = 0;
+            $countBcc = 0;
+
             foreach($mailRecipients as $mailRecipient){
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $message = $mailAssistant->getSwiftMailForAccountIndexSendMail($form, $item, true);
+                $message = $mailAssistant->getSwiftMailForAccountIndexSendMail($form, $item, false);
                 $mailer->send($message);
+
+                if(!is_null($message->getTo())){
+                    $countTo += count($message->getTo());
+                }
+                if(!is_null($message->getCc())){
+                    $countTo += count($message->getCc());
+                }
+                if(!is_null($message->getBcc())){
+                    $countTo += count($message->getBcc());
+                }
             }
+
+            $recipientCount = $countTo + $countCc + $countBcc;
+            $this->addFlash('recipientCount', $recipientCount);
+
+            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
+            $this->addFlash('savedSuccess', $returnUrl);
         }
 
         return [
+            'user' => $user,
             'form' => $form->createView(),
             'recipients' => $recipientArray,
         ];
@@ -1256,12 +1282,36 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $mailRecipients = $data->getRecipients();
 
+            $countTo = 0;
+            $countCc = 0;
+            $countBcc = 0;
+
             foreach($mailRecipients as $mailRecipient){
 
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
                 $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
                 $mailer->send($message);
+
+                if(!is_null($message->getTo())){
+                    $countTo += count($message->getTo());
+                }
+                if(!is_null($message->getCc())){
+                    $countTo += count($message->getCc());
+                }
+                if(!is_null($message->getBcc())){
+                    $countTo += count($message->getBcc());
+                }
             }
+
+            $recipientCount = $countTo + $countCc + $countBcc;
+            $this->addFlash('recipientCount', $recipientCount);
+
+            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
+            $this->addFlash('savedSuccess', $returnUrl);
+
         }
 
         return [
@@ -1315,12 +1365,36 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $mailRecipients = $data->getRecipients();
 
+            $countTo = 0;
+            $countCc = 0;
+            $countBcc = 0;
+
             foreach($mailRecipients as $mailRecipient){
 
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
                 $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
                 $mailer->send($message);
+
+                if(!is_null($message->getTo())){
+                    $countTo += count($message->getTo());
+                }
+                if(!is_null($message->getCc())){
+                    $countTo += count($message->getCc());
+                }
+                if(!is_null($message->getBcc())){
+                    $countTo += count($message->getBcc());
+                }
+
             }
+
+            $recipientCount = $countTo + $countCc + $countBcc;
+            $this->addFlash('recipientCount', $recipientCount);
+
+            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
+            $this->addFlash('savedSuccess', $returnUrl);
         }
 
         return [
@@ -1417,7 +1491,6 @@ class PortalSettingsController extends AbstractController
                 ]);
             }
         }
-
         return [
             'user' => $user,
             'form' => $form->createView(),
@@ -1463,6 +1536,14 @@ class PortalSettingsController extends AbstractController
         $userEdit->setMayCreateContext($user->getIsAllowedToCreateContext());
         $userEdit->setMayUseCaldav('standard');
         $userEdit->setPicture($user->getPicture());
+
+
+        $uploadUrl = $this->generateUrl('app_upload_upload', array(
+            'roomId' => $portal->getId(),
+            'itemId' => $user->getItemID(),
+        ));
+
+        $userEdit->setUploadUrl($uploadUrl);
 
         $form = $this->createForm(AccountIndexDetailEditType::class, $userEdit);
         $form->handleRequest($request);
@@ -1540,7 +1621,12 @@ class PortalSettingsController extends AbstractController
 
             //TODO: What is with caldav? $user does not posess a field for that
 
+            $returnUrl = $this->generateUrl('app_portalsettings_accountindexdetail', [
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
             $user->save();
+            $this->addFlash('savedSuccess', $returnUrl);
         }
 
         return [
@@ -1630,6 +1716,13 @@ class PortalSettingsController extends AbstractController
         $user->reject();
         $user->save();
 
+        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
+        ]);
+
+        $this->addFlash('performedSuccessfully', $returnUrl);
+
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
             'portalId' => $request->get('portalId'),
             'userId' => $request->get('userId'),
@@ -1646,6 +1739,14 @@ class PortalSettingsController extends AbstractController
         $user = $userService->getUser($request->get('userId'));
         $user->setEmailNotVisible();
         $user->save();
+
+        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
+        ]);
+
+        $this->addFlash('performedSuccessfully', $returnUrl);
+
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
             'portalId' => $request->get('portalId'),
             'userId' => $request->get('userId'),
@@ -1669,6 +1770,13 @@ class PortalSettingsController extends AbstractController
             $relatedUser->save();
         }
 
+        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
+        ]);
+
+        $this->addFlash('performedSuccessfully', $returnUrl);
+
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
             'portalId' => $request->get('portalId'),
             'userId' => $request->get('userId'),
@@ -1685,6 +1793,14 @@ class PortalSettingsController extends AbstractController
         $user = $userService->getUser($request->get('userId'));
         $user->setEmailVisible();
         $user->save();
+
+        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
+        ]);
+
+        $this->addFlash('performedSuccessfully', $returnUrl);
+
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
             'portalId' => $request->get('portalId'),
             'userId' => $request->get('userId'),
@@ -1702,11 +1818,20 @@ class PortalSettingsController extends AbstractController
         $user->setEmailVisible();
         $user->save();
 
+
+
         $relatedUsers = $user->getRelatedUserList();
         foreach($relatedUsers as $relatedUser){
-            $relatedUser->setMailVisible();
+            $relatedUser->setEmailVisible();
             $relatedUser->save();
         }
+
+        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
+        ]);
+
+        $this->addFlash('performedSuccessfully', $returnUrl);
 
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
             'portalId' => $request->get('portalId'),
@@ -1778,6 +1903,13 @@ class PortalSettingsController extends AbstractController
             redirect($environment->getCurrentContextID(),'home','index',array());
         }
 
+        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+            'portalId' => $portal->getId(),
+            'userId' => $user->getItemID(),
+        ]);
+
+        $this->addFlash('notYetImplemented', $returnUrl);
+
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
             'portalId' => $request->get('portalId'),
             'userId' => $request->get('userId'),
@@ -1814,18 +1946,7 @@ class PortalSettingsController extends AbstractController
                 $newAssignedRoom = $projectRoomManager->getItem($choiceWorkspaceId);
                 $newUser->setContextID($newAssignedRoom->getItemID());
                 $newUser->setUserComment($formData->getDescriptionOfParticipation());
-                try{
-                    $newUser->save();
-                }catch(\Exception $e){
-                    //do nothing
-                }
-
-//                $message = (new \Swift_Message())
-//                    ->setFrom([$this->getParameter('commsy.email.from') => 'a title'])
-//                    ->setReplyTo([$user->getEmail() => $user->getFullName()]);
-//                $message->setBody('a body', 'text/plain');
-//
-//                $this->get('mailer')->send($message);
+                $newUser->save();
 
             }elseif($form->get('search')->isClicked()){
                 $user = $userService->getUser($request->get('userId'));
@@ -1837,7 +1958,6 @@ class PortalSettingsController extends AbstractController
                 $formData = $form->getData();
 
                 $form = $this->createForm(AccountIndexDetailAssignWorkspaceType::class, $userAssignWorkspace);
-//                $allRooms = $portal->getContinuousRoomList($legacyEnvironment); TODO this causes a 'can't serialize PDO' error.
 
                 $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
                 $projectRooms = $projectRoomManager->getRoomsByTitle($formData->getSearchForWorkspace(), $portal->getId());
@@ -2094,6 +2214,10 @@ class PortalSettingsController extends AbstractController
         }
 
         return $subject;
+    }
+
+    private function getPicture(){
+
     }
 
     private function generateBody($user, $action, $legacyEnvironment)

@@ -112,7 +112,9 @@ class AccountIndexDetailEditType extends AbstractType
             ->add('picture', FileType::class, [
                 'label' => 'Picture',
                 'translation_domain' => 'portal',
-                'mapped' => false,
+                'attr' => array(
+                    'data-upload' => '{"path": "' . 'uploadUrl' . '"}',
+                ),
                 'required' => false,
             ])
             ->add('overrideExistingPicture', Types\CheckboxType::class, [
