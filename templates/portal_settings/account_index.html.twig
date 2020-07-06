@@ -28,12 +28,12 @@
                 <table>
                     <tr>
                         <th></th>
-                        <th>{{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'user.userid') }}</th>
-                        <th{% if pagination.isSorted('user.lastlogin') %} class="sorted"{% endif %}>
-                            {{ knp_pagination_sortable(pagination, 'Last login'|trans({},"portal"), 'user.lastlogin') }}
+                        <th>{{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'userid') }}</th>
+                        <th{% if pagination.isSorted('lastlogin') %} class="sorted"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Last login'|trans({},"portal"), 'lastlogin') }}
                         </th>
-                        <th{% if pagination.isSorted('user.email') %} class="sorted"{% endif %}>
-                            {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'user.email') }}
+                        <th{% if pagination.isSorted('email') %} class="sorted"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'email') }}
                         </th>
                     </tr>
                     {% for user in pagination %}
