@@ -143,6 +143,7 @@ CREATE TABLE `auth_source` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `portal_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
   `type` enum('local','oidc') NOT NULL DEFAULT 'local',
   `enabled` tinyint(4) NOT NULL DEFAULT 1,
   `extras` text DEFAULT NULL,
@@ -160,9 +161,9 @@ CREATE TABLE `auth_source` (
 LOCK TABLES `auth_source` WRITE;
 /*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
 
-INSERT INTO `auth_source` (`id`, `portal_id`, `title`, `type`, `enabled`, `extras`, `default`, `add_account`, `change_username`, `delete_account`, `change_userdata`, `change_password`, `create_room`)
+INSERT INTO `auth_source` (`id`, `portal_id`, `title`, `description`, `type`, `enabled`, `extras`, `default`, `add_account`, `change_username`, `delete_account`, `change_userdata`, `change_password`, `create_room`)
 VALUES
-	(100,99,'CommSy','local',1,NULL,1,0,0,0,1,1,1);
+	(100,99,'CommSy',NULL,'local',1,NULL,1,0,0,0,1,1,1);
 
 /*!40000 ALTER TABLE `auth_source` ENABLE KEYS */;
 UNLOCK TABLES;
