@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *     repositoryMethod="findOnByCredentials"
  * )
  */
-class Account implements UserInterface, EncoderAwareInterface
+class Account implements UserInterface, EncoderAwareInterface, \Serializable
 {
     /**
      * @var integer
@@ -335,6 +335,28 @@ class Account implements UserInterface, EncoderAwareInterface
         $this->authSource = $authSource;
 
         return $this;
+    }
+
+
+    // Serializable
+
+    public function serialize()
+    {
+        $serializableData = get_object_vars($this);
+
+        // exclude from serialization
+        unset($serializableData['authSource']);
+
+        return serialize($serializableData);
+    }
+
+    public function unserialize($serialized)
+    {
+        $unserializedData = unserialize($serialized);
+
+        foreach ($unserializedData as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }
 
