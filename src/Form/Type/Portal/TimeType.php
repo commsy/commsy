@@ -125,6 +125,7 @@ class TimeType extends AbstractType
                 'input'  => 'datetime_immutable',
                 'required' => false,
                 'translation_domain' => 'portal',
+                'help' => 'Time help',
             ])
             ->add('add_lifecycle', SubmitType::class, [
                 'label' => 'Add life cycle',
@@ -254,6 +255,7 @@ class TimeType extends AbstractType
                                     'input'  => 'datetime_immutable',
                                     'required' => false,
                                     'translation_domain' => 'portal',
+                                    'help' => 'Time help',
                                 ]);
                         }
                     $form

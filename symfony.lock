@@ -253,11 +253,17 @@
     "jms/metadata": {
         "version": "2.3.0"
     },
+    "knplabs/knp-components": {
+        "version": "v2.3.6"
+    },
     "knplabs/knp-menu": {
         "version": "2.6.0"
     },
     "knplabs/knp-menu-bundle": {
         "version": "v2.3.0"
+    },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v5.2.0"
     },
     "knplabs/knp-snappy": {
         "version": "v1.2.1"

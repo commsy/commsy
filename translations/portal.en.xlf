@@ -2,9 +2,30 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <!-- general translations -->
             <trans-unit id="portal_general">
                 <source>Portal</source>
                 <target>Portal</target>
+            </trans-unit>
+            <trans-unit id="save_success">
+                <source>Save success</source>
+                <target>Saved successfully</target>
+            </trans-unit>
+            <trans-unit id="back_to_overview">
+                <source>Back to overview</source>
+                <target>Back to the account index overview</target>
+            </trans-unit>
+            <trans-unit id="performed_action">
+                <source>Performed action</source>
+                <target>Successfully performed action</target>
+            </trans-unit>
+            <trans-unit id="not_yet_implemented">
+                <source>Not yet implemented</source>
+                <target>This functionality has yet to be implemented</target>
+            </trans-unit>
+            <trans-unit id="back_to_user">
+                <source>Back to user %username%</source>
+                <target>Back to %username%</target>
             </trans-unit>
 
             <!-- room categories -->
@@ -448,6 +469,10 @@
                 <source>Back</source>
                 <target>Back/r</target>
             </trans-unit>
+            <trans-unit id="standard">
+                <source>Standard</source>
+                <target>Standard</target>
+            </trans-unit>
 
             <!-- Account Index send Password Mail -->
             <trans-unit id="copy_cc_to_moderator">
@@ -560,7 +585,7 @@
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
                 <source>User is allowed to create context</source>
-                <target>Default settings of the portal (yes)</target>
+                <target>Default settings of the portal</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
@@ -576,7 +601,7 @@
             </trans-unit>
             <trans-unit id="is_allowed_to_use_caldav">
                 <source>User is allowed to use caldav</source>
-                <target>Default settings of the portal (lock)</target>
+                <target>Default settings of the portal</target>
             </trans-unit>
             <trans-unit id="default_settings_portal">
                 <source>Default settings of the portal</source>
@@ -617,6 +642,26 @@
             <trans-unit id="override_existing_picture">
                 <source>Override existing picture</source>
                 <target>Delete old picture</target>
+            </trans-unit>
+            <trans-unit id="never">
+                <source>Never</source>
+                <target>Never</target>
+            </trans-unit>
+            <trans-unit id="found_users">
+                <source>Found users</source>
+                <target>Gefundene Nutzer</target>
+            </trans-unit>
+            <trans-unit id="time_help">
+                <source>Time help</source>
+                <target>Placeholder für 4 digit dates:
+                        %1 = current year
+                        %2 = next year
+                        %3 = last year
+                        Placeholder for 2 digit dates:
+                        %4 = current year
+                        %5 = next year
+                        %6 = last year
+                        Format at "from to": DD.MM</target>
             </trans-unit>
 
             <!-- account index change status -->

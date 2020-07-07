@@ -54,7 +54,7 @@ class AccountIndexSendPasswordMailType extends AbstractType
             ->add('copyBCCToSender', Checkboxtype::class, [
                 'label' => 'Copy BCC to sender',
                 'translation_domain' => 'portal',
-                'required' => true,
+                'required' => false,
                 'data' => false,
             ])
             ->add('subject', TextType::class, [

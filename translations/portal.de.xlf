@@ -2,9 +2,30 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <!-- general translations -->
             <trans-unit id="portal_general">
                 <source>Portal</source>
                 <target>Portal</target>
+            </trans-unit>
+            <trans-unit id="save_success">
+                <source>Save success</source>
+                <target>Erfolgreich gespeichert</target>
+            </trans-unit>
+            <trans-unit id="performed_action">
+                <source>Performed action</source>
+                <target>Aktion erfolgreich durchgeführt</target>
+            </trans-unit>
+            <trans-unit id="not_yet_implemented">
+                <source>Not yet implemented</source>
+                <target>Diese Funktion ist noch nicht implementiert</target>
+            </trans-unit>
+            <trans-unit id="back_to_overview">
+                <source>Back to overview</source>
+                <target>Zurück zur Übersicht von Kennungen</target>
+            </trans-unit>
+            <trans-unit id="back_to_user">
+                <source>Back to user %username%</source>
+                <target>Zurück zu %username%</target>
             </trans-unit>
 
             <!-- room categories -->
@@ -422,6 +443,10 @@
                 <source>Names</source>
                 <target>Names</target>
             </trans-unit>
+            <trans-unit id="standard">
+                <source>Standard</source>
+                <target>Standard</target>
+            </trans-unit>
 
             <!-- user edit -->
             <trans-unit id="firstName">
@@ -474,11 +499,11 @@
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
                 <source>User is allowed to create context</source>
-                <target>Standardeinstellung des Portals (Ja)</target>
+                <target>Standardeinstellung des Portals</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
-                <target>Standardeinstellung der Authentifizierungsquelle (Ja)</target>
+                <target>Standardeinstellung der Authentifizierungsquelle</target>
             </trans-unit>
             <trans-unit id="may_create_context">
                 <source>May create context</source>
@@ -490,11 +515,11 @@
             </trans-unit>
             <trans-unit id="is_allowed_to_use_caldav">
                 <source>User is allowed to use caldav</source>
-                <target>Standardeinstellung des Portals (Sperren)</target>
+                <target>Standardeinstellung des Portals</target>
             </trans-unit>
             <trans-unit id="default_settings_portal">
                 <source>Default settings of the portal</source>
-                <target>Standardeinstellung des Portals (Sperren)</target>
+                <target>Standardeinstellung des Portals</target>
             </trans-unit>
             <trans-unit id="change_mail_everywhere">
                 <source>Change mail everywhere</source>
@@ -515,6 +540,14 @@
             <trans-unit id="override_existing_picture">
                 <source>Override existing picture</source>
                 <target>Altes Bild löschen</target>
+            </trans-unit>
+            <trans-unit id="never">
+                <source>Never</source>
+                <target>Noch nie</target>
+            </trans-unit>
+            <trans-unit id="found_users">
+                <source>Found users</source>
+                <target>Gefundene Nutzer</target>
             </trans-unit>
 
             <!-- account index change status -->
@@ -677,6 +710,18 @@
             <trans-unit id="time_cycle_to">
                 <source>Time cycle to</source>
                 <target>Bis</target>
+            </trans-unit>
+            <trans-unit id="time_help">
+                <source>Time help</source>
+                <target>Platzhalter für 4-stellige Jahreszahlen:
+                        %1 = aktuelles Jahr
+                        %2 = zukünftiges Jahr
+                        %3 = vergangenes Jahr
+                        Platzhalter für 2-stellige Jahreszahlen:
+                        %4 = aktuelles Jahr
+                        %5 = zukünftiges Jahr
+                        %6 = vergangenes Jahr
+                        Format bei "von bis": TT.MM</target>
             </trans-unit>
 
             <!-- privacy -->

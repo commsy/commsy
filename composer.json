@@ -19,6 +19,7 @@
         "friendsofsymfony/rest-bundle": "^2.7",
         "idci/color-scheme-bundle": "dev-master",
         "knplabs/knp-menu-bundle": "^2.2",
+        "knplabs/knp-paginator-bundle": "^5.2",
         "knplabs/knp-snappy-bundle": "^1.6",
         "lexik/form-filter-bundle": "^5.0",
         "lexik/jwt-authentication-bundle": "^2.6",
