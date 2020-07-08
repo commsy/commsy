@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class ContextController
@@ -70,8 +72,12 @@ class ContextController extends Controller
      *
      * @return array|Response
      */
-    public function requestAction($roomId, $itemId, Request $request)
-    {
+    public function requestAction(
+        $roomId,
+        $itemId,
+        Request $request,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
@@ -367,6 +373,9 @@ class ContextController extends Controller
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }
+
+                $event = new UserJoinedRoomEvent($newUser, $roomItem);
+                $eventDispatcher->dispatch($event);
             }
 
             // redirect to detail page
