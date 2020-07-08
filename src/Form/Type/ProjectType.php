@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\Room;
 use App\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -47,7 +48,17 @@ class ProjectType extends AbstractType
                 'label_attr' => [
                     'style' => 'display: none;',
                 ]
-            ]);
+            ])
+            ->add('bilateral', CheckboxType::class, [
+                'label' => 'Bilateral',
+                'translation_domain' => 'settings',
+                'mapped' => false,
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ])
+        ;
             if (!empty($options['times'])) {
                 $builder->add('time_interval', Select2ChoiceType::class, [
                     'choices' => $options['times'],

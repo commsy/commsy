@@ -326,6 +326,10 @@
                 <source>Terms text</source>
                 <target>Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs akzeptieren, um Zutritt zu diesem Raum zu erhalten.</target>
             </trans-unit>
+            <trans-unit id="bilateral">
+                <source>Bilateral</source>
+                <target>Personenbezogene Gruppenräume anlegen?</target>
+            </trans-unit>
 
             <!-- Appearance settings -->
             <trans-unit id="appearance_configuration">

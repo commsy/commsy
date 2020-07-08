@@ -1025,6 +1025,7 @@ class RoomController extends Controller
             if ($form->get('save')->isClicked() && isset($formData['type_select'])) {
                 if ($formData['type_select'] == 'project') {
                     $roomManager = $legacyEnvironment->getProjectManager();
+                    $bilateral = (isset($context['type_sub']['bilateral']) && $context['type_sub']['bilateral'] == '1');
                 }
                 elseif ($formData['type_select'] == 'community') {
                     $roomManager = $legacyEnvironment->getCommunityManager();
@@ -1032,6 +1033,7 @@ class RoomController extends Controller
                 else {
                     throw new UnexpectedValueException("Error Processing Request: Unrecognized room type", 1);
                 }
+
                 $legacyRoom = $roomManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
