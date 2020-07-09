@@ -118,6 +118,18 @@ class ExtensionSettingsType extends AbstractType
                     ));
                 }
             });
+
+            if($this->legacyEnvironment->getCurrentContextItem()->isProjectRoom()){
+                    $builder->add('bilateral', CheckboxType::class, [
+                        'label' => 'Bilateral',
+                        'translation_domain' => 'settings',
+                        'required' => false,
+                        'label_attr' => array(
+                            'class' => 'uk-form-label',
+                        ),
+                    ])
+                ;
+            }
         ;
     }
 

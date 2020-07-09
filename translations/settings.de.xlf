@@ -328,7 +328,11 @@
             </trans-unit>
             <trans-unit id="bilateral">
                 <source>Bilateral</source>
-                <target>Personenbezogene Gruppenräume anlegen?</target>
+                <target>Benutzerräume anlegen?</target>
+            </trans-unit>
+            <trans-unit id="bilateral_heading">
+                <source>Bilateral heading</source>
+                <target>Benutzerräume</target>
             </trans-unit>
 
             <!-- Appearance settings -->

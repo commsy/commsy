@@ -220,8 +220,6 @@ class ProjectController extends Controller
                 $context = $request->get('project');
                 $projectManager = $legacyEnvironment->getProjectManager();
 
-                $bilateral = (isset($context['bilateral']) && $context['bilateral'] == '1');
-
                 $legacyRoom = $projectManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -236,6 +234,10 @@ class ProjectController extends Controller
                 // fill in form values from the new entity object
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
+
+                if (isset($context['bilateral'])) {
+                    $legacyRoom->setBilateral($context['bilateral']);
+                }
 
 
                 $timeIntervals = $context['time_interval'] ?? [];

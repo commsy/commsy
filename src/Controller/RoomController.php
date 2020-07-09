@@ -1025,7 +1025,6 @@ class RoomController extends Controller
             if ($form->get('save')->isClicked() && isset($formData['type_select'])) {
                 if ($formData['type_select'] == 'project') {
                     $roomManager = $legacyEnvironment->getProjectManager();
-                    $bilateral = (isset($context['type_sub']['bilateral']) && $context['type_sub']['bilateral'] == '1');
                 }
                 elseif ($formData['type_select'] == 'community') {
                     $roomManager = $legacyEnvironment->getCommunityManager();
@@ -1050,6 +1049,11 @@ class RoomController extends Controller
                 // fill in form values from the new entity object
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
+
+                // Bilateral will only be set in project workspaces.
+                if(isset($context['type_sub']['bilateral'])){
+                    $legacyRoom->setBilateral($context['type_sub']['bilateral']);
+                }
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {

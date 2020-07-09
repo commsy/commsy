@@ -755,6 +755,18 @@ class cs_project_item extends cs_room_item {
       return $retour;
    }
 
+    function getBilateral () {
+        $retour = "0";
+        if ($this->_issetExtra('BILATERAL')) {
+            $retour = $this->_getExtra('BILATERAL');
+        }
+        return $retour;
+    }
+
+    function setBilateral ($value) {
+        $this->_addExtra('BILATERAL', $value);
+    }
+
    function getUsageInfoTextForRubricInForm($rubric){
       $funct = $this->_environment->getCurrentFunction();
       if ($this->_issetExtra('USAGE_INFO_TEXT')) {

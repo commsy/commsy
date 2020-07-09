@@ -328,7 +328,11 @@
             </trans-unit>
             <trans-unit id="bilateral">
                 <source>Bilateral</source>
-                <target>Create personalized group workspaces? </target>
+                <target>Create personal workspaces? </target>
+            </trans-unit>
+            <trans-unit id="bilateral_heading">
+                <source>Bilateral heading</source>
+                <target>Personal workspaces</target>
             </trans-unit>
 
             <!-- Appearance settings -->

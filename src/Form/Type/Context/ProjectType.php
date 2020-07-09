@@ -59,7 +59,6 @@ class ProjectType extends AbstractType
                 'label' => 'Bilateral',
                 'translation_domain' => 'settings',
                 'required' => false,
-                'mapped' => false,
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
