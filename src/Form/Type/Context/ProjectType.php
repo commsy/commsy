@@ -55,8 +55,8 @@ class ProjectType extends AbstractType
                 'help' => 'Community rooms tip',
                 'translation_domain' => 'settings',
             ])
-            ->add('bilateral', CheckboxType::class, [
-                'label' => 'Bilateral',
+            ->add('userRoom', CheckboxType::class, [
+                'label' => 'User room',
                 'translation_domain' => 'settings',
                 'required' => false,
                 'label_attr' => array(
