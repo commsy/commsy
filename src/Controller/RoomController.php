@@ -1050,9 +1050,9 @@ class RoomController extends Controller
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
 
-                // Bilateral will only be set in project workspaces.
-                if(isset($context['type_sub']['bilateral'])){
-                    $legacyRoom->setBilateral($context['type_sub']['bilateral']);
+                // User room will only be set in project workspaces.
+                if(isset($context['type_sub']['userRoom'])){
+                    $legacyRoom->setUserRoom($context['type_sub']['userRoom']);
                 }
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];

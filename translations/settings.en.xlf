@@ -326,12 +326,12 @@
                 <source>Terms text</source>
                 <target>This activates the "General terms and conditions" dialogue for this workspace. Users are required to accept the defined "General terms and conditions" before they enter for the first time.</target>
             </trans-unit>
-            <trans-unit id="bilateral">
-                <source>Bilateral</source>
+            <trans-unit id="user_room">
+                <source>User room</source>
                 <target>Create personal workspaces? </target>
             </trans-unit>
-            <trans-unit id="bilateral_heading">
-                <source>Bilateral heading</source>
+            <trans-unit id="user_room_heading">
+                <source>User room heading</source>
                 <target>Personal workspaces</target>
             </trans-unit>
 

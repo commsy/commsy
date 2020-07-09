@@ -323,7 +323,7 @@ class SettingsController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            $formData['bilateral'] = $form->get('bilateral')->getViewData();
+            $formData['userRoom'] = $form->get('userRoom')->getViewData();
             $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
         }
 

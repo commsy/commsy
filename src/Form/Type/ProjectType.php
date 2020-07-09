@@ -49,8 +49,8 @@ class ProjectType extends AbstractType
                     'style' => 'display: none;',
                 ]
             ])
-            ->add('bilateral', CheckboxType::class, [
-                'label' => 'Bilateral',
+            ->add('userRoom', CheckboxType::class, [
+                'label' => 'User room',
                 'translation_domain' => 'settings',
                 'mapped' => false,
                 'required' => false,

@@ -235,8 +235,8 @@ class ProjectController extends Controller
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
 
-                if (isset($context['bilateral'])) {
-                    $legacyRoom->setBilateral($context['bilateral']);
+                if (isset($context['userRoom'])) {
+                    $legacyRoom->setUserRoom($context['userRoom']);
                 }
 
 
