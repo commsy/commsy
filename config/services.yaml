@@ -1284,6 +1284,13 @@ services:
     App\Event\ItemDeletedEvent:
         autowire: false
 
+    App\Event\UserJoinedRoomEvent:
+        autowire: false
+
+    App\Event\UserLeftRoomEvent:
+        autowire: false
+
+
     # Response
     App\Http\JsonDataResponse:
         autowire: false
