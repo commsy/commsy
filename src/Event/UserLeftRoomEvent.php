@@ -8,6 +8,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class UserLeftRoomEvent extends Event
 {
+    public const NAME = 'commsy.room.userleft';
+
     /**
      * @var \cs_user_item
      */
