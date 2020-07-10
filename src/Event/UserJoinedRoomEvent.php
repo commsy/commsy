@@ -8,6 +8,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class UserJoinedRoomEvent extends Event
 {
+    public const NAME = 'commsy.room.userjoined';
+
     /**
      * @var \cs_user_item
      */

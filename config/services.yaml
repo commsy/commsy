@@ -607,6 +607,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    commsy.subscriber.userroom:
+        class: App\EventSubscriber\UserRoomSubscriber
+        arguments: ["@service_container"]
+        tags:
+            - { name: kernel.event_subscriber }
+
     # Search
     commsy.search.manager:
         alias: App\Search\SearchManager
