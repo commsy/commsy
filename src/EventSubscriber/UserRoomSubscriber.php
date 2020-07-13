@@ -33,8 +33,8 @@ class UserRoomSubscriber implements EventSubscriberInterface {
 
     public static function getSubscribedEvents() {
         return array(
-            UserJoinedRoomEvent::NAME => array('onUserJoinedRoom', 0),
-            UserLeftRoomEvent::NAME => array('onUserLeftRoom', 0),
+            UserJoinedRoomEvent::class => array('onUserJoinedRoom', 0),
+            UserLeftRoomEvent::class => array('onUserLeftRoom', 0),
         );
     }
 }
