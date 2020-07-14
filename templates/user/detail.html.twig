@@ -280,6 +280,37 @@
                                         </div>
                                     </div>
                                     {% endfor %}
+                                    {% if showUserRoomIcon %}
+                                        <div class="uk-width-medium-1-3">
+                                            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+                                                <div class="uk-panel-teaser cs-panel-teaser-user">
+                                                    <div class="uk-grid">
+                                                        <div class="uk-width-2-3">
+                                                       <span class="uk-text-large uk-text-middle">
+                                                           <a href="#">Personal Room </a>
+                                                       </span>
+                                                        </div>
+                                                            <div class="uk-width-1-3 uk-text-right">
+                                                                <a href="#" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                                <span>
+                                            <a href="#">
+                                                {{'send mail to group'|trans({}) }}
+                                            </a>
+                                            </span><br/>
+                                                <div class="uk-flex uk-flex-space-between">
+                                                    <div>
+                                                        {{'members'|trans({}) }}: 1
+                                                    </div>
+                                                    <div>
+                                                        {{'links'|trans({}) }}: 1
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </article>
