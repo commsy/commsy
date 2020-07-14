@@ -98,6 +98,9 @@
                         <span class="uk-visible-large">{{'Reject'|trans({}, 'user') }}</span>
                     </a>
                 {% endif %}
+                {% if showUserRoomIcon %}
+                    <a href="#" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip=""></a>
+                {% endif %}
             </div>
         </header>
     </article>

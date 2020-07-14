@@ -755,6 +755,18 @@ class cs_project_item extends cs_room_item {
       return $retour;
    }
 
+    function getUserRoom () {
+        $retour = "0";
+        if ($this->_issetExtra('USER_ROOM')) {
+            $retour = $this->_getExtra('USER_ROOM');
+        }
+        return $retour;
+    }
+
+    function setUserRoom ($value) {
+        $this->_addExtra('USER_ROOM', $value);
+    }
+
    function getUsageInfoTextForRubricInForm($rubric){
       $funct = $this->_environment->getCurrentFunction();
       if ($this->_issetExtra('USAGE_INFO_TEXT')) {

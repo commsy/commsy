@@ -69,6 +69,7 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             $roomData['workflow']['resubmission_show_to'] = $roomItem->getWorkflowReaderShowTo();
 
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
+            $roomData['userRoom'] = $roomItem->getUserRoom() == "1";
         }
 
         return $roomData;
@@ -93,6 +94,8 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
         } else {
             $roomObject->setAssessmentInactive();
         }
+
+        $roomObject->setUserRoom($roomData['userRoom']);
 
         $isset_workflow = false;
 
@@ -181,6 +184,6 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             }
         }
 
-        $roomObject->save();
+        return $roomObject;
     }
 }

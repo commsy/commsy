@@ -2,11 +2,11 @@
 
 namespace App\EventSubscriber;
 
-use App\Utils\UserroomService;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
+use App\Event\RoomSettingsChangedEvent;
 use App\Event\UserJoinedRoomEvent;
 use App\Event\UserLeftRoomEvent;
+use App\Utils\UserroomService;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserRoomSubscriber implements EventSubscriberInterface
 {
@@ -25,6 +25,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         return [
             UserJoinedRoomEvent::class => 'onUserJoinedRoom',
             UserLeftRoomEvent::class => 'onUserLeftRoom',
+            RoomSettingsChangedEvent::class => 'onRoomSettingsChanged',
         ];
     }
 
@@ -45,5 +46,10 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $room = $event->getRoom();
 
         // TODO: delete the user room associated with $user
+    }
+
+    public function onRoomSettingsChanged(RoomSettingsChangedEvent $event)
+    {
+        // TODO: disable creation of user rooms if the `userRoom` setting was disabled
     }
 }

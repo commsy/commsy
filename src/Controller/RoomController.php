@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Entity\ZzzRoom;
+use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
 use App\Repository\UserRepository;
 use App\Services\LegacyMarkup;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -915,7 +917,7 @@ class RoomController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
-    public function createAction($roomId, Request $request)
+    public function createAction($roomId, Request $request, EventDispatcherInterface $eventDispatcher)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
@@ -1032,6 +1034,7 @@ class RoomController extends Controller
                 else {
                     throw new UnexpectedValueException("Error Processing Request: Unrecognized room type", 1);
                 }
+
                 $legacyRoom = $roomManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -1048,6 +1051,11 @@ class RoomController extends Controller
                 // fill in form values from the new entity object
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
+
+                // User room will only be set in project workspaces.
+                if(isset($context['type_sub']['userRoom'])){
+                    $legacyRoom->setUserRoom($context['type_sub']['userRoom']);
+                }
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
@@ -1076,6 +1084,9 @@ class RoomController extends Controller
                 // would get overwritten by the room template's language setting
                 $legacyRoom->setLanguage($context['language']);
                 $legacyRoom->save();
+
+                $event = new UserJoinedRoomEvent($legacyRoom->getCreatorItem(), $legacyRoom);
+                $eventDispatcher->dispatch($event);
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();

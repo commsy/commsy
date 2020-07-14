@@ -466,6 +466,7 @@ class UserController extends BaseController
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -493,6 +494,12 @@ class UserController extends BaseController
 
         $roomItem = $roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
+
+        $showUserRoomIcon = false;
+        if($this->isGranted('ITEM_ENTER', $roomId, $infoArray['currentUser'])){
+            $showUserRoomIcon = true;
+        }
+
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -510,6 +517,7 @@ class UserController extends BaseController
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
             'showRating' => false,
+            'showUserRoomIcon' => $showUserRoomIcon,
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
             'currentUser' => $infoArray['currentUser'],
@@ -1321,12 +1329,18 @@ class UserController extends BaseController
             }
         }
 
+        $showUserRoomIcon = false;
+        if($this->isGranted('ITEM_ENTER', $roomId, $currentUser)){
+            $showUserRoomIcon = true;
+        }
+
         return [
             'roomId' => $roomId,
             'users' => $users,
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
+            'showUserRoomIcon' => $showUserRoomIcon,
         ];
     }
 

@@ -185,6 +185,13 @@ class ItemVoter extends Voter
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($item->getItemID());
+        $roomItemUserIds = [];
+        if(! is_null($roomItem)){
+            $userList = $roomItem->getUserList()->_data;
+            foreach($userList as $singleUserItem){
+                array_push($roomItemUserIds, $singleUserItem->getItemID());
+            }
+        }
 
         if ($item->isPrivateRoom()) {
             return true;
@@ -193,6 +200,9 @@ class ItemVoter extends Voter
                 return true;
             }
         } else if ($item->isPortal() && $item->mayEnter($currentUser)) {
+            return true;
+        } else if ($this->canModerate($item, $currentUser)
+            or in_array($currentUser->getItemID(), $roomItemUserIds)){
             return true;
         }
 
