@@ -615,7 +615,7 @@ services:
 
     commsy.subscriber.userroom:
         class: App\EventSubscriber\UserRoomSubscriber
-        arguments: ["@service_container", "@commsy_legacy.userroom_service"]
+        arguments: [ "@commsy_legacy.userroom_service" ]
         tags:
             - { name: kernel.event_subscriber }
 
