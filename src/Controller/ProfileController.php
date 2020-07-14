@@ -4,36 +4,32 @@ namespace App\Controller;
 
 use App\Entity\Calendars;
 use App\Form\Type\Profile\DeleteAccountType;
-use App\Privacy\PersonalDataCollector;
-use App\Services\PrintService;
-use App\Utils\UserService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormError;
-
-use App\Utils\RoomService;
-use App\Services\LegacyEnvironment;
-
-
-use App\Entity\User;
-use App\Form\Type\Profile\RoomProfileGeneralType;
-use App\Form\Type\Profile\RoomProfileAddressType;
-use App\Form\Type\Profile\RoomProfileContactType;
-use App\Form\Type\Profile\RoomProfileNotificationsType;
 use App\Form\Type\Profile\DeleteType;
 use App\Form\Type\Profile\ProfileAccountType;
+use App\Form\Type\Profile\ProfileAdditionalType;
+use App\Form\Type\Profile\ProfileCalendarsType;
 use App\Form\Type\Profile\ProfileChangePasswordType;
 use App\Form\Type\Profile\ProfileMergeAccountsType;
 use App\Form\Type\Profile\ProfileNewsletterType;
-use App\Form\Type\Profile\ProfilePrivacyType;
-use App\Form\Type\Profile\ProfileCalendarsType;
-use App\Form\Type\Profile\ProfileAdditionalType;
 use App\Form\Type\Profile\ProfilePersonalInformationType;
+use App\Form\Type\Profile\ProfilePrivacyType;
+use App\Form\Type\Profile\RoomProfileAddressType;
+use App\Form\Type\Profile\RoomProfileContactType;
+use App\Form\Type\Profile\RoomProfileGeneralType;
+use App\Form\Type\Profile\RoomProfileNotificationsType;
+use App\Privacy\PersonalDataCollector;
+use App\Services\LegacyEnvironment;
+use App\Services\PrintService;
+use App\Utils\RoomService;
+use App\Utils\UserService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * Class ProfileController
@@ -772,11 +768,20 @@ class ProfileController extends Controller
      * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
      * @Template
      */
-    public function deleteRoomProfileAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService, ParameterBagInterface $parameterBag)
-    {
+    public function deleteRoomProfileAction(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        RoomService $roomService,
+        ParameterBagInterface $parameterBag
+    ) {
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
-        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
-        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
+            'confirm_string' => $this->get('translator')->trans('lock', [], 'profile'),
+        ], [])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, [
+            'confirm_string' => $this->get('translator')->trans('delete', [], 'profile')
+        ], [])->getForm();
 
         $userService = $this->get('commsy_legacy.user_service');
         $currentUser = $userService->getCurrentUserItem();
@@ -785,8 +790,6 @@ class ProfileController extends Controller
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
         $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
-
-        $roomItem = $roomService->getRoomItem($roomId);
 
         // Lock room profile
         if ($request->request->has('lock_form')) {
@@ -806,22 +809,15 @@ class ProfileController extends Controller
 
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
                 $currentUser->delete();
+
                 return $this->redirect($portalUrl);
-            }
-
-
-            // get room from RoomService
-            $roomItem = $roomService->getRoomItem($roomId);
-
-            if (!$roomItem) {
-                throw $this->createNotFoundException('No room found for id ' . $roomId);
             }
         }
 
         return [
             'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
-            'form_delete' => $deleteForm->createView()
+            'form_delete' => $deleteForm->createView(),
         ];
     }
 

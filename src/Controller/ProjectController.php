@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Event\UserJoinedRoomEvent;
 use App\Form\Type\ProjectType;
 use App\Form\Type\Room\SecureDeleteType;
 use App\Services\LegacyEnvironment;
@@ -17,6 +18,7 @@ use App\Form\Type\Room\DeleteType;
 use App\Filter\ProjectFilterType;
 use App\Entity\Room;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class ProjectController
@@ -175,8 +177,13 @@ class ProjectController extends Controller
      * }))
      * @Template()
      */
-    public function createAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
-    {
+    public function createAction(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        RoomService $roomService,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -270,6 +277,9 @@ class ProjectController extends Controller
                 // would get overwritten by the room template's language setting
                 $legacyRoom->setLanguage($room->getLanguage());
                 $legacyRoom->save();
+
+                $event = new UserJoinedRoomEvent($legacyRoom->getCreatorItem(), $legacyRoom);
+                $eventDispatcher->dispatch($event);
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
