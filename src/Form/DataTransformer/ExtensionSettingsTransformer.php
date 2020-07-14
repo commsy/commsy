@@ -181,6 +181,6 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             }
         }
 
-        $roomObject->save();
+        return $roomObject;
     }
 }

@@ -1296,6 +1296,8 @@ services:
     App\Event\UserLeftRoomEvent:
         autowire: false
 
+    App\Event\RoomSettingsChangedEvent:
+        autowire: false
 
     # Response
     App\Http\JsonDataResponse:
