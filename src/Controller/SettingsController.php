@@ -49,6 +49,8 @@ class SettingsController extends Controller
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher
     ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
