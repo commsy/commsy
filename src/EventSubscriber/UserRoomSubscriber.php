@@ -8,13 +8,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Event\UserJoinedRoomEvent;
 use App\Event\UserLeftRoomEvent;
 
-class UserRoomSubscriber implements EventSubscriberInterface {
-
-    private $container;
-
-    public function __construct(ContainerInterface $container)
+class UserRoomSubscriber implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents()
     {
-        $this->container = $container;
+        return [
+            UserJoinedRoomEvent::class => 'onUserJoinedRoom',
+            UserLeftRoomEvent::class => 'onUserLeftRoom',
+        ];
     }
 
     public function onUserJoinedRoom(UserJoinedRoomEvent $event) {
@@ -29,12 +30,5 @@ class UserRoomSubscriber implements EventSubscriberInterface {
         $room = $event->getRoom() ?? null;
 
         // TODO: delete the user room associated with $user
-    }
-
-    public static function getSubscribedEvents() {
-        return array(
-            UserJoinedRoomEvent::NAME => array('onUserJoinedRoom', 0),
-            UserLeftRoomEvent::NAME => array('onUserLeftRoom', 0),
-        );
     }
 }
