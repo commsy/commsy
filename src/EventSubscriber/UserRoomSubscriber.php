@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Event\RoomSettingsChangedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -15,6 +16,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         return [
             UserJoinedWorkspaceEvent::class => 'onUserJoinedWorkspace',
             UserLeftWorkspaceEvent::class => 'onUserLeftWorkspace',
+            RoomSettingsChangedEvent::class => 'onRoomSettingsChanged',
         ];
     }
 
@@ -32,5 +34,10 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $room = $event->getRoom() ?? null;
 
         // TODO: delete the user room associated with $user
+    }
+
+    public function onRoomSettingsChanged(RoomSettingsChangedEvent $event)
+    {
+        // TODO: Stub
     }
 }
