@@ -50,6 +50,9 @@ class UserroomService
          * @var $newRoom \cs_userroom_item
          */
         $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle);
+        if (!$newRoom) {
+            return null;
+        }
 
         $newRoom->setLinkedProjectItemID($roomContext);
 
@@ -58,6 +61,9 @@ class UserroomService
 
         // persist room (which will also call $roomManager->saveItem())
         $newRoom->save();
+
+        $user->setLinkedUserroomItemID($newRoom->getItemID());
+        $user->save();
 
         return $newRoom;
     }

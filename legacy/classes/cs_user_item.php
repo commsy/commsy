@@ -45,6 +45,12 @@ class cs_user_item extends cs_item
 
     private $_context_id_array = NULL;
 
+    /**
+     * the user room associated with this user
+     * @var \cs_userroom_item
+     */
+    private $_userroomItem = NULL;
+
     /** constructor: cs_user_item
      * the only available constructor, initial values for internal variables
      */
@@ -194,6 +200,38 @@ class cs_user_item extends cs_item
     function setTopic($value)
     {
         $this->setTopicByID($value->getItemID());
+    }
+
+    public function getLinkedUserroomItem(): ?\cs_userroom_item
+    {
+        if (isset($this->_userroomItem)) {
+            return $this->_userroomItem;
+        }
+
+        $userroomItemId = $this->getLinkedUserroomItemID();
+        if (isset($userroomItemId)) {
+            $userroomManager = $this->_environment->getUserroomManager();
+            $userroomItem = $userroomManager->getItem($userroomItemId);
+            if (isset($userroomItem) and !$userroomItem->isDeleted()) {
+                $this->_userroomItem = $userroomItem;
+            }
+            return $this->_userroomItem;
+        }
+
+        return null;
+    }
+
+    public function getLinkedUserroomItemID(): ?int
+    {
+        if ($this->_issetExtra('USERROOM_ITEM_ID')) {
+            return $this->_getExtra('USERROOM_ITEM_ID');
+        }
+        return null;
+    }
+
+    public function setLinkedUserroomItemID($roomId)
+    {
+        $this->_setExtra('USERROOM_ITEM_ID', (int)$roomId);
     }
 
     /** get firstname of the user
