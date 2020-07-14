@@ -6,21 +6,21 @@ use App\Event\RoomSettingsChangedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use App\Event\UserJoinedWorkspaceEvent;
-use App\Event\UserLeftWorkspaceEvent;
+use App\Event\UserJoinedRoomEvent;
+use App\Event\UserLeftRoomEvent;
 
 class UserRoomSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
         return [
-            UserJoinedWorkspaceEvent::class => 'onUserJoinedWorkspace',
-            UserLeftWorkspaceEvent::class => 'onUserLeftWorkspace',
+            UserJoinedRoomEvent::class => 'onUserJoinedRoom',
+            UserLeftRoomEvent::class => 'onUserLeftRoom',
             RoomSettingsChangedEvent::class => 'onRoomSettingsChanged',
         ];
     }
 
-    public function onUserJoinedWorkspace(UserJoinedWorkspaceEvent $event)
+    public function onUserJoinedRoom(UserJoinedRoomEvent $event)
     {
         $user = $event->getUser() ?? null;
         $room = $event->getRoom() ?? null;
@@ -28,7 +28,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         // TODO: create a user room (cs_userroom_item) within $room, and add $user as well as all $room moderators to it
     }
 
-    public function onUserLeftWorkspace(UserLeftWorkspaceEvent $event)
+    public function onUserLeftRoom(UserLeftRoomEvent $event)
     {
         $user = $event->getUser() ?? null;
         $room = $event->getRoom() ?? null;

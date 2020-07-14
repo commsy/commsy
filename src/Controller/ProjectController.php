@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Event\UserJoinedWorkspaceEvent;
+use App\Event\UserJoinedRoomEvent;
 use App\Form\Type\ProjectType;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -272,7 +272,7 @@ class ProjectController extends Controller
                 $legacyRoom->setLanguage($room->getLanguage());
                 $legacyRoom->save();
 
-                $event = new UserJoinedWorkspaceEvent($legacyRoom->getCreatorItem(), $legacyRoom);
+                $event = new UserJoinedRoomEvent($legacyRoom->getCreatorItem(), $legacyRoom);
                 $eventDispatcher->dispatch($event);
 
                 // mark the room as edited

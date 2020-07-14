@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Event\UserJoinedWorkspaceEvent;
+use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -374,7 +374,7 @@ class ContextController extends Controller
                     $translator->setSelectedLanguage($savedLanguage);
                 }
 
-                $event = new UserJoinedWorkspaceEvent($newUser, $roomItem);
+                $event = new UserJoinedRoomEvent($newUser, $roomItem);
                 $eventDispatcher->dispatch($event);
             }
 

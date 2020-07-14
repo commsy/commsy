@@ -7,13 +7,13 @@ namespace App\Event;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Class UserJoinedWorkspaceEvent
+ * Class UserJoinedRoomEvent
  * @package App\Event
  *
  * This event is fired when a new user joined a workspace.
  * This is true for existing workspaces as well as new workspaces.
  */
-class UserJoinedWorkspaceEvent extends Event
+class UserJoinedRoomEvent extends Event
 {
     /**
      * @var \cs_user_item

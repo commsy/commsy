@@ -1290,10 +1290,10 @@ services:
     App\Event\ItemDeletedEvent:
         autowire: false
 
-    App\Event\UserJoinedWorkspaceEvent:
+    App\Event\UserJoinedRoomEvent:
         autowire: false
 
-    App\Event\UserLeftWorkspaceEvent:
+    App\Event\UserLeftRoomEvent:
         autowire: false
 
     App\Event\RoomSettingsChangedEvent:

@@ -7,13 +7,13 @@ namespace App\Event;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Class UserLeftWorkspaceEvent
+ * Class UserLeftRoomEvent
  * @package App\Event
  *
- * This event ist fired when a user left a workspace.
+ * This event is fired when a user left a workspace.
  * This is true for existing as well es deleted rooms.
  */
-class UserLeftWorkspaceEvent extends Event
+class UserLeftRoomEvent extends Event
 {
     /**
      * @var \cs_user_item
