@@ -1321,12 +1321,18 @@ class UserController extends BaseController
             }
         }
 
+        $showUserRoomIcon = false;
+        if($this->isGranted('ITEM_ENTER', $roomId, $currentUser)){
+            $showUserRoomIcon = true;
+        }
+
         return [
             'roomId' => $roomId,
             'users' => $users,
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
+            'showUserRoomIcon' => $showUserRoomIcon,
         ];
     }
 
