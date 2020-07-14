@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Entity\ZzzRoom;
-use App\Event\UserJoinedRoomEvent;
+use App\Event\UserJoinedWorkspaceEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
@@ -1079,7 +1079,7 @@ class RoomController extends Controller
                 $legacyRoom->setLanguage($context['language']);
                 $legacyRoom->save();
 
-                $event = new UserJoinedRoomEvent($legacyRoom->getCreatorItem(), $legacyRoom);
+                $event = new UserJoinedWorkspaceEvent($legacyRoom->getCreatorItem(), $legacyRoom);
                 $eventDispatcher->dispatch($event);
 
                 // mark the room as edited
