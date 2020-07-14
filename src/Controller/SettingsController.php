@@ -360,7 +360,7 @@ class SettingsController extends Controller
         $roomData = $extensionSettingsTransformer->transform($roomItem);
 
         $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
-            'roomId' => $roomId,
+            'room' => $roomItem,
         ]);
         
         $form->handleRequest($request);

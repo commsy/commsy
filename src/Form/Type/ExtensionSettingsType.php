@@ -108,7 +108,7 @@ class ExtensionSettingsType extends AbstractType
                     'class' => 'uk-button-primary',
                 )                
             ))
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                 $form = $event->getForm();
 
                 if ($this->mediaWikiEnabled) {
@@ -117,7 +117,21 @@ class ExtensionSettingsType extends AbstractType
                         'label_attr' => array('class' => 'uk-form-label'),
                     ));
                 }
-            });
+
+                /** @var \cs_room_item $roomItem */
+                $roomItem = $options['room'];
+
+                if ($roomItem->isProjectRoom()) {
+                    $form->add('userRoom', CheckboxType::class, [
+                        'label' => 'User room',
+                        'translation_domain' => 'settings',
+                        'required' => false,
+                        'label_attr' => [
+                            'class' => 'uk-form-label',
+                        ],
+                    ]);
+                }
+            })
         ;
     }
 
@@ -130,7 +144,7 @@ class ExtensionSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['roomId'])
+            ->setRequired(['room'])
             ->setDefaults(array('translation_domain' => 'settings'))            
         ;
     }

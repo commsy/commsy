@@ -224,8 +224,9 @@ class ProjectController extends Controller
             if ($form->get('save')->isClicked()) {
                 // create a new room using the legacy code
                 $communityRoom = $roomService->getRoomItem($roomId);
-
+                $context = $request->get('project');
                 $projectManager = $legacyEnvironment->getProjectManager();
+
                 $legacyRoom = $projectManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -241,7 +242,11 @@ class ProjectController extends Controller
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
 
-                $context = $request->get('project');
+                if (isset($context['userRoom'])) {
+                    $legacyRoom->setUserRoom($context['userRoom']);
+                }
+
+
                 $timeIntervals = $context['time_interval'] ?? [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
                     $legacyRoom->setContinuous();
