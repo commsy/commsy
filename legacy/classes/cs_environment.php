@@ -1100,6 +1100,28 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_grouproom_manager');
    }
 
+  /** get instance of cs_userroom_manager
+   *
+   * @return cs_userroom_manager
+   * @access public
+   */
+   function getUserRoomManager () {
+       if ( !$this->isArchiveMode() ) {
+           return $this->_getInstance('cs_userroom_manager');
+       } else {
+           return $this->getZzzUserRoomManager();
+       }
+   }
+
+  /** get instance of cs_zzz_userroom_manager
+   *
+   * @return cs_zzz_item_manager
+   * @access public
+   */
+   public function getZzzUserRoomManager() {
+      return $this->_getInstance('cs_zzz_userroom_manager');
+   }
+
   /** get instance of cs_myroom_manager
    *
    * @return cs_myroom_manager

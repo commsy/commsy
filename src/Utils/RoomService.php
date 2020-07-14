@@ -2,15 +2,79 @@
 
 namespace App\Utils;
 
+use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 
 class RoomService
 {
     private $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    /**
+     * @var CalendarsService
+     */
+    private $calendarsService;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, CalendarsService $calendarsService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->calendarsService = $calendarsService;
+    }
+
+    /**
+     * Returns a new room with the given properties, created by the given room manager
+     * @param \cs_room2_manager $roomManager the room manager to be used to create the room (which also defines its type)
+     * @param int $contextID the ID of the room which hosts the created room
+     * @param string $title the title of the created room
+     * @param string $description (optional) the description of the created room
+     * @param \cs_user_item|null (optional) $creator the user who will be specified as the room's creator; if left out,
+     * the current user will be used
+     * @param \cs_user_item|null (optional) $modifier the user who will be specified as the room's modifier; if left out,
+     * the current user will be used
+     * @return \cs_room_item|null the newly created room, or null if an error occurred
+     */
+    public function createRoom(
+        \cs_room2_manager $roomManager,
+        int $contextID,
+        string $title,
+        string $description = "",
+        \cs_user_item $creator = null,
+        \cs_user_item $modifier = null
+    ): ?\cs_room_item
+    {
+        // TODO: use a facade/factory to create a new room
+
+        if (!isset($roomManager) || empty($contextID) || empty($title)) {
+            return null;
+        }
+
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $creator = $creator ?? $currentUser;
+        $modifier = $modifier ?? $currentUser;
+
+        $newRoom = $roomManager->getNewItem();
+        if (!$newRoom) {
+            return null;
+        }
+
+        $newRoom->setCreatorItem($creator);
+        $newRoom->setModificatorItem($modifier);
+        $newRoom->setCreationDate(date('Y-m-d H:i:s'));
+
+        $newRoom->setContextID($contextID);
+        $newRoom->open();
+
+        $newRoom->setTitle($title);
+        $newRoom->setDescription($description);
+
+        // persist room (which will also call $roomManager->saveItem())
+        $newRoom->save();
+
+        $this->calendarsService->createCalendar($newRoom, null, null, true);
+
+        // TODO: setRoomContext?
+        // TODO: do we also need to "mark the room as edited"?, see `RoomController->createAction()`)
+
+        return $newRoom;
     }
 
     /**

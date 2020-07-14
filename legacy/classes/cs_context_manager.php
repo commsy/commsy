@@ -201,6 +201,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
     * @return object cs_item a new EMPTY room
     */
    function _getNewRoomItem ($type) {
+       include_once('classes/cs_userroom_item.php');
       if ( (empty($type)) ) {
          $retour = NULL;
       } elseif ( $type == CS_PROJECT_TYPE ) {
@@ -218,6 +219,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       } elseif ( $type == CS_GROUPROOM_TYPE ) {
          include_once('classes/cs_grouproom_item.php');
          $retour = new cs_grouproom_item($this->_environment);
+      } elseif ( $type == cs_userroom_item::ROOM_TYPE_USER ) {
+         $retour = new cs_userroom_item($this->_environment);
       } elseif ( $type == CS_PORTAL_TYPE ) {
          include_once('classes/cs_portal_item.php');
          $retour = new cs_portal_item($this->_environment);
