@@ -135,6 +135,27 @@ class cs_userroom_item extends cs_room_item
    }
 
 
+   // portal
+
+   function getPortalID(): ?int
+   {
+      return $this->getContextItem()->getContextID();
+   }
+
+   function getPortalItem(): ?cs_portal_item
+   {
+      $portalId = $this->getPortalID();
+      if (empty($portalId)) {
+         return null;
+      }
+
+      $portalManager = $this->_environment->getPortalManager();
+      $portalItem = $portalManager->getItem($portalId);
+
+      return $portalItem;
+   }
+
+
    // project item
 
    public function getLinkedProjectItem(): ?\cs_project_item

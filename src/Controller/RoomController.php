@@ -11,6 +11,7 @@ use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
 use App\Repository\UserRepository;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,9 +34,13 @@ class RoomController extends Controller
      * })
      * @Template()
      */
-    public function homeAction($roomId, Request $request, LegacyMarkup $legacyMarkup)
+    public function homeAction(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        LegacyMarkup $legacyMarkup)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         // get room item
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -110,7 +115,7 @@ class RoomController extends Controller
         $serviceContact = [
             'show' => false,
         ];
-        $portalItem = $roomItem->getContextItem();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
         if ($portalItem->showServiceLink()) {
             $serviceContact['show'] = true;
             $serviceContact['link'] = $roomService->buildServiceLink();

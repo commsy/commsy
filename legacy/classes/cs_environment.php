@@ -335,8 +335,12 @@ class cs_environment {
             } elseif ( $context_item->isPortal() ) {
                $this->_current_portal = $context_item;
             } else {
+               $currentPortalId = $context_item->getContextID();
+               if ($context_item->getType() === cs_userroom_item::ROOM_TYPE_USER) {
+                   $currentPortalId = $context_item->getPortalId();
+               }
                $manager = $this->getPortalManager();
-               $this->_current_portal = $manager->getItem($context_item->getContextID());
+               $this->_current_portal = $manager->getItem($currentPortalId);
             }
          } else {
             $manager = $this->getPortalManager();
@@ -1856,7 +1860,7 @@ class cs_environment {
             $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
          } elseif ( $this->inUserroom() ) {
              $this->instance['translation_object']->setContext(cs_userroom_item::ROOM_TYPE_USER);
-             $portal_item = $context_item->getContextItem();
+             $portal_item = $context_item->getPortalItem();
              $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
          } elseif ( $this->inPrivateRoom() ) {
             $this->instance['translation_object']->setContext('private');
