@@ -234,6 +234,11 @@ class cs_user_item extends cs_item
         $this->_setExtra('USERROOM_ITEM_ID', (int)$roomId);
     }
 
+    public function unsetLinkedUserroomItemID()
+    {
+        $this->_unsetExtra('USERROOM_ITEM_ID');
+    }
+
     /** get firstname of the user
      * this method returns the firstname of the user
      *
@@ -2016,6 +2021,7 @@ class cs_user_item extends cs_item
         $new_room_user->unsetCreatorID();
         $new_room_user->unsetCreatorDate();
         $new_room_user->unsetAGBAcceptanceDate();
+        $new_room_user->unsetLinkedUserroomItemID();
         $new_room_user->_unsetValue('modifier_id');
         return $new_room_user;
     }

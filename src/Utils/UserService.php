@@ -82,7 +82,12 @@ class UserService
 
         $newUser->setContextID($contextID);
         $newUser->setStatus($userStatus);
-        $newUser->setAGBAcceptance();
+
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($contextID);
+        if ($roomItem->getAGBStatus()) {
+            $newUser->setAGBAcceptance();
+        }
 
         if ($this->legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
             $newUser->setEmailNotVisible();
