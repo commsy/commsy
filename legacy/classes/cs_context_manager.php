@@ -772,6 +772,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if ($item->getItemType() == 'grouproom') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getItem($id);
+         } else if ($item->getItemType() == 'userroom') {
+             $userroom_manager = $this->_environment->getUserRoomManager();
+             $context_item = $userroom_manager->getItem($id);
          } else if ($item->getItemType() == 'privateroom') {
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
             $context_item = $privateroom_manager->getItem($id);
@@ -999,6 +1002,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if (((string)$xml->type[0]) == 'grouproom') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getNewItem();
+         } else if (((string)$xml->type[0]) == 'userroom') {
+             $userroom_manager = $this->_environment->getUserRoomManager();
+             $context_item = $userroom_manager->getNewItem();
          } else if (((string)$xml->type[0]) == 'privateroom') {
             $this->_environment->setCurrentContextID($this->_environment->getCurrentPortalID());
             $privateroom_manager = $this->_environment->getPrivateRoomManager();

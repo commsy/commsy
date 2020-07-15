@@ -54,6 +54,10 @@ class cs_userroom_item extends cs_room_item
       $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
    }
 
+   public function isUserroom () {
+      return true;
+   }
+
    public function save($saveOther = true)
    {
       $manager = $this->_environment->getUserRoomManager();
