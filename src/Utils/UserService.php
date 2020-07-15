@@ -53,6 +53,64 @@ class UserService
     }
 
     /**
+     * Creates a new user in the given context based on the given source user
+     * @param \cs_user_item $sourceUser the user whose attributes shall be cloned to the new user
+     * @param int $contextID the ID of the room which contains the created user
+     * @param int $userStatus (optional) the user status of the created user; defaults to a regular user
+     * @param \cs_user_item|null (optional) $creator the user who will be specified as the new user's creator; if left
+     * out, the new user will be also set as his/her own creator
+     * @return \cs_user_item|null the newly created user, or null if an error occurred
+     */
+    public function cloneUser(
+        \cs_user_item $sourceUser,
+        int $contextID,
+        int $userStatus = 2,
+        \cs_user_item $creator = null
+    ): ?\cs_user_item
+    {
+        // TODO: use a facade/factory to create a new room
+
+        if (!isset($sourceUser) || empty($contextID)) {
+            return null;
+        }
+
+        if ($sourceUser->isReallyGuest() || $sourceUser->isRoot()) {
+            return null;
+        }
+
+        $newUser = $sourceUser->cloneData();
+
+        $newUser->setContextID($contextID);
+        $newUser->setStatus($userStatus);
+        $newUser->setAGBAcceptance();
+
+        if ($this->legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+            $newUser->setEmailNotVisible();
+        }
+
+        if ($creator) {
+            $newUser->setCreatorItem($creator);
+        }
+
+        // TODO: set modification date?
+
+        // TODO: do we need to check if the user id already exists? (compare with ContextController->requestAction())
+        $newUser->save();
+
+        if (!$creator) {
+            $newUser->setCreatorID2ItemID();
+        }
+
+        // TODO: perform additional steps (similar to `ContextController->requestAction()`)
+        /*
+            * `$newPicture = $user->getPicture();`
+            * link user with group "all"
+         */
+
+        return $newUser;
+    }
+
+    /**
      * @param integer $roomId
      * @param integer $max
      * @param integer $start

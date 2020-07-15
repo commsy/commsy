@@ -27,6 +27,7 @@
 include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
 include_once('classes/cs_list.php');
+include_once('classes/cs_userroom_item.php');
 include_once('classes/interfaces/cs_export_import_interface.php');
 
    /** This class returns an instance of a cs_mananger subclass on request.
@@ -233,6 +234,8 @@ class cs_environment {
                   $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
                } elseif ($type == CS_GROUPROOM_TYPE) {
                   $manager = $this->getRoomManager(); // room_manager for caching
+               } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                   $manager = $this->getRoomManager(); // room_manager for caching
                } elseif ($type == CS_PORTAL_TYPE) {
                   $manager = $this->getPortalManager();
                } elseif ($type == CS_SERVER_TYPE) {
@@ -268,6 +271,8 @@ class cs_environment {
                      $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
                   } elseif ($type == CS_GROUPROOM_TYPE) {
                      $manager = $this->getRoomManager(); // room_manager for caching
+                  } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                      $manager = $this->getRoomManager(); // room_manager for caching
                   } elseif ($type == CS_PORTAL_TYPE) {
                      $manager = $this->getPortalManager();
                   } elseif ($type == CS_SERVER_TYPE) {
@@ -1100,6 +1105,28 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_grouproom_manager');
    }
 
+  /** get instance of cs_userroom_manager
+   *
+   * @return cs_userroom_manager
+   * @access public
+   */
+   function getUserRoomManager () {
+       if ( !$this->isArchiveMode() ) {
+           return $this->_getInstance('cs_userroom_manager');
+       } else {
+           return $this->getZzzUserRoomManager();
+       }
+   }
+
+  /** get instance of cs_zzz_userroom_manager
+   *
+   * @return cs_zzz_item_manager
+   * @access public
+   */
+   public function getZzzUserRoomManager() {
+      return $this->_getInstance('cs_zzz_userroom_manager');
+   }
+
   /** get instance of cs_myroom_manager
    *
    * @return cs_myroom_manager
@@ -1662,6 +1689,8 @@ class cs_environment {
             return $this->getPrivateRoomManager($force);
          } elseif ($type == CS_GROUPROOM_TYPE) {
             return $this->getGroupRoomManager($force);
+         } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+             return $this->getUserroomManager($force);
          } elseif ($type == CS_MYROOM_TYPE) {
             return $this->getMyRoomManager();
          } elseif ($type == CS_PORTAL_TYPE) {

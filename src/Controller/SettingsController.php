@@ -49,6 +49,8 @@ class SettingsController extends Controller
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher
     ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -360,7 +362,7 @@ class SettingsController extends Controller
         $roomData = $extensionSettingsTransformer->transform($roomItem);
 
         $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
-            'roomId' => $roomId,
+            'room' => $roomItem,
         ]);
         
         $form->handleRequest($request);
