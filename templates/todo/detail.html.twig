@@ -138,7 +138,7 @@
 
                                         {# new step #}
                                         <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                            {% if is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_ENTER', item.itemId, user.itemID)%}
                                                 <a class="newStep" href="#" id="newStep" data-step-url="{{ path('app_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
                                                 </a>
