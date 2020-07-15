@@ -230,5 +230,82 @@ class cs_userroom_item extends cs_room_item
    {
       $this->_setExtra('USER_ITEM_ID', (int)$userId);
    }
+
+
+   // usage info
+
+   public function getUsageInfoTextForRubric($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_TEXT', $rubric);
+   }
+
+   public function setUsageInfoTextForRubric($rubric, $string)
+   {
+      $this->setUsageInfo('USAGE_INFO_TEXT', $rubric, $string);
+   }
+
+   public function getUsageInfoTextForRubricForm($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_FORM_TEXT', $rubric);
+   }
+
+   public function setUsageInfoTextForRubricForm($rubric, $string)
+   {
+      $this->setUsageInfo('USAGE_INFO_FORM_TEXT', $rubric, $string);
+   }
+
+   public function getUsageInfoTextForRubricInForm($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_TEXT', $rubric);
+   }
+
+   public function getUsageInfoTextForRubricFormInForm($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_FORM_TEXT', $rubric);
+   }
+
+   private function getUsageInfo(string $key, string $rubric): string
+   {
+      if ($this->_issetExtra($key)) {
+         $usageInfo = $this->_getExtra($key);
+         if (empty($usageInfo)) {
+            $usageInfo = array();
+         } elseif (!is_array($usageInfo)) {
+            $usageInfo = XML2Array($usageInfo);
+         }
+      } else {
+         $usageInfo = array();
+      }
+      $usageInfoKey = mb_strtoupper($rubric, 'UTF-8');
+      if (isset($usageInfo[$usageInfoKey]) && !empty($usageInfo[$usageInfoKey])) {
+         $usageInfo = $usageInfo[$usageInfoKey];
+      } else {
+         $usageInfo = '';
+      }
+      return $usageInfo;
+   }
+
+   private function setUsageInfo(string $key, string $rubric, string $string)
+   {
+      if ($this->_issetExtra($key)) {
+         $usageInfo = $this->_getExtra($key);
+         if (empty($usageInfo)) {
+            $usageInfo = array();
+         } elseif (!is_array($usageInfo)) {
+            $usageInfo = XML2Array($usageInfo);
+         }
+      } else {
+         $usageInfo = array();
+      }
+      $usageInfoKey = mb_strtoupper($rubric, 'UTF-8');
+      if (!empty($string)) {
+         $usageInfo[$usageInfoKey] = $string;
+      } else {
+         if (isset($usageInfo[$usageInfoKey])) {
+            unset($usageInfo[$usageInfoKey]);
+         }
+      }
+      $this->_addExtra($key, $usageInfo);
+   }
 }
 ?>
