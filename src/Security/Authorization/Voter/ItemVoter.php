@@ -17,6 +17,7 @@ class ItemVoter extends Voter
     const PARTICIPATE = 'ITEM_PARTICIPATE';
     const MODERATE = 'ITEM_MODERATE';
     const ENTER = 'ITEM_ENTER';
+    const ENTER_USERROOM = 'ITEM_ENTER_USERROOM';
 
     private $legacyEnvironment;
     private $itemService;
@@ -38,6 +39,7 @@ class ItemVoter extends Voter
             self::PARTICIPATE,
             self::MODERATE,
             self::ENTER,
+            self::ENTER_USERROOM,
         ));
     }
 
@@ -74,6 +76,9 @@ class ItemVoter extends Voter
 
                 case self::ENTER:
                     return $this->canEnter($item, $currentUser);
+
+                case self::ENTER_USERROOM:
+                    return $this->canEnterUserRoom($item, $currentUser);
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
@@ -207,5 +212,22 @@ class ItemVoter extends Voter
         }
 
         return false;
+    }
+
+    private function canEnterUserRoom($item, $currentUser){
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($item->getItemID());
+        $roomItemUserIds = [];
+        if(! is_null($roomItem)){
+            $userList = $roomItem->getUserList()->_data;
+            foreach($userList as $singleUserItem){
+                array_push($roomItemUserIds, $singleUserItem->getItemID());
+            }
+        }
+
+        if ($this->canModerate($item, $currentUser)
+            or in_array($currentUser->getItemID(), $roomItemUserIds)){
+            return true;
+        }
     }
 }
