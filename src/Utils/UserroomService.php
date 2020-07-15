@@ -56,7 +56,8 @@ class UserroomService
 
         $newRoom->setLinkedProjectItemID($roomContext);
 
-        // TODO: set `$userroom->setLinkedUserItemID` to ID of newly created regular user
+        $linkedUserID = $user->getItemID();
+        $newRoom->setLinkedUserItemID($linkedUserID);
 
         // persist room (which will also call $roomManager->saveItem())
         $newRoom->save();
