@@ -153,9 +153,12 @@ class SettingsController extends Controller
     public function additionalAction(
         $roomId,
         Request $request,
+        LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         EventDispatcherInterface $eventDispatcher
     ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -196,7 +199,7 @@ class SettingsController extends Controller
             $eventDispatcher->dispatch($roomSettingsChangedEvent);
         }
 
-        $portalItem = $roomItem->getContextItem();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
         return [
             'form' => $form->createView(),
