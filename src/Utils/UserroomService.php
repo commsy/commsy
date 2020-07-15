@@ -35,7 +35,7 @@ class UserroomService
     /**
      * Creates a new user room within the given project room for the given user
      * @param \cs_room_item $room the project room that will host the created user room
-     * @param \cs_user_item $user the user who will be associated with the created user room
+     * @param \cs_user_item $user the project room user who will be associated with the created user room
      * @return \cs_userroom_item|null the newly created user room, or null if an error occurred
      */
     public function createUserroom(\cs_room_item $room, \cs_user_item $user): ?\cs_userroom_item
@@ -56,14 +56,24 @@ class UserroomService
 
         $newRoom->setLinkedProjectItemID($roomContext);
 
-        // TODO: add new users to the newly created user room
         // TODO: set `$userroom->setLinkedUserItemID` to ID of newly created regular user
 
         // persist room (which will also call $roomManager->saveItem())
         $newRoom->save();
 
+        // update project room user
         $user->setLinkedUserroomItemID($newRoom->getItemID());
         $user->save();
+
+        // add room owner (i.e. a regular user for the project room user who's associated with this user room)
+        $userContext = $newRoom->getItemID();
+        $this->userService->cloneUser($user, $userContext);
+
+        // add room moderators
+        $roomModerators = $this->userService->getModeratorsForContext($roomContext);
+        foreach ($roomModerators as $moderator) {
+            $this->userService->cloneUser($moderator, $userContext, 3);
+        }
 
         return $newRoom;
     }
