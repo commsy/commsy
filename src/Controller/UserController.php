@@ -500,6 +500,7 @@ class UserController extends BaseController
             $showUserRoomIcon = true;
         }
 
+        $linkedUserRoom = $currentUser->getLinkedUserroomItem();
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -518,6 +519,10 @@ class UserController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => false,
             'showUserRoomIcon' => $showUserRoomIcon,
+            'userRoomItemId' => $currentUser->getLinkedUserroomItemID(),
+            'userRoomItem' => $currentUser->getLinkedUserroomItem(),
+            'userRoomItemMemberCount' => count($linkedUserRoom == null ? [] : $linkedUserRoom->getUserList()),
+            'userRoomLinksCount' => count($linkedUserRoom == null ? [] : $linkedUserRoom->getLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
             'currentUser' => $infoArray['currentUser'],
@@ -1341,6 +1346,7 @@ class UserController extends BaseController
             'showRating' => false,
             'allowedActions' => $allowedActions,
             'showUserRoomIcon' => $showUserRoomIcon,
+            'userRoomItemId' => $currentUser->getLinkedUserroomItemID(),
         ];
     }
 
