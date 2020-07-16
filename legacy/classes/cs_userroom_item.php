@@ -40,19 +40,15 @@ class cs_userroom_item extends cs_room_item
 
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
       $this->_default_rubrics_array[1] = CS_TODO_TYPE;
-      $this->_default_rubrics_array[2] = CS_DATE_TYPE;
       $this->_default_rubrics_array[3] = CS_MATERIAL_TYPE;
       $this->_default_rubrics_array[4] = CS_DISCUSSION_TYPE;
       $this->_default_rubrics_array[5] = CS_USER_TYPE;
-      $this->_default_rubrics_array[6] = CS_TOPIC_TYPE;
 
       $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TODO_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_DATE_TYPE] = 'short';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'short';
       $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'short';
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
    }
 
    public function isUserroom () {
