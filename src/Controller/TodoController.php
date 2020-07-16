@@ -162,7 +162,7 @@ class TodoController extends BaseController
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
 
             if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
-            $this->isGranted('ITEM_ENTER_USERROOM',$roomId, $user)) { //TODO: This should only be checked for userrooms
+                ($this->isGranted('ITEM_ENTER',$roomId)) and $roomItem->getType() == 'userroom') {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete', 'markpending', 'markinprogress', 'markdone');
                 
                 $statusArray = $roomItem->getExtraToDoStatusArray();
