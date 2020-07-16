@@ -149,9 +149,9 @@ class UserService
      * Links the given user with the given room's system group "All" and returns that group
      * @param \cs_user_item $user the user who shall be linked to the system group "All"
      * @param \cs_room_item $room the room whose system group "All" shall be used
-     * @return \cs_group_item|null the system group "All" to which the given user was added, or null if an error occurred
+     * @return \cs_label_item|null the system group "All" to which the given user was added, or null if an error occurred
      */
-    public function addUserToSystemGroupAll(\cs_user_item $user, \cs_room_item $room): ?\cs_group_item
+    public function addUserToSystemGroupAll(\cs_user_item $user, \cs_room_item $room): ?\cs_label_item
     {
         $groupManager = $this->legacyEnvironment->getLabelManager();
         $groupManager->setExactNameLimit('ALL');
