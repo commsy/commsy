@@ -337,6 +337,7 @@ class cs_environment {
             } else {
                $currentPortalId = $context_item->getContextID();
                if ($context_item->getType() === cs_userroom_item::ROOM_TYPE_USER) {
+                   // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
                    $currentPortalId = $context_item->getPortalId();
                }
                $manager = $this->getPortalManager();

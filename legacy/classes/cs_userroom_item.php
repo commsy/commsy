@@ -6,6 +6,7 @@ include_once('classes/cs_room_item.php');
  * implements a user room item
  *
  * a user room gets used inside project rooms for bilateral exchange between a single user and the room's moderators
+ * NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
  */
 class cs_userroom_item extends cs_room_item
 {
@@ -139,6 +140,7 @@ class cs_userroom_item extends cs_room_item
 
    function getPortalID(): ?int
    {
+      // NOTE: the context item of a user room is the hosting project room
       return $this->getContextItem()->getContextID();
    }
 

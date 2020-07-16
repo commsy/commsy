@@ -43,8 +43,10 @@ class UserroomService
         // TODO: use a facade/factory to create a new user room
 
         $roomManager = $this->legacyEnvironment->getUserroomManager();
-        $roomContext = $room->getItemID();
         $roomTitle = $user->getFullName() . ' – ' . $room->getTitle();
+
+        // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
+        $roomContext = $room->getItemID();
 
         /**
          * @var $newRoom \cs_userroom_item
