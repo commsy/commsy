@@ -53,7 +53,8 @@ class UserService
     }
 
     /**
-     * Creates a new user in the given context based on the given source user
+     * Creates a new user in the given room context based on the given source user
+     * NOTE: if the room context already contains a user with identical ID, that existing user is returned
      * @param \cs_user_item $sourceUser the user whose attributes shall be cloned to the new user
      * @param int $contextID the ID of the room which contains the created user
      * @param int $userStatus (optional) the user status of the created user; defaults to a regular user
@@ -68,7 +69,7 @@ class UserService
         \cs_user_item $creator = null
     ): ?\cs_user_item
     {
-        // TODO: use a facade/factory to create a new room
+        // TODO: use a facade/factory to create a new room (also compare with UserBuilder->addUserToRooms())
 
         if (!isset($sourceUser) || empty($contextID)) {
             return null;
@@ -99,7 +100,12 @@ class UserService
 
         // TODO: set modification date?
 
-        // TODO: do we need to check if the user id already exists? (compare with ContextController->requestAction())
+        // check if the user ID already exists within the room
+        $existingUser = $newUser->getRelatedUserItemInContext($contextID);
+        if ($existingUser) {
+            return $existingUser;
+        }
+
         $newUser->save();
 
         if (!$creator) {
