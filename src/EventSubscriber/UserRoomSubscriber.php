@@ -37,8 +37,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $room = $event->getRoom();
 
         // only create a user room if the feature has been enabled for this room (in room settings > extensions)
-        $shouldCreateUserroom = !empty($room->getUserRoom()) ? true : false;
-        if (!$shouldCreateUserroom) {
+        if (!$room->getShouldCreateUserRooms()) {
             return;
         }
 

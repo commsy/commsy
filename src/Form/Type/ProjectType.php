@@ -49,7 +49,7 @@ class ProjectType extends AbstractType
                     'style' => 'display: none;',
                 ]
             ])
-            ->add('userRoom', CheckboxType::class, [
+            ->add('createUserRooms', CheckboxType::class, [
                 'label' => 'User room',
                 'translation_domain' => 'settings',
                 'mapped' => false,
