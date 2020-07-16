@@ -112,13 +112,41 @@ class UserService
             $newUser->setCreatorID2ItemID();
         }
 
+        // link user with group "all"
+        $this->addUserToSystemGroupAll($newUser, $roomItem);
+
         // TODO: perform additional steps (similar to `ContextController->requestAction()`)
         /*
             * `$newPicture = $user->getPicture();`
-            * link user with group "all"
          */
 
         return $newUser;
+    }
+
+    /**
+     * Links the given user with the given room's system group "All" and returns that group
+     * @param \cs_user_item $user the user who shall be linked to the system group "All"
+     * @param \cs_room_item $room the room whose system group "All" shall be used
+     * @return \cs_group_item|null the system group "All" to which the given user was added, or null if an error occurred
+     */
+    public function addUserToSystemGroupAll($user, $room): ?\cs_group_item
+    {
+        $groupManager = $this->legacyEnvironment->getLabelManager();
+        $groupManager->setExactNameLimit('ALL');
+        $groupManager->setContextLimit($room->getItemID());
+        $groupManager->select();
+        $groupList = $groupManager->get();
+
+        /** @var \cs_group_item $group */
+        $systemGroupAll = $groupList->getFirst();
+
+        if ($systemGroupAll) {
+            $systemGroupAll->addMember($user);
+
+            return $systemGroupAll;
+        }
+
+        return null;
     }
 
     /**

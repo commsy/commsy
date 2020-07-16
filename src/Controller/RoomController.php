@@ -13,6 +13,7 @@ use App\Form\Type\ModerationSupportType;
 use App\Repository\UserRepository;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
+use App\Utils\UserService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -625,7 +626,7 @@ class RoomController extends Controller
      * }))
      * @Template()
      */
-    public function requestAction($roomId, $itemId, Request $request)
+    public function requestAction($roomId, $itemId, Request $request, UserService $userService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -661,6 +662,8 @@ class RoomController extends Controller
                 // At this point we can assume that the user has accepted agb and
                 // provided the correct code if necessary (or provided no code at all).
                 // We can now build a new user item and set the appropriate status
+
+                // TODO: try to make use of UserService->cloneUser() instead
 
                 $currentUserItem = $legacyEnvironment->getCurrentUserItem();
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
@@ -701,16 +704,7 @@ class RoomController extends Controller
                     $isRequest = false;
 
                     // link user with group "all"
-                    $groupManager = $legacyEnvironment->getLabelManager();
-                    $groupManager->setExactNameLimit('ALL');
-                    $groupManager->setContextLimit($roomItem->getItemID());
-                    $groupManager->select();
-                    $groupList = $groupManager->get();
-                    $group = $groupList->getFirst();
-
-                    if ($group) {
-                        $group->addMember($newUser);
-                    }
+                    $userService->addUserToSystemGroupAll($newUser, $roomItem);
                 }
 
                 if ($roomItem->getAGBStatus()) {

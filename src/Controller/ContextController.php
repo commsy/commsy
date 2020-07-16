@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
+use App\Utils\UserService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -76,6 +77,7 @@ class ContextController extends Controller
         $roomId,
         $itemId,
         Request $request,
+        UserService $userService,
         EventDispatcherInterface $eventDispatcher
     ) {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -119,6 +121,8 @@ class ContextController extends Controller
                 // At this point we can assume that the user has accepted agb and
                 // provided the correct code if necessary (or provided no code at all).
                 // We can now build a new user item and set the appropriate status
+
+                // TODO: try to make use of UserService->cloneUser() instead
 
                 $currentUserItem = $legacyEnvironment->getCurrentUserItem();
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
@@ -180,18 +184,7 @@ class ContextController extends Controller
                     $newUser->setCreatorID2ItemID();
 
                     // link user with group "all"
-                    $groupManager = $legacyEnvironment->getLabelManager();
-                    $groupManager->setExactNameLimit('ALL');
-                    $groupManager->setContextLimit($roomItem->getItemID());
-                    $groupManager->select();
-                    $groupList = $groupManager->get();
-
-                    /** @var \cs_group_item $group */
-                    $systemGroupAll = $groupList->getFirst();
-
-                    if ($systemGroupAll) {
-                        $systemGroupAll->addMember($newUser);
-                    }
+                    $userService->addUserToSystemGroupAll($newUser, $roomItem);
 
                     // save task
                     if ($isRequest) {
