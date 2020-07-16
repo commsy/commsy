@@ -1203,6 +1203,7 @@ class cs_context_item extends cs_item {
             and ( $this->isProjectRoom()
                   or $this->isCommunityRoom()
                   or $this->isGroupRoom()
+                  or $this->isUserroom()
                 )
             and $this->isClosed()
             and !$this->_environment->isArchiveMode()
