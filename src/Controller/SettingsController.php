@@ -213,8 +213,12 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function appearanceAction($roomId, Request $request, RoomService $roomService)
-    {
+    public function appearanceAction(
+        $roomId,
+        Request $request,
+        RoomService $roomService,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {

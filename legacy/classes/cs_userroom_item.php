@@ -287,7 +287,7 @@ class cs_userroom_item extends cs_room_item
       return $usageInfo;
    }
 
-   private function setUsageInfo(string $key, string $rubric, string $string)
+   private function setUsageInfo(string $key, string $rubric, ?string $string)
    {
       if ($this->_issetExtra($key)) {
          $usageInfo = $this->_getExtra($key);
