@@ -520,7 +520,7 @@ class RoomController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) or is_granted('ITEM_ENTER', itemId)") //TODO: mayView not working for Userroom just yet. After, ITEM_ENTER should be removed.
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, Request $request, LegacyMarkup $legacyMarkup)
     {
