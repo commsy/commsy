@@ -128,13 +128,8 @@ class ContextController extends Controller
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
                 $portalUserItem = $legacyEnvironment->getPortalUserItem();
 
-                if ($privateRoomUserItem) {
-                    $newUser = $privateRoomUserItem->cloneData();
-                    $newPicture = $privateRoomUserItem->getPicture();
-                } else {
-                    $newUser = $currentUserItem->cloneData();
-                    $newPicture = $currentUserItem->getPicture();
-                }
+                $sourceUser = $privateRoomUserItem ?? $currentUserItem;
+                $newUser = $sourceUser->cloneData();
 
                 // TODO: fix inconsistency!! privateRoomUser or portalUser as "account" user?
                 if ($portalUserItem) {
@@ -143,16 +138,7 @@ class ContextController extends Controller
 
                 $newUser->setContextID($roomItem->getItemID());
 
-                if (!empty($newPicture)) {
-                    $values = explode('_', $newPicture);
-                    $values[0] = 'cid' . $newUser->getContextID();
-
-                    $newPictureName = implode('_', $values);
-
-                    $discManager = $legacyEnvironment->getDiscManager();
-                    $discManager->copyImageFromRoomToRoom($newPicture, $newUser->getContextID());
-                    $newUser->setPicture($newPictureName);
-                }
+                $userService->cloneUserPicture($sourceUser, $newUser);
 
                 if ($form->has('description') && $formData['description']) {
                     $newUser->setUserComment($formData['description']);
