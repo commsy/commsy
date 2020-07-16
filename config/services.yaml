@@ -391,6 +391,10 @@ services:
         class: App\Form\DataTransformer\ProjectTransformer
         arguments: ['@commsy_legacy.environment']
 
+    commsy_legacy.transformer.userroom:
+        class: App\Form\DataTransformer\UserroomTransformer
+        arguments: ['@commsy_legacy.environment']
+
     commsy_legacy.transformer.portfolio:
         class: App\Form\DataTransformer\PortfolioTransformer
         arguments: ['@commsy_legacy.environment']

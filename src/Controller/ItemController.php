@@ -44,8 +44,8 @@ class ItemController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         /** @var \cs_item $item */
         $item = $itemService->getTypedItem($itemId);
-        
-        $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
+
+        $transformer = $this->get('commsy_legacy.transformer.' . $item->getItemType());
 
         $itemType = $item->getItemType();
         
