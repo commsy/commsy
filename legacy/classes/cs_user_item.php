@@ -1415,11 +1415,18 @@ class cs_user_item extends cs_item
             }
         }
 
+        // in case of portal user, delete own room
         if ($this->_environment->getCurrentPortalID() == $this->getContextID()) {
             $own_room = $this->getOwnRoom();
             if (isset($own_room)) {
                 $own_room->delete();
             }
+        }
+
+        // delete any associated user room
+        $userroom = $this->getLinkedUserroomItem();
+        if ($userroom) {
+            $userroom->delete();
         }
 
         $this->makeNoContactPerson();
