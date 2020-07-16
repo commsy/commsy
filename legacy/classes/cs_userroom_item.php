@@ -128,7 +128,7 @@ class cs_userroom_item extends cs_room_item
          return true;
       }
 
-      if ($this->getLinkedUserItemID() === $userItem->getItemID()) {
+      if ($this->getLinkedUserItemID() == $userItem->getItemID()) {
          return true;
       }
 
