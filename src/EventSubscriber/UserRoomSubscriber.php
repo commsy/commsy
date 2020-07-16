@@ -36,8 +36,8 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $user = $event->getUser();
         $room = $event->getRoom();
 
-        // only create a user room if the feature has been enabled for this room (in room settings > extensions)
-        if (!$room->getShouldCreateUserRooms()) {
+        // only create a user room if the feature has been enabled for this project room (in room settings > extensions)
+        if (!($room->isProjectRoom() && $room->getShouldCreateUserRooms())) {
             return;
         }
 
