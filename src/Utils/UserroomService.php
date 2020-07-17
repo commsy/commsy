@@ -43,7 +43,7 @@ class UserroomService
         // TODO: use a facade/factory to create a new user room
 
         $roomManager = $this->legacyEnvironment->getUserroomManager();
-        $roomTitle = $user->getFullName() . ' – ' . $room->getTitle();
+        $roomTitle = $this->defaultUserroomTitle($room, $user);
 
         // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
         $roomContext = $room->getItemID();
@@ -104,5 +104,39 @@ class UserroomService
             // create a user room within $room, and create its initial users (for $user as well as all $room moderators)
             $this->createUserroom($room, $user);
         }
+    }
+
+    /**
+     * Updates the room titles of all user rooms of the given project room so that they include the project room's current title
+     * @param \cs_room_item $room the project room whose user rooms shall be updated
+     */
+    public function renameUserroomsForRoom(\cs_room_item $room)
+    {
+        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($roomUsers as $user) {
+            $existingUserroom = $user->getLinkedUserroomItem();
+            if (!$existingUserroom) {
+                continue;
+            }
+
+            $userroomTitle = $this->defaultUserroomTitle($room, $user);
+            if ($existingUserroom->getTitle() !== $userroomTitle) {
+                $existingUserroom->setTitle($userroomTitle);
+                $existingUserroom->save();
+            }
+        }
+    }
+
+    /**
+     * Returns the default room title for a user room to be created for the given room and user
+     * @param \cs_room_item $room the project room that would host the created user room
+     * @param \cs_user_item $user the project room user who would be associated with the created user room
+     * @return string the user room's suggested default title
+     */
+    private function defaultUserroomTitle(\cs_room_item $room, \cs_user_item $user): string
+    {
+        $roomTitle = $user->getFullName() . ' – ' . $room->getTitle();
+
+        return $roomTitle;
     }
 }

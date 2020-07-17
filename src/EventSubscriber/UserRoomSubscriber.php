@@ -54,7 +54,11 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $user = $event->getUser();
         $room = $event->getRoom();
 
-        // TODO: delete the user room associated with $user
+        if (!$room->isProjectRoom()) {
+            return;
+        }
+
+        // NOTE: a user's user room will be deleted again via cs_user_item->delete()
     }
 
     public function onRoomSettingsChanged(RoomSettingsChangedEvent $event)
@@ -62,9 +66,18 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $oldRoom = $event->getOldRoom();
         $newRoom = $event->getNewRoom();
 
+        if (!$newRoom->isProjectRoom()) {
+            return;
+        }
+
         // if the 'CREATE_USER_ROOMS' setting was just enabled, create user rooms for all existing users
         if (!$oldRoom->getShouldCreateUserRooms() && $newRoom->getShouldCreateUserRooms()) {
             $this->userroomService->createUserroomsForRoomUsers($newRoom);
+        }
+
+        // if the room's title was just changed, rename all user rooms accordingly
+        if ($oldRoom->getTitle() !== $newRoom->getTitle()) {
+            $this->userroomService->renameUserroomsForRoom($newRoom);
         }
     }
 }
