@@ -86,4 +86,23 @@ class UserroomService
 
         return $newRoom;
     }
+
+    /**
+     * Creates new user rooms within the given project room for all users who don't have user rooms yet
+     * @param \cs_room_item $room the project room for which user rooms shall be created for all its existing users
+     */
+    public function createUserroomsForRoomUsers(\cs_room_item $room)
+    {
+        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($roomUsers as $user) {
+            // only create a user room if there isn't already a user room for this user
+            $existingUserroom = $user->getLinkedUserroomItem();
+            if ($existingUserroom) {
+                continue;
+            }
+
+            // create a user room within $room, and create its initial users (for $user as well as all $room moderators)
+            $this->createUserroom($room, $user);
+        }
+    }
 }

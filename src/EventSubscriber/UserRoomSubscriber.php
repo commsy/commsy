@@ -61,6 +61,15 @@ class UserRoomSubscriber implements EventSubscriberInterface
 
     public function onRoomSettingsChanged(RoomSettingsChangedEvent $event)
     {
-        // TODO: disable creation of user rooms if the `userRoom` setting was disabled
+        // TODO: figure out why this callback method gets called twice
+
+        $oldRoom = $event->getOldRoom();
+        $newRoom = $event->getNewRoom();
+
+        // if the 'CREATE_USER_ROOMS' setting was just enabled, create user rooms for all existing users
+        if (!$oldRoom->getShouldCreateUserRooms() && $newRoom->getShouldCreateUserRooms()) {
+            // TODO: as long as this subscriber gets called twice, below method will created duplicate user rooms & users!
+//            $this->userroomService->createUserroomsForRoomUsers($newRoom);
+        }
     }
 }
