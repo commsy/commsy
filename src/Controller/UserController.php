@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
 use App\Form\Model\Send;
 use App\Form\Type\Profile\AccountContactFormType;
@@ -27,6 +28,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class UserController
@@ -300,7 +302,10 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('MODERATOR')")
      */
-    public function changeStatusAction($roomId, Request $request)
+    public function changeStatusAction(
+        $roomId,
+        Request $request,
+        EventDispatcherInterface $eventDispatcher)
     {
         $room = $this->getRoom($roomId);
 
@@ -424,6 +429,9 @@ class UserController extends BaseController
                         $versionId = $user->getVersionID();
                         $readerManager->markRead($itemId, $versionId);
                         $noticedManager->markNoticed($itemId, $versionId);
+
+                        $event = new UserStatusChangedEvent($user);
+                        $eventDispatcher->dispatch($event);
                     }
 
                     if ($formData['inform_user']) {
