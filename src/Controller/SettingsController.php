@@ -76,7 +76,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             if (!$roomItem->isGroupRoom()) {
@@ -130,7 +130,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
             $roomItem->save();
@@ -190,7 +190,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
             $roomItem->save();
@@ -249,7 +249,7 @@ class SettingsController extends Controller
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
@@ -374,7 +374,7 @@ class SettingsController extends Controller
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $form->getData());
             $roomItem->save();
