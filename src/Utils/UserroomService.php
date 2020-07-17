@@ -68,14 +68,20 @@ class UserroomService
         $user->setLinkedUserroomItemID($newRoom->getItemID());
         $user->save();
 
-        // add room owner (i.e. a regular user for the project room user who's associated with this user room)
-        $userContext = $newRoom->getItemID();
-        $this->userService->cloneUser($user, $userContext);
-
         // add room moderators
+        $userContext = $newRoom->getItemID();
+        $moderatorIsRoomOwner = false;
         $roomModerators = $this->userService->getModeratorsForContext($roomContext);
         foreach ($roomModerators as $moderator) {
             $this->userService->cloneUser($moderator, $userContext, 3);
+            if (!$moderatorIsRoomOwner) {
+                $moderatorIsRoomOwner = ($moderator->getItemID() === $user->getItemID());
+            }
+        }
+
+        // add room owner (i.e. a regular user for the project room user who's associated with this user room)
+        if (!$moderatorIsRoomOwner) {
+            $this->userService->cloneUser($user, $userContext);
         }
 
         return $newRoom;
