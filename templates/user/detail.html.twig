@@ -296,7 +296,7 @@
                                                     </div>
                                                 </div>
                                                 <span>
-                                            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_project_list'}) }}">
+                                            <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_detail', 'moderatorIds': moderatorIds }) }}">
                                                 {{'send mail to group'|trans({}) }}
                                             </a>
                                             </span><br/>

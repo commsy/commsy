@@ -11,9 +11,12 @@ use App\Form\Type\SendType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\MailAssistant;
+use App\Utils\RoomService;
+use App\Utils\UserService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,15 +56,41 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}")
+     * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}")
      * @Template
      */
-    public function sendMailViaContactForm($roomId, $itemId, $originPath, Request $request, MailAssistant $mailAssistant)
+    public function sendMailViaContactForm(
+        $roomId,
+        $itemId,
+        $originPath,
+        Request $request,
+        MailAssistant $mailAssistant,
+        $moderatorIds = null,
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
+        $formData = null;
+        if(!is_null($item->getLinkedUserroomItem())){
+            $recipients = [];
+            array_push($recipients,$item->getFullName());
+            foreach($item->getLinkedUserroomItem()->getModeratorList() as $moderators){
+                array_push($recipients,$moderators->getFullName());
+            }
+            $message = $this->get('translator')->trans('This email has been sent by ... from userroom ...', [
+                '%sender_name%' => $legacyEnvironment->getEnvironment()->getCurrentUserItem()->getFullName(),
+                '%room_name%' => $item->getLinkedUserroomItem()->getTitle(),
+                '%recipients%' => implode(', ',$recipients),
+            ], 'mail');
+            $message = '<br><br>--<br>'.$message;
+            $search = ', ';
+            $replace = ' & ';
+            $message = strrev(implode(strrev($replace), explode(strrev($search), strrev($message), 2)));
+            $formData = ['message' => $message];
+        }
 
-        $form = $this->createForm(AccountContactFormType::class, null, [
+        $form = $this->createForm(AccountContactFormType::class, $formData, [
             'item' => $item,
             'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
                 'roomId' => $roomId,
@@ -78,7 +107,7 @@ class UserController extends BaseController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true);
+            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true, $moderatorIds, $userService);
             $this->get('mailer')->send($message);
 
             $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
@@ -495,10 +524,16 @@ class UserController extends BaseController
         $roomItem = $roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
 
+        $moderatorIds = null;
         $userRoomItem = null;
         if(!is_null($infoArray['user']->getLinkedUserroomItem())
             and $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())){
             $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
+            $moderators = $infoArray['user']->getLinkedUserroomItem()->getModeratorList();
+            $moderatorIds = [];
+            foreach($moderators as $moderator){
+                array_push($moderatorIds, $moderator->getItemId());
+            }
         }
 
         return array(
@@ -514,12 +549,13 @@ class UserController extends BaseController
             'nextItemId' => $infoArray['nextItemId'],
             'lastItemId' => $infoArray['lastItemId'],
             'readCount' => $infoArray['readCount'],
+            'moderatorIds' => implode(', ', $moderatorIds),
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
             'showRating' => false,
             'userRoomItem' => $userRoomItem,
-            'userRoomItemMemberCount' => count($userRoomItem == null ? [] : $userRoomItem->getUserList()),
+            'userRoomItemMemberCount' => $userRoomItem == null ? [] : count($userRoomItem->getUserList()) + count($userRoomItem->getModeratorList()),
             'userRoomLinksCount' => count($userRoomItem == null ? [] : $userRoomItem->getAllLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
