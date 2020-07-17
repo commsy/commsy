@@ -1303,6 +1303,9 @@ services:
     App\Event\RoomSettingsChangedEvent:
         autowire: false
 
+    App\Event\UserStatusChangedEvent:
+        autowire: false
+
     # Response
     App\Http\JsonDataResponse:
         autowire: false
