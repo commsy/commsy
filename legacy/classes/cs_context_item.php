@@ -197,6 +197,10 @@ class cs_context_item extends cs_item {
     return false;
   }
 
+  function isUserroom () {
+    return false;
+  }
+
   function isProjectRoom () {
     return false;
   }
@@ -1199,6 +1203,7 @@ class cs_context_item extends cs_item {
             and ( $this->isProjectRoom()
                   or $this->isCommunityRoom()
                   or $this->isGroupRoom()
+                  or $this->isUserroom()
                 )
             and $this->isClosed()
             and !$this->_environment->isArchiveMode()
@@ -4970,6 +4975,8 @@ class cs_context_item extends cs_item {
       $manager = $this->_environment->getProjectManager();
     } elseif ( $this->isGroupRoom() ) {
       $manager = $this->_environment->getGrouproomManager();
+    } elseif ( $this->isUserroom() ) {
+      $manager = $this->_environment->getUserRoomManager();
     } elseif ( $this->isCommunityRoom() ) {
       $manager = $this->_environment->getCommunityManager();
     } elseif ( $this->isPortal() ) {

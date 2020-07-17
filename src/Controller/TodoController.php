@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\TodoStatus\TodoStatusAction;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -111,7 +112,7 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'duedate_rev', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'duedate_rev', Request $request, LegacyEnvironment $legacyEnvironment)
     {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -122,6 +123,8 @@ class TodoController extends BaseController
 
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
+
+        $user = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -158,7 +161,8 @@ class TodoController extends BaseController
         foreach ($todos as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
 
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
+                ($this->isGranted('ITEM_ENTER',$roomId)) and $roomItem->getType() == 'userroom') {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete', 'markpending', 'markinprogress', 'markdone');
                 
                 $statusArray = $roomItem->getExtraToDoStatusArray();

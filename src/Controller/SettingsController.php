@@ -76,7 +76,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             if (!$roomItem->isGroupRoom()) {
@@ -130,7 +130,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
             $roomItem->save();
@@ -153,9 +153,12 @@ class SettingsController extends Controller
     public function additionalAction(
         $roomId,
         Request $request,
+        LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         EventDispatcherInterface $eventDispatcher
     ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -187,7 +190,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
             $roomItem->save();
@@ -196,7 +199,7 @@ class SettingsController extends Controller
             $eventDispatcher->dispatch($roomSettingsChangedEvent);
         }
 
-        $portalItem = $roomItem->getContextItem();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
         return [
             'form' => $form->createView(),
@@ -210,8 +213,12 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function appearanceAction($roomId, Request $request, RoomService $roomService)
-    {
+    public function appearanceAction(
+        $roomId,
+        Request $request,
+        RoomService $roomService,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -242,7 +249,7 @@ class SettingsController extends Controller
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
@@ -367,7 +374,7 @@ class SettingsController extends Controller
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = $roomItem;
+            $oldRoom = clone $roomItem;
 
             $formData = $form->getData();
             $formData['userRoom'] = $form->get('userRoom')->getViewData();

@@ -561,12 +561,12 @@ class UserController extends BaseController
         $roomItem = $roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
 
-        $showUserRoomIcon = false;
-        if($this->isGranted('ITEM_ENTER', $roomId, $infoArray['currentUser'])){
-            $showUserRoomIcon = true;
+        $userRoomItem = null;
+        if(!is_null($infoArray['user']->getLinkedUserroomItem())
+            and $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())){
+            $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
         }
 
-        $linkedUserRoom = $currentUser->getLinkedUserroomItem();
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -584,11 +584,9 @@ class UserController extends BaseController
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
             'showRating' => false,
-            'showUserRoomIcon' => $showUserRoomIcon,
-            'userRoomItemId' => $currentUser->getLinkedUserroomItemID(),
-            'userRoomItem' => $currentUser->getLinkedUserroomItem(),
-            'userRoomItemMemberCount' => count($linkedUserRoom == null ? [] : $linkedUserRoom->getUserList()),
-            'userRoomLinksCount' => count($linkedUserRoom == null ? [] : $linkedUserRoom->getLinkedItemIDArray()),
+            'userRoomItem' => $userRoomItem,
+            'userRoomItemMemberCount' => count($userRoomItem == null ? [] : $userRoomItem->getUserList()),
+            'userRoomLinksCount' => count($userRoomItem == null ? [] : $userRoomItem->getAllLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
             'currentUser' => $infoArray['currentUser'],
@@ -1391,6 +1389,7 @@ class UserController extends BaseController
 
         $readerList = [];
         $allowedActions = [];
+        $linkedUserRooms = [];
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
@@ -1398,11 +1397,10 @@ class UserController extends BaseController
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
             }
-        }
-
-        $showUserRoomIcon = false;
-        if($this->isGranted('ITEM_ENTER', $roomId, $currentUser)){
-            $showUserRoomIcon = true;
+            if(!is_null($item->getLinkedUserroomItem())
+            and $this->isGranted('ITEM_ENTER', $item->getLinkedUserroomItemID())){
+                $linkedUserRooms[strval($item->getItemID())] = $item->getLinkedUserroomItem();
+            }
         }
 
         return [
@@ -1411,8 +1409,7 @@ class UserController extends BaseController
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
-            'showUserRoomIcon' => $showUserRoomIcon,
-            'userRoomItemId' => $currentUser->getLinkedUserroomItemID(),
+            'linkedUserRooms' => $linkedUserRooms,
         ];
     }
 

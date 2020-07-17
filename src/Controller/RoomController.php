@@ -11,7 +11,9 @@ use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
 use App\Repository\UserRepository;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
+use App\Utils\UserService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -33,9 +35,13 @@ class RoomController extends Controller
      * })
      * @Template()
      */
-    public function homeAction($roomId, Request $request, LegacyMarkup $legacyMarkup)
+    public function homeAction(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        LegacyMarkup $legacyMarkup)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         // get room item
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -110,7 +116,7 @@ class RoomController extends Controller
         $serviceContact = [
             'show' => false,
         ];
-        $portalItem = $roomItem->getContextItem();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
         if ($portalItem->showServiceLink()) {
             $serviceContact['show'] = true;
             $serviceContact['link'] = $roomService->buildServiceLink();
@@ -622,7 +628,7 @@ class RoomController extends Controller
      * }))
      * @Template()
      */
-    public function requestAction($roomId, $itemId, Request $request)
+    public function requestAction($roomId, $itemId, Request $request, UserService $userService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -659,29 +665,17 @@ class RoomController extends Controller
                 // provided the correct code if necessary (or provided no code at all).
                 // We can now build a new user item and set the appropriate status
 
+                // TODO: try to make use of UserService->cloneUser() instead
+
                 $currentUserItem = $legacyEnvironment->getCurrentUserItem();
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
 
-                if ($privateRoomUserItem) {
-                    $newUser = $privateRoomUserItem->cloneData();
-                    $newPicture = $privateRoomUserItem->getPicture();
-                } else {
-                    $newUser = $currentUserItem->cloneData();
-                    $newPicture = $currentUserItem->getPicture();
-                }
+                $sourceUser = $privateRoomUserItem ?? $currentUserItem;
+                $newUser = $sourceUser->cloneData();
 
                 $newUser->setContextID($roomItem->getItemID());
 
-                if (!empty($newPicture)) {
-                    $values = explode('_', $newPicture);
-                    $values[0] = 'cid' . $newUser->getContextID();
-
-                    $newPictureName = implode('_', $values);
-
-                    $discManager = $legacyEnvironment->getDiscManager();
-                    $discManager->copyImageFromRoomToRoom($newPicture, $newUser->getContextID());
-                    $newUser->setPicture($newPictureName);
-                }
+                $userService->cloneUserPicture($sourceUser, $newUser);
 
                 if ($formData['description']) {
                     $newUser->setUserComment($formData['description']);
@@ -698,16 +692,7 @@ class RoomController extends Controller
                     $isRequest = false;
 
                     // link user with group "all"
-                    $groupManager = $legacyEnvironment->getLabelManager();
-                    $groupManager->setExactNameLimit('ALL');
-                    $groupManager->setContextLimit($roomItem->getItemID());
-                    $groupManager->select();
-                    $groupList = $groupManager->get();
-                    $group = $groupList->getFirst();
-
-                    if ($group) {
-                        $group->addMember($newUser);
-                    }
+                    $userService->addUserToSystemGroupAll($newUser, $roomItem);
                 }
 
                 if ($roomItem->getAGBStatus()) {
@@ -1054,9 +1039,9 @@ class RoomController extends Controller
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
 
-                // User room will only be set in project workspaces.
-                if(isset($context['type_sub']['userRoom'])){
-                    $legacyRoom->setUserRoom($context['type_sub']['userRoom']);
+                // user room will only be set in project workspaces
+                if (isset($context['type_sub']['createUserRooms'])) {
+                    $legacyRoom->setShouldCreateUserRooms($context['type_sub']['createUserRooms']);
                 }
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];

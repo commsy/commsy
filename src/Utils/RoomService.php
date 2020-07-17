@@ -72,7 +72,10 @@ class RoomService
         $this->calendarsService->createCalendar($newRoom, null, null, true);
 
         // TODO: setRoomContext?
-        // TODO: do we also need to "mark the room as edited"?, see `RoomController->createAction()`)
+
+        // mark the room as edited
+        $linkModifierItemManager = $this->legacyEnvironment->getLinkModifierItemManager();
+        $linkModifierItemManager->markEdited($newRoom->getItemID(), $modifier->getItemID());
 
         return $newRoom;
     }

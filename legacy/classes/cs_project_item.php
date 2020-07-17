@@ -755,16 +755,17 @@ class cs_project_item extends cs_room_item {
       return $retour;
    }
 
-    function getUserRoom () {
-        $retour = "0";
-        if ($this->_issetExtra('USER_ROOM')) {
-            $retour = $this->_getExtra('USER_ROOM');
+    function getShouldCreateUserRooms(): bool
+    {
+        if ($this->_issetExtra('CREATE_USER_ROOMS')) {
+            return $this->_getExtra('CREATE_USER_ROOMS');
         }
-        return $retour;
+        return false;
     }
 
-    function setUserRoom ($value) {
-        $this->_addExtra('USER_ROOM', $value);
+    function setShouldCreateUserRooms(bool $shouldCreate)
+    {
+        $this->_addExtra('CREATE_USER_ROOMS', $shouldCreate);
     }
 
    function getUsageInfoTextForRubricInForm($rubric){

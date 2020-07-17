@@ -122,7 +122,7 @@ class ExtensionSettingsType extends AbstractType
                 $roomItem = $options['room'];
 
                 if ($roomItem->isProjectRoom()) {
-                    $form->add('userRoom', CheckboxType::class, [
+                    $form->add('createUserRooms', CheckboxType::class, [
                         'label' => 'User room',
                         'translation_domain' => 'settings',
                         'required' => false,

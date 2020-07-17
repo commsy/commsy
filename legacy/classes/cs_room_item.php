@@ -1482,6 +1482,8 @@ class cs_room_item extends cs_context_item {
          $manager = $this->_environment->getProjectManager();
       } elseif ( $this->isGroupRoom() ) {
          $manager = $this->_environment->getGrouproomManager();
+      } elseif ( $this->isUserroom() ) {
+          $manager = $this->_environment->getUserRoomManager();
       } elseif ( $this->isCommunityRoom() ) {
          $manager = $this->_environment->getCommunityManager();
       } elseif ( $this->isPrivateRoom() ) {

@@ -6,6 +6,7 @@ include_once('classes/cs_room_item.php');
  * implements a user room item
  *
  * a user room gets used inside project rooms for bilateral exchange between a single user and the room's moderators
+ * NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
  */
 class cs_userroom_item extends cs_room_item
 {
@@ -39,19 +40,19 @@ class cs_userroom_item extends cs_room_item
 
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
       $this->_default_rubrics_array[1] = CS_TODO_TYPE;
-      $this->_default_rubrics_array[2] = CS_DATE_TYPE;
       $this->_default_rubrics_array[3] = CS_MATERIAL_TYPE;
       $this->_default_rubrics_array[4] = CS_DISCUSSION_TYPE;
       $this->_default_rubrics_array[5] = CS_USER_TYPE;
-      $this->_default_rubrics_array[6] = CS_TOPIC_TYPE;
 
       $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TODO_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_DATE_TYPE] = 'short';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'short';
       $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'short';
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
+   }
+
+   public function isUserroom () {
+      return true;
    }
 
    public function save($saveOther = true)
@@ -123,11 +124,33 @@ class cs_userroom_item extends cs_room_item
          return true;
       }
 
-      if ($this->getLinkedUserItemID() === $userItem->getItemID()) {
+      if ($this->getLinkedUserItemID() == $userItem->getItemID()) {
          return true;
       }
 
       return false;
+   }
+
+
+   // portal
+
+   function getPortalID(): ?int
+   {
+      // NOTE: the context item of a user room is the hosting project room
+      return $this->getContextItem()->getContextID();
+   }
+
+   function getPortalItem(): ?cs_portal_item
+   {
+      $portalId = $this->getPortalID();
+      if (empty($portalId)) {
+         return null;
+      }
+
+      $portalManager = $this->_environment->getPortalManager();
+      $portalItem = $portalManager->getItem($portalId);
+
+      return $portalItem;
    }
 
 
@@ -204,6 +227,83 @@ class cs_userroom_item extends cs_room_item
    public function setLinkedUserItemID($userId)
    {
       $this->_setExtra('USER_ITEM_ID', (int)$userId);
+   }
+
+
+   // usage info
+
+   public function getUsageInfoTextForRubric($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_TEXT', $rubric);
+   }
+
+   public function setUsageInfoTextForRubric($rubric, $string)
+   {
+      $this->setUsageInfo('USAGE_INFO_TEXT', $rubric, $string);
+   }
+
+   public function getUsageInfoTextForRubricForm($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_FORM_TEXT', $rubric);
+   }
+
+   public function setUsageInfoTextForRubricForm($rubric, $string)
+   {
+      $this->setUsageInfo('USAGE_INFO_FORM_TEXT', $rubric, $string);
+   }
+
+   public function getUsageInfoTextForRubricInForm($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_TEXT', $rubric);
+   }
+
+   public function getUsageInfoTextForRubricFormInForm($rubric)
+   {
+      return $this->getUsageInfo('USAGE_INFO_FORM_TEXT', $rubric);
+   }
+
+   private function getUsageInfo(string $key, string $rubric): string
+   {
+      if ($this->_issetExtra($key)) {
+         $usageInfo = $this->_getExtra($key);
+         if (empty($usageInfo)) {
+            $usageInfo = array();
+         } elseif (!is_array($usageInfo)) {
+            $usageInfo = XML2Array($usageInfo);
+         }
+      } else {
+         $usageInfo = array();
+      }
+      $usageInfoKey = mb_strtoupper($rubric, 'UTF-8');
+      if (isset($usageInfo[$usageInfoKey]) && !empty($usageInfo[$usageInfoKey])) {
+         $usageInfo = $usageInfo[$usageInfoKey];
+      } else {
+         $usageInfo = '';
+      }
+      return $usageInfo;
+   }
+
+   private function setUsageInfo(string $key, string $rubric, ?string $string)
+   {
+      if ($this->_issetExtra($key)) {
+         $usageInfo = $this->_getExtra($key);
+         if (empty($usageInfo)) {
+            $usageInfo = array();
+         } elseif (!is_array($usageInfo)) {
+            $usageInfo = XML2Array($usageInfo);
+         }
+      } else {
+         $usageInfo = array();
+      }
+      $usageInfoKey = mb_strtoupper($rubric, 'UTF-8');
+      if (!empty($string)) {
+         $usageInfo[$usageInfoKey] = $string;
+      } else {
+         if (isset($usageInfo[$usageInfoKey])) {
+            unset($usageInfo[$usageInfoKey]);
+         }
+      }
+      $this->_addExtra($key, $usageInfo);
    }
 }
 ?>

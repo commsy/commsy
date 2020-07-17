@@ -243,8 +243,8 @@ class ProjectController extends Controller
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
 
-                if (isset($context['userRoom'])) {
-                    $legacyRoom->setUserRoom($context['userRoom']);
+                if (isset($context['createUserRooms'])) {
+                    $legacyRoom->setShouldCreateUserRooms($context['createUserRooms']);
                 }
 
 

@@ -55,7 +55,7 @@ class ProjectType extends AbstractType
                 'help' => 'Community rooms tip',
                 'translation_domain' => 'settings',
             ])
-            ->add('userRoom', CheckboxType::class, [
+            ->add('createUserRooms', CheckboxType::class, [
                 'label' => 'User room',
                 'translation_domain' => 'settings',
                 'required' => false,

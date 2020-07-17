@@ -45,8 +45,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
+# install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
 RUN set -eux; \
-	composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
+	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
@@ -66,10 +67,6 @@ RUN { \
         echo 'xdebug.default_enabled=0'; \
         echo 'xdebug.remote_enable=1'; \
         echo 'xdebug.remote_connect_back=0'; \
-        echo 'xdebug.profiler_enabled=1'; \
-        echo 'xdebug.profiler_enable_trigger=1'; \
-        echo 'xdebug.profiler_output_name=xdebug.out.%t'; \
-        echo 'xdebug.profiler_output_dir=/tmp'; \
     } > /usr/local/etc/php/conf.d/xdebug.ini
 
 # wkhtmltopdf
@@ -92,20 +89,37 @@ WORKDIR /var/www/html
 # build for production
 ARG APP_ENV=prod
 
+COPY .env ./
+
 # prevent the reinstallation of vendors at every changes in the source code
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --no-suggest; \
+	composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest; \
 	composer clear-cache
 
-COPY . ./
+# prevent the reinstallation of node modules at every changes in the source code
+COPY webpack.config.js tsconfig.json package.json yarn.lock ./
+COPY assets assets/
+RUN set -eux; \
+	yarn install; \
+	yarn build; \
+	rm -r assets; \
+	rm tsconfig.json
+
+# copy only specifically what we need
+COPY bin bin/
+COPY config config/
+COPY legacy legacy/
+COPY public public/
+COPY src src/
+COPY templates templates/
+COPY translations translations/
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
-#VOLUME /srv/api/var
 
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint

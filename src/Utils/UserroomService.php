@@ -43,8 +43,10 @@ class UserroomService
         // TODO: use a facade/factory to create a new user room
 
         $roomManager = $this->legacyEnvironment->getUserroomManager();
-        $roomContext = $room->getItemID();
         $roomTitle = $user->getFullName() . ' – ' . $room->getTitle();
+
+        // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
+        $roomContext = $room->getItemID();
 
         /**
          * @var $newRoom \cs_userroom_item
@@ -66,16 +68,41 @@ class UserroomService
         $user->setLinkedUserroomItemID($newRoom->getItemID());
         $user->save();
 
-        // add room owner (i.e. a regular user for the project room user who's associated with this user room)
-        $userContext = $newRoom->getItemID();
-        $this->userService->cloneUser($user, $userContext);
-
         // add room moderators
+        $userContext = $newRoom->getItemID();
+        $moderatorIsRoomOwner = false;
         $roomModerators = $this->userService->getModeratorsForContext($roomContext);
         foreach ($roomModerators as $moderator) {
             $this->userService->cloneUser($moderator, $userContext, 3);
+            if (!$moderatorIsRoomOwner) {
+                $moderatorIsRoomOwner = ($moderator->getItemID() === $user->getItemID());
+            }
+        }
+
+        // add room owner (i.e. a regular user for the project room user who's associated with this user room)
+        if (!$moderatorIsRoomOwner) {
+            $this->userService->cloneUser($user, $userContext);
         }
 
         return $newRoom;
+    }
+
+    /**
+     * Creates new user rooms within the given project room for all users who don't have user rooms yet
+     * @param \cs_room_item $room the project room for which user rooms shall be created for all its existing users
+     */
+    public function createUserroomsForRoomUsers(\cs_room_item $room)
+    {
+        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($roomUsers as $user) {
+            // only create a user room if there isn't already a user room for this user
+            $existingUserroom = $user->getLinkedUserroomItem();
+            if ($existingUserroom) {
+                continue;
+            }
+
+            // create a user room within $room, and create its initial users (for $user as well as all $room moderators)
+            $this->createUserroom($room, $user);
+        }
     }
 }

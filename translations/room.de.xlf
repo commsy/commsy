@@ -250,6 +250,10 @@
                 <source>grouproom</source>
                 <target>Gruppenraum</target>
             </trans-unit>
+            <trans-unit id="userroom">
+                <source>userroom</source>
+                <target>Personenraum</target>
+            </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
                 <target>Sprache</target>
