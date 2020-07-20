@@ -153,7 +153,7 @@ class UserroomService
             // get the project room user who's associated with this user room
             $projectUserRelatedToUserroom = $userroom->getLinkedUserItem();
             // is this user room the $changedUser's own roon?
-            $userroomBelongsToChangedUser = $projectUserRelatedToUserroom->getItemID() === $changedUser->getItemID();
+            $userroomBelongsToChangedUser = $projectUserRelatedToUserroom !== null && $projectUserRelatedToUserroom->getItemID() === $changedUser->getItemID();
 
             // does this user room contain a user who corresponds to (i.e., represents) the $changedUser?
             $changedUserHasRelatedUserroomUser = false;
@@ -165,7 +165,10 @@ class UserroomService
                 $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
 
                 // act on the user room owner
-                $ownsUserroom = $projectUserRelatedToUserroomUser->getItemID() === $projectUserRelatedToUserroom->getItemID();
+                $ownsUserroom = false;
+                if ($projectUserRelatedToUserroomUser && $projectUserRelatedToUserroom) {
+                    $ownsUserroom = $projectUserRelatedToUserroomUser->getItemID() === $projectUserRelatedToUserroom->getItemID();
+                }
                 if ($ownsUserroom) {
                     // for the user room of the $changedUser, update the user room owner's status
                     if ($userroomBelongsToChangedUser) {
@@ -174,7 +177,7 @@ class UserroomService
                     }
                 }
 
-                $userroomUserIsRelatedToChangedUser = $projectUserRelatedToUserroomUser->getItemID() === $changedUser->getItemID();
+                $userroomUserIsRelatedToChangedUser = $projectUserRelatedToUserroomUser !== null && $projectUserRelatedToUserroomUser->getItemID() === $changedUser->getItemID();
                 if ($userroomUserIsRelatedToChangedUser) {
                     $changedUserHasRelatedUserroomUser = true;
 
