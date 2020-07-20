@@ -136,7 +136,7 @@
             </trans-unit>
             <trans-unit id="userPaste">
                 <source>paste</source>
-                <target>Paste</target>
+                <target>Insert clipboard into userrooms</target>
             </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>

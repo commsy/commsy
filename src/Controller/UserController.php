@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Action\Copy\InsertAction;
 use App\Entity\User;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
@@ -1372,9 +1373,9 @@ class UserController extends BaseController
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'xhrcopy', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insert', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'xhrcopy'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insert'];
             }
             if(!is_null($item->getLinkedUserroomItem())
             and $this->isGranted('ITEM_ENTER', $item->getLinkedUserroomItemID())){
@@ -1393,16 +1394,23 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/user/xhrCopy")
+     * @Route("/room/{roomId}/user/insert")
      * @Template()
      */
-    public function xhrCopyAction($roomId, Request $request)
+    public function insertAction($roomId, Request $request, RoomService $roomService)
     {
         $room = $this->getRoom($roomId);
-        $items = $this->getItemsForActionRequest($room, $request);
+        $copyItems = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(CopyAction::class);
-        return $action->execute($room, $items);
+        foreach($copyItems as $copyItem){
+            $userroom = $copyItem->getLinkedUserroomItem();
+            if(!is_null($userroom)){
+                $response = $this->forward('App\Controller\CopyController::xhrInsertAction',[
+                    'roomId' => $userroom->getItemID(),
+                ]);
+            }
+        }
+        return $response;
     }
 
     /**
