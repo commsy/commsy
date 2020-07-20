@@ -7,6 +7,7 @@ use App\Form\Type\ProjectType;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Utils\RoomService;
+use App\Utils\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -181,6 +182,7 @@ class ProjectController extends Controller
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
+        UserService $userService,
         EventDispatcherInterface $eventDispatcher
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -277,8 +279,11 @@ class ProjectController extends Controller
                 $legacyRoom->setLanguage($room->getLanguage());
                 $legacyRoom->save();
 
-                $event = new UserJoinedRoomEvent($legacyRoom->getCreatorItem(), $legacyRoom);
-                $eventDispatcher->dispatch($event);
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                foreach ($legacyRoomUsers as $user) {
+                    $event = new UserJoinedRoomEvent($user, $legacyRoom);
+                    $eventDispatcher->dispatch($event);
+                }
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
