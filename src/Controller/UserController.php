@@ -77,9 +77,9 @@ class UserController extends BaseController
         $formData = null;
         if(!is_null($item->getLinkedUserroomItem())){
             $recipients = [];
-            array_push($recipients,$item->getFullName());
-            foreach($item->getLinkedUserroomItem()->getModeratorList() as $moderators){
-                array_push($recipients,$moderators->getFullName());
+            $recipients[$item->getFullName()] = $item->getFullName();
+            foreach ($item->getLinkedUserroomItem()->getModeratorList() as $moderator) {
+                $recipients[$moderator->getFullName()] = $moderator->getFullName();
             }
             $message = $this->get('translator')->trans('This email has been sent by ... from userroom ...', [
                 '%sender_name%' => $legacyEnvironment->getEnvironment()->getCurrentUserItem()->getFullName(),
@@ -629,7 +629,7 @@ class UserController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => false,
             'userRoomItem' => $userRoomItem,
-            'userRoomItemMemberCount' => $userRoomItem == null ? [] : count($userRoomItem->getUserList()) + count($userRoomItem->getModeratorList()),
+            'userRoomItemMemberCount' => $userRoomItem == null ? [] : $userRoomItem->getUserList()->getCount(),
             'userRoomLinksCount' => count($userRoomItem == null ? [] : $userRoomItem->getAllLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],

@@ -107,9 +107,9 @@ class MailAssistant
     public function getSwiftMessageContactForm(
         FormInterface $form,
         $item,
-        UserService $userService,
         $forceBCCMail = false,
-        $moderatorIds = null): \Swift_Message
+        $moderatorIds = null,
+        UserService $userService): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
