@@ -134,6 +134,10 @@
                 <source>send email</source>
                 <target>E-Mail senden</target>
             </trans-unit>
+            <trans-unit id="userPaste">
+                <source>paste</source>
+                <target>Einfügen</target>
+            </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
                 <target>Kennung(en) löschen</target>
