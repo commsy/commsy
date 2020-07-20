@@ -617,12 +617,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    commsy.subscriber.userroom:
-        class: App\EventSubscriber\UserRoomSubscriber
-        arguments: [ "@commsy_legacy.userroom_service" ]
-        tags:
-            - { name: kernel.event_subscriber }
-
     # Search
     commsy.search.manager:
         alias: App\Search\SearchManager
@@ -1307,6 +1301,9 @@ services:
         autowire: false
 
     App\Event\RoomSettingsChangedEvent:
+        autowire: false
+
+    App\Event\UserStatusChangedEvent:
         autowire: false
 
     # Response

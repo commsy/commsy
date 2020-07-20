@@ -14,6 +14,10 @@
                 <source>This email has been sent by ... from group room ...</source>
                 <target>This email has been sent by %sender_name% from group workspace "%room_name%".</target>
             </trans-unit>
+            <trans-unit id="mailFromUserRoom">
+                <source>This email has been sent by ... from userroom ...</source>
+                <target>This email has been sent by %sender_name% from the userroom "%room_name%" to %recipients%.</target>
+            </trans-unit>
             <trans-unit id="mailFromCommunityRoom">
                 <source>This email has been sent by ... from community room ...</source>
                 <target>This email has been sent by %sender_name% from community workspace "%room_name%".</target>
