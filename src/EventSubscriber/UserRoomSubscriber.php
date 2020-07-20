@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use App\Event\RoomSettingsChangedEvent;
 use App\Event\UserJoinedRoomEvent;
 use App\Event\UserLeftRoomEvent;
+use App\Event\UserStatusChangedEvent;
 use App\Utils\UserroomService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -25,6 +26,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         return [
             UserJoinedRoomEvent::class => 'onUserJoinedRoom',
             UserLeftRoomEvent::class => 'onUserLeftRoom',
+            UserStatusChangedEvent::class => 'onUserStatusChanged',
             RoomSettingsChangedEvent::class => 'onRoomSettingsChanged',
         ];
     }
@@ -59,6 +61,25 @@ class UserRoomSubscriber implements EventSubscriberInterface
         }
 
         // NOTE: a user's user room will be deleted again via cs_user_item->delete()
+    }
+
+    public function onUserStatusChanged(UserStatusChangedEvent $event)
+    {
+        $user = $event->getUser();
+        $room = $user->getContextItem();
+
+        if (!$room->isProjectRoom()) {
+            return;
+        }
+
+        // a user room contains a single regular user (who "owns" this user room), plus one or more moderators;
+        // thus we ignore the status change unless the status was changed to a regular user (2) or moderator (3)
+        $userStatus = $user->getStatus();
+        if ($userStatus !== 2 && $userStatus !== 3) {
+            return;
+        }
+
+        $this->userroomService->changeUserStatusInUserroomsForRoom($room, $user);
     }
 
     public function onRoomSettingsChanged(RoomSettingsChangedEvent $event)
