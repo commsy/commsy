@@ -562,7 +562,7 @@ class UserController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => false,
             'userRoomItem' => $userRoomItem,
-            'userRoomItemMemberCount' => $userRoomItem == null ? [] : count($userRoomItem->getUserList()) + count($userRoomItem->getModeratorList()),
+            'userRoomItemMemberCount' => $userRoomItem == null ? [] : $userRoomItem->getUserList()->getCount(),
             'userRoomLinksCount' => count($userRoomItem == null ? [] : $userRoomItem->getAllLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
