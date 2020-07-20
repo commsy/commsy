@@ -73,7 +73,10 @@ class UserroomService
         $moderatorIsRoomOwner = false;
         $roomModerators = $this->userService->getModeratorsForContext($roomContext);
         foreach ($roomModerators as $moderator) {
-            $this->userService->cloneUser($moderator, $userContext, 3);
+            $userroomModerator = $this->userService->cloneUser($moderator, $userContext, 3);
+            $userroomModerator->setLinkedProjectUserItemID($moderator->getItemID());
+            $userroomModerator->save();
+
             if (!$moderatorIsRoomOwner) {
                 $moderatorIsRoomOwner = ($moderator->getItemID() === $user->getItemID());
             }
@@ -81,7 +84,9 @@ class UserroomService
 
         // add room owner (i.e. a regular user for the project room user who's associated with this user room)
         if (!$moderatorIsRoomOwner) {
-            $this->userService->cloneUser($user, $userContext);
+            $userroomOwner = $this->userService->cloneUser($user, $userContext);
+            $userroomOwner->setLinkedProjectUserItemID($user->getItemID());
+            $userroomOwner->save();
         }
 
         return $newRoom;
@@ -123,6 +128,69 @@ class UserroomService
             if ($existingUserroom->getTitle() !== $userroomTitle) {
                 $existingUserroom->setTitle($userroomTitle);
                 $existingUserroom->save();
+            }
+        }
+    }
+
+    /**
+     * Updates the user status of the given user for its related users in all user rooms of the given project room
+     * @param \cs_room_item $room the project room whose user rooms shall be updated
+     * @param \cs_user_item $changedUser the project room user whose related user room users shall be updated
+     */
+    public function changeUserStatusInUserroomsForRoom($room, $changedUser)
+    {
+        $changedUserStatus = $changedUser->getStatus();
+
+        // for all project room users with user rooms, update their user room users
+        $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($projectUsers as $projectUser) {
+            // NOTE: a user room contains a single regular user (who "owns" this user room), plus one or more moderators
+            $userroom = $projectUser->getLinkedUserroomItem();
+            if (!$userroom) {
+                continue;
+            }
+
+            // get the project room user who's associated with this user room
+            $projectUserRelatedToUserroom = $userroom->getLinkedUserItem();
+            // is this user room the $changedUser's own roon?
+            $userroomBelongsToChangedUser = $projectUserRelatedToUserroom->getItemID() === $changedUser->getItemID();
+
+            // does this user room contain a user who corresponds to (i.e., represents) the $changedUser?
+            $changedUserHasRelatedUserroomUser = false;
+
+            $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
+            foreach ($userroomUsers as $userroomUser) {
+
+                // get the project room user who corresponds to (i.e., represents) this user room user
+                $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
+
+                // act on the user room owner
+                $ownsUserroom = $projectUserRelatedToUserroomUser->getItemID() === $projectUserRelatedToUserroom->getItemID();
+                if ($ownsUserroom) {
+                    // for the user room of the $changedUser, update the user room owner's status
+                    if ($userroomBelongsToChangedUser) {
+                        $userroomUser->setStatus($changedUserStatus);
+                        $userroomUser->save();
+                    }
+                }
+
+                $userroomUserIsRelatedToChangedUser = $projectUserRelatedToUserroomUser->getItemID() === $changedUser->getItemID();
+                if ($userroomUserIsRelatedToChangedUser) {
+                    $changedUserHasRelatedUserroomUser = true;
+
+                    // remove this user room moderator if the project room user who's related to this user room moderator
+                    // isn't a project room moderator anymore
+                    if (!$ownsUserroom && $userroomUser->isModerator() && !$changedUser->isModerator()) {
+                        $userroomUser->delete();
+                    }
+                }
+            }
+
+            // in case the $changedUser is a moderator, add a corresponding user room moderator if there isn't already one
+            if ($changedUser->isModerator() && !$changedUserHasRelatedUserroomUser) {
+                $userroomModerator = $this->userService->cloneUser($changedUser, $userroom->getItemID(), 3);
+                $userroomModerator->setLinkedProjectUserItemID($changedUser->getItemID());
+                $userroomModerator->save();
             }
         }
     }

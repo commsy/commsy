@@ -904,7 +904,7 @@ class RoomController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
-    public function createAction($roomId, Request $request, EventDispatcherInterface $eventDispatcher)
+    public function createAction($roomId, Request $request, UserService $userService, EventDispatcherInterface $eventDispatcher)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
@@ -1072,8 +1072,11 @@ class RoomController extends Controller
                 $legacyRoom->setLanguage($context['language']);
                 $legacyRoom->save();
 
-                $event = new UserJoinedRoomEvent($legacyRoom->getCreatorItem(), $legacyRoom);
-                $eventDispatcher->dispatch($event);
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                foreach ($legacyRoomUsers as $user) {
+                    $event = new UserJoinedRoomEvent($user, $legacyRoom);
+                    $eventDispatcher->dispatch($event);
+                }
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
