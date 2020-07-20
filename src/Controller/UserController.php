@@ -532,13 +532,12 @@ class UserController extends BaseController
         $roomItem = $roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
 
-        $moderatorIds = null;
+        $moderatorIds = [];
         $userRoomItem = null;
         if(!is_null($infoArray['user']->getLinkedUserroomItem())
             and $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())){
             $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
             $moderators = $infoArray['user']->getLinkedUserroomItem()->getModeratorList();
-            $moderatorIds = [];
             foreach($moderators as $moderator){
                 array_push($moderatorIds, $moderator->getItemId());
             }
