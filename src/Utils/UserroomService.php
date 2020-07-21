@@ -215,11 +215,12 @@ class UserroomService
             $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
             foreach ($userroomUsers as $userroomUser) {
 
-                // get the project room user who corresponds to (i.e., represents) this user room user
-                $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
+                // get the ID of the project room user who corresponds to (i.e., represents) this user room user
+                // NOTE: we cannot use `cs_user_item->getLinkedProjectUserItem()` since that only returns non-deleted items
+                $projectUserIdRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItemID();
 
                 // remove this user room user if the project room user who's related to this user room user was deleted
-                $userroomUserIsRelatedToDeletedUser = $projectUserRelatedToUserroomUser->getItemID() === $deletedUser->getItemID();
+                $userroomUserIsRelatedToDeletedUser = !empty($projectUserIdRelatedToUserroomUser) && $projectUserIdRelatedToUserroomUser == $deletedUser->getItemID();
                 if ($userroomUserIsRelatedToDeletedUser) {
                     $userroomUser->delete();
                 }
