@@ -129,6 +129,7 @@ class ExtensionSettingsType extends AbstractType
                         'label_attr' => [
                             'class' => 'uk-form-label',
                         ],
+                        'help' => 'User room tooltip',
                     ]);
                 }
             })

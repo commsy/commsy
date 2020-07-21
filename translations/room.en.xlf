@@ -130,6 +130,10 @@
                 <source>enter room</source>
                 <target>Enter workspace</target>
             </trans-unit>
+            <trans-unit id="Enter user room">
+                <source>Enter user room</source>
+                <target>Enter personal workspace</target>
+            </trans-unit>
             <trans-unit id="room_no_access">
                 <source>no access</source>
                 <target>No access</target>
@@ -252,7 +256,7 @@
             </trans-unit>
             <trans-unit id="userroom">
                 <source>userroom</source>
-                <target>User workspace</target>
+                <target>Personal workspace</target>
             </trans-unit>
             <trans-unit id="language">
                 <source>language</source>

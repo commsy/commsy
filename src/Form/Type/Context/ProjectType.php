@@ -62,6 +62,7 @@ class ProjectType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'help' => 'User room tooltip',
             ])
         ;
     }
