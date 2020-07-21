@@ -328,7 +328,7 @@
             </trans-unit>
             <trans-unit id="user_room">
                 <source>User room</source>
-                <target>Create personal workspaces? </target>
+                <target>Create personal workspaces?</target>
             </trans-unit>
             <trans-unit id="user_room_heading">
                 <source>User room heading</source>
