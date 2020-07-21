@@ -1306,6 +1306,9 @@ services:
     App\Event\UserStatusChangedEvent:
         autowire: false
 
+    App\Event\AccountChangedEvent:
+        autowire: false
+
     # Response
     App\Http\JsonDataResponse:
         autowire: false
