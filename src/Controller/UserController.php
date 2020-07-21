@@ -306,8 +306,9 @@ class UserController extends BaseController
     public function changeStatusAction(
         $roomId,
         Request $request,
-        EventDispatcherInterface $eventDispatcher)
-    {
+        UserService $userService,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $room = $this->getRoom($roomId);
 
         $formData = [];
@@ -335,7 +336,6 @@ class UserController extends BaseController
         $form->handleRequest($request);
 
         // get all affected user
-        $userService = $this->get('commsy_legacy.user_service');
         $users = [];
         if (isset($formData['userIds'])) {
             foreach ($formData['userIds'] as $userId) {
