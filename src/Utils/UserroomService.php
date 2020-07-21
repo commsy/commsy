@@ -153,7 +153,7 @@ class UserroomService
             // get the project room user who's associated with this user room
             $projectUserRelatedToUserroom = $userroom->getLinkedUserItem();
             // is this user room the $changedUser's own roon?
-            $userroomBelongsToChangedUser = $projectUserRelatedToUserroom->getItemID() === $changedUser->getItemID();
+            $userroomBelongsToChangedUser = $projectUserRelatedToUserroom !== null && $projectUserRelatedToUserroom->getItemID() === $changedUser->getItemID();
 
             // does this user room contain a user who corresponds to (i.e., represents) the $changedUser?
             $changedUserHasRelatedUserroomUser = false;
@@ -165,7 +165,10 @@ class UserroomService
                 $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
 
                 // act on the user room owner
-                $ownsUserroom = $projectUserRelatedToUserroomUser->getItemID() === $projectUserRelatedToUserroom->getItemID();
+                $ownsUserroom = false;
+                if ($projectUserRelatedToUserroomUser && $projectUserRelatedToUserroom) {
+                    $ownsUserroom = $projectUserRelatedToUserroomUser->getItemID() === $projectUserRelatedToUserroom->getItemID();
+                }
                 if ($ownsUserroom) {
                     // for the user room of the $changedUser, update the user room owner's status
                     if ($userroomBelongsToChangedUser) {
@@ -174,7 +177,7 @@ class UserroomService
                     }
                 }
 
-                $userroomUserIsRelatedToChangedUser = $projectUserRelatedToUserroomUser->getItemID() === $changedUser->getItemID();
+                $userroomUserIsRelatedToChangedUser = $projectUserRelatedToUserroomUser !== null && $projectUserRelatedToUserroomUser->getItemID() === $changedUser->getItemID();
                 if ($userroomUserIsRelatedToChangedUser) {
                     $changedUserHasRelatedUserroomUser = true;
 
@@ -191,6 +194,35 @@ class UserroomService
                 $userroomModerator = $this->userService->cloneUser($changedUser, $userroom->getItemID(), 3);
                 $userroomModerator->setLinkedProjectUserItemID($changedUser->getItemID());
                 $userroomModerator->save();
+            }
+        }
+    }
+
+    /**
+     * Removes all users related to the given user from all user rooms of the given project room
+     * @param \cs_room_item $room the project room whose associated user rooms shall be purged
+     * @param \cs_user_item $deletedUser the project room user whose related user room users shall be deleted
+     */
+    public function removeUserFromUserroomsForRoom(\cs_room_item $room, \cs_user_item $deletedUser)
+    {
+        $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($projectUsers as $projectUser) {
+            $userroom = $projectUser->getLinkedUserroomItem();
+            if (!$userroom) {
+                continue;
+            }
+
+            $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
+            foreach ($userroomUsers as $userroomUser) {
+
+                // get the project room user who corresponds to (i.e., represents) this user room user
+                $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
+
+                // remove this user room user if the project room user who's related to this user room user was deleted
+                $userroomUserIsRelatedToDeletedUser = $projectUserRelatedToUserroomUser->getItemID() === $deletedUser->getItemID();
+                if ($userroomUserIsRelatedToDeletedUser) {
+                    $userroomUser->delete();
+                }
             }
         }
     }

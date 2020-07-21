@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
 use App\Form\Type\Profile\AccountContactFormType;
@@ -333,7 +334,6 @@ class UserController extends BaseController
         $form->handleRequest($request);
 
         // get all affected user
-        $userService = $this->get('commsy_legacy.user_service');
         $users = [];
         if (isset($formData['userIds'])) {
             foreach ($formData['userIds'] as $userId) {
@@ -448,8 +448,13 @@ class UserController extends BaseController
                         $readerManager->markRead($itemId, $versionId);
                         $noticedManager->markNoticed($itemId, $versionId);
 
-                        $event = new UserStatusChangedEvent($user);
-                        $eventDispatcher->dispatch($event);
+                        if ($user->isDeleted()) {
+                            $event = new UserLeftRoomEvent($user, $room);
+                            $eventDispatcher->dispatch($event);
+                        } else {
+                            $event = new UserStatusChangedEvent($user);
+                            $eventDispatcher->dispatch($event);
+                        }
                     }
 
                     if ($formData['inform_user']) {

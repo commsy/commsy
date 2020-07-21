@@ -56,11 +56,13 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $user = $event->getUser();
         $room = $event->getRoom();
 
-        if (!$room->isProjectRoom()) {
+        if (!$room->isProjectRoom() || !$user->isDeleted()) {
             return;
         }
 
         // NOTE: a user's user room will be deleted again via cs_user_item->delete()
+
+        $this->userroomService->removeUserFromUserroomsForRoom($room, $user);
     }
 
     public function onUserStatusChanged(UserStatusChangedEvent $event)
