@@ -130,6 +130,10 @@
                 <source>enter room</source>
                 <target>Raum betreten</target>
             </trans-unit>
+            <trans-unit id="Enter user room">
+                <source>Enter user room</source>
+                <target>Personenraum betreten</target>
+            </trans-unit>
             <trans-unit id="room_no_access">
                 <source>no access</source>
                 <target>Kein Zugang</target>
