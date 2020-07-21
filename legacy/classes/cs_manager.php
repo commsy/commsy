@@ -784,29 +784,29 @@ class cs_manager {
       unset($item);
    }
 
-  /** delete a commsy item
-    * this method deletes a commsy item
-    *
-    * @param integer item_id the item id of the commsy item
-    */
-   function delete ($item_id) {
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $user_id = $current_user->getItemID();
-      $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET '.
-               'deletion_date="'.$current_datetime.'",'.
-               'deleter_id="'.encode(AS_DB,$user_id).'"'.
-               ' WHERE item_id="'.$item_id.'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems deleting item in table items.',E_USER_WARNING);
-      } else {
-         unset($result);
-      }
-      unset($query);
-      unset($item_id);
-  }
+    /** delete a commsy item
+     * this method deletes a commsy item
+     *
+     * @param integer item_id the item id of the commsy item
+     */
+    function delete($item_id)
+    {
+        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_user = $this->_environment->getCurrentUserItem();
+        $user_id = $current_user->getItemID();
+        $query = 'UPDATE ' . $this->addDatabasePrefix('items') . ' SET ' .
+            'deletion_date="' . $current_datetime . '",' .
+            'deleter_id="' . encode(AS_DB, $user_id) . '"' .
+            ' WHERE item_id="' . $item_id . '"';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) || !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting item in table items.', E_USER_WARNING);
+        } else {
+            unset($result);
+        }
+        unset($query);
+    }
 
   function undeleteItemByItemID ($item_id) {
       $current_datetime = getCurrentDateTimeInMySQL();

@@ -1394,6 +1394,8 @@ class cs_item {
       $link_manager = $this->_environment->getLinkItemManager();
       $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
 
+      $this->setDeletionDate(getCurrentDateTimeInMySQL());
+      $this->setDeleterID($this->_environment->getCurrentUserItem()->getItemID());
    }
 
    function _undelete ($manager) {
