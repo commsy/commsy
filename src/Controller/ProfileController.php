@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Calendars;
+use App\Event\AccountChangedEvent;
 use App\Form\Type\Profile\DeleteAccountType;
 use App\Form\Type\Profile\DeleteType;
 use App\Form\Type\Profile\ProfileAccountType;
@@ -20,6 +21,7 @@ use App\Form\Type\Profile\RoomProfileNotificationsType;
 use App\Privacy\PersonalDataCollector;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
+use App\Utils\DiscService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -29,6 +31,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 
 /**
@@ -43,12 +46,19 @@ class ProfileController extends Controller
      * @Template
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function generalAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function generalAction(
+        $roomId,
+        $itemId,
+        LegacyEnvironment $legacyEnvironment,
+        UserService $userService,
+        RoomService $roomService,
+        DiscService $discService,
+        Request $request
+    ) {
+        /** @var \cs_environment $legacyEnvironment */
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $discManager = $legacyEnvironment->getDiscManager();
-        $userService = $this->get('commsy_legacy.user_service');
-        $roomService = $this->get('commsy_legacy.room_service');
+
         $userItem = $userService->getUser($itemId);
 
         if (!$userItem) {
@@ -59,13 +69,13 @@ class ProfileController extends Controller
         $userData = $userTransformer->transform($userItem);
         $userData['useProfileImage'] = $userItem->getPicture() != "";
 
-        $form = $this->createForm(RoomProfileGeneralType::class, $userData, array(
+        $form = $this->createForm(RoomProfileGeneralType::class, $userData, [
             'itemId' => $itemId,
-            'uploadUrl' => $this->generateUrl('app_upload_upload', array(
+            'uploadUrl' => $this->generateUrl('app_upload_upload',[
                 'roomId' => $roomId,
-                'itemId' => $itemId
-            )),
-        ));
+                'itemId' => $itemId,
+            ]),
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,8 +84,11 @@ class ProfileController extends Controller
             // use custom profile picture if given
             if($formData['useProfileImage']) {
                 if($formData['image_data']) {
-                    $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
-                    if(!file_exists($saveDir)){
+                    $saveDir = implode("/", [
+                        $this->getParameter('files_directory'),
+                        $roomService->getRoomFileDirectory($userItem->getContextID()),
+                    ]);
+                    if (!file_exists($saveDir)) {
                         mkdir($saveDir, 0777, true);
                     }
                     $data = $formData['image_data'];
@@ -83,18 +96,21 @@ class ProfileController extends Controller
                     list(, $data) = explode(",", $data);
                     list(, $extension) = explode("/", $type);
                     $data = base64_decode($data);
-                    $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
-                    $absoluteFilepath = implode("/", array($saveDir, $fileName));
+                    $fileName = implode("_", [
+                        'cid'.$userItem->getContextID(),
+                        $userItem->getUserID(),
+                        $fileName,
+                    ]);
+                    $absoluteFilepath = implode("/", [$saveDir, $fileName]);
                     file_put_contents($absoluteFilepath, $data);
                     $userItem->setPicture($fileName);
 
                     $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
                     $userItem->save();
                 }
-            }
-            // use user initials else
-            else {
-                if($discManager->existsFile($userItem->getPicture())) {
+            } else {
+                // use user initials else
+                if ($discManager->existsFile($userItem->getPicture())) {
                     $discManager->unlinkFile($userItem->getPicture());
                 }
                 $userItem->setPicture("");
@@ -104,20 +120,18 @@ class ProfileController extends Controller
             if ($formData['imageChangeInAllContexts']) {
                 $userList = $userItem->getRelatedUserList();
                 $tempUserItem = $userList->getFirst();
-                $discService = $this->get('commsy_legacy.disc_service');
                 while ($tempUserItem) {
                     if ($tempUserItem->getItemId() == $userItem->getItemId()) {
                         $tempUserItem = $userList->getNext();
                         continue;
                     }
-                    if($formData['useProfileImage']) {
+                    if ($formData['useProfileImage']) {
                         $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
                         if ($tempFilename) {
                             $tempUserItem->setPicture($tempFilename);
                         }
-                    }
-                    else {
-                        if($discManager->existsFile($tempUserItem->getPicture())) {
+                    } else {
+                        if ($discManager->existsFile($tempUserItem->getPicture())) {
                             $discManager->unlinkFile($tempUserItem->getPicture());
                         }
                         $tempUserItem->setPicture("");
@@ -128,18 +142,20 @@ class ProfileController extends Controller
                 }
             }
 
-            return $this->redirectToRoute('app_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_general', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
-        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
-        return array(
+        return [
             'roomId' => $roomId,
             'roomTitle' => $roomItem->getTitle(),
             'user' => $userItem,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
@@ -317,10 +333,14 @@ class ProfileController extends Controller
      * @Template
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function personalAction($roomId, $itemId, Request $request)
-    {
+    public function personalAction(
+        $roomId,
+        $itemId,
+        UserService $userService,
+        EventDispatcherInterface $eventDispatcher,
+        Request $request
+    ) {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
@@ -332,22 +352,31 @@ class ProfileController extends Controller
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(ProfilePersonalInformationType::class, $userData, array(
+        $form = $this->createForm(ProfilePersonalInformationType::class, $userData, [
             'itemId' => $itemId,
             'portalUser' => $portalUser,
-        ));
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $oldUserItem = clone $userItem;
+
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
-            return $this->redirectToRoute('app_profile_personal', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            $event = new AccountChangedEvent($oldUserItem, $userItem);
+            $eventDispatcher->dispatch($event);
+
+            return $this->redirectToRoute('app_profile_personal', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'hasToChangeEmail' => $portalUser->hasToChangeEmail(),
-        );
+        ];
     }
 
     /**
