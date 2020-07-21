@@ -199,6 +199,35 @@ class UserroomService
     }
 
     /**
+     * Removes all users related to the given user from all user rooms of the given project room
+     * @param \cs_room_item $room the project room whose associated user rooms shall be purged
+     * @param \cs_user_item $deletedUser the project room user whose related user room users shall be deleted
+     */
+    public function removeUserFromUserroomsForRoom(\cs_room_item $room, \cs_user_item $deletedUser)
+    {
+        $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($projectUsers as $projectUser) {
+            $userroom = $projectUser->getLinkedUserroomItem();
+            if (!$userroom) {
+                continue;
+            }
+
+            $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
+            foreach ($userroomUsers as $userroomUser) {
+
+                // get the project room user who corresponds to (i.e., represents) this user room user
+                $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
+
+                // remove this user room user if the project room user who's related to this user room user was deleted
+                $userroomUserIsRelatedToDeletedUser = $projectUserRelatedToUserroomUser->getItemID() === $deletedUser->getItemID();
+                if ($userroomUserIsRelatedToDeletedUser) {
+                    $userroomUser->delete();
+                }
+            }
+        }
+    }
+
+    /**
      * Returns the default room title for a user room to be created for the given room and user
      * @param \cs_room_item $room the project room that would host the created user room
      * @param \cs_user_item $user the project room user who would be associated with the created user room
