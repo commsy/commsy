@@ -432,11 +432,10 @@ class UserController extends BaseController
 
                         if ($user->isDeleted()) {
                             $event = new UserLeftRoomEvent($user, $room);
-                            $eventDispatcher->dispatch($event);
                         } else {
                             $event = new UserStatusChangedEvent($user);
-                            $eventDispatcher->dispatch($event);
                         }
+                        $eventDispatcher->dispatch($event);
                     }
 
                     if ($formData['inform_user']) {
