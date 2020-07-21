@@ -81,13 +81,13 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('app_user_insert', {'roomId': roomId}),
-                        'action': 'insert',
+                        'url': path('app_user_insertuserroom', {'roomId': roomId}),
+                        'action': 'insertuserroom',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
                         'noSelectionMessage': 'no entry selected'|trans({},'item')
                     }|json_encode|e('html_attr') }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'paste'|trans({},'user') }}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-paste uk-visible-large"></i> {{ 'paste'|trans({},'user') }}
                     </a>
                 </li>
             </ul>

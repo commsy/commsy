@@ -1373,9 +1373,9 @@ class UserController extends BaseController
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insert', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insert'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom'];
             }
             if(!is_null($item->getLinkedUserroomItem())
             and $this->isGranted('ITEM_ENTER', $item->getLinkedUserroomItemID())){
@@ -1394,23 +1394,24 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/user/insert")
+     * @Route("/room/{roomId}/user/insertUserroom")
      * @Template()
      */
-    public function insertAction($roomId, Request $request, RoomService $roomService)
+    public function insertUserroomAction($roomId, Request $request, RoomService $roomService)
     {
         $room = $this->getRoom($roomId);
         $copyItems = $this->getItemsForActionRequest($room, $request);
-
+        $userRoomIds = [];
         foreach($copyItems as $copyItem){
             $userroom = $copyItem->getLinkedUserroomItem();
             if(!is_null($userroom)){
-                $response = $this->forward('App\Controller\CopyController::xhrInsertAction',[
-                    'roomId' => $userroom->getItemID(),
-                ]);
+                array_push($userRoomIds, $copyItem->getLinkedUserroomItemID());
             }
         }
-        return $response;
+        return $this->redirectToRoute('app_copy_xhrinsertuserroom', [
+            'roomId' => $roomId,
+            'userRoomIds' => implode(', ', $userRoomIds),
+        ]);
     }
 
     /**

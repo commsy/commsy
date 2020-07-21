@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\InsertAction;
+use App\Action\Copy\InsertUserroomAction;
 use App\Action\Copy\RemoveAction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -161,6 +162,25 @@ class CopyController extends BaseController
 
         $action = $this->get(InsertAction::class);
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/copy/xhr/insert/userroom/{userRoomIds}", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrInsertUserroomAction($roomId, $userRoomIds, Request $request)
+    {
+        $copyService = $this->get('commsy.copy_service');
+        $userRoomIds = explode(', ', $userRoomIds);
+        foreach($userRoomIds as $userRoomId){
+            $items = $copyService->getListEntries($userRoomId);
+            $room = $this->getRoom($userRoomId);
+            //$items = $this->getItemsForActionRequest($room, $request);
+
+            $action = $this->get(InsertUserroomAction::class);
+            $response = $action->execute($room, $items);
+        }
+        return $response;
     }
 
 //    public function xhrInsertStackAction($roomId, Request $request)
