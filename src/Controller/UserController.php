@@ -434,7 +434,6 @@ class UserController extends BaseController
                             break;
                     }
 
-                    $userService = $this->get('commsy_legacy.user_service');
                     foreach ($users as $user) {
                         $userService->updateAllGroupStatus($user, $roomId);
                     }
