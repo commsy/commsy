@@ -330,6 +330,10 @@
                 <source>User room</source>
                 <target>Create personal workspaces?</target>
             </trans-unit>
+            <trans-unit id="user_room_tooltip">
+                <source>User room tooltip</source>
+                <target>Personal workspaces can be used for bilateral exchange between a single user and the workspace moderators</target>
+            </trans-unit>
             <trans-unit id="user_room_heading">
                 <source>User room heading</source>
                 <target>Personal workspaces</target>

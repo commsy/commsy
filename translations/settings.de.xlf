@@ -330,6 +330,10 @@
                 <source>User room</source>
                 <target>Personenräume anlegen?</target>
             </trans-unit>
+            <trans-unit id="user_room_tooltip">
+                <source>User room tooltip</source>
+                <target>Personenräume können für den bilateralen Austausch zwischen einer Person des Projektraumes und der Moderation genutzt werden</target>
+            </trans-unit>
             <trans-unit id="user_room_heading">
                 <source>User room heading</source>
                 <target>Personenräume</target>
