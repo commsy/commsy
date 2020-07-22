@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Action\Copy\CopyAction;
+use App\Action\Copy\InsertAction;
+use App\Action\Copy\InsertUserroomAction;
 use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
@@ -1374,9 +1377,9 @@ class UserController extends BaseController
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom'];
             }
             if(!is_null($item->getLinkedUserroomItem())
             and $this->isGranted('ITEM_ENTER', $item->getLinkedUserroomItemID())){
@@ -1392,6 +1395,21 @@ class UserController extends BaseController
             'allowedActions' => $allowedActions,
             'linkedUserRooms' => $linkedUserRooms,
         ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/insertUserroom")
+     * @Template()
+     */
+    public function insertUserroomAction(
+        $roomId,
+        InsertUserroomAction $action,
+        Request $request
+    ) {
+        $room = $this->getRoom($roomId);
+        $users = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $users);
     }
 
     /**
