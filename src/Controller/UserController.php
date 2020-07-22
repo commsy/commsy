@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
 use App\Action\Copy\InsertAction;
+use App\Action\Copy\InsertUserroomAction;
 use App\Entity\User;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
@@ -1397,21 +1398,15 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/insertUserroom")
      * @Template()
      */
-    public function insertUserroomAction($roomId, Request $request, RoomService $roomService)
-    {
+    public function insertUserroomAction(
+        $roomId,
+        InsertUserroomAction $action,
+        Request $request
+    ) {
         $room = $this->getRoom($roomId);
-        $copyItems = $this->getItemsForActionRequest($room, $request);
-        $userRoomIds = [];
-        foreach($copyItems as $copyItem){
-            $userroom = $copyItem->getLinkedUserroomItem();
-            if(!is_null($userroom)){
-                array_push($userRoomIds, $copyItem->getLinkedUserroomItemID());
-            }
-        }
-        return $this->redirectToRoute('app_copy_xhrinsertuserroom', [
-            'roomId' => $roomId,
-            'userRoomIds' => implode(', ', $userRoomIds),
-        ]);
+        $users = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $users);
     }
 
     /**

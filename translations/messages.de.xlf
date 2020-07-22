@@ -382,6 +382,10 @@
                 <source>inserted %count% entries in this room</source>
                 <target>{0} Keinen Eintrag in diesen Raum eingefügt.|{1} Einen Eintrag in diesen Raum eingefügt.|]1,Inf[ %count% Einträge in diesen Raum eingefügt.</target>
            </trans-unit>
+           <trans-unit id="entriesInsertedGeneral">
+                <source>inserted %count% entries</source>
+                <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag eingefügt.|]1,Inf[ %count% Einträge eingefügt.</target>
+           </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>
                 <target>{0} Keinen Eintrag entfert.|{1} Einen Eintrag aus der Liste entfernt.|]1,Inf[ %count% Einträge aus der Liste entfernt.</target>
