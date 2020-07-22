@@ -134,6 +134,10 @@
                 <source>send email</source>
                 <target>Send email</target>
             </trans-unit>
+            <trans-unit id="userPaste">
+                <source>paste</source>
+                <target>Insert clipboard into userrooms</target>
+            </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
                 <target>Delete account/s</target>
