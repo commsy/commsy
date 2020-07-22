@@ -83,7 +83,6 @@
                     {% elseif feedItem.itemType == 'group' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
                     {% elseif feedItem.itemType == 'todo' %}
-                        Ein ToDo
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
                     {% elseif feedItem.itemType == 'task' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
