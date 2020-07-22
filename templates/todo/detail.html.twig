@@ -118,7 +118,7 @@
 
                                         {# participant #}
                                         <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) or (is_granted('ITEM_ENTER', item.itemId and item.type == 'userroom'))%}
+                                            {% if is_granted('ITEM_EDIT', item.itemId) or (item.type == 'userroom' and is_granted('ITEM_ENTER', item.itemId, user.itemID))%}
                                                 <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                     {% if not isParticipating %}
                                                         <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
