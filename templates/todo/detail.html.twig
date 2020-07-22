@@ -118,7 +118,7 @@
 
                                         {# participant #}
                                         <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) or (item.type == 'userroom' and is_granted('ITEM_ENTER', item.itemId, user.itemID))%}
+                                            {% if is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_USERROOM', item.itemId)%}
                                                 <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                     {% if not isParticipating %}
                                                         <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
@@ -138,7 +138,7 @@
 
                                         {# new step #}
                                         <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_ENTER', item.itemId, user.itemID)%}
+                                            {% if is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_USERROOM', item.itemId)%}
                                                 <a class="newStep" href="#" id="newStep" data-step-url="{{ path('app_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
                                                 </a>
@@ -281,6 +281,73 @@
                                                         <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                     {% endif %}
                                                 </li>
+                                                {# change status of whole task#}
+                                                <!-- {#
+                                                <li>
+                                                    {% if (user.isUser and not user.isReadOnlyUser) %}
+                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                            'url': path('app_todo_xhrstatus', {'roomId': roomId}),
+                                                            'action': 'markpending',
+                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                            'mode': 'click',
+                                                            'status': 'pending',
+                                                            'returnUrl': path('app_todo_list', {'roomId': roomId}),
+                                                            'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                            'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                            'confirmOk': 'confirm delete confirm'|trans({},'rubric')
+                                                        }|json_encode|e('html_attr') }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
+                                                </span>
+                                                    {% endif %}
+                                                </li>
+
+
+                                                <li>
+                                                    {% if (user.isUser and not user.isReadOnlyUser) %}
+                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                            'url': path('app_todo_xhrstatus', {'roomId': roomId}),
+                                                            'action': 'markinprogress',
+                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                            'mode': 'selection',
+                                                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                                                            'returnUrl': path('app_todo_list', {'roomId': roomId}),
+                                                            'status': 'inprogress'
+                                                        }|json_encode|e('html_attr') }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                                                </span>
+                                                    {% endif %}
+                                                </li>
+
+
+                                                <li>
+                                                    {% if (user.isUser and not user.isReadOnlyUser) %}
+                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                            'url': path('app_todo_xhrstatus', {'roomId': roomId}),
+                                                            'action': 'markdone',
+                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                            'mode': 'selection',
+                                                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                                                            'returnUrl': path('app_todo_list', {'roomId': roomId}),
+                                                            'status': 'done'
+                                                        }|json_encode|e('html_attr') }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
+                                                </span>
+                                                    {% endif %}
+                                                </li>
+                                                #}
+                                                -->
                                             </ul>
                                         </div>
                                     </div>
