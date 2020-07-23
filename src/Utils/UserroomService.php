@@ -112,6 +112,57 @@ class UserroomService
     }
 
     /**
+     * Updates the title of the user room for the given user, and updates the names of all corresponding user room users
+     * @param \cs_user_item $changedProjectUser the project room user whose user room and related user room users shall be renamed
+     * @param string $newFirstname (optional) the first name to be used for renaming; if not given, defaults to the $changedProjectUser's first name
+     * @param string $newLastname (optional) the last name to be used for renaming; if not given, defaults to the $changedProjectUser's last name
+     */
+    public function updateNameInUserroomsForUser(\cs_user_item $changedProjectUser, string $newFirstname = null, string $newLastname = null)
+    {
+        $room = $changedProjectUser->getContextItem();
+        $newFirstname = $newFirstname ?? $changedProjectUser->getFirstname();
+        $newLastname = $newLastname ?? $changedProjectUser->getLastname();
+
+// TODO: for some reason, UserService->getListUsers() does not return the correct list of users, which prevents related users in other user rooms to get renamed
+        $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($projectUsers as $projectUser) {
+            $userroom = $projectUser->getLinkedUserroomItem();
+            if (!$userroom) {
+                continue;
+            }
+
+            // get the project room user who's associated with this user room
+            $projectUserRelatedToUserroom = $userroom->getLinkedUserItem();
+
+            $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
+            foreach ($userroomUsers as $userroomUser) {
+                // get the project room user who corresponds to (i.e., represents) this user room user
+                $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
+
+                $userroomUserIsRelatedToProjectUser = $projectUserRelatedToUserroomUser !== null && $projectUserRelatedToUserroomUser->getItemID() === $changedProjectUser->getItemID();
+                if ($userroomUserIsRelatedToProjectUser) {
+                    // rename user room user who represents $projectUser
+                    $userroomUser->setFirstname($newFirstname);
+                    $userroomUser->setLastname($newLastname);
+                    $userroomUser->save();
+
+                    $ownsUserroom = false;
+                    if ($projectUserRelatedToUserroomUser && $projectUserRelatedToUserroom) {
+                        $ownsUserroom = $projectUserRelatedToUserroomUser->getItemID() === $projectUserRelatedToUserroom->getItemID();
+                    }
+                    if ($ownsUserroom) {
+                        // rename user room owned by $projectUser
+                        // NOTE: preferring $newFirstname & $newLastname over the $projectUser properties helps in cases where,
+                        // after a user's account was renamed, the given $projectUser doesn't have the updated name yet
+                        $roomTitle = $newFirstname . ' ' . $newLastname . ' – ' . $room->getTitle();
+                        $this->renameUserroom($userroom, $changedProjectUser, $roomTitle);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Updates the room titles of all user rooms of the given project room so that they include the project room's current title
      * @param \cs_room_item $room the project room whose user rooms shall be updated
      */
@@ -124,11 +175,7 @@ class UserroomService
                 continue;
             }
 
-            $userroomTitle = $this->defaultUserroomTitle($room, $user);
-            if ($existingUserroom->getTitle() !== $userroomTitle) {
-                $existingUserroom->setTitle($userroomTitle);
-                $existingUserroom->save();
-            }
+            $this->renameUserroom($existingUserroom, $user);
         }
     }
 
@@ -137,7 +184,7 @@ class UserroomService
      * @param \cs_room_item $room the project room whose user rooms shall be updated
      * @param \cs_user_item $changedUser the project room user whose related user room users shall be updated
      */
-    public function changeUserStatusInUserroomsForRoom($room, $changedUser)
+    public function changeUserStatusInUserroomsForRoom(\cs_room_item $room, \cs_user_item $changedUser)
     {
         $changedUserStatus = $changedUser->getStatus();
 
@@ -225,6 +272,32 @@ class UserroomService
                     $userroomUser->delete();
                 }
             }
+        }
+    }
+
+    /**
+     * Renames the the given user room with the default title
+     * The user room's default title consists of the full name of its room "owner", followed by the title of the hosting
+     * project room
+     * @param \cs_userroom_item $userroom the user room that should be renamed
+     * @param \cs_user_item $roomOwner the project room user who is associated with the given user room
+     * @param string $newRoomTitle (optional) the name to be used for renaming; if not given, defaults to the name returned
+     * by defaultUserroomTitle()
+     */
+    private function renameUserroom(\cs_userroom_item $userroom, \cs_user_item $roomOwner, string $newRoomTitle = null)
+    {
+        /**
+         * @var \cs_project_item $projectRoom
+         */
+        $projectRoom = $roomOwner->getContextItem();
+        if (!$projectRoom->isProjectRoom()) {
+            return;
+        }
+
+        $userroomTitle = $newRoomTitle ?? $this->defaultUserroomTitle($projectRoom, $roomOwner);
+        if ($userroom->getTitle() !== $userroomTitle) {
+            $userroom->setTitle($userroomTitle);
+            $userroom->save();
         }
     }
 
