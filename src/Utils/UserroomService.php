@@ -123,8 +123,7 @@ class UserroomService
         $newFirstname = $newFirstname ?? $changedProjectUser->getFirstname();
         $newLastname = $newLastname ?? $changedProjectUser->getLastname();
 
-// TODO: for some reason, UserService->getListUsers() does not return the correct list of users, which prevents related users in other user rooms to get renamed
-        $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        $projectUsers = $room->getUserList()->to_array();
         foreach ($projectUsers as $projectUser) {
             $userroom = $projectUser->getLinkedUserroomItem();
             if (!$userroom) {
