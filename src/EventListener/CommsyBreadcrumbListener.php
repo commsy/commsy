@@ -164,6 +164,9 @@ class CommsyBreadcrumbListener
         if ($roomItem->isGroupRoom()) {
             $this->addGroupRoom($roomItem, $asLink);
         }
+        elseif ($roomItem->isUserroom()) {
+            $this->addUserRoom($roomItem, $asLink);
+        }
         elseif ($roomItem->isProjectRoom()) {
             $this->addProjectRoom($roomItem, $asLink);
         }
@@ -187,6 +190,7 @@ class CommsyBreadcrumbListener
 
     private function addProjectRoom($roomItem, $asLink)
     {
+        // TODO: when called from addUserRoom(), $communityRoomItem is empty (even if the project room belongs to a community room)
         $communityRoomItem = $roomItem->getCommunityList()->getFirst();
         if ($communityRoomItem) {
             $this->addCommunityRoom($communityRoomItem, true);
@@ -210,6 +214,19 @@ class CommsyBreadcrumbListener
                 // Grouproom
                 $this->addRoomCrumb($roomItem, $asLink);
             }
+        }
+    }
+
+    private function addUserRoom($roomItem, $asLink)
+    {
+        $projectRoom = $roomItem->getLinkedProjectItem();
+        if ($projectRoom) {
+            // ProjectRoom
+            $this->addProjectRoom($projectRoom, true);
+            // "Persons" rubric in project room
+            $this->addChildRoomListCrumb($projectRoom, 'userroom');
+            // Userroom
+            $this->addRoomCrumb($roomItem, $asLink);
         }
     }
 
@@ -247,6 +264,8 @@ class CommsyBreadcrumbListener
     {
         if ($childRoomClass == 'project' || $childRoomClass == 'group') {
             $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans($childRoomClass, [], 'menu')), "app_" . $childRoomClass . "_list", ['roomId' => $roomItem->getItemId()]);
+        } else if ($childRoomClass == 'userroom') {
+            $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans($childRoomClass, [], 'menu')), "app_user_list", ['roomId' => $roomItem->getItemId()]);
         }
    }
 }
