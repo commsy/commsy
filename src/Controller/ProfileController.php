@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Calendars;
 use App\Event\AccountChangedEvent;
+use App\Event\UserLeftRoomEvent;
 use App\Form\Type\Profile\DeleteAccountType;
 use App\Form\Type\Profile\DeleteType;
 use App\Form\Type\Profile\ProfileAccountType;
@@ -798,7 +799,8 @@ class ProfileController extends Controller
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
-        ParameterBagInterface $parameterBag
+        ParameterBagInterface $parameterBag,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
@@ -815,6 +817,9 @@ class ProfileController extends Controller
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
         $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
 
         // Lock room profile
         if ($request->request->has('lock_form')) {
@@ -834,6 +839,9 @@ class ProfileController extends Controller
 
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
                 $currentUser->delete();
+
+                $event = new UserLeftRoomEvent($currentUser, $roomItem);
+                $eventDispatcher->dispatch($event);
 
                 return $this->redirect($portalUrl);
             }
