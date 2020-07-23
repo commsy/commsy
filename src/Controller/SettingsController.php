@@ -376,9 +376,7 @@ class SettingsController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $oldRoom = clone $roomItem;
 
-            $formData = $form->getData();
-            $formData['userRoom'] = $form->get('userRoom')->getViewData();
-            $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
+            $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $form->getData());
             $roomItem->save();
 
             $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
