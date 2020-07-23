@@ -352,6 +352,13 @@ class cs_project_item extends cs_room_item {
             $groupRoom->save();
         }
 
+        // delete all project room users which will also delete any associated user rooms
+        foreach ($this->getUserList() as $user) {
+            /** @var \cs_user_item $user */
+            $user->delete();
+            $user->save();
+        }
+
         // delete in community rooms
         $com_list = $this->getCommunityList();
         if (isset($com_list)
