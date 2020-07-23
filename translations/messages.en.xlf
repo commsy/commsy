@@ -382,7 +382,7 @@
                 <source>inserted %count% entries in this room</source>
                 <target>{0} No entry inserted.|{1} Inserted one entry into this workspace.|]1,Inf[ Inserted %count% entries into this workspace.</target>
            </trans-unit>
-           <trans-unit id="entriesInserted">
+           <trans-unit id="entriesInsertedGeneral">
                 <source>inserted %count% entries</source>
                 <target>{0} No entry inserted.|{1} Inserted one entry.|]1,Inf[ Inserted %count% entries.</target>
            </trans-unit>

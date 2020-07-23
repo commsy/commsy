@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Event\AccountChangedEvent;
 use App\Event\RoomSettingsChangedEvent;
 use App\Event\UserJoinedRoomEvent;
 use App\Event\UserLeftRoomEvent;
@@ -27,6 +28,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
             UserJoinedRoomEvent::class => 'onUserJoinedRoom',
             UserLeftRoomEvent::class => 'onUserLeftRoom',
             UserStatusChangedEvent::class => 'onUserStatusChanged',
+            AccountChangedEvent::class => 'onAccountChanged',
             RoomSettingsChangedEvent::class => 'onRoomSettingsChanged',
         ];
     }
@@ -82,6 +84,39 @@ class UserRoomSubscriber implements EventSubscriberInterface
         }
 
         $this->userroomService->changeUserStatusInUserroomsForRoom($room, $user);
+    }
+
+    public function onAccountChanged(AccountChangedEvent $event)
+    {
+        $oldUser = $event->getOldAccount();
+        $newUser = $event->getNewAccount();
+
+        $portalUser = $newUser->getRelatedPortalUserItem();
+
+        /**
+         * @var \cs_user_item[] $relatedUsers
+         */
+        $relatedUsers = $portalUser->getRelatedUserList()->to_array();
+
+        foreach ($relatedUsers as $relatedUser) {
+            $room = $relatedUser->getContextItem();
+
+            if (!$room->isProjectRoom() || !($relatedUser->isUser() || $relatedUser->isModerator())) {
+                continue;
+            }
+
+            // if the user's name just changed, rename the project user's user room as well as all corresponding user room users
+            if ($oldUser->getFullName() !== $newUser->getFullName()) {
+                // NOTE: after a user was renamed in the account settings, for some $relatedUser item, the first/last name
+                // has not been fully updated yet, thus we provide the first/last names explicitly
+                $this->userroomService->updateNameInUserroomsForUser($relatedUser, $newUser->getFirstname(), $newUser->getLastname());
+            }
+
+            // TODO: if the user's chosen language just changed, also update the user's language in her user room
+            if ($oldUser->getLanguage() !== $newUser->getLanguage()) {
+                // $this->userroomService->updateLanguageInUserroomOfUser($relatedUser);
+            }
+        }
     }
 
     public function onRoomSettingsChanged(RoomSettingsChangedEvent $event)
