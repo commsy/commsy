@@ -603,11 +603,13 @@ class UserController extends BaseController
 
         $moderatorIds = [];
         $userRoomItem = null;
-        if(!is_null($infoArray['user']->getLinkedUserroomItem())
-            and $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())){
+        if ($roomItem->isProjectRoom() &&
+            $roomItem->getShouldCreateUserRooms() &&
+            !is_null($infoArray['user']->getLinkedUserroomItem()) &&
+            $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())) {
             $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
             $moderators = $infoArray['user']->getLinkedUserroomItem()->getModeratorList();
-            foreach($moderators as $moderator){
+            foreach ($moderators as $moderator) {
                 array_push($moderatorIds, $moderator->getItemId());
             }
         }
@@ -1443,8 +1445,10 @@ class UserController extends BaseController
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom'];
             }
-            if(!is_null($item->getLinkedUserroomItem())
-            and $this->isGranted('ITEM_ENTER', $item->getLinkedUserroomItemID())){
+            if ($roomItem->isProjectRoom() &&
+                $roomItem->getShouldCreateUserRooms() &&
+                !is_null($item->getLinkedUserroomItem()) &&
+                $this->isGranted('ITEM_ENTER', $item->getLinkedUserroomItemID())) {
                 $linkedUserRooms[strval($item->getItemID())] = $item->getLinkedUserroomItem();
             }
         }
