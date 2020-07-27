@@ -261,7 +261,7 @@
                                                 </li>
 
                                                 {# delete #}
-                                                <li>
+                                                 <li>
                                                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                         <a  href="#" data-cs-action="{{ {
                                                             'url': path('app_step_xhrdelete', {'roomId': roomId, 'itemId': step.itemId}),
@@ -282,25 +282,21 @@
                                                     {% endif %}
                                                 </li>
                                                 {# change status of whole task#}
-                                                <!-- {#
                                                 <li>
                                                     {% if (user.isUser and not user.isReadOnlyUser) %}
                                                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                            'url': path('app_todo_xhrstatus', {'roomId': roomId}),
+                                                            'url': path('app_step_xhrchangestatus', {'roomId': roomId, 'itemId': step.itemId}),
                                                             'action': 'markpending',
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                             'mode': 'click',
                                                             'status': 'pending',
                                                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
-                                                            'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                            'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                            'confirmOk': 'confirm delete confirm'|trans({},'rubric')
                                                         }|json_encode|e('html_attr') }}">
-                                                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
                                                         </a>
                                                     {% else %}
                                                         <span class="uk-text-muted">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
                                                 </span>
                                                     {% endif %}
                                                 </li>
@@ -309,19 +305,18 @@
                                                 <li>
                                                     {% if (user.isUser and not user.isReadOnlyUser) %}
                                                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                            'url': path('app_todo_xhrstatus', {'roomId': roomId}),
+                                                            'url': path('app_step_xhrchangestatus', {'roomId': roomId, 'itemId': step.itemId}),
                                                             'action': 'markinprogress',
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                            'mode': 'selection',
-                                                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                                                            'mode': 'click',
+                                                            'status': 'inprogress',
                                                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
-                                                            'status': 'inprogress'
                                                         }|json_encode|e('html_attr') }}">
-                                                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
                                                         </a>
                                                     {% else %}
                                                         <span class="uk-text-muted">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
                                                 </span>
                                                     {% endif %}
                                                 </li>
@@ -330,24 +325,21 @@
                                                 <li>
                                                     {% if (user.isUser and not user.isReadOnlyUser) %}
                                                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                            'url': path('app_todo_xhrstatus', {'roomId': roomId}),
+                                                            'url': path('app_step_xhrchangestatus', {'roomId': roomId, 'itemId': step.itemId}),
                                                             'action': 'markdone',
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                            'mode': 'selection',
-                                                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                                                            'mode': 'click',
+                                                            'status': 'done',
                                                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
-                                                            'status': 'done'
                                                         }|json_encode|e('html_attr') }}">
-                                                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
                                                         </a>
                                                     {% else %}
                                                         <span class="uk-text-muted">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
                                                 </span>
                                                     {% endif %}
                                                 </li>
-                                                #}
-                                                -->
                                             </ul>
                                         </div>
                                     </div>
