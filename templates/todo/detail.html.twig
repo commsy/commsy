@@ -119,7 +119,7 @@
                                         {# participant #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_USERROOM', item.itemId)%}
-                                                <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                <a href="{{ path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                     {% if not isParticipating %}
                                                         <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
                                                     {% else %}
@@ -129,6 +129,66 @@
                                             {% else %}
                                                 <span class="uk-text-muted">
                                                     <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
+
+                                        {# change status of whole task#}
+                                        <li>
+                                            {% if (is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_USERROOM', item.itemId)) and (user.isUser and not user.isReadOnlyUser) %}
+                                                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                        'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                        'action': 'markpending',
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'status': 'pending',
+                                                        'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
+                                                    </span>
+                                                {% endif %}
+                                        </li>
+
+
+                                        <li>
+                                            {% if (is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_USERROOM', item.itemId)) and (user.isUser and not user.isReadOnlyUser) %}
+                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                    'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                    'action': 'markinprogress',
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'status': 'inprogress',
+                                                    'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
+
+
+                                        <li>
+                                            {% if (is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_USERROOM', item.itemId)) and (user.isUser and not user.isReadOnlyUser) %}
+                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                    'url': path('app_todo_xhrstatus', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                    'action': 'markdone',
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'status': 'done',
+                                                    'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
                                                 </span>
                                             {% endif %}
                                         </li>
@@ -290,7 +350,7 @@
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                             'mode': 'click',
                                                             'status': 'pending',
-                                                            'returnUrl': path('app_todo_list', {'roomId': roomId}),
+                                                            'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
                                                         }|json_encode|e('html_attr') }}">
                                                             <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
                                                         </a>
@@ -310,7 +370,7 @@
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                             'mode': 'click',
                                                             'status': 'inprogress',
-                                                            'returnUrl': path('app_todo_list', {'roomId': roomId}),
+                                                            'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
                                                         }|json_encode|e('html_attr') }}">
                                                             <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
                                                         </a>
@@ -330,7 +390,7 @@
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                             'mode': 'click',
                                                             'status': 'done',
-                                                            'returnUrl': path('app_todo_list', {'roomId': roomId}),
+                                                            'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
                                                         }|json_encode|e('html_attr') }}">
                                                             <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
                                                         </a>
