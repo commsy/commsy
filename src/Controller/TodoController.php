@@ -10,6 +10,9 @@ use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
+use App\Utils\ItemService;
+use App\Utils\RoomService;
+use App\Utils\TodoService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -948,6 +951,25 @@ class TodoController extends BaseController
             throw new \Exception('new status string not provided');
         }
 
+        $newStatus = $payload['status'];
+
+        $action = $this->get(TodoStatusAction::class);
+        $action->setNewStatus($newStatus);
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrStatusFromDetailAction ($roomId, $itemId, Request $request, TodoService $todoService, RoomService $roomService)
+    {
+        $room = $roomService->getRoomItem($roomId);
+        $items = [$todoService->getTodo($itemId)];
+        $payload = $request->request->get('payload');
+        if (!isset($payload['status'])) {
+            throw new \Exception('new status string not provided');
+        }
         $newStatus = $payload['status'];
 
         $action = $this->get(TodoStatusAction::class);
