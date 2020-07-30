@@ -194,7 +194,7 @@
         {% set fileArray = item.fileListWithFilesFromSections.to_array %}
     {% endif %}
     {% if not fileArray is empty %}
-        {% if is_granted('ITEM_SEE', item.itemId) %}
+        {% if is_granted('ITEM_SEE', item.itemId) or is_granted('ITEM_USERROOM', item.itemId) %}
             {% for file in fileArray %}
                 {% set disposition = 'attachment' %}
                 {% if file.extension|lower == 'pdf' %}

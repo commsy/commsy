@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +15,16 @@ class FileController extends Controller
      * @Route("/file/{fileId}/{disposition}")
      * @Security("is_granted('FILE_DOWNLOAD', fileId)")
      */
-    public function getFileAction($fileId, $disposition = 'attachment')
+    public function getFileAction($fileId, $disposition = 'attachment', LegacyEnvironment $legacyEnvironment)
     {
         $fileService = $this->get('commsy_legacy.file_service');
         $file = $fileService->getFile($fileId);
         $rootDir = $this->get('kernel')->getRootDir().'/';
+
+        // fix for userrooms
+        if($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom'){
+            $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
+        }
 
         // fix for archived rooms
         if (!$file->getPortalID()) {
