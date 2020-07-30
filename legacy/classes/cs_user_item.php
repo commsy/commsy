@@ -47,9 +47,15 @@ class cs_user_item extends cs_item
 
     /**
      * the user room associated with this user
-     * @var \cs_userroom_item
+     * @var \cs_userroom_item|null
      */
     private $_userroomItem = NULL;
+
+    /**
+     * for a user item in a user room, returns the project room user associated with this user
+     * @var \cs_user_item|null
+     */
+    private $_projectUserItem = NULL;
 
     /** constructor: cs_user_item
      * the only available constructor, initial values for internal variables
@@ -202,6 +208,10 @@ class cs_user_item extends cs_item
         $this->setTopicByID($value->getItemID());
     }
 
+    /**
+     * For a user item in a project room, returns any user room associated with this user
+     * @return \cs_userroom_item|null the user room associated with this user
+     */
     public function getLinkedUserroomItem(): ?\cs_userroom_item
     {
         if (isset($this->_userroomItem)) {
@@ -237,6 +247,49 @@ class cs_user_item extends cs_item
     public function unsetLinkedUserroomItemID()
     {
         $this->_unsetExtra('USERROOM_ITEM_ID');
+    }
+
+    /**
+     * For a user item in a user room, returns the project room user who corresponds to this user
+     * @return \cs_user_item|null the project room user associated with this user
+     */
+    public function getLinkedProjectUserItem(): ?\cs_user_item
+    {
+        if (isset($this->_projectUserItem)) {
+            return $this->_projectUserItem;
+        }
+
+        $userItemId = $this->getLinkedProjectUserItemID();
+        if (isset($userItemId)) {
+            $userManager = $this->_environment->getUserManager();
+            if ($userManager->existsItem($userItemId)) {
+                $userItem = $userManager->getItem($userItemId);
+                if (isset($userItem) and !$userItem->isDeleted()) {
+                    $this->_projectUserItem = $userItem;
+                }
+                return $this->_projectUserItem;
+            }
+        }
+
+        return null;
+    }
+
+    public function getLinkedProjectUserItemID(): ?int
+    {
+        if ($this->_issetExtra('PROJECT_USER_ITEM_ID')) {
+            return $this->_getExtra('PROJECT_USER_ITEM_ID');
+        }
+        return null;
+    }
+
+    public function setLinkedProjectUserItemID($userId)
+    {
+        $this->_setExtra('PROJECT_USER_ITEM_ID', (int)$userId);
+    }
+
+    public function unsetLinkedProjectUserItemID()
+    {
+        $this->_unsetExtra('PROJECT_USER_ITEM_ID');
     }
 
     /** get firstname of the user
@@ -2029,6 +2082,7 @@ class cs_user_item extends cs_item
         $new_room_user->unsetCreatorDate();
         $new_room_user->unsetAGBAcceptanceDate();
         $new_room_user->unsetLinkedUserroomItemID();
+        $new_room_user->unsetLinkedProjectUserItemID();
         $new_room_user->_unsetValue('modifier_id');
         return $new_room_user;
     }

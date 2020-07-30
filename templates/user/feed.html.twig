@@ -100,7 +100,7 @@
                 {% endif %}
                 {% set userKey = user.itemId %}
                 {% if linkedUserRooms[userKey] is defined %}
-                    <a href="{{ path('app_room_detail', {'itemId': linkedUserRooms[user.itemId].itemId, 'roomId': roomId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip=""></a>
+                    <a href="{{ path('app_room_home', {'roomId': linkedUserRooms[user.itemId].itemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'Enter user room'|trans({}, 'room') }}"></a>
                 {% endif %}
             </div>
         </header>

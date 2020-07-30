@@ -328,11 +328,15 @@
             </trans-unit>
             <trans-unit id="user_room">
                 <source>User room</source>
-                <target>Benutzerräume anlegen?</target>
+                <target>Personenräume anlegen?</target>
+            </trans-unit>
+            <trans-unit id="user_room_tooltip">
+                <source>User room tooltip</source>
+                <target>Personenräume können für den bilateralen Austausch zwischen einer Person des Projektraumes und der Moderation genutzt werden</target>
             </trans-unit>
             <trans-unit id="user_room_heading">
                 <source>User room heading</source>
-                <target>Benutzerräume</target>
+                <target>Personenräume</target>
             </trans-unit>
 
             <!-- Appearance settings -->

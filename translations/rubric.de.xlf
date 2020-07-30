@@ -218,13 +218,25 @@
                 <source>markdone</source>
                 <target>Einträge als "erledigt" markieren</target>
             </trans-unit>
+            <trans-unit id="markdonesingle">
+                <source>markdonesingle</source>
+                <target>Eintrag als "erledigt" markieren</target>
+            </trans-unit>
             <trans-unit id="markinprogress">
                 <source>markinprogress</source>
                 <target>Einträge als "in Bearbeitung" markieren</target>
             </trans-unit>
+            <trans-unit id="markinprogresssingle">
+                <source>markinprogresssingle</source>
+                <target>Eintrag als "in Bearbeitung" markieren</target>
+            </trans-unit>
             <trans-unit id="markpending">
                 <source>markpending</source>
                 <target>Einträge als "nicht bearbeitet" markieren</target>
+            </trans-unit>
+            <trans-unit id="markpendingsingle">
+                <source>markpendingsingle</source>
+                <target>Eintrag als "nicht bearbeitet" markieren</target>
             </trans-unit>
             <trans-unit id="marktodostatus">
                 <source>marktodostatus</source>

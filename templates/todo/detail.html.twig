@@ -118,19 +118,54 @@
 
                                         {# participant #}
                                         <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) or (is_granted('ITEM_ENTER', item.itemId and item.type == 'userroom'))%}
-                                                <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
-                                                    {% if not isParticipating %}
-                                                        <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
-                                                    {% else %}
-                                                        <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'remove responsibility'|trans({}, 'todo')|capitalize }}
-                                                    {% endif %}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
+                                            <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                {% if not isParticipating %}
                                                     <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
-                                                </span>
-                                            {% endif %}
+                                                {% else %}
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'remove responsibility'|trans({}, 'todo')|capitalize }}
+                                                {% endif %}
+                                            </a>
+                                        </li>
+
+                                        {# change status of whole task#}
+                                        <li>
+                                            <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                'action': 'markpending',
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'status': 'pending',
+                                                'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
+                                            </a>
+                                        </li>
+
+
+                                        <li>
+                                            <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                'action': 'markinprogress',
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'status': 'inprogress',
+                                                'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
+                                            </a>
+                                        </li>
+                                        
+                                        <li>
+                                            <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                'url': path('app_todo_xhrstatus', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                'action': 'markdone',
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'status': 'done',
+                                                'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
+                                            </a>
                                         </li>
 
                                         {# separator #}
@@ -138,15 +173,9 @@
 
                                         {# new step #}
                                         <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) or is_granted('ITEM_ENTER', item.itemId, user.itemID)%}
-                                                <a class="newStep" href="#" id="newStep" data-step-url="{{ path('app_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
-                                                </span>
-                                            {% endif %}
+                                            <a class="newStep" href="#" id="newStep" data-step-url="{{ path('app_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -261,7 +290,7 @@
                                                 </li>
 
                                                 {# delete #}
-                                                <li>
+                                                 <li>
                                                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                         <a  href="#" data-cs-action="{{ {
                                                             'url': path('app_step_xhrdelete', {'roomId': roomId, 'itemId': step.itemId}),
@@ -279,6 +308,65 @@
                                                         </a>
                                                     {% else %}
                                                         <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                    {% endif %}
+                                                </li>
+                                                {# change status of whole task#}
+                                                <li>
+                                                    {% if (user.isUser and not user.isReadOnlyUser) %}
+                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                            'url': path('app_step_xhrchangestatus', {'roomId': roomId, 'itemId': step.itemId}),
+                                                            'action': 'markpending',
+                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                            'mode': 'click',
+                                                            'status': 'pending',
+                                                            'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                        }|json_encode|e('html_attr') }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
+                                                </span>
+                                                    {% endif %}
+                                                </li>
+
+
+                                                <li>
+                                                    {% if (user.isUser and not user.isReadOnlyUser) %}
+                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                            'url': path('app_step_xhrchangestatus', {'roomId': roomId, 'itemId': step.itemId}),
+                                                            'action': 'markinprogress',
+                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                            'mode': 'click',
+                                                            'status': 'inprogress',
+                                                            'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                        }|json_encode|e('html_attr') }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
+                                                </span>
+                                                    {% endif %}
+                                                </li>
+
+
+                                                <li>
+                                                    {% if (user.isUser and not user.isReadOnlyUser) %}
+                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                            'url': path('app_step_xhrchangestatus', {'roomId': roomId, 'itemId': step.itemId}),
+                                                            'action': 'markdone',
+                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                            'mode': 'click',
+                                                            'status': 'done',
+                                                            'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                        }|json_encode|e('html_attr') }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
+                                                </span>
                                                     {% endif %}
                                                 </li>
                                             </ul>

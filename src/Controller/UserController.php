@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Copy\InsertAction;
 use App\Action\Copy\InsertUserroomAction;
 use App\Entity\User;
+use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
 use App\Form\Model\Send;
@@ -79,9 +80,9 @@ class UserController extends BaseController
         $formData = null;
         if(!is_null($item->getLinkedUserroomItem())){
             $recipients = [];
-            array_push($recipients,$item->getFullName());
-            foreach($item->getLinkedUserroomItem()->getModeratorList() as $moderators){
-                array_push($recipients,$moderators->getFullName());
+            $recipients[$item->getFullName()] = $item->getFullName();
+            foreach ($item->getLinkedUserroomItem()->getModeratorList() as $moderator) {
+                $recipients[$moderator->getFullName()] = $moderator->getFullName();
             }
             $message = $this->get('translator')->trans('This email has been sent by ... from userroom ...', [
                 '%sender_name%' => $legacyEnvironment->getEnvironment()->getCurrentUserItem()->getFullName(),
@@ -308,8 +309,9 @@ class UserController extends BaseController
     public function changeStatusAction(
         $roomId,
         Request $request,
-        EventDispatcherInterface $eventDispatcher)
-    {
+        UserService $userService,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $room = $this->getRoom($roomId);
 
         $formData = [];
@@ -337,7 +339,6 @@ class UserController extends BaseController
         $form->handleRequest($request);
 
         // get all affected user
-        $userService = $this->get('commsy_legacy.user_service');
         $users = [];
         if (isset($formData['userIds'])) {
             foreach ($formData['userIds'] as $userId) {
@@ -419,7 +420,6 @@ class UserController extends BaseController
                             break;
                     }
 
-                    $userService = $this->get('commsy_legacy.user_service');
                     foreach ($users as $user) {
                         $userService->updateAllGroupStatus($user, $roomId);
                     }
@@ -433,7 +433,11 @@ class UserController extends BaseController
                         $readerManager->markRead($itemId, $versionId);
                         $noticedManager->markNoticed($itemId, $versionId);
 
-                        $event = new UserStatusChangedEvent($user);
+                        if ($user->isDeleted()) {
+                            $event = new UserLeftRoomEvent($user, $room);
+                        } else {
+                            $event = new UserStatusChangedEvent($user);
+                        }
                         $eventDispatcher->dispatch($event);
                     }
 
@@ -535,13 +539,12 @@ class UserController extends BaseController
         $roomItem = $roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
 
-        $moderatorIds = null;
+        $moderatorIds = [];
         $userRoomItem = null;
         if(!is_null($infoArray['user']->getLinkedUserroomItem())
             and $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())){
             $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
             $moderators = $infoArray['user']->getLinkedUserroomItem()->getModeratorList();
-            $moderatorIds = [];
             foreach($moderators as $moderator){
                 array_push($moderatorIds, $moderator->getItemId());
             }
@@ -566,7 +569,7 @@ class UserController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => false,
             'userRoomItem' => $userRoomItem,
-            'userRoomItemMemberCount' => $userRoomItem == null ? [] : count($userRoomItem->getUserList()) + count($userRoomItem->getModeratorList()),
+            'userRoomItemMemberCount' => $userRoomItem == null ? [] : $userRoomItem->getUserList()->getCount(),
             'userRoomLinksCount' => count($userRoomItem == null ? [] : $userRoomItem->getAllLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
