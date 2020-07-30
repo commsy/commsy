@@ -118,7 +118,7 @@
 
                                         {# participant #}
                                         <li>
-                                            <a href="{{ path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                            <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                 {% if not isParticipating %}
                                                     <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
                                                 {% else %}
