@@ -378,7 +378,7 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template("todo/edit_step.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId)")
      */
     public function createStepAction($roomId, $itemId)
     {
