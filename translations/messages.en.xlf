@@ -346,6 +346,10 @@
                 <source>Set status of %count% entries to in progress</source>
                 <target>{0} No entries changed.|{1} Set status of %count% entry to "in progress".|]1,Inf[ Set status of %count% entries to "in progress".</target>
             </trans-unit>
+            <trans-unit id="entriesMarkedInProgressTypo">
+                <source>Set status of %count% entries to inprogress</source>
+                <target>{0} No entries changed.|{1} Set status of %count% entry to "in progress".|]1,Inf[ Set status of %count% entries to "in progress".</target>
+            </trans-unit>
             <trans-unit id="64">
                 <source>set status of %count% users to blocked</source>
                  <target>{0} No user locked.|{1} One user locked.|]1,Inf[ %count% users locked.</target>
