@@ -307,8 +307,10 @@
                                                             <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                         </a>
                                                     {% else %}
-                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                    {% endif %}
+                                                         <span class="uk-text-muted">
+                                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                         </span>
+                                                     {% endif %}
                                                 </li>
                                                 {# change status of whole task#}
                                                 <li>
