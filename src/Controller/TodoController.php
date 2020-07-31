@@ -378,7 +378,7 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template("todo/edit_step.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId) or is_granted('ITEM_PARTICIPATE', itemId)")
      */
     public function createStepAction($roomId, $itemId)
     {
@@ -854,7 +854,7 @@ class TodoController extends BaseController
     
     /**
      * @Route("/room/{roomId}/todo/{itemId}/participate")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_PARTICIPATE', itemId)")
      */
     public function participateAction($roomId, $itemId)
     {
