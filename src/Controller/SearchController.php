@@ -542,19 +542,20 @@ class SearchController extends BaseController
             'community' => [],
             'project' => [],
             'grouproom' => [],
+            'userroom' => [],
         ];
         foreach ($roomResults as $room) {
             $rooms[$room->getType()][] = $room;
         }
 
-        $rooms = array_merge($rooms['community'], $rooms['project'], $rooms['grouproom']);
+        $rooms = array_merge($rooms['community'], $rooms['project'], $rooms['grouproom'], $rooms['userroom']);
 
         $lastType = null;
         foreach ($rooms as $room) {
             $url = '#';
 
             if (!$lastType || $lastType != $room->getType()) {
-                if (in_array($room->getType(), ['project', 'community'])) {
+                if (in_array($room->getType(), ['project', 'community', 'userroom'])) {
                     $title = $translator->trans(ucfirst($room->getType()) . ' Rooms', [], 'room');
                 } else {
                     $title = $translator->trans('Group Rooms', [], 'room');
