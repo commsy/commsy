@@ -252,6 +252,20 @@ class RoomFeedGenerator
             }
         }
 
+        $relatedUsers = $currentUser->getRelatedUserList();
+        foreach($relatedUsers as $relatedUser){
+            if(!is_null($relatedUser->getLinkedUserroomItemID())){
+                if($relatedUser->getLinkedUserroomItemID()){
+                    $roomIds[] = strval($relatedUser->getLinkedUserroomItemID());
+                }
+            }
+            $relatedRooms = $relatedUser->getRelatedUserrooms();
+            foreach($relatedRooms as $relatedRoom){
+                $roomIds[] = $relatedRoom->getItemID();
+            }
+        }
+
+
 //        $grouproom_list = $currentUser->getUserRelatedGroupList();
 //        if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
 //            $grouproom_list->reverse();
