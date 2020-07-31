@@ -384,10 +384,19 @@ class UserService
         // group rooms
         $groupRoomList = $userItem->getUserRelatedGroupList();
 
+        // user rooms
+        $userRoomList = $userItem->getRelatedUserrooms();
+        $list = new \cs_list();
+        foreach($userRoomList as $userRoom){
+            $list->add($userRoom);
+        }
+
+
         // merge all lists
         $searchableRoomList = $projectRoomList;
         $searchableRoomList->addList($communityRoomList);
         $searchableRoomList->addList($groupRoomList);
+        $searchableRoomList->addList($list);
 
         return $searchableRoomList->to_array();
     }
