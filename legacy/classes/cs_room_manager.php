@@ -863,6 +863,17 @@ class cs_room_manager extends cs_context_manager
         return $retour;
     }
 
+    function getUserRoomsUserIsMemberOf($userId)
+    {
+        $query = 'SELECT * FROM user u, room r WHERE r.type = \'userroom\' AND u.item_id = ' . $userId ->getItemID();
+        $results = $this->_db_connector->performQuery($query);
+        $retour = [];
+        foreach($results as $result){
+            $retour[] = $this->getItem($result['item_id']);
+        }
+        return $retour;
+    }
+
     function deleteRoomOfUserAndUserItemsInactivity($uid)
     {
         // create backup of item
