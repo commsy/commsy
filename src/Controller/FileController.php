@@ -21,11 +21,6 @@ class FileController extends Controller
         $file = $fileService->getFile($fileId);
         $rootDir = $this->get('kernel')->getRootDir().'/';
 
-        // fix for userrooms
-        if($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom'){
-            $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
-        }
-
         // fix for archived rooms
         if (!$file->getPortalID()) {
             $roomService = $this->get('commsy_legacy.room_service');
@@ -40,7 +35,14 @@ class FileController extends Controller
         if (file_exists($rootDir.$file->getDiskFileName())) {
             $content = file_get_contents($rootDir.$file->getDiskFileName());
         } else {
-            throw $this->createNotFoundException('The requested file does not exist');   
+            // fix for userrooms
+            if($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom'){
+                $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
+            }
+            $content = file_get_contents($rootDir.$file->getDiskFileName());
+            if (!file_exists($rootDir.$file->getDiskFileName())) {
+                throw $this->createNotFoundException('The requested file does not exist');
+            }
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => $file->getMime()));
 
