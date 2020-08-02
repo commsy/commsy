@@ -126,6 +126,10 @@
                 <source>Group Rooms</source>
                 <target>Group workspaces</target>
             </trans-unit>
+            <trans-unit id="room-userrooms">
+                <source>Userroom Rooms</source>
+                <target>Userrooms</target>
+            </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>
                 <target>Enter workspace</target>
