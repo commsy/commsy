@@ -157,7 +157,7 @@
                                         
                                         <li>
                                             <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                'url': path('app_todo_xhrstatus', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
                                                 'action': 'markdone',
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                 'mode': 'click',
@@ -307,8 +307,10 @@
                                                             <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                         </a>
                                                     {% else %}
-                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                    {% endif %}
+                                                         <span class="uk-text-muted">
+                                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                         </span>
+                                                     {% endif %}
                                                 </li>
                                                 {# change status of whole task#}
                                                 <li>
