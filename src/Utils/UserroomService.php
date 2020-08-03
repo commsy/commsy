@@ -174,7 +174,8 @@ class UserroomService
                 continue;
             }
 
-            $this->renameUserroom($existingUserroom, $user);
+            $roomTitle = $user->getFullName() . ' – ' . $room->getTitle();
+            $this->renameUserroom($existingUserroom, $user, $roomTitle);
         }
     }
 
