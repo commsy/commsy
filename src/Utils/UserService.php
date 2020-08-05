@@ -373,7 +373,7 @@ class UserService
      * 
      * @return array of searchable room items
      */
-    public function getSearchableRooms($userItem)
+    public function getSearchableRooms(\cs_user_item $userItem)
     {
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
@@ -385,18 +385,13 @@ class UserService
         $groupRoomList = $userItem->getUserRelatedGroupList();
 
         // user rooms
-        $userRoomList = $userItem->getRelatedUserrooms();
-        $list = new \cs_list();
-        foreach($userRoomList as $userRoom){
-            $list->add($userRoom);
-        }
-
+        $userRoomList = $userItem->getRelatedUserroomsList();
 
         // merge all lists
         $searchableRoomList = $projectRoomList;
         $searchableRoomList->addList($communityRoomList);
         $searchableRoomList->addList($groupRoomList);
-        $searchableRoomList->addList($list);
+        $searchableRoomList->addList($userRoomList);
 
         return $searchableRoomList->to_array();
     }

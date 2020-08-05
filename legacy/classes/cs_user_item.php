@@ -1238,11 +1238,10 @@ class cs_user_item extends cs_item
         return $list;
     }
 
-    function getRelatedUserrooms()
+    public function getRelatedUserroomsList(): \cs_list
     {
         $manager = $this->_environment->getRoomManager();
-        $list = $manager->getUserRoomsUserIsMemberOf($this);
-        return $list;
+        return $manager->getUserRoomsUserIsMemberOf($this)  ;
     }
 
     function getUserRelatedProjectList()

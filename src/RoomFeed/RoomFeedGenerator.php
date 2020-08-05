@@ -260,7 +260,7 @@ class RoomFeedGenerator
                 }
             }
             $relatedRooms = $relatedUser->getRelatedUserrooms();
-            foreach($relatedRooms as $relatedRoom){
+            foreach($relatedRooms as $relatedRoom) {
                 $roomIds[] = $relatedRoom->getItemID();
             }
         }

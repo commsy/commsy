@@ -863,15 +863,26 @@ class cs_room_manager extends cs_context_manager
         return $retour;
     }
 
-    function getUserRoomsUserIsMemberOf($userId)
+    public function getUserRoomsUserIsMemberOf(\cs_user_item $user): \cs_list
     {
-        $query = 'SELECT * FROM user u, room r WHERE r.type = \'userroom\' AND u.item_id = ' . $userId ->getItemID();
+        $query = '
+            SELECT r.*
+            FROM room r
+            INNER JOIN user u ON u.context_id = r.item_id
+            WHERE r.type = "userroom" AND
+                u.auth_source = ' . $user->getAuthSource() . ' AND
+                u.deletion_date IS NULL AND
+                u.deleter_id IS NULL AND
+                u.user_id = "' . $user->getUserID() . '"
+        ';
         $results = $this->_db_connector->performQuery($query);
-        $retour = [];
-        foreach($results as $result){
-            $retour[] = $this->getItem($result['item_id']);
+
+        $list = new \cs_list();
+        foreach ($results as $result) {
+            $list->add($this->_buildItem($result));
         }
-        return $retour;
+
+        return $list;
     }
 
     function deleteRoomOfUserAndUserItemsInactivity($uid)
