@@ -31,6 +31,8 @@ use App\Model\SearchData;
 use App\Filter\SearchFilterType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class SearchController
@@ -521,14 +523,16 @@ class SearchController extends BaseController
      * @param  int $roomId The current room id
      * @return JsonResponse The JSON result
      */
-    public function roomNavigationAction($roomId, Request $request, SearchManager $searchManager)
-    {
+    public function roomNavigationAction(
+        int $roomId,
+        Request $request,
+        SearchManager $searchManager,
+        RouterInterface $router,
+        TranslatorInterface $translator
+    ) {
         $results = [];
 
         $query = $request->get('search', '');
-
-        $router = $this->container->get('router');
-        $translator = $this->container->get('translator');
 
         if (!empty($query)) {
             $roomQueryCondition = new RoomQueryCondition();
