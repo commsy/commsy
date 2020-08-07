@@ -253,38 +253,17 @@ class RoomFeedGenerator
         }
 
         $relatedUsers = $currentUser->getRelatedUserList();
-        foreach($relatedUsers as $relatedUser){
-            if(!is_null($relatedUser->getLinkedUserroomItemID())){
-                if($relatedUser->getLinkedUserroomItemID()){
-                    $roomIds[] = strval($relatedUser->getLinkedUserroomItemID());
+        foreach ($relatedUsers as $relatedUser) {
+            if ($relatedUser->getLinkedUserroomItemID() !== null) {
+                if ($relatedUser->getLinkedUserroomItemID()) {
+                    $roomIds[] = (string)$relatedUser->getLinkedUserroomItemID();
                 }
             }
             $relatedRooms = $relatedUser->getRelatedUserroomsList();
-            foreach($relatedRooms as $relatedRoom)  {
+            foreach ($relatedRooms as $relatedRoom) {
                 $roomIds[] = $relatedRoom->getItemID();
             }
         }
-
-
-//        $grouproom_list = $currentUser->getUserRelatedGroupList();
-//        if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
-//            $grouproom_list->reverse();
-//            $grouproom_item = $grouproom_list->getFirst();
-//            while ($grouproom_item) {
-//                $project_room_id = $grouproom_item->getLinkedProjectItemID();
-//                if ( in_array($project_room_id,$roomIds) ) {
-//                    $room_id_array_temp = array();
-//                    foreach ($roomIds as $value) {
-//                        $room_id_array_temp[] = $value;
-//                        if ( $value == $project_room_id) {
-//                            $room_id_array_temp[] = $grouproom_item->getItemID();
-//                        }
-//                    }
-//                    $roomIds = $room_id_array_temp;
-//                }
-//                $grouproom_item = $grouproom_list->getNext();
-//            }
-//        }
 
         $communityRooms = $currentUser->getUserRelatedCommunityList();
         if (isset($communityRooms) && $communityRooms->isNotEmpty()) {
