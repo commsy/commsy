@@ -220,6 +220,7 @@
 
                                     if ($result.find('ul.form-errors').length) {
                                         article.html($result);
+                                        registerDraftFormButtonEvents();
                                         $this.handleFormSubmit(article);
                                     } else {
                                         article.html($result);
