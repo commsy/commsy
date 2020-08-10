@@ -100,7 +100,9 @@ class RoomFeedGenerator
         if ($lastId) {
             $lastFeedItem = $this->itemService->getTypedItem($lastId);
             if ($lastFeedItem) {
-                $lastModificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
+                $lastModificationDate = ($lastFeedItem instanceof \cs_user_item) ?
+                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getCreationDate()) :
+                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
 
                 $previousFeedEntries = [];
                 foreach ($contextIdsByRubric as $rubric => $contextIds) {
