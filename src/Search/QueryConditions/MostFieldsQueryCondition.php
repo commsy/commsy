@@ -87,6 +87,8 @@ class MostFieldsQueryCondition implements QueryConditionInterface
 
             'contactPersons',
             'roomDescription',
+
+            'filesRaw',
         ];
 
         /**
