@@ -128,7 +128,7 @@
             </trans-unit>
             <trans-unit id="room-userrooms">
                 <source>Userroom Rooms</source>
-                <target>Userrooms</target>
+                <target>Personal Workspaces</target>
             </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>

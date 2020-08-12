@@ -112,9 +112,9 @@ class UserRoomSubscriber implements EventSubscriberInterface
                 $this->userroomService->updateNameInUserroomsForUser($relatedUser, $newUser->getFirstname(), $newUser->getLastname());
             }
 
-            // TODO: if the user's chosen language just changed, also update the user's language in her user room
+            // if the user's chosen system language just changed, also update the user's system language in her user room
             if ($oldUser->getLanguage() !== $newUser->getLanguage()) {
-                // $this->userroomService->updateLanguageInUserroomOfUser($relatedUser);
+                $this->userroomService->updateLanguageInUserroomOfUser($relatedUser, $newUser->getLanguage());
             }
         }
     }
