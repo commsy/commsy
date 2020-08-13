@@ -607,10 +607,14 @@ class ProfileController extends Controller
      * @Template
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function additionalAction($roomId, $itemId, Request $request)
-    {
+    public function additionalAction(
+        $roomId,
+        $itemId,
+        UserService $userService,
+        EventDispatcherInterface $eventDispatcher,
+        Request $request
+    ) {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
-        $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
@@ -627,10 +631,17 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $oldUserItem = clone $userItem;
+
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
+
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
             $privateRoomItem->save();
+
+            $event = new AccountChangedEvent($oldUserItem, $userItem);
+            $eventDispatcher->dispatch($event);
+
             return $this->redirect($request->getUri());
         }
 

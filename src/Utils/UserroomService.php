@@ -162,6 +162,47 @@ class UserroomService
     }
 
     /**
+     * Updates the system language of the user room for the given project room user, and updates the system language of the
+     * related user room user
+     * @param \cs_user_item $changedProjectUser the project room user whose user room's system language shall be updated
+     * @param string $newLanguage (optional) the language identifier describing the system language to be used; if not given,
+     * defaults to the $changedProjectUser's language
+     */
+    public function updateLanguageInUserroomOfUser(\cs_user_item $changedProjectUser, string $newLanguage = null)
+    {
+        $newLanguage = $newLanguage ?? $changedProjectUser->getLanguage();
+
+        $userroom = $changedProjectUser->getLinkedUserroomItem();
+
+        if (!$userroom || empty($newLanguage)) {
+            return;
+        }
+
+        // update the system language for the project room user's user room
+        // NOTE: if the user has chosen to dynamically map her system language to the browser's current language, we
+        // setup her user room in a similar fashion, so that it honors the user's currently chosen system language
+        $userroomLanguage = ($newLanguage !== 'browser') ? $newLanguage : 'user';
+        $userroom->setLanguage($userroomLanguage);
+        $userroom->save();
+
+        // update the system language for the user room user who's related to $changedProjectUser
+        $userroomUsers = $userroom->getUserList()->to_array();
+        foreach ($userroomUsers as $userroomUser) {
+            // get the project room user who corresponds to (i.e., represents) this user room user
+            $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
+
+            $ownsUserroom = false;
+            if ($projectUserRelatedToUserroomUser) {
+                $ownsUserroom = $projectUserRelatedToUserroomUser->getItemID() === $changedProjectUser->getItemID();
+            }
+            if ($ownsUserroom) {
+                $userroomUser->setLanguage($newLanguage);
+                $userroomUser->save();
+            }
+        }
+    }
+
+        /**
      * Updates the room titles of all user rooms of the given project room so that they include the project room's current title
      * @param \cs_room_item $room the project room whose user rooms shall be updated
      */
@@ -276,7 +317,7 @@ class UserroomService
     }
 
     /**
-     * Renames the the given user room with the default title
+     * Renames the given user room with the default title
      * The user room's default title consists of the full name of its room "owner", followed by the title of the hosting
      * project room
      * @param \cs_userroom_item $userroom the user room that should be renamed
