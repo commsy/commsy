@@ -386,6 +386,16 @@ class UserService
 
         // user rooms
         $userRoomList = $userItem->getRelatedUserroomsList();
+        foreach ($userRoomList as $userRoom) {
+            /** @var \cs_userroom_item $userRoom */
+            // we only want to add a user room, if the option is enabled in the project room
+            $parentProjectRoom = $userRoom->getLinkedProjectItem();
+            if ($parentProjectRoom !== null &&
+                $parentProjectRoom->getShouldCreateUserRooms() === false
+            ) {
+                $userRoomList->removeElement($userRoom);
+            }
+        }
 
         // merge all lists
         $searchableRoomList = $projectRoomList;
