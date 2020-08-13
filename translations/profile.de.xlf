@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="userId">
                 <source>userId</source>
-                <target>Benutzername</target>
+                <target>Kennung</target>
             </trans-unit>
             <trans-unit id="changePassword">
                 <source>changePassword</source>
@@ -56,7 +56,7 @@
             </trans-unit>
             <trans-unit id="combineUserId">
                 <source>combineUserId</source>
-                <target>Benutzername</target>
+                <target>Kennung</target>
             </trans-unit>
             <trans-unit id="combinePassword">
                 <source>combinePassword</source>
