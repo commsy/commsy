@@ -1037,9 +1037,15 @@ class RoomController extends Controller
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
 
-                // user room will only be set in project workspaces
+                // user room-related options will only be set in project workspaces
                 if (isset($context['type_sub']['createUserRooms'])) {
                     $legacyRoom->setShouldCreateUserRooms($context['type_sub']['createUserRooms']);
+                }
+                if (isset($context['type_sub']['userroom_template'])) {
+                    $userroomTemplate = $roomService->getRoomItem($context['type_sub']['userroom_template']);
+                    if ($userroomTemplate) {
+                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
+                    }
                 }
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
