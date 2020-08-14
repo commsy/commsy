@@ -123,14 +123,20 @@ class ExtensionSettingsType extends AbstractType
 
                 if ($roomItem->isProjectRoom()) {
                     $form->add('createUserRooms', CheckboxType::class, [
-                        'label' => 'User room',
-                        'translation_domain' => 'settings',
-                        'required' => false,
-                        'label_attr' => [
-                            'class' => 'uk-form-label',
-                        ],
-                        'help' => 'User room tooltip',
-                    ]);
+                            'label' => 'User room',
+                            'required' => false,
+                            'label_attr' => [
+                                'class' => 'uk-form-label',
+                            ],
+                        ])
+                        ->add('userroom_template', ChoiceType::class, [
+                            //'choices' => $options['templates'],// TODO: add templates
+                            'placeholder' => false,
+                            'required' => false,
+                            'mapped' => false,
+                            'label' => 'User room template',
+                        ])
+                    ;
                 }
             })
         ;
