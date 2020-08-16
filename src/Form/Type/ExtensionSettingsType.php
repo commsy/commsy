@@ -130,7 +130,8 @@ class ExtensionSettingsType extends AbstractType
                             ],
                         ])
                         ->add('userroom_template', ChoiceType::class, [
-                            //'choices' => $options['templates'],// TODO: add templates
+                            'choices' => $options['userroomTemplates'],
+                            'preferred_choices' => $options['preferredUserroomTemplates'],
                             'placeholder' => false,
                             'required' => false,
                             'mapped' => false,
@@ -151,6 +152,11 @@ class ExtensionSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired([
+                'room',
+                'userroomTemplates',
+                'preferredUserroomTemplates',
+            ])
             ->setRequired(['room'])
             ->setDefaults(array('translation_domain' => 'settings'))            
         ;
