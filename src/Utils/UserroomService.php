@@ -34,11 +34,11 @@ class UserroomService
 
     /**
      * Creates a new user room within the given project room for the given user
-     * @param \cs_room_item $room the project room that will host the created user room
+     * @param \cs_project_item $room the project room that will host the created user room
      * @param \cs_user_item $user the project room user who will be associated with the created user room
      * @return \cs_userroom_item|null the newly created user room, or null if an error occurred
      */
-    public function createUserroom(\cs_room_item $room, \cs_user_item $user): ?\cs_userroom_item
+    public function createUserroom(\cs_project_item $room, \cs_user_item $user): ?\cs_userroom_item
     {
         // TODO: use a facade/factory to create a new user room
 
@@ -48,10 +48,12 @@ class UserroomService
         // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
         $roomContext = $room->getItemID();
 
+        $userroomTemplate = $room->getUserRoomTemplateItem();
+
         /**
          * @var $newRoom \cs_userroom_item
          */
-        $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle);
+        $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle, "", $userroomTemplate);
         if (!$newRoom) {
             return null;
         }
