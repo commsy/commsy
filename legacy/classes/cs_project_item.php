@@ -1250,6 +1250,31 @@ class cs_project_item extends cs_room_item {
        }
    }
 
+    /**
+     * Returns a list of related userrooms.
+     *
+     * @return cs_list
+     */
+   public function getUserRoomTemplatesList()
+   {
+       if($this->getItemID()){
+           $userroom_manager = $this->_environment->getUserRoomManager();
+           $userroom_manager->resetLimits();
+           $userroom_manager->setGetAllRoomLimit();
+           $userroom_manager->setTemplateLimit();
+           $userroom_manager->unsetRoomLimit();
+           $templates = $userroom_manager->_performQuery();
+           $template_array = [];
+
+           $template_array[' - '] = -1;
+           foreach($templates as $template)
+           {
+               $template_array[$template['title']] = $template['item_id'];
+           }
+           return $template_array;
+       }
+   }
+
    function _setObjectLinkItems($changed_key) {
       if ( $changed_key == CS_COMMUNITY_TYPE ) {
          if ( !empty($this->_data[$changed_key])

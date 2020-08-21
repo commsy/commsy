@@ -366,18 +366,21 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        /**
-         * @var $userroomTemplate \cs_room_item
-         */
-        $userroomTemplate = $roomItem->getUserRoomTemplateItem();
-        $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
-        $templates = $roomService->getAvailableTemplates($roomItem->getType());
+        if($roomItem->getType() == 'project'){
+            $userroomTemplates = $roomItem->getUserRoomTemplatesList();
+            $userroomTemplate = $roomItem->getUserRoomTemplateItem();
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+        }else{
+            $userroomTemplates = [];
+            $userroomTemplate = null;
+            $defaultUserroomTemplateIDs = [];
+        }
 
         $roomData = $extensionSettingsTransformer->transform($roomItem);
 
         $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
             'room' => $roomItem,
-            'userroomTemplates' => $templates,
+            'userroomTemplates' => $userroomTemplates,
             'preferredUserroomTemplates' => $defaultUserroomTemplateIDs,
         ]);
         
@@ -388,8 +391,9 @@ class SettingsController extends Controller
 
             $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
 
-// TODO: persist ID of selected user room template via cs_project_item->setUserRoomTemplateID()
-
+            if($roomItem->getType() == 'project' and isset($formData['userroom_template'])){
+                $roomItem->setUserRoomTemplateID($formData['userroom_template']);
+            }
             $roomItem->save();
 
             $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);

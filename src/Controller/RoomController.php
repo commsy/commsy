@@ -985,6 +985,10 @@ class RoomController extends Controller
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
+        if(!isset($type)){
+            $type = 'project'; //TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
+        }
+
         $templates = $roomService->getAvailableTemplates($type);
 
         // necessary, since the data field malfunctions when added via listener call (#2979)

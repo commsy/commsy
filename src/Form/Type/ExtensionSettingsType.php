@@ -134,7 +134,7 @@ class ExtensionSettingsType extends AbstractType
                             'preferred_choices' => $options['preferredUserroomTemplates'],
                             'placeholder' => false,
                             'required' => false,
-                            'mapped' => false,
+                            'mapped' => true,
                             'label' => 'User room template',
                         ])
                     ;
