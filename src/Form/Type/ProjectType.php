@@ -59,6 +59,14 @@ class ProjectType extends AbstractType
                 ),
                 'help' => 'User room tooltip',
             ])
+            ->add('userroom_template', ChoiceType::class, [
+                'choices' => $options['templates'],
+                'placeholder' => 'No template',
+                'required' => false,
+                'mapped' => false,
+                'label' => 'User room template',
+                'translation_domain' => 'settings',
+            ])
         ;
             if (!empty($options['times'])) {
                 $builder->add('time_interval', Select2ChoiceType::class, [

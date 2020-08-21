@@ -26,6 +26,7 @@ class RoomService
      * @param int $contextID the ID of the room which hosts the created room
      * @param string $title the title of the created room
      * @param string $description (optional) the description of the created room
+     * @param \cs_room_item|null (optional) $roomTemplate the room to be used as a template when creating the new room
      * @param \cs_user_item|null (optional) $creator the user who will be specified as the room's creator; if left out,
      * the current user will be used
      * @param \cs_user_item|null (optional) $modifier the user who will be specified as the room's modifier; if left out,
@@ -37,6 +38,7 @@ class RoomService
         int $contextID,
         string $title,
         string $description = "",
+        \cs_room_item $roomTemplate = null,
         \cs_user_item $creator = null,
         \cs_user_item $modifier = null
     ): ?\cs_room_item
@@ -66,6 +68,9 @@ class RoomService
         $newRoom->setTitle($title);
         $newRoom->setDescription($description);
 
+        // TODO: in case of a project room, assign the community rooms to which this room belongs (from a method parameter)
+        // TODO: set the room's time intervals (from a method parameter)
+
         // persist room (which will also call $roomManager->saveItem())
         $newRoom->save();
 
@@ -73,9 +78,17 @@ class RoomService
 
         // TODO: setRoomContext?
 
+        if ($roomTemplate) {
+            $newRoom = $this->copySettings($roomTemplate, $newRoom);
+        }
+
+        // TODO: set the room's system language (from a method parameter)
+
         // mark the room as edited
         $linkModifierItemManager = $this->legacyEnvironment->getLinkModifierItemManager();
         $linkModifierItemManager->markEdited($newRoom->getItemID(), $modifier->getItemID());
+
+        // TODO: set any room categories (from a method parameter)
 
         return $newRoom;
     }
@@ -108,6 +121,57 @@ class RoomService
                 return $rubrics;
             }
         }
+    }
+
+    private function copySettings($masterRoom, $targetRoom)
+    {
+        // NOTE: the variable names in this method are required by the below included files
+        $old_room = $masterRoom;
+        $new_room = $targetRoom;
+        $old_room_id = $old_room->getItemID();
+        $environment = $this->legacyEnvironment;
+
+// TODO: check if the commented code is still necessary
+// (when creating a project room with user rooms, the commented code would hit the exception since the user room creator is not a room member)
+
+        /**/
+        $user_manager = $environment->getUserManager();
+        $creator_item = $user_manager->getItem($new_room->getCreatorID());
+//        if ($creator_item->getContextID() == $new_room->getItemID()) {
+            $creator_id = $creator_item->getItemID();
+//        } else {
+//            $user_manager->resetLimits();
+//            $user_manager->setContextLimit($new_room->getItemID());
+//            $user_manager->setUserIDLimit($creator_item->getUserID());
+//            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
+//            $user_manager->setModeratorLimit();
+//            $user_manager->select();
+//            $user_list = $user_manager->get();
+//            if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
+//                $creator_item = $user_list->getFirst();
+//                $creator_id = $creator_item->getItemID();
+//            } else {
+//                throw new \Exception('can not get creator of new room');
+//            }
+//        }
+//        $creator_item->setAccountWantMail('yes');
+//        $creator_item->setOpenRoomWantMail('yes');
+//        $creator_item->setPublishMaterialWantMail('yes');
+//        $creator_item->save();
+
+        // copy room settings
+        require_once('include/inc_room_copy_config.php');
+
+        // save new room
+        $new_room->save();
+
+        // copy data
+        require_once('include/inc_room_copy_data.php');
+        /**/
+
+        $targetRoom = $new_room;
+
+        return $targetRoom;
     }
 
     /**
@@ -323,5 +387,97 @@ class RoomService
         }
 
         return $serviceEmail;
+    }
+
+    /**
+     * Returns all room templates available for the given room type
+     * @param string $type the type of the room
+     * @return array array of room template IDs keyed by room title & ID
+     */
+    public function getAvailableTemplates(string $type): array
+    {
+        $templates = [];
+
+        $legacyEnvironment = $this->legacyEnvironment;
+
+        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager->setContextLimit($legacyEnvironment->getCurrentPortalItem()->getItemID());
+        $roomManager->setTemplateLimit();
+        $roomManager->select();
+
+        $templateList = $roomManager->get();
+        if ($templateList->isNotEmpty()) {
+            $template = $templateList->getFirst();
+            while ($template) {
+                $availability = $template->getTemplateAvailability(); // $type === 'project'
+                if ($type === 'community') {
+                    $availability = $template->getCommunityTemplateAvailability();
+                }
+
+                $add = false;
+
+                // free for all?
+                if (!$add && $availability == '0') {
+                    $add = true;
+                }
+
+                // only in community rooms
+                if (!$add && $legacyEnvironment->inCommunityRoom() && $availability == '3') {
+                    $add = true;
+                }
+
+                // same as above, but from portal context
+                if (!$add && $legacyEnvironment->inPortal() && $availability == '3') {
+                    // check if user is member in one of the templates community rooms
+                    $communityList = $template->getCommunityList();
+                    if ($communityList->isNotEmpty()) {
+                        $userCommunityList = $currentUserItem->getRelatedCommunityList();
+                        if ($userCommunityList->isNotEmpty()) {
+                            $communityItem = $communityList->getFirst();
+                            while ($communityItem) {
+                                $userCommunityItem = $userCommunityList->getFirst();
+                                while ($userCommunityItem) {
+                                    if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
+                                        $add = true;
+                                        break;
+                                    }
+
+                                    $userCommunityItem = $userCommunityList->getNext();
+                                }
+
+                                $communityItem = $communityList->getNext();
+                            }
+                        }
+                    }
+                }
+
+                // only for members
+                if (!$add && $availability == '1' && $template->mayEnter($currentUserItem)) {
+                    $add = true;
+                }
+
+                // only mods
+                if (!$add && $availability == '2' && $template->mayEnter($currentUserItem)) {
+                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
+                        $add = true;
+                    }
+                }
+
+                if ($type != $template->getItemType()) {
+                    $add = false;
+                }
+
+                if ($add) {
+                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
+                    $templates[$label] = $template->getItemID();
+                }
+
+                $template = $templateList->getNext();
+            }
+        }
+
+        return $templates;
     }
 }
