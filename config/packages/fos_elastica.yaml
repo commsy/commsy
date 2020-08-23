@@ -990,9 +990,9 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-                        files:
+#                        files:
                             # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
+#                            property_path: false
 #                            type: 'attachment'
                         filesRaw:
                             property_path: false

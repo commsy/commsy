@@ -75,6 +75,9 @@ class MostFieldsQueryCondition implements QueryConditionInterface
             'steps.description',
             'sections.description',
 
+            'steps.filesRaw',
+            'sections.filesRaw',
+
             'userId',
 //            'creationDate',
 //            'endDate',

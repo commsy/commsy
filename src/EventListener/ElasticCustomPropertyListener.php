@@ -211,6 +211,25 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+
+    public function getPlainContentofAllFiles($files){
+        $filesPlain = [];
+
+        /** @var \cs_file_item $file */
+        foreach($files as $file){
+            if (!$file->isDeleted()) {
+                $fileName = $this->projectDir . '/' . $file->getFilepath();
+                $contentPlain = $this->file2TextService->convert($fileName);
+                if(!empty($contentPlain)){
+                    $filesPlain[] = $contentPlain;
+                }
+            }
+        }
+
+        return $filesPlain;
+
+    }
+
     public function addDiscussionArticles($event)
     {
         $discussionManager = $this->legacyEnvironment->getDiscussionManager();
@@ -224,9 +243,13 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 $article = $articles->getFirst();
                 while ($article) {
                     if (!$article->isDeleted() && !$article->isDraft()) {
+                        $files = $article->getFileList();
+                        $filesPlain = $this->getPlainContentofAllFiles($files);
+
                         $articleContents[] = [
                             'subject' => $article->getSubject(),
                             'description' => $article->getDescription(),
+                            'filesRaw'=> $filesPlain,
                         ];
                     }
 
@@ -256,9 +279,12 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 $step = $steps->getFirst();
                 while ($step) {
                     if (!$step->isDeleted() && !$step->isDraft()) {
+                        $files = $step->getFileList();
+                        $filesPlain = $this->getPlainContentofAllFiles($files);
                         $stepContents[] = [
                             'title' => $step->getTitle(),
                             'description' => $step->getDescription(),
+                            'filesRaw'=> $filesPlain,
                         ];
                     }
 
@@ -285,9 +311,12 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 $section = $sections->getFirst();
                 while ($section) {
                     if (!$section->isDeleted() && !$section->isDraft()) {
+                        $files = $section->getFileList();
+                        $filesPlain = $this->getPlainContentofAllFiles($files);
                         $sectionContents[] = [
                             'title' => $section->getTitle(),
                             'description' => $section->getDescription(),
+                            'filesRaw'=> $filesPlain,
                         ];
                     }
 
