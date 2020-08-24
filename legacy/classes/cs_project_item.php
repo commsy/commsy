@@ -59,6 +59,8 @@ class cs_project_item extends cs_room_item {
      */
     private $_userroomTemplateItem = NULL;
 
+    private $environment = NULL;
+
    /** constructor
     *
     * @param object environment environment of the commsy project
@@ -67,6 +69,7 @@ class cs_project_item extends cs_room_item {
       cs_context_item::__construct($environment);
       $this->_type = CS_PROJECT_TYPE;
 
+      $this->environment = $environment;
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
       $this->_default_rubrics_array[1] = CS_TODO_TYPE;
       $this->_default_rubrics_array[2] = CS_DATE_TYPE;
@@ -1257,6 +1260,9 @@ class cs_project_item extends cs_room_item {
      */
    public function getUserRoomTemplatesList()
    {
+       $translator = $this->environment->getTranslationObject();
+       $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+
        if($this->getItemID()){
            $userroom_manager = $this->_environment->getUserRoomManager();
            $userroom_manager->resetLimits();
@@ -1266,7 +1272,7 @@ class cs_project_item extends cs_room_item {
            $templates = $userroom_manager->_performQuery();
            $template_array = [];
 
-           $template_array[' - '] = -1;
+           $template_array['*'.$msg] = '-1';
            foreach($templates as $template)
            {
                $template_array[$template['title']] = $template['item_id'];
