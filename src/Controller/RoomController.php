@@ -987,14 +987,18 @@ class RoomController extends Controller
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
+
         if(!isset($type)){
             $type = 'project'; //TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
         }
 
+        $translator = $legacyEnvironment->getTranslationObject();
+        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+
         $templates = $roomService->getAvailableTemplates($type);
 
         // necessary, since the data field malfunctions when added via listener call (#2979)
-        $templates['No template'] = '-1';
+        $templates['*'.$msg] = '-1';
 
         // re-sort array by elements
         foreach($templates as $index => $entry){
