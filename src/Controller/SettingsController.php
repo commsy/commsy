@@ -358,6 +358,7 @@ class SettingsController extends Controller
         Request $request,
         RoomService $roomService,
         ExtensionSettingsTransformer $extensionSettingsTransformer,
+        LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher
     ) {
         // get room from RoomService
@@ -369,6 +370,17 @@ class SettingsController extends Controller
         $userroomTemplate = $roomItem->getUserRoomTemplateItem();
         $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
         $templates = $roomService->getAvailableTemplates($roomItem->getType());
+
+        $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
+        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+        $templates['*'.$msg] = '-1';
+
+        uasort($templates,  function($a, $b) {
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
 
         $roomData = $extensionSettingsTransformer->transform($roomItem);
 
