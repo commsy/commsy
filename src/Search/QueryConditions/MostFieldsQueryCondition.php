@@ -64,6 +64,8 @@ class MostFieldsQueryCondition implements QueryConditionInterface
             // discussion articles
             'discussionarticles.subject^1.3',
             'discussionarticles.description^1.3',
+            'discussionarticles.filesRaw',
+
 
             // user
             'fullName',
