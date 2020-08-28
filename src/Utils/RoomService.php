@@ -160,13 +160,13 @@ class RoomService
 //        $creator_item->save();
 
         // copy room settings
-        require_once('include/inc_room_copy_config.php');
+        require('include/inc_room_copy_config.php');
 
         // save new room
         $new_room->save();
 
         // copy data
-        require_once('include/inc_room_copy_data.php');
+        require('include/inc_room_copy_data.php');
         /**/
 
         $targetRoom = $new_room;
