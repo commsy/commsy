@@ -367,9 +367,16 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $userroomTemplate = $roomItem->getUserRoomTemplateItem();
-        $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
-        $templates = $roomService->getAvailableTemplates($roomItem->getType());
+        if($roomItem->getType() == 'userroom'){
+            $projectItem = $roomItem->getLinkedProjectItem();
+            $userroomTemplate = $projectItem->getUserRoomTemplateItem();
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $templates = $roomService->getAvailableTemplates($projectItem->getType());
+        }else{
+            $userroomTemplate = $roomItem->getUserRoomTemplateItem();
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $templates = $roomService->getAvailableTemplates($roomItem->getType());
+        }
 
         $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
         $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
