@@ -93,6 +93,17 @@ class RoomService
         return $newRoom;
     }
 
+    public function updateRoomTemplate($roomId, $roomTemplateID)
+    {
+        $roomItem = $this->getRoomItem($roomId);
+        $roomTemplate = $this->getRoomItem($roomTemplateID);
+        if ($roomTemplate) {
+            $roomItem = $this->copySettings($roomTemplate, $roomItem);
+        }
+        $roomItem->save();
+        return $roomItem;
+    }
+
     /**
      * returns the rubrics for the room with the $roomId
      * @param Integer $roomId room id

@@ -94,6 +94,15 @@ class UserroomService
         return $newRoom;
     }
 
+    public function updateRoomTemplate($roomId, \cs_room_item $roomTemplate = null)
+    {
+        $roomManager = $this->legacyEnvironment->getUserroomManager();
+        $room = $roomManager->getItem($roomId);
+        $userroomTemplate = $room->getUserRoomTemplateItem();
+        $this->roomService->updateRoomTemplate($roomId, $roomTemplate, $roomManager);
+
+    }
+
     /**
      * Creates new user rooms within the given project room for all users who don't have user rooms yet
      * @param \cs_room_item $room the project room for which user rooms shall be created for all its existing users
@@ -222,6 +231,19 @@ class UserroomService
         }
     }
 
+    public function updateTemplateInUserroomsForRoom(\cs_room_item $room){
+        $roomManager = $this->legacyEnvironment->getUserroomManager();
+        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($roomUsers as $user) {
+            $existingUserroom = $user->getLinkedUserroomItem();
+            if (!$existingUserroom) {
+                continue;
+            }
+
+            $this->updateUserroomTemplate($existingUserroom, $user, $room->getUserRoomTemplateID(), $roomManager);
+        }
+    }
+
     /**
      * Updates the user status of the given user for its related users in all user rooms of the given project room
      * @param \cs_room_item $room the project room whose user rooms shall be updated
@@ -342,6 +364,19 @@ class UserroomService
             $userroom->setTitle($userroomTitle);
             $userroom->save();
         }
+    }
+
+    private function updateUserroomTemplate(\cs_userroom_item $userroom, \cs_user_item $roomOwner, string $newRoomTemplateID)
+    {
+        /**
+         * @var \cs_project_item $projectRoom
+         */
+        $projectRoom = $roomOwner->getContextItem();
+        if (!$projectRoom->isProjectRoom()) {
+            return;
+        }
+
+        $this->roomService->updateRoomTemplate($userroom->getItemID(), $newRoomTemplateID);
     }
 
     /**
