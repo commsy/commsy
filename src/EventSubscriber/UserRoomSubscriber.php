@@ -137,5 +137,9 @@ class UserRoomSubscriber implements EventSubscriberInterface
         if ($oldRoom->getTitle() !== $newRoom->getTitle()) {
             $this->userroomService->renameUserroomsForRoom($newRoom);
         }
+
+        if ($oldRoom->getUserRoomTemplateID() !== $newRoom->getUserRoomTemplateID()){
+            $this->userroomService->updateTemplateInUserroomsForRoom($newRoom);
+        }
     }
 }
