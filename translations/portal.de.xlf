@@ -941,6 +941,32 @@
                 <source>Portal logo</source>
                 <target>Logo</target>
             </trans-unit>
+
+            <!-- Mailtexts -->
+            <trans-unit id="mail_texts">
+                <source>Mailtexts</source>
+                <target>E-Mail-Texte</target>
+            </trans-unit>
+            <trans-unit id="password_expires">
+                <source>Password expires</source>
+                <target>Passwort läuft ab</target>
+            </trans-unit>
+            <trans-unit id="password_is_expired">
+                <source>Password is expired</source>
+                <target>Passwort ist abgelaufen</target>
+            </trans-unit>
+            <trans-unit id="reset">
+                <source>Reset</source>
+                <target>Zurücksetzen?</target>
+            </trans-unit>
+            <trans-unit id="content_german">
+                <source>Content german</source>
+                <target>Inhalt (Deutsch)</target>
+            </trans-unit>
+            <trans-unit id="content_english">
+                <source>Content english</source>
+                <target>Inhalt (Englisch)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

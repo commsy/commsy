@@ -34,6 +34,7 @@ use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\LicenseType;
 use App\Form\Type\Portal\LicenseSortType;
+use App\Form\Type\Portal\MailtextsType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
@@ -314,6 +315,38 @@ class PortalSettingsController extends AbstractController
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/mailtexts")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param RoomService $roomService
+     * @param LegacyEnvironment $environment
+     */
+    public function mailtexts(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $environment
+    )
+    {
+        $portalId = $portal->getId();
+        $mailTextForm = $this->createForm(MailtextsType::class, $portal);
+
+        $mailTextForm->handleRequest($request);
+        if ($mailTextForm->isSubmitted() && $mailTextForm->isValid()) {
+
+        }
+
+        return [
+            'form' => $mailTextForm->createView(),
+            'portalId' => $portalId,
         ];
     }
 
