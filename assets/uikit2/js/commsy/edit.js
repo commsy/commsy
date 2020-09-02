@@ -220,6 +220,7 @@
 
                                     if ($result.find('ul.form-errors').length) {
                                         article.html($result);
+                                        registerDraftFormButtonEvents();
                                         $this.handleFormSubmit(article);
                                     } else {
                                         article.html($result);
@@ -261,6 +262,13 @@
     });
 
     let registerDraftFormButtonEvents = function() {
+        /**
+         * This should not be mandatory in order to ensure the event listener is only fired once
+         * due to the .one() call. However, it fixes the problem where the handler is called multiple
+         * times, resulting in a lot of unwanted ajax requests when saving.
+         */
+        $('#draft-save-combine-link').off('click');
+
         $('#draft-save-combine-link').one('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             $(this).parents('article').find('form').each(function () {

@@ -126,9 +126,17 @@
                 <source>Group Rooms</source>
                 <target>Gruppenräume</target>
             </trans-unit>
+            <trans-unit id="room-userrooms">
+                <source>Userroom Rooms</source>
+                <target>Personenräume</target>
+            </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>
                 <target>Raum betreten</target>
+            </trans-unit>
+            <trans-unit id="Enter user room">
+                <source>Enter user room</source>
+                <target>Personenraum betreten</target>
             </trans-unit>
             <trans-unit id="room_no_access">
                 <source>no access</source>
@@ -249,6 +257,10 @@
             <trans-unit id="grouproom">
                 <source>grouproom</source>
                 <target>Gruppenraum</target>
+            </trans-unit>
+            <trans-unit id="userroom">
+                <source>userroom</source>
+                <target>Personenraum</target>
             </trans-unit>
             <trans-unit id="language">
                 <source>language</source>

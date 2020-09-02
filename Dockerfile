@@ -85,6 +85,8 @@ WORKDIR /var/www/html
 # build for production
 ARG APP_ENV=prod
 
+COPY .env ./
+
 # prevent the reinstallation of vendors at every changes in the source code
 COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \

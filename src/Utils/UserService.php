@@ -53,6 +53,125 @@ class UserService
     }
 
     /**
+     * Creates a new user in the given room context based on the given source user
+     * NOTE: if the room context already contains a user with identical ID, that existing user is returned
+     * @param \cs_user_item $sourceUser the user whose attributes shall be cloned to the new user
+     * @param int $contextID the ID of the room which contains the created user
+     * @param int $userStatus (optional) the user status of the created user; defaults to a regular user
+     * @param \cs_user_item|null (optional) $creator the user who will be specified as the new user's creator; if left
+     * out, the new user will be also set as his/her own creator
+     * @return \cs_user_item|null the newly created user, or null if an error occurred
+     */
+    public function cloneUser(
+        \cs_user_item $sourceUser,
+        int $contextID,
+        int $userStatus = 2,
+        \cs_user_item $creator = null
+    ): ?\cs_user_item
+    {
+        // TODO: use a facade/factory to create a new room (also compare with UserBuilder->addUserToRooms())
+
+        if (!isset($sourceUser) || empty($contextID)) {
+            return null;
+        }
+
+        if ($sourceUser->isReallyGuest() || $sourceUser->isRoot()) {
+            return null;
+        }
+
+        $newUser = $sourceUser->cloneData();
+
+        $newUser->setContextID($contextID);
+        $newUser->setStatus($userStatus);
+
+        $this->cloneUserPicture($sourceUser, $newUser);
+
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($contextID);
+        if ($roomItem->getAGBStatus()) {
+            $newUser->setAGBAcceptance();
+        }
+
+        if ($this->legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+            $newUser->setEmailNotVisible();
+        }
+
+        if ($creator) {
+            $newUser->setCreatorItem($creator);
+        }
+
+        // TODO: set modification date?
+
+        // check if the user ID already exists within the room
+        $existingUser = $newUser->getRelatedUserItemInContext($contextID);
+        if ($existingUser) {
+            return $existingUser;
+        }
+
+        $newUser->save();
+
+        if (!$creator) {
+            $newUser->setCreatorID2ItemID();
+        }
+
+        // link user with group "all"
+        $this->addUserToSystemGroupAll($newUser, $roomItem);
+
+        return $newUser;
+    }
+
+    /**
+     * Copies the source user's picture to the given target user, and returns the target user
+     * @param \cs_user_item $sourceUser the user whose picture shall be copied to the target user
+     * @param \cs_user_item $targetUser the user whose picture will be set to the picture of the source user
+     * @return \cs_user_item|null the target user whose picture has been set, or null if the source user had no picture
+     */
+    public function cloneUserPicture(\cs_user_item $sourceUser, \cs_user_item $targetUser): ?\cs_user_item
+    {
+        $userPicture = $sourceUser->getPicture(); // example userPicture value: "cid123_jdoe_Jon-Doe-01.jpg"
+        if (empty($userPicture)) {
+            return null;
+        }
+
+        $values = explode('_', $userPicture);
+        $values[0] = 'cid' . $targetUser->getContextID();
+
+        $userPictureName = implode('_', $values);
+
+        $discManager = $this->legacyEnvironment->getDiscManager();
+        $discManager->copyImageFromRoomToRoom($userPicture, $targetUser->getContextID());
+        $targetUser->setPicture($userPictureName);
+
+        return $targetUser;
+    }
+
+    /**
+     * Links the given user with the given room's system group "All" and returns that group
+     * @param \cs_user_item $user the user who shall be linked to the system group "All"
+     * @param \cs_room_item $room the room whose system group "All" shall be used
+     * @return \cs_label_item|null the system group "All" to which the given user was added, or null if an error occurred
+     */
+    public function addUserToSystemGroupAll(\cs_user_item $user, \cs_room_item $room): ?\cs_label_item
+    {
+        $groupManager = $this->legacyEnvironment->getLabelManager();
+        $groupManager->setExactNameLimit('ALL');
+        $groupManager->setContextLimit($room->getItemID());
+        $groupManager->select();
+        $groupList = $groupManager->get();
+
+        /** @var \cs_group_item $group */
+        $systemGroupAll = $groupList->getFirst();
+
+        if ($systemGroupAll) {
+            $systemGroupAll->addMember($user);
+
+            return $systemGroupAll;
+        }
+
+        return null;
+    }
+
+    /**
      * @param integer $roomId
      * @param integer $max
      * @param integer $start
@@ -256,7 +375,7 @@ class UserService
      * 
      * @return array of searchable room items
      */
-    public function getSearchableRooms($userItem)
+    public function getSearchableRooms(\cs_user_item $userItem)
     {
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
@@ -267,10 +386,24 @@ class UserService
         // group rooms
         $groupRoomList = $userItem->getUserRelatedGroupList();
 
+        // user rooms
+        $userRoomList = $userItem->getRelatedUserroomsList();
+        foreach ($userRoomList as $userRoom) {
+            /** @var \cs_userroom_item $userRoom */
+            // we only want to add a user room, if the option is enabled in the project room
+            $parentProjectRoom = $userRoom->getLinkedProjectItem();
+            if ($parentProjectRoom !== null &&
+                $parentProjectRoom->getShouldCreateUserRooms() === false
+            ) {
+                $userRoomList->removeElement($userRoom);
+            }
+        }
+
         // merge all lists
         $searchableRoomList = $projectRoomList;
         $searchableRoomList->addList($communityRoomList);
         $searchableRoomList->addList($groupRoomList);
+        $searchableRoomList->addList($userRoomList);
 
         return $searchableRoomList->to_array();
     }

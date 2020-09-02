@@ -3,7 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Portal;
+use App\Action\Copy\CopyAction;
+use App\Action\Copy\InsertAction;
+use App\Action\Copy\InsertUserroomAction;
 use App\Entity\User;
+use App\Event\UserLeftRoomEvent;
+use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Profile\AccountContactFormType;
@@ -38,6 +43,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class UserController
@@ -88,13 +94,14 @@ class UserController extends BaseController
         return $this->gatherUsers($roomId, $max, $start, $sort, 'gridView', $request);
     }
 /**
-     * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}")
+     * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}")
      * @Template
      */
     public function sendMailViaContactForm(
         $roomId,
         $itemId,
         $originPath,
+        $moderatorIds = null,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
@@ -105,14 +112,28 @@ class UserController extends BaseController
     ) {
 
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        $userItem = $userService->getUser($itemId);
-        $userData = $userTransformer->transform($userItem);
-        $mail = $userItem->getEmail();
 
         $item = $itemService->getTypedItem($itemId);
+        $formData = null;
+        if(!is_null($item->getLinkedUserroomItem())){
+            $recipients = [];
+            $recipients[$item->getFullName()] = $item->getFullName();
+            foreach ($item->getLinkedUserroomItem()->getModeratorList() as $moderator) {
+                $recipients[$moderator->getFullName()] = $moderator->getFullName();
+            }
+            $message = $this->get('translator')->trans('This email has been sent by ... from userroom ...', [
+                '%sender_name%' => $legacyEnvironment->getEnvironment()->getCurrentUserItem()->getFullName(),
+                '%room_name%' => $item->getLinkedUserroomItem()->getTitle(),
+                '%recipients%' => implode(', ',$recipients),
+            ], 'mail');
+            $message = '<br><br>--<br>'.$message;
+            $search = ', ';
+            $replace = ' & ';
+            $message = strrev(implode(strrev($replace), explode(strrev($search), strrev($message), 2)));
+            $formData = ['message' => $message];
+        }
 
-        $form = $this->createForm(AccountContactFormType::class, null, [
+        $form = $this->createForm(AccountContactFormType::class, $formData, [
             'item' => $item,
             'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
                 'roomId' => $roomId,
@@ -129,7 +150,7 @@ class UserController extends BaseController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, false);
+            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true, $moderatorIds, $userService);
             $mailer->send($message);
 
 
@@ -358,6 +379,7 @@ class UserController extends BaseController
         UserService $userService,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
@@ -479,6 +501,13 @@ class UserController extends BaseController
                         $versionId = $user->getVersionID();
                         $readerManager->markRead($itemId, $versionId);
                         $noticedManager->markNoticed($itemId, $versionId);
+
+                        if ($user->isDeleted()) {
+                            $event = new UserLeftRoomEvent($user, $room);
+                        } else {
+                            $event = new UserStatusChangedEvent($user);
+                        }
+                        $eventDispatcher->dispatch($event);
                     }
 
                     if ($formData['inform_user']) {
@@ -594,6 +623,20 @@ class UserController extends BaseController
 
         $roomItem = $roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
+
+        $moderatorIds = [];
+        $userRoomItem = null;
+        if ($roomItem->isProjectRoom() &&
+            $roomItem->getShouldCreateUserRooms() &&
+            !is_null($infoArray['user']->getLinkedUserroomItem()) &&
+            $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())) {
+            $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
+            $moderators = $infoArray['user']->getLinkedUserroomItem()->getModeratorList();
+            foreach ($moderators as $moderator) {
+                array_push($moderatorIds, $moderator->getItemId());
+            }
+        }
+
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -607,10 +650,14 @@ class UserController extends BaseController
             'nextItemId' => $infoArray['nextItemId'],
             'lastItemId' => $infoArray['lastItemId'],
             'readCount' => $infoArray['readCount'],
+            'moderatorIds' => implode(', ', $moderatorIds),
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
             'showRating' => false,
+            'userRoomItem' => $userRoomItem,
+            'userRoomItemMemberCount' => $userRoomItem == null ? [] : $userRoomItem->getUserList()->getCount(),
+            'userRoomLinksCount' => count($userRoomItem == null ? [] : $userRoomItem->getAllLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
             'currentUser' => $infoArray['currentUser'],
@@ -1476,12 +1523,19 @@ ReaderService $readerService,
 
         $readerList = [];
         $allowedActions = [];
+        $linkedUserRooms = [];
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom'];
+            }
+            if ($roomItem->isProjectRoom() &&
+                $roomItem->getShouldCreateUserRooms() &&
+                !is_null($item->getLinkedUserroomItem()) &&
+                $this->isGranted('ITEM_ENTER', $item->getLinkedUserroomItemID())) {
+                $linkedUserRooms[strval($item->getItemID())] = $item->getLinkedUserroomItem();
             }
         }
 
@@ -1491,7 +1545,23 @@ ReaderService $readerService,
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
+            'linkedUserRooms' => $linkedUserRooms,
         ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/insertUserroom")
+     * @Template()
+     */
+    public function insertUserroomAction(
+        $roomId,
+        InsertUserroomAction $action,
+        Request $request
+    ) {
+        $room = $this->getRoom($roomId);
+        $users = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $users);
     }
 
     /**

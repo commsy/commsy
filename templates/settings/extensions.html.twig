@@ -15,6 +15,15 @@
 
                 <div>
                     {{ form_start(form) }}
+                        {% if form.createUserRooms is defined and form.userroom_template is defined %}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'User room heading'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">{{ 'User room text'|trans({}, 'settings') }}</div>
+                            {{ form_row(form.createUserRooms) }}
+                            {{ form_row(form.userroom_template) }}
+                        </div>
+                        {% endif %}
+
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Assessment'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Assessment text'|trans({}, 'settings') }}</div>

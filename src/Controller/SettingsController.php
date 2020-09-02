@@ -7,6 +7,7 @@ use App\Form\DataTransformer\AdditionalSettingsTransformer;
 use App\Form\DataTransformer\AppearanceSettingsTransformer;
 use App\Form\DataTransformer\GeneralSettingsTransformer;
 use App\Form\DataTransformer\ModerationSettingsTransformer;
+use App\Event\RoomSettingsChangedEvent;
 use App\Form\Type\Room\DeleteType;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
@@ -29,6 +30,9 @@ use App\Form\Type\AppearanceSettingsType;
 use App\Form\Type\ExtensionSettingsType;
 use App\Form\Type\InvitationsSettingsType;
 use App\Utils\RoomService;
+
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -56,6 +60,7 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         GeneralSettingsTransformer $transformer,
         LegacyEnvironment $environment,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -76,19 +81,19 @@ class SettingsController extends AbstractController
             $roomData['categories'][] = $roomCategory->getCategoryId();
         }
 
-        $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
+        $form = $this->createForm(GeneralSettingsType::class, $roomData, [
             'roomId' => $roomId,
             'roomCategories' => $roomCategories,
-        ));
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $oldRoom = clone $roomItem;
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             if (!$roomItem->isGroupRoom()) {
                 $roomItem->save();
-            }
-            else {
+            } else {
                 $roomItem->save(false);
             }
 
@@ -98,12 +103,17 @@ class SettingsController extends AbstractController
                 $roomCategoriesService->setRoomCategoriesLinkedToContext($roomItem->getItemId(), $formData['categories']);
             }
 
-            return $this->redirectToRoute('app_settings_general', ["roomId" => $roomId]);
+            $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
+            $eventDispatcher->dispatch($roomSettingsChangedEvent);
+
+            return $this->redirectToRoute('app_settings_general', [
+                "roomId" => $roomId,
+            ]);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
@@ -120,6 +130,7 @@ class SettingsController extends AbstractController
         Request $request,
         RoomService $roomService,
         ModerationSettingsTransformer $transformer,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         /** @var cs_room_item $roomItem */
@@ -129,21 +140,25 @@ class SettingsController extends AbstractController
         }
         $roomData = $transformer->transform($roomItem);
 
-        $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
+        $form = $this->createForm(ModerationSettingsType::class, $roomData, [
             'roomId' => $roomId,
             'emailTextTitles' => $roomData['email_configuration']['email_text_titles'],
-        ));
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+            $oldRoom = clone $roomItem;
 
+            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
             $roomItem->save();
+
+            $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
+            $eventDispatcher->dispatch($roomSettingsChangedEvent);
         }
 
-        return array(
-            'form' => $form->createView()
-        );
+        return [
+            'form' => $form->createView(),
+        ];
     }
 
     /**
@@ -160,6 +175,7 @@ class SettingsController extends AbstractController
         Request $request,
         RoomService $roomService,
         AdditionalSettingsTransformer $transformer,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         /** @var cs_room_item $roomItem */
@@ -185,27 +201,30 @@ class SettingsController extends AbstractController
             $roomData['terms']['agb_text_en'] = $currentTerms->getContentEn();
         }
 
-        $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
+        $form = $this->createForm(AdditionalSettingsType::class, $roomData, [
             'roomId' => $roomId,
             'newStatus' => $roomData['tasks']['additional_status'],
             'portalTerms' => $portalTerms,
-        ));
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $oldRoom = clone $roomItem;
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
-
             $roomItem->save();
+
+            $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
+            $eventDispatcher->dispatch($roomSettingsChangedEvent);
         }
 
         $portalItem = $roomItem->getContextItem();
 
-        return array(
+        return [
             'form' => $form->createView(),
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
-        );
+        ];
     }
 
     /**
@@ -222,6 +241,7 @@ class SettingsController extends AbstractController
         Request $request,
         RoomService $roomService,
         AppearanceSettingsTransformer $transformer,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         // get room from RoomService
@@ -239,20 +259,22 @@ class SettingsController extends AbstractController
         // get the configured LiipThemeBundle themes
 
         $themeArray = (!empty($preDefinedTheme)) ? null : $this->container->getParameter('liip_theme.themes');
-        $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
+        $form = $this->createForm(AppearanceSettingsType::class, $roomData, [
             'roomId' => $roomId,
             'themes' => $themeArray,
-            'uploadUrl' => $this->generateUrl('app_upload_upload', array(
+            'uploadUrl' => $this->generateUrl('app_upload_upload', [
                 'roomId' => $roomId,
-            )),
-            'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
+            ]),
+            'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', [
                 'theme' => 'THEME'
-            )),
-        ));
+            ]),
+        ]);
 
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $oldRoom = clone $roomItem;
+
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
@@ -292,8 +314,7 @@ class SettingsController extends AbstractController
                     }
                     $roomItem->setBGImageFilename($fileName);
                 }
-            }
-            else{
+            }  else{
                 $roomItem->setBGImageFilename('');
             }
 
@@ -317,26 +338,38 @@ class SettingsController extends AbstractController
                     file_put_contents($absoluteFilepath, $data);
                     $roomItem->setLogoFilename($fileName);
                 }
-            }
-            else {
+            } else {
                 $roomItem->setLogoFilename('');
             }
 
             $roomItem->save();
 
-            return $this->redirectToRoute('app_settings_appearance', ["roomId" => $roomId]);
+            $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
+            $eventDispatcher->dispatch($roomSettingsChangedEvent);
+
+            return $this->redirectToRoute('app_settings_appearance', [
+                'roomId' => $roomId,
+            ]);
         }
 
-        $backgroundImageCustom = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
-        $backgroundImageTheme = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
-        $logoImage = $this->generateUrl("getLogo", array('roomId' => $roomId));
+        $backgroundImageCustom = $this->generateUrl('getBackground', [
+            'roomId' => $roomId,
+            'imageType' => 'custom',
+        ]);
+        $backgroundImageTheme = $this->generateUrl('getBackground', [
+            'roomId' => $roomId,
+            'imageType' => 'theme',
+        ]);
+        $logoImage = $this->generateUrl('getLogo', [
+            'roomId' => $roomId,
+        ]);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'bgImageFilepathCustom' => $backgroundImageCustom,
             'bgImageFilepathTheme' => $backgroundImageTheme,
             'logoImageFilepath' => $logoImage,
-        );
+        ];
     }
 
     /**
@@ -353,6 +386,8 @@ class SettingsController extends AbstractController
         Request $request,
         RoomService $roomService,
         ExtensionSettingsTransformer $extensionSettingsTransformer,
+        LegacyEnvironment $legacyEnvironment,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         // get room from RoomService
@@ -361,15 +396,50 @@ class SettingsController extends AbstractController
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
+        if($roomItem->getType() == 'userroom'){
+            $projectItem = $roomItem->getLinkedProjectItem();
+            $userroomTemplate = $projectItem->getUserRoomTemplateItem();
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $templates = $roomService->getAvailableTemplates($projectItem->getType());
+        }else{
+            $userroomTemplate = $roomItem->getUserRoomTemplateItem();
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $templates = $roomService->getAvailableTemplates($roomItem->getType());
+        }
+
+        $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
+        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+        $templates['*'.$msg] = '-1';
+
+        uasort($templates,  function($a, $b) {
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
+
         $roomData = $extensionSettingsTransformer->transform($roomItem);
 
         $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
-            'roomId' => $roomId,
+            'room' => $roomItem,
+            'userroomTemplates' => $templates,
+            'preferredUserroomTemplates' => $defaultUserroomTemplateIDs,
         ]);
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $extensionSettingsTransformer->applyTransformation($roomItem, $form->getData());
+            $oldRoom = clone $roomItem;
+            $formData = $form->getData();
+
+            $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
+
+            if($roomItem->getType() == 'project' and isset($formData['userroom_template'])){
+                $roomItem->setUserRoomTemplateID($formData['userroom_template']);
+            }
+            $roomItem->save();
+
+            $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
+            $eventDispatcher->dispatch($roomSettingsChangedEvent);
         }
 
         return [

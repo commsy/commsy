@@ -14,10 +14,11 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
+use App\Utils\RoomService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class InsertAction
+class InsertUserroomAction
 {
     /**
      * @var TranslatorInterface
@@ -39,8 +40,12 @@ class InsertAction
      */
     private $copyService;
 
-    public function __construct(TranslatorInterface $translator, LegacyEnvironment $legacyEnvironment, ItemService $itemService, CopyService $copyService)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment,
+        ItemService $itemService,
+        CopyService $copyService
+    ) {
         $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
@@ -61,49 +66,19 @@ class InsertAction
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items as read only user is not allowed'));
         }
 
-        if($roomItem->getType() == 'userroom'){
-            $imports = $this->copyService->getListEntries(0);
+        $imports = $this->copyService->getListEntries(0);
 
-            foreach ($items as $user) {
-                /** @var \cs_user_item $user */
-                //$userRoom = $user->getLinkedUserroomItem();
+        foreach ($items as $user) {
+            /** @var \cs_user_item $user */
+            $userRoom = $user->getLinkedUserroomItem();
 
-                foreach ($imports as $import) {
-                    /** @var \cs_item $import */
-                    $import = $this->itemService->getTypedItem($import->getItemId());
+            foreach ($imports as $import) {
+                /** @var \cs_item $import */
 
-                    $oldContextId = $this->legacyEnvironment->getCurrentContextID();
-                    $this->legacyEnvironment->setCurrentContextID($roomItem->getItemID());
-                    $copy = $import->copy();
-                    $this->legacyEnvironment->setCurrentContextID($oldContextId);
-
-                    if (empty($copy->getErrorArray())) {
-                        $readerManager = $this->legacyEnvironment->getReaderManager();
-                        $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
-                        $noticedManager = $this->legacyEnvironment->getNoticedManager();
-                        $noticedManager->markNoticed($copy->getItemID(), $copy->getVersionID());
-                    }
-                }
-            }
-        }else{
-            foreach ($items as $item) {
-                // archive
-                $toggleArchive = false;
-                if ($item->isArchived() and !$this->legacyEnvironment->isArchiveMode()) {
-                    $toggleArchive = true;
-                    $this->legacyEnvironment->toggleArchiveMode();
-                }
-
-                // archive
-                $importItem = $this->itemService->getTypedItem($item->getItemId());
-
-                // archive
-                if ($toggleArchive) {
-                    $this->legacyEnvironment->toggleArchiveMode();
-                }
-
-                // archive
-                $copy = $importItem->copy();
+                $oldContextId = $this->legacyEnvironment->getCurrentContextID();
+                $this->legacyEnvironment->setCurrentContextID($userRoom->getItemID());
+                $copy = $import->copy();
+                $this->legacyEnvironment->setCurrentContextID($oldContextId);
 
                 if (empty($copy->getErrorArray())) {
                     $readerManager = $this->legacyEnvironment->getReaderManager();
@@ -114,10 +89,8 @@ class InsertAction
             }
         }
 
-
-
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('inserted %count% entries in this room', count($items), [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('inserted %count% entries', count($items), [
                 '%count%' => count($items),
             ]),
         ]);

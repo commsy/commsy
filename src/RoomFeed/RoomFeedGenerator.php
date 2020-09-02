@@ -112,7 +112,9 @@ class RoomFeedGenerator
         if ($lastId) {
             $lastFeedItem = $this->itemService->getTypedItem($lastId);
             if ($lastFeedItem) {
-                $lastModificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
+                $lastModificationDate = ($lastFeedItem instanceof \cs_user_item) ?
+                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getCreationDate()) :
+                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
 
                 $previousFeedEntries = [];
                 foreach ($contextIdsByRubric as $rubric => $contextIds) {
@@ -261,6 +263,19 @@ class RoomFeedGenerator
                 $roomIds[] = $projectRoom->getItemId();
 
                 $projectRoom = $projectRooms->getNext();
+            }
+        }
+
+        $relatedUsers = $currentUser->getRelatedUserList();
+        foreach ($relatedUsers as $relatedUser) {
+            if ($relatedUser->getLinkedUserroomItemID() !== null) {
+                if ($relatedUser->getLinkedUserroomItemID()) {
+                    $roomIds[] = (string)$relatedUser->getLinkedUserroomItemID();
+                }
+            }
+            $relatedRooms = $relatedUser->getRelatedUserroomsList();
+            foreach ($relatedRooms as $relatedRoom) {
+                $roomIds[] = $relatedRoom->getItemID();
             }
         }
 

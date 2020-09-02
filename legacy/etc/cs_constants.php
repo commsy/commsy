@@ -88,6 +88,7 @@ define('CS_MYROOM_TYPE','myroom');
 define('CS_PROJECT_TYPE','project');
 define('CS_PORTAL_TYPE','portal');
 define('CS_SERVER_TYPE','server');
+// NOTE: for room type 'userroom', use const `cs_userroom_item::ROOM_TYPE_USER`
 
 define('CS_FILE_TYPE','file');
 define('CS_LABEL_TYPE','label');

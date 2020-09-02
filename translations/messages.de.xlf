@@ -346,6 +346,10 @@
                 <source>Set status of %count% entries to in progress</source>
                 <target>{0} Kein Eintrag verändert.|{1} Status eines Eintrages auf "in Bearbeitung" gesetzt.|]1,Inf[ Status von %count% Einträgen auf "in Bearbeitung" gesetzt.</target>
            </trans-unit>
+            <trans-unit id="entriesMarkedInProgressTypo">
+                <source>Set status of %count% entries to inprogress</source>
+                <target>{0} Kein Eintrag verändert.|{1} Status eines Eintrages auf "in Bearbeitung" gesetzt.|]1,Inf[ Status von %count% Einträgen auf "in Bearbeitung" gesetzt.</target>
+           </trans-unit>
            <trans-unit id="64">
                 <source>set status of %count% users to blocked</source>
                  <target>{0} Keine Kennung gesperrt.|{1} Eine Kennung gesperrt.|]1,Inf[ %count% Kennungen gesperrt.</target>
@@ -381,6 +385,10 @@
            <trans-unit id="entriesInserted">
                 <source>inserted %count% entries in this room</source>
                 <target>{0} Keinen Eintrag in diesen Raum eingefügt.|{1} Einen Eintrag in diesen Raum eingefügt.|]1,Inf[ %count% Einträge in diesen Raum eingefügt.</target>
+           </trans-unit>
+           <trans-unit id="entriesInsertedGeneral">
+                <source>inserted %count% entries</source>
+                <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag eingefügt.|]1,Inf[ %count% Einträge eingefügt.</target>
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>

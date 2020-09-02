@@ -34,6 +34,8 @@ use App\Model\SearchData;
 use App\Filter\SearchFilterType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class SearchController
@@ -559,14 +561,13 @@ class SearchController extends BaseController
      */
     public function roomNavigationAction(
         Request $request,
-        SearchManager $searchManager
+        SearchManager $searchManager,
+        RouterInterface $router,
+        TranslatorInterface $translator
     ) {
         $results = [];
 
         $query = $request->get('search', '');
-
-        $router = $this->container->get('router');
-        $translator = $this->container->get('translator');
 
         if (!empty($query)) {
             $roomQueryCondition = new RoomQueryCondition();
@@ -580,19 +581,20 @@ class SearchController extends BaseController
             'community' => [],
             'project' => [],
             'grouproom' => [],
+            'userroom' => [],
         ];
         foreach ($roomResults as $room) {
             $rooms[$room->getType()][] = $room;
         }
 
-        $rooms = array_merge($rooms['community'], $rooms['project'], $rooms['grouproom']);
+        $rooms = array_merge($rooms['community'], $rooms['project'], $rooms['grouproom'], $rooms['userroom']);
 
         $lastType = null;
         foreach ($rooms as $room) {
             $url = '#';
 
             if (!$lastType || $lastType != $room->getType()) {
-                if (in_array($room->getType(), ['project', 'community'])) {
+                if (in_array($room->getType(), ['project', 'community', 'userroom'])) {
                     $title = $translator->trans(ucfirst($room->getType()) . ' Rooms', [], 'room');
                 } else {
                     $title = $translator->trans('Group Rooms', [], 'room');

@@ -343,6 +343,8 @@ class RESTController extends AbstractFOSRestController
             $newLegacyUser = null;
             $picture = null;
 
+            // TODO: try to make use of UserService->cloneUser() instead
+
             $privateRoomUserItem = $legacyPortalUser->getRelatedPrivateRoomUserItem();
             if ($privateRoomUserItem === null) {
                 $newLegacyUser = $legacyPortalUser->cloneData();

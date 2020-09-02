@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Utils\FileService;
 use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -24,6 +25,7 @@ class FileController extends AbstractController
     public function getFileAction(
         FileService $fileService,
         RoomService $roomService,
+        LegacyEnvironment $legacyEnvironment,
         int $fileId,
         string $disposition = 'attachment'
     ) {
@@ -43,7 +45,14 @@ class FileController extends AbstractController
         if (file_exists($rootDir.$file->getDiskFileName())) {
             $content = file_get_contents($rootDir.$file->getDiskFileName());
         } else {
-            throw $this->createNotFoundException('The requested file does not exist');   
+            // fix for userrooms
+            if($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom'){
+                $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
+            }
+            $content = file_get_contents($rootDir.$file->getDiskFileName());
+            if (!file_exists($rootDir.$file->getDiskFileName())) {
+                throw $this->createNotFoundException('The requested file does not exist');
+            }
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => $file->getMime()));
 

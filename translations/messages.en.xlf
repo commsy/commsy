@@ -346,6 +346,10 @@
                 <source>Set status of %count% entries to in progress</source>
                 <target>{0} No entries changed.|{1} Set status of %count% entry to "in progress".|]1,Inf[ Set status of %count% entries to "in progress".</target>
             </trans-unit>
+            <trans-unit id="entriesMarkedInProgressTypo">
+                <source>Set status of %count% entries to inprogress</source>
+                <target>{0} No entries changed.|{1} Set status of %count% entry to "in progress".|]1,Inf[ Set status of %count% entries to "in progress".</target>
+            </trans-unit>
             <trans-unit id="64">
                 <source>set status of %count% users to blocked</source>
                  <target>{0} No user locked.|{1} One user locked.|]1,Inf[ %count% users locked.</target>
@@ -381,6 +385,10 @@
            <trans-unit id="entriesInserted">
                 <source>inserted %count% entries in this room</source>
                 <target>{0} No entry inserted.|{1} Inserted one entry into this workspace.|]1,Inf[ Inserted %count% entries into this workspace.</target>
+           </trans-unit>
+           <trans-unit id="entriesInsertedGeneral">
+                <source>inserted %count% entries</source>
+                <target>{0} No entry inserted.|{1} Inserted one entry.|]1,Inf[ Inserted %count% entries.</target>
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>

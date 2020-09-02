@@ -10,32 +10,35 @@ use cs_user_item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Entity\Calendars;
+use App\Event\AccountChangedEvent;
+use App\Event\UserLeftRoomEvent;
 use App\Form\Type\Profile\DeleteAccountType;
-use App\Privacy\PersonalDataCollector;
-use App\Services\PrintService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormError;
-use App\Utils\RoomService;
-use App\Services\LegacyEnvironment;
-use App\Form\Type\Profile\RoomProfileGeneralType;
-use App\Form\Type\Profile\RoomProfileAddressType;
-use App\Form\Type\Profile\RoomProfileContactType;
-use App\Form\Type\Profile\RoomProfileNotificationsType;
 use App\Form\Type\Profile\DeleteType;
 use App\Form\Type\Profile\ProfileAccountType;
+use App\Form\Type\Profile\ProfileAdditionalType;
+use App\Form\Type\Profile\ProfileCalendarsType;
 use App\Form\Type\Profile\ProfileChangePasswordType;
 use App\Form\Type\Profile\ProfileMergeAccountsType;
 use App\Form\Type\Profile\ProfileNewsletterType;
-use App\Form\Type\Profile\ProfilePrivacyType;
-use App\Form\Type\Profile\ProfileCalendarsType;
-use App\Form\Type\Profile\ProfileAdditionalType;
 use App\Form\Type\Profile\ProfilePersonalInformationType;
+use App\Form\Type\Profile\ProfilePrivacyType;
+use App\Form\Type\Profile\RoomProfileAddressType;
+use App\Form\Type\Profile\RoomProfileContactType;
+use App\Form\Type\Profile\RoomProfileGeneralType;
+use App\Form\Type\Profile\RoomProfileNotificationsType;
+use App\Privacy\PersonalDataCollector;
+use App\Services\LegacyEnvironment;
+use App\Services\PrintService;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Utils\RoomService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+
 
 /**
  * Class ProfileController
@@ -67,8 +70,10 @@ class ProfileController extends AbstractController
         int $roomId,
         int $itemId
     ) {
+        /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $environment->getEnvironment();
         $discManager = $legacyEnvironment->getDiscManager();
+
         /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
 
@@ -79,13 +84,13 @@ class ProfileController extends AbstractController
         $userData = $userTransformer->transform($userItem);
         $userData['useProfileImage'] = $userItem->getPicture() != "";
 
-        $form = $this->createForm(RoomProfileGeneralType::class, $userData, array(
+        $form = $this->createForm(RoomProfileGeneralType::class, $userData, [
             'itemId' => $itemId,
-            'uploadUrl' => $this->generateUrl('app_upload_upload', array(
+            'uploadUrl' => $this->generateUrl('app_upload_upload',[
                 'roomId' => $roomId,
-                'itemId' => $itemId
-            )),
-        ));
+                'itemId' => $itemId,
+            ]),
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -94,8 +99,11 @@ class ProfileController extends AbstractController
             // use custom profile picture if given
             if($formData['useProfileImage']) {
                 if($formData['image_data']) {
-                    $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
-                    if(!file_exists($saveDir)){
+                    $saveDir = implode("/", [
+                        $this->getParameter('files_directory'),
+                        $roomService->getRoomFileDirectory($userItem->getContextID()),
+                    ]);
+                    if (!file_exists($saveDir)) {
                         mkdir($saveDir, 0777, true);
                     }
                     $data = $formData['image_data'];
@@ -103,18 +111,21 @@ class ProfileController extends AbstractController
                     list(, $data) = explode(",", $data);
                     list(, $extension) = explode("/", $type);
                     $data = base64_decode($data);
-                    $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
-                    $absoluteFilepath = implode("/", array($saveDir, $fileName));
+                    $fileName = implode("_", [
+                        'cid'.$userItem->getContextID(),
+                        $userItem->getUserID(),
+                        $fileName,
+                    ]);
+                    $absoluteFilepath = implode("/", [$saveDir, $fileName]);
                     file_put_contents($absoluteFilepath, $data);
                     $userItem->setPicture($fileName);
 
                     $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
                     $userItem->save();
                 }
-            }
-            // use user initials else
-            else {
-                if($discManager->existsFile($userItem->getPicture())) {
+            } else {
+                // use user initials else
+                if ($discManager->existsFile($userItem->getPicture())) {
                     $discManager->unlinkFile($userItem->getPicture());
                 }
                 $userItem->setPicture("");
@@ -130,14 +141,13 @@ class ProfileController extends AbstractController
                         $tempUserItem = $userList->getNext();
                         continue;
                     }
-                    if($formData['useProfileImage']) {
+                    if ($formData['useProfileImage']) {
                         $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
                         if ($tempFilename) {
                             $tempUserItem->setPicture($tempFilename);
                         }
-                    }
-                    else {
-                        if($discManager->existsFile($tempUserItem->getPicture())) {
+                    } else {
+                        if ($discManager->existsFile($tempUserItem->getPicture())) {
                             $discManager->unlinkFile($tempUserItem->getPicture());
                         }
                         $tempUserItem->setPicture("");
@@ -148,17 +158,20 @@ class ProfileController extends AbstractController
                 }
             }
 
-            return $this->redirectToRoute('app_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_general', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
         $roomItem = $roomService->getRoomItem($roomId);
 
-        return array(
+        return [
             'roomId' => $roomId,
             'roomTitle' => $roomItem->getTitle(),
             'user' => $userItem,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
@@ -373,6 +386,7 @@ class ProfileController extends AbstractController
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ) {
@@ -389,22 +403,31 @@ class ProfileController extends AbstractController
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(ProfilePersonalInformationType::class, $userData, array(
+        $form = $this->createForm(ProfilePersonalInformationType::class, $userData, [
             'itemId' => $itemId,
             'portalUser' => $portalUser,
-        ));
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $oldUserItem = clone $userItem;
+
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
-            return $this->redirectToRoute('app_profile_personal', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            $event = new AccountChangedEvent($oldUserItem, $userItem);
+            $eventDispatcher->dispatch($event);
+
+            return $this->redirectToRoute('app_profile_personal', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'hasToChangeEmail' => $portalUser->hasToChangeEmail(),
-        );
+        ];
     }
 
     /**
@@ -682,6 +705,7 @@ class ProfileController extends AbstractController
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
+        EventDispatcherInterface $eventDispatcher,
         int $itemId
     ) {
         /** @var cs_user_item $userItem */
@@ -702,10 +726,17 @@ class ProfileController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $oldUserItem = clone $userItem;
+
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
+
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
             $privateRoomItem->save();
+
+            $event = new AccountChangedEvent($oldUserItem, $userItem);
+            $eventDispatcher->dispatch($event);
+
             return $this->redirect($request->getUri());
         }
 
@@ -894,13 +925,17 @@ class ProfileController extends AbstractController
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         UserService $userService,
-        RoomService $roomService,
         ParameterBagInterface $parameterBag,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
-        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
-        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
+            'confirm_string' => $this->get('translator')->trans('lock', [], 'profile'),
+        ], [])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, [
+            'confirm_string' => $this->get('translator')->trans('delete', [], 'profile')
+        ], [])->getForm();
 
         $currentUser = $userService->getCurrentUserItem();
 
@@ -909,7 +944,8 @@ class ProfileController extends AbstractController
 
         $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
 
-        $roomItem = $roomService->getRoomItem($roomId);
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
 
         // Lock room profile
         if ($request->request->has('lock_form')) {
@@ -929,22 +965,18 @@ class ProfileController extends AbstractController
 
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
                 $currentUser->delete();
+
+                $event = new UserLeftRoomEvent($currentUser, $roomItem);
+                $eventDispatcher->dispatch($event);
+
                 return $this->redirect($portalUrl);
-            }
-
-
-            // get room from RoomService
-            $roomItem = $roomService->getRoomItem($roomId);
-
-            if (!$roomItem) {
-                throw $this->createNotFoundException('No room found for id ' . $roomId);
             }
         }
 
         return [
             'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
-            'form_delete' => $deleteForm->createView()
+            'form_delete' => $deleteForm->createView(),
         ];
     }
 

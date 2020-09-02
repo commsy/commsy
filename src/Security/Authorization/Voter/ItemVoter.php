@@ -21,6 +21,7 @@ class ItemVoter extends Voter
     const PARTICIPATE = 'ITEM_PARTICIPATE';
     const MODERATE = 'ITEM_MODERATE';
     const ENTER = 'ITEM_ENTER';
+    const USERROOM = 'ITEM_USERROOM';
 
     private $legacyEnvironment;
     private $itemService;
@@ -48,6 +49,7 @@ class ItemVoter extends Voter
             self::PARTICIPATE,
             self::MODERATE,
             self::ENTER,
+            self::USERROOM,
         ));
     }
 
@@ -93,6 +95,9 @@ class ItemVoter extends Voter
 
                 case self::ENTER:
                     return $this->canEnter($item, $currentUser, $user);
+
+                case self::USERROOM:
+                    return $this->hasUserroomItemPriviledges($item, $currentUser);
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
@@ -205,15 +210,16 @@ class ItemVoter extends Voter
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($item->getItemID());
 
-        if ($item->isPrivateRoom()) {
-            return true;
-        }
-
-        if ($roomItem) {
-            if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+        try{
+            if ($item->isPrivateRoom()) {
                 return true;
             }
-        }
+
+        if ($roomItem) {
+                if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+                    return true;
+                }
+            }
 
         if ($item->isPortal()) {
             if ($currentUser->isRoot()) {
@@ -230,8 +236,20 @@ class ItemVoter extends Voter
 
             // allow access if user is authenticated
             return $user instanceof User;
+            }
+        }catch(\Exception $e){
+            return false;
         }
 
         return false;
+    }
+
+    private function hasUserroomItemPriviledges($item, $currentUser)
+    {
+            if($item->getContextItem()->getType() == 'userroom'
+                && $this->canParticipate($item, $currentUser)){
+                return true;
+            }
+            return false;
     }
 }

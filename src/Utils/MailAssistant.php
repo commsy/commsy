@@ -108,7 +108,9 @@ class MailAssistant
         FormInterface $form,
         $item,
         $forceBCCMail = false
-    ): \Swift_Message
+    ,
+        $moderatorIds = null,
+        UserService $userService): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -120,6 +122,13 @@ class MailAssistant
         ];
 
         $recipients['to'][$item->getEmail()] = $item->getFullName();
+        if(!is_null($moderatorIds)){
+            $moderatorIds = explode(', ', $moderatorIds);
+            foreach($moderatorIds as $moderatorId){
+                $moderator = $userService->getUser($moderatorId);
+                $recipients['to'][$moderator->getEmail()] = $moderator->getFullName();
+            }
+        }
 
         $to = $recipients['to'];
         $toBCC = $recipients['bcc'];
@@ -132,7 +141,6 @@ class MailAssistant
         }
 
         $formDataSubject = $formData['subject'];
-
         $formDataMessage = $formData['message'];
 
         $from = '';

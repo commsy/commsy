@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
 include_once('classes/cs_list.php');
+include_once('classes/cs_userroom_item.php');
 include_once('classes/interfaces/cs_export_import_interface.php');
 
    /** This class returns an instance of a cs_mananger subclass on request.
@@ -248,6 +249,8 @@ class cs_environment {
                   $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
                } elseif ($type == CS_GROUPROOM_TYPE) {
                   $manager = $this->getRoomManager(); // room_manager for caching
+               } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                   $manager = $this->getRoomManager(); // room_manager for caching
                } elseif ($type == CS_PORTAL_TYPE) {
                   $manager = $this->getPortalManager();
                } elseif ($type == CS_SERVER_TYPE) {
@@ -283,6 +286,8 @@ class cs_environment {
                      $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
                   } elseif ($type == CS_GROUPROOM_TYPE) {
                      $manager = $this->getRoomManager(); // room_manager for caching
+                  } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                      $manager = $this->getRoomManager(); // room_manager for caching
                   } elseif ($type == CS_PORTAL_TYPE) {
                      $manager = $this->getPortalManager();
                   } elseif ($type == CS_SERVER_TYPE) {
@@ -349,10 +354,17 @@ class cs_environment {
            } elseif ( $contextItem->isPortal() ) {
                $this->_current_portal = $contextItem;
            } else {
+               $currentPortalId = $contextItem->getContextID();
+
+               if ($contextItem->getType() === cs_userroom_item::ROOM_TYPE_USER) {
+                   // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
+                   $currentPortalId = $contextItem->getPortalId();
+               }
+
                global $symfonyContainer;
                /** @var EntityManagerInterface $entityManager */
                $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-               $portal = $entityManager->getRepository(Portal::class)->find($contextItem->getContextID());
+               $portal = $entityManager->getRepository(Portal::class)->find($currentPortalId);
 
                if ($portal) {
                    $this->_current_portal = new PortalProxy($portal);
@@ -1124,6 +1136,28 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_grouproom_manager');
    }
 
+  /** get instance of cs_userroom_manager
+   *
+   * @return cs_userroom_manager
+   * @access public
+   */
+   function getUserRoomManager () {
+       if ( !$this->isArchiveMode() ) {
+           return $this->_getInstance('cs_userroom_manager');
+       } else {
+           return $this->getZzzUserRoomManager();
+       }
+   }
+
+  /** get instance of cs_zzz_userroom_manager
+   *
+   * @return cs_zzz_item_manager
+   * @access public
+   */
+   public function getZzzUserRoomManager() {
+      return $this->_getInstance('cs_zzz_userroom_manager');
+   }
+
   /** get instance of cs_myroom_manager
    *
    * @return cs_myroom_manager
@@ -1664,6 +1698,8 @@ class cs_environment {
             return $this->getPrivateRoomManager($force);
          } elseif ($type == CS_GROUPROOM_TYPE) {
             return $this->getGroupRoomManager($force);
+         } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+             return $this->getUserRoomManager($force);
          } elseif ($type == CS_MYROOM_TYPE) {
             return $this->getMyRoomManager();
          } elseif ($type == CS_PORTAL_TYPE) {
@@ -1714,7 +1750,7 @@ class cs_environment {
       return NULL;
    }
 
-  /** get boolean, if your are in the community room or not
+  /** get boolean, if you are in the community room or not
    *
    * @return boolean, true  = you are in the community room
    *                  false = you are not in the community room
@@ -1724,7 +1760,7 @@ class cs_environment {
       return $context_item->isCommunityRoom();
    }
 
-  /** get boolean, if your are in the private room or not
+  /** get boolean, if you are in the private room or not
    *
    * @return boolean, true  = you are in the private room
    *                  false = you are not in the private room
@@ -1739,7 +1775,7 @@ class cs_environment {
       return $context_item->isOpenForGuests();
    }
 
-  /** get boolean, if your are in a group room or not
+  /** get boolean, if you are in a group room or not
    *
    * @return boolean, true  = you are in a group room
    *                  false = you are not in a group room
@@ -1749,7 +1785,17 @@ class cs_environment {
       return $context_item->isGroupRoom();
    }
 
-  /** get boolean, if your are in a project room or not
+  /** get boolean, if you are in a user room or not
+   *
+   * @return boolean, true  = you are in a user room
+   *                  false = you are not in a user room
+   */
+  function inUserroom () {
+      $context_item = $this->getCurrentContextItem();
+      return $context_item->isUserroom();
+  }
+
+  /** get boolean, if you are in a project room or not
    *
    * @return boolean, true  = you are in a project room
    *                  false = you are not in a project room
@@ -1759,7 +1805,7 @@ class cs_environment {
       return $context_item->isProjectRoom();
    }
 
-  /** get boolean, if your are in a portal or not
+  /** get boolean, if you are in a portal or not
    *
    * @return boolean, true  = you are in a portal
    *                  false = you are not in a portal
@@ -1769,7 +1815,7 @@ class cs_environment {
       return $context_item->isPortal();
    }
 
-  /** get boolean, if your are in a server or not
+  /** get boolean, if you are in a server or not
    *
    * @return boolean, true  = you are in a server
    *                  false = you are not in a server
@@ -1815,6 +1861,10 @@ class cs_environment {
             $this->instance['translation_object']->setContext(CS_GROUPROOM_TYPE);
             $portal_item = $context_item->getContextItem();
             $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
+         } elseif ( $this->inUserroom() ) {
+             $this->instance['translation_object']->setContext(cs_userroom_item::ROOM_TYPE_USER);
+             $portal_item = $context_item->getPortalItem();
+             $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
          } elseif ( $this->inPrivateRoom() ) {
             $this->instance['translation_object']->setContext('private');
             $portal_item = $context_item->getContextItem();

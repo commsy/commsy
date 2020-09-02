@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Event\UserJoinedRoomEvent;
 use App\Form\Type\ProjectType;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\Type\Room\DeleteType;
 use App\Filter\ProjectFilterType;
 use App\Entity\Room;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class ProjectController
@@ -220,7 +222,9 @@ class ProjectController extends AbstractController
         CalendarsService $calendarsService,
         RoomCategoriesService $roomCategoriesService,
         RoomService $roomService,
+        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -263,8 +267,9 @@ class ProjectController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 // create a new room using the legacy code
                 $communityRoom = $roomService->getRoomItem($roomId);
-
+                $context = $request->get('project');
                 $projectManager = $legacyEnvironment->getProjectManager();
+
                 $legacyRoom = $projectManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -280,7 +285,16 @@ class ProjectController extends AbstractController
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
 
-                $context = $request->get('project');
+                if (isset($context['createUserRooms'])) {
+                    $legacyRoom->setShouldCreateUserRooms($context['createUserRooms']);
+                }
+                if (isset($context['userroom_template'])) {
+                    $userroomTemplate = $roomService->getRoomItem($context['userroom_template']);
+                    if ($userroomTemplate) {
+                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
+                    }
+                }
+
                 $timeIntervals = $context['time_interval'] ?? [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
                     $legacyRoom->setContinuous();
@@ -309,6 +323,12 @@ class ProjectController extends AbstractController
                 // would get overwritten by the room template's language setting
                 $legacyRoom->setLanguage($room->getLanguage());
                 $legacyRoom->save();
+
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                foreach ($legacyRoomUsers as $user) {
+                    $event = new UserJoinedRoomEvent($user, $legacyRoom);
+                    $eventDispatcher->dispatch($event);
+                }
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();

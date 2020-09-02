@@ -213,6 +213,12 @@ services:
     App\Utils\RoomService:
         autowire: true
 
+    commsy_legacy.userroom_service:
+        alias: App\Utils\UserroomService
+
+    App\Utils\UserroomService:
+        autowire: true
+
     commsy_legacy.file_service:
         alias: App\Utils\FileService
 
@@ -383,6 +389,10 @@ services:
 
     commsy_legacy.transformer.project:
         class: App\Form\DataTransformer\ProjectTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.userroom:
+        class: App\Form\DataTransformer\UserroomTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.portfolio:
@@ -1243,6 +1253,21 @@ services:
         autowire: false
 
     App\Event\ItemDeletedEvent:
+        autowire: false
+
+    App\Event\UserJoinedRoomEvent:
+        autowire: false
+
+    App\Event\UserLeftRoomEvent:
+        autowire: false
+
+    App\Event\RoomSettingsChangedEvent:
+        autowire: false
+
+    App\Event\UserStatusChangedEvent:
+        autowire: false
+
+    App\Event\AccountChangedEvent:
         autowire: false
 
     # Response

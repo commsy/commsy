@@ -68,13 +68,13 @@
                 {% if todo.internalStatus == 0 %}
 
                 {% elseif todo.internalStatus == 1 %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo" data-uk-tooltip title="{{ todo.status }}"></i>
                 {% elseif todo.internalStatus == 2 %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress" data-uk-tooltip title="{{ todo.status }}"></i>
                 {% elseif todo.internalStatus == 3 %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done" data-uk-tooltip title="{{ todo.status }}"></i>
                 {% else %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                    <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large todo" data-uk-tooltip title="{{ todo.status }}"></i>
                 {% endif %}
             </div>
             

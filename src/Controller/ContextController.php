@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ProjectService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Utils\UserService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -14,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class ContextController
@@ -75,6 +78,8 @@ class ContextController extends AbstractController
     public function requestAction(
         Request $request,
         LegacyEnvironment $environment,
+        UserService $userService,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ) {
@@ -120,17 +125,14 @@ class ContextController extends AbstractController
                 // provided the correct code if necessary (or provided no code at all).
                 // We can now build a new user item and set the appropriate status
 
+                // TODO: try to make use of UserService->cloneUser() instead
+
                 $currentUserItem = $legacyEnvironment->getCurrentUserItem();
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
                 $portalUserItem = $legacyEnvironment->getPortalUserItem();
 
-                if ($privateRoomUserItem) {
-                    $newUser = $privateRoomUserItem->cloneData();
-                    $newPicture = $privateRoomUserItem->getPicture();
-                } else {
-                    $newUser = $currentUserItem->cloneData();
-                    $newPicture = $currentUserItem->getPicture();
-                }
+                $sourceUser = $privateRoomUserItem ?? $currentUserItem;
+                $newUser = $sourceUser->cloneData();
 
                 // TODO: fix inconsistency!! privateRoomUser or portalUser as "account" user?
                 if ($portalUserItem) {
@@ -139,16 +141,7 @@ class ContextController extends AbstractController
 
                 $newUser->setContextID($roomItem->getItemID());
 
-                if (!empty($newPicture)) {
-                    $values = explode('_', $newPicture);
-                    $values[0] = 'cid' . $newUser->getContextID();
-
-                    $newPictureName = implode('_', $values);
-
-                    $discManager = $legacyEnvironment->getDiscManager();
-                    $discManager->copyImageFromRoomToRoom($newPicture, $newUser->getContextID());
-                    $newUser->setPicture($newPictureName);
-                }
+                $userService->cloneUserPicture($sourceUser, $newUser);
 
                 if ($form->has('description') && $formData['description']) {
                     $newUser->setUserComment($formData['description']);
@@ -180,18 +173,7 @@ class ContextController extends AbstractController
                     $newUser->setCreatorID2ItemID();
 
                     // link user with group "all"
-                    $groupManager = $legacyEnvironment->getLabelManager();
-                    $groupManager->setExactNameLimit('ALL');
-                    $groupManager->setContextLimit($roomItem->getItemID());
-                    $groupManager->select();
-                    $groupList = $groupManager->get();
-
-                    /** @var \cs_group_item $group */
-                    $systemGroupAll = $groupList->getFirst();
-
-                    if ($systemGroupAll) {
-                        $systemGroupAll->addMember($newUser);
-                    }
+                    $userService->addUserToSystemGroupAll($newUser, $roomItem);
 
                     // save task
                     if ($isRequest) {
@@ -373,6 +355,9 @@ class ContextController extends AbstractController
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }
+
+                $event = new UserJoinedRoomEvent($newUser, $roomItem);
+                $eventDispatcher->dispatch($event);
             }
 
             // redirect to detail page
