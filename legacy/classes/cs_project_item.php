@@ -340,7 +340,7 @@ class cs_project_item extends cs_room_item {
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_room.room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Room');
 
@@ -415,7 +415,7 @@ class cs_project_item extends cs_room_item {
         unset($current_portal_item);
 
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_room.room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Room');
 

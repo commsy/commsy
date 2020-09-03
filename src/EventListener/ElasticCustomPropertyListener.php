@@ -2,20 +2,30 @@
 
 namespace App\EventListener;
 
+use App\Services\File2TextService;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use FOS\ElasticaBundle\Event\TransformEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class ElasticCustomPropertyListener implements EventSubscriberInterface
 {
     private $legacyEnvironment;
 
     private $itemCache = [];
+    /**
+     * @var File2TextService
+     */
+    private $file2TextService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    private $projectDir;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, File2TextService $file2TextService, KernelInterface $kernel)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->file2TextService = $file2TextService;
+        $this->projectDir = $kernel->getProjectDir();
     }
 
     public static function getSubscribedEvents()
@@ -43,6 +53,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
         if (isset($fields['files'])) {
             $this->addFilesContent($event);
+        }
+
+        if (isset($fields['filesRaw'])) {
+            $this->addFilesRawContent($event);
         }
 
         if (isset($fields['discussionarticles'])) {
@@ -146,14 +160,14 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
         if ($item) {
             $fileContents = [];
-
             $files = $item->getFileList();
             if ($files->isNotEmpty()) {
+
+                /** @var \cs_file_item $file */
                 $file = $files->getFirst();
                 while ($file) {
                     if (!$file->isDeleted()) {
                         $fileSize = $file->getFileSize();
-
                         if (round($fileSize / 1024) < 25) {
                             $content = $file->getContentBase64();
                             if (!empty($content)) {
@@ -170,6 +184,52 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+
+    private function addFilesRawContent(TransformEvent $event)
+    {
+        $item = $this->getItemCached($event->getObject()->getItemId());
+
+        if ($item) {
+            $filesPlain = [];
+            $files = $item->getFileList();
+            if ($files->isNotEmpty()) {
+
+                /** @var \cs_file_item $file */
+                $file = $files->getFirst();
+                while ($file) {
+                    if (!$file->isDeleted()) {
+                        $fileName = $this->projectDir . '/' . $file->getFilepath();
+                        $contentPlain = $this->file2TextService->convert($fileName);
+                        if(!empty($contentPlain)){
+                            $filesPlain[] = $contentPlain;
+                        }
+                    }
+                    $file = $files->getNext();
+                }
+            }
+            $event->getDocument()->set('filesRaw', $filesPlain);
+        }
+    }
+
+
+    public function getPlainContentofAllFiles($files){
+        $filesPlain = [];
+
+        /** @var \cs_file_item $file */
+        foreach($files as $file){
+            if (!$file->isDeleted()) {
+                $fileName = $this->projectDir . '/' . $file->getFilepath();
+                $contentPlain = $this->file2TextService->convert($fileName);
+                if(!empty($contentPlain)){
+                    $filesPlain[] = $contentPlain;
+                }
+            }
+        }
+
+        return $filesPlain;
+
+    }
+
     public function addDiscussionArticles($event)
     {
         $discussionManager = $this->legacyEnvironment->getDiscussionManager();
@@ -183,9 +243,13 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 $article = $articles->getFirst();
                 while ($article) {
                     if (!$article->isDeleted() && !$article->isDraft()) {
+                        $files = $article->getFileList();
+                        $filesPlain = $this->getPlainContentofAllFiles($files);
+
                         $articleContents[] = [
                             'subject' => $article->getSubject(),
                             'description' => $article->getDescription(),
+                            'filesRaw'=> $filesPlain,
                         ];
                     }
 
@@ -215,9 +279,12 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 $step = $steps->getFirst();
                 while ($step) {
                     if (!$step->isDeleted() && !$step->isDraft()) {
+                        $files = $step->getFileList();
+                        $filesPlain = $this->getPlainContentofAllFiles($files);
                         $stepContents[] = [
                             'title' => $step->getTitle(),
                             'description' => $step->getDescription(),
+                            'filesRaw'=> $filesPlain,
                         ];
                     }
 
@@ -244,9 +311,12 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 $section = $sections->getFirst();
                 while ($section) {
                     if (!$section->isDeleted() && !$section->isDraft()) {
+                        $files = $section->getFileList();
+                        $filesPlain = $this->getPlainContentofAllFiles($files);
                         $sectionContents[] = [
                             'title' => $section->getTitle(),
                             'description' => $section->getDescription(),
+                            'filesRaw'=> $filesPlain,
                         ];
                     }
 
