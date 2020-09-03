@@ -37,6 +37,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 
@@ -46,6 +47,16 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class ProfileController extends AbstractController
 {
+    /**
+     * @var TranslatorInterface $translator
+     */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @Route("/room/{roomId}/user/{itemId}/general")
      * @Template
@@ -682,7 +693,7 @@ class ProfileController extends AbstractController
             'serviceEmail' => $serviceEmail,
         ]);
 
-        $fileName = $this->get('translator')->trans('Self assessment', [], 'profile')
+        $fileName = $this->translator->trans('Self assessment', [], 'profile')
             . ' (' . $portal->getTitle() . ').pdf';
 
         // return HTML Response containing a PDF generated from the HTML data
@@ -800,10 +811,10 @@ class ProfileController extends AbstractController
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
 
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteAccountType::class, [
-            'confirm_string' => $this->get('translator')->trans('lock', [], 'profile'),
+            'confirm_string' => $this->translator->trans('lock', [], 'profile'),
         ],[])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteAccountType::class, [
-            'confirm_string' => $this->get('translator')->trans('delete', [], 'profile'),
+            'confirm_string' => $this->translator->trans('delete', [], 'profile'),
         ], [])->getForm();
 
         $currentUser = $userService->getCurrentUserItem();
@@ -931,10 +942,10 @@ class ProfileController extends AbstractController
     ) {
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
-            'confirm_string' => $this->get('translator')->trans('lock', [], 'profile'),
+            'confirm_string' => $this->translator->trans('lock', [], 'profile'),
         ], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, [
-            'confirm_string' => $this->get('translator')->trans('delete', [], 'profile')
+            'confirm_string' => $this->translator->trans('delete', [], 'profile')
         ], [])->getForm();
 
         $currentUser = $userService->getCurrentUserItem();
