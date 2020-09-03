@@ -159,6 +159,9 @@ services:
         autoconfigure: false
         tags:
             - 'doctrine.fixture.orm'
+    _instanceof:
+        App\DocumentConverter\DocumentConverterInterface:
+            tags: ['app.document_converter']
 
 
 ###############################
@@ -591,10 +594,11 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: form.event_subscriber }
-
     commsy.listener.elastic.custom_property:
         class: App\EventListener\ElasticCustomPropertyListener
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+            $legacyEnvironment: '@commsy_legacy.environment'
+            $file2TextService: '@App\Services\File2TextService'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -608,6 +612,14 @@ services:
     # Search
     commsy.search.manager:
         alias: App\Search\SearchManager
+
+
+    App\Services\File2TextService: ~
+
+    App\DocumentConverter\ConverterManager:
+        class: App\DocumentConverter\ConverterManager
+        arguments:
+            - !tagged 'app.document_converter'
 
     App\Search\SearchManager:
         autowire: false
