@@ -489,9 +489,7 @@ class SettingsController extends AbstractController
 
             // redirect back to portal
             $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
-            $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
-
-            return $this->redirect($url);
+            return $this->redirectToRoute('app_helper_portalenter', ["context" => $portal->getItemId()]);
         }
 
         return [

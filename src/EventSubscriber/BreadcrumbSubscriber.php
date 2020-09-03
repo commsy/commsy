@@ -151,7 +151,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
     {
         $portal = $this->legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         if ($portal) {
-            $this->breadcrumbs->prependItem($portal->getTitle(), $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId());
+            $this->breadcrumbs->addRouteItem($portal->getTitle(), "app_helper_portalenter", ["context" => $portal->getItemId()]);
         }
     }
 

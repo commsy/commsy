@@ -826,7 +826,9 @@ class ProfileController extends AbstractController
         $sessionManager = $legacyEnvironment->getSessionManager();
         $sessionItem = $legacyEnvironment->getSessionItem();
 
-        $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+        $portalUrl = $this->generateUrl('app_helper_portalenter', [
+            'context' => $portal->getItemId(),
+        ]);
 
         // Lock account
         if ($request->request->has('lock_form')) {
@@ -953,7 +955,9 @@ class ProfileController extends AbstractController
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
-        $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+        $portalUrl = $this->generateUrl('app_helper_portalenter', [
+            'context' => $portal->getItemId(),
+        ]);
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
