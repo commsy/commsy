@@ -324,7 +324,7 @@
         "version": "0.1.2"
     },
     "mhujer/breadcrumbs-bundle": {
-        "version": "1.5.0"
+        "version": "1.5.2"
     },
     "monolog/monolog": {
         "version": "1.25.3"
@@ -925,9 +925,6 @@
     },
     "webmozart/assert": {
         "version": "1.7.0"
-    },
-    "whiteoctober/breadcrumbs-bundle": {
-        "version": "1.4.5"
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"

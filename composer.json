@@ -58,8 +58,7 @@
         "symfony/yaml": "4.4.*",
         "tomnomnom/etherpad-lite-client": "^0.1.2",
         "twig/extensions": "^1.5",
-        "vich/uploader-bundle": "^1.15",
-        "whiteoctober/breadcrumbs-bundle": "^1.4"
+        "vich/uploader-bundle": "^1.15"
     },
     "require-dev": {
         "codeception/codeception": "^4.0",
