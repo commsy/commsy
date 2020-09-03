@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4dd7e10df88d6fcc1dfa7b2b099a0bc1",
+    "content-hash": "1e7863dba8903e5ca734021bb4435451",
     "packages": [
         {
             "name": "ci/restclientbundle",
@@ -58,24 +58,24 @@
         },
         {
             "name": "composer/package-versions-deprecated",
-            "version": "1.8.0",
+            "version": "1.11.99",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/package-versions-deprecated.git",
-                "reference": "98df7f1b293c0550bd5b1ce6b60b59bdda23aa47"
+                "reference": "c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/98df7f1b293c0550bd5b1ce6b60b59bdda23aa47",
-                "reference": "98df7f1b293c0550bd5b1ce6b60b59bdda23aa47",
+                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855",
+                "reference": "c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.1.0 || ^2.0",
-                "php": "^7"
+                "php": "^7 || ^8"
             },
             "replace": {
-                "ocramius/package-versions": "1.2 - 1.8.99"
+                "ocramius/package-versions": "1.11.99"
             },
             "require-dev": {
                 "composer/composer": "^1.9.3 || ^2.0@dev",
@@ -115,11 +115,15 @@
                     "type": "custom"
                 },
                 {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/composer/composer",
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-04-23T11:49:37+00:00"
+            "time": "2020-08-25T05:50:16+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -2051,42 +2055,43 @@
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
-            "version": "v5.0.3",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
-                "reference": "ebf96f984c7f0b6bdc830accd722c76b80943a23"
+                "reference": "e79828ed011464b43e227503c8b1f983ea3c2855"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/ebf96f984c7f0b6bdc830accd722c76b80943a23",
-                "reference": "ebf96f984c7f0b6bdc830accd722c76b80943a23",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/e79828ed011464b43e227503c8b1f983ea3c2855",
+                "reference": "e79828ed011464b43e227503c8b1f983ea3c2855",
                 "shasum": ""
             },
             "require": {
-                "pagerfanta/pagerfanta": "^1.0.5",
-                "php": "^5.6.0|^7.0",
+                "pagerfanta/pagerfanta": "^1.0.5|^2.0",
+                "php": "^7.1",
                 "psr/log": "^1.0",
-                "ruflin/elastica": "^5.2.1|^6.0",
-                "symfony/console": "^3.2|^4",
-                "symfony/dependency-injection": "^3.3|^4",
-                "symfony/framework-bundle": "^3.2|^4",
-                "symfony/property-access": "^3.2|^4"
+                "ruflin/elastica": "^5.3.5|^6.1.1",
+                "symfony/console": "^3.4|^4",
+                "symfony/dependency-injection": "^3.4|^4",
+                "symfony/framework-bundle": "^3.4|^4",
+                "symfony/property-access": "^3.4|^4"
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "^1.6",
                 "doctrine/orm": "^2.5",
-                "doctrine/phpcr-bundle": "^1.3",
+                "doctrine/phpcr-bundle": "^1.3|^2.0",
                 "doctrine/phpcr-odm": "^1.4",
                 "friendsofphp/php-cs-fixer": "^2.2",
                 "jackalope/jackalope-doctrine-dbal": "^1.2",
                 "jms/serializer-bundle": "^2.2",
                 "knplabs/knp-components": "^1.2",
                 "phpunit/phpunit": "^5.7.11|^6.5",
-                "symfony/expression-language": "^3.2|^4",
-                "symfony/serializer": "^3.2|^4",
-                "symfony/twig-bundle": "^3.2|^4",
-                "symfony/yaml": "^3.2|^4"
+                "symfony/expression-language": "^3.4|^4",
+                "symfony/serializer": "^3.4|^4",
+                "symfony/twig-bundle": "^3.4|^4",
+                "symfony/web-profiler-bundle": "^3.4|^4.0",
+                "symfony/yaml": "^3.4|^4"
             },
             "suggest": {
                 "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
@@ -2094,7 +2099,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0.x-dev"
+                    "dev-master": "5.1.x-dev"
                 }
             },
             "autoload": {
@@ -2108,16 +2113,16 @@
             ],
             "authors": [
                 {
+                    "name": "FriendsOfSymfony Community",
+                    "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle/contributors"
+                },
+                {
                     "name": "Tim Nagel",
                     "email": "tim@nagel.com.au"
                 },
                 {
                     "name": "Richard Miller",
                     "email": "richard.miller@limethinking.co.uk"
-                },
-                {
-                    "name": "FriendsOfSymfony Community",
-                    "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle/contributors"
                 },
                 {
                     "name": "Jeremy Mikola",
@@ -2133,78 +2138,73 @@
                 "mongodb",
                 "search"
             ],
-            "time": "2018-02-07T12:32:48+00:00"
+            "time": "2019-08-23T17:24:33+00:00"
         },
         {
             "name": "friendsofsymfony/rest-bundle",
-            "version": "2.8.2",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "88470cca1a99e4b55bb93a0f288fcb6230fce8d8"
+                "reference": "2a6f137d1b46559cdb5137d1204aa82517d0f1fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/88470cca1a99e4b55bb93a0f288fcb6230fce8d8",
-                "reference": "88470cca1a99e4b55bb93a0f288fcb6230fce8d8",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/2a6f137d1b46559cdb5137d1204aa82517d0f1fc",
+                "reference": "2a6f137d1b46559cdb5137d1204aa82517d0f1fc",
                 "shasum": ""
             },
             "require": {
-                "doctrine/inflector": "^1.0",
-                "php": "^7.1|^8.0",
+                "php": "^7.2|^8.0",
                 "psr/log": "^1.0",
-                "symfony/config": "^3.4|^4.3",
-                "symfony/debug": "^3.4|^4.3",
-                "symfony/dependency-injection": "^3.4|^4.3",
-                "symfony/event-dispatcher": "^3.4|^4.3",
-                "symfony/finder": "^3.4|^4.3",
-                "symfony/framework-bundle": "^3.4|^4.3",
-                "symfony/http-foundation": "^3.4|^4.3",
-                "symfony/http-kernel": "^3.4|^4.3",
-                "symfony/routing": "^3.4|^4.3",
-                "symfony/security-core": "^3.4|^4.3",
+                "symfony/config": "^4.4|^5.0",
+                "symfony/dependency-injection": "^4.4|^5.0",
+                "symfony/event-dispatcher": "^4.4|^5.0",
+                "symfony/framework-bundle": "^4.4.1|^5.0",
+                "symfony/http-foundation": "^4.4|^5.0",
+                "symfony/http-kernel": "^4.4|^5.0",
+                "symfony/security-core": "^3.4|^4.3|^5.0",
                 "willdurand/jsonp-callback-validator": "^1.0",
                 "willdurand/negotiation": "^2.0"
             },
             "conflict": {
                 "doctrine/inflector": "1.4.0",
                 "jms/serializer": "<1.13.0",
-                "jms/serializer-bundle": "<2.0.0",
-                "sensio/framework-extra-bundle": "<3.0.13"
+                "jms/serializer-bundle": "<2.4.3|3.0.0",
+                "sensio/framework-extra-bundle": "<5.2.3",
+                "symfony/error-handler": "<4.4.1"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.0",
                 "jms/serializer": "^1.13|^2.0|^3.0",
-                "jms/serializer-bundle": "^2.3.1|^3.0",
+                "jms/serializer-bundle": "^2.4.3|^3.0.1",
                 "phpoption/phpoption": "^1.1",
                 "psr/http-message": "^1.0",
-                "sensio/framework-extra-bundle": "^3.0.13|^4.0|^5.0",
-                "symfony/asset": "^3.4|^4.3",
-                "symfony/browser-kit": "^3.4|^4.3",
-                "symfony/css-selector": "^3.4|^4.3",
-                "symfony/expression-language": "^3.4|^4.3",
-                "symfony/form": "^3.4|^4.3",
-                "symfony/phpunit-bridge": "^4.1.8",
-                "symfony/security-bundle": "^3.4|^4.3",
-                "symfony/serializer": "^3.4|^4.3",
-                "symfony/templating": "^3.4|^4.3",
-                "symfony/twig-bundle": "^3.4|^4.3",
-                "symfony/validator": "^3.4|^4.3",
-                "symfony/web-profiler-bundle": "^3.4|^4.3",
-                "symfony/yaml": "^3.4|^4.3"
+                "sensio/framework-extra-bundle": "^5.2.3",
+                "symfony/asset": "^4.4|^5.0",
+                "symfony/browser-kit": "^4.4|^5.0",
+                "symfony/css-selector": "^4.4|^5.0",
+                "symfony/expression-language": "^4.4|^5.0",
+                "symfony/form": "^4.4|^5.0",
+                "symfony/mime": "^4.4|^5.0",
+                "symfony/phpunit-bridge": "^4.1.8|^5.0",
+                "symfony/security-bundle": "^4.4|^5.0",
+                "symfony/serializer": "^4.4|^5.0",
+                "symfony/twig-bundle": "^4.4|^5.0",
+                "symfony/validator": "^4.4|^5.0",
+                "symfony/web-profiler-bundle": "^4.4|^5.0",
+                "symfony/yaml": "^4.4|^5.0"
             },
             "suggest": {
                 "jms/serializer-bundle": "Add support for advanced serialization capabilities, recommended, requires ^2.0|^3.0",
                 "sensio/framework-extra-bundle": "Add support for the request body converter and the view response listener, requires ^3.0",
-                "symfony/expression-language": "Add support for using the expression language in the routing, requires ^2.7|^3.0",
                 "symfony/serializer": "Add support for basic serialization capabilities and xml decoding, requires ^2.7|^3.0",
                 "symfony/validator": "Add support for validation capabilities in the ParamFetcher, requires ^2.7|^3.0"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "2.x-dev": "2.8-dev",
-                    "dev-master": "2.7-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -2239,7 +2239,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2020-07-14T14:31:53+00:00"
+            "time": "2020-07-14T14:43:02+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2790,30 +2790,31 @@
         },
         {
             "name": "knplabs/knp-menu",
-            "version": "2.6.0",
+            "version": "v3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpMenu.git",
-                "reference": "b6aade272c345b6fbd07fce5929a761cba0909b8"
+                "reference": "9996764bc4bdc4381ecdc4617817de23948f0cdb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpMenu/zipball/b6aade272c345b6fbd07fce5929a761cba0909b8",
-                "reference": "b6aade272c345b6fbd07fce5929a761cba0909b8",
+                "url": "https://api.github.com/repos/KnpLabs/KnpMenu/zipball/9996764bc4bdc4381ecdc4617817de23948f0cdb",
+                "reference": "9996764bc4bdc4381ecdc4617817de23948f0cdb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6.0"
+                "php": "^7.2 || ^8.0"
             },
             "conflict": {
-                "twig/twig": "<1.40|>=2,<2.9"
+                "twig/twig": "<1.40 || >=2,<2.9"
             },
             "require-dev": {
+                "phpspec/prophecy": "^1.8",
                 "psr/container": "^1.0",
-                "symfony/http-foundation": "~2.4|~3.0|^4.0",
-                "symfony/phpunit-bridge": "~3.3|^4.0",
-                "symfony/routing": "~2.3|~3.0|^4.0",
-                "twig/twig": "^1.40|^2.9"
+                "symfony/http-foundation": "^3.4 || ^4.2|| ^5.0",
+                "symfony/phpunit-bridge": "^3.3 || ^4.2|| ^5.0",
+                "symfony/routing": "^3.4 || ^4.2|| ^5.0",
+                "twig/twig": "^1.40 || ^2.9 || ^3.0"
             },
             "suggest": {
                 "twig/twig": "for the TwigRenderer and the integration with your templates"
@@ -2821,7 +2822,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.2-dev"
                 }
             },
             "autoload": {
@@ -2843,7 +2844,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "Symfony Community",
+                    "name": "The Community",
                     "homepage": "https://github.com/KnpLabs/KnpMenu/contributors"
                 }
             ],
@@ -2853,36 +2854,37 @@
                 "menu",
                 "tree"
             ],
-            "time": "2019-09-02T10:16:14+00:00"
+            "time": "2020-08-15T08:01:46+00:00"
         },
         {
             "name": "knplabs/knp-menu-bundle",
-            "version": "v2.3.0",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpMenuBundle.git",
-                "reference": "78b0cebf8e1490f12ba6555511282954de83f627"
+                "reference": "2795e236db1d807040762be9a2813ab8c6ed0569"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpMenuBundle/zipball/78b0cebf8e1490f12ba6555511282954de83f627",
-                "reference": "78b0cebf8e1490f12ba6555511282954de83f627",
+                "url": "https://api.github.com/repos/KnpLabs/KnpMenuBundle/zipball/2795e236db1d807040762be9a2813ab8c6ed0569",
+                "reference": "2795e236db1d807040762be9a2813ab8c6ed0569",
                 "shasum": ""
             },
             "require": {
-                "knplabs/knp-menu": "~2.3",
-                "php": "^7.1",
-                "symfony/framework-bundle": "^3.4 | ^4.0"
+                "knplabs/knp-menu": "^3.0",
+                "php": "^7.2",
+                "symfony/framework-bundle": "^3.4 | ^4.2 | ^5.0"
             },
             "require-dev": {
-                "symfony/expression-language": "^3.4 | ^4.0",
-                "symfony/phpunit-bridge": "^3.4 | ^4.0",
-                "symfony/templating": "^3.4 | ^4.0"
+                "phpspec/prophecy": "^1.8",
+                "symfony/expression-language": "^3.4 | ^4.2 | ^5.0",
+                "symfony/phpunit-bridge": "^3.4 | ^4.2 | ^5.0",
+                "symfony/templating": "^3.4 | ^4.0 | ^5.0"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "3.1.x-dev"
                 }
             },
             "autoload": {
@@ -2912,7 +2914,7 @@
             "keywords": [
                 "menu"
             ],
-            "time": "2019-09-19T08:51:48+00:00"
+            "time": "2019-12-01T13:07:41+00:00"
         },
         {
             "name": "knplabs/knp-paginator-bundle",
@@ -3181,27 +3183,29 @@
         },
         {
             "name": "lexik/form-filter-bundle",
-            "version": "v5.0.10",
+            "version": "v6.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikFormFilterBundle.git",
-                "reference": "92df0638173979dc906bda7a33a10b98429d2057"
+                "reference": "6272c1a31ba1b29394198857c049cb3f6d3bcacc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikFormFilterBundle/zipball/92df0638173979dc906bda7a33a10b98429d2057",
-                "reference": "92df0638173979dc906bda7a33a10b98429d2057",
+                "url": "https://api.github.com/repos/lexik/LexikFormFilterBundle/zipball/6272c1a31ba1b29394198857c049cb3f6d3bcacc",
+                "reference": "6272c1a31ba1b29394198857c049cb3f6d3bcacc",
                 "shasum": ""
             },
             "require": {
-                "doctrine/orm": "^2.4.8",
-                "php": ">=5.5.9",
-                "symfony/form": "~2.8|~3.0|^4.0",
-                "symfony/framework-bundle": "~2.8|~3.0|^4.0"
+                "doctrine/orm": "^2.7",
+                "php": ">=7.0",
+                "symfony/form": "^4.0|^5.0",
+                "symfony/framework-bundle": "^4.0|^5.0"
             },
             "require-dev": {
-                "doctrine/mongodb-odm-bundle": "^3.0",
-                "phpunit/phpunit": "~5.0|^7.5"
+                "doctrine/doctrine-bundle": "^1.8 || ^2.0",
+                "doctrine/mongodb-odm-bundle": "^4.1",
+                "symfony/phpunit-bridge": "^4.0|^5.0",
+                "symfony/var-dumper": "^4.0|^5.0"
             },
             "suggest": {
                 "alcaeus/mongo-php-adapter": "Install this package if using the PHP 7 MongoDB Driver"
@@ -3223,12 +3227,12 @@
             ],
             "authors": [
                 {
-                    "name": "Dev Lexik",
-                    "email": "dev@lexik.fr"
-                },
-                {
                     "name": "Cedric Girard",
                     "email": "c.girard@lexik.fr"
+                },
+                {
+                    "name": "Dev Lexik",
+                    "email": "dev@lexik.fr"
                 }
             ],
             "description": "This bundle aim to provide classes to build some form filters and then build a doctrine query from this form filter.",
@@ -3240,7 +3244,7 @@
                 "form",
                 "symfony"
             ],
-            "time": "2019-04-17T17:58:44+00:00"
+            "time": "2020-06-17T11:24:42+00:00"
         },
         {
             "name": "lexik/jwt-authentication-bundle",
@@ -3836,21 +3840,21 @@
         },
         {
             "name": "nategood/httpful",
-            "version": "0.2.20",
+            "version": "0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nategood/httpful.git",
-                "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6"
+                "reference": "0cded3ea97ba905600de9ceb9ef13f3ab681587c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nategood/httpful/zipball/c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
-                "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
+                "url": "https://api.github.com/repos/nategood/httpful/zipball/0cded3ea97ba905600de9ceb9ef13f3ab681587c",
+                "reference": "0cded3ea97ba905600de9ceb9ef13f3ab681587c",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "php": ">=5.3"
+                "php": ">=7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "*"
@@ -3882,7 +3886,7 @@
                 "rest",
                 "restful"
             ],
-            "time": "2015-10-26T16:11:30+00:00"
+            "time": "2020-01-25T01:13:13+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -4125,85 +4129,104 @@
         },
         {
             "name": "pagerfanta/pagerfanta",
-            "version": "v1.1.0",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BabDev/Pagerfanta.git",
-                "reference": "8400ab498e500018cff9a099ac22555e7949aa9a"
+                "reference": "cf8f456c5fd691932ac6da0b6df6341c6c9bcc22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BabDev/Pagerfanta/zipball/8400ab498e500018cff9a099ac22555e7949aa9a",
-                "reference": "8400ab498e500018cff9a099ac22555e7949aa9a",
+                "url": "https://api.github.com/repos/BabDev/Pagerfanta/zipball/cf8f456c5fd691932ac6da0b6df6341c6c9bcc22",
+                "reference": "cf8f456c5fd691932ac6da0b6df6341c6c9bcc22",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "ext-json": "*",
+                "php": "^7.2",
+                "symfony/deprecation-contracts": "^2.1"
+            },
+            "conflict": {
+                "twig/twig": "<1.35 || >=2.0,<2.5"
+            },
+            "replace": {
+                "pagerfanta/core": "self.version",
+                "pagerfanta/doctrine-collections-adapter": "self.version",
+                "pagerfanta/doctrine-dbal-adapter": "self.version",
+                "pagerfanta/doctrine-mongodb-odm-adapter": "self.version",
+                "pagerfanta/doctrine-orm-adapter": "self.version",
+                "pagerfanta/doctrine-phpcr-odm-adapter": "self.version",
+                "pagerfanta/elastica-adapter": "self.version",
+                "pagerfanta/solarium-adapter": "self.version",
+                "pagerfanta/twig": "self.version"
             },
             "require-dev": {
-                "doctrine/orm": "~2.3",
-                "doctrine/phpcr-odm": "1.*",
-                "jackalope/jackalope-doctrine-dbal": "1.*",
-                "jmikola/geojson": "~1.0",
-                "mandango/mandango": "~1.0@dev",
-                "mandango/mondator": "~1.0@dev",
-                "phpunit/phpunit": "^4.8.35 | ^5.7",
-                "propel/propel": "~2.0@dev",
-                "propel/propel1": "~1.6",
-                "ruflin/elastica": "~1.3",
-                "solarium/solarium": "~3.1"
+                "doctrine/collections": "^1.4",
+                "doctrine/dbal": "^2.5",
+                "doctrine/orm": "^2.5",
+                "doctrine/phpcr-odm": "^1.3",
+                "friendsofphp/php-cs-fixer": "^2.16.3",
+                "jackalope/jackalope-doctrine-dbal": "^1.3",
+                "mandango/mandango": "^1.0@dev",
+                "phpstan/extension-installer": "^1.0.4",
+                "phpstan/phpstan": "^0.12.33",
+                "phpstan/phpstan-phpunit": "^0.12.12",
+                "phpunit/phpunit": "^8.5 || ^9.0",
+                "propel/propel": "^2.0@dev",
+                "propel/propel1": "^1.7",
+                "ruflin/elastica": "^1.3 || ^2.0 || ^3.0 || ^5.0 || ^6.0 || ^7.0",
+                "solarium/solarium": "^2.3 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+                "twig/twig": "^1.35 || ^2.5 || ^3.0"
             },
             "suggest": {
-                "doctrine/mongodb-odm": "To use the DoctrineODMMongoDBAdapter.",
-                "doctrine/orm": "To use the DoctrineORMAdapter.",
-                "doctrine/phpcr-odm": "To use the DoctrineODMPhpcrAdapter. >= 1.1.0",
-                "mandango/mandango": "To use the MandangoAdapter.",
-                "propel/propel": "To use the Propel2Adapter",
-                "propel/propel1": "To use the PropelAdapter",
-                "solarium/solarium": "To use the SolariumAdapter."
+                "twig/twig": "To integrate Pagerfanta with Twig"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
             "autoload": {
-                "psr-0": {
-                    "Pagerfanta\\": "src/"
+                "psr-4": {
+                    "Pagerfanta\\": "lib/Core/",
+                    "Pagerfanta\\Adapter\\": "src/Adapter/",
+                    "Pagerfanta\\Doctrine\\Collections\\": "lib/Adapter/Doctrine/Collections/",
+                    "Pagerfanta\\Doctrine\\DBAL\\": "lib/Adapter/Doctrine/DBAL/",
+                    "Pagerfanta\\Doctrine\\MongoDBODM\\": "lib/Adapter/Doctrine/MongoDBODM/",
+                    "Pagerfanta\\Doctrine\\ORM\\": "lib/Adapter/Doctrine/ORM/",
+                    "Pagerfanta\\Doctrine\\PHPCRODM\\": "lib/Adapter/Doctrine/PHPCRODM/",
+                    "Pagerfanta\\Elastica\\": "lib/Adapter/Elastica/",
+                    "Pagerfanta\\Solarium\\": "lib/Adapter/Solarium/",
+                    "Pagerfanta\\Twig\\": "lib/Twig/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Pablo Díez",
-                    "email": "pablodip@gmail.com"
-                }
-            ],
-            "description": "Pagination for PHP 5.3",
+            "description": "Pagination for PHP",
             "keywords": [
                 "page",
                 "pagination",
                 "paginator",
                 "paging"
             ],
-            "time": "2018-05-01T10:49:10+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/mbabker",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-08-03T23:54:27+00:00"
         },
         {
             "name": "php-imap/php-imap",
-            "version": "3.1.0",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barbushin/php-imap.git",
-                "reference": "1df5b8b17527829a990475292b6794f06aaa4843"
+                "reference": "7ca3d19451bfe6de47186b52f4b266179a5858b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/1df5b8b17527829a990475292b6794f06aaa4843",
-                "reference": "1df5b8b17527829a990475292b6794f06aaa4843",
+                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/7ca3d19451bfe6de47186b52f4b266179a5858b9",
+                "reference": "7ca3d19451bfe6de47186b52f4b266179a5858b9",
                 "shasum": ""
             },
             "require": {
@@ -4211,16 +4234,22 @@
                 "ext-iconv": "*",
                 "ext-imap": "*",
                 "ext-mbstring": "*",
-                "php": ">=5.6"
+                "php": "^7.2"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.16",
                 "jakub-onderka/php-parallel-lint": "^1.0",
-                "paragonie/random_compat": "^1",
-                "phpunit/phpunit": "^5.7"
+                "maglnet/composer-require-checker": "^2.0",
+                "paragonie/hidden-string": "^1.0",
+                "phpunit/phpunit": "^8.5",
+                "povils/phpmnd": "^2.2",
+                "psalm/plugin-phpunit": "^0.10.0",
+                "roave/security-advisories": "dev-master",
+                "sebastian/phpcpd": "^4.1",
+                "vimeo/psalm": "^3.11.5"
             },
             "suggest": {
-                "ext-fileinfo": "To facilitate IncomingMailAttachment::getMimeType() auto-detection"
+                "ext-fileinfo": "To facilitate IncomingMailAttachment::getFileInfo() auto-detection"
             },
             "type": "library",
             "autoload": {
@@ -4249,7 +4278,7 @@
                 "pop3",
                 "receive emails"
             ],
-            "time": "2020-04-10T11:43:19+00:00"
+            "time": "2020-06-14T20:18:24+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
