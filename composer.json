@@ -8,7 +8,7 @@
         "ext-iconv": "*",
         "ci/restclientbundle": "^2.0",
         "craue/twigextensions-bundle": "^2.4",
-        "debril/rss-atom-bundle": "4.3.0",
+        "debril/rss-atom-bundle": "^5.0",
         "doctrine/doctrine-bundle": "^2.1",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.6",
@@ -117,7 +117,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "4.4.*"
         },
         "ckeditor-tag": "4.11.4",

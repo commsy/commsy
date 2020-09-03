@@ -7,7 +7,6 @@ return [
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
     Circle\RestClientBundle\CircleRestClientBundle::class => ['all' => true],
     Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle::class => ['all' => true],
-    Debril\RssAtomBundle\DebrilRssAtomBundle::class => ['all' => true],
     FOS\ElasticaBundle\FOSElasticaBundle::class => ['all' => true],
     IDCI\Bundle\ColorSchemeBundle\IDCIColorSchemeBundle::class => ['all' => true],
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
@@ -30,4 +29,5 @@ return [
     FOS\RestBundle\FOSRestBundle::class => ['all' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
+    Debril\RssAtomBundle\DebrilRssAtomBundle::class => ['all' => true],
 ];
