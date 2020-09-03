@@ -22,6 +22,7 @@
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^5.3",
         "knplabs/knp-snappy-bundle": "^1.7",
+        "laminas/laminas-soap": "^2.8",
         "lexik/form-filter-bundle": "^6.0",
         "lexik/jwt-authentication-bundle": "^2.8",
         "liip/imagine-bundle": "^2.3",
@@ -58,8 +59,7 @@
         "tomnomnom/etherpad-lite-client": "^0.1.2",
         "twig/extensions": "^1.5",
         "vich/uploader-bundle": "^1.15",
-        "whiteoctober/breadcrumbs-bundle": "^1.4",
-        "zendframework/zend-soap": "^2.7"
+        "whiteoctober/breadcrumbs-bundle": "^1.4"
     },
     "require-dev": {
         "codeception/codeception": "^4.0",
