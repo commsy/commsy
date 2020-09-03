@@ -234,6 +234,11 @@ class PortalProxy
         return false;
     }
 
+    public function isUserroom(): bool
+    {
+        return false;
+    }
+
     public function isServer(): bool
     {
         return false;
