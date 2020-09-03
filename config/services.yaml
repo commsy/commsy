@@ -159,6 +159,9 @@ services:
         autoconfigure: false
         tags:
             - 'doctrine.fixture.orm'
+    _instanceof:
+        App\DocumentConverter\DocumentConverterInterface:
+            tags: ['app.document_converter']
 
 
 ###############################
@@ -591,10 +594,11 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: form.event_subscriber }
-
     commsy.listener.elastic.custom_property:
         class: App\EventListener\ElasticCustomPropertyListener
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+            $legacyEnvironment: '@commsy_legacy.environment'
+            $file2TextService: '@App\Services\File2TextService'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -609,14 +613,84 @@ services:
     commsy.search.manager:
         alias: App\Search\SearchManager
 
+
+    App\Services\File2TextService: ~
+
+    App\DocumentConverter\ConverterManager:
+        class: App\DocumentConverter\ConverterManager
+        arguments:
+            - !tagged 'app.document_converter'
+
     App\Search\SearchManager:
         autowire: false
         arguments:
-            $commsyFinder: '@fos_elastica.finder.commsy'
+            $commsyFinder: '@FOS\ElasticaBundle\Finder\TransformedFinder'
             $userService: '@App\Utils\UserService'
             $itemService: '@App\Utils\ItemService'
 
+    App\Search\MultiIndex:
+        arguments:
+            $name: 'commsy'
+            $client: '@fos_elastica.client.default'
+        calls:
+            - [ addIndices, [[
+                                 '@fos_elastica.index.commsy_announcement',
+                                 '@fos_elastica.index.commsy_date',
+                                 '@fos_elastica.index.commsy_discussion',
+                                 '@fos_elastica.index.commsy_label',
+                                 '@fos_elastica.index.commsy_user',
+                                 '@fos_elastica.index.commsy_room',
+                                 '@fos_elastica.index.commsy_todo',
+                                 '@fos_elastica.index.commsy_material',
+                             ]]]
+
+    FOS\ElasticaBundle\Finder\TransformedFinder: ~
+
+    FOS\ElasticaBundle\Finder\PaginatedFinderInterface: '@FOS\ElasticaBundle\Finder\TransformedFinder'
+
+    Elastica\SearchableInterface: '@App\Search\MultiIndex'
+
+    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection'
+
+    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection:
+        arguments:
+            - {
+                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement.announcement',
+                date: '@fos_elastica.elastica_to_model_transformer.commsy_date.date',
+                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion.discussion',
+                label: '@fos_elastica.elastica_to_model_transformer.commsy_label.label',
+                room: '@fos_elastica.elastica_to_model_transformer.commsy_room.room',
+                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo.todo',
+                user: '@fos_elastica.elastica_to_model_transformer.commsy_user.user',
+                material: '@fos_elastica.elastica_to_model_transformer.commsy_material.material',
+            }
+
+
     commsy.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_announcement.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_date.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_discussion.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_label.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_room.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_todo.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_user.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_material.search.indexable_checker:
         alias: App\Search\IndexableChecker
 
     App\Search\IndexableChecker:
