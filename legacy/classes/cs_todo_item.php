@@ -303,7 +303,7 @@ class cs_todo_item extends cs_item {
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.todo');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_todo.todo');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Todos');
 
@@ -330,7 +330,7 @@ class cs_todo_item extends cs_item {
       }
 
       global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.todo');
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_todo.todo');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('App:Todos');
 
