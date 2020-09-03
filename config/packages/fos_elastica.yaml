@@ -134,6 +134,11 @@ fos_elastica:
                     #                            # resolved by FOSElastica using POST_TRANSFORM
                     #                            property_path: false
                     #                            type: 'attachment'
+                        filesRaw:
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                     persistence:
                         driver: orm
                         model: App\Entity\Announcement
@@ -258,6 +263,11 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
+                        filesRaw:
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                     #                        files:
                     #                            # resolved by FOSElastica using POST_TRANSFORM
                     #                            property_path: false
@@ -372,6 +382,11 @@ fos_elastica:
                                     type: text
                                     analyzer: html_strip_analyzer
                                     search_analyzer: html_strip_analyzer
+                        filesRaw:
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         #                                files:
                         #                                    # resolved by FOSElastica using POST_TRANSFORM
                         #                                    property_path: false
@@ -723,6 +738,11 @@ fos_elastica:
                                     type: text
                                     analyzer: html_strip_analyzer
                                     search_analyzer: html_strip_analyzer
+                        filesRaw:
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         #                                files:
                         #                                    # resolved by FOSElastica using POST_TRANSFORM
                         #                                    property_path: false
@@ -947,6 +967,7 @@ fos_elastica:
                         #                                    # resolved by FOSElastica using POST_TRANSFORM
                         #                                    property_path: false
                         #                                    type: 'attachment'
+
                         hashtags:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
@@ -961,10 +982,16 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-                        files:
+#                        files:
                             # resolved by FOSElastica using POST_TRANSFORM
 #                            property_path: false
 #                            type: 'attachment'
+                        filesRaw:
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
+
                     persistence:
                         driver: orm
                         model: App\Entity\Materials
