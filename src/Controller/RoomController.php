@@ -614,27 +614,6 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/logo")
-     * @Template()
-     * @param LegacyEnvironment $legacyEnvironment
-     * @return array
-     */
-    public function logoAction(
-        LegacyEnvironment $legacyEnvironment
-    ) {
-        $environment = $legacyEnvironment->getEnvironment();
-        $portalItem = $environment->getCurrentPortalItem();
-
-        $portalUrl = $this->generateUrl('app_helper_portalenter', [
-            'context' => $portalItem->getItemId(),
-        ]);
-
-        return [
-            'portalUrl' => $portalUrl,
-        ];
-    }
-
-    /**
      * @Route("/room/{roomId}/all/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
