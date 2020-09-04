@@ -16,10 +16,9 @@
         <div id="commsy_navigation" class="uk-hidden-small">
 
             {# CommSy Logo #}
-            {{ render(controller(
-                'App\\Controller\\RoomController::logoAction',
-                { 'roomId': app.request.attributes.get('roomId') }
-            ))}}
+            <a href="{{ path('app_server_show') }}">
+                <div id="commsy_logo"></div>
+            </a>
 
             {# Context Navigation #}
             {% block side_navigation %}
