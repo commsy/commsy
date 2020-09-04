@@ -1120,6 +1120,14 @@ services:
         class: App\Services\SoapService
         arguments: ['@commsy_legacy.environment', '@service_container']
 
+    # Feed
+    debril.rss_atom.provider:
+        class: App\Feed\CommsyFeedContentProvider
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@translator'
+            - '@commsy.feed.creator_factory'
+
     commsy.feed.creator_factory:
         class: App\Feed\FeedCreatorFactory
         arguments: ['@commsy_legacy.item_service', '@commsy_legacy.environment', '@translator', '@router']

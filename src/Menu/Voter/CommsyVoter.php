@@ -18,7 +18,7 @@ class CommsyVoter implements VoterInterface
         $this->requestStack = $requestStack;
     }
 
-    public function matchItem(ItemInterface $item)
+    public function matchItem(ItemInterface $item): ?bool
     {
         $attributes = $item->getAttributes();
         if (isset($attributes['breadcrumb_rubric'])) {
