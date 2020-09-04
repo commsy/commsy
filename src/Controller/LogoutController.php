@@ -7,9 +7,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LogoutController extends AbstractController
 {
+    private $urlGenerator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
     /**
      * @Route("/room/{roomId}/logout")
      * @param Request $request
@@ -38,7 +46,9 @@ class LogoutController extends AbstractController
 
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
-        $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+        $url = $this->urlGenerator->generate('app_helper_portalenter', [
+            'context' => $portal->getItemId(),
+        ]);
 
         // restore root session
         if (isset($rootSessionId)) {
