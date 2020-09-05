@@ -295,7 +295,6 @@ class PortalSettingsController extends AbstractController
             $entityManager->flush();
         }
 
-
         // mandatory links form
         $linkForm = $this->createForm(MandatoryAssignmentType::class, $portal);
 
@@ -307,7 +306,6 @@ class PortalSettingsController extends AbstractController
                 $entityManager->flush();
             }
         }
-
 
         return [
             'editForm' => $editForm->createView(),
@@ -336,14 +334,85 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $environment
     )
     {
+        $defaultData = [
+            'userIndexFilterChoice' => -1,
+            'contentGerman' => '',
+            'contentEnglish' => '',
+            'resetContentGerman' => False,
+            'resetContentEnglish' => False,
+        ];
+
+        $roomItem = $environment->getEnvironment()->getCurrentContextItem();
+
+        $translator = $environment->getEnvironment()->getTranslationObject();
         $portalId = $portal->getId();
-        $mailTextForm = $this->createForm(MailtextsType::class, $portal);
+        $mailTextForm = $this->createForm(MailtextsType::class, $defaultData);
+        $langDe = 'de';
+        $langEn = 'en';
 
         $mailTextForm->handleRequest($request);
-        if ($mailTextForm->isSubmitted() && $mailTextForm->isValid()) {
+        if ($mailTextForm->isSubmitted()) {
 
+            $formData = $mailTextForm->getData();
+            $textChoice = $formData['userIndexFilterChoice'];
+            $previousMailTexts = $roomItem->getEmailTextArray();
+
+            if ($mailTextForm->isValid() && ($mailTextForm->get('save')->isClicked())) {
+
+                if($formData['resetContentGerman']){
+                    $translator->setEmailTextArray([]);
+                    $germanText = $translator->getEmailMessageInLang($langDe, $textChoice);
+                }else{
+                    $germanText = $formData['contentGerman'];
+                }
+
+                if($formData['resetContentEnglish']){
+                    $translator->setEmailTextArray([]);
+                    $englishText = $translator->getEmailMessageInLang($langEn, $textChoice);
+                }else{
+                    $englishText = $formData['contentEnglish'];
+                }
+
+                $roomItem->setEmailText($textChoice, [
+                    $langDe => $germanText,
+                    $langEn => $englishText,
+                ]);
+
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                // $roomItem->save();
+            } elseif (($mailTextForm->get('loadMailTexts')->isClicked())) {
+
+                if (!in_array($textChoice, $previousMailTexts)) {
+                    $germanText = $translator->getEmailMessageInLang($langDe, $textChoice);
+                } else {
+                    if($formData['resetContentGerman']){
+                        $translator->setEmailTextArray([]);
+                        $germanText = $translator->getEmailMessageInLang($langDe, $textChoice);
+                    }else{
+                        $germanText = $previousMailTexts[$textChoice][$langDe];
+                    }
+                }
+
+                if (!in_array($textChoice, $previousMailTexts)) {
+                    $englishText = $translator->getEmailMessageInLang($langEn, $textChoice);
+                } else {
+                    if($formData['resetContentEnglish']){
+                        $translator->setEmailTextArray([]);
+                        $englishText = $translator->getEmailMessageInLang($langEn, $textChoice);
+                    }else{
+                        $englishText = $previousMailTexts[$textChoice][$langEn];;
+                    }
+                }
+            }
+
+            $defaultData = $formData;
+            $defaultData['contentGerman'] = $germanText;
+            $defaultData['contentEnglish'] = $englishText;
+
+            $mailTextForm = $this->createForm(MailtextsType::class, $defaultData);
         }
-
         return [
             'form' => $mailTextForm->createView(),
             'portalId' => $portalId,

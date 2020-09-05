@@ -13,6 +13,14 @@
         {% block title %}{{ 'Mailtexts'|trans({}, "portal") }}{% endblock %}
         {% block body %}
             {{ form_start(form) }}
+            {{ form_row(form.userIndexFilterChoice) }}
+            {{ form_row(form.loadMailTexts) }}
+            {{ form_row(form.contentGerman) }}
+            {{ form_row(form.resetContentGerman) }}
+            <hr />
+            {{ form_row(form.contentEnglish) }}
+            {{ form_row(form.resetContentEnglish) }}
+            <hr />
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

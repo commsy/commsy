@@ -339,7 +339,7 @@
             </trans-unit>
             <trans-unit id="activate_user">
                 <source>Activate user id(s)</source>
-                <target>Kennung(en) freischalten</target>
+                <target>Kennung(en) freischalten / Status BenutzerIn</target>
             </trans-unit>
             <trans-unit id="mail_change_login">
                 <source>Email change login</source>
@@ -966,6 +966,78 @@
             <trans-unit id="content_english">
                 <source>Content english</source>
                 <target>Inhalt (Englisch)</target>
+            </trans-unit>
+            <trans-unit id="lock_room">
+                <source>Lock room</source>
+                <target>Raum sperren</target>
+            </trans-unit>
+            <trans-unit id="unlock_room">
+                <source>Unlock room</source>
+                <target>Raum wieder öffnen</target>
+            </trans-unit>
+            <trans-unit id="delete_room">
+                <source>Delete room</source>
+                <target>Raum löschen</target>
+            </trans-unit>
+            <trans-unit id="create_room">
+                <source>Create room</source>
+                <target>Raum anlegen</target>
+            </trans-unit>
+            <trans-unit id="archive_room_x_days">
+                <source>Archive room after X days</source>
+                <target>Raum wird in X Tagen automatisch archiviert</target>
+            </trans-unit>
+            <trans-unit id="room_was_archived_yesterday">
+                <source>Room was archived yesterday</source>
+                <target>Raum wurde gestern archiviert</target>
+            </trans-unit>
+            <trans-unit id="delete_room_after_x_days">
+                <source>Delete room after X day</source>
+                <target>Raum wird nach X Tagen automatisch gelöscht</target>
+            </trans-unit>
+            <trans-unit id="room_was_deleted_yesterday">
+                <source>Room was deleted yesterday</source>
+                <target>Raum wurde gestern gelöscht</target>
+            </trans-unit>
+            <trans-unit id="lock_userid_in_x_days">
+                <source>Lock userid in X days</source>
+                <target>Kennung wird in X Tagen gesperrt</target>
+            </trans-unit>
+            <trans-unit id="userid_locked_tomorrow">
+                <source>Userid will be locked tomorrow</source>
+                <target>Kennung wird morgen gesperrt</target>
+            </trans-unit>
+            <trans-unit id="userid_locked">
+                <source>Userid was locked</source>
+                <target>Kennung wurde gesperrt</target>
+            </trans-unit>
+            <trans-unit id="delete_userid_in_X_days">
+                <source>Delete userid in X days</source>
+                <target>Kennung wird in X Tagen gelöscht</target>
+            </trans-unit>
+            <trans-unit id="delete_userid_tomorrow">
+                <source>Userid will be deleted tomorrow</source>
+                <target>Kennung wird morgen gelöscht</target>
+            </trans-unit>
+            <trans-unit id="userid_deleted">
+                <source>Userid was deleted</source>
+                <target>Kennung wurde gelöscht</target>
+            </trans-unit>
+            <trans-unit id="no_mail_text">
+                <source>No email text</source>
+                <target>Keinen E-Mail-Text</target>
+            </trans-unit>
+            <trans-unit id="load_mail_texts">
+                <source>Load mail texts</source>
+                <target>Ausgewählte E-Mail-Texte laden</target>
+            </trans-unit>
+            <trans-unit id="salutation">
+                <source>Salutation</source>
+                <target>Anrede</target>
+            </trans-unit>
+            <trans-unit id="goodbye">
+                <source>Goodbye</source>
+                <target>Grußformel</target>
             </trans-unit>
         </body>
     </file>

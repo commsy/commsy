@@ -5,6 +5,7 @@ namespace App\Proxy;
 
 
 use App\Entity\Portal;
+use App\Services\LegacyEnvironment;
 
 class PortalProxy
 {
@@ -246,7 +247,23 @@ class PortalProxy
 
     public function getEmailTextArray(): array
     {
-        return [];
+        return ($this->portal->getExtras()['MAIL_TEXT_ARRAY']) ?? [];
+    }
+
+    public function setEmailTextArray($array)
+    {
+        $this->portal->getExtras()['MAIL_TEXT_ARRAY'] = $array;
+        // $this->portal->setEmailTextArray($array);
+    }
+
+    public function setEmailText($message_tag, $array)
+    {
+      //  foreach($array as $language => $message){
+       //     $this->portal->getExtras()['MAIL_TEXT_ARRAY'][$message_tag] = [$language => $message];
+       // }
+
+        $this->portal->setEmailText($message_tag, $array);
+        $this->portal->setTagMandatory(true);
     }
 
     public function isArchived(): bool
@@ -262,5 +279,10 @@ class PortalProxy
     public function isOpenForGuests(): bool
     {
         return $this->portal->getIsOpenForGuests();
+    }
+
+    public function save()
+    {
+        $this->portal->save();
     }
 }
