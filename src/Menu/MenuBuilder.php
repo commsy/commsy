@@ -489,6 +489,15 @@ class MenuBuilder
                 'extras' => ['icon' => 'minus-circle']
             ])
             ->setExtra('translation_domain', 'portal');
+
+            // mail
+            $menu->addChild('Mail', [
+                'label' => 'Mailtexts',
+                'route' => 'app_portalsettings_mailtexts',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'mail']
+            ])
+                ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;

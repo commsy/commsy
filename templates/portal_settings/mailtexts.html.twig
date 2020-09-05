@@ -1,0 +1,27 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% embed 'components/context_navigation.html.twig' %}
+        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Mailtexts'|trans({}, "portal") }}{% endblock %}
+        {% block body %}
+            {{ form_start(form) }}
+            {{ form_row(form.userIndexFilterChoice) }}
+            {{ form_row(form.loadMailTexts) }}
+            {{ form_row(form.contentGerman) }}
+            {{ form_row(form.resetContentGerman) }}
+            <hr />
+            {{ form_row(form.contentEnglish) }}
+            {{ form_row(form.resetContentEnglish) }}
+            <hr />
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
