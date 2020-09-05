@@ -1140,4 +1140,68 @@ class Portal implements \Serializable
             $this->$key = $value;
         }
     }
+
+    ###################################################
+    # email text translation methods
+    ###################################################
+
+    function getEmailTextArray () {
+        $retour = array();
+        if ($this->_issetExtra('MAIL_TEXT_ARRAY')) {
+            $retour = $this->getExtras()['MAIL_TEXT_ARRAY'];
+        }
+        return $retour;
+    }
+
+    function setEmailText ($message_tag, $array) {
+        $mail_text_array = array();
+        if ($this->_issetExtra('MAIL_TEXT_ARRAY')) {
+            $mail_text_array = $this->getExtras()['MAIL_TEXT_ARRAY'];
+        }
+        if (!empty($array)) {
+            $mail_text_array[$message_tag] = $array;
+        } elseif (!empty($mail_text_array[$message_tag])) {
+            unset($mail_text_array[$message_tag]);
+        }
+        $this->_addExtra('MAIL_TEXT_ARRAY',$mail_text_array);
+    }
+
+    function setEmailTextArray ($array) {
+        if ( !empty($array) ) {
+            $this->_addExtra('MAIL_TEXT_ARRAY',$array);
+        }
+    }
+
+    /** exists the extra information with the name $key ?
+     * this method returns a boolean, if the value exists or not
+     *
+     * @param string key   the key (name) of the value
+     *
+     * @return boolean true, if value exists
+     *                 false, if not
+     */
+    function _issetExtra($key) {
+        $result = false;
+        $extras = $this->getExtras();
+        if (isset($extras) and is_array($extras) and array_key_exists($key,$extras) and isset($extras[$key])) {
+            $result = true;
+        }
+        return $result;
+    }
+
+    function _addExtra($key, $value)
+    {
+        $extras = $this->getExtras();
+        $extras[$key] = $value;
+        $this->setExtras($extras);
+    }
+
+    /** save context
+     * this method save the context
+     */
+    function save() {
+        $manager = $this->_environment->getManager($this->_type);
+        $this->_save($manager);
+        $this->_changes = array();
+    }
 }

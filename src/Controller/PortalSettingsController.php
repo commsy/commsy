@@ -34,6 +34,7 @@ use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\LicenseType;
 use App\Form\Type\Portal\LicenseSortType;
+use App\Form\Type\Portal\MailtextsType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
@@ -294,7 +295,6 @@ class PortalSettingsController extends AbstractController
             $entityManager->flush();
         }
 
-
         // mandatory links form
         $linkForm = $this->createForm(MandatoryAssignmentType::class, $portal);
 
@@ -307,13 +307,115 @@ class PortalSettingsController extends AbstractController
             }
         }
 
-
         return [
             'editForm' => $editForm->createView(),
             'linkForm' => $linkForm->createView(),
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/mailtexts")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param RoomService $roomService
+     * @param LegacyEnvironment $environment
+     */
+    public function mailtexts(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $environment
+    )
+    {
+        $defaultData = [
+            'userIndexFilterChoice' => -1,
+            'contentGerman' => '',
+            'contentEnglish' => '',
+            'resetContentGerman' => False,
+            'resetContentEnglish' => False,
+        ];
+
+        $roomItem = $environment->getEnvironment()->getCurrentContextItem();
+
+        $translator = $environment->getEnvironment()->getTranslationObject();
+        $portalId = $portal->getId();
+        $mailTextForm = $this->createForm(MailtextsType::class, $defaultData);
+        $langDe = 'de';
+        $langEn = 'en';
+
+        $mailTextForm->handleRequest($request);
+        if ($mailTextForm->isSubmitted()) {
+
+            $formData = $mailTextForm->getData();
+            $textChoice = $formData['userIndexFilterChoice'];
+            $previousMailTexts = $roomItem->getEmailTextArray();
+
+            if ($mailTextForm->isValid() && ($mailTextForm->get('save')->isClicked())) {
+
+                if($formData['resetContentGerman']){
+                    $translator->setEmailTextArray([]);
+                    $germanText = $translator->getEmailMessageInLang($langDe, $textChoice);
+                }else{
+                    $germanText = $formData['contentGerman'];
+                }
+
+                if($formData['resetContentEnglish']){
+                    $translator->setEmailTextArray([]);
+                    $englishText = $translator->getEmailMessageInLang($langEn, $textChoice);
+                }else{
+                    $englishText = $formData['contentEnglish'];
+                }
+
+                $roomItem->setEmailText($textChoice, [
+                    $langDe => $germanText,
+                    $langEn => $englishText,
+                ]);
+
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                // $roomItem->save();
+            } elseif (($mailTextForm->get('loadMailTexts')->isClicked())) {
+
+                if (!in_array($textChoice, $previousMailTexts)) {
+                    $germanText = $translator->getEmailMessageInLang($langDe, $textChoice);
+                } else {
+                    if($formData['resetContentGerman']){
+                        $translator->setEmailTextArray([]);
+                        $germanText = $translator->getEmailMessageInLang($langDe, $textChoice);
+                    }else{
+                        $germanText = $previousMailTexts[$textChoice][$langDe];
+                    }
+                }
+
+                if (!in_array($textChoice, $previousMailTexts)) {
+                    $englishText = $translator->getEmailMessageInLang($langEn, $textChoice);
+                } else {
+                    if($formData['resetContentEnglish']){
+                        $translator->setEmailTextArray([]);
+                        $englishText = $translator->getEmailMessageInLang($langEn, $textChoice);
+                    }else{
+                        $englishText = $previousMailTexts[$textChoice][$langEn];;
+                    }
+                }
+            }
+
+            $defaultData = $formData;
+            $defaultData['contentGerman'] = $germanText;
+            $defaultData['contentEnglish'] = $englishText;
+
+            $mailTextForm = $this->createForm(MailtextsType::class, $defaultData);
+        }
+        return [
+            'form' => $mailTextForm->createView(),
+            'portalId' => $portalId,
         ];
     }
 

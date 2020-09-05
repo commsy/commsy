@@ -339,7 +339,7 @@
             </trans-unit>
             <trans-unit id="activate_user">
                 <source>Activate user id(s)</source>
-                <target>Activate user id(s)</target>
+                <target>Activate user id(s) / Status user</target>
             </trans-unit>
             <trans-unit id="mail_change_login">
                 <source>Email change login</source>
@@ -932,6 +932,104 @@
             <trans-unit id="Portal logo">
                 <source>Portal logo</source>
                 <target>Logo</target>
+            </trans-unit>
+
+            <!-- Mailtexts -->
+            <trans-unit id="mail_texts">
+                <source>Mailtexts</source>
+                <target>Email texts</target>
+            </trans-unit>
+            <trans-unit id="password_expires">
+                <source>Password expires</source>
+                <target>Password expires</target>
+            </trans-unit>
+            <trans-unit id="password_is_expired">
+                <source>Password is expired</source>
+                <target>Password is expired</target>
+            </trans-unit>
+            <trans-unit id="reset">
+                <source>Reset</source>
+                <target>Reset?</target>
+            </trans-unit>
+            <trans-unit id="content_german">
+                <source>Content german</source>
+                <target>Content (German)</target>
+            </trans-unit>
+            <trans-unit id="content_english">
+                <source>Content english</source>
+                <target>Content (English)</target>
+            </trans-unit>
+            <trans-unit id="lock_room">
+                <source>Lock room</source>
+                <target>Lock room</target>
+            </trans-unit>
+            <trans-unit id="unlock_room">
+                <source>Unlock room</source>
+                <target>Unlock room</target>
+            </trans-unit>
+            <trans-unit id="delete_room">
+                <source>Delete room</source>
+                <target>Delete room</target>
+            </trans-unit>
+            <trans-unit id="create_room">
+                <source>Create room</source>
+                <target>Create room</target>
+            </trans-unit>
+            <trans-unit id="archive_room_x_days">
+                <source>Archive room after X days</source>
+                <target>Room will automatically be archived in X days</target>
+            </trans-unit>
+            <trans-unit id="room_was_archived_yesterday">
+                <source>Room was archived yesterday</source>
+                <target>Room was archived yesterday</target>
+            </trans-unit>
+            <trans-unit id="delete_room_after_x_days">
+                <source>Delete room after X day</source>
+                <target>Room will be automatically deleted after X days</target>
+            </trans-unit>
+            <trans-unit id="room_was_deleted_yesterday">
+                <source>Room was deleted yesterday</source>
+                <target>Room was deleted yesterday</target>
+            </trans-unit>
+            <trans-unit id="lock_userid_in_x_days">
+                <source>Lock userid in X days</source>
+                <target>Lock user ID in X days</target>
+            </trans-unit>
+            <trans-unit id="userid_locked_tomorrow">
+                <source>Userid will be locked tomorrow</source>
+                <target>Use ID will be locked tomorrow</target>
+            </trans-unit>
+            <trans-unit id="userid_locked">
+                <source>Userid was locked</source>
+                <target>User ID was locked</target>
+            </trans-unit>
+            <trans-unit id="delete_userid_in_X_days">
+                <source>Delete userid in X days</source>
+                <target>Delete user ID in X days</target>
+            </trans-unit>
+            <trans-unit id="delete_userid_tomorrow">
+                <source>Userid will be deleted tomorrow</source>
+                <target>User ID will be deleted tomorrow</target>
+            </trans-unit>
+            <trans-unit id="userid_deleted">
+                <source>Userid was deleted</source>
+                <target>User ID was deleted</target>
+            </trans-unit>
+            <trans-unit id="no_mail_text">
+                <source>No email text</source>
+                <target>No email text</target>
+            </trans-unit>
+            <trans-unit id="load_mail_texts">
+                <source>Load mail texts</source>
+                <target>Load the chosen email texts</target>
+            </trans-unit>
+            <trans-unit id="salutation">
+                <source>Salutation</source>
+                <target>Salutation</target>
+            </trans-unit>
+            <trans-unit id="goodbye">
+                <source>Goodbye</source>
+                <target>Goodbye</target>
             </trans-unit>
         </body>
     </file>
