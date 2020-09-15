@@ -784,6 +784,60 @@
                 <target>Please choose (possibly search workspaces before)</target>
             </trans-unit>
 
+            <!-- time pulses -->
+            <trans-unit id="Time_pulses">
+                <source>Time pulses</source>
+                <target>Time pulses</target>
+            </trans-unit>
+            <trans-unit id="Show_time_pulses">
+                <source>Show time pulses</source>
+                <target>Show time pulses</target>
+            </trans-unit>
+            <trans-unit id="Time_pulses_name">
+                <source>Time pulses name</source>
+                <target>Label used for time pulses</target>
+            </trans-unit>
+            <trans-unit id="Number_of_future_time_pulses">
+                <source>Number of future time pulses</source>
+                <target>Number of future time pulses</target>
+            </trans-unit>
+            <trans-unit id="Edit_time_pulses">
+                <source>Edit time pulses</source>
+                <target>Edit time pulses</target>
+            </trans-unit>
+            <trans-unit id="Add_time_pulse">
+                <source>Add time pulse</source>
+                <target>Add time pulse</target>
+            </trans-unit>
+            <trans-unit id="Delete_time_pulse_x">
+                <source>Delete time pulse %number%</source>
+                <target>Delete time pulse %number%</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_start_day">
+                <source>Time pulse start day</source>
+                <target>Start day</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_start_month">
+                <source>Time pulse start month</source>
+                <target>Start month</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_end_day">
+                <source>Time pulse end day</source>
+                <target>End day</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_end_month">
+                <source>Time pulse end month</source>
+                <target>End month</target>
+            </trans-unit>
+            <trans-unit id="Show_time_pulses_help_text">
+                <source>Show time pulses help text</source>
+                <target>Enable time pulses if you want to associate project workspaces with certain divisions of a year (like a semester or trimester); the options below allow you to specify the name used for time pulses in the user interface, and how many time pulses shall be created from the templates defined below</target>
+            </trans-unit>
+            <trans-unit id="Time_pulses_help">
+                <source>Time pulses help</source>
+                <target>Placeholders for 4-digit years:<![CDATA[<br />]]>%1 = current year<![CDATA[<br />]]>%2 = next year<![CDATA[<br />]]>%3 = last year<![CDATA[<br /><br />]]>Placeholders for 2-digit years:<![CDATA[<br />]]>%4 = current year<![CDATA[<br />]]>%5 = next year<![CDATA[<br />]]>%6 = last year</target>
+            </trans-unit>
+
             <!-- privacy -->
             <trans-unit id="Privacy">
                 <source>Privacy</source>

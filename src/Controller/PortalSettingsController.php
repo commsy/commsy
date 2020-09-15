@@ -43,6 +43,7 @@ use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
+use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimeType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
@@ -589,6 +590,42 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/timepulses")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     */
+    public function timePulses(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ) {
+        // time pulses options form
+        $optionsForm = $this->createForm(TimePulsesType::class, $portal);
+
+        $optionsForm->handleRequest($request);
+        if ($optionsForm->isSubmitted() && $optionsForm->isValid()) {
+
+            if ($optionsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        // time pulses form
+        // TODO: $editForm
+
+        return [
+            'optionsForm' => $optionsForm->createView(),
+//            'editForm' => $editForm->createView(),
+            'portal' => $portal,
         ];
     }
 

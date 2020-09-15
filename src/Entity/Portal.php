@@ -1007,64 +1007,97 @@ class Portal implements \Serializable
         $this->getExtras()['SHOW_TIME'] = 0;
     }
 
-    public function getTimeNameArray () : array
+    public function getShowTimePulses(): bool
     {
-        $retour = array();
-        if ($this->getExtras()['TIME_NAME_ARRAY']) {
-            $retour = $this->getExtras()['TIME_NAME_ARRAY'];
+        /**
+         * show time pulses: 1 = yes, -1 = no (default)
+         * @var integer
+         */
+        $showTimePulses = $this->extras['TIME_SHOW'] ?? -1;
+
+        return $showTimePulses === 1 ? true : false;
+    }
+
+    public function setShowTimePulses(?bool $showTimePulses): Portal
+    {
+        $this->extras['TIME_SHOW'] = $showTimePulses ? 1 : -1;
+        return $this;
+    }
+
+    public function getTimePulseNameGerman(): string
+    {
+        return $this->getTimeNameArray()['DE'] ?? '';
+    }
+
+    public function setTimePulseNameGerman(?string $timePulseName): Portal
+    {
+        $timePulseName = $timePulseName ?? '';
+        if ($this->getTimePulseNameGerman() !== $timePulseName) {
+            $timePulseNamesByLanguage = $this->getTimeNameArray();
+            $timePulseNamesByLanguage['DE'] = $timePulseName;
+            $this->setTimeNameArray($timePulseNamesByLanguage);
         }
-        return $retour;
+        return $this;
     }
 
-    public function setTimeNameArray($value)
+    public function getTimePulseNameEnglish(): string
     {
-        $this->getExtras()['TIME_NAME_ARRAY'] = $value;
+        return $this->getTimeNameArray()['EN'] ?? '';
+    }
 
-        $value2 = array();
-        $value2['NAME'] = CS_TIME_TYPE;
-
-        foreach ($value as $lang => $name) {
-            $value2[mb_strtoupper($lang, 'UTF-8')]['NOMPL'] = $name;
+    public function setTimePulseNameEnglish(?string $timePulseName): Portal
+    {
+        $timePulseName = $timePulseName ?? '';
+        if ($this->getTimePulseNameEnglish() !== $timePulseName) {
+            $timePulseNamesByLanguage = $this->getTimeNameArray();
+            $timePulseNamesByLanguage['EN'] = $timePulseName;
+            $this->setTimeNameArray($timePulseNamesByLanguage);
         }
-        $this->setRubricArray(CS_TIME_TYPE, $value2);
+        return $this;
     }
 
-    /** set RubricArray
-     * this method sets the Rubric Name
-     *
-     * @param array value name cases
-     */
-    public function setRubricArray($rubric, $array)
+    public function getTimeNameArray(): array
     {
-
-        $rubricTranslationArray = array();
-        try {
-            $rubricTranslationArray = $this->getExtras()['RUBRIC_TRANSLATION_ARRAY'];
-        } catch (\ErrorException $e) {
-        }
-
-        if (empty($rubricTranslationArray) or sizeof($rubricTranslationArray) > 1) {
-            $rubricTranslationArray = array();
-        }
-        $extras = $this->getExtras();
-        $rubricTranslationArray[cs_strtoupper($rubric)] = $array;
-        $extras['RUBRIC_TRANSLATION_ARRAY'] = $rubricTranslationArray;
-        $this->setExtras($extras);
+        return $this->extras['TIME_NAME_ARRAY'] ?? [];
     }
 
-    public function getTimeInFuture()
+    public function setTimeNameArray(array $timePulseNamesByLanguage): Portal
     {
-        return ($this->getExtras()['TIME_IN_FUTURE']) ?? 0;
+        $this->extras['TIME_NAME_ARRAY'] = $timePulseNamesByLanguage;
+        return $this;
     }
 
-    public function setTimeInFuture($value)
+    public function getNumberOfFutureTimePulses(): int
     {
-        $this->getExtras()['TIME_IN_FUTURE'] = $value;
+        return $this->extras['TIME_IN_FUTURE'] ?? 0;
     }
 
-    public function setTimeTextArray($value)
+    public function setNumberOfFutureTimePulses(?int $count): Portal
     {
-        $this->getExtras()['TIME_TEXT_ARRAY'] = $value;
+        $this->extras['TIME_IN_FUTURE'] = $count ?? 0;
+        return $this;
+    }
+
+    public function getTimeInFuture(): int
+    {
+        return $this->extras['TIME_IN_FUTURE'] ?? 0;
+    }
+
+    public function setTimeInFuture(int $value): Portal
+    {
+        $this->extras['TIME_IN_FUTURE'] = $value;
+        return $this;
+    }
+
+    public function getTimeTextArray(): array
+    {
+        return $this->extras['TIME_TEXT_ARRAY'] ?? [];
+    }
+
+    public function setTimeTextArray(array $timePulseTemplates): Portal
+    {
+        $this->extras['TIME_TEXT_ARRAY'] = $timePulseTemplates;
+        return $this;
     }
 
     public function getIndexViewAction()
