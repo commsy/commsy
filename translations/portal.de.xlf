@@ -729,6 +729,10 @@
                 <source>Time pulses</source>
                 <target>Zeittakte</target>
             </trans-unit>
+            <trans-unit id="Time_pulse">
+                <source>Time pulse</source>
+                <target>Zeittakt</target>
+            </trans-unit>
             <trans-unit id="Show_time_pulses">
                 <source>Show time pulses</source>
                 <target>Zeittakte anzeigen</target>
@@ -741,37 +745,49 @@
                 <source>Number of future time pulses</source>
                 <target>Anzahl zukünftiger Zeittakte</target>
             </trans-unit>
+            <trans-unit id="New_time_pulse">
+                <source>New time pulse</source>
+                <target>Neuer Zeittakt</target>
+            </trans-unit>
             <trans-unit id="Edit_time_pulses">
                 <source>Edit time pulses</source>
                 <target>Zeittakte bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="Edit_time_pulse">
+                <source>Edit time pulse</source>
+                <target>Zeittakt bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="Save_time_pulse">
+                <source>Save time pulse</source>
+                <target>Zeittakt speichern</target>
             </trans-unit>
             <trans-unit id="Add_time_pulse">
                 <source>Add time pulse</source>
                 <target>Zeittakt hinzufügen</target>
             </trans-unit>
-            <trans-unit id="Delete_time_pulse_x">
-                <source>Delete time pulse %number%</source>
-                <target>Zeittakt %number% löschen</target>
+            <trans-unit id="Delete_time_pulse">
+                <source>Delete time pulse</source>
+                <target>Zeittakt löschen</target>
             </trans-unit>
-            <trans-unit id="Time_pulse_start_day">
-                <source>Time pulse start day</source>
-                <target>Beginnt am (Tag)</target>
+            <trans-unit id="Time_pulse_start">
+                <source>Time pulse start</source>
+                <target>Beginnt am</target>
             </trans-unit>
-            <trans-unit id="Time_pulse_start_month">
-                <source>Time pulse start month</source>
-                <target>Beginnt am (Monat)</target>
+            <trans-unit id="Time_pulse_end">
+                <source>Time pulse end</source>
+                <target>Endet am</target>
             </trans-unit>
-            <trans-unit id="Time_pulse_end_day">
-                <source>Time pulse end day</source>
-                <target>Endet am (Tag)</target>
+            <trans-unit id="Time_pulse_select_day">
+                <source>Time pulse select day</source>
+                <target>Tag...</target>
             </trans-unit>
-            <trans-unit id="Time_pulse_end_month">
-                <source>Time pulse end month</source>
-                <target>Endet am (Monat)</target>
+            <trans-unit id="Time_pulse_select_month">
+                <source>Time pulse select month</source>
+                <target>Monat...</target>
             </trans-unit>
             <trans-unit id="Show_time_pulses_help_text">
                 <source>Show time pulses help text</source>
-                <target>Aktivieren Sie Zeittakte, wenn sie Projekträume bestimmten Jahresabschnitten (z.B. Semester oder Trimester) zuordnen möchten; über die untenstehenden Optionen können Sie definieren, wie Zeittakte in der Benutzeroberfläche benannt werden, und wieviele Zeittakte aufgrund der unten definierten Vorlagen erstellt werden sollen</target>
+                <target>Aktivieren Sie Zeittakte, wenn Sie Projekträume bestimmten Jahresabschnitten (z.B. Semester oder Trimester) zuordnen möchten. Über die untenstehenden Optionen können Sie definieren, wie Zeittakte in der Benutzeroberfläche benannt werden, und wieviele Zeittakte aufgrund der unten definierten Vorlagen erstellt werden sollen:</target>
             </trans-unit>
             <trans-unit id="Time_pulses_help">
                 <source>Time pulses help</source>
