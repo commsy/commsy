@@ -44,20 +44,24 @@ use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
+use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\Portal\TimeType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
+use App\Model\TimePulseTemplate;
 use App\Repository\AuthSourceRepository;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
 use App\Utils\MailAssistant;
 use App\Utils\RoomService;
+use App\Utils\TimePulsesService;
 use App\Utils\UserService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -236,7 +240,7 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      * @param Portal $portal
-     * @param int $roomCategoryId
+     * @param int|null $roomCategoryId
      * @param Request $request
      * @param RoomCategoriesService $roomCategoriesService
      * @param EventDispatcherInterface $dispatcher
@@ -594,17 +598,21 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/timepulses")
+     * @Route("/portal/{portalId}/settings/timepulses/{timePulseTemplateId?}")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      * @param Portal $portal
+     * @param int|null $timePulseTemplateId
      * @param Request $request
+     * @param TimePulsesService $timePulsesService
      * @param EntityManagerInterface $entityManager
      */
     public function timePulses(
         Portal $portal,
+        $timePulseTemplateId,
         Request $request,
+        TimePulsesService $timePulsesService,
         EntityManagerInterface $entityManager
     ) {
         // time pulses options form
@@ -619,13 +627,49 @@ class PortalSettingsController extends AbstractController
             }
         }
 
-        // time pulses form
-        // TODO: $editForm
+
+        // time pulses templates form
+        if (isset($timePulseTemplateId)) {
+            $timePulseTemplate = $timePulsesService->getTimePulseTemplate($portal, $timePulseTemplateId);
+            if (!$timePulseTemplate) {
+                throw new Exception('could not find time pulse template with ID ' . $timePulseTemplateId);
+            }
+        } else {
+            $timePulseTemplate = new TimePulseTemplate();
+            $timePulseTemplate->setContextId($portal->getId());
+        }
+
+        $editForm = $this->createForm(TimePulseTemplateType::class, $timePulseTemplate);
+
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+
+            $clickedButtonName = $editForm->getClickedButton()->getName();
+
+            if ($clickedButtonName === 'new' || $clickedButtonName === 'update') {
+                $timePulsesService->updateTimePulseTemplate($portal, $timePulseTemplate);
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            } else if ($clickedButtonName === 'delete') {
+                $timePulsesService->removeTimePulseTemplate($portal, $timePulseTemplateId);
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('app_portalsettings_timepulses', [
+                'portalId' => $portal->getId(),
+            ]);
+        }
+
+        $timePulseTemplates = $timePulsesService->getTimePulseTemplates($portal);
+
 
         return [
             'optionsForm' => $optionsForm->createView(),
-//            'editForm' => $editForm->createView(),
+            'editForm' => $editForm->createView(),
             'portal' => $portal,
+            'timePulseTemplateId' => $timePulseTemplateId,
+            'timePulseTemplates' => $timePulseTemplates,
         ];
     }
 

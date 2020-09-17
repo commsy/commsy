@@ -222,6 +222,12 @@ services:
     App\Utils\UserroomService:
         autowire: true
 
+    commsy_legacy.timepulses_service:
+        alias: App\Utils\TimePulsesService
+
+    App\Utils\TimePulsesService:
+        autowire: true
+
     commsy_legacy.file_service:
         alias: App\Utils\FileService
 
