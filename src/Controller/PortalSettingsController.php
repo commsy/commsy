@@ -624,11 +624,17 @@ class PortalSettingsController extends AbstractController
             if ($optionsForm->getClickedButton()->getName() === 'save') {
                 $entityManager->persist($portal);
                 $entityManager->flush();
+                $timePulsesService->updateTimePulseLabels($portal);
             }
         }
 
 
         // time pulses templates form
+        $timePulseTemplates = $timePulsesService->getTimePulseTemplates($portal);
+
+        // NOTE: the TimePulseTemplate data objects used here will be transformed again by
+        // TimePulesesService->updateTimePulseTemplate() and stored in an array in the extras
+        // column of the `portal` database table (with key 'TIME_TEXT_ARRAY')
         if (isset($timePulseTemplateId)) {
             $timePulseTemplate = $timePulsesService->getTimePulseTemplate($portal, $timePulseTemplateId);
             if (!$timePulseTemplate) {
@@ -637,6 +643,13 @@ class PortalSettingsController extends AbstractController
         } else {
             $timePulseTemplate = new TimePulseTemplate();
             $timePulseTemplate->setContextId($portal->getId());
+            if (count($timePulseTemplates) === 0) {
+                // NOTE: if defined, the id property of the TimePulseTemplate data object will
+                // get used as the item's index in the 'TIME_TEXT_ARRAY'; for the first array
+                // item, we explicitly set the id to 1 since the legacy code (which processes
+                // the 'TIME_TEXT_ARRAY' items) requires 1-based array indexes
+                $timePulseTemplate->setId(1);
+            }
         }
 
         $editForm = $this->createForm(TimePulseTemplateType::class, $timePulseTemplate);
@@ -662,8 +675,6 @@ class PortalSettingsController extends AbstractController
                 'portalId' => $portal->getId(),
             ]);
         }
-
-        $timePulseTemplates = $timePulsesService->getTimePulseTemplates($portal);
 
 
         return [

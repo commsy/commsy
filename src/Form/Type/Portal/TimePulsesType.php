@@ -55,6 +55,7 @@ class TimePulsesType extends AbstractType
                     '7' => 7,
                     '8' => 8,
                     '9' => 9,
+                    '10' => 10,
                 ],
             ])
             ->add('save', Types\SubmitType::class, [

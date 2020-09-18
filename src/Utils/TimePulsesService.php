@@ -157,8 +157,8 @@ class TimePulsesService
             $ad_year = 0;
             $first = true;
             foreach ($timePulseTemplates as $key => $timePulseTemplate) {
-                $begin = sprintf('%02d.%02d', strval($timePulseTemplate->getStartMonth()), strval($timePulseTemplate->getStartDay()));
-                $end = sprintf('%02d.%02d', strval($timePulseTemplate->getEndMonth()), strval($timePulseTemplate->getEndDay()));
+                $begin = sprintf('%02d%02d', strval($timePulseTemplate->getStartMonth()), strval($timePulseTemplate->getStartDay()));
+                $end = sprintf('%02d%02d', strval($timePulseTemplate->getEndMonth()), strval($timePulseTemplate->getEndDay()));
 
                 $begin2 = ($current_year+$ad_year).$begin;
                 if ($end < $begin) {
