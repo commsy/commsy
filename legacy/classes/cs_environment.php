@@ -233,7 +233,7 @@ class cs_environment {
              $portal = $entityManager->getRepository(Portal::class)->find($this->current_context_id);
 
              if ($portal) {
-                 $this->current_context = new PortalProxy($portal);
+                 $this->current_context = new PortalProxy($portal, $this);
                  return $this->current_context;
              }
 
@@ -367,7 +367,7 @@ class cs_environment {
                $portal = $entityManager->getRepository(Portal::class)->find($currentPortalId);
 
                if ($portal) {
-                   $this->_current_portal = new PortalProxy($portal);
+                   $this->_current_portal = new PortalProxy($portal, $this);
                }
            }
        } else {
@@ -377,7 +377,7 @@ class cs_environment {
            $portal = $entityManager->getRepository(Portal::class)->find($this->_current_portal_id);
 
            if ($portal) {
-               $this->_current_portal = new PortalProxy($portal);
+               $this->_current_portal = new PortalProxy($portal, $this);
            }
        }
 

@@ -648,12 +648,14 @@ class PortalSettingsController extends AbstractController
 
             if ($clickedButtonName === 'new' || $clickedButtonName === 'update') {
                 $timePulsesService->updateTimePulseTemplate($portal, $timePulseTemplate);
-                $entityManager->persist($portal);
-                $entityManager->flush();
             } else if ($clickedButtonName === 'delete') {
                 $timePulsesService->removeTimePulseTemplate($portal, $timePulseTemplateId);
+            }
+
+            if ($clickedButtonName === 'new' || $clickedButtonName === 'update' || $clickedButtonName === 'delete') {
                 $entityManager->persist($portal);
                 $entityManager->flush();
+                $timePulsesService->updateTimePulseLabels($portal);
             }
 
             return $this->redirectToRoute('app_portalsettings_timepulses', [

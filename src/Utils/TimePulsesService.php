@@ -13,11 +13,14 @@ use App\Services\LegacyEnvironment;
  */
 class TimePulsesService
 {
+    /**
+     * @var LegacyEnvironment $legacyEnvironment
+     */
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->legacyEnvironment = $legacyEnvironment;
     }
 
     /**
@@ -131,5 +134,158 @@ class TimePulsesService
         $rawTimePulseTemplates = $portal->getTimeTextArray();
         unset($rawTimePulseTemplates[$templateId]);
         $portal->setTimeTextArray($rawTimePulseTemplates);
+    }
+
+    /**
+     * Takes the given portal's time pulse settings & templates, and inserts/removes corresponding cs_label_item
+     * objects in the database that represent the concrete time pulses for these time pulse settings & templates
+     * @param Portal $portal the portal hosting the time pulses to be updated
+     */
+    public function updateTimePulseLabels(Portal $portal): void
+    {
+        $timePulseTemplates = $this->getTimePulseTemplates($portal);
+
+        $current_pos = 0;
+
+        // TODO: the below legacy code (originally extracted from `configuration_time.php`) should get rewritten!
+
+        // change (insert) time labels
+        $clock_pulse_array = array();
+        if (!empty($timePulseTemplates)) {
+            $current_year = date('Y');
+            $current_date = getCurrentDate();
+            $ad_year = 0;
+            $first = true;
+            foreach ($timePulseTemplates as $key => $timePulseTemplate) {
+                $begin = sprintf('%02d.%02d', strval($timePulseTemplate->getStartMonth()), strval($timePulseTemplate->getStartDay()));
+                $end = sprintf('%02d.%02d', strval($timePulseTemplate->getEndMonth()), strval($timePulseTemplate->getEndDay()));
+
+                $begin2 = ($current_year+$ad_year).$begin;
+                if ($end < $begin) {
+                    $ad_year++;
+                }
+                $end2 = ($current_year+$ad_year).$end;
+
+                if ($first) {
+                    $first = false;
+                    $begin_first = $begin2;
+                }
+
+                if ( $begin2 <= $current_date
+                    and $current_date <= $end2) {
+                    $current_pos = $key;
+                }
+            }
+
+            $year = $current_year;
+
+            if ($current_date < $begin_first) {
+                $year--;
+                $current_pos = count($timePulseTemplates);
+            }
+
+            $count = count($timePulseTemplates);
+            $position = 1;
+            for ($i=0; $i < $portal->getNumberOfFutureTimePulses() + $current_pos; $i++) {
+                $clock_pulse_array[] = $year.'_'.$position;
+                $position++;
+                if ($position > $count) {
+                    $position = 1;
+                    $year++;
+                }
+            }
+        }
+
+        $currentUserItem = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $time_manager = $this->legacyEnvironment->getEnvironment()->getTimeManager();
+
+        if (!empty($clock_pulse_array)) {
+            $done_array = array();
+            $time_manager->reset();
+            $time_manager->setContextLimit($portal->getId());
+            $time_manager->setDeleteLimit(false);
+            $time_manager->select();
+            $time_list = $time_manager->get();
+            if ($time_list->isNotEmpty()) {
+                $time_label = $time_list->getFirst();
+                while ($time_label) {
+                    if (!in_array($time_label->getTitle(),$clock_pulse_array)) {
+                        $first_new_clock_pulse = $clock_pulse_array[0];
+                        $last_new_clock_pulse = array_pop($clock_pulse_array);
+                        $clock_pulse_array[] = $last_new_clock_pulse;
+                        if ($time_label->getTitle() < $first_new_clock_pulse) {
+                            $temp_clock_pulse_array = explode('_',$time_label->getTitle());
+                            $clock_pulse_pos = $temp_clock_pulse_array[1];
+                            if ($clock_pulse_pos > $count) {
+                                if (!$time_label->isDeleted()) {
+                                    $time_label->setDeleterItem($currentUserItem);
+                                    $time_label->delete();
+                                }
+                            } else {
+                                if ($time_label->isDeleted()) {
+                                    $time_label->setModificatorItem($currentUserItem);
+                                    $time_label->unDelete();
+                                }
+                            }
+                        } elseif ($time_label->getTitle() > $last_new_clock_pulse) {
+                            if (!$time_label->isDeleted()) {
+                                $time_label->setDeleterItem($currentUserItem);
+                                $time_label->delete();
+                            }
+                        } else {
+                            if (!$time_label->isDeleted()) {
+                                $time_label->setDeleterItem($currentUserItem);
+                                $time_label->delete();
+                            }
+                        }
+                    } else {
+                        if ($time_label->isDeleted()) {
+                            $time_label->setModificatorItem($currentUserItem);
+                            $time_label->unDelete();
+                        }
+                        $done_array[] = $time_label->getTitle();
+                    }
+                    $time_label = $time_list->getNext();
+                }
+            }
+
+            foreach ($clock_pulse_array as $clock_pulse) {
+                if (!in_array($clock_pulse,$done_array)) {
+                    $time_label = $time_manager->getNewItem();
+                    $time_label->setContextID($portal->getId());
+                    $user = $currentUserItem;
+                    $time_label->setCreatorItem($user);
+                    $time_label->setModificatorItem($user);
+                    $time_label->setTitle($clock_pulse);
+                    $time_label->save();
+                }
+            }
+        } else {
+            $time_manager->reset();
+            $time_manager->setContextLimit($portal->getId());
+            $time_manager->select();
+            $time_list = $time_manager->get();
+            if ($time_list->isNotEmpty()) {
+                $time_label = $time_list->getFirst();
+                while ($time_label) {
+                    $time_label->setDeleterItem($currentUserItem);
+                    $time_label->delete();
+                    $time_label = $time_list->getNext();
+                }
+            }
+        }
+
+        // renew links to continuous rooms
+        $room_list = $portal->getContinuousRoomList($this->legacyEnvironment);
+        if ($room_list->isNotEmpty()) {
+            $room_item2 = $room_list->getFirst();
+            while ($room_item2) {
+                if ($room_item2->isOpen()) {
+                    $room_item2->setContinuous();
+                    $room_item2->saveWithoutChangingModificationInformation();
+                }
+                $room_item2 = $room_list->getNext();
+            }
+        }
     }
 }
