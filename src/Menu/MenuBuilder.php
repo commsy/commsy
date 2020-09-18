@@ -445,10 +445,10 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
-            // time
+            // time pulses
             $menu->addChild('Time', [
-                'label' => 'Time',
-                'route' => 'app_portalsettings_time',
+                'label' => 'Time pulses',
+                'route' => 'app_portalsettings_timepulses',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'calendar']
             ])
