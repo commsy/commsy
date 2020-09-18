@@ -803,7 +803,7 @@
             </trans-unit>
             <trans-unit id="Number_of_future_time_pulses">
                 <source>Number of future time pulses</source>
-                <target>Number of future time pulses</target>
+                <target>Number of time pulses</target>
             </trans-unit>
             <trans-unit id="New_time_pulse">
                 <source>New time pulse</source>
