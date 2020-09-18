@@ -122,7 +122,7 @@ class cs_item {
                 $portal = $entityManager->getRepository(Portal::class)->find($contextId);
 
                 if ($portal) {
-                    $this->_context_item = new PortalProxy($portal);
+                    $this->_context_item = new PortalProxy($portal, $this->_environment);
                     return $this->_context_item;
                 }
             }

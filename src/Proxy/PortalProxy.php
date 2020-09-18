@@ -14,9 +14,15 @@ class PortalProxy
      */
     private $portal;
 
-    public function __construct(Portal $portal)
+    /**
+     * @var \cs_environment
+     */
+    private $legacyEnvironment;
+
+    public function __construct(Portal $portal, \cs_environment $legacyEnvironment)
     {
         $this->portal = $portal;
+        $this->legacyEnvironment = $legacyEnvironment;
     }
 
     public function getItemId(): int
@@ -37,6 +43,29 @@ class PortalProxy
     public function showTime(): bool
     {
         return (isset($this->portal->getExtras()['TIME_SHOW']) && $this->portal->getExtras()['TIME_SHOW'] == '1') ? true : false;
+    }
+
+    function getTimeList()
+    {
+        $retour = NULL;
+        $time_manager = $this->legacyEnvironment->getTimeManager();
+        $time_manager->setContextLimit($this->getItemID());
+        $time_manager->setSortOrder('title');
+        $time_manager->select();
+        $retour = $time_manager->get();
+        unset($time_manager);
+        return $retour;
+    }
+
+    function getTimeListRev () {
+        $retour = NULL;
+        $time_manager = $this->legacyEnvironment->getTimeManager();
+        $time_manager->setContextLimit($this->getItemID());
+        $time_manager->setSortOrder('title_rev');
+        $time_manager->select();
+        $retour = $time_manager->get();
+        unset($time_manager);
+        return $retour;
     }
 
     public function isCountRoomRedundancy(): bool
@@ -137,21 +166,11 @@ class PortalProxy
 
     public function getCurrentTimeName(): string
     {
-        $timeNamesByLanguage = ($this->portal->getExtras()['TIME_NAME_ARRAY']) ?? [];
+        $timeNamesByLanguage = $this->portal->getTimeNameArray();
+        $lang = strtoupper($this->legacyEnvironment->getSelectedLanguage());
+        $timeName = $timeNamesByLanguage[$lang] ?? '';
 
-        return '';
-
-
-//        $lang = strtoupper($this->_environment->getSelectedLanguage());
-//
-//        $timeName = '';
-//        if ($timeNamesByLanguage && !empty($timeNamesByLanguage)) {
-//            if (isset($timeNamesByLanguage[$lang])) {
-//                $timeName = $timeNamesByLanguage[$lang];
-//            }
-//        }
-//
-//        return $timeName;
+        return $timeName;
     }
 
     public function getProjectRoomLinkStatus(): string
