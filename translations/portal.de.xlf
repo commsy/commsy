@@ -743,7 +743,7 @@
             </trans-unit>
             <trans-unit id="Number_of_future_time_pulses">
                 <source>Number of future time pulses</source>
-                <target>Anzahl Zeittakte</target>
+                <target>Anzahl zukünftiger Zeittakte</target>
             </trans-unit>
             <trans-unit id="New_time_pulse">
                 <source>New time pulse</source>
