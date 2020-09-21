@@ -291,6 +291,11 @@ class PortalProxy
         return $this->portal->getStatus() === 3;
     }
 
+    public function isClosed(): bool
+    {
+        return $this->portal->getStatus() === 2;
+    }
+
     public function isOpenForGuests(): bool
     {
         return $this->portal->getIsOpenForGuests();
@@ -310,5 +315,30 @@ class PortalProxy
     public function setConfigurationHideMailByDefault(bool $enabled)
     {
         $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = ($enabled === true) ? 1 : 0;
+    }
+
+    public function getModeratorList(): \cs_list
+    {
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextLimit($this->getItemID());
+        $userManager->setModeratorLimit();
+        $userManager->select();
+
+        /** @var \cs_list $moderators */
+        $moderators = $userManager->get();
+
+        if ($moderators->isEmpty()) {
+            if ($this->isClosed() && !$this->legacyEnvironment->isArchiveMode()) {
+                $userManager = $this->legacyEnvironment->getZzzUserManager();
+                $userManager->resetLimits();
+                $userManager->setContextLimit($this->getItemID());
+                $userManager->setModeratorLimit();
+                $userManager->select();
+                $moderators = $userManager->get();
+            }
+        }
+
+        return $moderators;
     }
 }
