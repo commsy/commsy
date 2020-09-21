@@ -174,9 +174,9 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
 
          $hideMailDefault = $_POST['default_hide_mail'];
          if($hideMailDefault == 2){
-            $context_item->setConfigurationHideMailByDefault(0);
+            $context_item->setConfigurationHideMailByDefault(false);
          } else {
-            $context_item->setConfigurationHideMailByDefault(1);
+            $context_item->setConfigurationHideMailByDefault(true);
          }
 
       }
