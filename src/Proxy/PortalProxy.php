@@ -45,7 +45,7 @@ class PortalProxy
         return (isset($this->portal->getExtras()['TIME_SHOW']) && $this->portal->getExtras()['TIME_SHOW'] == '1') ? true : false;
     }
 
-    function getTimeList()
+    public function getTimeList()
     {
         $retour = NULL;
         $time_manager = $this->legacyEnvironment->getTimeManager();
@@ -57,7 +57,8 @@ class PortalProxy
         return $retour;
     }
 
-    function getTimeListRev () {
+    public function getTimeListRev()
+    {
         $retour = NULL;
         $time_manager = $this->legacyEnvironment->getTimeManager();
         $time_manager->setContextLimit($this->getItemID());
@@ -124,7 +125,7 @@ class PortalProxy
 
     public function getMaxRoomActivityPoints(): int
     {
-        return (int) ($this->portal->getExtras()['MAX_ROOM_ACTIVITY'] ?? 0);
+        return (int)($this->portal->getExtras()['MAX_ROOM_ACTIVITY'] ?? 0);
     }
 
     public function isActivatedDeletingUnusedRooms(): bool
@@ -135,7 +136,7 @@ class PortalProxy
 
     public function getDaysUnusedBeforeDeletingRooms(): int
     {
-        return (int) (($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? 365);
+        return (int)(($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? 365);
     }
 
     public function getSupportPageLink(): string
@@ -194,7 +195,7 @@ class PortalProxy
         return ($this->portal->getExtras()['DEFAULTCOMMUNITYTEMPLATEID']) ?? '-1';
     }
 
-    function getShowRoomsOnHome():? string
+    function getShowRoomsOnHome(): ?string
     {
         return ($this->portal->getExtras()['SHOWROOMSONHOME']) ?? '';
     }
@@ -204,12 +205,12 @@ class PortalProxy
         $this->portal->getExtras()['SHOWROOMSONHOME'] = $text;
     }
 
-    public function setShowTemplatesInRoomListON ()
+    public function setShowTemplatesInRoomListON()
     {
         $this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST'] = 1;
     }
 
-    public function setShowTemplatesInRoomListOFF ()
+    public function setShowTemplatesInRoomListOFF()
     {
         $this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST'] = -1;
     }
@@ -272,9 +273,9 @@ class PortalProxy
 
     public function setEmailText($message_tag, $array)
     {
-      //  foreach($array as $language => $message){
-       //     $this->portal->getExtras()['MAIL_TEXT_ARRAY'][$message_tag] = [$language => $message];
-       // }
+        //  foreach($array as $language => $message){
+        //     $this->portal->getExtras()['MAIL_TEXT_ARRAY'][$message_tag] = [$language => $message];
+        // }
 
         $this->portal->setEmailText($message_tag, $array);
         $this->portal->setTagMandatory(true);
@@ -298,5 +299,16 @@ class PortalProxy
     public function save()
     {
         $this->portal->save();
+    }
+
+    public function getConfigurationHideMailByDefault(): bool
+    {
+        $hideMailByDefault = ($this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT']) ?? 0;
+        return $hideMailByDefault === 1;
+    }
+
+    public function setConfigurationHideMailByDefault(bool $enabled)
+    {
+        $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = ($enabled === true) ? 1 : 0;
     }
 }

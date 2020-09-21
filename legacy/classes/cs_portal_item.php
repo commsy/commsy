@@ -3537,20 +3537,4 @@ class cs_portal_item extends cs_guide_item {
     }
     return $retour;
    }
-
-   public function setConfigurationHideMailByDefault($value)
-   {
-     $this->_addExtra('HIDE_MAIL_BY_DEFAULT', $value);
-   }
-
-   public function getConfigurationHideMailByDefault()
-   {
-     $retour = 0;
-     if ($this->_issetExtra('HIDE_MAIL_BY_DEFAULT')) {
-      $retour = $this->_getExtra('HIDE_MAIL_BY_DEFAULT');
-    } else {
-      $retour = '';
-    }
-    return $retour;
-   }
 }
