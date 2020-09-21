@@ -16,7 +16,7 @@
         "eluceo/ical": "^0.15",
         "ezyang/htmlpurifier": "^4.1",
         "friendsofsymfony/ckeditor-bundle": "^2.0",
-        "friendsofsymfony/elastica-bundle": "^5.1-dev",
+        "friendsofsymfony/elastica-bundle": "^5.2",
         "friendsofsymfony/rest-bundle": "^3.0",
         "idci/color-scheme-bundle": "dev-master",
         "knplabs/knp-menu-bundle": "^3.0",
