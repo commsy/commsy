@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7094d210016605001339ff2406f21f5",
+    "content-hash": "2d92e069bd8dc817ce99a04ba9e33ee1",
     "packages": [
         {
             "name": "ci/restclientbundle",
@@ -2055,16 +2055,16 @@
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
-            "version": "5.x-dev",
+            "version": "v5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
-                "reference": "0dacc4b1f77fb0f9883d98a622160d26f2b93c26"
+                "reference": "581f3dfccd9424c4a5d9713bd8c2fc9f38479a80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/0dacc4b1f77fb0f9883d98a622160d26f2b93c26",
-                "reference": "0dacc4b1f77fb0f9883d98a622160d26f2b93c26",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/581f3dfccd9424c4a5d9713bd8c2fc9f38479a80",
+                "reference": "581f3dfccd9424c4a5d9713bd8c2fc9f38479a80",
                 "shasum": ""
             },
             "require": {
@@ -2139,7 +2139,7 @@
                 "mongodb",
                 "search"
             ],
-            "time": "2020-01-20T21:41:51+00:00"
+            "time": "2020-09-15T13:32:33+00:00"
         },
         {
             "name": "friendsofsymfony/rest-bundle",
@@ -14100,7 +14100,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "friendsofsymfony/elastica-bundle": 20,
         "idci/color-scheme-bundle": 20
     },
     "prefer-stable": false,
