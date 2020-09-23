@@ -498,6 +498,15 @@ class MenuBuilder
                 'extras' => ['icon' => 'mail']
             ])
                 ->setExtra('translation_domain', 'portal');
+
+            // auth source
+            $menu->addChild('Auth', [
+                'label' => 'Auth',
+                'route' => 'app_portalsettings_authcommsy',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'credit-card']
+            ])
+                ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;
