@@ -2,7 +2,7 @@
     <ul class="uk-navbar-nav">
         {% if showPortalConfigurationLink %}
             <li>
-                <a href="{{ path('app_portalsettings_support', { 'portalId': portal.id }) }}" title="{{ 'Portal configuration'|trans({}, 'portal') }}">
+                <a href="{{ path('app_portalsettings_general', { 'portalId': portal.id }) }}" title="{{ 'Portal configuration'|trans({}, 'portal') }}">
                     <i class="uk-icon-justify uk-icon-wrench"></i>
                 </a>
             </li>
