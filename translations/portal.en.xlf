@@ -721,10 +721,6 @@
                 <source>...As</source>
                 <target> </target>
             </trans-unit>
-            <trans-unit id="change_password">
-                <source>Change password</source>
-                <target>Change password</target>
-            </trans-unit>
             <trans-unit id="change_status">
                 <source>Change status</source>
                 <target>Change status</target>
@@ -1100,6 +1096,239 @@
             <trans-unit id="goodbye">
                 <source>Goodbye</source>
                 <target>Goodbye</target>
+            </trans-unit>
+
+            <!-- Auth -->
+            <trans-unit id="auth">
+                <source>Auth</source>
+                <target>Authentification</target>
+            </trans-unit>
+            <trans-unit id="source">
+                <source>Source</source>
+                <target>Source</target>
+            </trans-unit>
+            <trans-unit id="no_source">
+                <source>No source</source>
+                <target>Source</target>
+            </trans-unit>
+            <trans-unit id="new">
+                <source>New</source>
+                <target>Enter new source</target>
+            </trans-unit>
+            <trans-unit id="select">
+                <source>Select</source>
+                <target>Select</target>
+            </trans-unit>
+            <trans-unit id="second_intervall">
+                <source>Intervall in seconds</source>
+                <target>Intervall in seconds</target>
+            </trans-unit>
+            <trans-unit id="number_of_tries">
+                <source>Number of tries</source>
+                <target>Number of tries</target>
+            </trans-unit>
+            <trans-unit id="lock_in_minutes">
+                <source>Lock in minutes</source>
+                <target>Lock in minutes</target>
+            </trans-unit>
+            <trans-unit id="lock_user_id">
+                <source>Lock user ID</source>
+                <target>Lock user ID</target>
+            </trans-unit>
+
+            <!-- Auth new -->
+            <trans-unit id="no_type">
+                <source>No type</source>
+                <target>No type</target>
+            </trans-unit>
+            <trans-unit id="mysql_general">
+                <source>MySQLGeneral</source>
+                <target>MySQL: general</target>
+            </trans-unit>
+            <trans-unit id="available">
+                <source>Available</source>
+                <target>Available</target>
+            </trans-unit>
+            <trans-unit id="path">
+                <source>Path</source>
+                <target>Path</target>
+            </trans-unit>
+            <trans-unit id="contactTelephone">
+                <source>Contact telephone</source>
+                <target>Contact telephone</target>
+            </trans-unit>
+            <trans-unit id="contactMail">
+                <source>Contact mail</source>
+                <target>Contact mail</target>
+            </trans-unit>
+            <trans-unit id="urlChangePW">
+                <source>URL for changing a password</source>
+                <target>URL for changing a password</target>
+            </trans-unit>
+            <trans-unit id="usersMayCreateRooms">
+                <source>Users may create rooms</source>
+                <target>Users may create rooms</target>
+            </trans-unit>
+            <trans-unit id="UderIdLdapField">
+                <source>UserID (LDAP field)</source>
+                <target>UserID (LDAP field)</target>
+            </trans-unit>
+            <trans-unit id="pathName">
+                <source>Path name</source>
+                <target>Path name</target>
+            </trans-unit>
+            <trans-unit id="userName">
+                <source>User name</source>
+                <target>User name</target>
+            </trans-unit>
+            <trans-unit id="crypto">
+                <source>Encryption</source>
+                <target>Encryption</target>
+            </trans-unit>
+            <trans-unit id="none">
+                <source>None</source>
+                <target>none</target>
+            </trans-unit>
+            <trans-unit id="database">
+                <source>Database</source>
+                <target>Database</target>
+            </trans-unit>
+            <trans-unit id="database_table">
+                <source>Database table</source>
+                <target>Database table</target>
+            </trans-unit>
+            <trans-unit id="stabase_table_with_user_name">
+                <source>Column with user name</source>
+                <target>Column with user names</target>
+            </trans-unit>
+            <trans-unit id="column_with_passwords">
+                <source>Column with passwords</source>
+                <target>Column with passwords</target>
+            </trans-unit>
+            <trans-unit id="direct_login">
+                <source>Direct login</source>
+                <target>Direkte Anmeldung aktivieren</target>
+            </trans-unit>
+            <trans-unit id="session_initiator_URL">
+                <source>Session initiator URL</source>
+                <target>Session Initiator URL</target>
+            </trans-unit>
+            <trans-unit id="session_logout_URL">
+                <source>Session logout URL</source>
+                <target>Session Logout URL</target>
+            </trans-unit>
+            <trans-unit id="data_from_provider">
+                <source>Update data from the identity provider</source>
+                <target>Dqaten vom Identity Provider aktualisieren</target>
+            </trans-unit>
+            <trans-unit id="path_to_cas_login">
+                <source>Path to cas login</source>
+                <target>/path/to/cas/login</target>
+            </trans-unit>
+            <trans-unit id="cas_path">
+                <source>Cas path</source>
+                <target>https://www.cas-server.com ... /login</target>
+            </trans-unit>
+           <trans-unit id="encryption_help_text">
+                <source>Encryption of the passwords</source>
+                <target>Encryption of the passwords of the users</target>
+            </trans-unit>
+            <trans-unit id="field_ldap_name_stored_help">
+                <source>In which field are UserID Ldap stored? (samaccountname)</source>
+                <target>In which field are UserID Ldap stored? (samaccountname)</target>
+            </trans-unit>
+            <trans-unit id="reading_rights_path_help_text">
+                <source>Reading rights path</source>
+                <target>und ggf. zum Herausfinden des Pfades einer Person die Angabe einer Kennung (falls abweichend zum Pfad auch als dn angebbar) mit umfassenden Leserechten</target>
+                <target>and possibly for sorting out the path of a person the statement of their ID (if different to the path also as self-designation) with thorough reading rights</target>
+            </trans-unit>
+            <trans-unit id="change_user_id">
+                <source>Change user ID</source>
+                <target>Change user ID</target>
+            </trans-unit>
+            <trans-unit id="change_identification">
+                <source>Change identification</source>
+                <target>Change identification</target>
+            </trans-unit>
+            <trans-unit id="change_password">
+                <source>Change password</source>
+                <target>Change password</target>
+            </trans-unit>
+            <trans-unit id="create_identification">
+                <source>Create identification</source>
+                <target>Create identification</target>
+            </trans-unit>
+            <trans-unit id="after_invitation">
+                <source>After invitation</source>
+                <target>after invitation</target>
+            </trans-unit>
+            <trans-unit id="delete_identification">
+                <source>Delete identification</source>
+                <target>Delete identification</target>
+            </trans-unit>
+            <trans-unit id="activate_password_traffig_light">
+                <source>Activate password traffic light</source>
+                <target>Activate password traffic light</target>
+            </trans-unit>
+            <trans-unit id="all_caps_letters">
+                <source>All capital letters</source>
+                <target>Capital letters</target>
+            </trans-unit>
+            <trans-unit id="all_small_letters">
+                <source>All small letters</source>
+                <target>Small letters</target>
+            </trans-unit>
+            <trans-unit id="special_chars">
+                <source>Special characters</source>
+                <target>Special characters</target>
+            </trans-unit>
+            <trans-unit id="minimum_length">
+                <source>Minimum length</source>
+                <target>Minimum length</target>
+            </trans-unit>
+            <trans-unit id="expiration_days">
+                <source>Expiration days</source>
+                <target>Expiration of the password after X days</target>
+            </trans-unit>
+            <trans-unit id="notification_expiration">
+                <source>Notification expiration</source>
+                <target>Notification of expiration</target>
+            </trans-unit>
+            <trans-unit id="password_generation">
+                <source>Password generations</source>
+                <target>Password generations</target>
+            </trans-unit>
+            <trans-unit id="may_not_repeat">
+                <source>May not repeat itself X-times</source>
+                <target>Password may not repeat itself X-times</target>
+            </trans-unit>
+            <trans-unit id="regular_expression_mail">
+                <source>Regular expression for mail validation</source>
+                <target>Regular expression for email validation</target>
+            </trans-unit>
+            <trans-unit id="include_modifiers">
+                <source>Please include delimiter and modifiers</source>
+                <target>Please include delimiter and modifiers</target>
+            </trans-unit>
+            <trans-unit id="configure_error_message">
+                <source>Configure error message</source>
+                <target>Error message</target>
+            </trans-unit>
+            <trans-unit id="error_configuration">
+                <source>Error configuration</source>
+                <target>Error configuration</target>
+            </trans-unit>
+            <trans-unit id="change_password_url">
+                <source>Change password URL</source>
+                <target>Change password URL</target>
+            </trans-unit>
+            <trans-unit id="mail_reg_ex">
+                <source>Mail regular expression</source>
+                <target>Regular expression of the email validation</target>
+            </trans-unit>
+            <trans-unit id="mail_reg_ex_help">
+                <source>Please including delimiter and modifier</source>
+                <target>Please including delimiter and modifier</target>
             </trans-unit>
         </body>
     </file>
