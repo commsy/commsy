@@ -545,28 +545,6 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getShowTime():? int
-    {
-        return $this->extras['SHOW_TIME'] ?? 0;
-    }
-
-    public function setShowTime(?int $showTime): Portal
-    {
-        $this->extras['SHOW_TIME'] = $showTime;
-        return $this;
-    }
-
-    public function getFutureTimeCycles():? int
-    {
-        return $this->extras['FUTURE_TIME_CYCLES'] ?? 1;
-    }
-
-    public function setFutureTimeCycles(?int $futureCycles): Portal
-    {
-        $this->extras['FUTURE_TIME_CYCLES'] = $futureCycles;
-        return $this;
-    }
-
     public function getAnnouncementText():? string
     {
         return $this->extras['ANNOUNCEMENT_TEXT'] ?? '';
@@ -581,28 +559,6 @@ class Portal implements \Serializable
     public function getAnnouncementLink():? string
     {
         return $this->extras['ANNOUNCEMENT_LINK'] ?? '';
-    }
-
-    public function setTimeCycleNameGerman(?string $text): Portal
-    {
-        $this->extras['TIME_CYCLE_NAME_GERMAN'] = $text;
-        return $this;
-    }
-
-    public function getTimeCycleNameGerman():? string
-    {
-        return $this->extras['TIME_CYCLE_NAME_GERMAN'] ?? '';
-    }
-
-    public function setTimeCycleNameEnglish(?string $text): Portal
-    {
-        $this->extras['TIME_CYCLE_NAME_ENGLISH'] = $text;
-        return $this;
-    }
-
-    public function getTimeCycleNameEnglish():? string
-    {
-        return $this->extras['TIME_CYCLE_NAME_ENGLISH'] ?? '';
     }
 
     public function setAnnouncementLink(?string $link): Portal
@@ -962,51 +918,6 @@ class Portal implements \Serializable
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    /** is room a normal open ?
-     * this method returns a boolean explaining if a room is open
-     *
-     * @return boolean true, if a room is open
-     *                 false, if a room is not open
-     */
-    public function isOpen () {
-        $retour = false;
-        if ( !empty($this->_data['status'])
-            and $this->_data['status'] == CS_ROOM_OPEN
-        ) {
-            $retour = true;
-        }
-        return $retour;
-    }
-
-    /** open the room for usage
-     * this method sets the status of the room to open
-     */
-    public function open () {
-        $this->_data['status'] = CS_ROOM_OPEN;
-    }
-
-    /** close a room
-     * this method sets the status of the room to closed
-     */
-    public function close () {
-        $this->_data['status'] = CS_ROOM_CLOSED;
-    }
-
-    public function setNotShowTime ()
-    {
-        $this->getExtras()['SHOW_TIME'] = 0;
-    }
-
     public function getShowTimePulses(): bool
     {
         /**
@@ -1078,17 +989,6 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getTimeInFuture(): int
-    {
-        return $this->extras['TIME_IN_FUTURE'] ?? 0;
-    }
-
-    public function setTimeInFuture(int $value): Portal
-    {
-        $this->extras['TIME_IN_FUTURE'] = $value;
-        return $this;
-    }
-
     public function getTimeTextArray(): array
     {
         return $this->extras['TIME_TEXT_ARRAY'] ?? [];
@@ -1142,14 +1042,6 @@ class Portal implements \Serializable
             unset($manager);
         }
         return $this->_room_list_continuous;
-    }
-
-    public function saveWithoutChangingModificationInformation(LegacyEnvironment $environment)
-    {
-        $manager = $environment->getEnvironment()->getPortalManager();
-        $manager->saveWithoutChangingModificationInformation();
-        $this->_save($manager);
-        $this->_changes = array();
     }
 
 
