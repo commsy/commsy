@@ -8,6 +8,7 @@ use App\Entity\AccountIndexSendMail;
 use App\Entity\AccountIndexSendMergeMail;
 use App\Entity\AccountIndexSendPasswordMail;
 use App\Entity\AccountIndexUser;
+use App\Entity\AuthShibboleth;
 use App\Entity\AuthSource;
 use App\Entity\License;
 use App\Entity\Portal;
@@ -28,6 +29,9 @@ use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
+use App\Form\Type\Portal\AuthCommsyType;
+use App\Form\Type\Portal\AuthLdapType;
+use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\InactiveType;
@@ -315,6 +319,349 @@ class PortalSettingsController extends AbstractController
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/authLdap")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     */
+    public function authLdap(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $environment
+    ){
+        $defaultData = [
+            'typeChoice' => 'ldap',
+            'default' => 0,
+            'imsDefault' => 0,
+            'available' => 1,
+        ];
+
+        $portalId = $portal->getId();
+        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
+        $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'ldap');
+
+        if(!is_null($existingAuthSources) && sizeof($existingAuthSources) > 0){
+            $existingLdapSource = $existingLdapSource = $existingAuthSources[0];
+            if(is_null($existingLdapSource->getExtras())){
+                $existingLdapSource->setExtras([]);
+            }
+            $defaultData['title'] = $existingLdapSource->getTitle();
+            $defaultData['default'] = $existingLdapSource->isDefault();
+            $defaultData['available'] = $existingLdapSource->getAvailable();
+            $defaultData['serverAddress'] = $existingLdapSource->getServerAddress();
+            $defaultData['userIdLdapField'] = $existingLdapSource->getUserIdLdapField();
+            $defaultData['userMayCreateRooms'] = $existingLdapSource->getCreateRoom();
+            $defaultData['path'] = $existingLdapSource->getPath();
+            $defaultData['userName'] = $existingLdapSource->getUserName();
+            $defaultData['password'] = $existingLdapSource->getPassword();
+            $defaultData['changePasswordURL'] = $existingLdapSource->getChangePasswordURL();
+            $defaultData['encryption'] = $existingLdapSource->getEncryption();
+            $defaultData['contactTelephone'] = $existingLdapSource->getContactTelephone();
+            $defaultData['contactMail'] = $existingLdapSource->getContactMail();
+            $defaultData['changePasswordURL'] = $existingLdapSource->getChangePasswordURL();
+            $existingLdapSource->setPortal($portal);
+        }
+
+        $ldapForm = $this->createForm(AuthLdapType::class, $defaultData);
+
+        $ldapForm->handleRequest($request);
+
+        if($ldapForm->isSubmitted()){
+            $formData = $ldapForm->getData();
+            $clickedButtonName = $ldapForm->getClickedButton()->getName();
+            if($clickedButtonName === 'type'){
+                $choice = $formData['typeChoice'];
+                switch($choice){
+                    case 'ldap':
+                        return $this->redirectToRoute('app_portalsettings_authldap', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                    case 'shibboleth':
+                        return $this->redirectToRoute('app_portalsettings_authshibboleth', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                    case 'commsy':
+                        return $this->redirectToRoute('app_portalsettings_authcommsy', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                }
+            }else if($clickedButtonName == 'save' &&  $ldapForm->isValid()){
+                $newAuthSource = new AuthSource();
+                if($existingAuthSources){
+                    $newAuthSource = $existingAuthSources[0];
+                }
+                if(is_null($newAuthSource->getExtras())){
+                    $newAuthSource->setExtras([]);
+                }
+                $newAuthSource->setTitle($formData['title']);
+                $newAuthSource->setDefault($formData['default']);
+                $newAuthSource->setAvailable($formData['available']);
+                $newAuthSource->setServerAddress($formData['serverAddress']);
+                $newAuthSource->setUserIdLdapField($formData['userIdLdapField']);
+                $newAuthSource->setCreateRoom($formData['userMayCreateRooms']);
+                $newAuthSource->setPath($formData['path']);
+                $newAuthSource->setUsername($formData['userName']);
+                $newAuthSource->setPassword($formData['password']);
+                $newAuthSource->setEncryption($formData['encryption']);
+                $newAuthSource->setContactTelephone($formData['contactTelephone']);
+                $newAuthSource->setContactMail($formData['contactMail']);
+                $newAuthSource->setChangePasswordURL($formData['changePasswordURL']);
+
+                $newAuthSource->setSourceOriginName('ldap');
+                $newAuthSource->setType('local');
+                $newAuthSource->setEnabled(true);
+                $newAuthSource->setAddAccount(false);
+                $newAuthSource->setChangeUsername(false);
+                $newAuthSource->setDeleteAccount(false);
+                $newAuthSource->setChangeUserdata(false);
+                $newAuthSource->setChangePassword(false);
+
+
+                $newAuthSource->setPortal($portal);
+
+                $entityManager->persist($newAuthSource);
+                $entityManager->flush();
+            }
+        }
+
+        return [
+            'form' => $ldapForm->createView(),
+            'portalId' => $portalId,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/authCommsy")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     */
+    public function authCommsy(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $environment
+    ){
+        $defaultData = [
+            'typeChoice' => 'commsy',
+            'default' => 0,
+            'imsDefault' => 0,
+            'available' => 1,
+        ];
+
+        $portalId = $portal->getId();
+        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
+        $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'commsy');
+
+        if(!is_null($existingAuthSources) && sizeof($existingAuthSources) > 0){
+            $existingCommsySource = $existingCommsySource = $existingAuthSources[0];
+            if(is_null($existingCommsySource->getExtras())){
+                $existingCommsySource->setExtras([]);
+            }
+            $defaultData['title'] = $existingCommsySource->getTitle();
+            $defaultData['default'] = $existingCommsySource->isDefault();
+            $defaultData['available'] = $existingCommsySource->getAvailable();
+            $defaultData['mailRegEx'] = $existingCommsySource->getMailRegEx();
+            $defaultData['default'] = $existingCommsySource->isDefault();
+            $defaultData['changeUserID'] = $existingCommsySource->isChangeUserID();
+            $defaultData['changeIdentification'] = $existingCommsySource->isChangeIdentification();
+            $defaultData['changePassword'] = $existingCommsySource->isChangePassword();
+            $defaultData['createIdentifiaction'] = $existingCommsySource->getCreateIdentification();
+            $defaultData['deleteIdentifiaction'] = $existingCommsySource->isDeleteAccount();
+            $defaultData['userMayCreateRooms'] = $existingCommsySource->getCreateRoom();
+
+            $existingCommsySource->setPortal($portal);
+        }
+
+        $authCommsyForm = $this->createForm(AuthCommsyType::class, $defaultData);
+        $authCommsyForm->handleRequest($request);
+
+        if($authCommsyForm->isSubmitted() && $authCommsyForm->isValid()){
+            $formData = $authCommsyForm->getData();
+            $clickedButtonName = $authCommsyForm->getClickedButton()->getName();
+            if($clickedButtonName == 'save' &&  $authCommsyForm->isValid()){
+                $newAuthSource = new AuthSource();
+                if($existingAuthSources){
+                    $newAuthSource = $existingAuthSources[0];
+                }
+                if(is_null($newAuthSource->getExtras())){
+                    $newAuthSource->setExtras([]);
+                }
+                $newAuthSource->setTitle($formData['title']);
+                $newAuthSource->setDefault($formData['default']);
+                $newAuthSource->setAvailable($formData['available']);
+                $newAuthSource->setDefault($formData['default']);
+                $newAuthSource->setChangeUserID($formData['changeUserID']);
+                $newAuthSource->setChangeIdentification($formData['changeIdentification']);
+                $newAuthSource->setChangePassword($formData['changePassword']);
+                $newAuthSource->setCreateIdentification($formData['createIdentifiaction']);
+                $newAuthSource->setDeleteAccount($formData['deleteIdentifiaction']);
+                $newAuthSource->setCreateRoom($formData['userMayCreateRooms']);
+                $newAuthSource->setMailRegEx($formData['mailRegEx']);
+
+                $newAuthSource->setSourceOriginName('commsy');
+                $newAuthSource->setType('local');
+
+                $newAuthSource->setEnabled(true);
+                $newAuthSource->setAddAccount(false);
+                $newAuthSource->setChangeUsername(false);
+                $newAuthSource->setChangeUserdata(false);
+
+                $newAuthSource->setPortal($portal);
+
+                $entityManager->persist($newAuthSource);
+                $entityManager->flush();
+            }else if($clickedButtonName === 'type'){
+                $choice = $formData['typeChoice'];
+                switch($choice){
+                    case 'ldap':
+                        return $this->redirectToRoute('app_portalsettings_authldap', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                    case 'commsy':
+                        return $this->redirectToRoute('app_portalsettings_authcommsy', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                    case 'shibboleth':
+                        return $this->redirectToRoute('app_portalsettings_authshibboleth', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                }
+            }
+        }
+
+        return [
+            'form' => $authCommsyForm->createView(),
+            'portalId' => $portalId,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/authShibboleth")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     */
+    public function authShibboleth(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $environment
+    ){
+        $defaultData = [
+            'typeChoice' => 'shibboleth',
+            'default' => 0,
+            'imsDefault' => 0,
+            'available' => 1,
+        ];
+
+        $portalId = $portal->getId();
+
+        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
+        $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'shibboleth');
+
+        if(!is_null($existingAuthSources) && sizeof($existingAuthSources) > 0){
+            $existingShibbolethSource = $existingShibbolethSource = $existingAuthSources[0];
+            $defaultData['title'] = $existingShibbolethSource->getTitle();
+            $defaultData['default'] = $existingShibbolethSource->isDefault();
+            $defaultData['available'] = $existingShibbolethSource->getAvailable();
+            $defaultData['directLogin'] = $existingShibbolethSource->getDirectLogin();
+            $defaultData['userMayCreateRooms'] = $existingShibbolethSource->getCreateRoom();
+            $defaultData['sessionInitiatorURL'] = $existingShibbolethSource->getSessionInitiatorURL();
+            $defaultData['identityProviderUpdates'] = $existingShibbolethSource->isIdentityProviderUpdates();
+            $defaultData['sessionLogoutURL'] = $existingShibbolethSource->getSessionLogoutURL();
+            $defaultData['changePasswordURL'] = $existingShibbolethSource->getChangePasswordURL();
+            $defaultData['userName'] = $existingShibbolethSource->getUserName();
+            $defaultData['firstName'] = $existingShibbolethSource->getFirstName();
+            $defaultData['lastName'] = $existingShibbolethSource->getLastName();
+            $defaultData['mail'] = $existingShibbolethSource->getMail();
+            $defaultData['contactTelephone'] = $existingShibbolethSource->getContactTelephone();
+            $defaultData['contactMail'] = $existingShibbolethSource->getContactMail();
+            $defaultData['changePasswordURL'] = $existingShibbolethSource->getChangePasswordURL();
+            $existingShibbolethSource->setPortal($portal);
+        }
+
+        $authShibbolethForm = $this->createForm(AuthShibbolethType::class, $defaultData);
+        $authShibbolethForm->handleRequest($request);
+
+        if($authShibbolethForm->isSubmitted()){
+            $formData = $authShibbolethForm->getData();
+            $clickedButtonName = $authShibbolethForm->getClickedButton()->getName();
+            if($clickedButtonName === 'type'){
+                $choice = $formData['typeChoice'];
+                switch($choice){
+                    case 'ldap':
+                        return $this->redirectToRoute('app_portalsettings_authldap', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                    case 'shibboleth':
+                        return $this->redirectToRoute('app_portalsettings_authshibboleth', [
+                            'portalId' => $portalId,
+                        ]);
+                        break;
+                    case 'commsy':
+                        return $this->redirectToRoute('app_portalsettings_authcommsy', [
+                            'portalId' => $portalId,
+                        ]);
+                }
+            }else if($clickedButtonName == 'save' &&  $authShibbolethForm->isValid()){
+
+                $newAuthSource = new AuthSource();
+                if($existingAuthSources){
+                    $newAuthSource = $existingAuthSources[0];
+                }
+                $newAuthSource->setTitle($formData['title']);
+                $newAuthSource->setDefault($formData['default']);
+                $newAuthSource->setAvailable($formData['available']);
+                $newAuthSource->setDirectLogin($formData['directLogin']);
+                $newAuthSource->setSessionInitiatorURL($formData['sessionInitiatorURL']);
+                $newAuthSource->setIdentityProviderUpdates($formData['identityProviderUpdates']);
+                $newAuthSource->setChangePasswordURL($formData['changePasswordURL']);
+                $newAuthSource->setSessionLogoutURL($formData['sessionLogoutURL']);
+                $newAuthSource->setCreateRoom($formData['userMayCreateRooms']);
+                $newAuthSource->setUsername($formData['userName']);
+                $newAuthSource->setFirstName($formData['firstName']);
+                $newAuthSource->setLastName($formData['lastName']);
+                $newAuthSource->setMail($formData['mail']);
+                $newAuthSource->setContactTelephone($formData['contactTelephone']);
+                $newAuthSource->setContactMail($formData['contactMail']);
+                $newAuthSource->setChangePasswordURL($formData['changePasswordURL']);
+                $newAuthSource->setPortal($portal);
+
+                $newAuthSource->setType('local');
+                $newAuthSource->setEnabled(true);
+                $newAuthSource->setAddAccount(false);
+                $newAuthSource->setChangeUsername(false);
+                $newAuthSource->setDeleteAccount(false);
+                $newAuthSource->setChangeUserdata(false);
+                $newAuthSource->setChangePassword(false);
+
+                $entityManager->persist($newAuthSource);
+                $entityManager->flush();
+            }
+        }
+
+        return [
+            'form' => $authShibbolethForm->createView(),
+            'portalId' => $portalId,
         ];
     }
 
