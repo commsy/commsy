@@ -17,7 +17,6 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Translation;
-use App\Entity\User;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -45,11 +44,9 @@ use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
-use App\Form\Type\Portal\TimeType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\TranslationType;
 use App\Model\TimePulseTemplate;
-use App\Repository\AuthSourceRepository;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
@@ -683,212 +680,6 @@ class PortalSettingsController extends AbstractController
             'portal' => $portal,
             'timePulseTemplateId' => $timePulseTemplateId,
             'timePulseTemplates' => $timePulseTemplates,
-        ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/settings/time")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @ParamConverter("environment", class="App\Services\LegacyEnvironment")
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     * @Template()
-     */
-    public function time(Portal $portal, Request $request,
-                         EntityManagerInterface $entityManager, LegacyEnvironment $environment)
-    {
-        $defaultData = ['showTime' => 0];
-        $form = $this->createForm(TimeType::class, $defaultData);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() && ($form->get('save')->isClicked())) {
-
-            // get room item and current user
-            $room_item = $portal;
-            $data = $form->getData();
-
-            // Load form data from postvars
-            if ( !empty($data) ) {
-                $values = $data;
-
-                // show time
-                $room_item->setShowTime($values['showTime']);
-
-
-                // clock pulse names
-                $clockPulseNames = array();
-                array_push($clockPulseNames, $values['timeCycleNameGerman']);
-                array_push($clockPulseNames, $values['timeCycleNameEnglish']);
-                $room_item->setTimeNameArray($clockPulseNames);
-
-                $room_item->setTimeInFuture($values['futureTimeCycles']);
-
-
-                $clockPulseTimeNames = explode(',',$values['token']);
-                $clockPulseTimeTextArray = array();
-                foreach($clockPulseTimeNames as $clockPulseCounter){
-                    $clockTextNameDeu = $values['timeCycleNameEnglish_'.$clockPulseCounter];
-                    $clockTextNameEng = $values['timeCycleNameGerman_'.$clockPulseCounter];
-                    array_push($clockPulseTimeTextArray, $clockTextNameDeu);
-                    array_push($clockPulseTimeTextArray, $clockTextNameEng);
-                }
-                $room_item->setTimeTextArray($clockPulseTimeTextArray);
-
-                // save room_item
-                $entityManager->persist($room_item); // portalProxy
-                $entityManager->flush();
-
-                // change (insert) time labels
-                $clock_pulse_array = array();
-
-                $current_year = date('Y');
-                $current_date = getCurrentDate();
-                $ad_year = 0;
-                $first = true;
-                foreach($clockPulseTimeNames as $clockPulseCounter){
-                    $date_string = $values['timeCycleFrom_'.$clockPulseCounter];
-                    $month = $date_string->format("m");
-                    $day = $date_string->format("d");
-                    $begin = $month.$day;
-
-                    $date_string = $values['timeCycleTo_'.$clockPulseCounter];
-                    $month = $date_string->format("m");
-                    $day = $date_string->format("d");
-                    $end = $month.$day;
-
-                    $begin2 = ($current_year+$ad_year).$begin;
-                    if ($end < $begin) {
-                        $ad_year++;
-                        $ad_year_pos = $clockPulseCounter;
-                    }
-                    $end2 = ($current_year+$ad_year).$end;
-
-                    if ($first) {
-                        $first = false;
-                        $begin_first = $begin2;
-                    }
-
-                    if ( $begin2 <= $current_date
-                        and $current_date <= $end2) {
-                        $current_pos = $clockPulseCounter;
-                    }
-                }
-
-                $year = $current_year;
-
-                if ($current_date < $begin_first) {
-                    $year--;
-                    $current_pos = $clockPulseCounter;
-                }
-
-                $count = sizeof($clockPulseTimeNames);
-                $position = 1;
-                for ($i=0; $i<$values['futureTimeCycles']+$current_pos; $i++) {
-                    $clock_pulse_array[] = $year.'_'.$position;
-                    $position++;
-                    if ($position > $count) {
-                        $position = 1;
-                        $year++;
-                    }
-                }
-
-
-                if (!empty($clock_pulse_array)) {
-                    $done_array = array();
-                    $time_manager = $environment->getEnvironment()->getTimeManager();
-                    $time_manager->reset();
-                    $time_manager->setContextLimit($portal->getId());
-                    $time_manager->setDeleteLimit(false);
-                    $time_manager->select();
-                    $time_list = $time_manager->get();
-                    if ($time_list->isNotEmpty()) {
-                        $time_label = $time_list->getFirst();
-                        while ($time_label) {
-                            if (!in_array($time_label->getTitle(),$clock_pulse_array)) {
-                                $first_new_clock_pulse = $clock_pulse_array[0];
-                                $last_new_clock_pulse = array_pop($clock_pulse_array);
-                                $clock_pulse_array[] = $last_new_clock_pulse;
-                                if ($time_label->getTitle() < $first_new_clock_pulse) {
-                                    $temp_clock_pulse_array = explode('_',$time_label->getTitle());
-                                    $clock_pulse_pos = $temp_clock_pulse_array[1];
-                                    if ($clock_pulse_pos > $count) {
-                                        if (!$time_label->isDeleted()) {
-                                            $time_label->setDeleterItem($environment->getCurrentUserItem());
-                                            $time_label->delete();
-                                        }
-                                    } else {
-                                        if ($time_label->isDeleted()) {
-                                            $time_label->setModificatorItem($environment->getCurrentUserItem());
-                                            $time_label->unDelete();
-                                        }
-                                    }
-                                } elseif ($time_label->getTitle() > $last_new_clock_pulse) {
-                                    if (!$time_label->isDeleted()) {
-                                        $time_label->setDeleterItem($environment->getCurrentUserItem());
-                                        $time_label->delete();
-                                    }
-                                } else {
-                                    if (!$time_label->isDeleted()) {
-                                        $time_label->setDeleterItem($environment->getCurrentUserItem());
-                                        $time_label->delete();
-                                    }
-                                }
-                            } else {
-                                if ($time_label->isDeleted()) {
-                                    $time_label->setModificatorItem($environment->getCurrentUserItem());
-                                    $time_label->unDelete();
-                                }
-                                $done_array[] = $time_label->getTitle();
-                            }
-                            $time_label = $time_list->getNext();
-                        }
-                    }
-
-                    foreach ($clock_pulse_array as $clock_pulse) {
-                        if (!in_array($clock_pulse,$done_array)) {
-                            $time_label = $time_manager->getNewItem();
-                            $time_label->setContextID($portal->getId());
-                            $user = $environment->getEnvironment()->getCurrentUserItem();
-                            $time_label->setCreatorItem($user);
-                            $time_label->setModificatorItem($user);
-                            $time_label->setTitle($clock_pulse);
-                            $time_label->save();
-                        }
-                    }
-                } else {
-                    $time_manager = $environment->getEnvironment()->getTimeManager();
-                    $time_manager->reset();
-                    $time_manager->setContextLimit($portal->getId());
-                    $time_manager->select();
-                    $time_list = $time_manager->get();
-                    if ($time_list->isNotEmpty()) {
-                        $time_label = $time_list->getFirst();
-                        while ($time_label) {
-                            $time_label->setDeleterItem($environment->getEnvironment()->getCurrentUserItem());
-                            $time_label->delete();
-                            $time_label = $time_list->getNext();
-                        }
-                    }
-                }
-
-                // renew links to continuous rooms
-                $current_context = $room_item;
-                $room_list = $current_context->getContinuousRoomList($environment);
-                if ($room_list->isNotEmpty()) {
-                    $room_item2 = $room_list->getFirst();
-                    while ($room_item2) {
-                        $room_item2->open();
-                        if ($room_item2->isOpen()) {
-                            $room_item2->setContinuous();
-                            $room_item2->saveWithoutChangingModificationInformation($environment);
-                        }
-                        $room_item2 = $room_list->getNext();
-                    }
-                }
-                $is_saved = true;
-            }
-        }
-
-        return [
-            'form' => $form->createView(),
         ];
     }
 

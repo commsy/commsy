@@ -670,60 +670,6 @@
                 <target>Bitte wählen Sie aus (ggf. zunächst Räume suchen)</target>
             </trans-unit>
 
-            <!-- time -->
-            <trans-unit id="time">
-                <source>Time</source>
-                <target>Zeittakte</target>
-            </trans-unit>
-            <trans-unit id="showtime">
-                <source>Show time</source>
-                <target>Zeittakte anzeigen</target>
-            </trans-unit>
-            <trans-unit id="yes">
-                <source>Yes</source>
-                <target>Ja</target>
-            </trans-unit>
-            <trans-unit id="no">
-                <source>No</source>
-                <target>Nein</target>
-            </trans-unit>
-            <trans-unit id="time_cycle_name">
-                <source>Time cycle name</source>
-                <target>Name der Zeittakte</target>
-            </trans-unit>
-            <trans-unit id="future_time_cycles">
-                <source>Future time cycles</source>
-                <target>Zeittakte in der Zukunft</target>
-            </trans-unit>
-            <trans-unit id="add_life_cycle">
-                <source>Add life cycle</source>
-                <target>Zeittakt hinzufügen</target>
-            </trans-unit>
-            <trans-unit id="delete_time_cycle">
-                <source>Delete time cycle %company%</source>
-                <target>Zeittakt %company% Löschen</target>
-            </trans-unit>
-            <trans-unit id="time_cycle_from">
-                <source>Time cycle from</source>
-                <target>Von</target>
-            </trans-unit>
-            <trans-unit id="time_cycle_to">
-                <source>Time cycle to</source>
-                <target>Bis</target>
-            </trans-unit>
-            <trans-unit id="time_help">
-                <source>Time help</source>
-                <target>Platzhalter für 4-stellige Jahreszahlen:
-                        %1 = aktuelles Jahr
-                        %2 = zukünftiges Jahr
-                        %3 = vergangenes Jahr
-                        Platzhalter für 2-stellige Jahreszahlen:
-                        %4 = aktuelles Jahr
-                        %5 = zukünftiges Jahr
-                        %6 = vergangenes Jahr
-                        Format bei "von bis": TT.MM</target>
-            </trans-unit>
-
             <!-- time pulses -->
             <trans-unit id="Time_pulses">
                 <source>Time pulses</source>
