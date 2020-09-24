@@ -400,6 +400,7 @@ class RoomController extends AbstractController
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portalItem->showTime(),
             'timePulses' => $roomService->getTimePulses(),
+            'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
         ]);
 
         $filterForm->handleRequest($request);
