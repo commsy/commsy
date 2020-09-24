@@ -135,7 +135,9 @@ class TimePulsesService
         unset($rawTimePulseTemplates[$templateId]);
 
         // re-index array, starting at index 1
-        $rawTimePulseTemplates = array_combine(range(1, count($rawTimePulseTemplates)), array_values($rawTimePulseTemplates));
+        if (!empty($rawTimePulseTemplates)) {
+            $rawTimePulseTemplates = array_combine(range(1, count($rawTimePulseTemplates)), array_values($rawTimePulseTemplates));
+        }
 
         $portal->setTimeTextArray($rawTimePulseTemplates);
     }
