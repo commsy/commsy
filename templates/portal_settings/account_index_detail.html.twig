@@ -58,8 +58,10 @@
                     </tr>
                     <tr>
                         <td> {{'Status'|trans({},'portal') }}: </td>
-                        {% if(user.getStatus() == 2) %}
-                            <td>{{'Contact'|trans({},'portal') }}</td>
+                        {% if(user.getStatus() == 1) %}
+                            <td>{{'Applying'|trans({},'portal') }}</td>
+                        {% elseif(user.getStatus() == 2) %}
+                            <td>{{'User'|trans({},'portal') }}</td>
                         {% elseif(user.getStatus() == 3) %}
                             <td>{{'Moderator'|trans({},'portal') }}</td>
                         {% else %}
@@ -137,7 +139,11 @@
                         <td>{{'Lock'|trans({},'profile') }}</td>
                     </tr>
                     <tr>
-                        <td>{{'Workspace membership'|trans({},'portal') }}</td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                    <tr>
+                        <td>{{'Workspace membership'|trans({},'portal') }}:</td>
                         <td> </td>
                     </tr>
                     <tr>
@@ -149,7 +155,19 @@
                         <td>{{ projects }}</td>
                     </tr>
                     <tr>
-                        <td>{{'Archived workspaces'|trans({},'portal') }}</td>
+                        <td>{{'Userroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ userrooms }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{'Privateroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ privaterooms }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                    <tr>
+                        <td>{{'Archived workspaces'|trans({},'portal') }}: </td>
                         <td> </td>
                     </tr>
                     <tr>
@@ -159,6 +177,14 @@
                     <tr>
                         <td>{{'Project workspaces'|trans({},'portal') }}</td>
                         <td>{{ projectsArchived }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{'Userroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ userroomsArchived }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{'Privateroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ privateRoomsArchived }}</td>
                     </tr>
                 </table>
             {{ form_row(form.back) }}
