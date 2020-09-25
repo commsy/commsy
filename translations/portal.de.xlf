@@ -305,6 +305,10 @@
                 <source>Accounts</source>
                 <target>Kennungen</target>
             </trans-unit>
+            <trans-unit id="applying">
+                <source>Applying</source>
+                <target>In Beantragung</target>
+            </trans-unit>
             <trans-unit id="execute">
                 <source>Execute</source>
                 <target>Ausführen</target>
@@ -416,6 +420,14 @@
             <trans-unit id="_for">
                 <source>...for</source>
                 <target> sichtbar)</target>
+            </trans-unit>
+            <trans-unit id="userrooms">
+                <source>Userroom workspaces</source>
+                <target>Personenräume</target>
+            </trans-unit>
+            <trans-unit id="privaterooms">
+                <source>Privateroom workspaces</source>
+                <target>Persönliche Räume</target>
             </trans-unit>
 
             <!-- Account Index send Password Mail -->
