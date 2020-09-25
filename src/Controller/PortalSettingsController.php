@@ -69,12 +69,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class PortalSettingsController extends AbstractController
@@ -1097,10 +1099,11 @@ class PortalSettingsController extends AbstractController
         $user = $userService->getCurrentUserItem();
         $portalUsers = $userService->getListUsers($portal->getId());
         $userList = [];
+        $alreadyIncludedUserIDs = [];
         foreach($portalUsers as $portalUser){
-            $relatedUsers = $portalUser->getRelatedUserList();
-            foreach($relatedUsers as $relatedUser){
-                array_push($userList, $relatedUser);
+            if(!in_array($portalUser->getUserID(), $alreadyIncludedUserIDs) and $portalUser->getContextID() == $portalId){
+                array_push($userList, $portalUser);
+                array_push($alreadyIncludedUserIDs, $portalUser->getUserID());
             }
         }
 
@@ -1755,7 +1758,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment)
+        LegacyEnvironment $legacyEnvironment,
+        RoomService $roomService)
     {
         $userList = $userService->getListUsers($portal->getId());
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
@@ -1765,30 +1769,48 @@ class PortalSettingsController extends AbstractController
         $authRepo = $this->getDoctrine()->getRepository(AuthSource::class);
         $authSourceItem = $authRepo->find($authSource); //TODO: could be useful for authsource settings, but it is not even used in legacy code?
 
-        $communities = $user->getRelatedCommunityList();
-        $communityListNames = [];
-        foreach($communities as $community){
-            array_push($communityListNames, $community->getTitle());
-        }
-        $projects = $user->getRelatedProjectList();
-        $projectsListNames = [];
-        foreach($projects as $project){
-            array_push($projectsListNames, $project->getTitle());
-        }
-
-        $communities = $user->getRelatedCommunityList();
         $communityArchivedListNames = [];
-        foreach($communities as $community){
-            if($community->getStatus() == '2'){
-                array_push($communityArchivedListNames, $community->getTitle());
-            };
-        }
-        $projects = $user->getRelatedProjectList();
+        $communityListNames = [];
+        $projectsListNames = [];
         $projectsArchivedListNames = [];
-        foreach($projects as $project){
-            if($project->getStatus() == '2'){
-                array_push($projectsArchivedListNames, $project->getTitle());
-            };
+        $userRoomListNames = [];
+        $userRoomsArchivedListNames = [];
+        $privateRoomNameList = [];
+        $privateRoomArchivedNameList = [];
+
+        $projects = $user->getRelatedProjectList();
+        $communities = $user->getRelatedCommunityList();
+        $relatedUsers = $user->getRelatedUserList();
+
+        foreach($relatedUsers as $relatedUser){
+
+            $contextID = $relatedUser->getContextID();
+            $relatedRoomItem = $roomService->getRoomItem($contextID);
+            if($relatedRoomItem->getType() == 'project'){
+                if($relatedRoomItem->getStatus() == '2'){
+                    array_push($projectsArchivedListNames, $relatedRoomItem->getTitle(). '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }else{
+                    array_push($projectsListNames, $relatedRoomItem->getTitle(). '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }
+            }elseif($relatedRoomItem->getType() == 'community'){
+                if($relatedRoomItem->getStatus() == '2'){
+                    array_push($communityArchivedListNames, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }else{
+                    array_push($communityListNames, $relatedRoomItem->getTitle(). '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }
+            }elseif($relatedRoomItem->getType() == 'userroom'){
+                if($relatedRoomItem->getStatus() == '2'){
+                    array_push($userRoomsArchivedListNames, $relatedRoomItem->getTitle(). '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }else{
+                    array_push($userRoomListNames, $relatedRoomItem->getTitle(). '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }
+            }elseif($relatedRoomItem->getType() == 'privateroom'){
+                if($relatedRoomItem->getStatus() == '2'){
+                    array_push($privateRoomArchivedNameList, $relatedRoomItem->getTitle(). '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }else{
+                    array_push($privateRoomNameList, $relatedRoomItem->getTitle(). '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                }
+            }
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1804,7 +1826,7 @@ class PortalSettingsController extends AbstractController
                     $counter = $counter + 1;
                 }
                 if ($form->get('next')->isClicked()) {
-                    if ($key < sizeof($userList)) {
+                    if ($key + 1 < sizeof($userList)) {
                         $user = $userList[$key + 1];
                     }
                 }
@@ -1819,8 +1841,12 @@ class PortalSettingsController extends AbstractController
                     'userId' => $user->getItemID(),
                     'communities'  => implode(', ', $communityListNames),
                     'projects' => implode(', ', $projectsListNames),
+                    'privaterooms' => implode(', ', $privateRoomNameList),
+                    'userrooms' => implode(', ', $userRoomListNames),
                     'communitiesArchived'  => implode(', ', $communityArchivedListNames),
                     'projectsArchived' => implode(', ', $projectsArchivedListNames),
+                    'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
+                    'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
                 ]);
             }
 
@@ -1832,14 +1858,19 @@ class PortalSettingsController extends AbstractController
                 ]);
             }
         }
+
         return [
             'user' => $user,
             'form' => $form->createView(),
             'portal' => $portal,
             'communities'  => implode(', ', $communityListNames),
             'projects' => implode(', ', $projectsListNames),
+            'privaterooms' => implode(', ', $privateRoomNameList),
+            'userrooms' => implode(', ', $userRoomListNames),
             'communitiesArchived'  => implode(', ', $communityArchivedListNames),
             'projectsArchived' => implode(', ', $projectsArchivedListNames),
+            'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
+            'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
         ];
     }
 
@@ -1983,7 +2014,7 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      */
-    public function accountIndexDetailChangeStatus(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
+    public function accountIndexDetailChangeStatus(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
     {
         $user = $userService->getUser($request->get('userId'));
         $userChangeStatus = new PortalUserChangeStatus();
@@ -1993,14 +2024,20 @@ class PortalSettingsController extends AbstractController
 
         $userStatus = $user->getStatus();
         $currentStatus = 'Moderator';
-        if($userStatus == 0){
-            $currentStatus = 'User';
+        if($userStatus == 1){
+            $currentStatus = 'Close';
         }elseif($userStatus == 0){
-            $currentStatus = 'Contact';
+            $currentStatus = 'In acceptance';
+        }elseif($userStatus == 2) {
+            $currentStatus = 'User';
+        }elseif($userStatus == 3){
+            $currentStatus = 'Moderator';
         }
 
-        $userChangeStatus->setCurrentStatus($currentStatus);
-        $userChangeStatus->setNewStatus('user');
+        $trans = $translator->trans($currentStatus, [], 'portal');
+
+        $userChangeStatus->setCurrentStatus($trans);
+        $userChangeStatus->setNewStatus(strtolower($currentStatus));
         $userChangeStatus->setContact($user->isContact());
         $userChangeStatus->setLoginIsDeactivated('2');
 
@@ -2017,12 +2054,14 @@ class PortalSettingsController extends AbstractController
                 $user->makeUser();
             }elseif(strcmp($newStatus, 'moderator') == 0){
                 $user->makeModerator();
-            }elseif(strcmp($newStatus, 'closed') == 0) {
+            }elseif(strcmp($newStatus, 'close') == 0) {
                 $user->reject();
             }
 
             if($data->isContact()){
                 $user->makeContactPerson();
+            }else{
+                $user->makeNoContactPerson();
             }
 
             $deactivateTakeOver = $data->getLoginIsDeactivated();
@@ -2035,6 +2074,18 @@ class PortalSettingsController extends AbstractController
             }
 
             $user->save();
+
+            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+                'portalId' => $portal->getId(),
+                'userId' => $user->getItemID(),
+            ]);
+
+            $this->addFlash('performedSuccessfully', $returnUrl);
+
+            return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                'portalId' => $request->get('portalId'),
+                'userId' => $request->get('userId'),
+            ]);
         }
 
         return [
@@ -2277,17 +2328,42 @@ class PortalSettingsController extends AbstractController
 
         if($form->isSubmitted()){
 
-            if($form->get('save')->isClicked()){ //TODO: $form->isValid() returns false, even if it is.
+            if($form->get('save')->isClicked()){
 
-                $user = $userService->getUser($request->get('userId'));
-                $formData = $form->getData();
-                $newUser = $user->cloneData();
+                $assignFlag = true;
                 $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
-                $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
-                $newAssignedRoom = $projectRoomManager->getItem($choiceWorkspaceId);
-                $newUser->setContextID($newAssignedRoom->getItemID());
-                $newUser->setUserComment($formData->getDescriptionOfParticipation());
-                $newUser->save();
+                $user = $userService->getUser($request->get('userId'));
+                $relatedUsers = $user->getRelatedUserList();
+                foreach($relatedUsers as $relatedUser){
+                    if($relatedUser->getContextID() == $choiceWorkspaceId){
+                        $assignFlag = false;
+                        break;
+                    }
+                }
+
+                if($assignFlag){
+                    $formData = $form->getData();
+                    $newUser = $user->cloneData();
+                    $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
+                    $newAssignedRoom = $projectRoomManager->getItem($choiceWorkspaceId);
+                    $newUser->setContextID($newAssignedRoom->getItemID());
+                    $newUser->setUserComment($formData->getDescriptionOfParticipation());
+                    $newUser->save();
+
+                    $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
+                        'portalId' => $portal->getId(),
+                        'userId' => $user->getItemID(),
+                    ]);
+
+                    $this->addFlash('performedSuccessfully', $returnUrl);
+
+                    return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
+                        'portalId' => $request->get('portalId'),
+                        'userId' => $request->get('userId'),
+                    ]);
+                }
+
+                $form->addError(new FormError('Already assigned'));
 
             }elseif($form->get('search')->isClicked()){
                 $user = $userService->getUser($request->get('userId'));
