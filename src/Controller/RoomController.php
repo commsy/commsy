@@ -13,6 +13,7 @@ use App\Form\Type\ModerationSupportType;
 use App\Repository\RoomRepository;
 use App\Repository\ZzzRoomRepository;
 use App\RoomFeed\RoomFeedGenerator;
+use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
@@ -1034,6 +1035,7 @@ class RoomController extends AbstractController
         RoomCategoriesService $roomCategoriesService,
         LegacyEnvironment $environment,
         EventDispatcherInterface $eventDispatcher,
+        CalendarsService $calendarsService,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -1207,7 +1209,6 @@ class RoomController extends AbstractController
                 // persist with legacy code
                 $legacyRoom->save();
 
-                $calendarsService = $this->get('commsy.calendars_service');
                 $calendarsService->createCalendar($legacyRoom, null, null, true);
 
                 // take values from a template?
