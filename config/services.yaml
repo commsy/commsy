@@ -270,10 +270,6 @@ services:
         class: App\Utils\ReaderService
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service']
 
-    commsy_legacy.date_service:
-        class: App\Utils\DateService
-        arguments: ['@commsy_legacy.environment']
-
     commsy_legacy.annotation_service:
         class: App\Utils\AnnotationService
         arguments: ['@commsy_legacy.environment']
