@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Entity\Calendars;
+use App\Utils\DateService;
+use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Sabre\VObject;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarsService
 {
@@ -16,9 +19,32 @@ class CalendarsService
 
     private $serviceContainer;
 
-    public function __construct(EntityManagerInterface $entityManager, Container $container)
-    {
+    /**
+     * @var DateService
+     */
+    private $dateService;
+
+    /**
+     * @var \cs_environment
+     */
+    private $legacyEnvironment;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        DateService $dateService,
+        LegacyEnvironment $legacyEnvironment,
+        TranslatorInterface $translator,
+        Container $container
+    ) {
         $this->em = $entityManager;
+        $this->dateService = $dateService;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->translator = $translator;
         $this->serviceContainer = $container;
     }
 
@@ -83,12 +109,11 @@ class CalendarsService
      * Deletes the given calendar and all of its contained date entries.
      * @var Calendars $calendar
      */
-    public function removeCalendar($calendar)
+    public function removeCalendar(RoomService $roomService, $calendar)
     {
-        $this->removeAllCalendarDates($calendar);
+        $this->removeAllCalendarDates($roomService, $calendar);
 
         $this->em->remove($calendar);
-
         $this->em->flush();
     }
 
@@ -97,26 +122,19 @@ class CalendarsService
      * Deletes all date entries from the given calendar.
      * @var Calendars $calendar
      */
-    public function removeAllCalendarDates($calendar)
+    public function removeAllCalendarDates(RoomService $roomService, $calendar)
     {
-        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
-        $dates = $dateService->getDatesByCalendarId($calendar->getId());
+        $dates = $this->dateService->getDatesByCalendarId($calendar->getId());
         if (empty($dates)) {
             return;
         }
 
-        $roomService = $this->serviceContainer->get('commsy_legacy.room_service');
         $roomId = $calendar->getContextId();
         $roomItem = $roomService->getRoomItem($roomId);
 
         // NOTE: we execute the DeleteDate action (and not just \cs_item->delete()) since
         // this performs additional cleanup like removing any date items from the clipboard
         $action = $this->serviceContainer->get('commsy.action.delete.date');
-        $strategy = $action->getStrategy();
-
-        if ($strategy instanceof DeleteDate) {
-            $strategy->setDateMode($roomItem->getDatesPresentationStatus());
-        }
 
         return $action->execute($roomItem, $dates);
     }
@@ -150,8 +168,6 @@ class CalendarsService
      * otherwise returns the error message.
      */
     public function importEvents ($icalData, $calendar, $external = false) {
-        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
-
         try {
             if (is_array($icalData)) {
                 // merge multiple iCalendar files into a single iCalendar
@@ -259,9 +275,9 @@ class CalendarsService
 
                     // try to find existing date item
                     $hasChanges = false;
-                    $date = $dateService->getDateByUid($uid, $calendar->getId(), $roomId);
+                    $date = $this->dateService->getDateByUid($uid, $calendar->getId(), $roomId);
                     if (!$date) {
-                        $date = $dateService->getNewDate();
+                        $date = $this->dateService->getNewDate();
                         if ($external) {
                             $date->setExternal(true);
                         }
@@ -333,8 +349,7 @@ class CalendarsService
 
                     $creatorId = $calendar->getCreatorId();
                     if (!$creatorId) {
-                        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
-                        $creatorId = $legacyEnvironment->getRootUserItemID();
+                        $creatorId = $this->legacyEnvironment->getRootUserItemID();
                     }
                     if ($hasChanges || $hasChanges = ((int)$date->getCreatorID() !== $creatorId)) {
                         $date->setCreatorID($creatorId);
@@ -361,7 +376,7 @@ class CalendarsService
                 }
             }
 
-            foreach ($dateService->getListDates($roomId, null, null, null) as $date) {
+            foreach ($this->dateService->getListDates($roomId, null, null, null) as $date) {
                 if ($date->getCalendarId() == $calendar->getId()) {
                     if (!in_array($date->getUid(), $uids)) {
                         $date->delete();
@@ -444,12 +459,10 @@ class CalendarsService
     }
 
     public function createCalendar($roomItem, $title = null, $color = null, $default = null) {
-        $translator =  $this->serviceContainer->get('translator');
-
         $calendar = new Calendars();
 
         if (!$title) {
-            $title = $translator->trans('Standard', array(), 'date');
+            $title = $this->translator->trans('Standard', array(), 'date');
         }
         $calendar->setTitle($title);
 

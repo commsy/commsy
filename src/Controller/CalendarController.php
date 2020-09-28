@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,6 +38,7 @@ class CalendarController extends AbstractController
         Request $request,
         CalendarsService $calendarsService,
         LegacyEnvironment $environment,
+        RoomService $roomService,
         int $roomId,
         int $calendarId = null
     ) {
@@ -79,7 +81,7 @@ class CalendarController extends AbstractController
             }
 
             if ($editForm->getClickedButton()->getName() == 'delete') {
-                $calendarsService->removeCalendar($calendar);
+                $calendarsService->removeCalendar($roomService, $calendar);
             } else {
                 $em->persist($calendar);
             }
