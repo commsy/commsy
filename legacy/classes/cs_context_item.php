@@ -5866,7 +5866,7 @@ class cs_context_item extends cs_item {
     $user_manager->setUserLimit();
     $user_manager->setLastLoginLimit($timespread);
     $ids = $user_manager->getIDArray();
-    $active = count($ids);
+    $active = !empty($ids) ? count($ids) : 0;
     unset($user_manager);
     return $active;
   }
