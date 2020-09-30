@@ -26,6 +26,7 @@ use App\Form\Type\Room\DeleteType;
 use App\Filter\ProjectFilterType;
 use App\Entity\Room;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ProjectController
@@ -34,6 +35,22 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class ProjectController extends AbstractController
 {
+    private $legacyEnvironment;
+    private $translator;
+
+
+    /**
+     * ProjectController constructor.
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
+    {
+        $this->legacyEnvironment = $legacyEnvironment;
+        $this->translator = $translator;
+    }
+
+
     /**
      * @Route("/room/{roomId}/project/feed/{start}/{sort}")
      * @Template()
@@ -384,7 +401,10 @@ class ProjectController extends AbstractController
         int $roomId,
         int $itemId
     ) {
-        $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
+
+        $form = $this->createForm(DeleteType::class, [], [
+            'confirm_string' => $this->translator->trans('delete', [], 'profile')
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -607,7 +627,7 @@ class ProjectController extends AbstractController
     private function memberStatus($item)
     {
         $status = 'closed';
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
