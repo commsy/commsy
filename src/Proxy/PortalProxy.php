@@ -341,4 +341,14 @@ class PortalProxy
 
         return $moderators;
     }
+
+    /**
+     * isDeleted
+     *
+     * @return boolean
+     */
+    public function isDeleted(): bool
+    {
+        return ($this->portal->getDeleter() !== null && $this->portal->getDeletionDate() !== null);
+    }
 }
