@@ -424,7 +424,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          if ( !isset($this->_cache_object[$item_id])
               and !isset($this->_cache_row[$item_id])
             ) {
-            $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB,$item_id)."'";
+            // NOTE: as of migration Version20191007171054.php, the `portal` table's `item_id` column is now called `id`
+            $id_column_name = ($this->_db_table === 'portal') ? 'id' : 'item_id';
+            $query = "SELECT * FROM " . $this->addDatabasePrefix($this->_db_table) . " WHERE " . $this->addDatabasePrefix($this->_db_table) . "." . $id_column_name . "='" . encode(AS_DB, $item_id) . "'";
             $result = $this->_db_connector->performQuery($query);
             unset($query);
             if ( !isset($result) ) {
@@ -438,7 +440,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                	   ) {
                		$data_array['zzz_table'] = 1;
                	}
-                  $retour = $this->_buildItem($data_array);
+               	if ($this->_db_table === 'portal') {
+               	    // NOTE: as of migration Version20200617133036.php, the `portal` table has no `type` column
+                    // anymore so we add the type here in order to maintain compatibility with `_getNewRoomItem()`
+                    $data_array['type'] = 'portal';
+                }
+                $retour = $this->_buildItem($data_array);
                }
                unset($result);
             }
