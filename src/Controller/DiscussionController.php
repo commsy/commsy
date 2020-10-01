@@ -140,6 +140,7 @@ class DiscussionController extends BaseController
     public function listAction(
         Request $request,
         LegacyEnvironment $environment,
+        DiscussionService $discussionService,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -150,7 +151,6 @@ class DiscussionController extends BaseController
         }
 
         // get the discussion manager service
-        $discussionService = $this->get('commsy_legacy.discussion_service');
         $filterForm = $this->createFilterForm($roomItem);
 
         // apply filter
@@ -349,10 +349,14 @@ class DiscussionController extends BaseController
         ];
     }
     
-    private function getDetailInfo ($roomId, $itemId, LegacyMarkup $legacyMarkup) {
+    private function getDetailInfo (
+        $roomId,
+        $itemId,
+        DiscussionService $discussionService,
+        LegacyMarkup $legacyMarkup)
+    {
         $infoArray = array();
         
-        $discussionService = $this->get('commsy_legacy.discussion_service');
         $itemService = $this->get('commsy_legacy.item_service');
 
         $discussion = $discussionService->getDiscussion($itemId);
@@ -519,7 +523,7 @@ class DiscussionController extends BaseController
             $categories = $this->getTagDetailArray($roomCategories, $discussionCategories);
         }
 
-        $articleTree = $this->get('commsy_legacy.discussion_service')->buildArticleTree($articleList);
+        $articleTree = $discussionService->buildArticleTree($articleList);
 
         $infoArray['discussion'] = $discussion;
         $infoArray['articleList'] = $articleList->to_array();
