@@ -1107,7 +1107,7 @@ class PortalSettingsController extends AbstractController
         $userList = [];
         $alreadyIncludedUserIDs = [];
         foreach ($portalUsers as $portalUser) {
-            if (!in_array($portalUser->getUserID(), $alreadyIncludedUserIDs) and $portalUser->getContextID() === $portalId) {
+            if (!in_array($portalUser->getUserID(), $alreadyIncludedUserIDs) and $portalUser->getContextID() == $portalId) {
                 $userList[] = $portalUser;
                 $alreadyIncludedUserIDs[] = $portalUser->getUserID();
             }
