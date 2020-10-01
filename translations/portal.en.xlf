@@ -1205,7 +1205,6 @@
             </trans-unit>
             <trans-unit id="reading_rights_path_help_text">
                 <source>Reading rights path</source>
-                <target>und ggf. zum Herausfinden des Pfades einer Person die Angabe einer Kennung (falls abweichend zum Pfad auch als dn angebbar) mit umfassenden Leserechten</target>
                 <target>and possibly for sorting out the path of a person the statement of their ID (if different to the path also as self-designation) with thorough reading rights</target>
             </trans-unit>
             <trans-unit id="change_user_id">
