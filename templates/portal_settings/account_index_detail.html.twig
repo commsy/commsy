@@ -27,8 +27,19 @@
                 </div>
             {% endif %}
             {{ form_start(form) }}
-            {{ form_row(form.previous) }}
-            {{ form_row(form.next) }}
+
+            {% if(hasPrevious) %}
+                {{ form_row(form.previous) }}
+            {% else %}
+                {{ form_row(form.hasNoPrevious) }}
+            {% endif %}
+
+            {% if(hasNext) %}
+                {{ form_row(form.next) }}
+            {% else %}
+                {{ form_row(form.hasNoNext) }}
+            {% endif %}
+
             <h1>{{ user.firstname }} {{ user.lastname }}</h1>
             <hr />
             <div style="border: 1px solid black; padding: 10px; width: 50%;">
@@ -188,6 +199,10 @@
                     </tr>
                 </table>
             {{ form_row(form.back) }}
+            {% do form.next.setRendered %}
+            {% do form.hasNoNext.setRendered %}
+            {% do form.previous.setRendered %}
+            {% do form.hasNoPrevious.setRendered %}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

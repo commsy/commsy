@@ -1822,17 +1822,30 @@ class PortalSettingsController extends AbstractController
             }
         }
 
+        $key = 0;
+        $counter = 0;
+        $hasNext = true;
+        $hasPrevious = true;
+
+        foreach ($userList as $userItem) {
+            if ($userItem->getItemID() === $user->getItemID()) {
+                $key = $counter;
+                break;
+            }
+            $counter = $counter + 1;
+        }
+
+        if($key+1 == sizeof($userList)){
+            $hasNext = false;
+        }
+        if($key == 0){
+            $hasPrevious = false;
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $key = 0;
+
             if ($form->get('next')->isClicked() or $form->get('previous')->isClicked()) {
-                $counter = 0;
-                foreach ($userList as $userItem) {
-                    if ($userItem->getItemID() === $user->getItemID()) {
-                        $key = $counter;
-                        break;
-                    }
-                    $counter = $counter + 1;
-                }
+
                 if ($form->get('next')->isClicked()) {
                     if ($key + 1 < sizeof($userList)) {
                         $user = $userList[$key + 1];
@@ -1843,6 +1856,7 @@ class PortalSettingsController extends AbstractController
                         $user = $userList[$key - 1];
                     }
                 }
+
                 return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
                     'portal' => $portal,
                     'portalId' => $portal->getId(),
@@ -1855,6 +1869,8 @@ class PortalSettingsController extends AbstractController
                     'projectsArchived' => implode(', ', $projectsArchivedListNames),
                     'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
                     'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
+                    'hasNext' => $hasNext,
+                    'hasPrevious' => $hasPrevious,
                 ]);
             }
 
@@ -1879,6 +1895,8 @@ class PortalSettingsController extends AbstractController
             'projectsArchived' => implode(', ', $projectsArchivedListNames),
             'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
             'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
+            'hasNext' => $hasNext,
+            'hasPrevious' => $hasPrevious,
         ];
     }
 
