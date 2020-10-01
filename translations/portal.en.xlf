@@ -305,6 +305,10 @@
                 <source>Accounts</source>
                 <target>Accounts</target>
             </trans-unit>
+            <trans-unit id="search_for_user_ids">
+                <source>Search for user IDs</source>
+                <target>Search for user IDs</target>
+            </trans-unit>
             <trans-unit id="applying">
                 <source>Applying</source>
                 <target>In application</target>

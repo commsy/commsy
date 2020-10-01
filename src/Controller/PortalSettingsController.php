@@ -1160,7 +1160,7 @@ class PortalSettingsController extends AbstractController
                 }
 
                 $accountIndex = new AccountIndex();
-
+                $accountIndex->setUserIndexFilterChoice($data->getUserIndexFilterChoice());
                 $accountIndexUserList = [];
                 $accountIndexUserIds = array();
 
