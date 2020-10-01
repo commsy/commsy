@@ -22,7 +22,7 @@ class AccountIndexType extends AbstractType
     {
         $builder
             ->add('accountIndexSearchString', Types\TextType::class, [
-                'label' => ' ',
+                'label' => 'Search for user IDs',
                 'required' => false,
                 'translation_domain' => 'portal',
             ])
