@@ -1349,10 +1349,7 @@ class PortalSettingsController extends AbstractController
                 $tempUserList = [];
                 $userList = [];
                 foreach ($portalUsers as $portalUser) {
-                    $relatedUsers = $portalUser->getRelatedUserList();
-                    foreach ($relatedUsers as $relatedUser) {
-                        $tempUserList[] = $relatedUser;
-                    }
+                    $tempUserList[] = $portalUser;
                 }
                 $searchParam = $data->getAccountIndexSearchString();
 
@@ -1382,7 +1379,7 @@ class PortalSettingsController extends AbstractController
                     $singleAccountIndexUser->setItemId($singleUser->getItemID());
                     $singleAccountIndexUser->setMail($singleUser->getEmail());
                     $singleAccountIndexUser->setUserId($singleUser->getUserID());
-                    $accountIndexUserList[] = $singleAccountIndexUser
+                    $accountIndexUserList[] = $singleAccountIndexUser;
                     $accountIndexUserIds[$singleUser->getItemID()] = false;
                 }
 
@@ -2000,40 +1997,38 @@ class PortalSettingsController extends AbstractController
         $projects = $user->getRelatedProjectList();
         $communities = $user->getRelatedCommunityList();
         $relatedUsers = $user->getRelatedUserList();
-
         foreach ($relatedUsers as $relatedUser) {
 
             $contextID = $relatedUser->getContextID();
             $relatedRoomItem = $roomService->getRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    array_push($projectsArchivedListNames, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $projectsArchivedListNames[]  = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 } else {
-                    array_push($projectsListNames, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $projectsListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'community') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    array_push($communityArchivedListNames, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $communityArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 } else {
-                    array_push($communityListNames, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $communityListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'userroom') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    array_push($userRoomsArchivedListNames, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $userRoomsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 } else {
-                    array_push($userRoomListNames, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $userRoomListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'privateroom') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    array_push($privateRoomArchivedNameList, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $privateRoomArchivedNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 } else {
-                    array_push($privateRoomNameList, $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )');
+                    $privateRoomNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             }
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $key = 0;
             if ($form->get('next')->isClicked() or $form->get('previous')->isClicked()) {
                 $counter = 0;
