@@ -1375,7 +1375,9 @@ class PortalSettingsController extends AbstractController
                     'userId' => $user->getItemID(),
                 ]);
 
-                $this->addFlash('performedSuccessfully', $returnUrl);
+                if ($data->getIndexViewAction() != 0) {
+                    $this->addFlash('performedSuccessfully', $returnUrl);
+                }
             }
         }
         $pagination = $paginator->paginate(
@@ -1795,7 +1797,7 @@ class PortalSettingsController extends AbstractController
             $relatedRoomItem = $roomService->getRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $projectsArchivedListNames[]  = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $projectsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 } else {
                     $projectsListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
