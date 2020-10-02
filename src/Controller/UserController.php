@@ -66,6 +66,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
+     * @param ReaderService $readerService
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $max
@@ -75,13 +76,14 @@ class UserController extends BaseController
      */
     public function feedAction(
         Request $request,
+        ReaderService $readerService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = 'name'
     ) {
-        return $this->gatherUsers($roomId, 'feedView', $request, $legacyEnvironment, $max, $start, $sort);
+        return $this->gatherUsers($roomId, 'feedView', $request, $readerService, $legacyEnvironment, $max, $start, $sort);
     }
 
     /**
@@ -89,6 +91,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
+     * @param ReaderService $readerService
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $max
@@ -98,13 +101,14 @@ class UserController extends BaseController
      */
     public function gridAction(
         Request $request,
+        ReaderService $readerService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = 'name'
     ) {
-        return $this->gatherUsers($roomId, 'gridView', $request, $legacyEnvironment, $max, $start, $sort);
+        return $this->gatherUsers($roomId, 'gridView', $request, $readerService, $legacyEnvironment, $max, $start, $sort);
     }
 /**
      * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}")
@@ -1466,6 +1470,7 @@ class UserController extends BaseController
         $roomId,
         $view,
         Request $request,
+        ReaderService $readerService,
         LegacyEnvironment $legacyEnvironment,
         $max = 10,
         $start = 0,
@@ -1509,8 +1514,6 @@ class UserController extends BaseController
         $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort);
 
         $this->get('session')->set('sortUsers', $sort);
-
-        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = [];
         $allowedActions = [];
