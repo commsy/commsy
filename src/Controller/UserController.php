@@ -57,6 +57,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -65,12 +66,13 @@ class UserController extends BaseController
      */
     public function feedAction(
         Request $request,
+        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = 'name'
     ) {
-        return $this->gatherUsers($roomId, $max, $start, $sort, 'feedView', $request);
+        return $this->gatherUsers($roomId, 'feedView', $request, $legacyEnvironment, $max, $start, $sort);
     }
 
     /**
@@ -78,6 +80,7 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -86,12 +89,13 @@ class UserController extends BaseController
      */
     public function gridAction(
         Request $request,
+        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'name')
-    {
-        return $this->gatherUsers($roomId, $max, $start, $sort, 'gridView', $request);
+        string $sort = 'name'
+    ) {
+        return $this->gatherUsers($roomId, 'gridView', $request, $legacyEnvironment, $max, $start, $sort);
     }
 /**
      * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}")
@@ -511,7 +515,7 @@ class UserController extends BaseController
                     }
 
                     if ($formData['inform_user']) {
-                        $this->sendUserInfoMail($formData['userIds'], $formData['status']);
+                        $this->sendUserInfoMail($formData['userIds'], $formData['status'], $legacyEnvironment);
                     }
                     if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('app_user_detail', [
@@ -1411,15 +1415,15 @@ ReaderService $readerService,
         return $printService->buildPdfResponse($html);
     }
 
-    private function sendUserInfoMail($userIds, $action)
+    private function sendUserInfoMail($userIds, $action, LegacyEnvironment $legacyEnvironment)
     {
         $accountMail = $this->get('commsy.utils.mail_account');
         $mailer = $this->get('mailer');
 
         $fromAddress = $this->getParameter('commsy.email.from');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+        $environment = $legacyEnvironment->getEnvironment();
+        $currentUser = $environment->getCurrentUserItem();
+        $fromSender = $environment->getCurrentContextItem()->getContextItem()->getTitle();
 
         $userService = $this->get('commsy_legacy.user_service');
 
@@ -1478,7 +1482,15 @@ ReaderService $readerService,
         }
     }
 
-    private function gatherUsers($roomId, $max = 10, $start = 0, $sort = 'name', $view, Request $request) {
+    private function gatherUsers(
+        $roomId,
+        $view,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        $max = 10,
+        $start = 0,
+        $sort = 'name')
+    {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $userFilter = $request->get('userFilter');
@@ -1486,10 +1498,10 @@ ReaderService $readerService,
             $userFilter = $request->query->get('user_filter');
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $environment = $legacyEnvironment->getEnvironment();
+        $currentUser = $environment->getCurrentUserItem();
 
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $environment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
