@@ -51,6 +51,15 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class UserController extends BaseController
 {
+    private $roomService;
+    private $userService;
+
+    public function __construct(RoomService $roomService, UserService $userService)
+    {
+        parent::__construct($roomService);
+        $this->roomService = $roomService;
+        $this->userService = $userService;
+    }
 
     /**
      * @Route("/room/{roomId}/user/feed/{start}/{sort}")
@@ -109,7 +118,6 @@ class UserController extends BaseController
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
-        UserService $userService,
         UserTransformer $userTransformer,
         ItemService $itemService,
         \Swift_Mailer $mailer
@@ -154,7 +162,7 @@ class UserController extends BaseController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true, $moderatorIds, $userService);
+            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true, $moderatorIds, $this->userService);
             $mailer->send($message);
 
 
@@ -194,7 +202,6 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
-     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param $view
@@ -202,7 +209,6 @@ class UserController extends BaseController
      */
     public function listAction(
         Request $request,
-        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         $view
@@ -224,14 +230,14 @@ class UserController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
-            $userService->setFilterConditions($filterForm);
+            $this->userService->setFilterConditions($filterForm);
         } else {
-            $userService->showNoNotActivatedEntries();
-            $userService->showUserStatus(8);
+            $this->userService->showNoNotActivatedEntries();
+            $this->userService->showUserStatus(8);
         }
 
         // get filtered and total number of results
-        $itemsCountArray = $userService->getCountArray($roomId, $currentUser->isModerator());
+        $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
         $itemsCountArray['countAll'] = $itemsCountArray['count'];
 
         $usageInfo = false;
@@ -263,17 +269,15 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/sendmail")
      * @Template()
      * @param Request $request
-     * @param UserService $userService
      * @return array
      */
     public function sendMailAction(
-        Request $request,
-        UserService $userService
+        Request $request
     ) {
         $userItems = array();
         $userIds = $request->query->get('userIds');
         foreach ($userIds as $userId) {
-            $userItems[] = $userService->getUser($userId);
+            $userItems[] = $this->userService->getUser($userId);
         }
         $formData = [
             'additional_recipients' => [],
@@ -297,7 +301,6 @@ class UserController extends BaseController
      * @param Request $request
      * @param PrintService $printService
      * @param ReaderService $readerService
-     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
      * @param string $sort
      * @param int $roomId
@@ -307,7 +310,6 @@ class UserController extends BaseController
         Request $request,
         PrintService $printService,
         ReaderService $readerService,
-        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         string $sort,
         int $roomId
@@ -322,27 +324,27 @@ class UserController extends BaseController
         }
         // setup filter form
         $filterForm = $this->createFilterForm($legacyEnvironment, $roomItem);
-        $numAllUsers = $userService->getCountArray($roomId)['countAll'];
+        $numAllUsers = $this->userService->getCountArray($roomId)['countAll'];
 
-        $userService->resetLimits();
+        $this->userService->resetLimits();
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
-            $userService->setFilterConditions($filterForm);
+            $this->userService->setFilterConditions($filterForm);
         }
 
-        $users = $userService->getListUsers($roomId);
+        $users = $this->userService->getListUsers($roomId);
 
         // get user list from manager service
         if ($sort != "none") {
-            $users = $userService->getListUsers($roomId, $numAllUsers, 0, $sort);
+            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
         }
         elseif ($this->get('session')->get('sortUsers')) {
-            $users = $userService->getListUsers($roomId, $numAllUsers, 0, $this->get('session')->get('sortUsers'));
+            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $this->get('session')->get('sortUsers'));
         }
         else {
-            $users = $userService->getListUsers($roomId, $numAllUsers, 0, 'date');
+            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, 'date');
         }
         $readerList = array();
         foreach ($users as $item) {
@@ -350,7 +352,7 @@ class UserController extends BaseController
         }
 
         // get user list from manager service 
-        $itemsCountArray = $userService->getCountArray($roomId);
+        $itemsCountArray = $this->userService->getCountArray($roomId);
 
 
         $html = $this->renderView('user/list_print.html.twig', [
@@ -372,7 +374,6 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('MODERATOR')")
      * @param Request $request
-     * @param UserService $userService
      * @param TranslatorInterface $translator
      * @param LegacyEnvironment $legacyEnvironment
      * @param EventDispatcherInterface $eventDispatcher
@@ -382,7 +383,6 @@ class UserController extends BaseController
      */
     public function changeStatusAction(
         Request $request,
-        UserService $userService,
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
@@ -418,7 +418,7 @@ class UserController extends BaseController
         $users = [];
         if (isset($formData['userIds'])) {
             foreach ($formData['userIds'] as $userId) {
-                $user = $userService->getUser($userId);
+                $user = $this->userService->getUser($userId);
                 if ($user) {
                     $users[] = $user;
                 }
@@ -431,7 +431,7 @@ class UserController extends BaseController
 
                 // manual validation - moderator count check
                 if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    if (!$this->contextHasModerators($userService, $roomId, $formData['userIds'])) {
+                    if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
                         $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
                     }
                 }
@@ -496,7 +496,7 @@ class UserController extends BaseController
                     }
 
                     foreach ($users as $user) {
-                        $userService->updateAllGroupStatus($user, $roomId);
+                        $this->userService->updateAllGroupStatus($user, $roomId);
                     }
 
                     $environment = $legacyEnvironment->getEnvironment();
@@ -555,11 +555,10 @@ class UserController extends BaseController
     }
 
     private function contextHasModerators(
-        UserService $userService,
         int $roomId,
         $selectedIds
     ) {
-        $moderators = $userService->getModeratorsForContext($roomId);
+        $moderators = $this->userService->getModeratorsForContext($roomId);
         $moderatorIds = [];
         foreach ($moderators as $moderator) {
             $moderatorIds[] = $moderator->getItemId();
@@ -584,7 +583,6 @@ class UserController extends BaseController
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
      * @param ItemService $itemService
-     * @param RoomService $roomService
      * @param TopicService $topicService
      * @param LegacyMarkup $legacyMarkup
      * @param LegacyEnvironment $legacyEnvironment
@@ -596,16 +594,14 @@ class UserController extends BaseController
         Request $request,
         ItemService $itemService,
         ReaderService $readerService,
-        RoomService $roomService,
         TopicService $topicService,
-        UserService $userService,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
         $environment = $legacyEnvironment->getEnvironment();
-        $infoArray = $this->getDetailInfo($userService, $itemService, $readerService, $legacyEnvironment, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($itemService, $readerService, $legacyEnvironment, $roomId, $itemId);
 
         $alert = null;
         if ($infoArray['user']->isLocked()) {
@@ -627,7 +623,7 @@ class UserController extends BaseController
 
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
-        $roomItem = $roomService->getRoomItem($roomId);
+        $roomItem = $this->roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
 
         $moderatorIds = [];
@@ -679,7 +675,6 @@ class UserController extends BaseController
 
 
     private function getDetailInfo(
-        UserService $userService,
         ItemService $itemService,
         ReaderService $readerService,
         LegacyEnvironment $legacyEnvironment,
@@ -687,7 +682,7 @@ class UserController extends BaseController
         $itemId
     ) {
         $infoArray = array();
-        $user = $userService->getUser($itemId);
+        $user = $this->userService->getUser($itemId);
 
         $environment = $legacyEnvironment->getEnvironment();
         $item = $user;
@@ -746,7 +741,7 @@ class UserController extends BaseController
 
         $modifierList[$user->getItemId()] = $itemService->getAdditionalEditorsForItem($user);
 
-        $users = $userService->getListUsers($roomId);
+        $users = $this->userService->getListUsers($roomId);
         $userList = array();
         $counterBefore = 0;
         $counterAfter = 0;
@@ -811,7 +806,7 @@ class UserController extends BaseController
         $infoArray['currentUser'] = $environment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-        $infoArray['linkedGroups'] = $userService->getUser($itemId)->getGroupList()->to_array();;
+        $infoArray['linkedGroups'] = $this->userService->getUser($itemId)->getGroupList()->to_array();;
         $infoArray['comment'] = $user->getUserComment();
         $infoArray['status'] = $user->getStatus();
 
@@ -821,19 +816,17 @@ class UserController extends BaseController
 
     /**
      * @Route("/room/{roomId}/user/create")
-     * @param UserService $userService
      * @param TranslatorInterface $translator
      * @param int $roomId
      * @return RedirectResponse
      * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'user')")
      */
     public function createAction(
-        UserService $userService,
         TranslatorInterface $translator,
         int $roomId
     ) {
         // create new user item
-        $userItem = $userService->getNewuser();
+        $userItem = $this->userService->getNewuser();
         $userItem->setTitle('['.$translator->trans('insert title').']');
         $userItem->setBibKind('none');
         $userItem->setDraftStatus(1);
@@ -849,7 +842,6 @@ class UserController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
      * @param ItemService $itemService
-     * @param UserService $userService
      * @param UserTransformer $transformer
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
@@ -859,7 +851,6 @@ class UserController extends BaseController
     public function editAction(
         Request $request,
         ItemService $itemService,
-        UserService $userService,
         UserTransformer $transformer,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
@@ -869,7 +860,7 @@ class UserController extends BaseController
 
         $environment = $legacyEnvironment->getEnvironment();
         $current_context = $environment->getCurrentContextItem();
-        $userItem = $userService->getuser($itemId);
+        $userItem = $this->userService->getuser($itemId);
         if (!$userItem) {
             throw $this->createNotFoundException('No user found for id ' . $itemId);
         }
@@ -920,7 +911,6 @@ class UserController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      * @param ItemService $itemService
      * @param ReaderService $readerService
-     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
@@ -929,12 +919,11 @@ class UserController extends BaseController
     public function saveAction(
         ItemService $itemService,
         ReaderService $readerService,
-        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
-        $user = $userService->getUser($itemId);
+        $user = $this->userService->getUser($itemId);
 
         $itemArray = array($user);
         $modifierList = array();
@@ -1197,7 +1186,6 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")
      * @param AvatarService $avatarService
-     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
@@ -1205,12 +1193,11 @@ class UserController extends BaseController
      */
     public function imageAction(
         AvatarService $avatarService,
-        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
-        $user = $userService->getUser($itemId);
+        $user = $this->userService->getUser($itemId);
         $file = $user->getPicture();
         $foundUserImage = true;
 
@@ -1266,18 +1253,16 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/rooms/{start}")
      * @Template("menu/room_list.html.twig")
-     * @param UserService $userService
      * @param int $roomId
      * @return array
      */
     public function roomsAction(
-        UserService $userService,
         int $roomId
     ) {
-        $user = $userService->getCurrentUserItem();
+        $user = $this->userService->getCurrentUserItem();
 
         // Room list feed
-        $rooms = $userService->getRoomList($user);
+        $rooms = $this->userService->getRoomList($user);
 
         return [
             'roomId' => $roomId,
@@ -1291,19 +1276,17 @@ class UserController extends BaseController
      *
      * @Template()
      *
-     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
      * @param SessionInterface $session
      * @return array
      */
     public function globalNavbarAction(
         $contextId,
-        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         SessionInterface $session,
         EntityManagerInterface $entityManager
     ) {
-        $currentUserItem = $userService->getCurrentUserItem();
+        $currentUserItem = $this->userService->getCurrentUserItem();
         $privateRoomItem = $currentUserItem->getOwnRoom();
         $environment = $legacyEnvironment->getEnvironment();
 
@@ -1345,15 +1328,13 @@ class UserController extends BaseController
      * This is an embedded controller action.
      *
      * @Template()
-     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
      * @return array
      */
     public function allRoomsNavbarAction(
-        UserService $userService,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $currentUserItem = $userService->getCurrentUserItem();
+        $currentUserItem = $this->userService->getCurrentUserItem();
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
 
@@ -1374,7 +1355,6 @@ class UserController extends BaseController
      * @param ItemService $itemService
      * @param PrintService $printService
      * @param ReaderService $readerService
-     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
@@ -1384,13 +1364,12 @@ class UserController extends BaseController
         ItemService $itemService,
         PrintService $printService,
         ReaderService $readerService,
-        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
 
-        $infoArray = $this->getDetailInfo($userService, $itemService, $readerService, $legacyEnvironment, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($itemService, $readerService, $legacyEnvironment, $roomId, $itemId);
 
         $html = $this->renderView('user/detail_print.html.twig', [
             'roomId' => $roomId,
@@ -1428,8 +1407,6 @@ class UserController extends BaseController
         $currentUser = $environment->getCurrentUserItem();
         $fromSender = $environment->getCurrentContextItem()->getContextItem()->getTitle();
 
-        $userService = $this->get('commsy_legacy.user_service');
-
         $validator = new EmailValidator();
         $replyTo = [];
         $currentUserEmail = $currentUser->getEmail();
@@ -1442,7 +1419,7 @@ class UserController extends BaseController
         $users = [];
         $failedUsers = [];
         foreach ($userIds as $userId) {
-            $user = $userService->getUser($userId);
+            $user = $this->userService->getUser($userId);
 
             $userEmail = $user->getEmail();
             if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
@@ -1512,8 +1489,7 @@ class UserController extends BaseController
         }
 
         // get the user manager service
-        $userService = $this->get('commsy_legacy.user_service');
-        $userService->resetLimits();
+        $this->userService->resetLimits();
 
         if ($userFilter) {
             // setup filter form
@@ -1523,14 +1499,14 @@ class UserController extends BaseController
             $filterForm->submit($userFilter);
 
             // set filter conditions in user manager
-            $userService->setFilterConditions($filterForm);
+            $this->userService->setFilterConditions($filterForm);
         } else {
-            $userService->showNoNotActivatedEntries();
-            $userService->showUserStatus(8);
+            $this->userService->showNoNotActivatedEntries();
+            $this->userService->showUserStatus(8);
         }
 
         // get user list from manager service
-        $users = $userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort);
+        $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort);
 
         $this->get('session')->set('sortUsers', $sort);
 
@@ -1583,7 +1559,6 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/sendMultiple")
      * @Template()
      * @param Request $request
-     * @param UserService $userService
      * @param TranslatorInterface $translator
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
@@ -1592,7 +1567,6 @@ class UserController extends BaseController
      */
     public function sendMultipleAction(
         Request $request,
-        UserService $userService,
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
@@ -1621,7 +1595,7 @@ class UserController extends BaseController
         if ($userCount) {
             $defaultBodyMessage .= '<br/><br/><br/>' . '--' . '<br/>';
             if ($userCount == 1) {
-                $user = $userService->getUser(reset($userIds));
+                $user = $this->userService->getUser(reset($userIds));
                 if ($user) {
                     $defaultBodyMessage .= $translator->trans(
                         'This email has been sent by sender to recipient',
@@ -1655,7 +1629,7 @@ class UserController extends BaseController
         $users = [];
         if (isset($formData['users'])) {
             foreach ($formData['users'] as $userId) {
-                $user = $userService->getUser($userId);
+                $user = $this->userService->getUser($userId);
                 if ($user) {
                     $users[] = $user;
                 }
@@ -1878,9 +1852,6 @@ class UserController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-        // get the user service
-        $userService = $this->get('commsy_legacy.user_service');
-
         if ($selectAll) {
             if ($request->query->has('user_filter')) {
                 $currentFilter = $request->query->get('user_filter');
@@ -1890,15 +1861,15 @@ class UserController extends BaseController
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $userService->setFilterConditions($filterForm);
+                $this->userService->setFilterConditions($filterForm);
             } else {
-                $userService->showNoNotActivatedEntries();
-                $userService->showUserStatus(8);
+                $this->userService->showNoNotActivatedEntries();
+                $this->userService->showUserStatus(8);
             }
 
-            return $userService->getListUsers($roomItem->getItemID());
+            return $this->userService->getListUsers($roomItem->getItemID());
         } else {
-            return $userService->getUsersById($roomItem->getItemID(), $itemIds);
+            return $this->userService->getUsersById($roomItem->getItemID(), $itemIds);
         }
     }
 }
