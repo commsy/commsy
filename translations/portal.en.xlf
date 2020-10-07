@@ -309,6 +309,10 @@
                 <source>Search for user IDs</source>
                 <target>Search for user IDs</target>
             </trans-unit>
+            <trans-unit id="help_text_search">
+                <source>Account index search string help</source>
+                <target>Input of search strings: user IDs, first or last names and emails. The search is not case sensetive.</target>
+            </trans-unit>
             <trans-unit id="applying">
                 <source>Applying</source>
                 <target>In application</target>

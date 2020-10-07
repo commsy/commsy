@@ -25,6 +25,7 @@ class AccountIndexType extends AbstractType
                 'label' => 'Search for user IDs',
                 'required' => false,
                 'translation_domain' => 'portal',
+                'help' => 'Account index search string help',
             ])
             ->add('userIndexFilterChoice', Types\ChoiceType::class, [
                 'choices'  => [
