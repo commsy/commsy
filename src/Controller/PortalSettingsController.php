@@ -1388,6 +1388,10 @@ class PortalSettingsController extends AbstractController
 
                 if ($data->getIndexViewAction() != 0) {
                     $this->addFlash('performedSuccessfully', $returnUrl);
+                    return $this->redirectToRoute('app_portalsettings_accountindex', [
+                        'portal' => $portal,
+                        'portalId' => $portal->getId(),
+                    ]);
                 }
             }
         }
