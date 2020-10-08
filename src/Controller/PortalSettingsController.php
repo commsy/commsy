@@ -1153,7 +1153,18 @@ class PortalSettingsController extends AbstractController
                     }
                 } else {
                     foreach ($tempUserList as $singleUser) {
-                        if ((strpos($singleUser->getUserID(), $searchParam) !== false) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser, $portal, $environment)) {
+
+                        $machtesUserIdLowercased = (strpos(strtolower($singleUser->getUserID()), strtolower($searchParam)) !== false);
+                        $machtesUserNameLowercased = (strpos(strtolower($singleUser->getFullName()), strtolower($searchParam)) !== false);
+                        $matchesFirstNameLowercased = (strpos(strtolower($singleUser->getFirstName()), strtolower($searchParam)) !== false);
+                        $matchesLastNameLowercased = (strpos(strtolower($singleUser->getLastName()), strtolower($searchParam)) !== false);
+                        $matchMailLowercased = (strpos(strtolower($singleUser->getEmail()), strtolower($searchParam)) !== false);
+
+                        if (($matchesLastNameLowercased
+                                or $machtesUserIdLowercased
+                                or $matchesFirstNameLowercased
+                                or $machtesUserNameLowercased
+                                or $matchMailLowercased) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser, $portal, $environment)) {
                             $userList[] = $singleUser; //remove users not fitting the search string
                         }
                     }
@@ -1377,6 +1388,10 @@ class PortalSettingsController extends AbstractController
 
                 if ($data->getIndexViewAction() != 0) {
                     $this->addFlash('performedSuccessfully', $returnUrl);
+                    return $this->redirectToRoute('app_portalsettings_accountindex', [
+                        'portal' => $portal,
+                        'portalId' => $portal->getId(),
+                    ]);
                 }
             }
         }
@@ -1835,10 +1850,10 @@ class PortalSettingsController extends AbstractController
             $counter = $counter + 1;
         }
 
-        if($key+1 == sizeof($userList)){
+        if ($key + 1 == sizeof($userList)) {
             $hasNext = false;
         }
-        if($key == 0){
+        if ($key == 0) {
             $hasPrevious = false;
         }
 

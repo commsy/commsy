@@ -313,6 +313,10 @@
                 <source>Applying</source>
                 <target>In Beantragung</target>
             </trans-unit>
+            <trans-unit id="help_text_search">
+                <source>Account index search string help</source>
+                <target>Eingabe von Such-Zeichenketten: Kennungen, Vor- oder Nachnamen und E-Mails. Die Groß- und Kleinschreibung wird ignoriert.</target>
+            </trans-unit>
             <trans-unit id="execute">
                 <source>Execute</source>
                 <target>Ausführen</target>
