@@ -50,9 +50,7 @@ class PortalUserEdit
 
     private $description;
 
-    private $picture;
-
-    private $userIsAllowedToUseCaldav;
+//    private $picture;
 
     private $mayCreateContext;
 
@@ -63,8 +61,8 @@ class PortalUserEdit
     /** @var bool */
     private $changeMailEverywhere;
 
-    /** @var bool */
-    private $overrideExistingPicture;
+//    /** @var bool */
+//    private $overrideExistingPicture;
 
     /**
      * @return string
@@ -386,21 +384,21 @@ class PortalUserEdit
         $this->description = $description;
     }
 
-    /**
-     * @return string
-     */
-    public function getPicture()
-    {
-        return $this->picture;
-    }
-
-    /**
-     * @param string $picture
-     */
-    public function setPicture($picture): void
-    {
-        $this->picture = $picture;
-    }
+//    /**
+//     * @return string
+//     */
+//    public function getPicture()
+//    {
+//        return $this->picture;
+//    }
+//
+//    /**
+//     * @param string $picture
+//     */
+//    public function setPicture($picture): void
+//    {
+//        $this->picture = $picture;
+//    }
 
     /**
      * @return string
@@ -450,37 +448,21 @@ class PortalUserEdit
         $this->changeMailEverywhere = $changeMailEverywhere;
     }
 
-    /**
-     * @return bool
-     */
-    public function isOverrideExistingPicture(): bool
-    {
-        return $this->overrideExistingPicture ?? 0;
-    }
-
-    /**
-     * @param bool $overrideExistingPicture
-     */
-    public function setOverrideExistingPicture(bool $overrideExistingPicture): void
-    {
-        $this->overrideExistingPicture = $overrideExistingPicture;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserIsAllowedToUseCaldav()
-    {
-        return $this->userIsAllowedToUseCaldav ?? 0;
-    }
-
-    /**
-     * @param mixed $userIsAllowedToUseCaldav
-     */
-    public function setUserIsAllowedToUseCaldav($userIsAllowedToUseCaldav): void
-    {
-        $this->userIsAllowedToUseCaldav = $userIsAllowedToUseCaldav;
-    }
+//    /**
+//     * @return bool
+//     */
+//    public function isOverrideExistingPicture(): bool
+//    {
+//        return $this->overrideExistingPicture ?? 0;
+//    }
+//
+//    /**
+//     * @param bool $overrideExistingPicture
+//     */
+//    public function setOverrideExistingPicture(bool $overrideExistingPicture): void
+//    {
+//        $this->overrideExistingPicture = $overrideExistingPicture;
+//    }
 
     /**
      * @return mixed

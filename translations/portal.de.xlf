@@ -305,6 +305,14 @@
                 <source>Accounts</source>
                 <target>Kennungen</target>
             </trans-unit>
+            <trans-unit id="portal_yes">
+                <source>Yes</source>
+                <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="portal_no">
+                <source>No</source>
+                <target>Nein</target>
+            </trans-unit>
             <trans-unit id="search_for_user_ids">
                 <source>Search for user IDs</source>
                 <target>Suche nach Kennungen</target>
@@ -362,7 +370,7 @@
                 <target>Status: BenutzerIn</target>
             </trans-unit>
             <trans-unit id="status_moderator">
-                <source>Satus moderator</source>
+                <source>Status moderator</source>
                 <target>Status: ModeratorIn</target>
             </trans-unit>
             <trans-unit id="make_contact">

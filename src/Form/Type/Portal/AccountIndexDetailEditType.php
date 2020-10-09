@@ -109,34 +109,24 @@ class AccountIndexDetailEditType extends AbstractType
                 'translation_domain' => 'portal',
                 'required' => false,
             ])
-            ->add('picture', FileType::class, [
-                'label' => 'Picture',
-                'translation_domain' => 'portal',
-                'attr' => array(
-                    'data-upload' => '{"path": "' . 'uploadUrl' . '"}',
-                ),
-                'required' => false,
-            ])
-            ->add('overrideExistingPicture', Types\CheckboxType::class, [
-                'label' => 'Override existing picture',
-                'translation_domain' => 'portal',
-                'required' => false,
-            ])
+//            ->add('picture', FileType::class, [
+//                'label' => 'Picture',
+//                'translation_domain' => 'portal',
+//                'attr' => array(
+//                    'data-upload' => '{"path": "' . 'uploadUrl' . '"}',
+//                ),
+//                'required' => false,
+//            ])
+//            ->add('overrideExistingPicture', Types\CheckboxType::class, [
+//                'label' => 'Override existing picture',
+//                'translation_domain' => 'portal',
+//                'required' => false,
+//            ])
             ->add('mayCreateContext', Types\ChoiceType::class, [
                 'label' => 'May create context',
                 'expanded' => true,
                 'choices'  => [
                     'User is allowed to create context' => 'standard',
-                    'Yes' => '1',
-                    'No' => '-1',
-                ],
-                'translation_domain' => 'portal',
-            ])
-            ->add('mayUseCaldav', Types\ChoiceType::class, [
-                'label' => 'May use caldav',
-                'expanded' => true,
-                'choices'  => [
-                    'User is allowed to use caldav' => 'standard',
                     'Yes' => '1',
                     'No' => '-1',
                 ],

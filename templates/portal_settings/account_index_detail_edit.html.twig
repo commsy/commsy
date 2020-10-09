@@ -42,18 +42,13 @@
             {{ form_row(form.homepage) }}
             {{ form_row(form.description) }}
             <hr />
-            {{ form_row(form.picture) }}
-            {{ form_row(form.overrideExistingPicture) }}
-            <hr />
+{#            {{ form_row(form.picture) }}#}
+{#            {{ form_row(form.overrideExistingPicture) }}#}
+{#            <hr />#}
             {{ form_label(form.mayCreateContext) }}
             {{ form_row(form.mayCreateContext[0]) }}
             {{ form_row(form.mayCreateContext[1]) }}
             {{ form_row(form.mayCreateContext[2]) }}
-            <hr />
-            {{ form_label(form.mayUseCaldav) }}
-            {{ form_row(form.mayUseCaldav[0]) }}
-            {{ form_row(form.mayUseCaldav[1]) }}
-            {{ form_row(form.mayUseCaldav[2]) }}
             <hr />
             {{ form_row(form.save) }}
             <a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}" class="data-uk-button">{{'Cancel'|trans({},'portal') }}</a>
