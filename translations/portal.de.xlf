@@ -357,6 +357,14 @@
                 <source>Lock user id(s)</source>
                 <target>Kennung(en) sperren</target>
             </trans-unit>
+            <trans-unit id="workspace_already_assigned">
+                <source>Workspace already assigned</source>
+                <target>Dieser Raum wurde bereits zugewiesen.</target>
+            </trans-unit>
+            <trans-unit id="workspace_assign_help">
+                <source>Workspace assign help</source>
+                <target>Suchen Sie hier nach Räumen. Wenn Sie den Wert leer lassen und 'Suchen' klicken, werden alle möglichen Räume in der Raumauswahl-Liste auswählbar.</target>
+            </trans-unit>
             <trans-unit id="activate_user">
                 <source>Activate user id(s)</source>
                 <target>Kennung(en) freischalten / Status BenutzerIn</target>
