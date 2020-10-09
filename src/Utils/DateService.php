@@ -10,14 +10,9 @@ class DateService
 {
     private $legacyEnvironment;
 
-    private $dateManager;
-
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-
-        $this->dateManager = $this->legacyEnvironment->getDateManager();
-        $this->dateManager->reset();
     }
 
     /**
@@ -29,19 +24,21 @@ class DateService
      */
     public function getListDates($roomId, $max = null, $start = null, $sort = null)
     {
-        $this->dateManager->setContextLimit($roomId);
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        $dateManager->setContextLimit($roomId);
         if ($max !== null && $start !== null) {
-            $this->dateManager->setIntervalLimit($start, $max);
+            $dateManager->setIntervalLimit($start, $max);
         }
 
         if ($sort) {
-            $this->dateManager->setSortOrder($sort);
+            $dateManager->setSortOrder($sort);
         }
 
-        $this->dateManager->setWithoutDateModeLimit();
+        $dateManager->setWithoutDateModeLimit();
 
-        $this->dateManager->select();
-        $dateList = $this->dateManager->get();
+        $dateManager->select();
+        $dateList = $dateManager->get();
 
         return $dateList->to_array();
     }
@@ -51,28 +48,33 @@ class DateService
      * @param integer[] $idArray
      * @return \cs_dates_item[]
      */
-    public function getDatesById($roomId, $idArray) {
-        $this->dateManager->setContextLimit($roomId);
-        $this->dateManager->setIDArrayLimit($idArray);
+    public function getDatesById($roomId, $idArray)
+    {
+        $dateManager = $this->legacyEnvironment->getDateManager();
 
-        $this->dateManager->select();
-        $dateList = $this->dateManager->get();
+        $dateManager->setContextLimit($roomId);
+        $dateManager->setIDArrayLimit($idArray);
+
+        $dateManager->select();
+        $dateList =$dateManager->get();
 
         return $dateList->to_array();
     }
 
     public function setFilterConditions(FormInterface $filterForm)
     {
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
         $formData = $filterForm->getData();
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $this->dateManager->showNoNotActivatedEntries();
+            $dateManager->showNoNotActivatedEntries();
         }
 
         // past
         if ($formData['hide-past-dates']) {
-            $this->dateManager->setFutureLimit();
+            $dateManager->setFutureLimit();
         }
 
         // dates between
@@ -89,7 +91,7 @@ class DateService
         }
         
         if ($isBetweenFilterSet) {
-            $this->dateManager->setBetweenLimit($fromDate, $untilDate);
+            $dateManager->setBetweenLimit($fromDate, $untilDate);
         }
 
         // rubrics
@@ -97,13 +99,13 @@ class DateService
             // group
             if (isset($formData['rubrics']['group'])) {
                 $relatedLabel = $formData['rubrics']['group'];
-                $this->dateManager->setGroupLimit($relatedLabel->getItemId());
+                $dateManager->setGroupLimit($relatedLabel->getItemId());
             }
             
             // topic
             if (isset($formData['rubrics']['topic'])) {
                 $relatedLabel = $formData['rubrics']['topic'];
-                $this->dateManager->setTopicLimit($relatedLabel->getItemId());
+                $dateManager->setTopicLimit($relatedLabel->getItemId());
             }
         }
         
@@ -113,7 +115,7 @@ class DateService
                 $users = $formData['participant']['participant'];
 
                 if (!empty($users)) {
-                    $this->dateManager->setParticipantArrayLimit($users);
+                    $dateManager->setParticipantArrayLimit($users);
                 }
             }
         }
@@ -124,7 +126,7 @@ class DateService
                 $calendars = $formData['calendar']['calendar'];
 
                 if (!empty($calendars)) {
-                    $this->dateManager->setCalendarArrayLimit($calendars);
+                    $dateManager->setCalendarArrayLimit($calendars);
                 }
             }
         }
@@ -134,7 +136,7 @@ class DateService
             if (isset($formData['hashtag']['hashtag'])) {
                 $hashtag = $formData['hashtag']['hashtag'];
                 $itemId = $hashtag->getItemId();
-                $this->dateManager->setBuzzwordLimit($itemId);
+                $dateManager->setBuzzwordLimit($itemId);
             }
         }
 
@@ -144,15 +146,18 @@ class DateService
                 $categories = $formData['category']['category'];
 
                 if (!empty($categories)) {
-                    $this->dateManager->setTagArrayLimit($categories);
+                    $dateManager->setTagArrayLimit($categories);
                 }
             }
         }
     }
     
-    public function setPastFilter ($past) {
+    public function setPastFilter ($past)
+    {
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
         if (!$past) {
-            $this->dateManager->setFutureLimit();
+            $dateManager->setFutureLimit();
         }
     }
 
@@ -162,7 +167,9 @@ class DateService
      */
     public function getDate($itemId)
     {
-        return $this->dateManager->getItem($itemId);
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        return $dateManager->getItem($itemId);
     }
 
     /**
@@ -173,31 +180,37 @@ class DateService
      */
     public function getCalendarEvents($roomId, $start, $end)
     {
-        $this->dateManager->setContextLimit($roomId);
-        $this->dateManager->setWithoutDateModeLimit();
-        $this->dateManager->setBetweenLimit($start, $end);
-        $this->dateManager->select();
-        $dateList = $this->dateManager->get();
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        $dateManager->setContextLimit($roomId);
+        $dateManager->setWithoutDateModeLimit();
+        $dateManager->setBetweenLimit($start, $end);
+        $dateManager->select();
+        $dateList = $dateManager->get();
 
         return $dateList->to_array();
     }
     
     public function getNewDate()
     {
-        return $this->dateManager->getNewItem();
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        return $dateManager->getNewItem();
     }
     
     public function getCountArray($roomId)
     {
-        $this->dateManager->setContextLimit($roomId);
-        $this->dateManager->setWithoutDateModeLimit();
-        $this->dateManager->select();
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        $dateManager->setContextLimit($roomId);
+        $dateManager->setWithoutDateModeLimit();
+        $dateManager->select();
         $countDatelArray = array();
-        $countDatelArray['count'] = sizeof($this->dateManager->get()->to_array());
-        $this->dateManager->resetLimits();
-        $this->dateManager->setWithoutDateModeLimit();
-        $this->dateManager->select();
-        $countDatelArray['countAll'] = $this->dateManager->getCountAll();
+        $countDatelArray['count'] = sizeof($dateManager->get()->to_array());
+        $dateManager->resetLimits();
+        $dateManager->setWithoutDateModeLimit();
+        $dateManager->select();
+        $countDatelArray['countAll'] = $dateManager->getCountAll();
 
         return $countDatelArray;
     }
@@ -209,12 +222,14 @@ class DateService
      */
     public function getRecurringDates($roomId, $recurringId)
     {
-        $this->dateManager->reset();
-        $this->dateManager->setContextLimit($roomId);
-        $this->dateManager->setRecurrenceLimit($recurringId);
-        $this->dateManager->setWithoutDateModeLimit();
-        $this->dateManager->select();
-        $dateList = $this->dateManager->get();
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        $dateManager->reset();
+        $dateManager->setContextLimit($roomId);
+        $dateManager->setRecurrenceLimit($recurringId);
+        $dateManager->setWithoutDateModeLimit();
+        $dateManager->select();
+        $dateList = $dateManager->get();
 
         return $dateList->to_array();
     }
@@ -232,12 +247,14 @@ class DateService
      */
     public function getDateByUid($uid, $calendarId, $roomId)
     {
-        $this->dateManager->reset();
-        $this->dateManager->setUidArrayLimit(['"'.$uid.'"']);
-        $this->dateManager->setWithoutDateModeLimit();
-        $this->dateManager->unsetContextLimit();
-        $this->dateManager->select();
-        $dateList = $this->dateManager->get();
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        $dateManager->reset();
+        $dateManager->setUidArrayLimit(['"'.$uid.'"']);
+        $dateManager->setWithoutDateModeLimit();
+        $dateManager->unsetContextLimit();
+        $dateManager->select();
+        $dateList =$dateManager->get();
         if (isset($dateList->to_array()[0])) {
             return $dateList->to_array()[0];
         }
@@ -250,11 +267,13 @@ class DateService
      */
     public function getDatesByCalendarId($calendarId)
     {
-        $this->dateManager->reset();
-        $this->dateManager->setCalendarArrayLimit(['"'.$calendarId.'"']);
-        $this->dateManager->setWithoutDateModeLimit();
-        $this->dateManager->select();
-        $dateList = $this->dateManager->get();
+        $dateManager = $this->legacyEnvironment->getDateManager();
+
+        $dateManager->reset();
+        $dateManager->setCalendarArrayLimit(['"'.$calendarId.'"']);
+        $dateManager->setWithoutDateModeLimit();
+        $dateManager->select();
+        $dateList = $dateManager->get();
         return $dateList->to_array();
     }
 }

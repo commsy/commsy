@@ -31,19 +31,6 @@ class db_mysql_connector
     private $_display = true;
     private $_query_failed = 0;
 
-    private $dbalConnection;
-
-    public function __construct()
-    {
-        $this->_connect();
-    }
-
-    private function _connect()
-    {
-        global $symfonyContainer;
-        $this->dbalConnection = $symfonyContainer->get('database_connection');
-    }
-
     public function performQuery($query)
     {
         global $symfonyContainer;
