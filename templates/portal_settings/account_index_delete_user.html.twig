@@ -22,35 +22,10 @@
             {% endif %}
 
             {{ form_start(form) }}
-            {{ form_row(form.firstName) }}
-            {{ form_row(form.lastName) }}
-            <hr />
-            {{ form_row(form.academicDegree) }}
-            {{ form_row(form.birthday) }}
-            {{ form_row(form.street) }}
-            {{ form_row(form.zip) }}
-            {{ form_row(form.city) }}
-            {{ form_row(form.workspace) }}
-            {{ form_row(form.telephone) }}
-            {{ form_row(form.secondTelephone) }}
-            {{ form_row(form.email) }}
-            {{ form_row(form.emailChangeAll) }}
-            {{ form_row(form.icq) }}
-            {{ form_row(form.msn) }}
-            {{ form_row(form.skype) }}
-            {{ form_row(form.yahoo) }}
-            {{ form_row(form.homepage) }}
-            {{ form_row(form.description) }}
-            <hr />
-{#            {{ form_row(form.picture) }}#}
-{#            {{ form_row(form.overrideExistingPicture) }}#}
-{#            <hr />#}
-            {{ form_label(form.mayCreateContext) }}
-            {{ form_row(form.mayCreateContext[0]) }}
-            {{ form_row(form.mayCreateContext[1]) }}
-            {{ form_row(form.mayCreateContext[2]) }}
-            <hr />
-            {{ form_row(form.save) }}
+            <h1>Are you sure, you want to delete {{ user.fullName }}?</h1>
+            {{ form_widget(form.execute) }}
+            {{ form_widget(form.cancel) }}
+            <br />
             <a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}" class="data-uk-button">{{'Cancel'|trans({},'portal') }}</a>
             {{ form_end(form) }}
         {% endblock %}
