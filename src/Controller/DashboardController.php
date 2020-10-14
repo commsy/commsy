@@ -195,6 +195,25 @@ class DashboardController extends Controller
         return array(
         );
     }
+
+    /**
+     * @Route("/dashboard/{roomId}/externalaccess")
+     * @Template()
+     */
+    public function myViews($roomId, Request $request)
+    {
+        $userService = $this->get("commsy_legacy.user_service");
+        $user = $userService->getPortalUserFromSessionId();
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemManager = $legacyEnvironment->getItemManager();
+
+        $myViewItems = ['Konfigurierte Ansicht 1', 'Konfigurierte Ansicht 2'];
+
+        return array(
+            'myViewItems' => $myViewItems,
+        );
+    }
     
     /**
      * @Route("/dashboard/{roomId}/externalaccess")
