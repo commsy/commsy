@@ -2,6 +2,9 @@
 
 namespace App\Menu;
 
+use App\Entity\Portal;
+use App\Repository\PortalRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Utils\RoomService;
@@ -28,6 +31,11 @@ class MenuBuilder
     private $invitationsService;
 
     /**
+     * @var PortalRepository
+     */
+    private $portalRepository;
+
+    /**
     * @param FactoryInterface $factory
     */
     public function __construct(
@@ -36,7 +44,8 @@ class MenuBuilder
         LegacyEnvironment $legacyEnvironment,
         UserService $userService,
         AuthorizationCheckerInterface $authorizationChecker,
-        InvitationsService $invitationsService)
+        InvitationsService $invitationsService,
+        PortalRepository $portalRepository)
     {
         $this->factory = $factory;
         $this->roomService = $roomService;
@@ -44,6 +53,7 @@ class MenuBuilder
         $this->userService = $userService;
         $this->authorizationChecker = $authorizationChecker;
         $this->invitationsService = $invitationsService;
+        $this->portalRepository = $portalRepository;
     }
 
     public function createAccountMenu(RequestStack $requestStack)
@@ -274,6 +284,10 @@ class MenuBuilder
         // get room Id
         $currentStack = $requestStack->getCurrentRequest();
         $roomId = $currentStack->attributes->get('roomId');
+        $room = $this->roomService->getRoomItem($roomId);
+
+        /** @var Portal $portal */
+        $portal = $this->portalRepository->find($room->getContextID());
 
         // create root item
         $menu = $this->factory->createItem('root');
@@ -326,7 +340,7 @@ class MenuBuilder
 
 
             // invitations
-            if ($this->invitationsService->invitationsEnabled()) {
+            if ($this->invitationsService->invitationsEnabled($portal)) {
                 $menu->addChild('Invitations', array(
                     'label' => 'invitations',
                     'route' => 'app_settings_invitations',
