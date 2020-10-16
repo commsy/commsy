@@ -6552,10 +6552,10 @@ typescript@^3.9.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
   integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
 
-"uikit3@npm:uikit@^3.5.4":
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.5.4.tgz#3291abbf8e80114313ebf9ea3b30c628d751d345"
-  integrity sha512-5alqUOBUVrkbc/7NH/G3LB6iCHDaknA2ZFDa8FKh/s+ieexDGK6FLQQjxAvRTIO6EdL+/irBxe85+BKI1B8okw==
+"uikit3@npm:uikit@^3.5.8":
+  version "3.5.8"
+  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.5.8.tgz#746a80a16c3ef2763297c7c058c423267d8eeda2"
+  integrity sha512-MzUykA+mOC74W+vtvxJUZ76YJvGM2tlBsZs0ab2ZFyZBBfqSV5xsJ5/48HVhPtuAlsdfhbP36c5OXJ38xY6Iuw==
 
 "uikit@npm:uikit@2.27.4":
   version "2.27.4"
