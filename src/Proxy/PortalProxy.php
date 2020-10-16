@@ -342,6 +342,19 @@ class PortalProxy
         return $moderators;
     }
 
+    public function getCommunityList(): \cs_list
+    {
+        $communityManager = $this->legacyEnvironment->getCommunityManager();
+        $communityManager->resetLimits();
+        $communityManager->setContextLimit($this->getItemId());
+        $communityManager->select();
+
+        /** @var \cs_list $communityList */
+        $communityList = $communityManager->get();
+
+        return $communityList;
+    }
+
     /**
      * isDeleted
      *
