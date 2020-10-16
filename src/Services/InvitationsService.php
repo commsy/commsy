@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Entity\AuthSource;
 use App\Entity\Invitations;
+use App\Entity\Portal;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
@@ -13,33 +15,28 @@ class InvitationsService
      */
     private $em;
 
-    private $serviceContainer;
-
-    public function __construct(EntityManagerInterface $entityManager, Container $container)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->em = $entityManager;
-        $this->serviceContainer = $container;
     }
 
-    public function invitationsEnabled () {
-        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
+    public function invitationsEnabled(Portal $portal): bool
+    {
+        $authSources = $portal->getAuthSources();
 
-        $authSourceManager = $legacyEnvironment->getAuthSourceManager();
-        $authSourceManager->setContextLimit($legacyEnvironment->getCurrentPortalId());
-        $authSourceManager->select();
-        $authSourceArray = $authSourceManager->get()->to_array();
+        /** @var AuthSource $localAuthSource */
+        $localAuthSource = $authSources->filter(function(AuthSource $authSource) {
+            return $authSource->getType() === 'local';
+        })->first();
 
-        foreach ($authSourceArray as $authSourceItem) {
-            if ($authSourceItem->isCommSyDefault()) {
-                if ($authSourceItem->allowAddAccountInvitation()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        $localAuthSourceExtras = $localAuthSource->getExtras();
+        $configValue = ($localAuthSourceExtras['CONFIGURATION']['ADD_ACCOUNT_INVITATION']) ?? 0;
+
+        return $configValue === 1;
     }
 
-    public function existsInvitationForEmailAddress ($authSourceItem, $email) {
+    public function existsInvitationForEmailAddress($authSourceItem, $email): bool
+    {
         $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->select()
@@ -56,7 +53,8 @@ class InvitationsService
         return false;
     }
 
-    public function generateInvitationCode($authSourceItem, $contextId, $email) {
+    public function generateInvitationCode($authSourceItem, $contextId, $email): string
+    {
         $invitationCode = md5(rand().time().rand());
 
         $invitation = new Invitations();
@@ -73,7 +71,8 @@ class InvitationsService
         return $invitationCode;
     }
 
-    public function confirmInvitationCode($authSourceItem, $invitationCode) {
+    public function confirmInvitationCode($authSourceItem, $invitationCode): bool
+    {
         $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->select()
@@ -92,7 +91,8 @@ class InvitationsService
         return false;
     }
 
-    public function redeemInvitation($authSourceItem, $invitationCode, $email){
+    public function redeemInvitation($authSourceItem, $invitationCode, $email): void
+    {
         $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->update()
@@ -105,7 +105,8 @@ class InvitationsService
         $query->getResult();
     }
 
-    public function getInvitedEmailAdressesByContextId ($authSourceItem, $contextId) {
+    public function getInvitedEmailAdressesByContextId($authSourceItem, $contextId): array
+    {
         $result = array();
 
         $repository = $this->em->getRepository('App:Invitations');
@@ -126,7 +127,8 @@ class InvitationsService
 
     }
 
-    public function removeInvitedEmailAdresses ($authSourceItem, $email) {
+    public function removeInvitedEmailAdresses($authSourceItem, $email): void
+    {
         $repository = $this->em->getRepository('App:Invitations');
         $query = $repository->createQueryBuilder('invitations')
             ->delete()
