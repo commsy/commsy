@@ -372,4 +372,11 @@ class PortalProxy
     {
         return ($this->portal->getExtras()['SERVER_NEWS']['LINK']) ?? '';
     }
+
+    public function getHideAccountname(): bool
+    {
+        $hideAccountName = ($this->portal->getExtras()['EXTRA_CONFIG']['HIDE_ACCOUNTNAME']) ?? 0;
+        return $hideAccountName === '1';
+
+    }
 }
