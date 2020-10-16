@@ -305,6 +305,14 @@
                 <source>Accounts</source>
                 <target>Accounts</target>
             </trans-unit>
+            <trans-unit id="portal_yes">
+                <source>Yes</source>
+                <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="portal_no">
+                <source>No</source>
+                <target>No</target>
+            </trans-unit>
             <trans-unit id="search_for_user_ids">
                 <source>Search for user IDs</source>
                 <target>Search for user IDs</target>
@@ -362,8 +370,16 @@
                 <target>Satus: user</target>
             </trans-unit>
             <trans-unit id="status_moderator">
-                <source>Satus moderator</source>
+                <source>Status moderator</source>
                 <target>Status: moderator</target>
+            </trans-unit>
+            <trans-unit id="workspace_already_assigned">
+                <source>Workspace already assigned</source>
+                <target>This workspace has been assigned already.</target>
+            </trans-unit>
+            <trans-unit id="workspace_assign_help">
+                <source>Workspace assign help</source>
+                <target>Search for workspaces. If you leave this empty and click 'search', all possible workspaces will become available in the workspace selection dropdown list.</target>
             </trans-unit>
             <trans-unit id="make_contact">
                 <source>Make contact</source>
