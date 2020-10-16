@@ -351,4 +351,25 @@ class PortalProxy
     {
         return ($this->portal->getDeleter() !== null && $this->portal->getDeletionDate() !== null);
     }
+
+    public function showNewsFromServer(): bool
+    {
+        $showNewsFromServer = ($this->portal->getExtras()['SERVER_NEWS']['SHOW_NEWS_FROM_SERVER']) ?? 0;
+        return $showNewsFromServer === 1;
+    }
+
+    public function getServerNewsTitle(): string
+    {
+        return ($this->portal->getExtras()['SERVER_NEWS']['TITLE']) ?? '';
+    }
+
+    public function getServerNewsText(): string
+    {
+        return ($this->portal->getExtras()['SERVER_NEWS']['TEXT']) ?? '';
+    }
+
+    public function getServerNewsLink(): string
+    {
+        return ($this->portal->getExtras()['SERVER_NEWS']['LINK']) ?? '';
+    }
 }
