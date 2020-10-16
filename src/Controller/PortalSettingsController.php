@@ -20,6 +20,7 @@ use App\Entity\RoomCategories;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
+use App\Form\Type\Portal\AccountIndexDeleteUserType;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
@@ -69,7 +70,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -1088,6 +1088,61 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
+     * @Route("/portal/{portalId}/settings/accountindex/{userId}/deleteUser")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexDeleteUser(
+        $portalId,
+        $userId,
+        Portal $portal,
+        UserService $userService,
+        Request $request,
+        LegacyEnvironment $environment,
+        \Swift_Mailer $mailer,
+        PaginatorInterface $paginator
+    )
+    {
+
+        $user = $userService->getUser($userId);
+
+        $formOptions = [
+            'user' => $user,
+            'portal' => $portal,
+        ];
+
+        $form = $this->createForm(AccountIndexDeleteUserType::class, $formOptions);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            if ($form->get('execute')->isClicked()) {
+                $IdsMailRecipients[] = $userId;
+                $user = $userService->getUser($userId);
+                $user->delete();
+                $user->save();
+                return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
+                    'portalId' => $portalId,
+                    'recipients' => implode(", ", $IdsMailRecipients),
+                ]);
+            } else if ($form->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('app_portalsettings_accountindex', [
+                    'portalId' => $portalId,
+                ]);
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+            'portalId' => $portalId,
+            'userId' => $userId,
+            'user' => $user,
+            'portal' => $portal,
+        ];
+    }
+
+    /**
      * @Route("/portal/{portalId}/settings/accountindex")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -1200,10 +1255,11 @@ class PortalSettingsController extends AbstractController
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->delete();
-                                $user->save();
+                                return $this->redirectToRoute('app_portalsettings_accountindexdeleteuser', [
+                                    'portalId' => $portalId,
+                                    'userId' => $id,
+                                ]);
+                                break;
                             }
                         }
                         $this->sendUserInfoMail($IdsMailRecipients, 'user-delete', $user, $mailer, $userService, $environment);
@@ -1256,6 +1312,7 @@ class PortalSettingsController extends AbstractController
                                 $IdsMailRecipients[] = $id;
                                 $user = $userService->getUser($id);
                                 $user->makeUser();
+                                $user->setStatus(2);
                                 $user->save();
                             }
                         }
@@ -1268,7 +1325,7 @@ class PortalSettingsController extends AbstractController
                                 $IdsMailRecipients[] = $id;
                                 $user = $userService->getUser($id);
                                 $user->setStatus(3);
-                                //$user->save();
+                                $user->save();
                             }
                         }
                         $this->sendUserInfoMail($IdsMailRecipients, 'user-status-moderator', $user, $mailer, $userService, $environment);
@@ -1428,7 +1485,9 @@ class PortalSettingsController extends AbstractController
                 }
                 break;
             case 3: // In activation
-                $meetsCriteria = true;
+                if ($userInQuestion->getStatus() == '0') {
+                    $meetsCriteria = true;
+                }
                 break;
             case 4: // User
                 if ($userInQuestion->isUser()) {
@@ -1812,25 +1871,25 @@ class PortalSettingsController extends AbstractController
             $relatedRoomItem = $roomService->getRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $projectsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $projectsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
                     $projectsListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'community') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $communityArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $communityArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
                     $communityListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'userroom') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $userRoomsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $userRoomsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
                     $userRoomListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'privateroom') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $privateRoomArchivedNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $privateRoomArchivedNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
                     $privateRoomNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
@@ -1947,20 +2006,18 @@ class PortalSettingsController extends AbstractController
         $userEdit->setHomepage($user->getHomepage());
         $userEdit->setDescription($user->getDescription());
         $userEdit->setMayCreateContext($user->getIsAllowedToCreateContext());
-        $userEdit->setMayUseCaldav('standard');
-        $userEdit->setPicture($user->getPicture());
+//        $userEdit->setPicture($user->getPicture());
 
 
-        $uploadUrl = $this->generateUrl('app_upload_upload', array(
-            'roomId' => $portal->getId(),
-            'itemId' => $user->getItemID(),
-        ));
+//        $uploadUrl = $this->generateUrl('app_upload_upload', array(
+//            'roomId' => $portal->getId(),
+//            'itemId' => $user->getItemID(),
+//        ));
 
-        $userEdit->setUploadUrl($uploadUrl);
+//        $userEdit->setUploadUrl($uploadUrl);
 
         $form = $this->createForm(AccountIndexDetailEditType::class, $userEdit);
         $form->handleRequest($request);
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var PortalUserEdit $editAccountIndex */
@@ -1991,36 +2048,36 @@ class PortalSettingsController extends AbstractController
             $user->setHomepage($editAccountIndex->getHomepage());
             $user->setDescription($editAccountIndex->getDescription());
 
-            if (!empty($editAccountIndex->getPicture())) {
-                //TODO: Does this piece of code make sense, if we set a new picture anyway?
-                if ($editAccountIndex->isOverrideExistingPicture()) {
-                    $disc_manager = $environment->getDiscManager();
-                    if ($disc_manager->existsFile($user->getPicture())) {
-                        $disc_manager->unlinkFile($user->getPicture());
-                    }
-                    $user->setPicture('');
-                    if (isset($portal_user_item)) {
-                        $portal_user_item->setPicture('');
-                    }
-                }
-
-                $filename = 'cid' . $environment->getCurrentContextID() . '_' . $user_item->getUserID() . '_' . $_FILES['upload']['name'];
-                $disc_manager = $environment->getDiscManager();
-                $disc_manager->copyFile($_FILES['upload']['tmp_name'], $filename, true);
-                $user_item->setPicture($filename);
-                if (isset($portal_user_item)) {
-                    if ($disc_manager->copyImageFromRoomToRoom($filename, $portal_user_item->getContextID())) {
-                        $value_array = explode('_', $filename);
-                        $old_room_id = $value_array[0];
-                        $old_room_id = str_replace('cid', '', $old_room_id);
-                        $value_array[0] = 'cid' . $portal_user_item->getContextID();
-                        $new_picture_name = implode('_', $value_array);
-                        $portal_user_item->setPicture($new_picture_name);
-                    }
-                }
-
-                $user->setPicture($editAccountIndex->getPicture());
-            }
+//            if (!empty($editAccountIndex->getPicture())) {
+//                //TODO: Does this piece of code make sense, if we set a new picture anyway?
+//                if ($editAccountIndex->isOverrideExistingPicture()) {
+//                    $disc_manager = $environment->getDiscManager();
+//                    if ($disc_manager->existsFile($user->getPicture())) {
+//                        $disc_manager->unlinkFile($user->getPicture());
+//                    }
+//                    $user->setPicture('');
+//                    if (isset($portal_user_item)) {
+//                        $portal_user_item->setPicture('');
+//                    }
+//                }
+//
+//                $filename = 'cid' . $environment->getCurrentContextID() . '_' . $user_item->getUserID() . '_' . $_FILES['upload']['name'];
+//                $disc_manager = $environment->getDiscManager();
+//                $disc_manager->copyFile($_FILES['upload']['tmp_name'], $filename, true);
+//                $user_item->setPicture($filename);
+//                if (isset($portal_user_item)) {
+//                    if ($disc_manager->copyImageFromRoomToRoom($filename, $portal_user_item->getContextID())) {
+//                        $value_array = explode('_', $filename);
+//                        $old_room_id = $value_array[0];
+//                        $old_room_id = str_replace('cid', '', $old_room_id);
+//                        $value_array[0] = 'cid' . $portal_user_item->getContextID();
+//                        $new_picture_name = implode('_', $value_array);
+//                        $portal_user_item->setPicture($new_picture_name);
+//                    }
+//                }
+//
+//                $user->setPicture($editAccountIndex->getPicture());
+//            }
 
             if ($editAccountIndex->getMayCreateContext() == 'standard') {
                 $user->setIsAllowedToCreateContext(true); //TODO how do we get the pre-set portal value?
@@ -2031,8 +2088,6 @@ class PortalSettingsController extends AbstractController
                 $user->setIsAllowedToCreateContext(false);
                 $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext(false);
             }
-
-            //TODO: What is with caldav? $user does not posess a field for that
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindexdetail', [
                 'portalId' => $portal->getId(),
@@ -2136,30 +2191,6 @@ class PortalSettingsController extends AbstractController
             'portalId' => $portal->getId(),
             'userId' => $user->getItemID(),
         ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/terminatemembership")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     */
-    public function accountIndexDetailTerminateMembership(Portal $portal, Request $request, UserService $userService, LegacyEnvironment $legacyEnvironment)
-    {
-        $user = $userService->getUser($request->get('userId'));
-        $user->reject();
-        $user->save();
-
-        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-            'portalId' => $portal->getId(),
-            'userId' => $user->getItemID(),
-        ]);
-
-        $this->addFlash('performedSuccessfully', $returnUrl);
-
-        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
-        ]);
     }
 
     /**
@@ -2403,7 +2434,7 @@ class PortalSettingsController extends AbstractController
                     ]);
                 }
 
-                $form->addError(new FormError('Already assigned'));
+                $this->addFlash('unsuccessful', 'Already assigned');
 
             } elseif ($form->get('search')->isClicked()) {
                 $user = $userService->getUser($request->get('userId'));
@@ -2672,11 +2703,6 @@ class PortalSettingsController extends AbstractController
         }
 
         return $subject;
-    }
-
-    private function getPicture()
-    {
-
     }
 
     private function generateBody($user, $action, $legacyEnvironment)
