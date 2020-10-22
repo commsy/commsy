@@ -38,17 +38,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SettingsController extends Controller
 {
     /**
-    * @Route("/room/{roomId}/settings/general")
-    * @Template
-    * @Security("is_granted('MODERATOR')")
-    */
+     * @Route("/room/{roomId}/settings/general")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     */
     public function generalAction(
         $roomId,
         Request $request,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         // get room from RoomService
@@ -114,7 +115,8 @@ class SettingsController extends Controller
         Request $request,
         RoomService $roomService,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -156,7 +158,8 @@ class SettingsController extends Controller
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomItem = $roomService->getRoomItem($roomId);
@@ -218,7 +221,8 @@ class SettingsController extends Controller
         Request $request,
         RoomService $roomService,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -246,7 +250,7 @@ class SettingsController extends Controller
             ]),
         ]);
 
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $oldRoom = clone $roomItem;
@@ -258,26 +262,25 @@ class SettingsController extends Controller
 
             $room_image_data = $form['room_image']->getData();
 
-            if($room_image_data['choice'] == 'custom_image') {
-                if(!is_null($room_image_data['room_image_data'])){
+            if ($room_image_data['choice'] == 'custom_image') {
+                if (!is_null($room_image_data['room_image_data'])) {
                     $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
-                    if(!is_dir($saveDir)){
+                    if (!is_dir($saveDir)) {
                         mkdir($saveDir, 0777, true);
                     }
                     $file = $room_image_data['room_image_upload'];
                     $fileName = "";
                     // case 1: file was send as "input file" via "room_image_upload" field (legacy case; does not occur with current client configuration)
-                    if(!is_null($file)){
+                    if (!is_null($file)) {
                         $extension = $file->guessExtension();
-                        if(!$extension) {
+                        if (!$extension) {
                             $extension = "bin";
                         }
                         $fileName = "cid" . $roomId . "_bgimage_" . $file->getClientOriginalName();
                         $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
                         $file->move($saveDir, $fileName);
-                    }
-                    // case 2: file was send as base64 string via hidden "room_image_data" text field
-                    else{
+                    } // case 2: file was send as base64 string via hidden "room_image_data" text field
+                    else {
                         $data = $room_image_data['room_image_data'];
                         list($fileName, $type, $date) = explode(";", $data);
                         list(, $data) = explode(",", $data);
@@ -290,16 +293,16 @@ class SettingsController extends Controller
                     }
                     $roomItem->setBGImageFilename($fileName);
                 }
-            }  else{
+            } else {
                 $roomItem->setBGImageFilename('');
             }
 
             $room_logo_data = $form['room_logo']->getData();
 
-            if(isset($room_logo_data['activate']) && !empty($room_logo_data['activate']) && $room_logo_data['activate'] == true) {
-                if(!is_null($room_logo_data['room_logo_data'])){
+            if (isset($room_logo_data['activate']) && !empty($room_logo_data['activate']) && $room_logo_data['activate'] == true) {
+                if (!is_null($room_logo_data['room_logo_data'])) {
                     $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
-                    if(!is_dir($saveDir)){
+                    if (!is_dir($saveDir)) {
                         mkdir($saveDir, 0777, true);
                     }
                     $fileName = "";
@@ -347,7 +350,7 @@ class SettingsController extends Controller
             'logoImageFilepath' => $logoImage,
         ];
     }
-    
+
     /**
      * @Route("/room/{roomId}/settings/extensions")
      * @Template
@@ -360,29 +363,30 @@ class SettingsController extends Controller
         ExtensionSettingsTransformer $extensionSettingsTransformer,
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        if($roomItem->getType() == 'userroom'){
+        if ($roomItem->getType() == 'userroom') {
             $projectItem = $roomItem->getLinkedProjectItem();
             $userroomTemplate = $projectItem->getUserRoomTemplateItem();
-            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [$userroomTemplate->getItemID()] : [];
             $templates = $roomService->getAvailableTemplates($projectItem->getType());
-        }else{
+        } else {
             $userroomTemplate = $roomItem->getUserRoomTemplateItem();
-            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [$userroomTemplate->getItemID()] : [];
             $templates = $roomService->getAvailableTemplates($roomItem->getType());
         }
 
         $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
         $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
-        $templates['*'.$msg] = '-1';
+        $templates['*' . $msg] = '-1';
 
-        uasort($templates,  function($a, $b) {
+        uasort($templates, function ($a, $b) {
             if ($a == $b) {
                 return 0;
             }
@@ -396,7 +400,7 @@ class SettingsController extends Controller
             'userroomTemplates' => $templates,
             'preferredUserroomTemplates' => $defaultUserroomTemplateIDs,
         ]);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $oldRoom = clone $roomItem;
@@ -404,7 +408,7 @@ class SettingsController extends Controller
 
             $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
 
-            if($roomItem->getType() == 'project' and isset($formData['userroom_template'])){
+            if ($roomItem->getType() == 'project' and isset($formData['userroom_template'])) {
                 $roomItem->setUserRoomTemplateID($formData['userroom_template']);
             }
             $roomItem->save();
@@ -429,7 +433,8 @@ class SettingsController extends Controller
         RoomService $roomService,
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment
-    ) {
+    )
+    {
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -448,9 +453,27 @@ class SettingsController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $roomItem->delete();
-            $roomItem->save();
+            $deletionRoomItems = [$roomItem];
 
+            // extend deletion routine if it is a project room
+            if ($roomItem->getType() == 'project') {
+
+                // add deletion userrooms
+                $users = $roomItem->getUserList();
+                foreach ($users as $user) {
+                    $deletionRoomItems[] = $roomService->getRoomItem($user->getLinkedUserroomItemID());
+                }
+
+                // add deletion grouprooms
+                foreach ($relatedGroupRooms as $relatedGroupRoom) {
+                    $deletionRoomItems[] = $relatedGroupRoom;
+                }
+            }
+
+            foreach ($deletionRoomItems as $deletionRoomItem) {
+                $deletionRoomItems->delete();
+                $deletionRoomItems->save();
+            }
 
             // redirect back to portal
             $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
