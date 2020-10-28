@@ -1602,7 +1602,12 @@ class cs_user_manager extends cs_manager {
         $room_item_ids[] = $own_room->getItemID();
         unset($own_room);
      }
-     # private room
+
+     # user rooms
+     $relatedUserrooms = $old_item->getRelatedUserroomsList();
+     foreach ($relatedUserrooms as $userroom) {
+           $room_item_ids[] = $userroom->getItemID();
+     }
 
      $update  = "UPDATE ".$this->addDatabasePrefix("user")." SET ";
      $update .= " user_id = '".encode(AS_DB,$new)."',";
