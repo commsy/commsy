@@ -366,13 +366,13 @@ class SettingsController extends Controller
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
-
+        $defaultUserroomTemplateIDs = [];
         if($roomItem->getType() == 'userroom'){
             $projectItem = $roomItem->getLinkedProjectItem();
             $userroomTemplate = $projectItem->getUserRoomTemplateItem();
             $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
             $templates = $roomService->getAvailableTemplates($projectItem->getType());
-        }else{
+        }else if($roomItem->getType() == 'project'){
             $userroomTemplate = $roomItem->getUserRoomTemplateItem();
             $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
             $templates = $roomService->getAvailableTemplates($roomItem->getType());
@@ -399,18 +399,23 @@ class SettingsController extends Controller
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldRoom = clone $roomItem;
-            $formData = $form->getData();
 
-            $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
+            if ($form->get('deleteUserRooms')->isClicked()){
+                return $this->redirectToRoute('app_settings_delete', ["roomId" => $roomId, "deleteUserRooms" => true]);
+            } else {
+                $oldRoom = clone $roomItem;
+                $formData = $form->getData();
 
-            if($roomItem->getType() == 'project' and isset($formData['userroom_template'])){
-                $roomItem->setUserRoomTemplateID($formData['userroom_template']);
+                $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
+
+                if($roomItem->getType() == 'project' and isset($formData['userroom_template'])){
+                    $roomItem->setUserRoomTemplateID($formData['userroom_template']);
+                }
+                $roomItem->save();
+
+                $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
+                $eventDispatcher->dispatch($roomSettingsChangedEvent);
             }
-            $roomItem->save();
-
-            $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
-            $eventDispatcher->dispatch($roomSettingsChangedEvent);
         }
 
         return [
@@ -419,16 +424,17 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/settings/delete")
+     * @Route("/room/{roomId}/settings/delete/{deleteUserRooms}", defaults={"deleteUserRooms"=0})
      * @Template
-     * @Security("is_granted('MODERATOR')")
+     * @Security("is_granted('MODERATOR') and is_granted('ITEM_DELETE', roomId)")
      */
     public function deleteAction(
         $roomId,
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        $deleteUserRooms
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -444,13 +450,28 @@ class SettingsController extends Controller
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $roomItem->delete();
-            $roomItem->save();
-
+            if ($deleteUserRooms) {
+                if($roomItem->getType() == 'project'){
+                    $localLegacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                    $user = $localLegacyEnvironment->getCurrentUserItem();
+                    $userRooms = $user->getRelatedUserroomsList();
+                    foreach ($userRooms as $userRoom){
+                        if ($userRoom->getContextID() == $roomId) {
+                            $userRoom->delete();
+                            $userRoom->save();
+                        }
+                    }
+                    $roomItem->setShouldCreateUserRooms(false);
+                    $roomItem->save();
+                }else{
+                    throw $this->createNotFoundException('No userrooms found for id ' . $roomId);
+                }
+            } else {
+                $roomItem->delete();
+                $roomItem->save();
+            }
 
             // redirect back to portal
             $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();

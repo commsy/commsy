@@ -337,20 +337,22 @@ class MenuBuilder
             }
 
             // delete
-            $menu->addChild('Delete', [
-                'label' => 'delete',
-                'route' => 'app_settings_delete',
-                'routeParameters' => [
-                    'roomId' => $roomId,
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
-                ],
-            ])
-            ->setAttributes([
-                'class' => 'uk-button-danger',
-            ])
-            ->setExtra('translation_domain', 'menu');
+            if ($this->roomService->getRoomItem($roomId)->getType() != 'userroom') {
+                $menu->addChild('Delete', [
+                    'label' => 'delete',
+                    'route' => 'app_settings_delete',
+                    'routeParameters' => [
+                        'roomId' => $roomId,
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
+                    ],
+                ])
+                    ->setAttributes([
+                        'class' => 'uk-button-danger',
+                    ])
+                    ->setExtra('translation_domain', 'menu');
+            }
 
             $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
