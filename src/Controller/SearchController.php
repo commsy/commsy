@@ -155,7 +155,7 @@ class SearchController extends BaseController
     /**
      * Displays search results
      * 
-     * @Route("/room/{roomId}/search/results")
+     * @Route("/room/{roomId}/search/results/{sort}")
      * @Template
      */
     public function resultsAction(
@@ -164,7 +164,8 @@ class SearchController extends BaseController
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
-        MultipleContextFilterCondition $multipleContextFilterCondition
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+        $sort = 'date'
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
 

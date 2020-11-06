@@ -1,6 +1,7 @@
 {% extends 'base/room.html.twig' %}
 
 {% form_theme filterForm 'form/uikit_horizontal_dynamic_layout.html.twig' %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -48,8 +49,24 @@
                         </div>
 
                         <div>
-                            {% block editbox %}
 
+                            {% block sortbox %}
+                                {# sort dropdown #}
+                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                    <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                            {# sorting options #}
+                                            {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', '') }}
+                                            {{ utilsMacros.sortActor('creator', 'creator', 'messages', 'creator', 'creator_rev', '') }}
+                                            {{ utilsMacros.sortActor('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', '') }}
+                                            {{ utilsMacros.sortActor('date', 'modification_date', 'rubric', 'date_rev', 'date', 'desc') }}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endblock %}
+
+                            {% block editbox %}
                                 <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                                     <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
                                     <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
