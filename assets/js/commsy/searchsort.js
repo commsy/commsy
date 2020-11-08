@@ -8,10 +8,6 @@
 
     function onSortActorSearchClick($element)
     {
-        // first functionality test
-        alert("Hello world!");
-
-
         // default new sort order is ascending
         let sortOrder = 'asc';
 
@@ -40,22 +36,15 @@
             .find('i')
             .addClass('uk-icon-sort-' + sortOrder);
 
-        let target = el.data('feed').target;
-        $(target).empty();
-
-        // re-enable spinner - otherwise feeds are reaching their end before changing sort order
-        // and will not be able to load more entries
-        el.css('display', 'block');
-
-        let path = $element.url + '/' + sortOrder;
+        let path = window.location.href.replace("#", "") + "/" + sortOrder;
         let uri = new URI(path);
 
         // build up the url
         let url = uri.toString();
 
-        // send ajax request to get more items
-        $.ajax({
-            url: url
-        })
+        // first functionality test
+        alert(url);
+
+        window.location.replace(url);
     }
 })(UIkit);

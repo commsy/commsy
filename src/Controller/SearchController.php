@@ -165,14 +165,14 @@ class SearchController extends BaseController
         RoomService $roomService,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
-        $sort = 'date'
+        $sort = 'desc'
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-
+        $var = $sort;
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request);
 
