@@ -31,19 +31,30 @@
             .addClass('cs-sort-active')
             .addClass('cs-sort-active-' + sortOrder);
 
+        // determine current sortBy
+        let sortBy = '';
+        let $sortActive = $('.cs-sort-active');
+
+        if ($sortActive.length) {
+            if ($sortActive.hasClass('cs-sort-active-asc')) {
+                sortBy = $sortActive.data('sort-order').asc;
+            } else {
+                sortBy = $sortActive.data('sort-order').desc;
+            }
+        } else {
+            sortBy = 'date';
+        }
+
         // set new sort icon class
         $element
             .find('i')
             .addClass('uk-icon-sort-' + sortOrder);
 
-        let path = window.location.href.replace("#", "") + "/" + sortOrder;
+        let path = window.location.href.replace("#", "") + "/" + sortBy + "_" + sortOrder;
         let uri = new URI(path);
 
         // build up the url
         let url = uri.toString();
-
-        // first functionality test
-        alert(url);
 
         window.location.replace(url);
     }
