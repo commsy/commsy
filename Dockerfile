@@ -41,7 +41,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 
 # Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
