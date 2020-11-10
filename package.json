@@ -22,7 +22,7 @@
   ],
   "homepage": "https://github.com/commsy/commsy#readme",
   "devDependencies": {
-    "@symfony/webpack-encore": "^0.30.2",
+    "@symfony/webpack-encore": "^0.31.0",
     "@types/jquery": "^3.3.38",
     "@types/urijs": "^1.19.9",
     "core-js": "^3.6.5",
@@ -34,7 +34,7 @@
     "jscolor-picker": "^2.0.4",
     "jstree": "^3.3.9",
     "less": "^3.11.3",
-    "less-loader": "^4.1.0",
+    "less-loader": "^6.2.0",
     "mathjax": "^3.0.1",
     "moment": "^2.26.0",
     "nprogress": "^0.2.0",
@@ -45,7 +45,7 @@
     "ts-loader": "^5.3.0",
     "typescript": "^3.9.5",
     "uikit": "npm:uikit@2.27.4",
-    "uikit3": "npm:uikit@^3.5.8",
+    "uikit3": "npm:uikit@3.5.6",
     "urijs": "^1.19.2",
     "video.js": "^7.8.2",
     "webpack-notifier": "^1.8.0"

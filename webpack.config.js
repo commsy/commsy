@@ -1,4 +1,3 @@
-// webpack.config.js
 let Encore = require('@symfony/webpack-encore');
 let webpack = require('webpack');
 let HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -10,11 +9,22 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 }
 
 Encore
-    // the project directory where all compiled assets will be stored
+    // directory where compiled assets will be stored
     .setOutputPath('public/build/')
-
-    // the public path used by the web server to access the previous directory
+    // public path used by the web server to access the output path
     .setPublicPath('/build')
+    // only needed for CDN's or sub-directory deploy
+    //.setManifestKeyPrefix('build/')
+
+    /*
+     * ENTRY CONFIG
+     *
+     * Add 1 entry for each "page" of your app
+     * (including one that's included on every page - e.g. "app")
+     *
+     * Each entry will result in one JavaScript file (e.g. app.js)
+     * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
+     */
 
     // entry points UiKit2
     .addEntry('app_default', './assets/uikit2/js/app_default.js')
@@ -33,16 +43,12 @@ Encore
     // entry points UiKit3
     .addEntry('app_portal', './assets/uikit3/js/app_portal.js')
 
-    .enableTypeScriptLoader()
+    // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
+    .splitEntryChunks()
 
-    // allow less files to be processed
-    .enableLessLoader(function(options) {
-        options.paths = [
-            'node_modules/uikit/src/less',
-            'node_modules/uikit3/src/less',
-            'assets/uikit2/css'
-        ]
-    })
+    // will require an extra script tag for runtime.js
+    // but, you probably want this, unless you're building a single-page app
+    .enableSingleRuntimeChunk()
 
     .copyFiles([
         { from: './assets/uikit2/img', includeSubdirectories: false },
@@ -53,22 +59,17 @@ Encore
     .addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /uikit\/dist\/js\/components$/))
     .addPlugin(new HardSourceWebpackPlugin())
 
-    // will require an extra script tag for runtime.js
-    // but, you probably want this, unless you're building a single-page app
-    .enableSingleRuntimeChunk()
-
-    // allow legacy applications to use $/jQuery as a global variable
-    .autoProvidejQuery()
-
-    .enableSourceMaps(!Encore.isProduction())
-
-    // empty the outputPath dir before each build
+    /*
+     * FEATURE CONFIG
+     *
+     * Enable & configure other features below. For a full
+     * list of features, see:
+     * https://symfony.com/doc/current/frontend.html#adding-more-features
+     */
     .cleanupOutputBeforeBuild()
-
-    // show OS notifications when builds finish/fail
     .enableBuildNotifications()
-
-    // create hashed filenames (e.g. app.abc123.css)
+    .enableSourceMaps(!Encore.isProduction())
+    // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
     // enables @babel/preset-env polyfills
@@ -76,7 +77,33 @@ Encore
         config.useBuiltIns = 'usage';
         config.corejs = 3;
     })
+
+    .enableLessLoader(function(options) {
+        options.lessOptions = {
+            paths: [
+                'node_modules/uikit/src/less',
+                'node_modules/uikit3/src/less',
+                'assets/uikit2/css'
+            ]
+        };
+    })
+
+    // enables Sass/SCSS support
+    //.enableSassLoader()
+
+    // uncomment if you use TypeScript
+    .enableTypeScriptLoader()
+
+    // uncomment to get integrity="..." attributes on your script & link tags
+    // requires WebpackEncoreBundle 1.4 or higher
+    //.enableIntegrityHashes(Encore.isProduction())
+
+    // uncomment if you're having problems with a jQuery plugin
+    .autoProvidejQuery()
+
+    // uncomment if you use API Platform Admin (composer req api-admin)
+    //.enableReactPreset()
+    //.addEntry('admin', './assets/admin.js')
 ;
 
-// export the final configuration
 module.exports = Encore.getWebpackConfig();
