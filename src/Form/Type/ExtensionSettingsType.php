@@ -123,14 +123,21 @@ class ExtensionSettingsType extends AbstractType
 
                 if ($roomItem->isProjectRoom()) {
                     $form->add('createUserRooms', CheckboxType::class, [
-                        'label' => 'User room',
-                        'translation_domain' => 'settings',
-                        'required' => false,
-                        'label_attr' => [
-                            'class' => 'uk-form-label',
-                        ],
-                        'help' => 'User room tooltip',
-                    ]);
+                            'label' => 'User room',
+                            'required' => false,
+                            'label_attr' => [
+                                'class' => 'uk-form-label',
+                            ],
+                        ])
+                        ->add('userroom_template', ChoiceType::class, [
+                            'choices' => $options['userroomTemplates'],
+                            'preferred_choices' => $options['preferredUserroomTemplates'],
+                            'placeholder' => false,
+                            'required' => false,
+                            'mapped' => true,
+                            'label' => 'User room template',
+                        ])
+                    ;
                 }
             })
         ;
@@ -145,6 +152,11 @@ class ExtensionSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired([
+                'room',
+                'userroomTemplates',
+                'preferredUserroomTemplates',
+            ])
             ->setRequired(['room'])
             ->setDefaults(array('translation_domain' => 'settings'))            
         ;

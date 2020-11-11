@@ -34,11 +34,11 @@ class UserroomService
 
     /**
      * Creates a new user room within the given project room for the given user
-     * @param \cs_room_item $room the project room that will host the created user room
+     * @param \cs_project_item $room the project room that will host the created user room
      * @param \cs_user_item $user the project room user who will be associated with the created user room
      * @return \cs_userroom_item|null the newly created user room, or null if an error occurred
      */
-    public function createUserroom(\cs_room_item $room, \cs_user_item $user): ?\cs_userroom_item
+    public function createUserroom(\cs_project_item $room, \cs_user_item $user): ?\cs_userroom_item
     {
         // TODO: use a facade/factory to create a new user room
 
@@ -48,10 +48,12 @@ class UserroomService
         // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
         $roomContext = $room->getItemID();
 
+        $userroomTemplate = $room->getUserRoomTemplateItem();
+
         /**
          * @var $newRoom \cs_userroom_item
          */
-        $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle);
+        $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle, "", $userroomTemplate);
         if (!$newRoom) {
             return null;
         }
@@ -90,6 +92,15 @@ class UserroomService
         }
 
         return $newRoom;
+    }
+
+    public function updateRoomTemplate($roomId, \cs_room_item $roomTemplate = null)
+    {
+        $roomManager = $this->legacyEnvironment->getUserroomManager();
+        $room = $roomManager->getItem($roomId);
+        $userroomTemplate = $room->getUserRoomTemplateItem();
+        $this->roomService->updateRoomTemplate($roomId, $roomTemplate, $roomManager);
+
     }
 
     /**
@@ -220,6 +231,19 @@ class UserroomService
         }
     }
 
+    public function updateTemplateInUserroomsForRoom(\cs_room_item $room){
+        $roomManager = $this->legacyEnvironment->getUserroomManager();
+        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        foreach ($roomUsers as $user) {
+            $existingUserroom = $user->getLinkedUserroomItem();
+            if (!$existingUserroom) {
+                continue;
+            }
+
+            $this->updateUserroomTemplate($existingUserroom, $user, $room->getUserRoomTemplateID(), $roomManager);
+        }
+    }
+
     /**
      * Updates the user status of the given user for its related users in all user rooms of the given project room
      * @param \cs_room_item $room the project room whose user rooms shall be updated
@@ -340,6 +364,19 @@ class UserroomService
             $userroom->setTitle($userroomTitle);
             $userroom->save();
         }
+    }
+
+    private function updateUserroomTemplate(\cs_userroom_item $userroom, \cs_user_item $roomOwner, string $newRoomTemplateID)
+    {
+        /**
+         * @var \cs_project_item $projectRoom
+         */
+        $projectRoom = $roomOwner->getContextItem();
+        if (!$projectRoom->isProjectRoom()) {
+            return;
+        }
+
+        $this->roomService->updateRoomTemplate($userroom->getItemID(), $newRoomTemplateID);
     }
 
     /**

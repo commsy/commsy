@@ -53,6 +53,14 @@ class cs_project_item extends cs_room_item {
 
    var $_changed_room_link = false;
 
+    /**
+     * the room item to be used as a template when creating user rooms
+     * @var \cs_room_item
+     */
+    private $_userroomTemplateItem = NULL;
+
+    private $environment = NULL;
+
    /** constructor
     *
     * @param object environment environment of the commsy project
@@ -61,6 +69,7 @@ class cs_project_item extends cs_room_item {
       cs_context_item::__construct($environment);
       $this->_type = CS_PROJECT_TYPE;
 
+      $this->environment = $environment;
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
       $this->_default_rubrics_array[1] = CS_TODO_TYPE;
       $this->_default_rubrics_array[2] = CS_DATE_TYPE;
@@ -762,19 +771,6 @@ class cs_project_item extends cs_room_item {
       return $retour;
    }
 
-    function getShouldCreateUserRooms(): bool
-    {
-        if ($this->_issetExtra('CREATE_USER_ROOMS')) {
-            return $this->_getExtra('CREATE_USER_ROOMS');
-        }
-        return false;
-    }
-
-    function setShouldCreateUserRooms(bool $shouldCreate)
-    {
-        $this->_addExtra('CREATE_USER_ROOMS', $shouldCreate);
-    }
-
    function getUsageInfoTextForRubricInForm($rubric){
       $funct = $this->_environment->getCurrentFunction();
       if ($this->_issetExtra('USAGE_INFO_TEXT')) {
@@ -814,6 +810,55 @@ class cs_project_item extends cs_room_item {
       }
       return $retour;
    }
+
+    ######################################################
+    # user rooms
+    ######################################################
+
+    function getShouldCreateUserRooms(): bool
+    {
+        if ($this->_issetExtra('CREATE_USER_ROOMS')) {
+            return $this->_getExtra('CREATE_USER_ROOMS');
+        }
+        return false;
+    }
+
+    function setShouldCreateUserRooms(bool $shouldCreate)
+    {
+        $this->_addExtra('CREATE_USER_ROOMS', $shouldCreate);
+    }
+
+    public function getUserRoomTemplateItem(): ?\cs_room_item
+    {
+        if (isset($this->_userroomTemplateItem)) {
+            return $this->_userroomTemplateItem;
+        }
+
+        $templateItemId = $this->getUserRoomTemplateID();
+        if (isset($templateItemId)) {
+            $roomManager = $this->_environment->getRoomManager();
+            $templateItem = $roomManager->getItem($templateItemId);
+            if (isset($templateItem) and !$templateItem->isDeleted()) {
+                $this->_userroomTemplateItem = $templateItem;
+            }
+            return $this->_userroomTemplateItem;
+        }
+
+        return null;
+    }
+
+    public function getUserRoomTemplateID(): ?int
+    {
+        if ($this->_issetExtra('USERROOM_TEMPLATE_ITEM_ID')) {
+            return $this->_getExtra('USERROOM_TEMPLATE_ITEM_ID');
+        }
+        return null;
+    }
+
+    public function setUserRoomTemplateID($roomId)
+    {
+        $this->_setExtra('USERROOM_TEMPLATE_ITEM_ID', (int)$roomId);
+    }
 
    ################################################################
    # mail to moderation, if the project room status changed

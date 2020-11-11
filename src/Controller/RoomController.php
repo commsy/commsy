@@ -13,6 +13,7 @@ use App\Form\Type\ModerationSupportType;
 use App\Repository\UserRepository;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
+use App\Utils\RoomService;
 use App\Utils\UserService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -902,10 +903,15 @@ class RoomController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
-    public function createAction($roomId, Request $request, UserService $userService, EventDispatcherInterface $eventDispatcher)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
+    public function createAction(
+        $roomId,
+        Request $request,
+        RoomService $roomService,
+        UserService $userService,
+        LegacyEnvironment $legacyEnvironment,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $type = null;
@@ -979,10 +985,18 @@ class RoomController extends Controller
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
-        $templates = $this->getAvailableTemplates($type);
+
+        if(!isset($type)){
+            $type = 'project'; //TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
+        }
+
+        $translator = $legacyEnvironment->getTranslationObject();
+        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+
+        $templates = $roomService->getAvailableTemplates($type);
 
         // necessary, since the data field malfunctions when added via listener call (#2979)
-        $templates['No template'] = '-1';
+        $templates['*'.$msg] = '-1';
 
         // re-sort array by elements
         foreach($templates as $index => $entry){
@@ -991,6 +1005,13 @@ class RoomController extends Controller
                 $templates[$index] = $entry;
             }
         }
+
+        uasort($templates,  function($a, $b) {
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
 
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
@@ -1037,9 +1058,15 @@ class RoomController extends Controller
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
 
-                // user room will only be set in project workspaces
+                // user room-related options will only be set in project workspaces
                 if (isset($context['type_sub']['createUserRooms'])) {
                     $legacyRoom->setShouldCreateUserRooms($context['type_sub']['createUserRooms']);
+                }
+                if (isset($context['type_sub']['userroom_template'])) {
+                    $userroomTemplate = $roomService->getRoomItem($context['type_sub']['userroom_template']);
+                    if ($userroomTemplate) {
+                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
+                    }
                 }
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
@@ -1099,93 +1126,6 @@ class RoomController extends Controller
         return [
             'form' => $form->createView(),
         ];
-    }
-
-    private function getAvailableTemplates($type)
-    {
-        $templates = [];
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomManager->setContextLimit($legacyEnvironment->getCurrentPortalItem()->getItemID());
-        $roomManager->setTemplateLimit();
-        $roomManager->select();
-
-        $templateList = $roomManager->get();
-        if ($templateList->isNotEmpty()) {
-            $template = $templateList->getFirst();
-            while ($template) {
-                $availability = $template->getTemplateAvailability(); // $type === 'project'
-                if ($type === 'community') {
-                    $availability = $template->getCommunityTemplateAvailability();
-                }
-
-                $add = false;
-
-                // free for all?
-                if (!$add && $availability == '0') {
-                    $add = true;
-                }
-
-                // only in community rooms
-                if (!$add && $legacyEnvironment->inCommunityRoom() && $availability == '3') {
-                    $add = true;
-                }
-
-                // same as above, but from portal context
-                if (!$add && $legacyEnvironment->inPortal() && $availability == '3') {
-                    // check if user is member in one of the templates community rooms
-                    $communityList = $template->getCommunityList();
-                    if ($communityList->isNotEmpty()) {
-                        $userCommunityList = $currentUserItem->getRelatedCommunityList();
-                        if ($userCommunityList->isNotEmpty()) {
-                            $communityItem = $communityList->getFirst();
-                            while ($communityItem) {
-                                $userCommunityItem = $userCommunityList->getFirst();
-                                while ($userCommunityItem) {
-                                    if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
-                                        $add = true;
-                                        break;
-                                    }
-
-                                    $userCommunityItem = $userCommunityList->getNext();
-                                }
-
-                                $communityItem = $communityList->getNext();
-                            }
-                        }
-                    }
-                }
-
-                // only for members
-                if (!$add && $availability == '1' && $template->mayEnter($currentUserItem)) {
-                    $add = true;
-                }
-
-                // only mods
-                if (!$add && $availability == '2' && $template->mayEnter($currentUserItem)) {
-                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
-                        $add = true;
-                    }
-                }
-
-                if ($type != $template->getItemType()) {
-                    $add = false;
-                }
-
-                if ($add) {
-                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
-                    $templates[$label] = $template->getItemID();
-                }
-
-                $template = $templateList->getNext();
-            }
-        }
-
-        return $templates;
     }
 
     private function memberStatus($roomItem)

@@ -104,6 +104,11 @@ class cs_userroom_manager extends cs_room2_manager
         $this->_project_room_limit = (int)$limit;
     }
 
+    public function unsetRoomLimit()
+    {
+        $this->_room_limit = NULL;
+    }
+
     /** set time limit
      * this method sets an clock pulses limit for rooms
      *

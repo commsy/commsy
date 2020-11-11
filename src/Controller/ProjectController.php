@@ -247,7 +247,12 @@ class ProjectController extends Controller
                 if (isset($context['createUserRooms'])) {
                     $legacyRoom->setShouldCreateUserRooms($context['createUserRooms']);
                 }
-
+                if (isset($context['userroom_template'])) {
+                    $userroomTemplate = $roomService->getRoomItem($context['userroom_template']);
+                    if ($userroomTemplate) {
+                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
+                    }
+                }
 
                 $timeIntervals = $context['time_interval'] ?? [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {

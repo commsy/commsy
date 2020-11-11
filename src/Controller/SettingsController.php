@@ -358,6 +358,7 @@ class SettingsController extends Controller
         Request $request,
         RoomService $roomService,
         ExtensionSettingsTransformer $extensionSettingsTransformer,
+        LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher
     ) {
         // get room from RoomService
@@ -366,17 +367,46 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
+        if($roomItem->getType() == 'userroom'){
+            $projectItem = $roomItem->getLinkedProjectItem();
+            $userroomTemplate = $projectItem->getUserRoomTemplateItem();
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $templates = $roomService->getAvailableTemplates($projectItem->getType());
+        }else{
+            $userroomTemplate = $roomItem->getUserRoomTemplateItem();
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $templates = $roomService->getAvailableTemplates($roomItem->getType());
+        }
+
+        $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
+        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+        $templates['*'.$msg] = '-1';
+
+        uasort($templates,  function($a, $b) {
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
+
         $roomData = $extensionSettingsTransformer->transform($roomItem);
 
         $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
             'room' => $roomItem,
+            'userroomTemplates' => $templates,
+            'preferredUserroomTemplates' => $defaultUserroomTemplateIDs,
         ]);
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $oldRoom = clone $roomItem;
+            $formData = $form->getData();
 
-            $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $form->getData());
+            $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
+
+            if($roomItem->getType() == 'project' and isset($formData['userroom_template'])){
+                $roomItem->setUserRoomTemplateID($formData['userroom_template']);
+            }
             $roomItem->save();
 
             $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);

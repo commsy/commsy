@@ -57,7 +57,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
             $feed->setLastModified($this->getLastModified());
             $feed->setTitle($this->getTitle($currentContextItem));
             $feed->setDescription($this->getDescription($currentContextItem));
-            $feed->setLink($currentRequest->getHost() . $currentRequest->getBaseUrl());
+            $feed->setLink($currentRequest->getSchemeAndHttpHost() . $currentRequest->getBaseUrl());
 
             $items = $this->getItems($currentContextItem);
 

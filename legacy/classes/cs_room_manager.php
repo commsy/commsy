@@ -873,6 +873,8 @@ class cs_room_manager extends cs_context_manager
                 u.auth_source = ' . $user->getAuthSource() . ' AND
                 u.deletion_date IS NULL AND
                 u.deleter_id IS NULL AND
+                r.deletion_date IS NULL AND
+                r.deleter_id IS NULL AND
                 u.user_id = "' . $user->getUserID() . '"
         ';
         $results = $this->_db_connector->performQuery($query);

@@ -107,6 +107,28 @@ class cs_userroom_item extends cs_room_item
    }
 
 
+   // time spread
+
+   /** Returns the time spread for items on home
+    * @return integer the time spread
+    */
+   public function getTimeSpread()
+   {
+      if ($this->_issetExtra('TIMESPREAD')) {
+         return $this->_getExtra('TIMESPREAD');
+      }
+      return '7';
+   }
+
+   /** Sets the time spread for items on home
+    * @param integer value the time spread
+    */
+   public function setTimeSpread($value)
+   {
+      $this->_addExtra('TIMESPREAD', (int)$value);
+   }
+
+
    // access rights
 
    public function isOpenForGuests()

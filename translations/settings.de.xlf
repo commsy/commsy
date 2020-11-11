@@ -326,18 +326,6 @@
                 <source>Terms text</source>
                 <target>Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs akzeptieren, um Zutritt zu diesem Raum zu erhalten.</target>
             </trans-unit>
-            <trans-unit id="user_room">
-                <source>User room</source>
-                <target>Personenräume anlegen?</target>
-            </trans-unit>
-            <trans-unit id="user_room_tooltip">
-                <source>User room tooltip</source>
-                <target>Personenräume können für den bilateralen Austausch zwischen einer Person des Projektraumes und der Moderation genutzt werden</target>
-            </trans-unit>
-            <trans-unit id="user_room_heading">
-                <source>User room heading</source>
-                <target>Personenräume</target>
-            </trans-unit>
 
             <!-- Appearance settings -->
             <trans-unit id="appearance_configuration">
@@ -656,6 +644,26 @@
             <trans-unit id="guest_access">
                 <source>Guest Access</source>
                 <target>Gastzugang</target>
+            </trans-unit>
+            <trans-unit id="user_room">
+                <source>User room</source>
+                <target>Personenräume anlegen?</target>
+            </trans-unit>
+            <trans-unit id="user_room_tooltip">
+                <source>User room tooltip</source>
+                <target>Personenräume können für den bilateralen Austausch zwischen einer Person des Projektraumes und der Moderation genutzt werden</target>
+            </trans-unit>
+            <trans-unit id="user_room_heading">
+                <source>User room heading</source>
+                <target>Personenräume</target>
+            </trans-unit>
+            <trans-unit id="user_room_text">
+                <source>User room text</source>
+                <target>Wenn diese Funktion aktiviert ist, wird für jedes Mitglied dieses Projektraumes automatisch ein Personenraum erstellt. Personenräume können für den bilateralen Austausch zwischen einer Person des Projektraumes und der Moderation genutzt werden.</target>
+            </trans-unit>
+            <trans-unit id="user_room_template">
+                <source>User room template</source>
+                <target>Personenraum-Vorlage</target>
             </trans-unit>
 
             <!-- Invitations -->
