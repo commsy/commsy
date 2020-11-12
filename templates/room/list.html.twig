@@ -42,10 +42,16 @@
                     {% endif %}
                     <div class="uk-comment-meta">
                         <span class="uk-text-nowrap">
-                            {% if feedItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                {{ 'today'|trans({})|capitalize }}, {{ feedItem.modificationDate|date("H:i") }}
+                            {% if feedItem.itemType == 'user' %}
+                                {# opposed to other items, the feed includes user items based on their creation (i.e. room membership request) date, which we'll also display here #}
+                                {% set feedItemDate = feedItem.creationDate %}
                             {% else %}
-                                {{ feedItem.modificationDate|craue_date }}
+                                {% set feedItemDate = feedItem.modificationDate %}
+                            {% endif %}
+                            {% if feedItemDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ feedItemDate|date("H:i") }}
+                            {% else %}
+                                {{ feedItemDate|craue_date }}
                             {% endif %}
                         </span>
                     </div>
