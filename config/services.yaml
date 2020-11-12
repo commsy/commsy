@@ -1166,6 +1166,10 @@ services:
         class: App\Services\RoomCategoriesService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
+    commsy.savedsearches_service:
+        class: App\Services\SavedSearchesService
+        arguments: ['@doctrine.orm.entity_manager']
+
     commsy.room_feed_generator:
         class: App\RoomFeed\RoomFeedGenerator
         public: true
