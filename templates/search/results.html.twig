@@ -57,10 +57,27 @@
                                     <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                                         <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                             {# sorting options #}
-                                            {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title_rev', '') }}
-                                            {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator_rev', '') }}
-                                            {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', '') }}
-                                            {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date_rev', 'date', 'desc') }}
+                                            {% if(sortField == 'title') %}
+                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title_rev', sortOrder) }}
+                                            {% else %}
+                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title_rev', '') }}
+                                            {% endif %}
+                                            {% if(sortField == 'creator') %}
+                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator_rev', sortOrder) }}
+                                            {% else %}
+                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator_rev', '') }}
+                                            {% endif %}
+                                            {% if(sortField == 'modificator') %}
+                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', sortOrder) }}
+                                            {% else %}
+                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', '') }}
+                                            {% endif %}
+                                            {% if(sortField == 'date') %}
+                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date_rev', 'date', sortOrder) }}
+                                            {% else %}
+                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date_rev', 'date', '') }}
+                                            {% endif %}
+
                                         </ul>
                                     </div>
                                 </div>

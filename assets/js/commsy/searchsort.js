@@ -56,6 +56,10 @@
         // build up the url
         let url = uri.toString();
 
-        window.location.replace(url);
+        // rewrite url
+        window.history.pushState("","", url);
+
+        // click the search-button as if done manually to keep search parameter as is
+        document.getElementById('search_submit').click();
     }
 })(UIkit);

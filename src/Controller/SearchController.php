@@ -172,7 +172,17 @@ class SearchController extends BaseController
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-        $var = $sort;
+
+        // extract path extension for sorting
+        $path = $request->server->get('HTTP_REFERER');
+        if(strpos($path,'_desc')!== false or strpos($path,'_asc') !== false){
+            $explodedPath = explode('/', $path);
+            if(count($explodedPath) > 0){
+                $sort = array_pop($explodedPath);
+            }
+        }
+        $sortingSplit = explode('_',$sort);
+
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request);
 
@@ -192,6 +202,7 @@ class SearchController extends BaseController
         $this->setupSearchQueryConditions($searchManager, $searchData);
         $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
 
+        //$searchResults = $searchManager->getResults([$sortingSplit[0] => $sortingSplit[1]]);
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
 
@@ -247,6 +258,9 @@ class SearchController extends BaseController
         $totalHits = $searchResults->getTotalHits();
         $results = $this->prepareResults($searchResults, $roomId);
 
+        $sortByString = 'sortBy'. ucwords($sortingSplit[0]) . ucwords($sortingSplit[1]);
+        usort($results, array('App\Controller\SearchController',$sortByString));
+
         return [
             'filterForm' => $filterForm->createView(),
             'roomId' => $roomId,
@@ -255,7 +269,49 @@ class SearchController extends BaseController
             'searchData' => $searchData,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getEnvironment()->getCurrentUserItem(),
+            'sortOrder' => $sortingSplit[1],
+            'sortField' => $sortingSplit[0],
         ];
+    }
+
+    function sortByTitleAsc($a, $b) {
+        if($a['entity']->getTitle() == $b['entity']->getTitle()){ return 0 ; }
+        return ($a['entity']->getTitle() > $b['entity']->getTitle()) ? -1 : 1;
+    }
+
+    function sortByTitleDesc($a, $b) {
+        if($a['entity']->getTitle() == $b['entity']->getTitle()){ return 0 ; }
+        return ($a['entity']->getTitle() < $b['entity']->getTitle()) ? -1 : 1;
+    }
+
+    function sortByCreatorAsc($a, $b) {
+        if($a['entity']->getCreator()->getFullName() == $b['entity']->getCreator()->getFullName()){ return 0 ; }
+        return ($a['entity']->getCreator()->getFullName() > $b['entity']->getCreator()->getFullName()) ? -1 : 1;
+    }
+
+    function sortByCreatorDesc($a, $b) {
+        if($a['entity']->getCreator()->getFullName() == $b['entity']->getCreator()->getFullName()){ return 0 ; }
+        return ($a['entity']->getCreator()->getFullName() < $b['entity']->getCreator()->getFullName()) ? -1 : 1;
+    }
+
+    function sortByDateAsc($a, $b) {
+        if($a['entity']->getModificationDate() == $b['entity']->getModificationDate()){ return 0 ; }
+        return ($a['entity']->getModificationDate() > $b['entity']->getModificationDate()) ? -1 : 1;
+    }
+
+    function sortByDateDesc($a, $b) {
+        if($a['entity']->getModificationDate() == $b['entity']->getModificationDate()){ return 0 ; }
+        return ($a['entity']->getModificationDate() < $b['entity']->getModificationDate()) ? -1 : 1;
+    }
+
+    function sortByModificatorAsc($a, $b) {
+        if($a['entity']->getModifier()->getFullName() == $b['entity']->getModifier()->getFullName()){ return 0 ; }
+        return ($a['entity']->getModifier()->getFullName() > $b['entity']->getModifier()->getFullName()) ? -1 : 1;
+    }
+
+    function sortByModificatorDesc($a, $b) {
+        if($a['entity']->getTitle() == $b['entity']->getTitle()){ return 0 ; }
+        return ($a['entity']->getTitle() < $b['entity']->getTitle()) ? -1 : 1;
     }
 
     /**
