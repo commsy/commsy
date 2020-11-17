@@ -58,24 +58,24 @@
                                         <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                             {# sorting options #}
                                             {% if(sortField == 'title') %}
-                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title_rev', sortOrder) }}
+                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title_rev', '') }}
+                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title', '') }}
                                             {% endif %}
                                             {% if(sortField == 'creator') %}
-                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator_rev', sortOrder) }}
+                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator_rev', '') }}
+                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator', '') }}
                                             {% endif %}
                                             {% if(sortField == 'modificator') %}
-                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', sortOrder) }}
+                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', '') }}
+                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator', '') }}
                                             {% endif %}
                                             {% if(sortField == 'date') %}
-                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date_rev', 'date', sortOrder) }}
+                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date', 'date', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date_rev', 'date', '') }}
+                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date', 'date', '') }}
                                             {% endif %}
 
                                         </ul>

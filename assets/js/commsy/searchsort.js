@@ -18,7 +18,7 @@
         }
 
         // remove any previously set active and sort icon classes
-        $('.cs-sort-actor')
+        $('.cs-sort-actor-search')
             .removeClass('cs-sort-active')
             .removeClass('cs-sort-active-asc')
             .removeClass('cs-sort-active-desc')
