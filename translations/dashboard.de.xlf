@@ -10,6 +10,14 @@
                 <source>external access</source>
                 <target>Freigegebene Einträge</target>
             </trans-unit>
+            <trans-unit id="myViews">
+                <source>my views</source>
+                <target>Meine Ansichten</target>
+            </trans-unit>
+            <trans-unit id="newView">
+                <source>new view</source>
+                <target>Neue Ansicht</target>
+            </trans-unit>
             <trans-unit id="externalAccessMyEntries">
                 <source>external access to my entries</source>
                 <target>Meine freigegebenen Einträge</target>

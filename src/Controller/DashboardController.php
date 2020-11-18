@@ -195,6 +195,20 @@ class DashboardController extends Controller
         return array(
         );
     }
+
+    /**
+     * @Route("/dashboard/{roomId}/myViews")
+     * @Template()
+     */
+    public function myViews($roomId, Request $request)
+    {
+
+        $myViewItems = ['Konfigurierte Ansicht 1', 'Konfigurierte Ansicht 2'];
+
+        return array(
+            'myViewItems' => $myViewItems,
+        );
+    }
     
     /**
      * @Route("/dashboard/{roomId}/externalaccess")

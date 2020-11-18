@@ -10,6 +10,14 @@
                 <source>external access</source>
                 <target>External access</target>
             </trans-unit>
+            <trans-unit id="myViews">
+                <source>my views</source>
+                <target>My Views</target>
+            </trans-unit>
+            <trans-unit id="newView">
+                <source>new view</source>
+                <target>New View</target>
+            </trans-unit>
             <trans-unit id="externalAccessMyEntries">
                 <source>external access to my entries</source>
                 <target>External access to my entries</target>
