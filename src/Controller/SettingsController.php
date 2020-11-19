@@ -6,6 +6,7 @@ use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
 use App\Form\Type\Room\DeleteType;
 use App\Services\LegacyEnvironment;
+use App\Utils\UserroomService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -367,14 +368,14 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
         $defaultUserroomTemplateIDs = [];
-        if($roomItem->getType() == 'userroom'){
+        if ($roomItem->getType() == 'userroom') {
             $projectItem = $roomItem->getLinkedProjectItem();
             $userroomTemplate = $projectItem->getUserRoomTemplateItem();
-            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [$userroomTemplate->getItemID()] : [];
             $templates = $roomService->getAvailableTemplates($projectItem->getType());
-        }else if($roomItem->getType() == 'project'){
+        } else if ($roomItem->getType() === 'project') {
             $userroomTemplate = $roomItem->getUserRoomTemplateItem();
-            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [ $userroomTemplate->getItemID() ] : [];
+            $defaultUserroomTemplateIDs = ($userroomTemplate) ? [$userroomTemplate->getItemID()] : [];
             $templates = $roomService->getAvailableTemplates($roomItem->getType());
         }
 
@@ -434,6 +435,7 @@ class SettingsController extends Controller
         RoomService $roomService,
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
+        UserroomService $userroomService,
         $deleteUserRooms
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
@@ -453,21 +455,7 @@ class SettingsController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($deleteUserRooms) {
-                if($roomItem->getType() == 'project'){
-                    $localLegacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                    $user = $localLegacyEnvironment->getCurrentUserItem();
-                    $userRooms = $user->getRelatedUserroomsList();
-                    foreach ($userRooms as $userRoom){
-                        if ($userRoom->getContextID() == $roomId) {
-                            $userRoom->delete();
-                            $userRoom->save();
-                        }
-                    }
-                    $roomItem->setShouldCreateUserRooms(false);
-                    $roomItem->save();
-                }else{
-                    throw $this->createNotFoundException('No userrooms found for id ' . $roomId);
-                }
+                $userroomService->deleteUserroomsOfGivenProjectRoomId($roomId);
             } else {
                 $roomItem->delete();
                 $roomItem->save();

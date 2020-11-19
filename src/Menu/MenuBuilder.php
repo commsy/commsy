@@ -337,7 +337,7 @@ class MenuBuilder
             }
 
             // delete
-            if ($this->roomService->getRoomItem($roomId)->getType() != 'userroom') {
+            if ($this->roomService->getRoomItem($roomId)->getType() !== 'userroom') {
                 $menu->addChild('Delete', [
                     'label' => 'delete',
                     'route' => 'app_settings_delete',
