@@ -11,7 +11,11 @@
         {% if not releaseItems is empty %}
             {% for releaseItem in releaseItems %}
                 <article class="uk-comment">
-                    <i class="{{ macros.iconClassForItemType(releaseItem.itemType) }} uk-icon-small"></i>
+                    {% if releaseItem.itemType == 'todo' %}
+                        <i class="{{ macros.iconClassForItemType(releaseItem.itemType, releaseItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ releaseItem.status }}"></i>
+                    {% else %}
+                        <i class="{{ macros.iconClassForItemType(releaseItem.itemType) }} uk-icon-small"></i>
+                    {% endif %}
                     {#{ macros.statusColor(readerList, releaseItem.itemId) }#}
                     <header class="uk-comment-header uk-flex">
                         <div class="uk-margin-right">
@@ -85,7 +89,11 @@
         {% if not viewableItems is empty %}
             {% for viewableItem in viewableItems %}
                 <article class="uk-comment">
-                    <i class="{{ macros.iconClassForItemType(viewableItem.itemType) }} uk-icon-small"></i>
+                    {% if viewableItem.itemType == 'todo' %}
+                        <i class="{{ macros.iconClassForItemType(viewableItem.itemType, viewableItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ viewableItem.status }}"></i>
+                    {% else %}
+                        <i class="{{ macros.iconClassForItemType(viewableItem.itemType) }} uk-icon-small"></i>
+                    {% endif %}
                     {#{ macros.statusColor(readerList, viewableItem.itemId) }#}
                     <header class="uk-comment-header uk-flex">
                         <div class="uk-margin-right">

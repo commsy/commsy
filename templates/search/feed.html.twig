@@ -74,7 +74,12 @@
             </div>
 
             <div class="uk-width-2-10 uk-text-right">
-                <i class="{{ macros.iconClassForItemType(result.type) }} uk-icon-small"></i>
+                {% if result.type == 'todo' and result.status in [1, 2, 3] %}
+                    {% set statusDescriptions = ['pending'|trans({},'todo'), 'in progress'|trans({},'todo'), 'done'|trans({},'todo')] %}
+                    <i class="{{ macros.iconClassForItemType(result.type, result.status) }} uk-icon-small" data-uk-tooltip title="{{ statusDescriptions[result.status - 1] }}"></i>
+                {% else %}
+                    <i class="{{ macros.iconClassForItemType(result.type) }} uk-icon-small"></i>
+                {% endif %}
             </div>
         </header>
     </article>

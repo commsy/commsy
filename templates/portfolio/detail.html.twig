@@ -17,7 +17,11 @@
                 {% if not feedList is empty %}
                     {% for feedItem in feedList %}
                         <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
-                            <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
+                            {% if feedItem.type == 'todo' %}
+                                <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
+                            {% else %}
+                                <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
+                            {% endif %}
                             {% if feedItem.type != 'date' %}
                                 {{ macros.statusColor(readerList, feedItem.itemId) }}
                             {% else %}
