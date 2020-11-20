@@ -455,7 +455,7 @@ class SettingsController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($deleteUserRooms) {
-                $userroomService->deleteUserroomsOfGivenProjectRoomId($roomId);
+                $userroomService->deleteUserroomsForProjectRoomId($roomId);
             } else {
                 $roomItem->delete();
                 $roomItem->save();

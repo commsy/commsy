@@ -340,26 +340,24 @@ class UserroomService
         }
     }
 
-    public function deleteUserroomsOfGivenProjectRoomId($roomId)
+    public function deleteUserroomsForProjectRoomId($projectRoomId)
     {
-        $roomItem = $this->roomService->getRoomItem($roomId);
+        $roomItem = $this->roomService->getRoomItem($projectRoomId);
         if ($roomItem->getType() === 'project') {
 
             $userList = $roomItem->getUserList();
 
             foreach ($userList as $roomUser) {
-                $relatedUserroomItems = $roomUser->getRelatedUserroomsList();
-                foreach ($relatedUserroomItems as $relatedUserromItem) {
-                    if ($relatedUserromItem->getContextID() === intval($roomId)) {
-                        $relatedUserromItem->delete();
-                        $relatedUserromItem->save();
-                    }
+                $linkedUserRoomItem = $roomUser->getLinkedUserroomItem();
+                if ($linkedUserRoomItem->getContextID() === intval($projectRoomId)) {
+                    $linkedUserRoomItem->delete();
+                    $linkedUserRoomItem->save();
                 }
             }
             $roomItem->setShouldCreateUserRooms(false);
             $roomItem->save();
         } else {
-            throw $this->createNotFoundException('No userrooms found for id ' . $roomId);
+            throw $this->createNotFoundException('No project room found for id ' . $projectRoomId);
         }
     }
 
