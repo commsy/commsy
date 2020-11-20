@@ -345,20 +345,22 @@
                     {% if item.itemType != 'section' %}
                         <div>
                             <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
-                            {% if item.itemType == 'material' %}
-                                {% set material = item %}
+                            {% if item.itemType == 'material' or item.itemType == 'todo' %}
                                 <div top-padding=0>
-                                {% if showRating or showWorkflow%}
-                                
-                                    {% if showRating%}
-                                        {{ macros.ratingStatusDetail(material, ratingArray) }}
+                                    {% if showRating and ratingArray is not null %}
+                                        {{ macros.ratingStatusDetail(item, ratingArray) }}
                                     {% endif %}
-                                    {% if showWorkflow%}
-                                        {{ macros.workflowTrafficLight(material) }}
+                                    {% if item.itemType == 'material' %}
+                                        {% if showWorkflow %}
+                                            {{ macros.workflowTrafficLight(item) }}
+                                        {% endif %}
+                                        {% include 'material/biblio.html.twig' %}
                                     {% endif %}
-                                {% endif %}
-                            </div>
-                            {% include 'material/biblio.html.twig' %}
+                                    {% if item.itemType == 'todo' %}
+                                        <i class="{{ macros.iconClassForItemType(item.itemType, item.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ item.status }}"></i>
+                                        {{ item.status }}
+                                    {% endif %}
+                                </div>
                             {% endif %}
 
                         </div>
@@ -620,7 +622,8 @@
         {% endfor %}
     {% endif %}
 {% endmacro %}
-{% macro iconClassForItemType(type) %}
+
+{% macro iconClassForItemType(type, status = 0) %}
     {% if type == 'announcement' %}
         uk-icon-comment-o
     {% elseif type == 'date' %}
@@ -636,7 +639,15 @@
     {% elseif type == 'group' %}
         uk-icon-group
     {% elseif type == 'todo' %}
-        uk-icon-check
+        {% if status == 1 %}
+            uk-icon-circle-o todo
+        {% elseif status == 2 %}
+            uk-icon-dot-circle-o inProgress
+        {% elseif status == 3 %}
+            uk-icon-check-circle-o done
+        {% else %}
+            uk-icon-check
+        {% endif %}
     {% elseif type == 'task' %}
         uk-icon-home
     {% endif %}
