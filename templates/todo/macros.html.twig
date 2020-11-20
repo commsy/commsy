@@ -169,17 +169,7 @@
                                         <strong>{{ "status"|trans({},'todo') }}:</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {% if item.internalStatus == 0 %}
-
-                                        {% elseif item.internalStatus == 1 %}
-                                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo" data-uk-tooltip title="{{ item.status }}"></i>
-                                        {% elseif item.internalStatus == 2 %}
-                                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress" data-uk-tooltip title="{{ item.status }}"></i>
-                                        {% elseif item.internalStatus == 3 %}
-                                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done" data-uk-tooltip title="{{ item.status }}"></i>
-                                        {% else %}
-                                            <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large todo" data-uk-tooltip title="{{ item.status }}"></i>
-                                        {% endif %}
+                                        <i class="{{ macros.iconClassForItemType(item.itemType, item.internalStatus) }} uk-icon-small"></i>
                                         {{ item.status }}
                                     </td>
                                 </tr>

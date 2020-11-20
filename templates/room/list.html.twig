@@ -93,37 +93,17 @@
                 {%if showRating and feedItem.itemType != 'user' %}
                     {{ macros.ratingStatus(feedItem) }}
                     {% if feedItem.itemType == 'todo' %}
-                        {% if feedItem.internalStatus == 0 %}
-
-                        {% elseif feedItem.internalStatus == 1 %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-circle-o uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% elseif feedItem.internalStatus == 2 %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-dot-circle-o uk-visible-large inProgress" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% elseif feedItem.internalStatus == 3 %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-check-circle-o uk-visible-large done" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% else %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-circle uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% endif %}
+                        <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} cs-icon-xs-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
                     {% else %}
                         <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} cs-icon-xs-small"></i>
                     {% endif %}
-                 {% else %}
-                     {% if feedItem.itemType == 'todo' %}
-                         {% if feedItem.internalStatus == 0 %}
-
-                         {% elseif feedItem.internalStatus == 1 %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% elseif feedItem.internalStatus == 2 %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% elseif feedItem.internalStatus == 3 %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% else %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% endif %}
-                     {% else %}
+                {% else %}
+                    {% if feedItem.itemType == 'todo' %}
+                        <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
+                    {% else %}
                         <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
-                     {% endif %}
-                 {% endif %}                
+                    {% endif %}
+                {% endif %}
                 </div>
             </header>
         </article>

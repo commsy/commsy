@@ -1,4 +1,4 @@
-{% macro iconClassForItemType(type) %}
+{% macro iconClassForItemType(type, status = 0) %}
     {% if type == 'announcement' %}
         uk-icon-comment-o
     {% elseif type == 'date' %}
@@ -14,7 +14,15 @@
     {% elseif type == 'group' %}
         uk-icon-group
     {% elseif type == 'todo' %}
-        uk-icon-check-square-o
+        {% if status == 1 %}
+            uk-icon-circle-o todo
+        {% elseif status == 2 %}
+            uk-icon-dot-circle-o inProgress
+        {% elseif status == 3 %}
+            uk-icon-check-circle-o done
+        {% else %}
+            uk-icon-check-square-o
+        {% endif %}
     {% elseif type == 'task' %}
         uk-icon-home
     {% elseif type == 'topic' %}
