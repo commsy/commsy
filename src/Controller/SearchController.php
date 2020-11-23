@@ -202,8 +202,7 @@ class SearchController extends BaseController
         $this->setupSearchQueryConditions($searchManager, $searchData);
         $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
 
-        //$searchResults = $searchManager->getResults([$sortingSplit[0] => $sortingSplit[1]]);
-        $searchResults = $searchManager->getResults();
+        $searchResults = $searchManager->getResults([$sortingSplit[0] => $sortingSplit[1]]);
         $aggregations = $searchResults->getAggregations();
 
         $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
@@ -258,9 +257,6 @@ class SearchController extends BaseController
         $totalHits = $searchResults->getTotalHits();
         $results = $this->prepareResults($searchResults, $roomId);
 
-        $sortByString = 'sortBy'. ucwords($sortingSplit[0]) . ucwords($sortingSplit[1]);
-        usort($results, array('App\Controller\SearchController',$sortByString));
-
         return [
             'filterForm' => $filterForm->createView(),
             'roomId' => $roomId,
@@ -272,46 +268,6 @@ class SearchController extends BaseController
             'sortOrder' => $sortingSplit[1],
             'sortField' => $sortingSplit[0],
         ];
-    }
-
-    function sortByTitleAsc($a, $b) {
-        if($a['entity']->getTitle() == $b['entity']->getTitle()){ return 0 ; }
-        return ($a['entity']->getTitle() > $b['entity']->getTitle()) ? -1 : 1;
-    }
-
-    function sortByTitleDesc($a, $b) {
-        if($a['entity']->getTitle() == $b['entity']->getTitle()){ return 0 ; }
-        return ($a['entity']->getTitle() < $b['entity']->getTitle()) ? -1 : 1;
-    }
-
-    function sortByCreatorAsc($a, $b) {
-        if($a['entity']->getCreator()->getFullName() == $b['entity']->getCreator()->getFullName()){ return 0 ; }
-        return ($a['entity']->getCreator()->getFullName() > $b['entity']->getCreator()->getFullName()) ? -1 : 1;
-    }
-
-    function sortByCreatorDesc($a, $b) {
-        if($a['entity']->getCreator()->getFullName() == $b['entity']->getCreator()->getFullName()){ return 0 ; }
-        return ($a['entity']->getCreator()->getFullName() < $b['entity']->getCreator()->getFullName()) ? -1 : 1;
-    }
-
-    function sortByDateAsc($a, $b) {
-        if($a['entity']->getModificationDate() == $b['entity']->getModificationDate()){ return 0 ; }
-        return ($a['entity']->getModificationDate() > $b['entity']->getModificationDate()) ? -1 : 1;
-    }
-
-    function sortByDateDesc($a, $b) {
-        if($a['entity']->getModificationDate() == $b['entity']->getModificationDate()){ return 0 ; }
-        return ($a['entity']->getModificationDate() < $b['entity']->getModificationDate()) ? -1 : 1;
-    }
-
-    function sortByModificatorAsc($a, $b) {
-        if($a['entity']->getModifier()->getFullName() == $b['entity']->getModifier()->getFullName()){ return 0 ; }
-        return ($a['entity']->getModifier()->getFullName() > $b['entity']->getModifier()->getFullName()) ? -1 : 1;
-    }
-
-    function sortByModificatorDesc($a, $b) {
-        if($a['entity']->getTitle() == $b['entity']->getTitle()){ return 0 ; }
-        return ($a['entity']->getTitle() < $b['entity']->getTitle()) ? -1 : 1;
     }
 
     /**

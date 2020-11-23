@@ -406,6 +406,17 @@ fos_elastica:
                                     fields:
                                         raw:
                                             type: keyword
+                        modifier:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         creationDate:
                             type: date
                             format: date_optional_time

@@ -57,25 +57,27 @@
                                     <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                                         <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                             {# sorting options #}
-                                            {% if(sortField == 'title') %}
-                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title', sortOrder) }}
+                                            {% if(sortField == 'title.raw') %}
+                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title.raw', 'title.raw', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title', 'title', '') }}
+                                                {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title.raw', 'title.raw', '') }}
                                             {% endif %}
-                                            {% if(sortField == 'creator') %}
-                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator', sortOrder) }}
+                                            {% if(sortField == 'creator.fullName.raw') %}
+                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator.fullName.raw', 'creator.fullName.raw', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator', 'creator', '') }}
+                                                {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator.fullName.raw', 'creator.fullName.raw', '') }}
                                             {% endif %}
-                                            {% if(sortField == 'modificator') %}
-                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator', sortOrder) }}
+{#                                            
+                                            {% if(sortField == 'modifier.fullName.raw') %}
+                                                {{ utilsMacros.sortActorSearch('modifier', 'modifier', 'rubric', 'modifier.fullName.raw', 'modifier.fullName.raw', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('modificator', 'modifier', 'rubric', 'modificator', 'modificator', '') }}
+                                                {{ utilsMacros.sortActorSearch('modifier', 'modifier', 'rubric', 'modifier.fullName.raw', 'modifier.fullName.raw', '') }}
                                             {% endif %}
-                                            {% if(sortField == 'date') %}
-                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date', 'date', sortOrder) }}
+#}
+                                            {% if(sortField == 'modificationDate') %}
+                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'modificationDate', 'modificationDate', sortOrder) }}
                                             {% else %}
-                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'date', 'date', '') }}
+                                                {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'modificationDate', 'modificationDate', '') }}
                                             {% endif %}
 
                                         </ul>
