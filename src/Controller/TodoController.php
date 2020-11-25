@@ -837,7 +837,7 @@ class TodoController extends BaseController
         $html = $this->renderView('todo/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'todo',
-            'announcements' => $todos,
+            'todos' => $todos,
             'readerList' => $readerList,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),

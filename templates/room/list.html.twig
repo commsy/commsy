@@ -2,7 +2,7 @@
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
         <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
-            {% if feedItem.type != 'date' %}
+            {% if feedItem.type is not same as('date') %}
                 {{ macros.statusColor(readerList, feedItem.itemId) }}
             {% else %}
                 {% if not feedItem.isExternal %}
@@ -11,8 +11,8 @@
             {% endif %}
             <header class="uk-comment-header uk-flex">
                 <div class="uk-margin-right uk-flex-item-none">
-                    {% if feedItem.itemType != 'user' %}
-                        {% if feedItem.type != 'date' %}
+                    {% if feedItem.itemType is not same as('user') %}
+                        {% if feedItem.type is not same as('date') %}
                             {% if not feedItem.modificatorItem.isDeleted and feedItem.modificatorItem.isUser %}
                                 {{ macros.userIconLink(feedItem.modificatorItem) }}
                             {% else %}
@@ -59,22 +59,22 @@
                 <div class="uk-width-8-10">
                     <h4 class="uk-comment-title">
                         {% set feedItemType = feedItem.type %}
-                        {% if feedItem.type == 'label' %}
+                        {% if feedItem.type is same as('label') %}
                             {% set feedItemType = feedItem.labelType %}
                         {% endif %}
                         <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ feedItemType }}/{{ feedItem.itemID }}">
-                        {% if feedItem.itemType != 'user' %}
-                            {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType == 'date' and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
+                        {% if feedItem.itemType is not same as('user') %}
+                            {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType is same as('date') and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
                         {% else %}
                             {{ macros.userFullname(feedItem) }}
                         {% endif %}
                         </a>
                     </h4>
-                    {% if feedItem.itemType == 'announcement' %}
+                    {% if feedItem.itemType is same as('announcement') %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
-                    {% elseif feedItem.itemType == 'date' %}
+                    {% elseif feedItem.itemType is same as('date') %}
                         <div class="uk-comment-meta">{{ formatDateTimeRange(feedItem.wholeDay, feedItem.dateTimeObject_Start, feedItem.dateTimeObject_End) }}{% if feedItem.place != '' %}, {{ feedItem.place }}{% endif %}</div>
-                    {% elseif feedItem.itemType == 'material' %}
+                    {% elseif feedItem.itemType is same as('material') %}
                         <div class="uk-comment-meta">
                             {% if feedItem.author != '' %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
@@ -82,54 +82,34 @@
                                     {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{ feedItem.creationDate|craue_date }})
                             {% endif %}                        
                         </div>
-                    {% elseif feedItem.itemType == 'discussion' %}
+                    {% elseif feedItem.itemType is same as('discussion') %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
-                    {% elseif feedItem.itemType == 'user' %}
+                    {% elseif feedItem.itemType is same as('user') %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem) }}</div>
-                    {% elseif feedItem.itemType == 'group' %}
+                    {% elseif feedItem.itemType is same as('group') %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
-                    {% elseif feedItem.itemType == 'todo' %}
+                    {% elseif feedItem.itemType is same as('todo') %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
-                    {% elseif feedItem.itemType == 'task' %}
+                    {% elseif feedItem.itemType is same as('task') %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>
                     {% endif %}
                     <div class="uk-comment-meta">{{ macros.fileListShort(feedItem) }}</div>
                 </div>
                 <div class="uk-width-2-10 uk-text-right">
-                {%if showRating and feedItem.itemType != 'user' %}
+                {% if showRating and feedItem.itemType is not same as('user') %}
                     {{ macros.ratingStatus(feedItem) }}
-                    {% if feedItem.itemType == 'todo' %}
-                        {% if feedItem.internalStatus == 0 %}
-
-                        {% elseif feedItem.internalStatus == 1 %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-circle-o uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% elseif feedItem.internalStatus == 2 %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-dot-circle-o uk-visible-large inProgress" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% elseif feedItem.internalStatus == 3 %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-check-circle-o uk-visible-large done" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% else %}
-                            <i class="uk-icon-justify uk-icon-xs-small uk-icon-circle uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                        {% endif %}
+                    {% if feedItem.itemType is same as('todo') %}
+                        <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} cs-icon-xs-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
                     {% else %}
                         <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} cs-icon-xs-small"></i>
                     {% endif %}
-                 {% else %}
-                     {% if feedItem.itemType == 'todo' %}
-                         {% if feedItem.internalStatus == 0 %}
-
-                         {% elseif feedItem.internalStatus == 1 %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% elseif feedItem.internalStatus == 2 %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% elseif feedItem.internalStatus == 3 %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% else %}
-                             <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large todo" data-uk-tooltip title="{{ feedItem.status }}"></i>
-                         {% endif %}
-                     {% else %}
+                {% else %}
+                    {% if feedItem.itemType is same as('todo') %}
+                        <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
+                    {% else %}
                         <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
-                     {% endif %}
-                 {% endif %}                
+                    {% endif %}
+                {% endif %}
                 </div>
             </header>
         </article>
