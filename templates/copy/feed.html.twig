@@ -48,7 +48,7 @@
             </div>
             
             <div class="uk-width-2-10 uk-text-right">
-                {% if entry.type == 'todo' %}
+                {% if entry.type is same as('todo') %}
                     <i class="{{ macros.iconClassForItemType(entry.itemType, entry.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ entry.status }}"></i>
                 {% else %}
                     <i class="{{ macros.iconClassForItemType(entry.itemType) }} uk-icon-small"></i>

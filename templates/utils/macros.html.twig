@@ -1,19 +1,19 @@
 {% macro iconClassForItemType(type, status = 0) %}
-    {% if type == 'announcement' %}
+    {% if type is same as('announcement') %}
         uk-icon-comment-o
-    {% elseif type == 'date' %}
+    {% elseif type is same as('date') %}
         uk-icon-calendar
-    {% elseif type == 'material' %}
+    {% elseif type is same as('material') %}
         uk-icon-file-o
-    {% elseif type == 'section' %}
+    {% elseif type is same as('section') %}
         uk-icon-file-o
-    {% elseif type == 'discussion' %}
+    {% elseif type is same as('discussion') %}
         uk-icon-comments-o
-    {% elseif type == 'user' %}
+    {% elseif type is same as('user') %}
         uk-icon-user
-    {% elseif type == 'group' %}
+    {% elseif type is same as('group') %}
         uk-icon-group
-    {% elseif type == 'todo' %}
+    {% elseif type is same as('todo') %}
         {% if status == 1 %}
             uk-icon-circle-o todo
         {% elseif status == 2 %}
@@ -23,11 +23,11 @@
         {% else %}
             uk-icon-check-square-o
         {% endif %}
-    {% elseif type == 'task' %}
+    {% elseif type is same as('task') %}
         uk-icon-home
-    {% elseif type == 'topic' %}
+    {% elseif type is same as('topic') %}
         uk-icon-book
-    {% elseif type == 'room' %}
+    {% elseif type is same as('room') %}
         uk-icon-sitemap
     {% endif %}
 {% endmacro %}
@@ -117,21 +117,21 @@
 {% endmacro %}
 
 {% macro statusColor(readerList, itemId, type='comment') %}
-    {% if type == 'grid' %}
+    {% if type is same as('grid') %}
         {% if readerList[itemId] is defined %}
-           {% if readerList[itemId] == 'new' %}
+           {% if readerList[itemId] is same as('new') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
                     <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed' %}
+            {% elseif readerList[itemId] is same as('changed') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'new_annotation' %}
+            {% elseif readerList[itemId] is same as('new_annotation') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed_annotation' %}
+            {% elseif readerList[itemId] is same as('changed_annotation') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
@@ -139,19 +139,19 @@
         {% endif %}
     {% else %}
         {% if readerList[itemId] is defined %}
-           {% if readerList[itemId] == 'new' %}
+           {% if readerList[itemId] is same as('new') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
                     <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed' %}
+            {% elseif readerList[itemId] is same as('changed') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'new_annotation' %}
+            {% elseif readerList[itemId] is same as('new_annotation') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed_annotation' %}
+            {% elseif readerList[itemId] is same as('changed_annotation') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
@@ -161,21 +161,21 @@
 {% endmacro %}
 
 {% macro iconClassForFileType(type) %}
-    {% if type == 'xlsx' or type == 'xls' %}
+    {% if type is same as('xlsx') or type is same as('xls') %}
         uk-icon-file-excel-o
-    {% elseif type == 'docx' or type == 'doc' or type == 'ods' %}
+    {% elseif type is same as('docx') or type is same as('doc') or type is same as('ods') %}
         uk-icon-file-word-o
-    {% elseif type == 'pptx' or type == 'ppt' %}
+    {% elseif type is same as('pptx') or type is same as('ppt') %}
         uk-icon-file-powerpoint-o
-    {% elseif type == 'pdf' %}
+    {% elseif type is same as('pdf') %}
         uk-icon-file-pdf-o
-    {% elseif type == 'zip' or type == 'ipa' %}
+    {% elseif type is same as('zip') or type is same as('ipa') %}
         uk-icon-file-archive-o
-    {% elseif type == 'png' or type == 'jpg' or type == 'eps' or type == 'gif' or type == 'svg' %}
+    {% elseif type is same as('png') or type is same as('jpg') or type is same as('eps') or type is same as('gif') or type is same as('svg') %}
         uk-icon-file-image-o
-    {% elseif type == 'txt' or type == 'csv' or type == 'md' %}
+    {% elseif type is same as('txt') or type is same as('csv') or type is same as('md') %}
         uk-icon-file-text-o
-    {% elseif type == 'mpg' or type == 'wmv' or type == 'mp4' or type == 'avi' %}
+    {% elseif type is same as('mpg') or type is same as('wmv') or type is same as('mp4') or type is same as('avi') %}
         uk-icon-file-movie-o
     {% else %}
         uk-icon-file-o
@@ -196,7 +196,7 @@
 
 {% macro fileListShort(item) %}
     {% import _self as macros %}
-    {% if item.itemType != 'material' %}
+    {% if item.itemType is not same as('material') %}
         {% set fileArray = item.fileList.to_array %}
     {% else %}
         {% set fileArray = item.fileListWithFilesFromSections.to_array %}
@@ -205,7 +205,7 @@
         {% if is_granted('ITEM_SEE', item.itemId) or is_granted('ITEM_USERROOM', item.itemId) %}
             {% for file in fileArray %}
                 {% set disposition = 'attachment' %}
-                {% if file.extension|lower == 'pdf' %}
+                {% if file.extension|lower is same as('pdf') %}
                     {% set disposition = 'inline' %}
                 {% endif %}
 
@@ -225,7 +225,7 @@
         {% if is_granted('ITEM_SEE', entity.itemId) %}
             {% for file in fileArray %}
                 {% set disposition = 'attachment' %}
-                {% if file.extension|lower == 'pdf' %}
+                {% if file.extension|lower is same as('pdf') %}
                     {% set disposition = 'inline' %}
                 {% endif %}
 
@@ -244,7 +244,7 @@
     {% set styleAttribute = '' %}
     {% set additionalClasses = '' %}
 
-    {% if size == 'small' %}
+    {% if size is same as('small') %}
         {% set styleAttribute = ' style="height:30px; width:30px;"' %}
     {% elseif size matches '/^\\d+$/' %}
         {% set styleAttribute = ' style="height:' ~ size ~ 'px; width:' ~ size ~ 'px;"' %}
@@ -481,15 +481,15 @@
     {% endif %}
     <div class="uk-text-nowrap">
         <span class="cs-workflow-traffic-light" data-uk-tooltip title="{{ title }}">
-            {% if status == '0_green' %}
+            {% if status is same as('0_green') %}
                 <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-            {% elseif status == '1_yellow' %}
+            {% elseif status is same as('1_yellow') %}
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-warning"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-            {% elseif status == '2_red' %}
+            {% elseif status is same as('2_red') %}
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-danger"></i>
@@ -531,19 +531,19 @@
                 <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
             {% endif %}
         {% else %}
-            {% if contextMemberStatus == 'join' %}
+            {% if contextMemberStatus is same as('join') %}
                 <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
-            {% elseif contextMemberStatus == 'locked' %}
+            {% elseif contextMemberStatus is same as('locked') %}
                 {{ 'This room is currently locked.'|trans({}, 'room') }}
-            {% elseif contextMemberStatus == 'requested' %}
+            {% elseif contextMemberStatus is same as('requested') %}
                 <span data-uk-tooltip title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}">
                     <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon-sign-in uk-icon"></i> {{ 'Membership request in process'|trans({}, 'room') }}</a>
                 </span>
-            {% elseif contextMemberStatus == 'rejected' %}
+            {% elseif contextMemberStatus is same as('rejected') %}
                 {{ 'Your request has been rejected.'|trans({}, 'room') }}
-            {% elseif contextMemberStatus == 'archived' %}
+            {% elseif contextMemberStatus is same as('archived') %}
                 {{ 'Archived room'|trans({}, 'room') }}
-            {% elseif contextMemberStatus == 'forbidden' %}
+            {% elseif contextMemberStatus is same as('forbidden') %}
                 {{ 'Guests are not allowed to request for membership.'|trans({}, 'room') }}
             {% else %}
                 <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
@@ -554,16 +554,16 @@
 {% endmacro %}
 
 {% macro contextLinkIcon(roomId, context, contextMemberStatus) %}
-    {% if contextMemberStatus == 'enter' %}
+    {% if contextMemberStatus is same as('enter') %}
         <a href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon-medium" style="width:24px; height:24px;" title="{{ 'enter room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
     {% else %}
-        {% if contextMemberStatus == 'join' %}
+        {% if contextMemberStatus is same as('join') %}
             <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
-        {% elseif contextMemberStatus == 'locked' %}
+        {% elseif contextMemberStatus is same as('locked') %}
             <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
-        {% elseif contextMemberStatus == 'requested' %}
+        {% elseif contextMemberStatus is same as('requested') %}
             <i class="uk-icon-spinner uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
-        {% elseif contextMemberStatus == 'rejected' %}
+        {% elseif contextMemberStatus is same as('rejected') %}
             <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has been rejected.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% elseif 'archived' in contextMemberStatus %}
             <i class="uk-icon-file-archive-o uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Archived room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
@@ -685,7 +685,7 @@
 {% endmacro %}
 
 {% macro sortActor(identifier, translationKey, translationDomain, sortAsc, sortDesc, initialState) %}
-    {%- set sortingClass = initialState is not empty ? (initialState == 'asc' ? 'uk-icon-sort-asc' : 'uk-icon-sort-desc' ) : '' %}
+    {%- set sortingClass = initialState is not empty ? (initialState is same as('asc') ? 'uk-icon-sort-asc' : 'uk-icon-sort-desc' ) : '' %}
     <li>
         <a href="#" id="commsy-sort-{{ identifier }}" class="cs-sort-actor uk-clearfix{% if initialState is not empty %} cs-sort-active cs-sort-active-{{ initialState }}{% endif %}" data-sort-order='{"asc": "{{ sortAsc }}", "desc": "{{ sortDesc }}"}'>
             <span class="uk-float-left">{{ translationKey|trans({}, translationDomain)|capitalize }}</span>

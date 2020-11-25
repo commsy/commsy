@@ -57,7 +57,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if result.type == 'date' %}
+                    {% if result.type is same as('date') %}
                         {{ formatDateTimeRange(entity.wholeDay, entity.datetimeStart, entity.datetimeEnd) }}{% if entity.place != '' %}, {{ entity.place }}{% endif %}
                     {% elseif entity.author is defined and entity.author is not empty %}
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
@@ -74,7 +74,7 @@
             </div>
 
             <div class="uk-width-2-10 uk-text-right">
-                {% if result.type == 'todo' and result.status in [1, 2, 3] %}
+                {% if result.type is same as('todo') and result.status in [1, 2, 3] %}
                     {% set statusDescriptions = ['pending'|trans({},'todo'), 'in progress'|trans({},'todo'), 'done'|trans({},'todo')] %}
                     <i class="{{ macros.iconClassForItemType(result.type, result.status) }} uk-icon-small" data-uk-tooltip title="{{ statusDescriptions[result.status - 1] }}"></i>
                 {% else %}

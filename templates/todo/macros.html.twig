@@ -2,7 +2,7 @@
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as todoMacros %}
 
-    {% if item.type == 'todo' %}
+    {% if item.type is same as('todo') %}
         {% set pathName = 'app_todo_edit' %}
     {% else %}
         {% set pathName = 'app_todo_editstep' %}
