@@ -665,6 +665,10 @@
                 <source>User room template</source>
                 <target>Personenraum-Vorlage</target>
             </trans-unit>
+            <trans-unit id="delete_user_rooms">
+                <source>Delete user rooms</source>
+                <target>Personenräume löschen</target>
+            </trans-unit>
 
             <!-- Invitations -->
             <trans-unit id="send">

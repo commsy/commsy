@@ -670,6 +670,10 @@
                 <source>User room template</source>
                 <target>Template for personal workspaces</target>
             </trans-unit>
+            <trans-unit id="delete_user_rooms">
+                <source>Delete user rooms</source>
+                <target>Delete user rooms</target>
+            </trans-unit>
 
             <!-- Invitations -->
             <trans-unit id="send">
