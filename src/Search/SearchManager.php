@@ -47,7 +47,7 @@ class SearchManager
         $this->queryConditions[] = $queryCondition;
     }
 
-    public function getResults()
+    public function getResults($sortQuery = null)
     {
         // create our basic query
         $query = new \Elastica\Query();
@@ -62,6 +62,11 @@ class SearchManager
         $boolQuery->addFilter($contextFilter);
 
         $query->setQuery($boolQuery);
+
+        // optional sorting
+        if(!is_null($sortQuery)) {
+            $query->setSort($sortQuery);
+        }
 
         // aggregation
         $typeAggregation = new Aggregations\Terms('rubrics');
@@ -85,16 +90,6 @@ class SearchManager
         // return at most 100 of the most used categories (default is 10)
         $categoriesAggregation->setSize(100);
         $query->addAggregation($categoriesAggregation);
-
-        // aggregations
-//        $filterAggregation = new Aggregations\Filter('filterContext');
-//        $filterAggregation->setFilter($contextFilter);
-
-//        $termsAggregation = new Aggregations\Terms('contexts');
-//        $termsAggregation->setField('contextId');
-//        $filterAggregation->addAggregation($termsAggregation);
-
-//        $query->addAggregation($filterAggregation);
 
         return $this->commsyFinder->createPaginatorAdapter($query);
     }

@@ -155,7 +155,7 @@ class SearchController extends BaseController
     /**
      * Displays search results
      * 
-     * @Route("/room/{roomId}/search/results")
+     * @Route("/room/{roomId}/search/results/{sort}")
      * @Template
      */
     public function resultsAction(
@@ -164,13 +164,24 @@ class SearchController extends BaseController
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
-        MultipleContextFilterCondition $multipleContextFilterCondition
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+        $sort = 'date_desc'
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
+
+        // extract path extension for sorting
+        $path = $request->server->get('HTTP_REFERER');
+        if(strpos($path,'_desc')!== false or strpos($path,'_asc') !== false){
+            $explodedPath = explode('/', $path);
+            if(count($explodedPath) > 0){
+                $sort = array_pop($explodedPath);
+            }
+        }
+        $sortingSplit = explode('_',$sort);
 
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request);
@@ -183,6 +194,9 @@ class SearchController extends BaseController
         ]);
         $topForm->handleRequest($request);
 
+        $sortField = $sortingSplit[0] ?? 'modificationDate';
+        $sortOrder = $sortingSplit[1] ?? 'desc';
+
         /**
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
          * according to the current query parameters.
@@ -191,7 +205,7 @@ class SearchController extends BaseController
         $this->setupSearchQueryConditions($searchManager, $searchData);
         $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
 
-        $searchResults = $searchManager->getResults();
+        $searchResults = $searchManager->getResults([$sortField => $sortOrder]);
         $aggregations = $searchResults->getAggregations();
 
         $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
@@ -219,16 +233,21 @@ class SearchController extends BaseController
         }
 
         $selectedHashtags = $searchData->getSelectedHashtags();
-        foreach ($selectedHashtags as $hashtag) {
-            if (!array_key_exists($hashtag, $countsByHashtag)) {
-                $searchData->addHashtags([$hashtag => 0]);
+        if(!empty($selectedHashtags)) {
+            foreach ($selectedHashtags as $hashtag) {
+                if (!array_key_exists($hashtag, $countsByHashtag)) {
+                    $searchData->addHashtags([$hashtag => 0]);
+                }
             }
         }
 
+
         $selectedCategories = $searchData->getSelectedCategories();
-        foreach ($selectedCategories as $category) {
-            if (!array_key_exists($category, $countsByCategory)) {
-                $searchData->addCategories([$category => 0]);
+        if(!empty($selectedCategories)) {
+            foreach ($selectedCategories as $category) {
+                if (!array_key_exists($category, $countsByCategory)) {
+                    $searchData->addCategories([$category => 0]);
+                }
             }
         }
 
@@ -249,6 +268,8 @@ class SearchController extends BaseController
             'searchData' => $searchData,
             'isArchived' => $roomItem->isArchived(),
             'user' => $legacyEnvironment->getEnvironment()->getCurrentUserItem(),
+            'sortOrder' => $sortingSplit[1],
+            'sortField' => $sortingSplit[0],
         ];
     }
 
