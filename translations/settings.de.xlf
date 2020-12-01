@@ -681,9 +681,17 @@
                 <source>Delete room</source>
                 <target>Raum löschen</target>
             </trans-unit>
+            <trans-unit id="settings_delete_userrooms">
+                <source>Delete userrooms</source>
+                <target>Benutzerräume löschen</target>
+            </trans-unit>
             <trans-unit id="settings_delete_intro">
                 <source>Delete intro</source>
                 <target>Achtung: Der gesamte Raum und alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!</target>
+            </trans-unit>
+            <trans-unit id="delete_user_rooms_text">
+                <source>Delete user rooms text</source>
+                <target>Achtung: Alle Benutzerräume dieses Projektraums werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!</target>
             </trans-unit>
             <trans-unit id="settings_delete_explanation_start">
                 <source>Delete explanation start</source>
