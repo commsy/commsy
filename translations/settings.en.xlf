@@ -686,6 +686,10 @@
                 <source>Delete userrooms</source>
                 <target>Delete userrooms</target>
             </trans-unit>
+            <trans-unit id="project_workspace_unchanged">
+                <source>Project workspace unchanged</source>
+                <target>The project workspace will stay unchanged.</target>
+            </trans-unit>
             <trans-unit id="settings_delete_intro">
                 <source>Delete intro</source>
                 <target>Attention: The entire workspace and all data will be deleted. This action cannot be undone!</target>
