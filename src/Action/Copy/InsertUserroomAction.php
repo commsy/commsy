@@ -90,9 +90,10 @@ class InsertUserroomAction
         }
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('inserted %count% entries', count($items), [
-                '%count%' => count($items),
-            ]),
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('inserted %itemcount% entries into %usercount% personal workspaces', count($imports), [
+                    '%itemcount%' => count($imports),
+                    '%usercount%' => count($users),
+                ]),
         ]);
     }
 }
