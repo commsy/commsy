@@ -256,14 +256,15 @@ class RoomFeedGenerator
 
         $relatedUsers = $currentUser->getRelatedUserList();
         foreach ($relatedUsers as $relatedUser) {
-            if ($relatedUser->getLinkedUserroomItemID() !== null) {
-                if ($relatedUser->getLinkedUserroomItemID()) {
-                    $roomIds[] = (string)$relatedUser->getLinkedUserroomItemID();
-                }
+            $linkedItemId = $relatedUser->getLinkedUserroomItemID();
+            $linkedUserroomItem = $this->roomService->getRoomItem($linkedItemId);
+            if ($linkedItemId !== null && !$linkedUserroomItem->isDeleted()) {
+                $roomIds[] = (String)$linkedItemId;
             }
             $relatedRooms = $relatedUser->getRelatedUserroomsList();
             foreach ($relatedRooms as $relatedRoom) {
                 $roomIds[] = $relatedRoom->getItemID();
+
             }
         }
 
