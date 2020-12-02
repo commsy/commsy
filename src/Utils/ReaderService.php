@@ -50,21 +50,6 @@ class ReaderService
             $return = 'changed';
         }
 
-        // NOTE: for an unread item in a user room, we also consider the given user's corresponding project user
-        // (if the item was copied from a project room it got only marked as read+noticed for the project room user)
-        if ($return === 'new') {
-            $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
-            $roomItem = $roomManager->getItem($item->getContextID());
-            if (isset($roomItem) && $roomItem->isUserroom()) {
-                $userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
-                $userItem = $userManager->getItem($userID);
-                if (isset($userItem)) {
-                    $linkedProjectUserId = $userItem->getLinkedProjectUserItemID();
-                    $return = $this->getChangeStatusForUserByID($itemId, $linkedProjectUserId);
-                }
-            }
-        }
-
         if ($return == '') {
 
             // annotations
