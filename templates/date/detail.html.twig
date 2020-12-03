@@ -37,19 +37,6 @@
                                 <div class="cs-additional-actions uk-dropdown uk-padding-remove" style="width: 220px;">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
-                                        {# new entry #}
-                                        <li>
-                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                <a href="{{ path('app_date_create', {'roomId': roomId, 'dateDescription' : "now" }) }}" id="newEntry">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-
                                         {# print #}
                                         <li>
                                             <a href="{{ path('app_date_print', {'roomId': roomId, 'itemId': date.itemId}) }}" target="_blank" id="print">
