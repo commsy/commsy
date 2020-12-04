@@ -11,11 +11,15 @@
         {% if not releaseItems is empty %}
             {% for releaseItem in releaseItems %}
                 <article class="uk-comment">
-                    <i class="{{ macros.iconClassForItemType(releaseItem.itemType) }} uk-icon-small"></i>
+                    {% if releaseItem.itemType is same as('todo') %}
+                        <i class="{{ macros.iconClassForItemType(releaseItem.itemType, releaseItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ releaseItem.status }}"></i>
+                    {% else %}
+                        <i class="{{ macros.iconClassForItemType(releaseItem.itemType) }} uk-icon-small"></i>
+                    {% endif %}
                     {#{ macros.statusColor(readerList, releaseItem.itemId) }#}
                     <header class="uk-comment-header uk-flex">
                         <div class="uk-margin-right">
-                            {% if releaseItem.itemType != 'user' %}
+                            {% if releaseItem.itemType is not same as('user') %}
                                 {% if not releaseItem.creator.isDeleted and releaseItem.creator.isUser %}
                                     {{ macros.userIconLink(releaseItem.creator) }}
                                 {% else %}
@@ -41,19 +45,19 @@
                         <div>
                             <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/dashboard/{{ releaseItem.contextItem.itemId }}">{{releaseItem.contextItem.title|decodeHtmlEntity}}</a></div>
                             <h4 class="uk-comment-title">
-                                <a href="{{ app.request.baseURL }}/dashboard/{{ app.request.attributes.get('roomId') }}/{{ releaseItem.type }}/{{ releaseItem.itemID }}">
-                                {% if releaseItem.itemType != 'user' %}
+                                <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ releaseItem.type }}/{{ releaseItem.itemID }}">
+                                {% if releaseItem.itemType is not same as('user') %}
                                     {{ releaseItem.title|decodeHtmlEntity }}
                                 {% else %}
                                     {{ macros.userFullname(releaseItem) }}
                                 {% endif %}
                                 </a>
                             </h4>
-                            {% if releaseItem.itemType == 'announcement' %}
+                            {% if releaseItem.itemType is same as('announcement') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
-                            {% elseif releaseItem.itemType == 'date' %}
+                            {% elseif releaseItem.itemType is same as('date') %}
                                 <div class="uk-comment-meta">{{ formatDateTimeRange(releaseItem.wholeDay, releaseItem.dateTimeObject_Start, releaseItem.dateTimeObject_End) }}{% if releaseItem.place != '' %}, {{ releaseItem.place }}{% endif %}</div>
-                            {% elseif releaseItem.itemType == 'material' %}
+                            {% elseif releaseItem.itemType is same as('material') %}
                                 <div class="uk-comment-meta">
                                     {% if releaseItem.author != '' %}
                                             {{ 'by'|trans({})|capitalize }}: {{releaseItem.author}} ({{releaseItem.publishingdate}})
@@ -61,15 +65,15 @@
                                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }} ({{ releaseItem.creationDate|craue_date }})
                                     {% endif %}                        
                                 </div>
-                            {% elseif releaseItem.itemType == 'discussion' %}
+                            {% elseif releaseItem.itemType is same as('discussion') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
-                            {% elseif releaseItem.itemType == 'user' %}
+                            {% elseif releaseItem.itemType is same as('user') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem) }}</div>
-                            {% elseif releaseItem.itemType == 'group' %}
+                            {% elseif releaseItem.itemType is same as('group') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
-                            {% elseif releaseItem.itemType == 'todo' %}
+                            {% elseif releaseItem.itemType is same as('todo') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
-                            {% elseif releaseItem.itemType == 'task' %}
+                            {% elseif releaseItem.itemType is same as('task') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
                             {% endif %}
                             <div class="uk-comment-meta">{{ macros.fileListShort(releaseItem) }}</div>
@@ -85,11 +89,15 @@
         {% if not viewableItems is empty %}
             {% for viewableItem in viewableItems %}
                 <article class="uk-comment">
-                    <i class="{{ macros.iconClassForItemType(viewableItem.itemType) }} uk-icon-small"></i>
+                    {% if viewableItem.itemType is same as('todo') %}
+                        <i class="{{ macros.iconClassForItemType(viewableItem.itemType, viewableItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ viewableItem.status }}"></i>
+                    {% else %}
+                        <i class="{{ macros.iconClassForItemType(viewableItem.itemType) }} uk-icon-small"></i>
+                    {% endif %}
                     {#{ macros.statusColor(readerList, viewableItem.itemId) }#}
                     <header class="uk-comment-header uk-flex">
                         <div class="uk-margin-right">
-                            {% if viewableItem.itemType != 'user' %}
+                            {% if viewableItem.itemType is not same as('user') %}
                                 {% if not viewableItem.creator.isDeleted and viewableItem.creator.isUser %}
                                     {{ macros.userIconLink(viewableItem.creator) }}
                                 {% else %}
@@ -115,19 +123,19 @@
                         <div>
                             <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/dashboard/{{ viewableItem.contextItem.itemId }}">{{viewableItem.contextItem.title|decodeHtmlEntity}}</a></div>
                             <h4 class="uk-comment-title">
-                                <a href="{{ app.request.baseURL }}/dashboard/{{ app.request.attributes.get('roomId') }}/{{ viewableItem.type }}/{{ viewableItem.itemID }}">
-                                {% if viewableItem.itemType != 'user' %}
+                                <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ viewableItem.type }}/{{ viewableItem.itemID }}">
+                                {% if viewableItem.itemType is not same as('user') %}
                                     {{ viewableItem.title|decodeHtmlEntity }}
                                 {% else %}
                                     {{ macros.userFullname(viewableItem) }}
                                 {% endif %}
                                 </a>
                             </h4>
-                            {% if viewableItem.itemType == 'announcement' %}
+                            {% if viewableItem.itemType is same as('announcement') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
-                            {% elseif viewableItem.itemType == 'date' %}
+                            {% elseif viewableItem.itemType is same as('date') %}
                                 <div class="uk-comment-meta">{{ formatDateTimeRange(viewableItem.wholeDay, viewableItem.dateTimeObject_Start, viewableItem.dateTimeObject_End) }}{% if viewableItem.place != '' %}, {{ viewableItem.place }}{% endif %}</div>
-                            {% elseif viewableItem.itemType == 'material' %}
+                            {% elseif viewableItem.itemType is same as('material') %}
                                 <div class="uk-comment-meta">
                                     {% if viewableItem.author != '' %}
                                             {{ 'by'|trans({})|capitalize }}: {{viewableItem.author}} ({{viewableItem.publishingdate}})
@@ -135,15 +143,15 @@
                                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }} ({{ viewableItem.creationDate|craue_date }})
                                     {% endif %}                        
                                 </div>
-                            {% elseif viewableItem.itemType == 'discussion' %}
+                            {% elseif viewableItem.itemType is same as('discussion') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
-                            {% elseif viewableItem.itemType == 'user' %}
+                            {% elseif viewableItem.itemType is same as('user') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem) }}</div>
-                            {% elseif viewableItem.itemType == 'group' %}
+                            {% elseif viewableItem.itemType is same as('group') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
-                            {% elseif viewableItem.itemType == 'todo' %}
+                            {% elseif viewableItem.itemType is same as('todo') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
-                            {% elseif viewableItem.itemType == 'task' %}
+                            {% elseif viewableItem.itemType is same as('task') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>
                             {% endif %}
                             <div class="uk-comment-meta">{{ macros.fileListShort(viewableItem) }}</div>

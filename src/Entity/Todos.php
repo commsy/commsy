@@ -87,9 +87,9 @@ class Todos
     private $date;
 
     /**
-     * @var boolean
+     * @var int
      *
-     * @ORM\Column(name="status", type="boolean", nullable=false)
+     * @ORM\Column(name="status", type="integer", nullable=false)
      */
     private $status = '1';
 
@@ -417,11 +417,11 @@ class Todos
     /**
      * Set status
      *
-     * @param boolean $status
+     * @param int $status
      *
      * @return Todos
      */
-    public function setStatus($status)
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 
@@ -431,9 +431,9 @@ class Todos
     /**
      * Get status
      *
-     * @return boolean
+     * @return int
      */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }

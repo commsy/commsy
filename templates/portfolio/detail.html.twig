@@ -17,8 +17,12 @@
                 {% if not feedList is empty %}
                     {% for feedItem in feedList %}
                         <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
-                            <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
-                            {% if feedItem.type != 'date' %}
+                            {% if feedItem.type is same as('todo') %}
+                                <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
+                            {% else %}
+                                <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
+                            {% endif %}
+                            {% if feedItem.type is not same as('date') %}
                                 {{ macros.statusColor(readerList, feedItem.itemId) }}
                             {% else %}
                                 {% if not feedItem.isExternal %}
@@ -27,8 +31,8 @@
                             {% endif %}
                             <header class="uk-comment-header uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">
-                                    {% if feedItem.itemType != 'user' %}
-                                        {% if feedItem.type != 'date' %}
+                                    {% if feedItem.itemType is not same as('user') %}
+                                        {% if feedItem.type is not same as('date') %}
                                             {% if feedItem.modificatorItem.isUser %}
                                                 {{  macros.userIconLink(feedItem.modificatorItem) }}
                                             {% else %}
@@ -74,23 +78,23 @@
                                     <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title|decodeHtmlEntity}}</a></div>
                                     <h4 class="uk-comment-title">
                                         {% set feedItemType = feedItem.type %}
-                                        {% if feedItem.type == 'label' %}
+                                        {% if feedItem.type is same as('label') %}
                                             {% set feedItemType = feedItem.labelType %}
                                         {% endif %}
 
                                         <a href="{{ app.request.baseURL }}/room/{{ roomId }}/{{ feedItemType }}/{{ feedItem.itemID }}">
-                                            {% if feedItem.itemType != 'user' %}
-                                                {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType == 'date' and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
+                                            {% if feedItem.itemType is not same as('user') %}
+                                                {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType is same as('date') and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
                                             {% else %}
                                                 {{ feedItem.getFullName }}
                                             {% endif %}
                                         </a>
                                     </h4>
-                                    {% if feedItem.itemType == 'announcement' %}
+                                    {% if feedItem.itemType is same as('announcement') %}
                                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-                                    {% elseif feedItem.itemType == 'date' %}
+                                    {% elseif feedItem.itemType is same as('date') %}
                                         <div class="uk-comment-meta">{{ formatDateTimeRange(feedItem.wholeDay, feedItem.dateTimeObject_Start, feedItem.dateTimeObject_End) }}{% if feedItem.place != '' %}, {{ feedItem.place }}{% endif %}</div>
-                                    {% elseif feedItem.itemType == 'material' %}
+                                    {% elseif feedItem.itemType is same as('material') %}
                                         <div class="uk-comment-meta">
                                             {% if feedItem.author != '' %}
                                                 {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
@@ -98,15 +102,15 @@
                                                 {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{ feedItem.creationDate|craue_date }})
                                             {% endif %}
                                         </div>
-                                    {% elseif feedItem.itemType == 'discussion' %}
+                                    {% elseif feedItem.itemType is same as('discussion') %}
                                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-                                    {% elseif feedItem.itemType == 'user' %}
+                                    {% elseif feedItem.itemType is same as('user') %}
                                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.getFullName}}</div>
-                                    {% elseif feedItem.itemType == 'group' %}
+                                    {% elseif feedItem.itemType is same as('group') %}
                                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-                                    {% elseif feedItem.itemType == 'todo' %}
+                                    {% elseif feedItem.itemType is same as('todo') %}
                                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-                                    {% elseif feedItem.itemType == 'task' %}
+                                    {% elseif feedItem.itemType is same as('task') %}
                                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                                     {% endif %}
                                     <div class="uk-comment-meta">{{  macros.fileListShort(feedItem) }}</div>
