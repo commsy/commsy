@@ -684,7 +684,7 @@
             </trans-unit>
             <trans-unit id="settings_delete_userrooms">
                 <source>Delete userrooms</source>
-                <target>Delete userrooms</target>
+                <target>Delete personal workspaces</target>
             </trans-unit>
             <trans-unit id="project_workspace_unchanged">
                 <source>Project workspace unchanged</source>
@@ -696,7 +696,7 @@
             </trans-unit>
             <trans-unit id="delete_user_rooms_text">
                 <source>Delete user rooms text</source>
-                <target>Attention: All userrooms of this project workspaces will be deleted. This action cannot be undone!</target>
+                <target>Attention: All personal workspaces of this project workspaces will be deleted. This action cannot be undone!</target>
             </trans-unit>
             <trans-unit id="settings_delete_explanation_start">
                 <source>Delete explanation start</source>

@@ -349,8 +349,8 @@ class UserroomService
 
             foreach ($userList as $roomUser) {
                 $linkedUserRoomItem = $roomUser->getLinkedUserroomItem();
-                if(!is_null($linkedUserRoomItem)){
-                    if ($linkedUserRoomItem->getContextID() === intval($projectRoomId)) {
+                if($linkedUserRoomItem !== null) {
+                    if ($linkedUserRoomItem->getContextID() === $projectRoomId) {
                         $linkedUserRoomItem->delete();
                         $linkedUserRoomItem->save();
                     }
