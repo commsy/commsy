@@ -121,7 +121,7 @@
 
                                         {# new article #}
                                         <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
                                                 <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
                                                 </a>
