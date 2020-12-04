@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
 use App\Form\Type\Room\DeleteType;
+use App\Form\Type\Room\UserRoomDeleteType;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserroomService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -402,7 +403,7 @@ class SettingsController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
 
             if ($form->get('deleteUserRooms')->isClicked()){
-                return $this->redirectToRoute('app_settings_delete', ["roomId" => $roomId, "deleteUserRooms" => true]);
+                return $this->redirectToRoute('app_settings_deleteuserrooms', ["roomId" => $roomId]);
             } else {
                 $oldRoom = clone $roomItem;
                 $formData = $form->getData();
@@ -421,6 +422,40 @@ class SettingsController extends Controller
 
         return [
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/settings/deleteuserrooms")
+     * @Template
+     * @Security("is_granted('MODERATOR') and is_granted('ITEM_DELETE', roomId)")
+     */
+    public function deleteUserRoomsAction(
+        $roomId,
+        Request $request,
+        RoomService $roomService,
+        TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment,
+        UserroomService $userroomService
+    )
+    {
+        $roomItem = $roomService->getRoomItem($roomId);
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $form = $this->createForm(UserRoomDeleteType::class, $roomItem, [
+            'confirm_string' => $translator->trans('delete', [], 'profile')
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userroomService->deleteUserroomsForProjectRoomId($roomId);
+            return $this->redirectToRoute('app_settings_extensions', ["roomId" => $roomId]);
+        }
+
+        return [
+            'form' => $form->createView()
         ];
     }
 

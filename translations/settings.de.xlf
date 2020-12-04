@@ -681,6 +681,10 @@
                 <source>Delete room</source>
                 <target>Raum löschen</target>
             </trans-unit>
+            <trans-unit id="settings_delete_userrooms">
+                <source>Delete userrooms</source>
+                <target>Personenräume löschen</target>
+            </trans-unit>
             <trans-unit id="settings_lock_title">
                 <source>Lock room</source>
                 <target>Raum sperren</target>
@@ -688,6 +692,14 @@
             <trans-unit id="settings_delete_intro">
                 <source>Delete intro</source>
                 <target>Achtung: Der gesamte Raum und alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!</target>
+            </trans-unit>
+            <trans-unit id="delete_user_rooms_text">
+                <source>Delete user rooms text</source>
+                <target>ACHTUNG: Alle Personenräume dieses Projektraumes und alle in den Personenräumen enthaltenen Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!</target>
+            </trans-unit>
+            <trans-unit id="project_workspace_unchanged">
+                <source>Project workspace unchanged</source>
+                <target>Der Projektraum bleibt dabei unangetastet.</target>
             </trans-unit>
             <trans-unit id="settings_lock_intro">
                 <source>Lock intro</source>
