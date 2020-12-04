@@ -249,10 +249,12 @@ class RoomFeedGenerator
             $roomIds[] = $projectRoom->getItemID();
         }
 
-        $userRooms = $currentUser->getRelatedUserroomsList();
-        foreach ($userRooms as $userRoom) {
-            /** @var \cs_userroom_item $userRoom */
-            $roomIds[] = $userRoom->getItemID();
+        $relatedUsers = $currentUser->getRelatedUserList();
+        foreach ($relatedUsers as $relatedUser) {
+            $linkedUserroomItem = $relatedUser->getLinkedUserroomItem();
+            if ($linkedUserroomItem !== null) {
+                $roomIds[] = (String)$linkedUserroomItem->getItemId();
+            }
         }
 
         $communityRooms = $currentUser->getUserRelatedCommunityList();
