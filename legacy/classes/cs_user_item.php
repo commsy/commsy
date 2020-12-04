@@ -214,7 +214,7 @@ class cs_user_item extends cs_item
      */
     public function getLinkedUserroomItem(): ?\cs_userroom_item
     {
-        if (isset($this->_userroomItem)) {
+        if (isset($this->_userroomItem) && !$this->_userroomItem->isDeleted()) {
             return $this->_userroomItem;
         }
 
