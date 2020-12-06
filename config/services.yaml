@@ -171,6 +171,9 @@ services:
     _instanceof:
         App\DocumentConverter\DocumentConverterInterface:
             tags: ['app.document_converter']
+        App\Form\DataTransformer\DataTransformerInterface:
+            tags: [ 'app.data_transformer' ]
+
 
 
 ###############################
@@ -322,7 +325,6 @@ services:
     # Transformer
     commsy_legacy.transformer.general_settings:
         class: App\Form\DataTransformer\GeneralSettingsTransformer
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.moderation_settings:
         class: App\Form\DataTransformer\ModerationSettingsTransformer
@@ -624,6 +626,11 @@ services:
 
     App\DocumentConverter\ConverterManager:
         class: App\DocumentConverter\ConverterManager
+        arguments:
+            - !tagged 'app.document_converter'
+
+    App\Form\DataTransformer\TransformerManager:
+        class: App\Form\DataTransformer\TransformerManager
         arguments:
             - !tagged 'app.document_converter'
 
