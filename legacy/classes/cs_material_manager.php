@@ -1058,9 +1058,10 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
         if ($material_item->isNotActivated()){
            $modification_date = $material_item->getModificationDate();
         }
+
         $query = 'INSERT INTO '.$this->addDatabasePrefix('materials').' SET '.
                  'item_id="'.encode(AS_DB,$material_item->getItemID()).'",'.
-                 'version_id="'.encode(AS_DB,$material_item->getVersionID()).'",'.
+                 $this->returnQuerySentenceIfFieldIsValid($material_item->getVersionID(), 'version_id').
                  'context_id="'.encode(AS_DB,$context_id).'",'.
                  'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                  'creation_date="'.$current_datetime.'",'.
@@ -1075,15 +1076,31 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                  'copy_of="'.encode(AS_DB,$copy_id).'",'.
                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
                  'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
-                 'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'",'.
-                 'workflow_validity_date="'.encode(AS_DB,$material_item->getWorkflowValidityDate()).'",'.
-                 'license_id="'.encode(AS_DB,$material_item->getLicenseId()).'"';
+                 $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowResubmissionDate(), 'workflow_resubmission_date').
+                 $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowValidityDate(), 'workflow_validity_date').
+                 $this->returnQuerySentenceIfFieldIsValid($material_item->getLicenseId(), 'license_id');
+        // Remove unexpected commas at the end if some of the queries are left behind
+        $query = rtrim($query, ',');
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
           include_once('functions/error_functions.php');
           trigger_error('Problems creating material from query: "'.$query.'"',E_USER_WARNING);
         }
      }
+  }
+
+    /**
+     * @param $value
+     * @param $databaseField
+     * @param false $isString
+     * @return string
+     */
+  function returnQuerySentenceIfFieldIsValid($value, $databaseField, $isString=false): string {
+      if(!is_null($value) && $value !== ""){
+          $doubleQuotes = $isString ? '"' : '';
+          return sprintf("%s=%s%s%s,", $databaseField, $doubleQuotes, $value, $doubleQuotes);
+      }
+      return '';
   }
 
   /** save a commsy item
