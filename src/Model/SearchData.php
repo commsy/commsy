@@ -1,8 +1,15 @@
 <?php
 namespace App\Model;
 
+use App\Entity\SavedSearch;
+
 class SearchData
 {
+    /**
+     * @var SavedSearch|null $selectedSavedSearch the currently selected saved search (aka "view")
+     */
+    private $selectedSavedSearch;
+
     /**
      * @var string|null
      */
@@ -82,6 +89,24 @@ class SearchData
      * @var \DateTime|null $modificationDateUntil
      */
     private $modificationDateUntil;
+
+    /**
+     * @return SavedSearch|null
+     */
+    public function getSelectedSavedSearch(): ?SavedSearch
+    {
+        return $this->selectedSavedSearch;
+    }
+
+    /**
+     * @param SavedSearch|null $selectedSavedSearch
+     * @return SearchData
+     */
+    public function setSelectedSavedSearch(?SavedSearch $selectedSavedSearch): SearchData
+    {
+        $this->selectedSavedSearch = $selectedSavedSearch;
+        return $this;
+    }
 
     /**
      * @return string|null
