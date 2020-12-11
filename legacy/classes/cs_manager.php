@@ -101,6 +101,11 @@ class cs_manager {
     /**
      * @var \DateTime
      */
+    protected $creationNewerThenLimit = null;
+
+    /**
+     * @var \DateTime
+     */
     protected $modificationOlderThenLimit = null;
 
     /**
@@ -223,6 +228,7 @@ class cs_manager {
      $this->_id_array_limit = NULL;
      $this->modificationOlderThenLimit = null;
      $this->modificationNewerThenLimit = null;
+     $this->creationNewerThenLimit = null;
      $this->excludedIdsLimit = [];
   }
 
@@ -544,6 +550,10 @@ class cs_manager {
 
    public function setModificationNewerThenLimit(\DateTime $newerThen) {
        $this->modificationNewerThenLimit = $newerThen;
+   }
+
+   public function setCreationNewerThenLimit(\DateTime $newerThen) {
+       $this->creationNewerThenLimit = $newerThen;
    }
 
    public function setExcludedIdsLimit($ids) {

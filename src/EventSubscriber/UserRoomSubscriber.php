@@ -112,6 +112,8 @@ class UserRoomSubscriber implements EventSubscriberInterface
                 $this->userroomService->updateNameInUserroomsForUser($relatedUser, $newUser->getFirstname(), $newUser->getLastname());
             }
 
+            // NOTE: a change of the user's user ID is handled in cs_user_manager->changeUserID() (called via UserTransformer)
+
             // if the user's chosen system language just changed, also update the user's system language in her user room
             if ($oldUser->getLanguage() !== $newUser->getLanguage()) {
                 $this->userroomService->updateLanguageInUserroomOfUser($relatedUser, $newUser->getLanguage());
