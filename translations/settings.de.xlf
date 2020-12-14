@@ -695,7 +695,7 @@
             </trans-unit>
             <trans-unit id="project_workspace_unchanged">
                 <source>Project workspace unchanged</source>
-                <target>Der Projektraum bleibt dabei unangetastet.</target>
+                <target>Der Projektraum bleibt dabei erhalten.</target>
             </trans-unit>
             <trans-unit id="settings_delete_explanation_start">
                 <source>Delete explanation start</source>
