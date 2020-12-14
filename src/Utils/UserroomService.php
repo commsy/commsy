@@ -340,6 +340,29 @@ class UserroomService
         }
     }
 
+    public function deleteUserroomsForProjectRoomId($projectRoomId)
+    {
+        $roomItem = $this->roomService->getRoomItem($projectRoomId);
+        if ($roomItem->getType() === 'project') {
+
+            $userList = $roomItem->getUserList();
+
+            foreach ($userList as $roomUser) {
+                $linkedUserRoomItem = $roomUser->getLinkedUserroomItem();
+                if($linkedUserRoomItem !== null) {
+                    if ($linkedUserRoomItem->getContextID() === $projectRoomId) {
+                        $linkedUserRoomItem->delete();
+                        $linkedUserRoomItem->save();
+                    }
+                }
+            }
+            $roomItem->setShouldCreateUserRooms(false);
+            $roomItem->save();
+        } else {
+            throw $this->createNotFoundException('No project room found for id ' . $projectRoomId);
+        }
+    }
+
     /**
      * Renames the given user room with the default title
      * The user room's default title consists of the full name of its room "owner", followed by the title of the hosting

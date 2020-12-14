@@ -17,6 +17,7 @@ class ItemVoter extends Voter
     const MODERATE = 'ITEM_MODERATE';
     const ENTER = 'ITEM_ENTER';
     const USERROOM = 'ITEM_USERROOM';
+    const DELETE = 'ITEM_DELETE';
 
     private $legacyEnvironment;
     private $itemService;
@@ -39,6 +40,7 @@ class ItemVoter extends Voter
             self::MODERATE,
             self::ENTER,
             self::USERROOM,
+            self::DELETE,
         ));
     }
 
@@ -78,6 +80,9 @@ class ItemVoter extends Voter
 
                 case self::USERROOM:
                     return $this->hasUserroomItemPriviledges($item, $currentUser);
+
+                case self::DELETE:
+                    return $this->canDelete($item, $currentUser);
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
@@ -199,6 +204,26 @@ class ItemVoter extends Voter
                 }
             } else if ($item->isPortal() && $item->mayEnter($currentUser)) {
                 return true;
+            }
+        }catch(\Exception $e){
+            return false;
+        }
+
+        return false;
+    }
+
+    private function canDelete($item, $currentUser)
+    {
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($item->getItemID());
+
+        try{
+            if ($roomItem->getType() == 'userroom') {
+                return false;
+            } else if ($roomItem) {
+                if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+                    return true;
+                }
             }
         }catch(\Exception $e){
             return false;
