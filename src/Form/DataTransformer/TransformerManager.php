@@ -19,11 +19,11 @@ class TransformerManager
     }
 
     /**
-     * @param $format
+     * @param $entity
      * @return DataTransformerInterface|null
      */
     public function getConverter($entity): ?DataTransformerInterface {
-        /** @var DataTransformerInterface $converter */
+        /** @var DataTransformerInterface $transformer */
         foreach ($this->transformers as $transformer){
             if($transformer->supportsFormat($entity)){
                 return $transformer;
