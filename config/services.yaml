@@ -632,7 +632,7 @@ services:
     App\Form\DataTransformer\TransformerManager:
         class: App\Form\DataTransformer\TransformerManager
         arguments:
-            - !tagged 'app.document_converter'
+            - !tagged 'app.data_transformer'
 
     App\Search\SearchManager:
         autowire: false
