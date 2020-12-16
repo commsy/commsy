@@ -282,8 +282,9 @@ class MaterialController extends BaseController
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
         }
 
+        $itemController = $this->get('commsy.item_controller');
         $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
-        $hashTags = $this->getHashtags($roomId, $legacyEnvironment);
+        $hashTags = $itemController->getLinkedHashTags($itemId, $roomId, $legacyEnvironment);
         $hashNameArray = [];
         foreach ($hashTags as $hashTag) {
             $hashNameArray[] = $labelService->getLabel($hashTag)->getName();
@@ -389,23 +390,6 @@ class MaterialController extends BaseController
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
         );
-    }
-
-    private function getHashtags($roomId, $legacyEnvironment) {
-        $hashtags = [];
-
-        /** @var \cs_buzzword_manager $buzzwordManager */
-        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
-        $buzzwordManager->setContextLimit($roomId);
-        $buzzwordManager->setTypeLimit('buzzword');
-        $buzzwordManager->select();
-        $buzzwordList = $buzzwordManager->get();
-        $buzzwordItem = $buzzwordList->getFirst();
-        while ($buzzwordItem) {
-            $hashtags[$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
-            $buzzwordItem = $buzzwordList->getNext();
-        }
-        return array_flip($hashtags);
     }
 
     /**
