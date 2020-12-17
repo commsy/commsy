@@ -29,13 +29,6 @@ class SavedSearch
     private $accountId;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=false)
-     */
-    private $contextId;
-
-    /**
      * @var int|null
      *
      * @ORM\Column(name="deleter_id", type="integer", nullable=true)
@@ -77,18 +70,6 @@ class SavedSearch
     public function setAccountId(int $accountId): self
     {
         $this->accountId = $accountId;
-
-        return $this;
-    }
-
-    public function getContextId(): ?int
-    {
-        return $this->contextId;
-    }
-
-    public function setContextId(int $contextId): self
-    {
-        $this->contextId = $contextId;
 
         return $this;
     }

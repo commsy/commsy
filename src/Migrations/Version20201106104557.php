@@ -25,7 +25,6 @@ final class Version20201106104557 extends AbstractMigration
             CREATE TABLE saved_searches (
                 id int(11) NOT NULL AUTO_INCREMENT,
                 account_id int(11) NOT NULL,
-                context_id int(11) NOT NULL,
                 deleter_id int(11) DEFAULT NULL,
                 deletion_date datetime DEFAULT NULL,
                 title varchar(255) NOT NULL,
