@@ -1,14 +1,29 @@
 <?php
 namespace App\Form\Type;
 
+use App\Entity\SavedSearch;
+use App\Model\SearchData;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints;
 
+use Symfony\Component\Translation\TranslatorInterface;
+
 class ManageMyViewsType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface $translator
+     */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -19,19 +34,29 @@ class ManageMyViewsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var SearchData $searchData */
+        $searchData = $builder->getData();
+
         $builder
-            // TODO: add a dropdown menu that lists the existing saved views for the current user account, plus a delete button
-            // TODO: selecting a dropdown item should directly execute the stored saved search url (which includes its title & ID)
-            // TODO: on reload of the search view, populate this form's title & id fields from the request and select the corresponding dropdown item
-            ->add('title', Types\TextType::class, [
+            ->add('selectedSavedSearchId', Types\ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    $translatedTitleNew = $this->translator->trans('New view', [], 'search');
+                    return array_merge([$translatedTitleNew => 0], $this->buildSavedSearchChoices($searchData->getSavedSearches()));
+                }),
+                'label' => 'My view',
+                'required' => false,
+                'placeholder' => false,
+            ])
+            ->add('selectedSavedSearchTitle', Types\TextType::class, [
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'Title',
                 'required' => true,
-            ])
-            ->add('id', Types\HiddenType::class, [
-                'label' => false,
+
             ])
             ->add('save', Types\SubmitType::class, [
                 'attr' => [
@@ -69,5 +94,24 @@ class ManageMyViewsType extends AbstractType
     public function getBlockPrefix()
     {
         return 'manage_my_views';
+    }
+
+    /**
+     * Builds the array of choices for the dropdown of saved searches (aka "views").
+     *
+     * @param SavedSearch[]|null $savedSearches array of SavedSearch objects
+     */
+    private function buildSavedSearchChoices(?array $savedSearches): array
+    {
+        if (empty($savedSearches)) {
+            return [];
+        }
+
+        $choices = [];
+        foreach ($savedSearches as $savedSearch) {
+            $choices[$savedSearch->getTitle()] = $savedSearch->getId();
+        }
+
+        return $choices;
     }
 }

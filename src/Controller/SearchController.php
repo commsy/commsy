@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\SavedSearch;
+use App\Form\Type\ManageMyViewsType;
 use App\Search\QueryConditions\DescriptionQueryCondition;
 use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
@@ -20,6 +21,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -165,7 +167,8 @@ class SearchController extends BaseController
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
-        MultipleContextFilterCondition $multipleContextFilterCondition
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+        EntityManagerInterface $entityManager
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
@@ -240,11 +243,24 @@ class SearchController extends BaseController
         ]);
         $filterForm->handleRequest($request);
 
+        $manageMyViewsForm = $this->createForm(ManageMyViewsType::class, $searchData, []);
+        $manageMyViewsForm->handleRequest($request);
+        if ($manageMyViewsForm->isSubmitted() && $manageMyViewsForm->isValid()) {
+            $buttonName = $manageMyViewsForm->getClickedButton()->getName();
+// TODO: get the saved search that was selected on submit (in case it was changed by the user)
+            $savedSearch = $searchData->getSelectedSavedSearch();
+            if ($buttonName === 'save' && $savedSearch) {
+                $entityManager->persist($savedSearch);
+            }
+            $entityManager->flush();
+        }
+
         $totalHits = $searchResults->getTotalHits();
         $results = $this->prepareResults($searchResults, $roomId);
 
         return [
             'filterForm' => $filterForm->createView(),
+            'manageMyViewsForm' => $manageMyViewsForm->createView(),
             'roomId' => $roomId,
             'totalHits' => $totalHits,
             'results' => $results,

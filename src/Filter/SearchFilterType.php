@@ -37,6 +37,10 @@ class SearchFilterType extends AbstractType
         $searchData = $builder->getData();
 
         $builder
+            ->add('selectedSavedSearchId', Types\HiddenType::class, [
+                'label' => false,
+                'disabled' => true // read-only
+            ])
             /**
              * Since this form uses the same data class as the global search form, it is important to keep the field
              * name of the search query phrase identical
