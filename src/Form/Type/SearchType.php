@@ -25,14 +25,12 @@ class SearchType extends AbstractType
                     'class' => 'uk-search-field',
                 ],
                 'required' => false,
-                'translation_domain' => 'search',
             ])
             ->add('submit', Types\SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button-primary',
                 ],
                 'label' => 'Search',
-                'translation_domain' => 'search',
             ])
         ;
     }
@@ -47,7 +45,9 @@ class SearchType extends AbstractType
         $resolver
             ->setRequired([])
             ->setDefaults([
+                'csrf_protection'    => false,
                 'method'             => 'get',
+                'translation_domain' => 'search',
             ])
         ;
     }

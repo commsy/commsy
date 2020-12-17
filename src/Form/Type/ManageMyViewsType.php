@@ -78,6 +78,7 @@ class ManageMyViewsType extends AbstractType
         $resolver
             ->setRequired([])
             ->setDefaults([
+                'csrf_protection'    => false,
                 'method'             => 'get',
                 'translation_domain' => 'search',
             ]);
