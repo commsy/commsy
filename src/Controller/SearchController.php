@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\SavedSearch;
 use App\Search\QueryConditions\DescriptionQueryCondition;
 use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
@@ -167,13 +168,14 @@ class SearchController extends BaseController
         MultipleContextFilterCondition $multipleContextFilterCondition
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request);
+        $searchData = $this->populateSearchData($searchData, $request, $currentUser);
 
         // if the top form submits a POST request it will call setPhrase() on SearchData
         $topForm = $this->createForm(SearchType::class, $searchData, [
@@ -248,7 +250,7 @@ class SearchController extends BaseController
             'results' => $results,
             'searchData' => $searchData,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getEnvironment()->getCurrentUserItem(),
+            'user' => $currentUser,
         ];
     }
 
@@ -262,14 +264,17 @@ class SearchController extends BaseController
                                       $start = 0,
                                       $sort = 'date',
                                       Request $request,
+                                      LegacyEnvironment $legacyEnvironment,
                                       SearchManager $searchManager,
                                       MultipleContextFilterCondition $multipleContextFilterCondition)
     {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request);
+        $searchData = $this->populateSearchData($searchData, $request, $currentUser);
 
         /**
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
@@ -313,13 +318,12 @@ class SearchController extends BaseController
      *
      * @param SearchData $searchData
      * @param Request $request
+     * @param \cs_user_item $currentUser
      * @return SearchData
      */
-    private function populateSearchData(SearchData $searchData, Request $request): SearchData
+    private function populateSearchData(SearchData $searchData, Request $request, \cs_user_item $currentUser): SearchData
     {
-        // TODO: should we better move this method to SearchData.php?
-
-        if (!isset($request)) {
+        if (!$request || !$currentUser) {
             return $searchData;
         }
 
@@ -331,7 +335,31 @@ class SearchController extends BaseController
             return $searchData;
         }
 
+        $savedSearchParams = $requestParams['manage_my_views'] ?? null;
         $searchParams = $requestParams['search'] ?? $requestParams['search_filter'] ?? null;
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(SavedSearch::class);
+        $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+
+        // saved search parameters
+// TODO: also read any saved search ID from $searchParams
+        $savedSearchId = $savedSearchParams['selectedSavedSearchId'] ?? 0;
+        $savedSearchTitle = $savedSearchParams['selectedSavedSearchTitle'] ?? '';
+        if (!empty($savedSearchId)) {
+            $savedSearch = $repository->findOneById($savedSearchId);
+        } else {
+            $savedSearch = new SavedSearch();
+            $savedSearch->setAccountId($portalUserId);
+        }
+        if (!empty($savedSearchTitle)) {
+            $savedSearch->setTitle($savedSearchTitle);
+        }
+// TODO: also store other saved search params (like the `search_url`) in `$savedSearch`
+        $searchData->setSelectedSavedSearch($savedSearch);
+
+        $savedSearches = $repository->findByAccountId($portalUserId);
+        $searchData->setSavedSearches($savedSearches);
 
         // search phrase parameter
         if (!$searchData->getPhrase()) {
@@ -409,8 +437,6 @@ class SearchController extends BaseController
     public function setupSearchQueryConditions(SearchManager $searchManager,
                                                SearchData $searchData)
     {
-        // TODO: should we better move this method to SearchData.php?
-
         if (!isset($searchManager) || !isset($searchData)) {
             return;
         }
@@ -455,8 +481,6 @@ class SearchController extends BaseController
                                                 int $roomId,
                                                 MultipleContextFilterCondition $multipleContextFilterCondition)
     {
-        // TODO: should we better move this method to SearchData.php?
-
         if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition)) {
             return;
         }
