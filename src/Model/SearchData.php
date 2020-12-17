@@ -11,6 +11,11 @@ class SearchData
     private $selectedSavedSearch;
 
     /**
+     * @var SavedSearch[]|null $savedSearches array of all saved searches belonging to the current user's account
+     */
+    private $savedSearches;
+
+    /**
      * @var string|null
      */
     private $phrase;
@@ -105,6 +110,58 @@ class SearchData
     public function setSelectedSavedSearch(?SavedSearch $selectedSavedSearch): SearchData
     {
         $this->selectedSavedSearch = $selectedSavedSearch;
+        return $this;
+    }
+
+    /**
+     * @return SavedSearch[]|null
+     */
+    public function getSavedSearches(): ?array
+    {
+        return $this->savedSearches;
+    }
+
+    /**
+     * @param SavedSearch[]|null $savedSearches
+     * @return SearchData
+     */
+    public function setSavedSearches(?array $savedSearches): SearchData
+    {
+        $this->savedSearches = $savedSearches;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSelectedSavedSearchId(): int
+    {
+        if (!$this->selectedSavedSearch || !$this->selectedSavedSearch->getId()) {
+            return 0;
+        }
+        return $this->selectedSavedSearch->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectedSavedSearchTitle(): string
+    {
+        if (!$this->selectedSavedSearch || !$this->selectedSavedSearch->getTitle()) {
+            return '';
+        }
+        return $this->selectedSavedSearch->getTitle();
+    }
+
+    /**
+     * @param string $title
+     * @return SearchData
+     */
+    public function setSelectedSavedSearchTitle(string $title): SearchData
+    {
+        if ($this->selectedSavedSearch) {
+            $this->selectedSavedSearch->setTitle($title);
+        }
         return $this;
     }
 
