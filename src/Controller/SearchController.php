@@ -180,7 +180,7 @@ class SearchController extends BaseController
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
 
-        // if the top form submits a POST request it will call setPhrase() on SearchData
+        // if the top form submits a request it will call setPhrase() on SearchData
         $topForm = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId,

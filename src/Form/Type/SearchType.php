@@ -46,6 +46,9 @@ class SearchType extends AbstractType
     {
         $resolver
             ->setRequired([])
+            ->setDefaults([
+                'method'             => 'get',
+            ])
         ;
     }
 
