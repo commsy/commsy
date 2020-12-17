@@ -367,6 +367,9 @@ class SearchController extends BaseController
         } else {
             $savedSearch = new SavedSearch();
             $savedSearch->setAccountId($portalUserId);
+// TODO: prevent search URL getting overwritten by a `searchmore/...` URL (as a result of a `moreResultsAction()` call)
+// TODO: $request->getRequestUri() returns the current request URL containing params from the manage_my_views form (but not the search_filter params)!
+            $savedSearch->setSearchUrl($request->getRequestUri());
         }
         if (!empty($savedSearchTitle)) {
             $savedSearch->setTitle($savedSearchTitle);
