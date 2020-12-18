@@ -117,6 +117,15 @@
                                                 </a>
                                             </li>
                                         {% endif %}
+
+                                        {% if is_granted('ITEM_EDIT', 'NEW') %}
+                                            {# new entry #}
+                                            <li>
+                                                <a class="" href="{{ path('app_group_create', {'roomId': roomId}) }}" id="newEntry">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
                                         
                                         {# print #}
                                         <li>
