@@ -1,6 +1,7 @@
 <?php
 namespace App\Filter;
 
+use App\Entity\SavedSearch;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
@@ -9,12 +10,18 @@ use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
+use Symfony\Component\Validator\Constraints;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface $translator
+     */
+    private $translator;
+
     private $searchManager;
 
     public function __construct(TranslatorInterface $translator, SearchManager $searchManager)
@@ -37,9 +44,35 @@ class SearchFilterType extends AbstractType
         $searchData = $builder->getData();
 
         $builder
-            ->add('selectedSavedSearchId', Types\HiddenType::class, [
-                'label' => false,
-                'disabled' => true // read-only
+            ->add('selectedSavedSearchId', Types\ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    $translatedTitleNew = $this->translator->trans('New view', [], 'search');
+                    return array_merge([$translatedTitleNew => 0], $this->buildSavedSearchChoices($searchData->getSavedSearches()));
+                }),
+                'label' => 'My view',
+                'required' => false,
+                'placeholder' => false,
+            ])
+            ->add('selectedSavedSearchTitle', Types\TextType::class, [
+// TODO: only require a non-empty title (which does not only consist of whitespace) if the Save button was clicked
+//                'constraints' => [
+//                    new Constraints\NotBlank([
+//                        'normalizer' => 'trim',
+//                    ]),
+//                ],
+                'label' => 'Title',
+                'required' => true,
+
+            ])
+            ->add('save', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+                'label' => 'save',
+                'translation_domain' => 'form',
             ])
             /**
              * Since this form uses the same data class as the global search form, it is important to keep the field
@@ -236,6 +269,25 @@ class SearchFilterType extends AbstractType
         foreach ($terms as $name => $count) {
             $term = $name . " (" . $count . ")";
             $choices[$term] = $name;
+        }
+
+        return $choices;
+    }
+
+    /**
+     * Builds the array of choices for the dropdown of saved searches (aka "views").
+     *
+     * @param SavedSearch[]|null $savedSearches array of SavedSearch objects
+     */
+    private function buildSavedSearchChoices(?array $savedSearches): array
+    {
+        if (empty($savedSearches)) {
+            return [];
+        }
+
+        $choices = [];
+        foreach ($savedSearches as $savedSearch) {
+            $choices[$savedSearch->getTitle()] = $savedSearch->getId();
         }
 
         return $choices;

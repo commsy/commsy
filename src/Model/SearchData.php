@@ -154,12 +154,12 @@ class SearchData
     }
 
     /**
-     * @param string $title
+     * @param string|null $title
      * @return SearchData
      */
-    public function setSelectedSavedSearchTitle(string $title): SearchData
+    public function setSelectedSavedSearchTitle(?string $title): SearchData
     {
-        if ($this->selectedSavedSearch) {
+        if ($this->selectedSavedSearch && !empty($title)) {
             $this->selectedSavedSearch->setTitle($title);
         }
         return $this;

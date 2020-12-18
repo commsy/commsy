@@ -243,14 +243,26 @@ class SearchController extends BaseController
         ]);
         $filterForm->handleRequest($request);
 
-        $manageMyViewsForm = $this->createForm(ManageMyViewsType::class, $searchData, []);
-        $manageMyViewsForm->handleRequest($request);
-        if ($manageMyViewsForm->isSubmitted() && $manageMyViewsForm->isValid()) {
-            $buttonName = $manageMyViewsForm->getClickedButton()->getName();
-// TODO: get the saved search that was selected on submit (in case it was changed by the user)
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+// TODO: if a saved search was selected from the "My views" dropdown, redirect to the search_url stored for this saved search
+
+            $clickedButton = $filterForm->getClickedButton();
+            $buttonName = $clickedButton ? $clickedButton->getName() : '';
+
+// TODO: get the saved search that was selected on submit (in case it was changed by the user) -> maybe use EntityType instead of ChoiceType for the selectedSavedSearchId field?
             $savedSearch = $searchData->getSelectedSavedSearch();
+
             if ($buttonName === 'save' && $savedSearch) {
+//                $savedSearchIsNew = empty($savedSearch->getId()) ? true : false;
+// TODO: the search_url stored with the newly created saved_search item still contains a selectedSavedSearchId value of 0 (and not the actual `id` of the newly created SavedSearch object)
                 $entityManager->persist($savedSearch);
+
+// TODO: after clicking Save in the "My views" form, reload with selectedSavedSearchId set to the actual `id` of the newly created SavedSearch object
+// TODO: this doesn't work yet (i.e. after saving a new saved search, this new saved search doesn't get selected after reload):
+//                if ($savedSearchIsNew) {
+//                    // update $searchData with updated $savedSearch object (which now has the correct ID)
+//                    $searchData->setSelectedSavedSearch($savedSearch);
+//                }
             }
             $entityManager->flush();
         }
@@ -260,7 +272,6 @@ class SearchController extends BaseController
 
         return [
             'filterForm' => $filterForm->createView(),
-            'manageMyViewsForm' => $manageMyViewsForm->createView(),
             'roomId' => $roomId,
             'totalHits' => $totalHits,
             'results' => $results,
@@ -351,7 +362,6 @@ class SearchController extends BaseController
             return $searchData;
         }
 
-        $savedSearchParams = $requestParams['manage_my_views'] ?? null;
         $searchParams = $requestParams['search'] ?? $requestParams['search_filter'] ?? null;
 
         $em = $this->getDoctrine()->getManager();
@@ -359,22 +369,19 @@ class SearchController extends BaseController
         $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
 
         // saved search parameters
-// TODO: also read any saved search ID from $searchParams
-        $savedSearchId = $savedSearchParams['selectedSavedSearchId'] ?? 0;
-        $savedSearchTitle = $savedSearchParams['selectedSavedSearchTitle'] ?? '';
+        $savedSearchId = $searchParams['selectedSavedSearchId'] ?? 0;
+        $savedSearchTitle = $searchParams['selectedSavedSearchTitle'] ?? '';
         if (!empty($savedSearchId)) {
             $savedSearch = $repository->findOneById($savedSearchId);
         } else {
             $savedSearch = new SavedSearch();
             $savedSearch->setAccountId($portalUserId);
 // TODO: prevent search URL getting overwritten by a `searchmore/...` URL (as a result of a `moreResultsAction()` call)
-// TODO: $request->getRequestUri() returns the current request URL containing params from the manage_my_views form (but not the search_filter params)!
             $savedSearch->setSearchUrl($request->getRequestUri());
         }
         if (!empty($savedSearchTitle)) {
             $savedSearch->setTitle($savedSearchTitle);
         }
-// TODO: also store other saved search params (like the `search_url`) in `$savedSearch`
         $searchData->setSelectedSavedSearch($savedSearch);
 
         $savedSearches = $repository->findByAccountId($portalUserId);
