@@ -39,6 +39,14 @@ use Symfony\Component\Translation\TranslatorInterface;
 class PortalController extends Controller
 {
     /**
+     * @Route("/portal/{portalId}")
+     */
+    public function gotoAction(int $portalId, Request $request)
+    {
+        return $this->redirect($request->getBaseUrl() . '?cid=' . $portalId);
+    }
+
+    /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
