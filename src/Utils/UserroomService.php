@@ -340,7 +340,7 @@ class UserroomService
         }
     }
 
-    public function deleteUserroomsForProjectRoomId($projectRoomId)
+    public function deleteUserroomsForProjectRoomId(int $projectRoomId)
     {
         $roomItem = $this->roomService->getRoomItem($projectRoomId);
         if ($roomItem->getType() === 'project') {
