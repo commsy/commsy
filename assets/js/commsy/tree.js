@@ -156,8 +156,8 @@
         }
     });
     
-    jQuery.jstree.plugins.nohover = function() {
-        this.hover_node = jQuery.noop;
+    $.jstree.plugins.nohover = function() {
+        this.hover_node = $.noop;
     };
 
     $('.cs-tree-plain').first('ul').jstree({

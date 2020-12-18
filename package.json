@@ -31,7 +31,7 @@
     "hard-source-webpack-plugin": "^0.13.1",
     "jquery": "^3.5.1",
     "jscolor-picker": "^2.0.4",
-    "jstree": "^3.3.8",
+    "jstree": "^3.3.10",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "mathjax": "^3.0.1",
