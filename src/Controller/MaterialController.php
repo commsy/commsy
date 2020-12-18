@@ -9,9 +9,6 @@ use App\Entity\License;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
-use App\Utils\ItemService;
-use App\Utils\LabelService;
-use PhpParser\Node\Stmt\Label;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -202,9 +199,11 @@ class MaterialController extends BaseController
         // get material list from manager service 
         if ($sort != "none") {
             $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
-        } elseif ($this->get('session')->get('sortMaterials')) {
+        }
+        elseif ($this->get('session')->get('sortMaterials')) {
             $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->get('session')->get('sortMaterials'));
-        } else {
+        }
+        else {
             $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
         }
 
@@ -240,7 +239,7 @@ class MaterialController extends BaseController
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
             'ratingList' => $ratingList,
-
+            
         ]);
 
         return $printService->buildPdfResponse($html);
@@ -254,12 +253,12 @@ class MaterialController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
-    public function detailAction($roomId, $itemId, $versionId = null, Request $request, LegacyMarkup $legacyMarkup, AnnotationService $annotationService, ItemService $itemService, LabelService $labelService)
+    public function detailAction($roomId, $itemId, $versionId = null, Request $request, LegacyMarkup $legacyMarkup, AnnotationService $annotationService)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
+        
         $materialService = $this->get('commsy_legacy.material_service');
         if ($versionId === null) {
             $material = $materialService->getMaterial($itemId);
@@ -267,15 +266,7 @@ class MaterialController extends BaseController
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
         }
 
-        $itemController = new ItemController();
         $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
-        $hashTags = $itemController->getHashtags($roomId, $legacyEnvironment);
-        $hashNameArray = [];
-        foreach ($hashTags as $hashTag) {
-            $hashNameArray[] = $labelService->getLabel($hashTag)->getName();
-        }
-        $infoArray['material']->setBuzzwordArray($hashNameArray);
-        $infoArray['material']->setBuzzwordListByID($hashNameArray);
 
         $wordpressExporter = $this->get('commsy.export.wordpress');
         $canExportToWordpress = false;
@@ -340,8 +331,8 @@ class MaterialController extends BaseController
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
-            'workflowGroupArray' => $infoArray['workflowGroupArray'],
-            'workflowUserArray' => $infoArray['workflowUserArray'],
+            'workflowGroupArray'=> $infoArray['workflowGroupArray'],
+            'workflowUserArray'=> $infoArray['workflowUserArray'],
             'workflowText' => $infoArray['workflowText'],
             'workflowValidityDate' => $infoArray['workflowValidityDate'],
             'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
@@ -374,7 +365,7 @@ class MaterialController extends BaseController
             ],
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
-        );
+       );
     }
 
     /**
@@ -411,7 +402,7 @@ class MaterialController extends BaseController
             'itemId' => $itemId
         ]));
     }
-
+    
     /**
      * @Route("/room/{roomId}/material/{itemId}/rating/{vote}")
      * @Template()
@@ -420,23 +411,23 @@ class MaterialController extends BaseController
     {
         $materialService = $this->get('commsy_legacy.material_service');
         $material = $materialService->getMaterial($itemId);
-
+        
         $assessmentService = $this->get('commsy_legacy.assessment_service');
         if ($vote != 'remove') {
             $assessmentService->rateItem($material, $vote);
         } else {
             $assessmentService->removeRating($material);
         }
-
+        
         $assessmentService = $this->get('commsy_legacy.assessment_service');
         $ratingDetail = $assessmentService->getRatingDetail($material);
         $ratingAverageDetail = $assessmentService->getAverageRatingDetail($material);
         $ratingOwnDetail = $assessmentService->getOwnRatingDetail($material);
-
+        
         return array(
             'roomId' => $roomId,
             'material' => $material,
-            'ratingArray' => array(
+            'ratingArray' =>  array(
                 'ratingDetail' => $ratingDetail,
                 'ratingAverageDetail' => $ratingAverageDetail,
                 'ratingOwnDetail' => $ratingOwnDetail,
@@ -444,34 +435,33 @@ class MaterialController extends BaseController
         );
     }
 
-    private function getDetailInfo($roomId, $itemId, $versionId = null)
-    {
+    private function getDetailInfo ($roomId, $itemId, $versionId = null) {
         $infoArray = array();
-
+        
         $materialService = $this->get('commsy_legacy.material_service');
         $itemService = $this->get('commsy_legacy.item_service');
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
-
+        
         if ($versionId === null) {
             $material = $materialService->getMaterial($itemId);
         } else {
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
         }
-
-        if ($material == null) {
+        
+        if($material == null) {
             $section = $materialService->getSection($itemId);
             $material = $materialService->getMaterial($section->getLinkedItemID());
         }
-
+        
         $sectionList = $material->getSectionList()->to_array();
-
+        
         $itemArray = array($material);
         $itemArray = array_merge($itemArray, $sectionList);
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-
+ 
         $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
         $roomItem = $roomService->getRoomItem($material->getContextId());
@@ -487,39 +477,39 @@ class MaterialController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $material->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(), $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $material->getModificationDate()) {
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$material->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $material->getModificationDate() ) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-            $current_user = $user_list->getNext();
-        }
+		    $current_user = $user_list->getNext();
+		}
         $readerService = $this->get('commsy_legacy.reader_service');
-
+        
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
             }
-
+            
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-
+        
         $materials = $materialService->getListMaterials($roomId);
         $materialList = array();
         $counterBefore = 0;
@@ -562,7 +552,7 @@ class MaterialController extends BaseController
                 $firstItemId = $materials[0]->getItemId();
             }
             if ($nextItemId) {
-                $lastItemId = $materials[sizeof($materials) - 1]->getItemId();
+                $lastItemId = $materials[sizeof($materials)-1]->getItemId();
             }
         }
 
@@ -576,29 +566,29 @@ class MaterialController extends BaseController
             $itemManager = $legacyEnvironment->getItemManager();
             $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($material->getItemID());
             $persons_array = array();
-            foreach ($users_read_array as $user_read) {
+            foreach($users_read_array as $user_read){
                 $persons_array[] = $userManager->getItem($user_read['user_id']);
             }
 
-            if ($current_context->getWorkflowReaderGroup() == '1') {
+            if($current_context->getWorkflowReaderGroup() == '1'){
                 $group_manager = $legacyEnvironment->getGroupManager();
                 $group_manager->setContextLimit($legacyEnvironment->getCurrentContextID());
                 $group_manager->setTypeLimit('group');
                 $group_manager->select();
                 $group_list = $group_manager->get();
                 $group_item = $group_list->getFirst();
-                while ($group_item) {
+                while($group_item){
                     $link_user_list = $group_item->getLinkItemList('user');
                     $user_count_complete = $link_user_list->getCount();
                     $user_count = 0;
-                    foreach ($persons_array as $person) {
+                    foreach($persons_array as $person) {
                         if (!empty($persons_array[0])) {
                             $temp_link_list = $person->getLinkItemList('group');
                             $temp_link_item = $temp_link_list->getFirst();
 
                             while ($temp_link_item) {
                                 $temp_group_item = $temp_link_item->getLinkedItem($person);
-                                if ($group_item->getItemID() == $temp_group_item->getItemID()) {
+                                if($group_item->getItemID() == $temp_group_item->getItemID()) {
                                     $user_count++;
                                 }
                                 $temp_link_item = $temp_link_list->getNext();
@@ -607,20 +597,20 @@ class MaterialController extends BaseController
                     }
                     $tmpArray = array();
                     $tmpArray['iid'] = $group_item->getItemID();
-                    $tmpArray['title'] = $group_item->getTitle();
-                    $tmpArray['userCount'] = $user_count;
-                    $tmpArray['userCountComplete'] = $user_count_complete;
+                    $tmpArray['title']=  $group_item->getTitle();
+                    $tmpArray['userCount']=  $user_count;
+                    $tmpArray['userCountComplete']=  $user_count_complete;
                     $workflowGroupArray[] = $tmpArray;
                     $group_item = $group_list->getNext();
                 }
             }
 
-            if ($current_context->getWorkflowReaderPerson() == '1') {
+            if ($current_context->getWorkflowReaderPerson() == '1'){
                 foreach ($persons_array as $person) {
-                    if (!empty($persons_array[0])) {
+                    if (!empty($persons_array[0])){
                         $tmpArray = array();
                         $tmpArray['iid'] = $person->getItemID();
-                        $tmpArray['name'] = $person->getFullname();
+                        $tmpArray['name']=  $person->getFullname();
                         $workflowUserArray[] = $tmpArray;
                     }
                 }
@@ -628,12 +618,12 @@ class MaterialController extends BaseController
 
             $currentContextItem = $legacyEnvironment->getCurrentContextItem();
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
-
+            
             if ($currentContextItem->withWorkflow()) {
                 if (!$currentUserItem->isRoot()) {
                     if (!$currentUserItem->isGuest() && $material->isReadByUser($currentUserItem)) {
                         $workflowUnread = true;
-                    } else {
+                    } else  {
                         $workflowRead = true;
                     }
                 }
@@ -672,30 +662,30 @@ class MaterialController extends BaseController
 
         $item = $material;
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         // mark annotations as read
         $annotationList = $material->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
+ 
         $readsectionList = $material->getSectionList();
 
         $section = $readsectionList->getFirst();
-        while ($section) {
+        while($section) {
             $reader = $reader_manager->getLatestReader($section->getItemID());
-            if (empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
+            if(empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
                 $reader_manager->markRead($section->getItemID(), 0);
             }
 
             $noticed = $noticed_manager->getLatestNoticed($section->getItemID());
-            if (empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
+            if(empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
                 $noticed_manager->markNoticed($section->getItemID(), 0);
             }
 
@@ -742,12 +732,12 @@ class MaterialController extends BaseController
                 }
             }
             asort($versions);
-
+            
             $timeDiff = $maxTimestamp - $minTimestamp;
             $minPercentDiff = ($timeDiff / 100) * sizeof($versions);
             $lastPercent = 0;
             $first = true;
-            $toFollow = sizeof($versions) - 1;
+            $toFollow = sizeof($versions)-1;
             foreach ($versions as $timestamp => $versionId) {
                 $tempTimeDiff = $timestamp - $minTimestamp;
                 $tempPercent = 0;
@@ -763,7 +753,7 @@ class MaterialController extends BaseController
                 } else {
                     $first = false;
                 }
-
+                
                 if ($tempPercent >= 95) {
                     if ($toFollow != 0) {
                         $tempPercent = $tempPercent - ($toFollow * 2);
@@ -813,12 +803,11 @@ class MaterialController extends BaseController
         ] : [];
         $infoArray['roomCategories'] = $categories;
         $infoArray['versions'] = $versions;
-
+        
         return $infoArray;
     }
 
-    private function getTagDetailArray($baseCategories, $itemCategories)
-    {
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
         $result = array();
         $tempResult = array();
         $addCategory = false;
@@ -861,27 +850,27 @@ class MaterialController extends BaseController
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
+        
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-
+        
         $materialService = $this->get('commsy_legacy.material_service');
-
+        
         $tempItem = NULL;
-
+        
         if ($item->getItemType() == 'material') {
             $tempItem = $materialService->getMaterial($itemId);
         }
 
         $itemArray = array($tempItem);
-
+    
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
-
+        
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,
@@ -921,7 +910,7 @@ class MaterialController extends BaseController
 
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-
+        
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
 
@@ -934,7 +923,7 @@ class MaterialController extends BaseController
         $isMaterial = false;
         $isDraft = false;
         $isSaved = false;
-
+        
         $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
@@ -974,7 +963,7 @@ class MaterialController extends BaseController
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
-                'placeholderText' => '[' . $translator->trans('insert title') . ']',
+                'placeholderText' => '['.$translator->trans('insert title').']',
                 'categoryMappingOptions' => [
                     'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
                 ],
@@ -997,7 +986,7 @@ class MaterialController extends BaseController
             }
             $formData = $transformer->transform($section);
             $form = $this->createForm(SectionType::class, $formData, array(
-                'placeholderText' => '[' . $translator->trans('insert title') . ']',
+                'placeholderText' => '['.$translator->trans('insert title').']',
             ));
 
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialService->getMaterial($section->getlinkedItemID())));
@@ -1043,7 +1032,7 @@ class MaterialController extends BaseController
                 }
 
                 $typedItem->save();
-
+                
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
@@ -1071,7 +1060,7 @@ class MaterialController extends BaseController
             'licensesContent' => $licensesContent,
         );
     }
-
+    
     /**
      * @Route("/room/{roomId}/material/{itemId}/save")
      * @Template()
@@ -1082,15 +1071,15 @@ class MaterialController extends BaseController
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
+        
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-
+        
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
-
+        
         $tempItem = NULL;
-
+        
         if ($item->getItemType() == 'material') {
             $tempItem = $materialService->getMaterial($itemId);
 
@@ -1100,13 +1089,13 @@ class MaterialController extends BaseController
 
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($materialService->getMaterial($tempItem->getLinkedItemID())));
         }
-
+        
         $itemArray = array($tempItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-
+        
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         return array(
@@ -1154,8 +1143,8 @@ class MaterialController extends BaseController
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
-            'workflowGroupArray' => $infoArray['workflowGroupArray'],
-            'workflowUserArray' => $infoArray['workflowUserArray'],
+            'workflowGroupArray'=> $infoArray['workflowGroupArray'],
+            'workflowUserArray'=> $infoArray['workflowUserArray'],
             'workflowText' => $infoArray['workflowText'],
             'workflowValidityDate' => $infoArray['workflowValidityDate'],
             'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
@@ -1187,7 +1176,7 @@ class MaterialController extends BaseController
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
         $materialService = $this->get('commsy_legacy.material_service');
-
+        
         // create new material item
         $materialItem = $materialService->getNewMaterial();
         $materialItem->setBibKind('none');
@@ -1222,13 +1211,13 @@ class MaterialController extends BaseController
         $section->setDraftStatus(1);
         $section->setLinkedItemId($itemId);
         $section->setVersionId($material->getVersionId());
-        $section->setNumber($countSections + 1);
+        $section->setNumber($countSections+1);
         $section->save();
 
         $formData = $transformer->transform($section);
         $form = $this->createForm(SectionType::class, $formData, array(
             'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '[' . $translator->trans('insert title') . ']',
+            'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
         return array(
@@ -1265,7 +1254,7 @@ class MaterialController extends BaseController
 
         $form = $this->createForm(SectionType::class, $formData, array(
             'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '[' . $translator->trans('insert title') . ']',
+            'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
         $form->handleRequest($request);
@@ -1288,7 +1277,7 @@ class MaterialController extends BaseController
 
                 // this will also update the material item's modification date to indicate that it has changes
                 $section->getLinkedItem()->save();
-
+                
             } else if ($form->get('cancel')->isClicked()) {
                 // remove not saved item
                 $section->delete();
@@ -1395,7 +1384,7 @@ class MaterialController extends BaseController
             'sectionList' => $material->getSectionList()->to_array(),
         );
     }
-
+    
     /**
      * @Route("/room/{roomId}/material/{itemId}/savesections")
      * @Template()
@@ -1418,26 +1407,26 @@ class MaterialController extends BaseController
             'sections' => $material->getSectionList()->to_array(),
         ];
     }
-
+    
     /**
      * @Route("/room/{roomId}/material/{itemId}/{versionId}/createversion/")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function createVersionAction($roomId, $itemId, $versionId)
-    {
+    {           
         $materialService = $this->get('commsy_legacy.material_service');
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
-
+        
         $material = $materialService->getMaterialByVersion($itemId, $versionId);
 
-        $newVersionId = $material->getVersionID() + 1;
+        $newVersionId = $material->getVersionID()+1;
         $newMaterial = $material->cloneCopy(true);
         $newMaterial->setVersionID($newVersionId);
-
+        
         $newMaterial->setModificatorItem($currentUserItem);
-
+        
         $newMaterial->save();
 
         return $this->redirectToRoute('app_material_detail', [
