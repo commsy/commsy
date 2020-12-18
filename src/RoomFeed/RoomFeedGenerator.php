@@ -244,38 +244,21 @@ class RoomFeedGenerator
         $roomIds = [];
 
         $projectRooms = $currentUser->getUserRelatedProjectList();
-        if (isset($projectRooms) && $projectRooms->isNotEmpty()) {
-            $projectRoom = $projectRooms->getFirst();
-
-            while ($projectRoom) {
-                $roomIds[] = $projectRoom->getItemId();
-
-                $projectRoom = $projectRooms->getNext();
-            }
+        foreach ($projectRooms as $projectRoom) {
+            /** @var \cs_project_item $projectRoom */
+            $roomIds[] = $projectRoom->getItemID();
         }
 
-        $relatedUsers = $currentUser->getRelatedUserList();
-        foreach ($relatedUsers as $relatedUser) {
-            $linkedUserroomItem = $relatedUser->getLinkedUserroomItem();
-            if ($linkedUserroomItem !== null) {
-                $roomIds[] = (String)$linkedUserroomItem->getItemId();
-            }
-            $relatedRooms = $relatedUser->getRelatedUserroomsList();
-            foreach ($relatedRooms as $relatedRoom) {
-                $roomIds[] = $relatedRoom->getItemID();
-
-            }
+        $userRooms = $currentUser->getRelatedUserroomsList();
+        foreach ($userRooms as $userRoom) {
+            /** @var \cs_userroom_item $userRoom */
+            $roomIds[] = $userRoom->getItemID();
         }
 
         $communityRooms = $currentUser->getUserRelatedCommunityList();
-        if (isset($communityRooms) && $communityRooms->isNotEmpty()) {
-            $communityRoom = $communityRooms->getFirst();
-
-            while ($communityRoom) {
-                $roomIds[] = $communityRoom->getItemId();
-
-                $communityRoom = $communityRooms->getNext();
-            }
+        foreach ($communityRooms as $communityRoom) {
+            /** @var \cs_community_item $communityRoom */
+            $roomIds[] = $communityRoom->getItemID();
         }
 
         /**
