@@ -133,9 +133,10 @@
             // override form submit behaviour
             article.find('button').click(function (event) {
                 let $button = $(this);
+                let buttonNameAttr = $button.attr('name');
 
                 // cancel is not handled via ajax
-                if ($button.attr('name').indexOf('cancel') > -1) {
+                if (buttonNameAttr.indexOf('cancel') > -1) {
                     event.preventDefault ? event.preventDefault() : (event.returnValue = false);
                     /*
                     // cancel editing a NEW entry => return to list view
@@ -176,7 +177,7 @@
                         }
                     });
                 } else {
-                    if (!$button.attr('name').indexOf('newHashtagAdd') > -1) {
+                    if (!(buttonNameAttr.indexOf('newHashtagAdd') > -1 || buttonNameAttr.indexOf('itemLinks[newHashtagAdd]') > -1)) {
                         let form = $(this).closest('form');
                         if (form[0].checkValidity()) {
                             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
