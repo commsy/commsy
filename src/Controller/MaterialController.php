@@ -4,30 +4,30 @@ namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
 use App\Action\Download\DownloadAction;
-use App\Entity\Session;
-use App\Http\JsonRedirectResponse;
 use App\Entity\License;
+use App\Event\CommsyEditEvent;
+use App\Filter\MaterialFilterType;
+use App\Form\Type\AnnotationType;
+use App\Form\Type\MaterialSectionType;
+use App\Form\Type\MaterialType;
+use App\Form\Type\SectionType;
+use App\Http\JsonRedirectResponse;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\ItemService;
 use App\Utils\LabelService;
-use PhpParser\Node\Stmt\Label;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Utils\MaterialService;
+use App\Utils\ReaderService;
+use App\Utils\RoomService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
 
-
-use App\Filter\MaterialFilterType;
-use App\Form\Type\AnnotationType;
-use App\Form\Type\MaterialType;
-use App\Form\Type\SectionType;
-use App\Form\Type\MaterialSectionType;
-
-use App\Event\CommsyEditEvent;
 
 /**
  * Class MaterialController
@@ -36,19 +36,6 @@ use App\Event\CommsyEditEvent;
  */
 class MaterialController extends BaseController
 {
-
-    private $session;
-
-    /**
-     * MaterialController constructor.
-     * @param $session
-     */
-    public function __construct(SessionInterface $session)
-    {
-        $this->session = $session;
-    }
-
-
     /**
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
@@ -192,9 +179,17 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request, $sort, PrintService $printService)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
+    public function printlistAction(
+        $roomId,
+        Request $request,
+        $sort,
+        PrintService $printService,
+        RoomService $roomService,
+        MaterialService $materialService,
+        ReaderService $readerService,
+        LegacyEnvironment $legacyEnvironment,
+        SessionInterface $session
+    ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -204,7 +199,6 @@ class MaterialController extends BaseController
         $filterForm = $this->createFilterForm($roomItem);
 
         // get the material manager service
-        $materialService = $this->get('commsy_legacy.material_service');
         $numAllMaterials = $materialService->getCountArray($roomId)['countAll'];
 
         // apply filter
@@ -215,18 +209,16 @@ class MaterialController extends BaseController
         }
 
         // get material list from manager service 
-        if ($sort != "none") {
+        if ($sort !== "none") {
             $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
-        } elseif ($this->session->get('sortMaterials')) {
-            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->session->get('sortMaterials'));
+        } elseif ($session->get('sortMaterials')) {
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $session->get('sortMaterials'));
         } else {
             $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
         }
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-
 
         $readerList = array();
         foreach ($materials as $item) {
