@@ -18,17 +18,13 @@
                 <source>articles</source>
                 <target>Articles</target>
             </trans-unit>
-            <trans-unit id="discussionNewArticle">
-                <source>new article</source>
-                <target>New article</target>
+            <trans-unit id="discussion_answer">
+                <source>Answer</source>
+                <target>Answer</target>
             </trans-unit>
             <trans-unit id="latest_articles">
                 <source>latest article</source>
                 <target>Latest article</target>
-            </trans-unit>
-            <trans-unit id="discussion_answer_article">
-                <source>Answer</source>
-                <target>Answer</target>
             </trans-unit>
         </body>
     </file>
