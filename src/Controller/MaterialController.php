@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
 use App\Action\Download\DownloadAction;
-use App\Entity\Session;
 use App\Http\JsonRedirectResponse;
 use App\Entity\License;
 use App\Services\LegacyMarkup;
@@ -13,7 +12,6 @@ use App\Utils\AnnotationService;
 use App\Utils\ItemService;
 use App\Utils\LabelService;
 use PhpParser\Node\Stmt\Label;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -36,19 +34,6 @@ use App\Event\CommsyEditEvent;
  */
 class MaterialController extends BaseController
 {
-
-    private $session;
-
-    /**
-     * MaterialController constructor.
-     * @param $session
-     */
-    public function __construct(SessionInterface $session)
-    {
-        $this->session = $session;
-    }
-
-
     /**
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
@@ -217,8 +202,8 @@ class MaterialController extends BaseController
         // get material list from manager service 
         if ($sort != "none") {
             $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
-        } elseif ($this->session->get('sortMaterials')) {
-            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->session->get('sortMaterials'));
+        } elseif ($this->get('session')->get('sortMaterials')) {
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->get('session')->get('sortMaterials'));
         } else {
             $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
         }
@@ -282,8 +267,9 @@ class MaterialController extends BaseController
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
         }
 
+        $itemController = new ItemController();
         $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
-        $hashTags = $this->getHashtags($roomId, $legacyEnvironment);
+        $hashTags = $itemController->getHashtags($roomId, $legacyEnvironment);
         $hashNameArray = [];
         foreach ($hashTags as $hashTag) {
             $hashNameArray[] = $labelService->getLabel($hashTag)->getName();
@@ -389,23 +375,6 @@ class MaterialController extends BaseController
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
         );
-    }
-
-    private function getHashtags($roomId, $legacyEnvironment) {
-        $hashtags = [];
-
-        /** @var \cs_buzzword_manager $buzzwordManager */
-        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
-        $buzzwordManager->setContextLimit($roomId);
-        $buzzwordManager->setTypeLimit('buzzword');
-        $buzzwordManager->select();
-        $buzzwordList = $buzzwordManager->get();
-        $buzzwordItem = $buzzwordList->getFirst();
-        while ($buzzwordItem) {
-            $hashtags[$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
-            $buzzwordItem = $buzzwordList->getNext();
-        }
-        return array_flip($hashtags);
     }
 
     /**
