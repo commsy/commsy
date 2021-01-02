@@ -27,6 +27,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,6 +42,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SettingsController extends AbstractController
 {
+    /**
+     * @var ParameterBagInterface
+     */
+    private $params;
+
+    /**
+     * @required
+     * @param ParameterBagInterface $params
+     */
+    public function setParameterBag(ParameterBagInterface $params)
+    {
+        $this->params = $params;
+    }
+
     /**
      * @Route("/room/{roomId}/settings/general")
      * @Template
@@ -256,12 +271,12 @@ class SettingsController extends AbstractController
         $roomData = $transformer->transform($roomItem);
 
         // is theme pre-defined in config?
-        $preDefinedTheme = $this->getParameter('liip_theme_pre_configuration.active_theme');
+        $preDefinedTheme = $this->params->get('liip_theme_pre_configuration.active_theme');
 
         //if theme is pre-decined, do not include it in the form
         // get the configured LiipThemeBundle themes
 
-        $themeArray = (!empty($preDefinedTheme)) ? null : $this->getParameter('liip_theme.themes');
+        $themeArray = (!empty($preDefinedTheme)) ? null : $this->params->get('liip_theme.themes');
         $form = $this->createForm(AppearanceSettingsType::class, $roomData, [
             'roomId' => $roomId,
             'themes' => $themeArray,

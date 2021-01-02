@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Export\WordpressExporter;
 use App\Form\DataTransformer\MaterialTransformer;
@@ -47,9 +48,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class MaterialController extends BaseController
 {
-
+    /**
+     * @var MaterialService
+     */
     private $materialService;
+    /**
+     * @var ItemService
+     */
     private $itemService;
+    /**
+     * @var AnnotationService
+     */
     private $annotationService;
     /**
      * @var LegacyEnvironment
@@ -1697,13 +1706,13 @@ class MaterialController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        DeleteAction $deleteAction
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.delete.generic');
-        return $action->execute($room, $items);
+        return $deleteAction->execute($room, $items);
     }
 
     /**
@@ -1741,7 +1750,6 @@ class MaterialController extends BaseController
         $itemIds = []
     ) {
         // get the material manager service
-        $materialService = $this->get('commsy_legacy.material_service');
 
         if ($selectAll) {
             if ($request->query->has('material_filter')) {
@@ -1752,14 +1760,14 @@ class MaterialController extends BaseController
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $materialService->setFilterConditions($filterForm);
+                $this->materialService->setFilterConditions($filterForm);
             } else {
-                $materialService->hideDeactivatedEntries();
+                $this->materialService->hideDeactivatedEntries();
             }
 
-            return $materialService->getListMaterials($roomItem->getItemID());
+            return $this->materialService->getListMaterials($roomItem->getItemID());
         } else {
-            return $materialService->getMaterialsById($roomItem->getItemID(), $itemIds);
+            return $this->materialService->getMaterialsById($roomItem->getItemID(), $itemIds);
         }
     }
 }
