@@ -5,6 +5,7 @@ use App\Entity\SavedSearch;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,18 +45,31 @@ class SearchFilterType extends AbstractType
         $searchData = $builder->getData();
 
         $builder
-            ->add('selectedSavedSearchId', Types\ChoiceType::class, [
+            ->add('selectedSavedSearch', EntityType::class, [
                 'attr' => [
+// TODO: ideally, don't reload if the "Neue Ansicht" gets chosen again
                     'onchange' => 'this.form.submit()',
                 ],
-                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    $translatedTitleNew = $this->translator->trans('New view', [], 'search');
-                    return array_merge([$translatedTitleNew => 0], $this->buildSavedSearchChoices($searchData->getSavedSearches()));
-                }),
+                'class' => SavedSearch::class,
+                'choices' => $searchData->getSavedSearches(),
+                'choice_label' => 'title',
                 'label' => 'My view',
                 'required' => false,
-                'placeholder' => false,
+                'placeholder' => 'New view',
             ])
+//            ->add('selectedSavedSearchId', Types\ChoiceType::class, [
+//                'attr' => [
+//// TODO: ideally, don't reload if the "Neue Ansicht" gets chosen again
+//                    'onchange' => 'this.form.submit()',
+//                ],
+//                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+//                    $translatedTitleNew = $this->translator->trans('New view', [], 'search');
+//                    return array_merge([$translatedTitleNew => 0], $this->buildSavedSearchChoices($searchData->getSavedSearches()));
+//                }),
+//                'label' => 'My view',
+//                'required' => false,
+//                'placeholder' => false,
+//            ])
             ->add('selectedSavedSearchTitle', Types\TextType::class, [
 // TODO: only require a non-empty title (which does not only consist of whitespace) if the Save button was clicked
 //                'constraints' => [
@@ -64,7 +78,7 @@ class SearchFilterType extends AbstractType
 //                    ]),
 //                ],
                 'label' => 'Title',
-                'required' => true,
+//                'required' => true,
 
             ])
             ->add('save', Types\SubmitType::class, [

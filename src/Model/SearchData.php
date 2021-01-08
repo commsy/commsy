@@ -11,6 +11,11 @@ class SearchData
     private $selectedSavedSearch;
 
     /**
+     * @var string|null
+     */
+    private $selectedSavedSearchTitle;
+
+    /**
      * @var SavedSearch[]|null $savedSearches array of all saved searches belonging to the current user's account
      */
     private $savedSearches;
@@ -143,14 +148,16 @@ class SearchData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSelectedSavedSearchTitle(): string
+    public function getSelectedSavedSearchTitle(): ?string
     {
-        if (!$this->selectedSavedSearch || !$this->selectedSavedSearch->getTitle()) {
-            return '';
-        }
-        return $this->selectedSavedSearch->getTitle();
+        return $this->selectedSavedSearchTitle;
+
+//        if (!$this->selectedSavedSearch || !$this->selectedSavedSearch->getTitle()) {
+//            return '';
+//        }
+//        return $this->selectedSavedSearch->getTitle();
     }
 
     /**
@@ -159,10 +166,13 @@ class SearchData
      */
     public function setSelectedSavedSearchTitle(?string $title): SearchData
     {
-        if ($this->selectedSavedSearch && !empty($title)) {
-            $this->selectedSavedSearch->setTitle($title);
-        }
+        $this->selectedSavedSearchTitle = $title;
         return $this;
+
+//        if ($this->selectedSavedSearch && !empty($title)) {
+//            $this->selectedSavedSearch->setTitle($title);
+//        }
+//        return $this;
     }
 
     /**

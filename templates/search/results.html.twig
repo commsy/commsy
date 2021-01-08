@@ -25,7 +25,7 @@
 
                 <div id="manage-my-views" class="uk-hidden-small">
                     {{ form_start(filterForm) }}
-                    {{ form_row(filterForm.selectedSavedSearchId) }}
+                    {{ form_row(filterForm.selectedSavedSearch) }}
                     {{ form_row(filterForm.selectedSavedSearchTitle) }}
                     {{ form_row(filterForm.save) }}
                 </div>
@@ -93,6 +93,8 @@
                                                 {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
                                                     {% set returnUrlParams = {
                                                         'roomId': roomId,
+                                                        'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId,
+                                                        'search_filter[selectedSavedSearchTitle]': searchData.selectedSavedSearchTitle ?? '',
                                                         'search_filter[phrase]': searchData.phrase,
                                                         'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
                                                         "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
@@ -179,6 +181,8 @@
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
                                 "target": "#search-feed",
                                 "query": {
+                                    "search[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
+                                    "search[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
                                     "search[phrase]": "{{ searchData.phrase }}",
                                     "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
                                     "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
