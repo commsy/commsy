@@ -56,7 +56,7 @@ class DiscussionController extends BaseController
             $discussionService->setFilterConditions($filterForm);
         }
         else {
-            $discussionService->showNoNotActivatedEntries();
+            $discussionService->hideDeactivatedEntries();
         }
 
         // get discussion list from manager service
@@ -126,7 +126,7 @@ class DiscussionController extends BaseController
             $discussionService->setFilterConditions($filterForm);
         }
         else {
-            $discussionService->showNoNotActivatedEntries();
+            $discussionService->hideDeactivatedEntries();
         }
 
         // get discussion list from manager service
@@ -1095,7 +1095,7 @@ class DiscussionController extends BaseController
     {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
         ];
 
         return $this->createForm(DiscussionFilterType::class, $defaultFilterValues, [
@@ -1130,7 +1130,7 @@ class DiscussionController extends BaseController
                 // apply filter
                 $discussionService->setFilterConditions($filterForm);
             } else {
-                $discussionService->showNoNotActivatedEntries();
+                $discussionService->hideDeactivatedEntries();
             }
 
             return $discussionService->getListDiscussions($roomItem->getItemID());

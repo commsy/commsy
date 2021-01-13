@@ -46,7 +46,7 @@ class ProjectService
 
         // activated
         if ($formData['activated']) {
-            $this->projectManager->showNoNotActivatedEntries();
+            $this->projectManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         }
 
         // rubrics

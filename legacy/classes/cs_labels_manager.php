@@ -460,9 +460,15 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
           $query .= ' AND ' . $this->addDatabasePrefix('labels') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
       }
 
-     if(!$this->_show_not_activated_entries_limit) {
-        $query .= ' AND ('.$this->addDatabasePrefix('labels').'.modification_date IS NULL OR '.$this->addDatabasePrefix('labels').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
-     }
+      switch ($this->inactiveEntriesLimit) {
+          case self::SHOW_ENTRIES_ONLY_ACTIVATED:
+              $query .= ' AND (' . $this->addDatabasePrefix('labels') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('labels') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+              break;
+          case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
+              $query .= ' AND (' . $this->addDatabasePrefix('labels') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('labels') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+              break;
+      }
+
      if ($this->_delete_limit) {
         $query .= ' AND '.$this->addDatabasePrefix('labels').'.deleter_id IS NULL';
      }

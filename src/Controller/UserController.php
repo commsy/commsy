@@ -163,7 +163,7 @@ class UserController extends BaseController
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         } else {
-            $userService->showNoNotActivatedEntries();
+            $userService->hideDeactivatedEntries();
             $userService->showUserStatus(8);
         }
 
@@ -1362,7 +1362,7 @@ class UserController extends BaseController
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         } else {
-            $userService->showNoNotActivatedEntries();
+            $userService->hideDeactivatedEntries();
             $userService->showUserStatus(8);
         }
 
@@ -1702,7 +1702,7 @@ class UserController extends BaseController
                 // apply filter
                 $userService->setFilterConditions($filterForm);
             } else {
-                $userService->showNoNotActivatedEntries();
+                $userService->hideDeactivatedEntries();
                 $userService->showUserStatus(8);
             }
 

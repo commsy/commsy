@@ -689,7 +689,7 @@ class SoapService
 
         $datesManager = $this->legacyEnvironment->getDatesManager();
         $datesManager->setContextLimit($contextId);
-        $datesManager->showNoNotActivatedEntries();
+        $datesManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         $datesManager->setDateModeLimit(2);
         $datesManager->select();
 
@@ -750,7 +750,7 @@ class SoapService
 
         $datesManager = $this->legacyEnvironment->getDatesManager();
         $datesManager->setContextLimit($contextId);
-        $datesManager->showNoNotActivatedEntries();
+        $datesManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         $datesManager->setDateModeLimit(2);
         $datesManager->setBetweenLimit($startDate, $endDate);
 
@@ -810,7 +810,7 @@ class SoapService
 
         $announcementManager = $this->legacyEnvironment->getAnnouncementManager();
         $announcementManager->setContextLimit($contextId);
-        $announcementManager->showNoNotActivatedEntries();
+        $announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         $announcementManager->setDateLimit($validDate);
 
         $announcementManager->select();

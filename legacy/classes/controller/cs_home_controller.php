@@ -242,7 +242,7 @@
 	                        $count_all = $manager->getCountAll();
 	                        $manager->setDateLimit(getCurrentDateTimeInMySQL());
 	                        $manager->setSortOrder('modified');
-	                        $manager->showNoNotActivatedEntries();
+	                        $manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
@@ -262,7 +262,7 @@
 	                        $count_all = $manager->getCountAll();
 	                        $manager->setFutureLimit();
 	                        $manager->setDateModeLimit(3);
-	                        $manager->showNoNotActivatedEntries();
+	                        $manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
@@ -308,7 +308,7 @@
 	                        $count_all = $manager->getCountAll();
 	                        $manager->setStatusLimit(4);
 	                        $manager->setSortOrder('date');
-	                        $manager->showNoNotActivatedEntries();
+	                        $manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
@@ -340,7 +340,7 @@
 	                        $manager->reset();
 	                        $manager->setContextLimit($environment->getCurrentContextID());
 	                        
-	                        $manager->showNoNotActivatedEntries();
+	                        $manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 	                        
 	                        $manager->select();
 	                        $list = $manager->get();
@@ -375,7 +375,7 @@
 	                           $manager->setIntervalLimit(0,5);
 	                           $home_rubric_limit = 5;
 	                        }
-	                        $manager->showNoNotActivatedEntries();
+	                        $manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
@@ -414,7 +414,7 @@
 	                           $manager->setIntervalLimit(0,5);
 	                           $home_rubric_limit = 5;
 	                        }
-	                        $manager->showNoNotActivatedEntries();
+	                        $manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);

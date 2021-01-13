@@ -62,7 +62,7 @@ class GroupController extends BaseController
             // set filter conditions in group manager
             $groupService->setFilterConditions($filterForm);
         } else {
-            $groupService->showNoNotActivatedEntries();
+            $groupService->hideDeactivatedEntries();
         }
 
         // get group list from manager service 
@@ -115,7 +115,7 @@ class GroupController extends BaseController
             // set filter conditions in group manager
             $groupService->setFilterConditions($filterForm);
         } else {
-            $groupService->showNoNotActivatedEntries();
+            $groupService->hideDeactivatedEntries();
         }
 
         // get group list from manager service 
@@ -189,7 +189,7 @@ class GroupController extends BaseController
 
             $groupService->setFilterConditions($filterForm);
         } else {
-            $groupService->showNoNotActivatedEntries();
+            $groupService->hideDeactivatedEntries();
         }
 
         // get group list from manager service 
@@ -1643,7 +1643,7 @@ class GroupController extends BaseController
     {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
         ];
 
         return $this->createForm(GroupFilterType::class, $defaultFilterValues, [
@@ -1678,7 +1678,7 @@ class GroupController extends BaseController
                 // apply filter
                 $groupService->setFilterConditions($filterForm);
             } else {
-                $groupService->showNoNotActivatedEntries();
+                $groupService->hideDeactivatedEntries();
             }
 
             return $groupService->getListGroups($roomItem->getItemID());

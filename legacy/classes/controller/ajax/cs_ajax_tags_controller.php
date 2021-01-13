@@ -576,7 +576,7 @@ class cs_ajax_tags_controller extends cs_ajax_controller
                     if ($restrictions['only_linked'] === true)
                         $rubric_manager->setIDArrayLimit($selected_ids);
                     if ($restrictions['type'] == 2)
-                        $rubric_manager->showNoNotActivatedEntries();
+                        $rubric_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
                     
                     $rubric_manager->selectDistinct();
                     $rubric_list = $rubric_manager->get();

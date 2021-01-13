@@ -193,11 +193,14 @@ class cs_item_manager extends cs_manager {
            }
         }
 
-/***Activating Code***/
-      if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND ('.$this->addDatabasePrefix('items').'.modification_date IS NULL OR '.$this->addDatabasePrefix('items').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
-      }
-/*********************/
+       switch ($this->inactiveEntriesLimit) {
+           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('items') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('items') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('items') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('items') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+       }
 
      if ( isset($this->_existence_limit) ) {
          $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';

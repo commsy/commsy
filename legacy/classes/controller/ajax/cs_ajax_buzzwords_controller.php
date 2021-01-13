@@ -367,7 +367,7 @@ if ( !empty($_POST['itemlist'])
 					// set restrictions
 					if(!empty($restrictions['search'])) $rubric_manager->setSearchLimit($restrictions['search']);
 					if($restrictions['only_linked'] === true) $rubric_manager->setIDArrayLimit($selected_ids);
-					if($restrictions['type'] == 2) $rubric_manager->showNoNotActivatedEntries();
+					if($restrictions['type'] == 2) $rubric_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 			
 					$rubric_manager->selectDistinct();
 					$rubric_list = $rubric_manager->get();

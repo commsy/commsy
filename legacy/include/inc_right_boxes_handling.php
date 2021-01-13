@@ -538,7 +538,7 @@ if ( isOption($command, $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) or
          }
 
          if ( $sel_activating_status == 2 ) {
-            $rubric_manager->showNoNotActivatedEntries();
+            $rubric_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
          }
          if ( $rubric != CS_MYROOM_TYPE ) {
             $rubric_manager->selectDistinct();

@@ -411,7 +411,7 @@ foreach ($rubric_array as $rubric) {
       }
 
       if ( $sel_activating_status == 2 ) {
-         $rubric_manager->showNoNotActivatedEntries();
+         $rubric_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
       }
       $rubric_manager->selectDistinct();
       $rubric_list = $rubric_manager->get();
