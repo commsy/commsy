@@ -25,6 +25,14 @@ class AnnouncementFilterType extends AbstractType
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
+                'label_attr' => [
+                    'class' => 'uk-form-label',
+                ],
+            ])
+            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
                 'choices' => [
                     'only activated' => 'only_activated',
                     'only deactivated' => 'only_deactivated',
@@ -32,14 +40,6 @@ class AnnouncementFilterType extends AbstractType
                 ],
                 'translation_domain' => 'form',
                 'placeholder' => false,
-            ])
-            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
-                'label_attr' => [
-                    'class' => 'uk-form-label',
-                ],
             ])
             ->add('rubrics', RubricFilterType::class, [
                 'label' => false,
