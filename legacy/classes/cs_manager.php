@@ -118,7 +118,7 @@ class cs_manager {
      */
     protected $excludedIdsLimit = [];
 
-   var $_show_not_activated_entries_limit = true;
+    protected $inactiveEntriesLimit = self::SHOW_ENTRIES_ACTIVATED_DEACTIVATED;
 
    var $_update_with_changing_modification_information = true;
 
@@ -161,6 +161,10 @@ class cs_manager {
    public $_with_db_prefix = true;
 
    var $_force_sql = false;
+
+    public const SHOW_ENTRIES_ONLY_ACTIVATED = 'only.activated';
+    public const SHOW_ENTRIES_ONLY_DEACTIVATED = 'only.deactivated';
+    public const SHOW_ENTRIES_ACTIVATED_DEACTIVATED = 'either';
 
   /** constructor: cs_manager
     * the only available constructor, initial values for internal variables. sets room limit to room
@@ -224,7 +228,7 @@ class cs_manager {
      $this->_output_limit = '';
      $this->_only_files_limit = NULL;
      $this->_room_array_limit = NULL;
-     $this->_show_not_activated_entries_limit = true;
+     $this->inactiveEntriesLimit = self::SHOW_ENTRIES_ACTIVATED_DEACTIVATED;
      $this->_id_array_limit = NULL;
      $this->modificationOlderThenLimit = null;
      $this->modificationNewerThenLimit = null;
@@ -252,14 +256,25 @@ class cs_manager {
       $this->_id_array_limit = (array)$id_array;
    }
 
-    public function showNoNotActivatedEntries()
+    /**
+     * Set a limit to show only activate, inactive or both items
+     *
+     * @param string $limit
+     * @return $this
+     */
+    public function setInactiveEntriesLimit(string $limit): self
     {
-        $this->_show_not_activated_entries_limit = false;
-    }
+       if (
+           $limit !== self::SHOW_ENTRIES_ONLY_ACTIVATED &&
+           $limit !== self::SHOW_ENTRIES_ONLY_DEACTIVATED &&
+           $limit !== self::SHOW_ENTRIES_ACTIVATED_DEACTIVATED
+       ) {
+           throw new InvalidArgumentException('unknown limit given');
+       }
 
-    public function showNotActivatedEntries()
-    {
-        $this->_show_not_activated_entries_limit = true;
+       $this->inactiveEntriesLimit = $limit;
+
+       return $this;
     }
 
    function setBuzzwordLimit ($limit) {
@@ -269,11 +284,11 @@ class cs_manager {
    function setTagLimit ($limit) {
       $this->_tag_limit = (array) $limit;
    }
-   
+
    function setTagArrayLimit ($limit) {
    	 $this->_tag_limit = $limit;
    }
-   
+
    function _getTagIDArrayByTagIDArray($array) {
    	 $id_array = array();
    	 $first_element = array();
@@ -786,7 +801,7 @@ class cs_manager {
 
       global $symfonyContainer;
       $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
-      
+
       if ($checkLocking && $item->hasLocking()) {
           $item->unlock();
       }
@@ -872,15 +887,15 @@ class cs_manager {
       $item = $this->getNewItem();
       if ( isset($item) ) {
          $item->_setItemData(encode(FROM_DB,$db_array));
-         
+
          // archive
         	if ( function_exists('get_called_class')
         		  and strstr(get_called_class(),'_zzz_')
         	   ) {
-            $item->setArchiveStatus();	
+            $item->setArchiveStatus();
         	}
          // archive
-         
+
       }
       if ( $this->_cache_on
            and method_exists($item,'getItemID')
@@ -892,7 +907,7 @@ class cs_manager {
             $this->_cache_object[$item_id] = $item;
          }
       }
-      
+
       return $item;
    }
 
@@ -1514,7 +1529,7 @@ class cs_manager {
                   if ( isset($id_array[$id]) ) {
                      #$desc = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
                      $match2 = str_replace($id,$id_array[$id],strip_tags($matches[0][$key]));
-                     # if there are html tags, then there are double spaces, don't know why (IJ 27.10.2011) 
+                     # if there are html tags, then there are double spaces, don't know why (IJ 27.10.2011)
                      $match2 = str_replace('  ',' ',$match2);
                      $desc = str_replace($matches[0][$key],$match2,$desc);
                      $replace = true;
@@ -1874,7 +1889,7 @@ class cs_manager {
    function withDatabasePrefix () {
       return $this->_with_db_prefix;
    }
-   
+
    function getDatabasePrefix () {
       return $this->_db_prefix;
    }
@@ -1917,12 +1932,12 @@ class cs_manager {
         $query = 'DELETE FROM ' . $db_prefix . $this->_db_table . ' WHERE ' . $db_prefix . $this->_db_table . '.context_id = "' . $context_id . '"';
         $this->_db_connector->performQuery($query);
     }
-   
-   
+
+
    /*
     * Functions needed for ex- and import of items
     */
-   
+
    function getArrayAsXML($xml, $array, $create_top_element = false, $top_element_name = ''){
       if ($create_top_element) {
          if ($top_element_name != '') {
@@ -1946,7 +1961,7 @@ class cs_manager {
       }
       return $xml;
    }
-   
+
    function getXMLAsArray($xml){
       $arr = array();
       foreach ($xml as $element) {
@@ -1960,7 +1975,7 @@ class cs_manager {
       }
       return $arr;
    }
-   
+
    function simplexml_import_xml(SimpleXMLElementExtended $parent, $xml, $before = false) {
       $xml = (string)$xml;
       // check if there is something to add
@@ -1976,7 +1991,7 @@ class cs_manager {
       }
       return (bool)$node->appendChild($fragment);
     }
-    
+
     function simplexml_import_simplexml(SimpleXMLElementExtended $parent, SimpleXMLElementExtended $child, $before = false) {
       // check if there is something to add
       if ($child[0] == NULL) {
@@ -1997,17 +2012,17 @@ class cs_manager {
       }
       return $this->simplexml_import_xml($parent, $xml, $before);
     }
-    
+
     function getAnnotationsAsXML ($itemID) {
        $item_manager = $this->_environment->getManager('item');
        $item = $item_manager->getItem($itemID);
-    
+
        $annotations_manager = $this->_environment->getManager('annotations');
        $annotations_manager->setContextLimit($item->getContextID());
        $annotations_manager->setLinkedItemID($item->getItemID());
        $annotations_manager->select();
        $annotations_list = $annotations_manager->get();
-   	
+
    	 // get XML for each section
        $annotations_item_xml_array = array();
        if (!$annotations_list->isEmpty()) {
@@ -2024,20 +2039,20 @@ class cs_manager {
        foreach ($annotations_item_xml_array as $annotations_item_xml) {
           $this->simplexml_import_simplexml($annotations_xml, $annotations_item_xml);
        }
-   
+
        return $annotations_xml;
     }
-    
+
     function importAnnotationsFromXML ($xml, $top_item) {
     }
-    
+
     function getFilesAsXML ($itemID) {
        $item_manager = $this->_environment->getManager('item');
        $item = $item_manager->getItem($itemID);
-    
+
        $file_manager = $this->_environment->getFileManager();
        $file_list = $item->getFileList();
-          	
+
    	 // get XML for each section
        $file_item_xml_array = array();
        if (!$file_list->isEmpty()) {
@@ -2054,17 +2069,17 @@ class cs_manager {
        foreach ($file_item_xml_array as $file_item_xml) {
           $this->simplexml_import_simplexml($file_xml, $file_item_xml);
        }
-   
+
        return $file_xml;
     }
-    
+
     function importFilesFromXML ($xml, $top_item, &$options) {
        $file_manager = $this->_environment->getFileManager();
        foreach ($xml->files->children() as $file) {
           $file_manager->import_item($file, $top_item, $options);
        }
     }
-    
+
     function getTagsAsXML ($xml, $tag_array) {
        foreach ($tag_array as $tag) {
           $tag_manager = $this->_environment->getTagManager();
@@ -2078,7 +2093,7 @@ class cs_manager {
        }
        return $xml;
     }
-    
+
     function importTagsFromXML ($xml, $top_item, &$options) {
        $tag_manager = $this->_environment->getTagManager();
        $tag_item = $tag_manager->import_item($xml, $top_item, $options);
@@ -2130,7 +2145,7 @@ class cs_manager {
 
         $this->setContextArrayLimit($contextIds);
         $this->setDeleteLimit(true);
-        $this->showNoNotActivatedEntries();
+        $this->setInactiveEntriesLimit(self::SHOW_ENTRIES_ONLY_ACTIVATED);
 
         if ($newerThen) {
             $this->setModificationNewerThenLimit($newerThen);

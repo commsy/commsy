@@ -299,7 +299,7 @@
 
 							// activating status
 							if($this->_params['sel_activating_status'] !== '1') {
-								$rubric_manager->showNoNotActivatedEntries();
+								$rubric_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 							}
 
 							$rubric_manager->setSearchLimit($this->_search_words[0]);

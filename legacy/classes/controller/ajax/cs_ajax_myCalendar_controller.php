@@ -46,7 +46,7 @@
 			/* set paramter limits */
 			if ( $parameters["activatingStatus"] == "2" )
 			{
-				$datesManager->showNoNotActivatedEntries();
+				$datesManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 			}
 			
 			if ( $parameters["selColor"] != "2" )

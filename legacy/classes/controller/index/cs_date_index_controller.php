@@ -1542,7 +1542,7 @@
 
 				// apply filter
 				if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
-					$dates_manager->showNoNotActivatedEntries();
+					$dates_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 				}
 
 				// TODO: should be handles via list parameters

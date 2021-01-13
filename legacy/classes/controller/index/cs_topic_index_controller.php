@@ -292,7 +292,7 @@ if ( !empty($ref_iid) and $mode == 'attached' ){
 			}
 
 			if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
-   				$topic_manager->showNoNotActivatedEntries();
+   				$topic_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 			}
 
 

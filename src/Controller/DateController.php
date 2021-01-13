@@ -1789,7 +1789,7 @@ class DateController extends BaseController
     {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
             'hide-past-dates' => $hidePastDates,
         ];
 

@@ -57,7 +57,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/so
 RUN apt-get update && apt-get install -y yarn
 
 # xdebug
-RUN pecl install xdebug \
+RUN pecl install xdebug-2.9.8 \
     && docker-php-ext-enable xdebug
 
 RUN { \
