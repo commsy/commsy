@@ -23,6 +23,7 @@ use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -168,7 +169,8 @@ class SearchController extends BaseController
         RoomService $roomService,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
@@ -248,27 +250,74 @@ class SearchController extends BaseController
             $clickedButton = $filterForm->getClickedButton();
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
-// TODO: get the saved search that was selected on submit (in case it was changed by the user) -> maybe use EntityType instead of ChoiceType for the selectedSavedSearchId field?
             $savedSearch = $searchData->getSelectedSavedSearch();
+            $currentRequestURL = $request->getRequestUri();
 
-            if ($savedSearch) {
-                if ($buttonName === '') {
-                    // TODO: if a saved search was selected from the "My views" dropdown, redirect to the search_url stored for this saved search
+            if ($buttonName === '' && $savedSearch) {
+                // if a saved search was selected from the "Manage my views" dropdown, this directly submits the
+                // form (via an `onchange` attribute); so `$buttonName` will be empty; note that the same is true
+                // if the search params get changed for an existing saved search via the "Restrict Results" form part
+// TODO: changing the search params of an existing saved search should not reload the stored search params!
 
-                } elseif ($buttonName === 'save') {
-//                $savedSearchIsNew = empty($savedSearch->getId()) ? true : false;
-// TODO: the search_url stored with the newly created saved_search item still contains a selectedSavedSearchId value of 0 (and not the actual `id` of the newly created SavedSearch object)
-                    $entityManager->persist($savedSearch);
+                $savedSearchURL = $savedSearch->getSearchUrl();
 
-// TODO: after clicking Save in the "My views" form, reload with selectedSavedSearchId set to the actual `id` of the newly created SavedSearch object
-// TODO: this doesn't work yet (i.e. after saving a new saved search, this new saved search doesn't get selected after reload):
-//                if ($savedSearchIsNew) {
-//                    // update $searchData with updated $savedSearch object (which now has the correct ID)
-//                    $searchData->setSelectedSavedSearch($savedSearch);
-//                }
+                if ($savedSearchURL) {
+                    // redirect to the search_url stored for the chosen saved search
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+
+                    return $redirectResponse;
                 }
+
+            } elseif ($buttonName === 'save') {
+                // handles cases where the "Save" button (in the "Manage my views" sub-form) was clicked
+                // with either "New view" or an existing saved search (aka view) selected in the view dropdown
+
+                if (!$savedSearch) { // create a new saved search
+                    $savedSearch = new SavedSearch();
+                    $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+                    $savedSearch->setAccountId($portalUserId);
+                }
+
+                $savedSearchTitle = $searchData->getSelectedSavedSearchTitle();
+                if (empty($savedSearchTitle)) {
+                    $savedSearchTitle = $translator->trans('New view', [], 'search');
+                }
+                if ($savedSearchTitle !== $savedSearch->getTitle()) {
+                    $savedSearch->setTitle($savedSearchTitle);
+                }
+
+// TODO: if the "save" param is NOT removed before storing the saved search URL, loading a saved search will then always execute the ($buttonName === 'save') if clause
+// TODO: if the "save" param is removed before storing the saved search URL, loading a saved search will *endlessly* execute the ($buttonName === '') if clause
+                // remove any "save" param
+//                $separator = urlencode('search_filter[save]') . '=&';
+//                $savedSearchURL = implode('', explode($separator, $currentRequestURL, 2));
+                $savedSearchURL = $currentRequestURL; // DEBUG
+
+                $savedSearch->setSearchUrl($savedSearchURL);
+
+                // for a newly created saved search, update its stored search URL with the correct Id and an appropriate submit value
+                if (empty($savedSearch->getId())) {
+                    // persisting the saved search will auto-assign an Id
+                    $entityManager->persist($savedSearch);
+                    $entityManager->flush();
+                    $savedSearchId = $savedSearch->getId();
+
+                    // update saved search Id in current search URL
+                    $separator = urlencode('search_filter[selectedSavedSearch]') . '=';
+                    $savedSearchURL = implode($separator . $savedSearchId, explode($separator, $savedSearchURL, 2));
+
+                    $savedSearch->setSearchUrl($savedSearchURL);
+                    $entityManager->persist($savedSearch);
+                    $entityManager->flush();
+
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+
+                    return $redirectResponse;
+                }
+
+                $entityManager->persist($savedSearch);
+                $entityManager->flush();
             }
-            $entityManager->flush();
         }
 
         $totalHits = $searchResults->getTotalHits();
@@ -373,32 +422,16 @@ class SearchController extends BaseController
         $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
 
         // saved search parameters
-        $savedSearchId = $searchParams['selectedSavedSearch'] ?? 0;
-        $savedSearchTitle = $searchParams['selectedSavedSearchTitle'] ?? '';
+        $savedSearchId = !empty($searchParams['selectedSavedSearch']) ? $searchParams['selectedSavedSearch'] : 0;
         if (!empty($savedSearchId)) {
             $savedSearch = $repository->findOneById($savedSearchId);
-
-            if (!empty($savedSearchTitle)) {
-                $savedSearch->setTitle($savedSearchTitle);
-            }
-            $savedSearchTitle = $savedSearch->getTitle();
-
             $searchData->setSelectedSavedSearch($savedSearch);
         }
-//        if (!empty($savedSearchId)) {
-//            $savedSearch = $repository->findOneById($savedSearchId);
-//        } else {
-//            $savedSearch = new SavedSearch();
-//            $savedSearch->setAccountId($portalUserId);
-//// TODO: prevent search URL getting overwritten by a `searchmore/...` URL (as a result of a `moreResultsAction()` call)
-//            $savedSearch->setSearchUrl($request->getRequestUri());
-//        }
-//        if (!empty($savedSearchTitle)) {
-//            $savedSearch->setTitle($savedSearchTitle);
-//        }
-//        $searchData->setSelectedSavedSearch($savedSearch);
 
-        $searchData->setSelectedSavedSearchTitle($savedSearchTitle);
+        $savedSearchTitle = $searchParams['selectedSavedSearchTitle'] ?? '';
+        if (!empty($savedSearchTitle)) {
+            $searchData->setSelectedSavedSearchTitle($savedSearchTitle);
+        }
 
         $savedSearches = $repository->findByAccountId($portalUserId);
         $searchData->setSavedSearches($savedSearches);

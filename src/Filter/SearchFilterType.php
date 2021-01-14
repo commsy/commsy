@@ -47,7 +47,7 @@ class SearchFilterType extends AbstractType
         $builder
             ->add('selectedSavedSearch', EntityType::class, [
                 'attr' => [
-// TODO: ideally, don't reload if the "Neue Ansicht" gets chosen again
+// TODO: ideally, don't reload if "New view" gets chosen again
                     'onchange' => 'this.form.submit()',
                 ],
                 'class' => SavedSearch::class,
@@ -57,19 +57,6 @@ class SearchFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => 'New view',
             ])
-//            ->add('selectedSavedSearchId', Types\ChoiceType::class, [
-//                'attr' => [
-//// TODO: ideally, don't reload if the "Neue Ansicht" gets chosen again
-//                    'onchange' => 'this.form.submit()',
-//                ],
-//                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-//                    $translatedTitleNew = $this->translator->trans('New view', [], 'search');
-//                    return array_merge([$translatedTitleNew => 0], $this->buildSavedSearchChoices($searchData->getSavedSearches()));
-//                }),
-//                'label' => 'My view',
-//                'required' => false,
-//                'placeholder' => false,
-//            ])
             ->add('selectedSavedSearchTitle', Types\TextType::class, [
 // TODO: only require a non-empty title (which does not only consist of whitespace) if the Save button was clicked
 //                'constraints' => [
@@ -283,25 +270,6 @@ class SearchFilterType extends AbstractType
         foreach ($terms as $name => $count) {
             $term = $name . " (" . $count . ")";
             $choices[$term] = $name;
-        }
-
-        return $choices;
-    }
-
-    /**
-     * Builds the array of choices for the dropdown of saved searches (aka "views").
-     *
-     * @param SavedSearch[]|null $savedSearches array of SavedSearch objects
-     */
-    private function buildSavedSearchChoices(?array $savedSearches): array
-    {
-        if (empty($savedSearches)) {
-            return [];
-        }
-
-        $choices = [];
-        foreach ($savedSearches as $savedSearch) {
-            $choices[$savedSearch->getTitle()] = $savedSearch->getId();
         }
 
         return $choices;
