@@ -1229,8 +1229,8 @@ class cs_discussion_detail_view extends cs_detail_view {
          } // end while
          
          // update reader and noticed entries
-         $reader_manager->markReadArray($marked_reader_ids, 0);
-         $noticed_manager->markNoticedArray($marked_noticed_ids, 0);
+         $reader_manager->markItemsAsRead($marked_reader_ids, 0);
+         $noticed_manager->markItemsAsNoticed($marked_noticed_ids, 0);
          unset($reader_manager);
          unset($noticed_manager);
       }

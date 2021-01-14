@@ -498,35 +498,13 @@ class cs_server_item extends cs_guide_item
         $mod_contact_list = $portal_item->getContactModeratorList();
         $mod_user_first = $mod_contact_list->getFirst();
 
-        // link
-        $url_to_portal = '';
-        if (!empty($portal_item)) {
-            $url_to_portal = $portal_item->getURL();
-        }
-        $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
-        if (isset($c_commsy_cron_path)) {
-            $link = $c_commsy_cron_path;
-        } elseif (!empty($url_to_portal)) {
-            $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
-            if (stristr($c_commsy_domain, 'https://')) {
-                $link = 'https://';
-            } else {
-                $link = 'http://';
-            }
-            $link .= $url_to_portal;
-            $file = 'commsy.php';
-            $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-            if (!empty($c_single_entry_point)) {
-                $file = $c_single_entry_point;
-            }
-            $link .= '/' . $file;
-        } else {
-            $file = $_SERVER['PHP_SELF'];
-            $file = str_replace('cron', 'commsy', $file);
-            $link = 'http://' . $_SERVER['HTTP_HOST'] . $file;
-        }
-        $link .= '?cid=' . $portal_item->getItemID() . '&mod=home&fct=index';
-        // link
+        global $symfonyContainer;
+
+        /** @var \Symfony\Component\Routing\RouterInterface $router */
+        $router = $symfonyContainer->get('router');
+        $urlToPortal = $router->generate('app_portal_goto', [
+            'portalId' => $portal_item->getItemID(),
+        ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
 
         //content
         $email_text_array = $portal_item->getEmailTextArray();
@@ -556,7 +534,7 @@ class cs_server_item extends cs_guide_item
                 // lock in x days
                 $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $user->getUserID(), $auth_source_item->getTitle(), $portal_item->getInactivitySendMailBeforeLockDays(), $link, $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $user->getUserID(), $auth_source_item->getTitle(), $portal_item->getInactivitySendMailBeforeLockDays(), $urlToPortal, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal_item->getTitle());
                 $body .= "\n\n";
@@ -567,7 +545,7 @@ class cs_server_item extends cs_guide_item
                 // lock tomorrow
                 $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $link, $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $urlToPortal, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal_item->getTitle());
                 $body .= "\n\n";
@@ -578,7 +556,7 @@ class cs_server_item extends cs_guide_item
                 // locked
                 $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NOW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $link, $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NOW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $urlToPortal, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal_item->getTitle());
                 $body .= "\n\n";
@@ -589,7 +567,7 @@ class cs_server_item extends cs_guide_item
                 // delete in x days
                 $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $user->getUserID(), $auth_source_item->getTitle(), $portal_item->getInactivitySendMailBeforeDeleteDays(), $link, $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $user->getUserID(), $auth_source_item->getTitle(), $portal_item->getInactivitySendMailBeforeDeleteDays(), $urlToPortal, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal_item->getTitle());
                 $body .= "\n\n";
@@ -600,7 +578,7 @@ class cs_server_item extends cs_guide_item
                 // delete tomorrow
                 $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $link, $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $urlToPortal, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal_item->getTitle());
                 $body .= "\n\n";
@@ -611,7 +589,7 @@ class cs_server_item extends cs_guide_item
                 // deleted
                 $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NOW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $link, $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NOW_BODY', $user->getUserID(), $auth_source_item->getTitle(), $urlToPortal, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getMessage('EMAIL_COMMSY_PORTAL_MODERATION');
                 $body .= "\n\n";

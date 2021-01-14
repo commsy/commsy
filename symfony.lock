@@ -559,6 +559,9 @@
     "symfony/dependency-injection": {
         "version": "v4.2.4"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.2.0"
+    },
     "symfony/doctrine-bridge": {
         "version": "v4.2.4"
     },
@@ -619,6 +622,9 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
+    },
+    "symfony/http-client-contracts": {
+        "version": "v1.1.10"
     },
     "symfony/http-foundation": {
         "version": "v4.2.4"
