@@ -251,14 +251,11 @@ class SearchController extends BaseController
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
             $savedSearch = $searchData->getSelectedSavedSearch();
-            $currentRequestURL = $request->getRequestUri();
 
-            if ($buttonName === '' && $savedSearch) {
-                // if a saved search was selected from the "Manage my views" dropdown, this directly submits the
-                // form (via an `onchange` attribute); so `$buttonName` will be empty; note that the same is true
-                // if the search params get changed for an existing saved search via the "Restrict Results" form part
-// TODO: changing the search params of an existing saved search should not reload the stored search params!
-
+            // NOTE: if a saved search was selected from the "Manage my views" dropdown, this performs a click (via an
+            // `onchange` attribute) on the form's hidden "load" button; opposed to this, `$buttonName` will be empty
+            // if the search params get changed for an existing saved search via the "Restrict Results" form part
+            if ($buttonName === 'load' && $savedSearch) {
                 $savedSearchURL = $savedSearch->getSearchUrl();
 
                 if ($savedSearchURL) {
@@ -269,8 +266,8 @@ class SearchController extends BaseController
                 }
 
             } elseif ($buttonName === 'save') {
-                // handles cases where the "Save" button (in the "Manage my views" sub-form) was clicked
-                // with either "New view" or an existing saved search (aka view) selected in the view dropdown
+                // this handles cases where the "Save" button (in the "Manage my views" form part) was clicked
+                // with either "New view" or an existing saved search (aka "view") selected in the view dropdown
 
                 if (!$savedSearch) { // create a new saved search
                     $savedSearch = new SavedSearch();
@@ -280,29 +277,31 @@ class SearchController extends BaseController
 
                 $savedSearchTitle = $searchData->getSelectedSavedSearchTitle();
                 if (empty($savedSearchTitle)) {
+                    // this shouldn't get hit due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
                     $savedSearchTitle = $translator->trans('New view', [], 'search');
                 }
                 if ($savedSearchTitle !== $savedSearch->getTitle()) {
                     $savedSearch->setTitle($savedSearchTitle);
                 }
 
-// TODO: if the "save" param is NOT removed before storing the saved search URL, loading a saved search will then always execute the ($buttonName === 'save') if clause
-// TODO: if the "save" param is removed before storing the saved search URL, loading a saved search will *endlessly* execute the ($buttonName === '') if clause
-                // remove any "save" param
-//                $separator = urlencode('search_filter[save]') . '=&';
-//                $savedSearchURL = implode('', explode($separator, $currentRequestURL, 2));
-                $savedSearchURL = $currentRequestURL; // DEBUG
+                // remove the "save" param from the search URL to be persisted
+                // TODO: ideally, we'd instead use something like the ParameterBag (returned by `Request->query`) where we could set/remove query params as necessary
+                $currentRequestURL = $request->getRequestUri();
+                $separator = urlencode('search_filter[save]') . '=&';
+                $savedSearchURL = implode('', explode($separator, $currentRequestURL, 2));
 
-                $savedSearch->setSearchUrl($savedSearchURL);
+                if ($savedSearchURL !== $savedSearch->getSearchUrl()) {
+                    $savedSearch->setSearchUrl($savedSearchURL);
+                }
 
-                // for a newly created saved search, update its stored search URL with the correct Id and an appropriate submit value
+                // for a newly created saved search, update its search URL with the correct ID
                 if (empty($savedSearch->getId())) {
-                    // persisting the saved search will auto-assign an Id
+                    // persisting the new SavedSearch object will auto-assign an ID
                     $entityManager->persist($savedSearch);
                     $entityManager->flush();
                     $savedSearchId = $savedSearch->getId();
 
-                    // update saved search Id in current search URL
+                    // update saved search ID in current search URL
                     $separator = urlencode('search_filter[selectedSavedSearch]') . '=';
                     $savedSearchURL = implode($separator . $savedSearchId, explode($separator, $savedSearchURL, 2));
 

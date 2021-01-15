@@ -5,15 +5,13 @@ use App\Entity\SavedSearch;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Validator\Constraints;
-
-use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
@@ -47,8 +45,7 @@ class SearchFilterType extends AbstractType
         $builder
             ->add('selectedSavedSearch', EntityType::class, [
                 'attr' => [
-// TODO: ideally, don't reload if "New view" gets chosen again
-                    'onchange' => 'this.form.submit()',
+                    'onchange' => "document.getElementById('search_filter_load').click()",
                 ],
                 'class' => SavedSearch::class,
                 'choices' => $searchData->getSavedSearches(),
@@ -57,16 +54,11 @@ class SearchFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => 'New view',
             ])
+            // due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
+            // clicking the "Save" button will require a non-empty title (which does not only consist of whitespace)
             ->add('selectedSavedSearchTitle', Types\TextType::class, [
-// TODO: only require a non-empty title (which does not only consist of whitespace) if the Save button was clicked
-//                'constraints' => [
-//                    new Constraints\NotBlank([
-//                        'normalizer' => 'trim',
-//                    ]),
-//                ],
                 'label' => 'Title',
-//                'required' => true,
-
+                'required' => false,
             ])
             ->add('save', Types\SubmitType::class, [
                 'attr' => [
@@ -74,11 +66,20 @@ class SearchFilterType extends AbstractType
                 ],
                 'label' => 'save',
                 'translation_domain' => 'form',
+                'validation_groups' => 'save',
             ])
-            /**
-             * Since this form uses the same data class as the global search form, it is important to keep the field
-             * name of the search query phrase identical
-             */
+            // the hidden `load` button will be clicked automatically when a saved search is selected from the
+            // `selectedSavedSearch` dropdown
+            ->add('load', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-hidden',
+                ],
+                'label' => 'load',
+                'translation_domain' => 'form',
+                'validation_groups' => 'false',
+            ])
+            // since this form uses the same data class as the global search form, it is important to keep the field
+            // name of the search query phrase identical
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])

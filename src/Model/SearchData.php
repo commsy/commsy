@@ -2,6 +2,7 @@
 namespace App\Model;
 
 use App\Entity\SavedSearch;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class SearchData
 {
@@ -12,6 +13,7 @@ class SearchData
 
     /**
      * @var string|null
+     * @Assert\NotBlank(normalizer="trim", groups={"save"})
      */
     private $selectedSavedSearchTitle;
 
