@@ -306,16 +306,14 @@ class SearchController extends BaseController
                     $savedSearchURL = implode($separator . $savedSearchId, explode($separator, $savedSearchURL, 2));
 
                     $savedSearch->setSearchUrl($savedSearchURL);
-                    $entityManager->persist($savedSearch);
-                    $entityManager->flush();
-
-                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
-
-                    return $redirectResponse;
                 }
 
                 $entityManager->persist($savedSearch);
                 $entityManager->flush();
+
+                $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+
+                return $redirectResponse;
             }
         }
 
