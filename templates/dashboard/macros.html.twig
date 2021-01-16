@@ -170,22 +170,15 @@
 {% endmacro %}
 
 {% macro dashboardMyViews(roomItem) %}
-    {#<li id="dashboard-external-access" class="uk-grid-margin">#}
     <div class="uk-panel uk-panel-box uk-panel-box-primary">
         <div class="uk-panel-teaser cs-panel-teaser-primary">
             <div class="uk-flex uk-flex-middle">
                 <div class="uk-text-large">{{ 'my views'|trans({}, "dashboard") }}</div>
             </div>
         </div>
-        <ul class="uk-list">
-            <li>
-                <a class="uk-comment-title cs-link-highlight" href="#">{{ 'new view'|trans([], 'dashboard') }}</a>
-            </li>
-        </ul>
         {{ render(controller(
-            'App\\Controller\\DashboardController::myViews',
+            'App\\Controller\\DashboardController::myViewsAction',
             { 'roomId': roomItem.itemId }
-        ))}}
+        )) }}
     </div>
-    {#</li>#}
 {% endmacro %}

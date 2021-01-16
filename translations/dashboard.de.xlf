@@ -14,9 +14,21 @@
                 <source>my views</source>
                 <target>Meine Ansichten</target>
             </trans-unit>
+            <trans-unit id="myView">
+                <source>my view</source>
+                <target>Ansicht</target>
+            </trans-unit>
             <trans-unit id="newView">
                 <source>new view</source>
                 <target>Neue Ansicht</target>
+            </trans-unit>
+            <trans-unit id="show">
+                <source>show</source>
+                <target>Anzeigen</target>
+            </trans-unit>
+            <trans-unit id="create">
+                <source>create</source>
+                <target>Erstellen</target>
             </trans-unit>
             <trans-unit id="externalAccessMyEntries">
                 <source>external access to my entries</source>
