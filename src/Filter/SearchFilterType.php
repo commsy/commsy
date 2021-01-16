@@ -50,7 +50,7 @@ class SearchFilterType extends AbstractType
                     'onchange' => "document.getElementById('search_filter_load').click()",
                 ],
                 'class' => SavedSearch::class,
-                'choices' => $searchData->getSavedSearches(),
+                'choices' => $searchData->getSavedSearches() ?? [],
                 'choice_label' => 'title',
                 'label' => 'My view',
                 'required' => false,

@@ -30,7 +30,7 @@ class MyViewsType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ],
                 'class' => SavedSearch::class,
-                'choices' => $searchData->getSavedSearches(),
+                'choices' => $searchData->getSavedSearches() ?? [],
                 'choice_label' => 'title',
                 'label' => false,
                 'required' => false,
