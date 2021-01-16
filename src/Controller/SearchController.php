@@ -228,16 +228,20 @@ class SearchController extends BaseController
         }
 
         $selectedHashtags = $searchData->getSelectedHashtags();
-        foreach ($selectedHashtags as $hashtag) {
-            if (!array_key_exists($hashtag, $countsByHashtag)) {
-                $searchData->addHashtags([$hashtag => 0]);
+        if (!empty($selectedHashtags)) {
+            foreach ($selectedHashtags as $hashtag) {
+                if (!array_key_exists($hashtag, $countsByHashtag)) {
+                    $searchData->addHashtags([$hashtag => 0]);
+                }
             }
         }
 
         $selectedCategories = $searchData->getSelectedCategories();
-        foreach ($selectedCategories as $category) {
-            if (!array_key_exists($category, $countsByCategory)) {
-                $searchData->addCategories([$category => 0]);
+        if (!empty($selectedCategories)) {
+            foreach ($selectedCategories as $category) {
+                if (!array_key_exists($category, $countsByCategory)) {
+                    $searchData->addCategories([$category => 0]);
+                }
             }
         }
 
