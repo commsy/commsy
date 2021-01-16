@@ -285,10 +285,8 @@ class SearchController extends BaseController
                 }
 
                 // remove the "save" param from the search URL to be persisted
-                // TODO: ideally, we'd instead use something like the ParameterBag (returned by `Request->query`) where we could set/remove query params as necessary
-                $currentRequestURL = $request->getRequestUri();
-                $separator = urlencode('search_filter[save]') . '=&';
-                $savedSearchURL = implode('', explode($separator, $currentRequestURL, 2));
+                $request = $this->setSubParamForRequestQueryParam('save', null, 'search_filter', $request);
+                $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
 
                 if ($savedSearchURL !== $savedSearch->getSearchUrl()) {
                     $savedSearch->setSearchUrl($savedSearchURL);
@@ -302,8 +300,8 @@ class SearchController extends BaseController
                     $savedSearchId = $savedSearch->getId();
 
                     // update saved search ID in current search URL
-                    $separator = urlencode('search_filter[selectedSavedSearch]') . '=';
-                    $savedSearchURL = implode($separator . $savedSearchId, explode($separator, $savedSearchURL, 2));
+                    $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', $savedSearchId, 'search_filter', $request);
+                    $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
 
                     $savedSearch->setSearchUrl($savedSearchURL);
                 }
@@ -826,5 +824,69 @@ class SearchController extends BaseController
         }
 
         return $results;
+    }
+
+    /**
+     * Modifies & returns again the given Request object by setting (or removing) the sub-parameter with the given key
+     * from the given query parameter key.
+     *
+     * @param string $subParamKey the key of the sub-parameter to be set or removed
+     * @param string|null $subParamVal the value of the sub-parameter to be set; may be null in which case it will be removed
+     * @param string $paramKey the query parameter key having the parameter with `$subParamKey` be set or reomoved
+     * @param Request $request the Request object whose query params shall be modified
+     * @return Request the modified Request object
+     */
+    private function setSubParamForRequestQueryParam(string $subParamKey, ?string $subParamVal, string $paramKey, Request $request): Request
+    {
+        if (empty($subParamKey) || empty($paramKey) || empty($request)) {
+            return $request;
+        }
+
+        $queryBag = $request->query;
+
+        /** @var array $subParams */
+        $subParams = $queryBag->get($paramKey);
+        if (!$subParams) {
+            return $request;
+        }
+
+        // null value: remove param
+        if (!$subParamVal) {
+            if (!array_key_exists($subParamKey, $subParams)) {
+                return $request;
+            } else {
+                unset($subParams[$subParamKey]);
+            }
+        }
+
+        // set param
+        else {
+            $subParams[$subParamKey] = $subParamVal;
+        }
+
+        // update Request query params
+        $queryBag->set($paramKey, $subParams);
+        $request->query->replace($queryBag->all());
+
+        return $request;
+    }
+
+    /**
+     * Returns the request URI generated from the request's current path and query parameters.
+     *
+     * @return string The raw URI (i.e., not URI decoded)
+     */
+    private function getUpdatedRequestUriForRequest(Request $request): string
+    {
+        $pathInfo = $request->getPathInfo();
+
+        // NOTE: w/o calling `overrideGlobals()`, `request()->getQueryString()` would return the original
+        // query string ignoring the request's current path and query parameters
+        $request->overrideGlobals();
+        $queryString = $request->getQueryString();
+
+        $requesthUri = $pathInfo . '?' . $queryString;
+
+        return $requesthUri;
     }
 }
