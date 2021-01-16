@@ -260,7 +260,7 @@ class SearchController extends BaseController
 
             // NOTE: if a saved search was selected from the "Manage my views" dropdown, this performs a click (via an
             // `onchange` attribute) on the form's hidden "load" button; opposed to this, `$buttonName` will be empty
-            // if the search params get changed for an existing saved search via the "Restrict Results" form part
+            // if the search params get changed for an existing saved search via the "Restrict results" form part
             if ($buttonName === 'load' && $savedSearch) {
                 $savedSearchURL = $savedSearch->getSearchUrl();
 

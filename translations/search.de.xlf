@@ -47,7 +47,7 @@
                 <target>Titel</target>
             </trans-unit>
             <trans-unit id="search-results-restrict">
-                <source>Restrict Results</source>
+                <source>Restrict results</source>
                 <target>Ergebnisse einschränken</target>
             </trans-unit>
             <trans-unit id="search-results-top50">

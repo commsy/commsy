@@ -4,7 +4,7 @@
         <body>
             <trans-unit id="rssFeeds">
                 <source>rss feeds</source>
-                <target>RSS Feeds</target>
+                <target>RSS feeds</target>
             </trans-unit>
             <trans-unit id="externalAccess">
                 <source>external access</source>
@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="myViews">
                 <source>my views</source>
-                <target>My Views</target>
+                <target>My views</target>
             </trans-unit>
             <trans-unit id="myView">
                 <source>my view</source>
@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="newView">
                 <source>new view</source>
-                <target>New View</target>
+                <target>New view</target>
             </trans-unit>
             <trans-unit id="show">
                 <source>show</source>
