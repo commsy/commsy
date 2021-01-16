@@ -11,6 +11,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -68,6 +70,25 @@ class SearchFilterType extends AbstractType
                 'translation_domain' => 'form',
                 'validation_groups' => 'save',
             ])
+
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+                /** @var SearchData $searchData */
+                $searchData = $event->getData();
+                $form = $event->getForm();
+
+                $selectedSavedSearch = $searchData->getSelectedSavedSearch();
+                if ($selectedSavedSearch) {
+                    $form->add('delete', Types\SubmitType::class, [
+                        'attr' => [
+                            'class' => 'uk-button-danger',
+                        ],
+                        'label' => 'Delete',
+                        'translation_domain' => 'form',
+                        'validation_groups' => false,
+                    ]);
+                }
+            })
+
             // the hidden `load` button will be clicked automatically when a saved search is selected from the
             // `selectedSavedSearch` dropdown
             ->add('load', Types\SubmitType::class, [

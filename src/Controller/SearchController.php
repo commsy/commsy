@@ -18,6 +18,7 @@ use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\FilterConditions\SingleContextFilterCondition;
 use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
+use App\Services\SavedSearchesService;
 use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
@@ -170,7 +171,8 @@ class SearchController extends BaseController
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        SavedSearchesService $savedSearchesService
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
@@ -264,6 +266,19 @@ class SearchController extends BaseController
 
                     return $redirectResponse;
                 }
+
+            } elseif ($buttonName === 'delete' && $savedSearch) {
+                $savedSearchesService->removeSavedSearch($savedSearch);
+
+                // remove the "delete" param as well as saved search related params from current search URL
+                $request = $this->setSubParamForRequestQueryParam('delete', null, 'search_filter', $request);
+                $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', null, 'search_filter', $request);
+                $request = $this->setSubParamForRequestQueryParam('selectedSavedSearchTitle', null, 'search_filter', $request);
+                $searchURL = $this->getUpdatedRequestUriForRequest($request);
+
+                $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $searchURL);
+
+                return $redirectResponse;
 
             } elseif ($buttonName === 'save') {
                 // this handles cases where the "Save" button (in the "Manage my views" form part) was clicked
