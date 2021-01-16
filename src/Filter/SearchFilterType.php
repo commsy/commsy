@@ -59,6 +59,9 @@ class SearchFilterType extends AbstractType
             // due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
             // clicking the "Save" button will require a non-empty title (which does not only consist of whitespace)
             ->add('selectedSavedSearchTitle', Types\TextType::class, [
+                'attr' => [
+                    'class' => 'cs-form-horizontal-full-width',
+                ],
                 'label' => 'Title',
                 'required' => false,
             ])
