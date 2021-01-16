@@ -425,17 +425,22 @@ class SearchController extends BaseController
         if (empty($requestParams)) {
             $requestParams = $request->request->all();
         }
+
+        // get all of the user's saved searches
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(SavedSearch::class);
+        $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+
+        $savedSearches = $repository->findByAccountId($portalUserId);
+        $searchData->setSavedSearches($savedSearches);
+
         if (empty($requestParams)) {
             return $searchData;
         }
 
         $searchParams = $requestParams['search_filter'] ?? $requestParams['search'] ?? null;
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(SavedSearch::class);
-        $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
-
-        // saved search parameters
+        // selected saved search parameters
         $savedSearchId = !empty($searchParams['selectedSavedSearch']) ? $searchParams['selectedSavedSearch'] : 0;
         if (!empty($savedSearchId)) {
             $savedSearch = $repository->findOneById($savedSearchId);
@@ -446,9 +451,6 @@ class SearchController extends BaseController
         if (!empty($savedSearchTitle)) {
             $searchData->setSelectedSavedSearchTitle($savedSearchTitle);
         }
-
-        $savedSearches = $repository->findByAccountId($portalUserId);
-        $searchData->setSavedSearches($savedSearches);
 
         // search phrase parameter
         if (!$searchData->getPhrase()) {
