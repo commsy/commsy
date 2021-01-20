@@ -4,6 +4,7 @@ namespace App\Filter;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
+use App\Utils\RoomService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,11 +17,13 @@ use Symfony\Component\Translation\TranslatorInterface;
 class SearchFilterType extends AbstractType
 {
     private $searchManager;
+    private $roomService;
 
-    public function __construct(TranslatorInterface $translator, SearchManager $searchManager)
+    public function __construct(TranslatorInterface $translator, SearchManager $searchManager, RoomService $roomService)
     {
         $this->translator = $translator;
         $this->searchManager = $searchManager;
+        $this->roomService = $roomService;
     }
 
     /**
@@ -126,6 +129,19 @@ class SearchFilterType extends AbstractType
                     'format' => 'dd.MM.yyyy',
                 ],
             ])
+            ->add('rooms', Select2ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    return $this->buildRoomChoices($searchData->getRooms());
+                }),
+                'expanded' => false,
+                'multiple' => true,
+                'required' => false,
+                'label' => 'Rooms',
+                'translation_domain' => 'room',
+            ])
             ->add('selectedRubric', Types\ChoiceType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
@@ -184,12 +200,16 @@ class SearchFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['contextId'])
+            ->setRequired([
+                'contextId',
+            ])
             ->setDefaults([
                 'csrf_protection'    => false,
                 'validation_groups'  => array('filtering'), // avoid NotBlank() constraint-related message
                 'method'             => 'get',
                 'translation_domain' => 'search',
+                'community_rooms' => [],
+                'linkCommunitiesMandantory' => false,
             ]);
     }
 
@@ -232,6 +252,26 @@ class SearchFilterType extends AbstractType
         foreach ($terms as $name => $count) {
             $term = $name . " (" . $count . ")";
             $choices[$term] = $name;
+        }
+
+        return $choices;
+    }
+
+    /**
+     * Builds the array of choices for the rooms filter fields.
+     *
+     * @param array|null $contextIds associative array of room contextIds (key: contextId, value: count)
+     */
+    private function buildRoomChoices($contextIds): array
+    {
+        if (!isset($contextIds) || empty($contextIds)) {
+            return [];
+        }
+
+        $choices = [];
+        foreach ($contextIds as $name => $count) {
+            $contextId = $name . " (" . $count . ")";
+            $choices[$contextId] = $name;
         }
 
         return $choices;

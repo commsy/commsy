@@ -14,9 +14,24 @@ class MultipleContextFilterCondition implements FilterConditionInterface
      */
     private $userService;
 
+    /**
+     * @var string[] $contextIds
+     */
+    private $contextIds;
+
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
+    }
+
+    /**
+     * @param string[] $contextIds
+     * @return MultipleContextFilterCondition
+     */
+    public function setContextIds(array $contextIds): MultipleContextFilterCondition
+    {
+        $this->contextIds = $contextIds;
+        return $this;
     }
 
     /**
@@ -26,13 +41,20 @@ class MultipleContextFilterCondition implements FilterConditionInterface
     {
         $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
 
-        $contextIds = [];
+        $selectedContextIds = [];
+        $classContextIds = $this->contextIds;
         foreach ($searchableRooms as $searchableRoom) {
-            $contextIds[] = $searchableRoom->getItemId();
+            if (!is_null($classContextIds) && !empty($classContextIds)) {
+                if (in_array($searchableRoom->getItemId(),$classContextIds)) {
+                    $selectedContextIds[] = $searchableRoom->getItemId();
+                }
+            } else {
+                $selectedContextIds[] = $searchableRoom->getItemId();
+            }
         }
 
         $contextFilter = new Terms();
-        $contextFilter->setTerms('contextId', $contextIds);
+        $contextFilter->setTerms('contextId', $selectedContextIds);
 
         return [$contextFilter];
     }

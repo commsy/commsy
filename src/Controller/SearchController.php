@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Search\FilterConditions\MultipleRoomsFilterCondition;
 use App\Search\QueryConditions\DescriptionQueryCondition;
 use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
@@ -19,6 +20,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
+use App\Utils\UserService;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -163,6 +165,7 @@ class SearchController extends BaseController
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
+        UserService $userService,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition
     ) {
@@ -173,7 +176,7 @@ class SearchController extends BaseController
         }
 
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request);
+        $searchData = $this->populateSearchData($searchData, $request, $roomService);
 
         // if the top form submits a POST request it will call setPhrase() on SearchData
         $topForm = $this->createForm(SearchType::class, $searchData, [
@@ -206,6 +209,9 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
+        $countsByRooms = $searchManager->countsByKeyFromAggregation($aggregations['contextId']);
+        $searchData->addRooms($countsByRooms);
+
         // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
         // respective search filter form field; this also avoids a form validation error ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
@@ -229,6 +235,13 @@ class SearchController extends BaseController
         foreach ($selectedCategories as $category) {
             if (!array_key_exists($category, $countsByCategory)) {
                 $searchData->addCategories([$category => 0]);
+            }
+        }
+
+        $selectedRooms = $searchData->getSelectedRooms();
+        foreach ($selectedRooms as $selectedRoom) {
+            if (!array_key_exists($selectedRoom, $countsByRooms)) {
+                $searchData->addRooms([$selectedRoom => 0]);
             }
         }
 
@@ -263,13 +276,14 @@ class SearchController extends BaseController
                                       $sort = 'date',
                                       Request $request,
                                       SearchManager $searchManager,
+                                      RoomService $roomService,
                                       MultipleContextFilterCondition $multipleContextFilterCondition)
     {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request);
+        $searchData = $this->populateSearchData($searchData, $request, $roomService);
 
         /**
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
@@ -294,6 +308,9 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
+        $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['contextId']);
+        $searchData->addCategories($countsByCategory);
+
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
@@ -313,9 +330,10 @@ class SearchController extends BaseController
      *
      * @param SearchData $searchData
      * @param Request $request
+     * @param RoomService $roomService
      * @return SearchData
      */
-    private function populateSearchData(SearchData $searchData, Request $request): SearchData
+    private function populateSearchData(SearchData $searchData, Request $request, RoomService $roomService): SearchData
     {
         // TODO: should we better move this method to SearchData.php?
 
@@ -338,9 +356,6 @@ class SearchController extends BaseController
             $searchData->setPhrase($searchParams['phrase'] ?? null);
         }
 
-        // search in all contexts parameter
-        $searchData->setAllRooms((!empty($searchParams['all_rooms']) && $searchParams['all_rooms'] === "1") ? true : false);
-
         // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
 
@@ -355,6 +370,9 @@ class SearchController extends BaseController
 
         // categories parameter
         $searchData->setSelectedCategories($searchParams['selectedCategories'] ?? []);
+
+        // rooms
+        $searchData->setSelectedRooms($searchParams['rooms'] ?? []);
 
         // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
@@ -461,14 +479,13 @@ class SearchController extends BaseController
             return;
         }
 
-        // search in all contexts parameter
-        if ($searchData->getAllRooms()) {
-            $searchManager->addFilterCondition($multipleContextFilterCondition);
-        } else {
-            $singleContextFilterCondition = new SingleContextFilterCondition();
-            $singleContextFilterCondition->setContextId($roomId);
-            $searchManager->addFilterCondition($singleContextFilterCondition);
+        // selected rooms
+        if (!empty($searchData->getSelectedRooms())) {
+            $multipleContextFilterCondition->setContextIds($searchData->getSelectedRooms());
         }
+
+        // search in all contexts parameter
+        $searchManager->addFilterCondition($multipleContextFilterCondition);
 
         // rubric parameter
         if ($searchData->getSelectedRubric()) {

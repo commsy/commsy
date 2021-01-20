@@ -80,6 +80,12 @@ class SearchManager
         $hashtagsAggregation->setSize(100);
         $query->addAggregation($hashtagsAggregation);
 
+        $roomsAggregation = new Aggregations\Terms('contextId');
+        $roomsAggregation->setField('contextId');
+        // returns at most 100 of the most content heavy rooms (default is 10)
+        $roomsAggregation->setSize(100);
+        $query->addAggregation($roomsAggregation);
+
         $categoriesAggregation = new Aggregations\Terms('tags');
         $categoriesAggregation->setField('tags');
         // return at most 100 of the most used categories (default is 10)

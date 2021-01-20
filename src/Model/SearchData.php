@@ -29,6 +29,11 @@ class SearchData
     private $rubrics;
 
     /**
+     * @var array|null associative array of rooms (key: room name, value: id)
+     */
+    private $rooms;
+
+    /**
      * @var string|null
      */
     private $selectedRubric;
@@ -62,6 +67,12 @@ class SearchData
      * @var string[]|null $selectedCategories
      */
     private $selectedCategories;
+
+    /**
+     * @var string[]|null $selectedCategories
+     */
+    private $selectedRooms;
+
 
     /**
      * @var \DateTime|null $creationDateFrom
@@ -354,6 +365,18 @@ class SearchData
     }
 
     /**
+     * @param array $rooms associative array of rooms (key: category name, value: count)
+     * @return SearchData
+     */
+    public function addRooms(array $rooms): SearchData
+    {
+        foreach ($rooms as $name => $count) {
+            $this->rooms[$name] = $count;
+        }
+        return $this;
+    }
+
+    /**
      * @return string[]|null
      */
     public function getSelectedCategories(): ?array
@@ -496,4 +519,37 @@ class SearchData
         $this->modificationDateUntil = $modificationDateUntil;
         return $this;
     }
+
+    /**
+     * @return array|null
+     */
+    public function getRooms(): ?array
+    {
+        return $this->rooms;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getSelectedRooms(): ?array
+    {
+        return $this->selectedRooms;
+    }
+
+    /**
+     * @param string[]|null $selectedRooms
+     */
+    public function setSelectedRooms(?array $selectedRooms): void
+    {
+        $this->selectedRooms = $selectedRooms;
+    }
+
+    /**
+     * @param array|null $rooms
+     */
+    public function setRooms(?array $rooms): void
+    {
+        $this->rooms = $rooms;
+    }
+
 }
