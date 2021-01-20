@@ -308,8 +308,8 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
-        $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['contextId']);
-        $searchData->addCategories($countsByCategory);
+        $countsByRoom = $searchManager->countsByKeyFromAggregation($aggregations['contextId']);
+        $searchData->addRooms($countsByRoom);
 
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [

@@ -270,6 +270,10 @@ class SearchFilterType extends AbstractType
 
         $choices = [];
         foreach ($contextIds as $name => $count) {
+//            $roomObject = $this->roomService->getRoomItem($name);
+//            if (!is_null($roomObject)) {
+//                $name = $roomObject->getTitle();
+//            }
             $contextId = $name . " (" . $count . ")";
             $choices[$contextId] = $name;
         }
