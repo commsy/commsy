@@ -124,6 +124,10 @@
                 <source>A category can only be used once per portfolio.</source>
                 <target>A category can only be used once per portfolio.</target>
             </trans-unit>
+            <trans-unit id="violation_hashtag_merge_identical">
+                <source>Your selection must differ.</source>
+                <target>Your selection must differ.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
