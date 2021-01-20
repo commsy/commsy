@@ -29,12 +29,12 @@ class AnnouncementFilterType extends AbstractType
                 'label' => 'Filter',
                 'translation_domain' => 'form',
             ))
-            ->add('hide-invalid-entries', Filters\ChoiceFilterType::class, [
+            ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, [
                 'label_attr' => [
                     'class' => 'uk-form-label',
                 ],
             ])
-            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, [
+            ->add('hide-deactivated-entries', Filters\ChoiceFilterType::class, [
                 'choices' => [
                     'only activated' => 'only_activated',
                     'only deactivated' => 'only_deactivated',
