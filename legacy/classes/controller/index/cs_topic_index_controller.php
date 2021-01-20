@@ -557,7 +557,7 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->g
 	   				$todo_manager->setSearchLimit($this->_list_parameter_arrray['search']);
 				}
 				if($sel_activating_status == 2) {
-					$todo_manager->showNoNotActivatedEntries();
+					$todo_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 				}
 
 				// Find current status selection

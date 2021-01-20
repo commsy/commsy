@@ -3940,7 +3940,7 @@ class SoapService
 //            $reader_manager = $this->_environment->getReaderManager();
 //            $material_manager = $this->_environment->getMaterialManager();
 //            $material_manager->setContextLimit($context_id);
-//            $material_manager->showNoNotActivatedEntries();
+//            $material_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 //            $material_manager->select();
 //            $material_list = $material_manager->get();
 //            $xml = "<material_list>\n";
@@ -4213,7 +4213,7 @@ class SoapService
 //            $reader_manager = $this->_environment->getReaderManager();
 //            $discussion_manager = $this->_environment->getDiscussionManager();
 //            $discussion_manager->setContextLimit($context_id);
-//            $discussion_manager->showNoNotActivatedEntries();
+//            $discussion_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 //            $discussion_manager->select();
 //            $discussion_list = $discussion_manager->get();
 //            $xml = "<discussion_list>\n";
@@ -4775,7 +4775,7 @@ class SoapService
 //
 //            $material_manager = $this->_environment->getMaterialManager();
 //            $material_manager->setContextLimit($context_id);
-//            $material_manager->showNoNotActivatedEntries();
+//            $material_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 //            $material_manager->select();
 //            $material_list = $material_manager->get();
 //            $material_item = $material_list->getFirst();
