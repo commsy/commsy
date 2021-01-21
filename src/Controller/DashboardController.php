@@ -220,7 +220,7 @@ class DashboardController extends Controller
 
         $myViewsForm = $this->createForm(MyViewsType::class, $searchData, [
             'action' => $this->generateUrl('app_dashboard_myviews', [
-                'roomId' => $roomId
+                'roomId' => $roomId,
             ])
         ]);
         $myViewsForm->handleRequest($request);
@@ -239,7 +239,7 @@ class DashboardController extends Controller
                 }
             } else {
                 return $this->redirectToRoute('app_search_results', [
-                    'roomId' => $roomId
+                    'roomId' => $roomId,
                 ]);
             }
         }
