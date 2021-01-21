@@ -33,8 +33,8 @@ class SavedSearchesService
         $repository = $this->em->getRepository('App:SavedSearch');
         $query = $repository->createQueryBuilder('savedsearches')
             ->select()
-            ->where('savedsearches.account_id = :account_id')
-            ->setParameter('account_id', $accountId)
+            ->where('savedsearches.accountId = :accountId')
+            ->setParameter('accountId', $accountId)
             ->getQuery();
         $savedSearches = $query->getResult();
 
@@ -58,8 +58,8 @@ class SavedSearchesService
         $repository = $this->em->getRepository('App:SavedSearch');
         $query = $repository->createQueryBuilder('savedsearches')
             ->select()
-            ->where('savedsearches.id = :saved_search_id')
-            ->setParameter('saved_search_id', $savedSearchId)
+            ->where('savedsearches.id = :savedSearchId')
+            ->setParameter('savedSearchId', $savedSearchId)
             ->getQuery();
         $savedSearch = $query->getResult();
 
