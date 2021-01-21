@@ -871,17 +871,15 @@ class SearchController extends BaseController
             return $request;
         }
 
-        // null value: remove param
         if (!$subParamVal) {
+            // null value: remove param if it exists
             if (!array_key_exists($subParamKey, $subParams)) {
                 return $request;
             } else {
                 unset($subParams[$subParamKey]);
             }
-        }
-
-        // set param
-        else {
+        } else {
+            // set param
             $subParams[$subParamKey] = $subParamVal;
         }
 
