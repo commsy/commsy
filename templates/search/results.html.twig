@@ -72,6 +72,7 @@
                                                         'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
                                                         "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
                                                         "search_filter[selectedCreator]": searchData.selectedCreator,
+                                                        "search_filter[selectedContext]": searchData.selectedContext,
                                                         "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
                                                         "search_filter[creation_date_range][right_date]": searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '',
                                                         "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
@@ -153,6 +154,7 @@
                                     "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
                                     "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",
+                                    "search[selectedContext]": "{{ searchData.selectedContext }}",
                                     {% for hashtag in searchData.selectedHashtags -%}
                                     "search[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
                                     {%- endfor %}
