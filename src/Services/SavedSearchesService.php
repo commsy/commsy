@@ -46,6 +46,21 @@ class SavedSearchesService
     }
 
     /**
+     * Deletes any saved searches belonging to the given account ID.
+     * @param int $accountId The ID of the user account whose saved searches shall be deleted
+     */
+    public function removeSavedSearchesForAccountId(int $accountId)
+    {
+        $savedSearches = $this->getSavedSearchesForAccountId($accountId);
+
+        foreach ($savedSearches as $savedSearch) {
+            $this->em->remove($savedSearch);
+        }
+
+        $this->em->flush();
+    }
+
+    /**
      * Returns the saved search with the given ID, or null if nothing was found.
      * @param int $savedSearchId The ID of the saved search to be returned.
      * @return SavedSearch|null
