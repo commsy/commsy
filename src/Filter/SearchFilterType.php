@@ -82,6 +82,18 @@ class SearchFilterType extends AbstractType
                 'label' => 'Creator',
                 'required' => false,
             ])
+            ->add('selectedContext', Select2ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    return $this->buildTermChoices($searchData->getContext());
+                }),
+                'label' => 'Contexts',
+                'expanded' => false,
+                'multiple' => true,
+                'required' => false,
+            ])
             ->add('creation_date_range', Filters\DateRangeFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',

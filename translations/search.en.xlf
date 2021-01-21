@@ -66,6 +66,10 @@
                 <source>Hashtags</source>
                 <target>Tags</target>
             </trans-unit>
+            <trans-unit id="search-filter-contexts">
+                <source>Contexts</source>
+                <target>Workspaces</target>
+            </trans-unit>
             <trans-unit id="search-filter-categories">
                 <source>Categories</source>
                 <target>Categories</target>

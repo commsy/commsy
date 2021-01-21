@@ -206,6 +206,9 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
+        $countsByContexts = $searchManager->countsByKeyFromAggregation($aggregations['context']);
+        $searchData->addContexts($countsByContexts);
+
         // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
         // respective search filter form field; this also avoids a form validation error ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
@@ -229,6 +232,13 @@ class SearchController extends BaseController
         foreach ($selectedCategories as $category) {
             if (!array_key_exists($category, $countsByCategory)) {
                 $searchData->addCategories([$category => 0]);
+            }
+        }
+
+        $selectedContexts = $searchData->getSelectedContext();
+        foreach ($selectedContexts as $context) {
+            if (!array_key_exists($context, $countsByContexts)) {
+                $searchData->addContexts([$context => 0]);
             }
         }
 
@@ -294,6 +304,9 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
+        $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['context']);
+        $searchData->addContexts($countsByContext);
+
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
@@ -355,6 +368,9 @@ class SearchController extends BaseController
 
         // categories parameter
         $searchData->setSelectedCategories($searchParams['selectedCategories'] ?? []);
+
+        // contexts parameter
+        $searchData->setSelectedContext($searchParams['selectedContext'] ?? []);
 
         // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
@@ -461,13 +477,10 @@ class SearchController extends BaseController
             return;
         }
 
-        // search in all contexts parameter
-        if ($searchData->getAllRooms()) {
+        // context parameter
+        if ($searchData->getSelectedContext()) {
+            $multipleContextFilterCondition->setContexts($searchData->getSelectedContext());
             $searchManager->addFilterCondition($multipleContextFilterCondition);
-        } else {
-            $singleContextFilterCondition = new SingleContextFilterCondition();
-            $singleContextFilterCondition->setContextId($roomId);
-            $searchManager->addFilterCondition($singleContextFilterCondition);
         }
 
         // rubric parameter

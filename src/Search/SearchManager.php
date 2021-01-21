@@ -86,6 +86,12 @@ class SearchManager
         $categoriesAggregation->setSize(100);
         $query->addAggregation($categoriesAggregation);
 
+        $contextsAggregation = new Aggregations\Terms('context');
+        $contextsAggregation->setField('context.title');
+        // return at most 100 of the most used contexts (default is 10)
+        $contextsAggregation->setSize(100);
+        $query->addAggregation($contextsAggregation);
+
         // aggregations
 //        $filterAggregation = new Aggregations\Filter('filterContext');
 //        $filterAggregation->setFilter($contextFilter);

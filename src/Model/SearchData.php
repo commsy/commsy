@@ -34,6 +34,16 @@ class SearchData
     private $selectedRubric;
 
     /**
+     * @var array|null associative array of contexts (key: context title, value: count)
+     */
+    private $context;
+
+    /**
+     * @var string|null
+     */
+    private $selectedContext;
+
+    /**
      * @var array|null associative array of creators (key: creator name, value: count)
      */
     private $creators;
@@ -496,4 +506,51 @@ class SearchData
         $this->modificationDateUntil = $modificationDateUntil;
         return $this;
     }
+
+    /**
+     * @return array|null
+     */
+    public function getContext(): ?array
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param array|null $context
+     */
+    public function setContext(?array $context): void
+    {
+        $this->context = $context;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSelectedContext(): ?array
+    {
+        return $this->selectedContext;
+    }
+
+    /**
+     * @param string|null $selectedContext
+     * @return SearchData
+     */
+    public function setSelectedContext(?array $selectedContext): SearchData
+    {
+        $this->selectedContext = $selectedContext;
+        return $this;
+    }
+
+    /**
+     * @param array $contexts associative array of contexts (key: context title, value: count)
+     * @return SearchData
+     */
+    public function addContexts(array $contexts): SearchData
+    {
+        foreach ($contexts as $name => $count) {
+            $this->context[$name] = $count;
+        }
+        return $this;
+    }
+
 }

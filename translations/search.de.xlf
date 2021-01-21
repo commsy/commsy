@@ -66,6 +66,10 @@
                 <source>Hashtags</source>
                 <target>Schlagwörter</target>
             </trans-unit>
+            <trans-unit id="search-filter-contexts">
+                <source>Contexts</source>
+                <target>Räume</target>
+            </trans-unit>
             <trans-unit id="search-filter-categories">
                 <source>Categories</source>
                 <target>Kategorien</target>
