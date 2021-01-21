@@ -77,7 +77,7 @@ class SearchFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    $translatedTitleAny = $this->translator->trans('any', [], 'form');
+                    $translatedTitleAny = $this->translator->trans('All my rooms', [], 'search');
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getContexts()));
                 }),
                 'label' => 'Contexts',

@@ -39,8 +39,8 @@
                 <target>Top 50 matches (sorted by activity and type)</target>
             </trans-unit>
             <trans-unit id="search-filter-all-my-rooms">
-                <source>Search in all my rooms</source>
-                <target>Search in all my workspaces</target>
+                <source>All my rooms</source>
+                <target>All my workspaces</target>
             </trans-unit>
             <trans-unit id="search-filter-appearing-in">
                 <source>Appearing in</source>

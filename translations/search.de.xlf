@@ -39,8 +39,8 @@
                 <target>Die 50 besten Treffer (nach Aktivität und Raumtyp sortiert)</target>
             </trans-unit>
             <trans-unit id="search-filter-all-my-rooms">
-                <source>Search in all my rooms</source>
-                <target>Suche in allen meinen Räumen</target>
+                <source>All my rooms</source>
+                <target>Alle meine Räume</target>
             </trans-unit>
             <trans-unit id="search-filter-appearing-in">
                 <source>Appearing in</source>
