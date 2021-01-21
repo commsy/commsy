@@ -11,11 +11,6 @@ class SearchData
     /**
      * @var boolean|null
      */
-    private $allRooms;
-
-    /**
-     * @var boolean|null
-     */
     private $appearsInTitle;
 
     /**
@@ -34,9 +29,9 @@ class SearchData
     private $selectedRubric;
 
     /**
-     * @var array|null associative array of contexts (key: context title, value: count)
+     * @var array|null associative array of context titles (key: context title, value: count)
      */
-    private $context;
+    private $contexts;
 
     /**
      * @var string|null
@@ -108,24 +103,6 @@ class SearchData
     public function setPhrase(?string $phrase): SearchData
     {
         $this->phrase = $phrase;
-        return $this;
-    }
-
-    /**
-     * @return boolean|null
-     */
-    public function getAllRooms(): ?bool
-    {
-        return $this->allRooms;
-    }
-
-    /**
-     * @param boolean $allRooms
-     * @return SearchData
-     */
-    public function setAllRooms(bool $allRooms): SearchData
-    {
-        $this->allRooms = $allRooms;
         return $this;
     }
 
@@ -510,23 +487,23 @@ class SearchData
     /**
      * @return array|null
      */
-    public function getContext(): ?array
+    public function getContexts(): ?array
     {
-        return $this->context;
+        return $this->contexts;
     }
 
     /**
-     * @param array|null $context
+     * @param array|null $contexts
      */
-    public function setContext(?array $context): void
+    public function setContexts(?array $contexts): void
     {
-        $this->context = $context;
+        $this->contexts = $contexts;
     }
 
     /**
      * @return string|null
      */
-    public function getSelectedContext(): ?array
+    public function getSelectedContext(): ?string
     {
         return $this->selectedContext;
     }
@@ -535,22 +512,21 @@ class SearchData
      * @param string|null $selectedContext
      * @return SearchData
      */
-    public function setSelectedContext(?array $selectedContext): SearchData
+    public function setSelectedContext(?string $selectedContext): SearchData
     {
         $this->selectedContext = $selectedContext;
         return $this;
     }
 
     /**
-     * @param array $contexts associative array of contexts (key: context title, value: count)
+     * @param array $contexts associative array of context titles (key: context title, value: count)
      * @return SearchData
      */
     public function addContexts(array $contexts): SearchData
     {
         foreach ($contexts as $name => $count) {
-            $this->context[$name] = $count;
+            $this->contexts[$name] = $count;
         }
         return $this;
     }
-
 }

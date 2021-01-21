@@ -24,9 +24,6 @@
 
                 <div id="list-filter" class="uk-hidden-small">
                     {{ form_start(filterForm) }}
-                    {# visually separate the first form field from the rest (since it expands the search results instead of restricting them) #}
-                    {{ form_row(filterForm.all_rooms) }}
-                    <hr/>
                     {{ form_end(filterForm) }}
                 </div>
             </div>
@@ -82,11 +79,6 @@
                                                         "search_filter[selectedRubric]": searchData.selectedRubric,
                                                     }
                                                     %}
-                                                    {% if searchData.allRooms %}
-                                                        {# NOTE: for allRooms==false, the param must be left out entirely, otherwise the corresponding checkbox in
-                                                           the search filter form will get marked when handleRequest() gets called for the SearchFilterType form #}
-                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[all_rooms]": 1 }) %}
-                                                    {% endif %}
                                                     {% for hashtag in searchData.selectedHashtags %}
                                                         {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
                                                         {% set val = searchData.selectedHashtags[loop.index0] %}
@@ -158,7 +150,6 @@
                                 "target": "#search-feed",
                                 "query": {
                                     "search[phrase]": "{{ searchData.phrase }}",
-                                    "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
                                     "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
                                     "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",

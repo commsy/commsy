@@ -14,6 +14,7 @@ use App\Search\FilterConditions\MultipleCategoryFilterCondition;
 use App\Search\FilterConditions\MultipleHashtagFilterCondition;
 use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\FilterConditions\SingleContextFilterCondition;
+use App\Search\FilterConditions\SingleContextTitleFilterCondition;
 use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
@@ -206,8 +207,8 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
-        $countsByContexts = $searchManager->countsByKeyFromAggregation($aggregations['context']);
-        $searchData->addContexts($countsByContexts);
+        $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['contexts']);
+        $searchData->addContexts($countsByContext);
 
         // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
         // respective search filter form field; this also avoids a form validation error ("this value is not valid")
@@ -239,11 +240,9 @@ class SearchController extends BaseController
             }
         }
 
-        $selectedContexts = $searchData->getSelectedContext();
-        foreach ($selectedContexts as $context) {
-            if (!array_key_exists($context, $countsByContexts)) {
-                $searchData->addContexts([$context => 0]);
-            }
+        $selectedContext = $searchData->getSelectedContext();
+        if (!empty($selectedContext) && $selectedContext !== 'all' && !array_key_exists($selectedContext, $countsByContext)) {
+            $searchData->addContexts([$selectedContext => 0]);
         }
 
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
@@ -308,7 +307,7 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
-        $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['context']);
+        $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['contexts']);
         $searchData->addContexts($countsByContext);
 
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
@@ -334,8 +333,6 @@ class SearchController extends BaseController
      */
     private function populateSearchData(SearchData $searchData, Request $request): SearchData
     {
-        // TODO: should we better move this method to SearchData.php?
-
         if (!isset($request)) {
             return $searchData;
         }
@@ -355,8 +352,8 @@ class SearchController extends BaseController
             $searchData->setPhrase($searchParams['phrase'] ?? null);
         }
 
-        // search in all contexts parameter
-        $searchData->setAllRooms((!empty($searchParams['all_rooms']) && $searchParams['all_rooms'] === "1") ? true : false);
+        // contexts parameter
+        $searchData->setSelectedContext($searchParams['selectedContext'] ?? "all");
 
         // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
@@ -372,9 +369,6 @@ class SearchController extends BaseController
 
         // categories parameter
         $searchData->setSelectedCategories($searchParams['selectedCategories'] ?? []);
-
-        // contexts parameter
-        $searchData->setSelectedContext($searchParams['selectedContext'] ?? []);
 
         // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
@@ -429,8 +423,6 @@ class SearchController extends BaseController
     public function setupSearchQueryConditions(SearchManager $searchManager,
                                                SearchData $searchData)
     {
-        // TODO: should we better move this method to SearchData.php?
-
         if (!isset($searchManager) || !isset($searchData)) {
             return;
         }
@@ -475,16 +467,18 @@ class SearchController extends BaseController
                                                 int $roomId,
                                                 MultipleContextFilterCondition $multipleContextFilterCondition)
     {
-        // TODO: should we better move this method to SearchData.php?
-
         if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition)) {
             return;
         }
 
+        // NOTE: we always restrict the search to the context IDs of the current user's rooms
+        $searchManager->addFilterCondition($multipleContextFilterCondition);
+
         // context parameter
         if ($searchData->getSelectedContext()) {
-            $multipleContextFilterCondition->setContexts($searchData->getSelectedContext());
-            $searchManager->addFilterCondition($multipleContextFilterCondition);
+            $singleContextTitleFilterCondition = new SingleContextTitleFilterCondition();
+            $singleContextTitleFilterCondition->setContextTitle($searchData->getSelectedContext());
+            $searchManager->addFilterCondition($singleContextTitleFilterCondition);
         }
 
         // rubric parameter

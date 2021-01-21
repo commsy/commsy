@@ -44,16 +44,6 @@ class SearchFilterType extends AbstractType
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])
-            ->add('all_rooms', Filters\CheckboxFilterType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
-                'label' => 'Search in all my rooms',
-                'required' => false,
-                'label_attr' => [
-                    'class' => 'uk-form-label',
-                ],
-            ])
             ->add('appears_in', Filters\ChoiceFilterType::class, [
                 'choice_attr' => function($choice, $key, $value) {
                     return [
@@ -87,11 +77,10 @@ class SearchFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    return $this->buildTermChoices($searchData->getContext());
+                    $translatedTitleAny = $this->translator->trans('any', [], 'form');
+                    return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getContexts()));
                 }),
                 'label' => 'Contexts',
-                'expanded' => false,
-                'multiple' => true,
                 'required' => false,
             ])
             ->add('creation_date_range', Filters\DateRangeFilterType::class, [

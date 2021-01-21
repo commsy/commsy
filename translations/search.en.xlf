@@ -68,7 +68,7 @@
             </trans-unit>
             <trans-unit id="search-filter-contexts">
                 <source>Contexts</source>
-                <target>Workspaces</target>
+                <target>Workspace</target>
             </trans-unit>
             <trans-unit id="search-filter-categories">
                 <source>Categories</source>
