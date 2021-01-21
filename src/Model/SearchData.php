@@ -155,11 +155,6 @@ class SearchData
     public function getSelectedSavedSearchTitle(): ?string
     {
         return $this->selectedSavedSearchTitle;
-
-//        if (!$this->selectedSavedSearch || !$this->selectedSavedSearch->getTitle()) {
-//            return '';
-//        }
-//        return $this->selectedSavedSearch->getTitle();
     }
 
     /**
@@ -170,11 +165,6 @@ class SearchData
     {
         $this->selectedSavedSearchTitle = $title;
         return $this;
-
-//        if ($this->selectedSavedSearch && !empty($title)) {
-//            $this->selectedSavedSearch->setTitle($title);
-//        }
-//        return $this;
     }
 
     /**
