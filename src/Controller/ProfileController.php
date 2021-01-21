@@ -731,8 +731,9 @@ class ProfileController extends Controller
             $deleteForm->handleRequest($request);
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
                 // delete account
-                // NOTE: `cs_authentication->delete()` will eventually cause `cs_user_manager->delete()` to get called
-                // which, in turn, will fire an `AccountDeletedEvent`
+                // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, since one can also delete users via
+                // the legacy portal config, we do this centrally in the legacy code: `cs_authentication->delete()` will
+                // eventually cause `cs_user_manager->delete()` to get called which, in turn, will fire an `AccountDeletedEvent`
                 $authentication = $legacyEnvironment->getAuthenticationObject();
                 $authentication->delete($portalUser->getItemID());
 
