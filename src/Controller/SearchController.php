@@ -2,36 +2,35 @@
 
 namespace App\Controller;
 
+use App\Action\Copy\CopyAction;
+use App\Filter\SearchFilterType;
+use App\Form\Type\SearchItemType;
+use App\Form\Type\SearchType;
+use App\Model\SearchData;
+use App\Search\FilterConditions\CreationDateFilterCondition;
+use App\Search\FilterConditions\ModificationDateFilterCondition;
+use App\Search\FilterConditions\MultipleCategoryFilterCondition;
+use App\Search\FilterConditions\MultipleContextFilterCondition;
+use App\Search\FilterConditions\MultipleHashtagFilterCondition;
+use App\Search\FilterConditions\ReadStatusFilterCondition;
+use App\Search\FilterConditions\RubricFilterCondition;
+use App\Search\FilterConditions\SingleContextFilterCondition;
+use App\Search\FilterConditions\SingleContextTitleFilterCondition;
+use App\Search\FilterConditions\SingleCreatorFilterCondition;
 use App\Search\QueryConditions\DescriptionQueryCondition;
 use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
 use App\Search\QueryConditions\TitleQueryCondition;
-use App\Search\FilterConditions\CreationDateFilterCondition;
-use App\Search\FilterConditions\ModificationDateFilterCondition;
-use App\Search\FilterConditions\MultipleContextFilterCondition;
-use App\Search\FilterConditions\SingleCreatorFilterCondition;
-use App\Search\FilterConditions\MultipleCategoryFilterCondition;
-use App\Search\FilterConditions\MultipleHashtagFilterCondition;
-use App\Search\FilterConditions\RubricFilterCondition;
-use App\Search\FilterConditions\SingleContextFilterCondition;
-use App\Search\FilterConditions\SingleContextTitleFilterCondition;
 use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
+use App\Utils\ReaderService;
 use App\Utils\RoomService;
-use App\Action\Copy\CopyAction;
-use App\Form\Type\SearchItemType;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use App\Form\Type\SearchType;
-use App\Model\SearchData;
-
-use App\Filter\SearchFilterType;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -165,7 +164,8 @@ class SearchController extends BaseController
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
-        MultipleContextFilterCondition $multipleContextFilterCondition
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+        ReadStatusFilterCondition $readStatusFilterCondition
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -190,7 +190,7 @@ class SearchController extends BaseController
          */
 
         $this->setupSearchQueryConditions($searchManager, $searchData);
-        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
+        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition, $readStatusFilterCondition);
 
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
@@ -276,7 +276,8 @@ class SearchController extends BaseController
                                       $sort = 'date',
                                       Request $request,
                                       SearchManager $searchManager,
-                                      MultipleContextFilterCondition $multipleContextFilterCondition)
+                                      MultipleContextFilterCondition $multipleContextFilterCondition,
+                                      ReadStatusFilterCondition $readStatusFilterCondition)
     {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
@@ -290,7 +291,7 @@ class SearchController extends BaseController
          */
 
         $this->setupSearchQueryConditions($searchManager, $searchData);
-        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
+        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition, $readStatusFilterCondition);
 
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
@@ -461,18 +462,25 @@ class SearchController extends BaseController
      * @param SearchData $searchData
      * @param integer $roomId
      * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     * @param ReadStatusFilterCondition $readStatusFilterCondition
      */
     public function setupSearchFilterConditions(SearchManager $searchManager,
                                                 SearchData $searchData,
                                                 int $roomId,
-                                                MultipleContextFilterCondition $multipleContextFilterCondition)
+                                                MultipleContextFilterCondition $multipleContextFilterCondition,
+                                                ReadStatusFilterCondition $readStatusFilterCondition)
     {
-        if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition)) {
+        if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition) || !isset($readStatusFilterCondition)) {
             return;
         }
 
         // NOTE: we always restrict the search to the context IDs of the current user's rooms
         $searchManager->addFilterCondition($multipleContextFilterCondition);
+
+        // DEBUG
+        $readStatusFilterCondition->setReadStatus(ReaderService::READ_STATUS_NEW);
+//        $readStatusFilterCondition->setReadStatus($searchData->getSelectedReadStatus());
+        $searchManager->addFilterCondition($readStatusFilterCondition);
 
         // context parameter
         if ($searchData->getSelectedContext()) {

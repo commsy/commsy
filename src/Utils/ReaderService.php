@@ -7,6 +7,36 @@ use App\Utils\ItemService;
 
 class ReaderService
 {
+    /**
+     * Read status constant that identifies a "new" item, i.e. an item that hasn't been seen before
+     * @var string
+     */
+    public const READ_STATUS_NEW = 'new';
+
+    /**
+     * Read status constant that identifies a "changed" item, i.e. an item with unread changes
+     * @var string
+     */
+    public const READ_STATUS_CHANGED = 'changed';
+
+    /**
+     * Read status constant that identifies a "seen" item, i.e. an item that has been read before
+     * @var string
+     */
+    public const READ_STATUS_SEEN = 'seen';
+
+    /**
+     * Read status constant that identifies an item that has a "new annotation" which hasn't been seen before
+     * @var string
+     */
+    public const READ_STATUS_NEW_ANNOTATION = 'new_annotation';
+
+    /**
+     * Read status constant that identifies an item that has a "changed annotation", i.e. an annotation with unread changes
+     * @var string
+     */
+    public const READ_STATUS_CHANGED_ANNOTATION = 'changed_annotation';
+
     private $legacyEnvironment;
     private $readerManager;
     private $itemService;
@@ -44,10 +74,10 @@ class ReaderService
             $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
             $itemIsCurrentUser = ($item instanceof \cs_user_item && $item->getUserID() === $currentUser->getUserID());
             if (!$itemIsCurrentUser) {
-                $return = 'new';
+                $return = self::READ_STATUS_NEW;
             }
         } else if (!$item->isNotActivated() and $reader['read_date'] < $item->getModificationDate()) {
-            $return = 'changed';
+            $return = self::READ_STATUS_CHANGED;
         }
 
         if ($return == '') {
@@ -77,9 +107,9 @@ class ReaderService
             }
 
             if ($new) {
-                $return = 'new_annotation';
+                $return = self::READ_STATUS_NEW_ANNOTATION;
             } else if ($changed) {
-                $return = 'changed_annotation';
+                $return = self::READ_STATUS_CHANGED_ANNOTATION;
             }
         }
 
@@ -127,9 +157,9 @@ class ReaderService
             }
 
             if ($new) {
-                $return = 'changed';
+                $return = self::READ_STATUS_CHANGED;
             } else if ($changed) {
-                $return = 'changed';
+                $return = self::READ_STATUS_CHANGED;
             }
         }
 

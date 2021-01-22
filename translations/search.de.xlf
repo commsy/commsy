@@ -90,6 +90,22 @@
                 <source>Groups, Topics and Institutions</source>
                 <target>Gruppen, Themen &amp; Institutionen</target>
             </trans-unit>
+            <trans-unit id="search-filter-read-status">
+                <source>Read status</source>
+                <target>Gelesen-Status</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-new">
+                <source>New</source>
+                <target>Neu</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-modified">
+                <source>Modified</source>
+                <target>Geändert</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-read">
+                <source>Read</source>
+                <target>Gelesen</target>
+            </trans-unit>
             <trans-unit id="room-search">
                 <source>Room search</source>
                 <target>Raumsuche</target>

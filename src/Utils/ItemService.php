@@ -2,14 +2,18 @@
 
 namespace App\Utils;
 
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
 
 class ItemService
 {
+    /**
+     * @var LegacyEnvironment $legacyEnvironment
+     */
     private $legacyEnvironment;
 
+    /**
+     * @var \cs_item_manager $itemManager
+     */
     private $itemManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -135,6 +139,30 @@ class ItemService
         }
 
         return [];
+    }
+
+    /**
+     * Returns all items contained in rooms specified by the given room IDs.
+     * @param integer[] $contextIds array of room IDs for rooms whose items shall be returned
+     * @return \cs_item[]
+     */
+    public function getItemsForContextIds(array $contextIds)
+    {
+        if (empty($contextIds)) {
+            return [];
+        }
+
+        $itemManager = $this->itemManager;
+
+        $itemManager->resetLimits();
+        $itemManager->setContextArrayLimit($contextIds);
+
+        $itemManager->select();
+
+        /** @var \cs_list $itemList */
+        $itemList = $itemManager->get();
+
+        return $itemList->to_array();
     }
 
     /**
