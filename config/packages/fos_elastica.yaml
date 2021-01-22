@@ -486,6 +486,8 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
+                        status:
+                            type: integer
                         steps:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
