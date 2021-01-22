@@ -210,8 +210,9 @@ class SearchController extends BaseController
         $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['contexts']);
         $searchData->addContexts($countsByContext);
 
-        // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
-        // respective search filter form field; this also avoids a form validation error ("this value is not valid")
+        // if a rubric, creator, hashtag, category or context title is selected that isn't part of the results anymore,
+        // we keep displaying it in the respective search filter form field; this also avoids a form validation error
+        // ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
         if (!empty($selectedRubric) && $selectedRubric !== 'all' && !array_key_exists($selectedRubric, $countsByRubric)) {
             $searchData->addRubrics([$selectedRubric => 0]);
@@ -359,6 +360,9 @@ class SearchController extends BaseController
         // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
 
+        // read status parameter
+        $searchData->setSelectedReadStatus($searchParams['selectedReadStatus'] ?? 'all');
+
         // rubric parameter
         $searchData->setSelectedRubric($searchParams['selectedRubric'] ?? 'all');
 
@@ -474,13 +478,18 @@ class SearchController extends BaseController
             return;
         }
 
-        // NOTE: we always restrict the search to the context IDs of the current user's rooms
-        $searchManager->addFilterCondition($multipleContextFilterCondition);
-
-        // DEBUG
-        $readStatusFilterCondition->setReadStatus(ReaderService::READ_STATUS_NEW);
-//        $readStatusFilterCondition->setReadStatus($searchData->getSelectedReadStatus());
-        $searchManager->addFilterCondition($readStatusFilterCondition);
+        // user room IDs / read status parameter
+        // NOTE: we always restrict the search to either the context IDs of the current user's rooms, or to item IDs
+        // matching the currently selected read status (which is a user-specific property and thus isn't indexed)
+        // WARNING: this acts as a PRE-filtering mechanism which can slow things down substantially and ideally
+        // wouldn't be necessary
+        $selectedReadStatus = $searchData->getSelectedReadStatus();
+        if (empty($selectedReadStatus) || $selectedReadStatus === 'all') {
+            $searchManager->addFilterCondition($multipleContextFilterCondition);
+        } else {
+            $readStatusFilterCondition->setReadStatus($selectedReadStatus);
+            $searchManager->addFilterCondition($readStatusFilterCondition);
+        }
 
         // context parameter
         if ($searchData->getSelectedContext()) {

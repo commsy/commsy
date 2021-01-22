@@ -19,6 +19,11 @@ class SearchData
     private $appearsInDescription;
 
     /**
+     * @var string|null
+     */
+    private $selectedReadStatus;
+
+    /**
      * @var array|null associative array of rubrics (key: rubric name, value: count)
      */
     private $rubrics;
@@ -163,6 +168,24 @@ class SearchData
     public function setAppearsInDescription(bool $appearsInDescription): SearchData
     {
         $this->appearsInDescription = $appearsInDescription;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSelectedReadStatus(): ?string
+    {
+        return $this->selectedReadStatus;
+    }
+
+    /**
+     * @param string|null $selectedReadStatus
+     * @return SearchData
+     */
+    public function setSelectedReadStatus(?string $selectedReadStatus): SearchData
+    {
+        $this->selectedReadStatus = $selectedReadStatus;
         return $this;
     }
 

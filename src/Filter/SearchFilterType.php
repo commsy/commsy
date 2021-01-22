@@ -4,6 +4,7 @@ namespace App\Filter;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
+use App\Utils\ReaderService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -136,6 +137,20 @@ class SearchFilterType extends AbstractType
                     return array_merge([$translatedTitleAny => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
                 }),
                 'label' => 'Rubric',
+                'required' => false,
+                'placeholder' => false,
+            ])
+            ->add('selectedReadStatus', Types\ChoiceType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'choices' => [
+                    $this->translator->trans('any', [], 'form') => 'all',
+                    'New' => ReaderService::READ_STATUS_NEW,
+                    'Modified' => ReaderService::READ_STATUS_CHANGED,
+                    'Read' => ReaderService::READ_STATUS_SEEN,
+                ],
+                'label' => 'Read status',
                 'required' => false,
                 'placeholder' => false,
             ])

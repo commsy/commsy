@@ -55,6 +55,13 @@ class ReadStatusFilterCondition implements FilterConditionInterface
      */
     public function getConditions(): array
     {
+        // WARNING: this method potentially iterates over a very large number of items, i.e. this may be very slow!
+
+        if (empty($this->readStatus)) {
+            return [];
+        }
+
+        // get IDs of the user's rooms
         $currentUser = $this->userService->getCurrentUserItem();
         $searchableRooms = $this->userService->getSearchableRooms($currentUser);
 
@@ -62,9 +69,11 @@ class ReadStatusFilterCondition implements FilterConditionInterface
             return $room->getItemID();
         }, $searchableRooms);
 
-        $items = $this->itemService->getItemsForContextIds($contextIds);
+        // get all searchable items from the user's rooms
+        $items = $this->itemService->getSearchableItemsForContextIds($contextIds);
 
-        // extract the item IDs of all items having a read status of that set in `$readStatus`
+        // extract the IDs of all items with a read status matching the one in `$this->readStatus`
+// TODO: handle ReaderService::READ_STATUS_SEEN
         $itemIds = [];
         foreach ($items as $item) {
             if ($item) {

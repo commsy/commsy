@@ -71,6 +71,7 @@
                                                         'search_filter[phrase]': searchData.phrase,
                                                         'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
                                                         "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
+                                                        "search_filter[selectedReadStatus]": searchData.selectedReadStatus,
                                                         "search_filter[selectedCreator]": searchData.selectedCreator,
                                                         "search_filter[selectedContext]": searchData.selectedContext,
                                                         "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
@@ -153,6 +154,7 @@
                                     "search[phrase]": "{{ searchData.phrase }}",
                                     "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
                                     "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
+                                    "search[selectedReadStatus]": "{{ searchData.selectedReadStatus }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",
                                     "search[selectedContext]": "{{ searchData.selectedContext }}",
                                     {% for hashtag in searchData.selectedHashtags -%}

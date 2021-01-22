@@ -67,9 +67,13 @@ class ReaderService
     {
         $return = '';
 
+        $item = $this->itemService->getTypedItem($itemId);
+        if (!$item) {
+            return $return;
+        }
+
         $readerManager = $this->readerManager;
         $reader = $readerManager->getLatestReaderForUserByID($itemId, $userID);
-        $item = $this->itemService->getTypedItem($itemId);
         if (empty($reader)) {
             $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
             $itemIsCurrentUser = ($item instanceof \cs_user_item && $item->getUserID() === $currentUser->getUserID());
