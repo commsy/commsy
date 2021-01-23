@@ -73,7 +73,6 @@ class ReadStatusFilterCondition implements FilterConditionInterface
         $items = $this->itemService->getSearchableItemsForContextIds($contextIds);
 
         // extract the IDs of all items with a read status matching the one in `$this->readStatus`
-// TODO: handle ReaderService::READ_STATUS_SEEN
         $itemIds = [];
         foreach ($items as $item) {
             if ($item) {
@@ -81,9 +80,12 @@ class ReadStatusFilterCondition implements FilterConditionInterface
                 if ($relatedUser) {
                     $itemId = $item->getItemId();
                     $readStatus = $this->readerService->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
-                    // READ_STATUS_NEW_ANNOTATION is treated like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
-                    // is treated like READ_STATUS_CHANGED
-                    if (strpos($readStatus, $this->readStatus) === 0) {
+
+                    // NOTE: instead of READ_STATUS_SEEN, ReaderService currently returns an empty string (''); also,
+                    // we treat READ_STATUS_NEW_ANNOTATION like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
+                    // like READ_STATUS_CHANGED
+                    if (empty($readStatus) && $this->readStatus === ReaderService::READ_STATUS_SEEN
+                        || strpos($readStatus, $this->readStatus) === 0) {
                         $itemIds[] = $itemId;
                     }
                 }
