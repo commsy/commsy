@@ -81,7 +81,9 @@ class ReadStatusFilterCondition implements FilterConditionInterface
                 if ($relatedUser) {
                     $itemId = $item->getItemId();
                     $readStatus = $this->readerService->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
-                    if ($readStatus === $this->readStatus) {
+                    // READ_STATUS_NEW_ANNOTATION is treated like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
+                    // is treated like READ_STATUS_CHANGED
+                    if (strpos($readStatus, $this->readStatus) === 0) {
                         $itemIds[] = $itemId;
                     }
                 }
