@@ -176,4 +176,41 @@ class ReaderService
         $this->readerManager->resetLimits();
         return $this->readerManager->getLatestReaderForUserByID($itemId, $userId);
     }
+
+    /**
+     * Returns the IDs of all items among the given items matching the given read status (for the given user).
+     * Note that this method will also return IDs for items with new/changed annotations if "new"/"changed" has been
+     * specified as read status.
+     * @param \cs_item[] $items array of items from which IDs for all items matching `$readStatus` shall be returned
+     * @param string $readStatus the read status for which IDs of matching items shall be returned
+     * @param \cs_item $user the user whose read status shall be used
+     * @return integer[]
+     */
+    public function itemIdsForReadStatus(array $items, string $readStatus, \cs_user_item $user): array
+    {
+        if (empty($items) || !$readStatus || !$user) {
+            return [];
+        }
+
+        $itemIds = [];
+        foreach ($items as $item) {
+            if ($item) {
+                $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
+                if ($relatedUser) {
+                    $itemId = $item->getItemId();
+                    $itemReadStatus = $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
+
+                    // NOTE: instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('');
+                    // also, we treat READ_STATUS_NEW_ANNOTATION like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
+                    // like READ_STATUS_CHANGED
+                    if (empty($itemReadStatus) && $readStatus === ReaderService::READ_STATUS_SEEN
+                        || strpos($itemReadStatus, $readStatus) === 0) {
+                        $itemIds[] = $itemId;
+                    }
+                }
+            }
+        }
+
+        return $itemIds;
+    }
 }
