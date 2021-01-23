@@ -3,7 +3,8 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
+use Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class ReaderService
 {
@@ -38,6 +39,8 @@ class ReaderService
      */
     public const READ_STATUS_CHANGED_ANNOTATION = 'changed_annotation';
 
+    private $readStatusCache;
+
     private $legacyEnvironment;
     private $readerManager;
     private $itemService;
@@ -47,6 +50,8 @@ class ReaderService
         $this->legacyEnvironment = $legacyEnvironment;
         $this->readerManager = $this->legacyEnvironment->getEnvironment()->getReaderManager();
         $this->itemService = $itemService;
+
+        $this->readStatusCache = new FilesystemTagAwareAdapter();
     }
 
     public function getLatestReader($itemId)
@@ -192,25 +197,58 @@ class ReaderService
             return [];
         }
 
+        $userId = $user->getItemID();
         $itemIds = [];
+
         foreach ($items as $item) {
             if ($item) {
-                $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-                if ($relatedUser) {
-                    $itemId = $item->getItemId();
-                    $itemReadStatus = $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
+                $itemId = $item->getItemId();
+                $cachedItemKey = $userId . '_' . $itemId;
 
-                    // NOTE: instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('');
-                    // also, we treat READ_STATUS_NEW_ANNOTATION like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
-                    // like READ_STATUS_CHANGED
-                    if (empty($itemReadStatus) && $readStatus === ReaderService::READ_STATUS_SEEN
-                        || strpos($itemReadStatus, $readStatus) === 0) {
-                        $itemIds[] = $itemId;
+                // we cache the user's read status for a given item which speeds up the look-up; the cached status
+                // will be invalidated after 12 hours, or when the item gets saved again (the `CommsyEditEvent::SAVE`
+                // event will trigger invalidateCachedReadStatusForItemId())
+                $cachedReadStatus = $this->readStatusCache->get($cachedItemKey, function (ItemInterface $cachedItem) use ($item, $itemId, $user, $userId) {
+                    // NOTE: this function will only get executed if there's no valid cache value for `$cachedItemKey`
+                    $itemType = $item->getItemType();
+                    $cachedItem->tag(['user_' . $userId, 'item_' . $itemType . '_' . $itemId]);
+                    $cachedItem->expiresAfter(60*60*12);
+
+                    $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
+                    if ($relatedUser) {
+                        $itemReadStatus = $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
+
+                        return $itemReadStatus;
                     }
+                    return ''; // TODO: shouldn't we better return null here (if that's possible) since '' currently equals 'seen'
+                });
+
+                // NOTE: instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('');
+                // also, we treat READ_STATUS_NEW_ANNOTATION like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
+                // like READ_STATUS_CHANGED
+                if ($cachedReadStatus === '' && $readStatus === ReaderService::READ_STATUS_SEEN
+                    || strpos($cachedReadStatus, $readStatus) === 0) {
+                    $itemIds[] = $itemId;
                 }
             }
         }
 
         return $itemIds;
+    }
+
+    /**
+     * Invalidates the cached read status for the given item.
+     * @param \cs_item $item the ID of the item whose cached read status shall be invalidated
+     */
+    public function invalidateCachedReadStatusForItem($item): void
+    {
+        if (!$item) {
+            return;
+        }
+
+        $itemId = $item->getItemId();
+        $itemType = $item->getItemType();
+
+        $this->readStatusCache->invalidateTags(['item_' . $itemType . '_' . $itemId]);
     }
 }
