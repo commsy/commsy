@@ -44,6 +44,18 @@ class SearchData
     private $selectedCreator;
 
     /**
+     * @var array|null associative array of statuses (key: status int, value: count)
+     */
+    private $statuses;
+
+    /**
+     * @var int|null $selectedStatus
+     */
+    private $selectedStatus;
+
+    private $selectedStatusWidget;
+
+    /**
      * @var array|null associative array of hashtags (key: hashtag name, value: count)
      */
     private $hashtags;
@@ -276,6 +288,59 @@ class SearchData
     }
 
     /**
+     * @return array|null
+     */
+    public function getStatuses(): ?array
+    {
+        return $this->statuses;
+    }
+
+
+    /**
+     * @param array|null $statuses
+     * @return SearchData
+     */
+    public function setStatuses(?array $statuses): SearchData
+    {
+        $this->statuses = $statuses;
+        return $this;
+    }
+
+    public function addStatus(array $statuses): SearchData
+    {
+        foreach ($statuses as $name => $count) {
+            $this->statuses[$name] = $count;
+        }
+
+        return $this;
+    }
+
+    public function addStatuses(array $statuses): SearchData
+    {
+        foreach ($statuses as $name => $count) {
+            $this->statuses[$name] = $count;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSelectedStatus(): ?int
+    {
+        return $this->selectedStatus;
+    }
+
+    /**
+     * @param int|null $selectedStatus
+     */
+    public function setSelectedStatus(?int $selectedStatus): void
+    {
+        $this->selectedStatus = $selectedStatus;
+    }
+
+    /**
      * @return array|null associative array of hashtags (key: hashtag name, value: count)
      */
     public function getHashtags(): ?array
@@ -496,4 +561,21 @@ class SearchData
         $this->modificationDateUntil = $modificationDateUntil;
         return $this;
     }
+
+    /**
+     * @return Object|null
+     */
+    public function getSelectedStatusWidget()
+    {
+        return $this->selectedStatusWidget;
+    }
+
+    /**
+     * @param Object|null $selectedStatusWidget
+     */
+    public function setSelectedStatusWidget($selectedStatusWidget): void
+    {
+        $this->selectedStatusWidget = $selectedStatusWidget;
+    }
+
 }

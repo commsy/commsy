@@ -14,6 +14,10 @@
                 <source>done</source>
                 <target>erledigt</target>
             </trans-unit>
+            <trans-unit id="todo status">
+                <source>todo status</source>
+                <target>Aufgaben-Status</target>
+            </trans-unit>
             <trans-unit id="due date">
                 <source>due date</source>
                 <target>Fällig am</target>
