@@ -242,6 +242,15 @@ class cs_reader_manager {
                    . $currentDateTime
                    . '")';
                $valueRows[] = $valueRow;
+
+               // fire a ReadStatusWillChangeEvent (which will e.g. trigger invalidation of the read status cache for this item & user)
+               global $symfonyContainer;
+
+               /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+               $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+
+               $readStatusWillChangeEvent = new \App\Event\ReadStatusWillChangeEvent($userId, $itemId, 'seen');
+               $eventDispatcher->dispatch($readStatusWillChangeEvent, \App\Event\ReadStatusWillChangeEvent::class);
            }
        }
        $query .= implode(', ', $valueRows);
