@@ -53,6 +53,9 @@ class ItemService
             }
             
             $manager = $this->legacyEnvironment->getManager($type);
+            if (!$manager) {
+                return null;
+            }
 
             if ($versionId === null) {
                 return $manager->getItem($item->getItemID());
