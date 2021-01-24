@@ -94,7 +94,10 @@ class SearchController extends BaseController
      * @param $roomId
      * @param Request $request
      */
-    public function itemSearchResultsAction($roomId, Request $request, SearchManager $searchManager)
+    public function itemSearchResultsAction($roomId,
+                                            Request $request,
+                                            SearchManager $searchManager,
+                                            ReaderService $readerService)
     {
         $query = $request->get('search', '');
 
@@ -111,7 +114,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
-        $results = $this->prepareResults($searchResults, $roomId, 0, true);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
 
         $response = new JsonResponse();
 
@@ -124,7 +127,10 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/instantresults")
      * @param $roomId int The context id
      */
-    public function instantResultsAction($roomId, Request $request, SearchManager $searchManager)
+    public function instantResultsAction($roomId,
+                                         Request $request,
+                                         SearchManager $searchManager,
+                                         ReaderService $readerService)
     {
         $query = $request->get('search', '');
 
@@ -141,7 +147,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, $roomId, 0, true);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
 
         $response = new JsonResponse();
 
@@ -165,7 +171,8 @@ class SearchController extends BaseController
         RoomService $roomService,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
-        ReadStatusFilterCondition $readStatusFilterCondition
+        ReadStatusFilterCondition $readStatusFilterCondition,
+        ReaderService $readerService
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -253,7 +260,7 @@ class SearchController extends BaseController
         $filterForm->handleRequest($request);
 
         $totalHits = $searchResults->getTotalHits();
-        $results = $this->prepareResults($searchResults, $roomId);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService);
 
         return [
             'filterForm' => $filterForm->createView(),
@@ -278,7 +285,8 @@ class SearchController extends BaseController
                                       Request $request,
                                       SearchManager $searchManager,
                                       MultipleContextFilterCondition $multipleContextFilterCondition,
-                                      ReadStatusFilterCondition $readStatusFilterCondition)
+                                      ReadStatusFilterCondition $readStatusFilterCondition,
+                                      ReaderService $readerService)
     {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
@@ -318,7 +326,7 @@ class SearchController extends BaseController
         ]);
         $filterForm->handleRequest($request);
 
-        $results = $this->prepareResults($searchResults, $roomId, $start);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService, $start);
 
         return [
             'roomId' => $roomId,
@@ -682,7 +690,7 @@ class SearchController extends BaseController
         }
     }
 
-    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, $offset = 0, $json = false)
+    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, ReaderService $readerService, $offset = 0, $json = false)
     {
         $itemService = $this->get('commsy_legacy.item_service');
 
@@ -746,6 +754,10 @@ class SearchController extends BaseController
                 if (method_exists($searchResult, 'getStatus')) {
                     $status = $searchResult->getStatus();
                 }
+                if (method_exists($searchResult, 'getItemId')) {
+                    $item = $itemService->getItem($searchResult->getItemId());
+                    $readStatus = $readerService->cachedReadStatusForItem($item);
+                }
                 $results[] = [
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
@@ -753,6 +765,7 @@ class SearchController extends BaseController
                     'files' => $itemService->getItemFileList($searchResult->getItemId()),
                     'type' => $type,
                     'status' => $status,
+                    'readStatus' => $readStatus,
                 ];
             }
         }

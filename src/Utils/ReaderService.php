@@ -184,7 +184,7 @@ class ReaderService
 
     /**
      * Returns the IDs of all items among the given items matching the given read status (for the given user).
-     * Note that this method will also return IDs for items with new/changed annotations if "new"/"changed" has been
+     * Note that this method will also return IDs for items with new/changed annotations if "changed" has been
      * specified as read status.
      * @param \cs_item[] $items array of items from which IDs for all items matching `$readStatus` shall be returned
      * @param string $readStatus the read status for which IDs of matching items shall be returned
@@ -205,10 +205,11 @@ class ReaderService
                 $cachedReadStatus = $this->cachedReadStatusForItem($item, $user);
 
                 // NOTE: instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('');
-                // also, we treat READ_STATUS_NEW_ANNOTATION like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
-                // like READ_STATUS_CHANGED
-                if ($cachedReadStatus === '' && $readStatus === ReaderService::READ_STATUS_SEEN
-                    || strpos($cachedReadStatus, $readStatus) === 0) {
+                // also, we treat READ_STATUS_NEW_ANNOTATION and READ_STATUS_CHANGED_ANNOTATION like READ_STATUS_CHANGED
+                if ($cachedReadStatus === $readStatus
+                    || $cachedReadStatus === '' && $readStatus === self::READ_STATUS_SEEN
+                    || $cachedReadStatus === self::READ_STATUS_NEW_ANNOTATION && $readStatus === self::READ_STATUS_CHANGED
+                    || $cachedReadStatus === self::READ_STATUS_CHANGED_ANNOTATION && $readStatus === self::READ_STATUS_CHANGED) {
                     $itemId = $item->getItemId();
                     $itemIds[] = $itemId;
                 }

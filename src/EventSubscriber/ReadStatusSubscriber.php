@@ -43,6 +43,16 @@ class ReadStatusSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // for annotations, invalidate the read status cache of their linked (hosting) item
+        if ($item->getItemType() === CS_ANNOTATION_TYPE) {
+            /** @var \cs_annotation_item $annotation */
+            $annotation = $this->itemService->getTypedItem($itemId);
+            $linkedItem = $annotation->getLinkedItem();
+            if ($linkedItem) {
+                $item = $linkedItem;
+            }
+        }
+
         $this->readerService->invalidateCachedReadStatusForItem($item);
     }
 }
