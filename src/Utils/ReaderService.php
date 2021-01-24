@@ -188,7 +188,7 @@ class ReaderService
      * specified as read status.
      * @param \cs_item[] $items array of items from which IDs for all items matching `$readStatus` shall be returned
      * @param string $readStatus the read status for which IDs of matching items shall be returned
-     * @param \cs_item $user the user whose read status shall be used
+     * @param \cs_user_item $user the user whose read status shall be used
      * @return integer[]
      */
     public function itemIdsForReadStatus(array $items, string $readStatus, \cs_user_item $user): array
@@ -197,37 +197,19 @@ class ReaderService
             return [];
         }
 
-        $userId = $user->getItemID();
         $itemIds = [];
 
         foreach ($items as $item) {
             if ($item) {
-                $itemId = $item->getItemId();
-                $cachedItemKey = $userId . '_' . $itemId;
-
-                // we cache the user's read status for a given item which speeds up the look-up; the cached status
-                // will be invalidated after 12 hours, or when the item gets saved again (the `CommsyEditEvent::SAVE`
-                // event will trigger invalidateCachedReadStatusForItemId())
-                $cachedReadStatus = $this->readStatusCache->get($cachedItemKey, function (ItemInterface $cachedItem) use ($item, $itemId, $user, $userId) {
-                    // NOTE: this function will only get executed if there's no valid cache value for `$cachedItemKey`
-                    $itemType = $item->getItemType();
-                    $cachedItem->tag(['user_' . $userId, 'item_' . $itemType . '_' . $itemId]);
-                    $cachedItem->expiresAfter(60*60*12);
-
-                    $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-                    if ($relatedUser) {
-                        $itemReadStatus = $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
-
-                        return $itemReadStatus;
-                    }
-                    return ''; // TODO: shouldn't we better return null here (if that's possible) since '' currently equals 'seen'
-                });
+                // we cache the user's read status for a given item which greatly speeds up the look-up process
+                $cachedReadStatus = $this->cachedReadStatusForItem($item, $user);
 
                 // NOTE: instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('');
                 // also, we treat READ_STATUS_NEW_ANNOTATION like READ_STATUS_NEW, and READ_STATUS_CHANGED_ANNOTATION
                 // like READ_STATUS_CHANGED
                 if ($cachedReadStatus === '' && $readStatus === ReaderService::READ_STATUS_SEEN
                     || strpos($cachedReadStatus, $readStatus) === 0) {
+                    $itemId = $item->getItemId();
                     $itemIds[] = $itemId;
                 }
             }
@@ -237,10 +219,59 @@ class ReaderService
     }
 
     /**
-     * Invalidates the cached read status for the given item.
-     * @param \cs_item $item the ID of the item whose cached read status shall be invalidated
+     * Returns the cached read status for the given item and user.
+     * If there's no cached read status for the given item, this method calculates its read status and caches it.
+     * The cached status will be invalidated:
+     * - when the item gets saved (the `CommsyEditEvent::SAVE` will trigger `invalidateCachedReadStatusForItem()`)
+     * - when the item gets marked as read  (the `ReadStatusWillChangeEvent` will trigger `invalidateCachedReadStatusForItem()`)
+     * - or, otherwise, after 12 hours
+     * @param \cs_item $item the item whose cached read status shall be returned
+     * @param \cs_user_item $user the user whose read status shall be used (defaults to the current user if not given)
+     * @return string
      */
-    public function invalidateCachedReadStatusForItem($item): void
+    public function cachedReadStatusForItem(\cs_item $item, \cs_user_item $user = null): string
+    {
+        if (!$item) {
+            return '';
+        }
+
+        if (!$user) {
+            $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+            if ($currentUser) {
+                $user = $currentUser;
+            }
+            if (!$user) {
+                return '';
+            }
+        }
+
+        $itemId = $item->getItemId();
+        $userId = $user->getItemID();
+        $cachedItemKey = $userId . '_' . $itemId;
+
+        $cachedReadStatus = $this->readStatusCache->get($cachedItemKey, function (ItemInterface $cachedItem) use ($item, $itemId, $user, $userId) {
+            // NOTE: this function will only get executed if there's no valid cache value for `$cachedItemKey`
+            $itemType = $item->getItemType();
+            $cachedItem->tag(['user_' . $userId, 'item_' . $itemType . '_' . $itemId]);
+            $cachedItem->expiresAfter(60*60*12);
+
+            $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
+            if ($relatedUser) {
+                $itemReadStatus = $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
+
+                return $itemReadStatus;
+            }
+            return ''; // TODO: shouldn't we better return null here (if that's possible) since '' currently equals 'seen'
+        });
+
+        return $cachedReadStatus;
+    }
+
+    /**
+     * Invalidates the cached read status for the given item.
+     * @param \cs_item $item the item whose cached read status shall be invalidated
+     */
+    public function invalidateCachedReadStatusForItem(\cs_item $item): void
     {
         if (!$item) {
             return;
