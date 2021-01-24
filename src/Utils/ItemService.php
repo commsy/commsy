@@ -158,11 +158,9 @@ class ItemService
             CS_ANNOUNCEMENT_TYPE,
             CS_DATE_TYPE,
             CS_DISCUSSION_TYPE,
-            CS_GROUP_TYPE,
-            CS_INSTITUTION_TYPE,
+            CS_LABEL_TYPE, // groups, topics & institutions
             CS_MATERIAL_TYPE,
             CS_TODO_TYPE,
-            CS_TOPIC_TYPE,
             CS_USER_TYPE,
             cs_userroom_item::ROOM_TYPE_USER,
         ];
