@@ -1306,7 +1306,7 @@ services:
     App\Event\UserStatusChangedEvent:
         autowire: false
 
-    App\Event\ReadStatusWillChangeEvent:
+    App\Event\ReadStatusPreChangeEvent:
         autowire: false
 
     App\Event\AccountChangedEvent:

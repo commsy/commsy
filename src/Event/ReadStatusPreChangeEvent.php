@@ -10,10 +10,10 @@ use Symfony\Contracts\EventDispatcher\Event;
  * This event is fired when an item's read status will be changed for a user.
  * For available read status values, see the constants defined in `ReaderService`.
  *
- * Class ReadStatusWillChangeEvent
+ * Class ReadStatusPreChangeEvent
  * @package App\Event
  */
-class ReadStatusWillChangeEvent extends Event
+class ReadStatusPreChangeEvent extends Event
 {
     /**
      * @var int $userId

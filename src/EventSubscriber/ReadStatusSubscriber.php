@@ -4,7 +4,7 @@
 namespace App\EventSubscriber;
 
 
-use App\Event\ReadStatusWillChangeEvent;
+use App\Event\ReadStatusPreChangeEvent;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -30,11 +30,11 @@ class ReadStatusSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ReadStatusWillChangeEvent::class => 'onReadStatusWillChange',
+            ReadStatusPreChangeEvent::class => 'onReadStatusPreChange',
         ];
     }
 
-    public function onReadStatusWillChange(ReadStatusWillChangeEvent $event)
+    public function onReadStatusPreChange(ReadStatusPreChangeEvent $event)
     {
         $itemId = $event->getItemId();
 

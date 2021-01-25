@@ -224,7 +224,7 @@ class ReaderService
      * If there's no cached read status for the given item, this method calculates its read status and caches it.
      * The cached status will be invalidated:
      * - when the item gets saved (the `CommsyEditEvent::SAVE` will trigger `invalidateCachedReadStatusForItem()`)
-     * - when the item gets marked as read  (the `ReadStatusWillChangeEvent` will trigger `invalidateCachedReadStatusForItem()`)
+     * - when the item gets marked as read  (the `ReadStatusPreChangeEvent` will trigger `invalidateCachedReadStatusForItem()`)
      * - or, otherwise, after 12 hours
      * @param \cs_item $item the item whose cached read status shall be returned
      * @param \cs_user_item $user the user whose read status shall be used (defaults to the current user if not given)

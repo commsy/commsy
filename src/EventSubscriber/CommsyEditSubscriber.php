@@ -50,7 +50,7 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
             if (method_exists($item, 'updateElastic')) {
                 $item->updateElastic();
 
-                // NOTE: read status cache items also get invalidated via the ReadStatusWillChangeEvent
+                // NOTE: read status cache items also get invalidated via the ReadStatusPreChangeEvent
                 // which will be triggered when items get marked as read
                 $this->readerService->invalidateCachedReadStatusForItem($item);
             }
