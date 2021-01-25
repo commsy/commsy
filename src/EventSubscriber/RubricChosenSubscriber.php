@@ -9,7 +9,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
-class RubricChosenSubscriber implements EventSubscriberInterface
+class ChosenRubricSubscriber implements EventSubscriberInterface
 {
 
     public static function getSubscribedEvents()
@@ -26,6 +26,7 @@ class RubricChosenSubscriber implements EventSubscriberInterface
         $formOptions = $form->getConfig()->getOptions();
 
         $formOptions['label'] = false;
+        $formOptions['mapped'] = false;
         if ($data->getSelectedRubric() === 'todo') {
             $form->add('selectedStatusWidget', 'App\Form\Type\TodoStatusFilterType', $formOptions);
         }

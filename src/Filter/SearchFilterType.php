@@ -1,7 +1,7 @@
 <?php
 namespace App\Filter;
 
-use App\EventSubscriber\RubricChosenSubscriber;
+use App\EventSubscriber\ChosenRubricSubscriber;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Form\Type\Event\AddContextFieldListener;
 use App\Model\SearchData;
@@ -140,7 +140,7 @@ class SearchFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => false,
             ])
-            ->addEventSubscriber(new RubricChosenSubscriber())
+            ->addEventSubscriber(new ChosenRubricSubscriber())
             ->add('selectedHashtags', Select2ChoiceType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',

@@ -31,15 +31,13 @@ class TodoStatusFilterType extends AbstractType
         /** @var SearchData $searchData */
         $searchData = $builder->getData();
 
-        $translationDomain = 'search';
-
         $builder->add('selectedStatus', Types\ChoiceType::class, [
         'attr' => [
             'onchange' => 'this.form.submit()',
         ],
         'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
             $translatedTitleAny = $this->translator->trans('any', [], 'form');
-            return array_merge([$translatedTitleAny => 0], $this->buildRubricsChoices($searchData->getStatuses()));
+            return array_merge([$translatedTitleAny => 0], $this->buildTodoStatusChoices($searchData->getStatuses()));
         }),
         'label' => 'todo status',
         'translation_domain' => 'todo',
@@ -49,11 +47,11 @@ class TodoStatusFilterType extends AbstractType
     }
 
     /**
-     * Builds the array of choices for the rubric filter field.
+     * Builds the array of choices for the todo status filter field.
      *
-     * @param array|null $statuses associative array of rubrics (key: rubric name, value: count)
+     * @param array|null $statuses associative array of todo statuses (key: status int, value: count)
      */
-    private function buildRubricsChoices($statuses): array
+    private function buildTodoStatusChoices(?array $statuses): array
     {
         if (!isset($statuses) || empty($statuses)) {
             return [];
