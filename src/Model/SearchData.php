@@ -44,15 +44,18 @@ class SearchData
     private $selectedCreator;
 
     /**
-     * @var array|null associative array of statuses (key: status int, value: count)
+     * @var array|null associative array of todo statuses (key: status int, value: count)
      */
-    private $statuses;
+    private $todoStatuses;
 
     /**
-     * @var int|null $selectedStatus
+     * @var int|null $selectedTodoStatus
      */
-    private $selectedStatus;
+    private $selectedTodoStatus;
 
+    /**
+     * @var object $selectedStatusWidget
+     */
     private $selectedStatusWidget;
 
     /**
@@ -290,35 +293,26 @@ class SearchData
     /**
      * @return array|null
      */
-    public function getStatuses(): ?array
+    public function getTodoStatuses(): ?array
     {
-        return $this->statuses;
+        return $this->todoStatuses;
     }
 
 
     /**
-     * @param array|null $statuses
+     * @param array|null $todoStatuses
      * @return SearchData
      */
-    public function setStatuses(?array $statuses): SearchData
+    public function setTodoStatuses(?array $todoStatuses): SearchData
     {
-        $this->statuses = $statuses;
+        $this->todoStatuses = $todoStatuses;
         return $this;
     }
 
-    public function addStatus(array $statuses): SearchData
+    public function addTodoStatuses(array $todoStatuses): SearchData
     {
-        foreach ($statuses as $name => $count) {
-            $this->statuses[$name] = $count;
-        }
-
-        return $this;
-    }
-
-    public function addStatuses(array $statuses): SearchData
-    {
-        foreach ($statuses as $name => $count) {
-            $this->statuses[$name] = $count;
+        foreach ($todoStatuses as $name => $count) {
+            $this->todoStatuses[$name] = $count;
         }
 
         return $this;
@@ -327,17 +321,17 @@ class SearchData
     /**
      * @return int|null
      */
-    public function getSelectedStatus(): ?int
+    public function getSelectedTodoStatus(): ?int
     {
-        return $this->selectedStatus;
+        return $this->selectedTodoStatus;
     }
 
     /**
-     * @param int|null $selectedStatus
+     * @param int|null $selectedTodoStatus
      */
-    public function setSelectedStatus(?int $selectedStatus): void
+    public function setSelectedTodoStatus(?int $selectedTodoStatus): void
     {
-        $this->selectedStatus = $selectedStatus;
+        $this->selectedTodoStatus = $selectedTodoStatus;
     }
 
     /**
@@ -561,21 +555,4 @@ class SearchData
         $this->modificationDateUntil = $modificationDateUntil;
         return $this;
     }
-
-    /**
-     * @return Object|null
-     */
-    public function getSelectedStatusWidget()
-    {
-        return $this->selectedStatusWidget;
-    }
-
-    /**
-     * @param Object|null $selectedStatusWidget
-     */
-    public function setSelectedStatusWidget($selectedStatusWidget): void
-    {
-        $this->selectedStatusWidget = $selectedStatusWidget;
-    }
-
 }
