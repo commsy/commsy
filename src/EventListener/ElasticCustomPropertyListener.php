@@ -45,6 +45,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
             $this->addFilesContent($event);
         }
 
+        if (isset($fields['context'])) {
+            $this->addContext($event);
+        }
+
         if (isset($fields['discussionarticles'])) {
             $this->addDiscussionArticles($event);
         }
@@ -111,6 +115,20 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 if (!empty($objectTags)) {
                     $event->getDocument()->set('tags', $objectTags);
                 }
+            }
+        }
+    }
+
+    private function addContext(TransformEvent $event)
+    {
+        $item = $this->getItemCached($event->getObject()->getItemId());
+
+        if ($item) {
+            $context = $item->getContextItem();
+            if ($context) {
+                $event->getDocument()->set('context', [
+                    'title' => $context->getTitle(),
+                ]);
             }
         }
     }
@@ -288,7 +306,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
-    private function getItemCached($itemId)
+    private function getItemCached($itemId): ?\cs_item
     {
         // cache wiping
         if (sizeof($this->itemCache) >= 10000) {

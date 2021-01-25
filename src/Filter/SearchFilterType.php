@@ -4,6 +4,7 @@ namespace App\Filter;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Search\SearchManager;
+use App\Utils\ReaderService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -52,13 +53,6 @@ class SearchFilterType extends AbstractType
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])
-            ->add('all_rooms', Filters\CheckboxFilterType::class, [
-                'label' => 'Search in all my rooms',
-                'required' => false,
-                'label_attr' => [
-                    'class' => 'uk-form-label',
-                ],
-            ])
             ->add('appears_in', Filters\ChoiceFilterType::class, [
                 'choices' => [
                     'Title' => 'title',
@@ -77,6 +71,14 @@ class SearchFilterType extends AbstractType
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getCreators()));
                 }),
                 'label' => 'Creator',
+                'required' => false,
+            ])
+            ->add('selectedContext', Select2ChoiceType::class, [
+                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                    $translatedTitleAny = $this->translator->trans('All my rooms', [], 'search');
+                    return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getContexts()));
+                }),
+                'label' => 'Contexts',
                 'required' => false,
             ])
             ->add('creation_date_range', Filters\DateRangeFilterType::class, [
@@ -127,6 +129,17 @@ class SearchFilterType extends AbstractType
                     return array_merge([$translatedTitleAny => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
                 }),
                 'label' => 'Rubric',
+                'required' => false,
+                'placeholder' => false,
+            ])
+            ->add('selectedReadStatus', Types\ChoiceType::class, [
+                'choices' => [
+                    $this->translator->trans('any', [], 'form') => 'all',
+                    'New' => ReaderService::READ_STATUS_NEW,
+                    'Modified' => ReaderService::READ_STATUS_CHANGED,
+                    'Read' => ReaderService::READ_STATUS_SEEN,
+                ],
+                'label' => 'Read status',
                 'required' => false,
                 'placeholder' => false,
             ])

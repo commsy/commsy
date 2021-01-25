@@ -39,8 +39,8 @@
                 <target>Top 50 matches (sorted by activity and type)</target>
             </trans-unit>
             <trans-unit id="search-filter-all-my-rooms">
-                <source>Search in all my rooms</source>
-                <target>Search in all my workspaces</target>
+                <source>All my rooms</source>
+                <target>All my workspaces</target>
             </trans-unit>
             <trans-unit id="search-filter-appearing-in">
                 <source>Appearing in</source>
@@ -66,6 +66,10 @@
                 <source>Hashtags</source>
                 <target>Tags</target>
             </trans-unit>
+            <trans-unit id="search-filter-contexts">
+                <source>Contexts</source>
+                <target>Workspace</target>
+            </trans-unit>
             <trans-unit id="search-filter-categories">
                 <source>Categories</source>
                 <target>Categories</target>
@@ -85,6 +89,22 @@
             <trans-unit id="search-filter-rubric-labels">
                 <source>Groups, Topics and Institutions</source>
                 <target>Groups, Topics &amp; Institutions</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status">
+                <source>Read status</source>
+                <target>Read status</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-new">
+                <source>New</source>
+                <target>New</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-modified">
+                <source>Modified</source>
+                <target>Modified</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-read">
+                <source>Read</source>
+                <target>Read</target>
             </trans-unit>
             <trans-unit id="room-search">
                 <source>Room search</source>
