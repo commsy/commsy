@@ -103,9 +103,9 @@ class SearchData
 
     /**
      * @param string|null $phrase
-     * @return SearchData
+     * @return self
      */
-    public function setPhrase(?string $phrase): SearchData
+    public function setPhrase(?string $phrase): self
     {
         $this->phrase = $phrase;
         return $this;
@@ -128,9 +128,9 @@ class SearchData
 
     /**
      * @param array $appearsIn an array of field names describing the fields that must contain a search term
-     * @return SearchData
+     * @return self
      */
-    public function setAppearsIn(array $appearsIn): SearchData
+    public function setAppearsIn(array $appearsIn): self
     {
         $this->setAppearsInTitle(in_array('title', $appearsIn, true) ? true : false);
         $this->setAppearsInDescription(in_array('description', $appearsIn, true) ? true : false);
@@ -148,7 +148,7 @@ class SearchData
     /**
      * @param boolean $appearsInTitle
      */
-    public function setAppearsInTitle(bool $appearsInTitle): SearchData
+    public function setAppearsInTitle(bool $appearsInTitle): self
     {
         $this->appearsInTitle = $appearsInTitle;
         return $this;
@@ -165,7 +165,7 @@ class SearchData
     /**
      * @param boolean $appearsInDescription
      */
-    public function setAppearsInDescription(bool $appearsInDescription): SearchData
+    public function setAppearsInDescription(bool $appearsInDescription): self
     {
         $this->appearsInDescription = $appearsInDescription;
         return $this;
@@ -181,9 +181,9 @@ class SearchData
 
     /**
      * @param string|null $selectedReadStatus
-     * @return SearchData
+     * @return self
      */
-    public function setSelectedReadStatus(?string $selectedReadStatus): SearchData
+    public function setSelectedReadStatus(?string $selectedReadStatus): self
     {
         $this->selectedReadStatus = $selectedReadStatus;
         return $this;
@@ -199,9 +199,9 @@ class SearchData
 
     /**
      * @param array $rubrics associative array of rubrics (key: rubric name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function setRubrics(array $rubrics): SearchData
+    public function setRubrics(array $rubrics): self
     {
         $this->rubrics = $rubrics;
         return $this;
@@ -209,9 +209,9 @@ class SearchData
 
     /**
      * @param array $rubrics associative array of rubrics (key: rubric name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function addRubrics(array $rubrics): SearchData
+    public function addRubrics(array $rubrics): self
     {
         foreach ($rubrics as $name => $count) {
             $this->rubrics[$name] = $count;
@@ -229,9 +229,9 @@ class SearchData
 
     /**
      * @param string|null $selectedRubric
-     * @return SearchData
+     * @return self
      */
-    public function setSelectedRubric(?string $selectedRubric): SearchData
+    public function setSelectedRubric(?string $selectedRubric): self
     {
         $this->selectedRubric = $selectedRubric;
         return $this;
@@ -247,9 +247,9 @@ class SearchData
 
     /**
      * @param array $creators associative array of creators (key: creator name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function setCreators(array $creators): SearchData
+    public function setCreators(array $creators): self
     {
         $this->creators = $creators;
         return $this;
@@ -257,9 +257,9 @@ class SearchData
 
     /**
      * @param array $creators associative array of creators (key: creator name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function addCreators(array $creators): SearchData
+    public function addCreators(array $creators): self
     {
         foreach ($creators as $name => $count) {
             $this->creators[$name] = $count;
@@ -277,9 +277,9 @@ class SearchData
 
     /**
      * @param string|null $selectedCreator
-     * @return SearchData
+     * @return self
      */
-    public function setSelectedCreator(?string $selectedCreator): SearchData
+    public function setSelectedCreator(?string $selectedCreator): self
     {
         $this->selectedCreator = $selectedCreator;
         return $this;
@@ -295,9 +295,9 @@ class SearchData
 
     /**
      * @param array $hashtags associative array of hashtags (key: hashtag name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function setHashtags(array $hashtags): SearchData
+    public function setHashtags(array $hashtags): self
     {
         $this->hashtags = $hashtags;
         return $this;
@@ -305,9 +305,9 @@ class SearchData
 
     /**
      * @param array $hashtags associative array of hashtags (key: hashtag name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function addHashtags(array $hashtags): SearchData
+    public function addHashtags(array $hashtags): self
     {
         foreach ($hashtags as $name => $count) {
             $this->hashtags[$name] = $count;
@@ -325,9 +325,9 @@ class SearchData
 
     /**
      * @param string[] $selectedHashtags
-     * @return SearchData
+     * @return self
      */
-    public function setSelectedHashtags(array $selectedHashtags): SearchData
+    public function setSelectedHashtags(array $selectedHashtags): self
     {
         $this->selectedHashtags = $selectedHashtags;
         return $this;
@@ -343,9 +343,9 @@ class SearchData
 
     /**
      * @param array $categories associative array of categories (key: category name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function setCategories(array $categories): SearchData
+    public function setCategories(array $categories): self
     {
         $this->categories = $categories;
         return $this;
@@ -353,9 +353,9 @@ class SearchData
 
     /**
      * @param array $categories associative array of categories (key: category name, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function addCategories(array $categories): SearchData
+    public function addCategories(array $categories): self
     {
         foreach ($categories as $name => $count) {
             $this->categories[$name] = $count;
@@ -373,9 +373,9 @@ class SearchData
 
     /**
      * @param string[] $selectedCategories
-     * @return SearchData
+     * @return self
      */
-    public function setSelectedCategories(array $selectedCategories): SearchData
+    public function setSelectedCategories(array $selectedCategories): self
     {
         $this->selectedCategories = $selectedCategories;
         return $this;
@@ -394,9 +394,9 @@ class SearchData
 
     /**
      * @param array|null $creationDateRange an array of two items, start & end date, which may be \DateTime objects or null
-     * @return SearchData
+     * @return self
      */
-    public function setCreationDateRange(?array $creationDateRange): SearchData
+    public function setCreationDateRange(?array $creationDateRange): self
     {
         // start date
         if (isset($creationDateRange[0]) && $creationDateRange[0] instanceof \DateTime) {
@@ -422,9 +422,9 @@ class SearchData
 
     /**
      * @param array|null $modificationDateRange an array of two items, start & end date, which may be \DateTime objects or null
-     * @return SearchData
+     * @return self
      */
-    public function setModificationDateRange(?array $modificationDateRange): SearchData
+    public function setModificationDateRange(?array $modificationDateRange): self
     {
         if (isset($modificationDateRange[0]) && $modificationDateRange[0] instanceof \DateTime) {
             $this->setModificationDateFrom($modificationDateRange[0]);
@@ -445,9 +445,9 @@ class SearchData
 
     /**
      * @param \DateTime|null $creationDateFrom
-     * @return SearchData
+     * @return self
      */
-    public function setCreationDateFrom(?\DateTime $creationDateFrom): SearchData
+    public function setCreationDateFrom(?\DateTime $creationDateFrom): self
     {
         $this->creationDateFrom = $creationDateFrom;
         return $this;
@@ -463,9 +463,9 @@ class SearchData
 
     /**
      * @param \DateTime|null $creationDateUntil
-     * @return SearchData
+     * @return self
      */
-    public function setCreationDateUntil(?\DateTime $creationDateUntil): SearchData
+    public function setCreationDateUntil(?\DateTime $creationDateUntil): self
     {
         $this->creationDateUntil = $creationDateUntil;
         return $this;
@@ -481,9 +481,9 @@ class SearchData
 
     /**
      * @param \DateTime|null $modificationDateFrom
-     * @return SearchData
+     * @return self
      */
-    public function setModificationDateFrom(?\DateTime $modificationDateFrom): SearchData
+    public function setModificationDateFrom(?\DateTime $modificationDateFrom): self
     {
         $this->modificationDateFrom = $modificationDateFrom;
         return $this;
@@ -499,9 +499,9 @@ class SearchData
 
     /**
      * @param \DateTime|null $modificationDateUntil
-     * @return SearchData
+     * @return self
      */
-    public function setModificationDateUntil(?\DateTime $modificationDateUntil): SearchData
+    public function setModificationDateUntil(?\DateTime $modificationDateUntil): self
     {
         $this->modificationDateUntil = $modificationDateUntil;
         return $this;
@@ -533,9 +533,9 @@ class SearchData
 
     /**
      * @param string|null $selectedContext
-     * @return SearchData
+     * @return self
      */
-    public function setSelectedContext(?string $selectedContext): SearchData
+    public function setSelectedContext(?string $selectedContext): self
     {
         $this->selectedContext = $selectedContext;
         return $this;
@@ -543,9 +543,9 @@ class SearchData
 
     /**
      * @param array $contexts associative array of context titles (key: context title, value: count)
-     * @return SearchData
+     * @return self
      */
-    public function addContexts(array $contexts): SearchData
+    public function addContexts(array $contexts): self
     {
         foreach ($contexts as $name => $count) {
             $this->contexts[$name] = $count;
