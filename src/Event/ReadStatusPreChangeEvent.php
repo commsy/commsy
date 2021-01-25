@@ -4,6 +4,7 @@
 namespace App\Event;
 
 
+use App\Utils\ReaderService;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -32,6 +33,17 @@ class ReadStatusPreChangeEvent extends Event
 
     public function __construct(int $userId, int $itemId, string $newReadStatus)
     {
+        if (
+            $newReadStatus !== ReaderService::READ_STATUS_NEW &&
+            $newReadStatus !== ReaderService::READ_STATUS_CHANGED &&
+            $newReadStatus !== ReaderService::READ_STATUS_NEW_ANNOTATION &&
+            $newReadStatus !== ReaderService::READ_STATUS_CHANGED_ANNOTATION &&
+            $newReadStatus !== ReaderService::READ_STATUS_SEEN &&
+            !empty($newReadStatus) // most CommSy code currently uses an empty string ('') instead of READ_STATUS_SEEN
+        ) {
+            throw new \InvalidArgumentException('unknown read status given');
+        }
+
         $this->userId = $userId;
         $this->itemId = $itemId;
         $this->newReadStatus = $newReadStatus;

@@ -3,7 +3,6 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
-use cs_userroom_item;
 
 class ItemService
 {
@@ -150,7 +149,7 @@ class ItemService
      * @param integer[] $contextIds array of room IDs for rooms whose items shall be returned
      * @return \cs_item[]
      */
-    public function getSearchableItemsForContextIds(array $contextIds)
+    public function getSearchableItemsForContextIds(array $contextIds): array
     {
         if (empty($contextIds)) {
             return [];
@@ -165,7 +164,7 @@ class ItemService
             CS_MATERIAL_TYPE,
             CS_TODO_TYPE,
             CS_USER_TYPE,
-            cs_userroom_item::ROOM_TYPE_USER,
+            \cs_userroom_item::ROOM_TYPE_USER,
         ];
 
         $itemManager->resetLimits();

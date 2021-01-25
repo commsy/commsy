@@ -249,7 +249,7 @@ class cs_reader_manager {
                /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
                $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
-               $readStatusPreChangeEvent = new \App\Event\ReadStatusPreChangeEvent($userId, $itemId, 'seen');
+               $readStatusPreChangeEvent = new \App\Event\ReadStatusPreChangeEvent($userId, $itemId, \App\Utils\ReaderService::READ_STATUS_SEEN);
                $eventDispatcher->dispatch($readStatusPreChangeEvent, \App\Event\ReadStatusPreChangeEvent::class);
            }
        }
