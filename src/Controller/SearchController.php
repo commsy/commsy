@@ -529,7 +529,7 @@ class SearchController extends BaseController
         }
 
         // status parameter
-        if ($searchData->getSelectedStatus()) {
+        if ($searchData->getSelectedRubric() === 'todo' && $searchData->getSelectedStatus()) {
             $todoStatusFilterCondition = new TodoStatusFilterCondition();
             $todoStatusFilterCondition->setTodoStatus($searchData->getSelectedStatus());
             $searchManager->addFilterCondition($todoStatusFilterCondition);

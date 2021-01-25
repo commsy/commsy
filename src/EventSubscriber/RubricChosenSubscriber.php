@@ -4,6 +4,7 @@
 namespace App\EventSubscriber;
 
 
+use App\Model\SearchData;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -19,6 +20,7 @@ class RubricChosenSubscriber implements EventSubscriberInterface
     }
 
     public function onPreSetData(FormEvent $event) {
+        /** @var SearchData $data **/
         $data = $event->getData();
         $form = $event->getForm();
         $formOptions = $form->getConfig()->getOptions();
@@ -28,5 +30,4 @@ class RubricChosenSubscriber implements EventSubscriberInterface
             $form->add('selectedStatusWidget', 'App\Form\Type\TodoStatusFilterType', $formOptions);
         }
     }
-
 }
