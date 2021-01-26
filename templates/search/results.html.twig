@@ -27,6 +27,16 @@
                     {# visually separate the first form field from the rest (since it expands the search results instead of restricting them) #}
                     {{ form_row(filterForm.all_rooms) }}
                     <hr/>
+                    {{ form_row(filterForm.appears_in) }}
+                    {{ form_row(filterForm.selectedCreator) }}
+                    {{ form_row(filterForm.creation_date_range) }}
+                    {{ form_row(filterForm.modification_date_range) }}
+                    {{ form_row(filterForm.selectedRubric) }}
+                    {% if filterForm.selectedTodoStatus is defined %}
+                        {{ form_row(filterForm.selectedTodoStatus) }}
+                    {% endif %}
+                    {{ form_row(filterForm.selectedHashtags) }}
+                    {{ form_row(filterForm.selectedCategories) }}
                     {{ form_end(filterForm) }}
                 </div>
             </div>
