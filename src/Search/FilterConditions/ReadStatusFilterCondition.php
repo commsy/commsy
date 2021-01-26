@@ -74,9 +74,6 @@ class ReadStatusFilterCondition implements FilterConditionInterface
 
         // extract the IDs of all items with a read status matching the one in `$this->readStatus`
         $itemIds = $this->readerService->itemIdsForReadStatus($items, $this->readStatus, $currentUser);
-        if (empty($itemIds)) {
-            return [];
-        }
 
         $contextFilter = new Ids();
         $contextFilter->setIds($itemIds);

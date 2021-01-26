@@ -520,14 +520,14 @@ class SearchController extends BaseController
         }
 
         // user room IDs / read status parameter
-        // NOTE: we always restrict the search to the context IDs of the current user's rooms, and possibly to item
-        // IDs matching the currently selected read status (which is a user-specific property and thus isn't indexed)
+        // NOTE: we always restrict the search to either the context IDs of the current user's rooms, or to item IDs
+        // matching the currently selected read status (which is a user-specific property and thus isn't indexed)
         // WARNING: this acts as a PRE-filtering mechanism which can slow things down substantially and ideally
         // wouldn't be necessary
-        $searchManager->addFilterCondition($multipleContextFilterCondition);
-
         $selectedReadStatus = $searchData->getSelectedReadStatus();
-        if (!empty($selectedReadStatus) && $selectedReadStatus !== 'all') {
+        if (empty($selectedReadStatus) || $selectedReadStatus === 'all') {
+            $searchManager->addFilterCondition($multipleContextFilterCondition);
+        } else {
             $readStatusFilterCondition->setReadStatus($selectedReadStatus);
             $searchManager->addFilterCondition($readStatusFilterCondition);
         }
