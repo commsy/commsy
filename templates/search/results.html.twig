@@ -170,25 +170,25 @@
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
                                 "target": "#search-feed",
                                 "query": {
-                                    "search[phrase]": "{{ searchData.phrase }}",
-                                    "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
-                                    "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
-                                    "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
-                                    "search[selectedCreator]": "{{ searchData.selectedCreator }}",
+                                    "search_filter[phrase]": "{{ searchData.phrase }}",
+                                    "search_filter[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
+                                    "search_filter[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
+                                    "search_filter[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
+                                    "search_filter[selectedCreator]": "{{ searchData.selectedCreator }}",
                                     {% for hashtag in searchData.selectedHashtags -%}
-                                    "search[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
+                                    "search_filter[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
                                     {%- endfor %}
 
                                     {% for category in searchData.selectedCategories -%}
-                                        "search[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
+                                        "search_filter[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
                                     {%- endfor %}
 
-                                    "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
-                                    "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
-                                    "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
-                                    "search[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
-                                    "search[selectedRubric]": "{{ searchData.selectedRubric }}",
-                                    "search[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0  }}"
+                                    "search_filter[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
+                                    "search_filter[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
+                                    "search_filter[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
+                                    "search_filter[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
+                                    "search_filter[selectedRubric]": "{{ searchData.selectedRubric }}",
+                                    "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0  }}"
                                 }
                         }'>
                             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
