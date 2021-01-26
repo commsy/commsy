@@ -31,19 +31,19 @@ class TodoStatusFilterType extends AbstractType
         /** @var SearchData $searchData */
         $searchData = $builder->getData();
 
-        $builder->add('selectedStatus', Types\ChoiceType::class, [
-        'attr' => [
-            'onchange' => 'this.form.submit()',
-        ],
-        'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-            $translatedTitleAny = $this->translator->trans('any', [], 'form');
-            return array_merge([$translatedTitleAny => 0], $this->buildTodoStatusChoices($searchData->getStatuses()));
-        }),
-        'label' => 'todo status',
-        'translation_domain' => 'todo',
-        'required' => false,
-        'placeholder' => false,
-    ]);
+        $builder->add('selectedTodoStatus', Types\ChoiceType::class, [
+            'attr' => [
+                'onchange' => 'this.form.submit()',
+            ],
+            'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
+                $translatedTitleAny = $this->translator->trans('any', [], 'form');
+                return array_merge([$translatedTitleAny => 0], $this->buildTodoStatusChoices($searchData->getTodoStatuses()));
+            }),
+            'label' => 'todo status',
+            'translation_domain' => 'todo',
+            'required' => false,
+            'placeholder' => false,
+        ]);
     }
 
     /**
@@ -62,15 +62,15 @@ class TodoStatusFilterType extends AbstractType
             switch ($code) {
                 case 1:
                     // pending
-                    $translatedTitle = $this->translator->trans('pending',[],'todo');  //'Pending';
+                    $translatedTitle = $this->translator->trans('pending', [], 'todo');
                     break;
                 case 2:
                     // in progress
-                    $translatedTitle = $this->translator->trans('in progress', [], 'todo'); //'In progress';
+                    $translatedTitle = $this->translator->trans('in progress', [], 'todo');
                     break;
                 case 3:
                     // done
-                    $translatedTitle = $this->translator->trans('done',[],'todo'); //'done';
+                    $translatedTitle = $this->translator->trans('done', [], 'todo');
                     break;
                 default:
                     $translatedTitle = $code;
@@ -86,16 +86,16 @@ class TodoStatusFilterType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired(['contextId'])
             ->setDefaults([
-                'csrf_protection'    => false,
-                'validation_groups'  => array('filtering'), // avoid NotBlank() constraint-related message
-                'method'             => 'get',
+                'csrf_protection' => false,
+                'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
+                'method' => 'get',
                 'translation_domain' => 'search',
             ]);
     }

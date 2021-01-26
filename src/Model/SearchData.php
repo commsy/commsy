@@ -298,7 +298,6 @@ class SearchData
         return $this->todoStatuses;
     }
 
-
     /**
      * @param array|null $todoStatuses
      * @return SearchData
@@ -554,5 +553,15 @@ class SearchData
     {
         $this->modificationDateUntil = $modificationDateUntil;
         return $this;
+    }
+
+    public function getSelectedStatusWidget()
+    {
+        return $this->selectedStatusWidget;
+    }
+
+    public function setSelectedStatusWidget( $selectedStatusWidget)
+    {
+        $this->selectedStatusWidget = $selectedStatusWidget;
     }
 }
