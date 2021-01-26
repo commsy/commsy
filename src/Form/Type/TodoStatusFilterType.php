@@ -32,9 +32,6 @@ class TodoStatusFilterType extends AbstractType
         $searchData = $builder->getData();
 
         $builder->add('selectedTodoStatus', Types\ChoiceType::class, [
-            'attr' => [
-                'onchange' => 'this.form.submit()',
-            ],
             'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                 $translatedTitleAny = $this->translator->trans('any', [], 'form');
                 return array_merge([$translatedTitleAny => 0], $this->buildTodoStatusChoices($searchData->getTodoStatuses()));
