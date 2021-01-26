@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Search\FilterConditions\TodoStatusFilterCondition;
 use App\Action\Copy\CopyAction;
 use App\Filter\SearchFilterType;
 use App\Form\Type\SearchItemType;
@@ -228,6 +229,11 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
+        $countsByTodoStatus = $searchManager->countsByKeyFromAggregation($aggregations['todostatuses']);
+        $searchData->addTodoStatuses($countsByTodoStatus);
+
+        // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
+        // respective search filter form field; this also avoids a form validation error ("this value is not valid")
         $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['contexts']);
         $searchData->addContexts($countsByContext);
 
@@ -265,6 +271,11 @@ class SearchController extends BaseController
         $selectedContext = $searchData->getSelectedContext();
         if (!empty($selectedContext) && $selectedContext !== 'all' && !array_key_exists($selectedContext, $countsByContext)) {
             $searchData->addContexts([$selectedContext => 0]);
+        }
+
+        $selectedTodoStatus = $searchData->getSelectedTodoStatus();
+        if (!empty($selectedTodoStatus) && $selectedTodoStatus !== 0 && !array_key_exists($selectedTodoStatus, $countsByTodoStatus)) {
+            $searchData->addTodoStatuses([$selectedTodoStatus => 0]);
         }
 
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
@@ -333,6 +344,9 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
+        $countsByTodoStatus = $searchManager->countsByKeyFromAggregation($aggregations['todostatuses']);
+        $searchData->addTodoStatuses($countsByTodoStatus);
+
         $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['contexts']);
         $searchData->addContexts($countsByContext);
 
@@ -398,6 +412,9 @@ class SearchController extends BaseController
 
         // categories parameter
         $searchData->setSelectedCategories($searchParams['selectedCategories'] ?? []);
+
+        // todostatus
+        $searchData->setSelectedTodoStatus($searchParams['selectedStatusWidget']['selectedTodoStatus'] ?? 0);
 
         // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
@@ -564,6 +581,13 @@ class SearchController extends BaseController
             $modificationDateFilterCondition->setStartDate($searchData->getModificationDateFrom());
             $modificationDateFilterCondition->setEndDate($searchData->getModificationDateUntil());
             $searchManager->addFilterCondition($modificationDateFilterCondition);
+        }
+
+        // todo status parameter
+        if ($searchData->getSelectedRubric() === 'todo' && $searchData->getSelectedTodoStatus()) {
+            $todoStatusFilterCondition = new TodoStatusFilterCondition();
+            $todoStatusFilterCondition->setTodoStatus($searchData->getSelectedTodoStatus());
+            $searchManager->addFilterCondition($todoStatusFilterCondition);
         }
     }
 

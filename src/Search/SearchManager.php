@@ -97,6 +97,22 @@ class SearchManager
         $contextsAggregation->setSize(100);
         $query->addAggregation($contextsAggregation);
 
+        $statusesAggregation = new Aggregations\Terms('todostatuses');
+        $statusesAggregation->setField('status');
+        // return at most 100 of the most used statuses (default is 10)
+        $statusesAggregation->setSize(100);
+        $query->addAggregation($statusesAggregation);
+
+        // aggregations
+//        $filterAggregation = new Aggregations\Filter('filterContext');
+//        $filterAggregation->setFilter($contextFilter);
+
+//        $termsAggregation = new Aggregations\Terms('contexts');
+//        $termsAggregation->setField('contextId');
+//        $filterAggregation->addAggregation($termsAggregation);
+
+//        $query->addAggregation($filterAggregation);
+
         return $this->commsyFinder->createPaginatorAdapter($query);
     }
 

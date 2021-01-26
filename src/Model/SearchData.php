@@ -54,6 +54,21 @@ class SearchData
     private $selectedCreator;
 
     /**
+     * @var array|null associative array of todo statuses (key: status int, value: count)
+     */
+    private $todoStatuses;
+
+    /**
+     * @var int|null $selectedTodoStatus
+     */
+    private $selectedTodoStatus;
+
+    /**
+     * @var object $selectedStatusWidget
+     */
+    private $selectedStatusWidget;
+
+    /**
      * @var array|null associative array of hashtags (key: hashtag name, value: count)
      */
     private $hashtags;
@@ -283,6 +298,49 @@ class SearchData
     {
         $this->selectedCreator = $selectedCreator;
         return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getTodoStatuses(): ?array
+    {
+        return $this->todoStatuses;
+    }
+
+    /**
+     * @param array|null $todoStatuses
+     * @return SearchData
+     */
+    public function setTodoStatuses(?array $todoStatuses): SearchData
+    {
+        $this->todoStatuses = $todoStatuses;
+        return $this;
+    }
+
+    public function addTodoStatuses(array $todoStatuses): SearchData
+    {
+        foreach ($todoStatuses as $name => $count) {
+            $this->todoStatuses[$name] = $count;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSelectedTodoStatus(): ?int
+    {
+        return $this->selectedTodoStatus;
+    }
+
+    /**
+     * @param int|null $selectedTodoStatus
+     */
+    public function setSelectedTodoStatus(?int $selectedTodoStatus): void
+    {
+        $this->selectedTodoStatus = $selectedTodoStatus;
     }
 
     /**
@@ -551,5 +609,15 @@ class SearchData
             $this->contexts[$name] = $count;
         }
         return $this;
+    }
+
+    public function getSelectedStatusWidget()
+    {
+        return $this->selectedStatusWidget;
+    }
+
+    public function setSelectedStatusWidget( $selectedStatusWidget)
+    {
+        $this->selectedStatusWidget = $selectedStatusWidget;
     }
 }
