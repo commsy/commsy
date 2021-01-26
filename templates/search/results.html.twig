@@ -82,6 +82,9 @@
                                                         "search_filter[selectedRubric]": searchData.selectedRubric,
                                                     }
                                                     %}
+                                                    {% if searchData.selectedRubric is same as('todo') %}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[selectedTodoStatus]": searchData.selectedTodoStatus }) %}
+                                                    {% endif %}
                                                     {% if searchData.allRooms %}
                                                         {# NOTE: for allRooms==false, the param must be left out entirely, otherwise the corresponding checkbox in
                                                            the search filter form will get marked when handleRequest() gets called for the SearchFilterType form #}
@@ -174,7 +177,8 @@
                                     "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
                                     "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
                                     "search[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
-                                    "search[selectedRubric]": "{{ searchData.selectedRubric }}"
+                                    "search[selectedRubric]": "{{ searchData.selectedRubric }}",
+                                    "search[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0  }}"
                                 }
                         }'>
                             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
