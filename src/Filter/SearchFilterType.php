@@ -3,18 +3,16 @@ namespace App\Filter;
 
 use App\EventSubscriber\ChosenRubricSubscriber;
 use App\Form\Type\Custom\Select2ChoiceType;
-use App\Form\Type\Event\AddContextFieldListener;
 use App\Model\SearchData;
 use App\Search\SearchManager;
 use App\Utils\ReaderService;
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
-
-use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
@@ -145,7 +143,7 @@ class SearchFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => false,
             ])
-            ->addEventSubscriber(new ChosenRubricSubscriber())
+            ->addEventSubscriber(new ChosenRubricSubscriber($this->translator))
             ->add('selectedHashtags', Select2ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     return $this->buildTermChoices($searchData->getHashtags());
