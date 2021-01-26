@@ -140,7 +140,7 @@ class SearchFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => false,
             ])
-            ->addEventSubscriber(new ChosenRubricSubscriber())
+            ->addEventSubscriber(new ChosenRubricSubscriber($this->translator))
             ->add('selectedHashtags', Select2ChoiceType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',
