@@ -86,7 +86,7 @@ class SearchManager
         $categoriesAggregation->setSize(100);
         $query->addAggregation($categoriesAggregation);
 
-        $statusesAggregation = new Aggregations\Terms('statuses');
+        $statusesAggregation = new Aggregations\Terms('todostatuses');
         $statusesAggregation->setField('status');
         // return at most 100 of the most used statuses (default is 10)
         $statusesAggregation->setSize(100);

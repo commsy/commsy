@@ -368,6 +368,9 @@ class SearchController extends BaseController
         // categories parameter
         $searchData->setSelectedCategories($searchParams['selectedCategories'] ?? []);
 
+        // todostatus
+        $searchData->setSelectedTodoStatus($searchParams['selectedStatusWidget']['selectedTodoStatus'] ?? 0);
+
         // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
         if (!empty($searchParams['creation_date_range'])) {

@@ -26,7 +26,6 @@ class ChosenRubricSubscriber implements EventSubscriberInterface
         $formOptions = $form->getConfig()->getOptions();
 
         $formOptions['label'] = false;
-        $formOptions['mapped'] = false;
         if ($data->getSelectedRubric() === 'todo') {
             $form->add('selectedStatusWidget', 'App\Form\Type\TodoStatusFilterType', $formOptions);
         }
