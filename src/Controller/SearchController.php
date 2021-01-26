@@ -18,7 +18,6 @@ use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\FilterConditions\SingleContextFilterCondition;
 use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
-use App\Services\SavedSearchesService;
 use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
@@ -171,8 +170,7 @@ class SearchController extends BaseController
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator,
-        SavedSearchesService $savedSearchesService
+        TranslatorInterface $translator
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
@@ -272,7 +270,8 @@ class SearchController extends BaseController
                 }
 
             } elseif ($buttonName === 'delete' && $savedSearch) {
-                $savedSearchesService->removeSavedSearch($savedSearch);
+                $repository = $entityManager->getRepository('App:SavedSearch');
+                $repository->removeSavedSearch($savedSearch);
 
                 // remove the "delete" param as well as saved search related params from current search URL
                 $request = $this->setSubParamForRequestQueryParam('delete', null, 'search_filter', $request);

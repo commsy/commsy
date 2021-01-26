@@ -3,19 +3,19 @@
 namespace App\EventSubscriber;
 
 use App\Event\AccountDeletedEvent;
-use App\Services\SavedSearchesService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class AccountSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var SavedSearchesService
+     * @var EntityManagerInterface $entityManager
      */
-    private $savedSearchesService;
+    private $entityManager;
 
-    public function __construct(SavedSearchesService $savedSearchesService)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->savedSearchesService = $savedSearchesService;
+        $this->entityManager = $entityManager;
     }
 
     public static function getSubscribedEvents()
@@ -34,6 +34,7 @@ class AccountSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->savedSearchesService->removeSavedSearchesForAccountId($portalUser->getItemID());
+        $repository = $this->entityManager->getRepository('App:SavedSearch');
+        $repository->removeSavedSearchesByAccountId($portalUser->getItemID());
     }
 }
