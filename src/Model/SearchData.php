@@ -54,11 +54,6 @@ class SearchData
     private $selectedTodoStatus;
 
     /**
-     * @var object $selectedStatusWidget
-     */
-    private $selectedStatusWidget;
-
-    /**
      * @var array|null associative array of hashtags (key: hashtag name, value: count)
      */
     private $hashtags;
@@ -553,15 +548,5 @@ class SearchData
     {
         $this->modificationDateUntil = $modificationDateUntil;
         return $this;
-    }
-
-    public function getSelectedStatusWidget()
-    {
-        return $this->selectedStatusWidget;
-    }
-
-    public function setSelectedStatusWidget( $selectedStatusWidget)
-    {
-        $this->selectedStatusWidget = $selectedStatusWidget;
     }
 }
