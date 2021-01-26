@@ -75,15 +75,15 @@ class ChosenRubricSubscriber implements EventSubscriberInterface
             switch ($code) {
                 case 1:
                     // pending
-                    $translatedTitle = $this->translator->trans('pending', [], 'todo');
+                    $translatedTitle = ucfirst($this->translator->trans('pending', [], 'todo'));
                     break;
                 case 2:
                     // in progress
-                    $translatedTitle = $this->translator->trans('in progress', [], 'todo');
+                    $translatedTitle = ucfirst($this->translator->trans('in progress', [], 'todo'));
                     break;
                 case 3:
                     // done
-                    $translatedTitle = $this->translator->trans('done', [], 'todo');
+                    $translatedTitle = ucfirst($this->translator->trans('done', [], 'todo'));
                     break;
                 default:
                     $translatedTitle = $code;
