@@ -270,7 +270,7 @@ class SearchController extends BaseController
                 }
 
             } elseif ($buttonName === 'delete' && $savedSearch) {
-                $repository = $entityManager->getRepository('App:SavedSearch');
+                $repository = $entityManager->getRepository(SavedSearch::class);
                 $repository->removeSavedSearch($savedSearch);
 
                 // remove the "delete" param as well as saved search related params from current search URL

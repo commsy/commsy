@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * SavedSearch
  *
  * @ORM\Table(name="saved_searches", indexes={@ORM\Index(name="account_id", columns={"account_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\SavedSearchRepository")
  */
 class SavedSearch
 {
