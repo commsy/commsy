@@ -1312,6 +1312,9 @@ services:
     App\Event\AccountChangedEvent:
         autowire: false
 
+    App\Event\AccountDeletedEvent:
+        autowire: false
+
     # Response
     App\Http\JsonDataResponse:
         autowire: false
