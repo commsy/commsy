@@ -579,6 +579,54 @@ fos_elastica:
                             copy_to: fullName
                         fullName:
                             type: text
+                            copy_to: title
+                        creator:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
+                        modifier:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
+                        title:
+                            # duplicates fullName
+                            property_path: false
+                            type: text
+                            analyzer: commsy_analyzer
+                            search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                     persistence:
                         driver: orm
                         model: App\Entity\User
