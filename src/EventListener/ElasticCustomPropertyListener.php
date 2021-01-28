@@ -60,6 +60,14 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         if (isset($fields['parentId'])) {
             $this->addParentRoomIds($event);
         }
+
+        if (isset($fields['creator'])) {
+            $this->addCreator($event);
+        }
+
+        if (isset($fields['modifier'])) {
+            $this->addModifier($event);
+        }
     }
 
     private function addHashtags(TransformEvent $event)
@@ -285,6 +293,40 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                     }
                 }
             }
+        }
+    }
+
+    public function addCreator($event)
+    {
+        $item = $this->getItemCached($event->getObject()->getItemId());
+
+        if ($item) {
+            /** @var \cs_item $creator */
+            $creator = $item->getCreatorItem();
+
+            // ignore user with ID 99 which doesn't exist and would cause an EntityNotFoundException
+            if ($creator && $creator->getItemID() === 99) {
+                return;
+            }
+
+            $event->getDocument()->set('creator', $creator);
+        }
+    }
+
+    public function addModifier($event)
+    {
+        $item = $this->getItemCached($event->getObject()->getItemId());
+
+        if ($item) {
+            /** @var \cs_item $modifier */
+            $modifier = $item->getModificatorItem();
+
+            // ignore user with ID 99 which doesn't exist and would cause an EntityNotFoundException
+            if ($modifier && $modifier->getItemID() === 99) {
+                return;
+            }
+
+            $event->getDocument()->set('modifier', $modifier);
         }
     }
 

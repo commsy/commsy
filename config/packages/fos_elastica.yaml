@@ -588,6 +588,8 @@ fos_elastica:
                             type: text
                             copy_to: title
                         creator:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                             type: object
                             properties:
                                 firstName:
@@ -602,6 +604,8 @@ fos_elastica:
                                         raw:
                                             type: keyword
                         modifier:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                             type: object
                             properties:
                                 firstName:
