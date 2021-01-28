@@ -104,6 +104,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -183,6 +186,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -265,6 +271,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -352,6 +361,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -393,6 +405,20 @@ fos_elastica:
                             property_path: false
                             type: integer
                         creator:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
+                        modifier:
                             type: object
                             properties:
                                 firstName:
@@ -466,6 +492,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -593,6 +622,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
