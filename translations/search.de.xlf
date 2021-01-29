@@ -90,6 +90,18 @@
                 <source>Room search</source>
                 <target>Raumsuche</target>
             </trans-unit>
+            <trans-unit id="search-sort-modifier">
+                <source>Modifier</source>
+                <target>BearbeiterIn</target>
+            </trans-unit>
+            <trans-unit id="search-sort-creation-date">
+                <source>Creation date</source>
+                <target>Erstellungsdatum</target>
+            </trans-unit>
+            <trans-unit id="search-sort-modification-date">
+                <source>Modification date</source>
+                <target>Bearbeitungsdatum</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

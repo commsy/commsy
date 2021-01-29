@@ -260,7 +260,7 @@ class SearchController extends BaseController
      */
     public function moreResultsAction($roomId,
                                       $start = 0,
-                                      $sort = 'date',
+                                      $sort = '',
                                       Request $request,
                                       SearchManager $searchManager,
                                       MultipleContextFilterCondition $multipleContextFilterCondition)
@@ -276,10 +276,18 @@ class SearchController extends BaseController
          * according to the current query parameters.
          */
 
+        // honor chosen sort field & order
+        if (!empty($sort)) {
+            $searchData->setSortBy($sort);
+        }
+        $sortBy = $searchData->getSortBy();
+        $sortOrder = $searchData->getSortOrder();
+        $sortArguments = !empty($sortBy) ? [$sortBy => $sortOrder] : [] ;
+
         $this->setupSearchQueryConditions($searchManager, $searchData);
         $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
 
-        $searchResults = $searchManager->getResults();
+        $searchResults = $searchManager->getResults($sortArguments);
         $aggregations = $searchResults->getAggregations();
 
         $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
@@ -396,6 +404,10 @@ class SearchController extends BaseController
             }
             $searchData->setModificationDateRange($modificationDateRange);
         }
+
+        // sortBy/sortOrder parameters
+        $searchData->setSortBy($searchParams['sortBy'] ?? '');
+        $searchData->setSortOrder($searchParams['sortOrder'] ?? 'asc');
 
         return $searchData;
     }

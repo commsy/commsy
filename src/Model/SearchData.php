@@ -84,6 +84,16 @@ class SearchData
     private $modificationDateUntil;
 
     /**
+     * @var string|null $sortBy
+     */
+    private $sortBy;
+
+    /**
+     * @var string|null $sortOrder
+     */
+    private $sortOrder;
+
+    /**
      * @return string|null
      */
     public function getPhrase(): ?string
@@ -494,6 +504,42 @@ class SearchData
     public function setModificationDateUntil(?\DateTime $modificationDateUntil): SearchData
     {
         $this->modificationDateUntil = $modificationDateUntil;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSortBy(): ?string
+    {
+        return $this->sortBy;
+    }
+
+    /**
+     * @param string|null $sortBy
+     * @return self
+     */
+    public function setSortBy(?string $sortBy): self
+    {
+        $this->sortBy = $sortBy;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSortOrder(): ?string
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param string|null $sortOrder
+     * @return self
+     */
+    public function setSortOrder(?string $sortOrder): self
+    {
+        $this->sortOrder = $sortOrder;
         return $this;
     }
 }
