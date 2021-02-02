@@ -103,7 +103,7 @@
    				$material_manager->setOrder($this->_list_parameter_arrray['sort']);
 			}
 			if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
-   				$material_manager->showNoNotActivatedEntries();
+   				$material_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 			}
 			if ( !empty($this->_list_parameter_arrray['search']) ) {
    				$material_manager->setSearchLimit($this->_list_parameter_arrray['search']);

@@ -132,7 +132,7 @@
    				$discussion_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 			}
 			if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
-   				$discussion_manager->showNoNotActivatedEntries();
+   				$discussion_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 			}
 			if ( !empty($this->_list_parameter_arrray['search']) ) {
    				$discussion_manager->setSearchLimit($this->_list_parameter_arrray['search']);

@@ -53,7 +53,7 @@ class TopicController extends BaseController
             $topicService->setFilterConditions($filterForm);
         }
         else {
-            $topicService->showNoNotActivatedEntries();
+            $topicService->hideDeactivatedEntries();
         }
 
         // get topic list from manager service 
@@ -117,7 +117,7 @@ class TopicController extends BaseController
             $topicService->setFilterConditions($filterForm);
         }
         else {
-            $topicService->showNoNotActivatedEntries();
+            $topicService->hideDeactivatedEntries();
         }
 
         // get topic list from manager service 
@@ -892,7 +892,7 @@ class TopicController extends BaseController
                 // apply filter
                 $topicService->setFilterConditions($filterForm);
             } else {
-                $topicService->showNoNotActivatedEntries();
+                $topicService->hideDeactivatedEntries();
             }
 
             return $topicService->getListTopics($roomItem->getItemID());
@@ -909,7 +909,7 @@ class TopicController extends BaseController
     {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
         ];
 
         return $this->createForm(TopicFilterType::class, $defaultFilterValues, [

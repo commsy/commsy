@@ -89,7 +89,13 @@ class MaterialService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $this->materialManager->showNoNotActivatedEntries();
+            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+                $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+                $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'all') {
+                $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
         }
 
         // rubrics
@@ -162,10 +168,6 @@ class MaterialService
     {
         return $this->materialManager->getVersionList($itemId);
     }
-    
-    public function showNoNotActivatedEntries(){
-        $this->materialManager->showNoNotActivatedEntries();
-    }
 
     /** Marks the material item with the given ID as read and noticed.
      * @param int $itemId the identifier of the material item to be marked as read and noticed
@@ -215,6 +217,6 @@ class MaterialService
 
     public function hideDeactivatedEntries()
     {
-        $this->materialManager->showNoNotActivatedEntries();
+        $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 }

@@ -166,7 +166,7 @@
 					$manager->setSearchLimit($query);
 				}
 				
-				$manager->showNoNotActivatedEntries();
+				$manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 				$manager->select();
 				$searchResults->addList($manager->get());
 			}
@@ -202,7 +202,7 @@
 						$rubricManager->setSearchLimit($query);
 					}
 					
-					$rubricManager->showNoNotActivatedEntries();
+					$rubricManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 					$rubricManager->select();
 					$searchResults->addList($rubricManager->get());
 				}

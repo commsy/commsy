@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="form-filter-hide-deactivated-entries">
                 <source>Hide-deactivated-entries</source>
-                <target>Hide deactivated entries</target>
+                <target>Activated and Deactivated entries</target>
             </trans-unit>
             <trans-unit id="form-filter-hide-completed-entries">
                 <source>Hide-completed-entries</source>
@@ -277,6 +277,14 @@
             <trans-unit id="form-group-all">
                 <source>ALL</source>
                 <target>All</target>
+            </trans-unit>
+            <trans-unit id="form-choice-only-activated">
+                <source>only activated</source>
+                <target>Only activated</target>
+            </trans-unit>
+            <trans-unit id="form-choice-only-deactivated">
+                <source>only deactivated</source>
+                <target>Only deactivated</target>
             </trans-unit>
             <trans-unit id="edit workflow">
                 <source>edit workflow</source>

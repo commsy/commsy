@@ -81,7 +81,13 @@ class AnnouncementService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $this->hideDeactivatedEntries();
+            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'all') {
+                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
         }
         
         // active
@@ -139,7 +145,7 @@ class AnnouncementService
     
     public function hideDeactivatedEntries()
     {
-        $this->announcementManager->showNoNotActivatedEntries();
+        $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function hideInvalidEntries()
