@@ -25,6 +25,22 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class ContextController extends AbstractController
 {
+
+
+    /**
+     *
+     * @var \Swift_Mailer
+     */
+    private $mailer;
+
+    /**
+     * @required
+     * @param \Swift_Mailer $mailer
+     */
+    public function setMailer(\Swift_Mailer $mailer){
+        $this->mailer = $mailer;
+    }
+
     /**
      * @Route("/room/{roomId}/context")
      *
@@ -278,7 +294,7 @@ class ContextController extends AbstractController
 
                         $message->setBody($body, 'text/plain');
 
-                        $this->get('mailer')->send($message);
+                        $this->mailer->send($message);
 
                         $translator->setSelectedLanguage($savedLanguage);
                     }
