@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="form-filter-hide-deactivated-entries">
                 <source>Hide-deactivated-entries</source>
-                <target>Aktivierte und Deaktivierte Einträge</target>
+                <target>Aktivierte und deaktivierte Einträge</target>
             </trans-unit>
             <trans-unit id="form-filter-hide-completed-entries">
                 <source>Hide-completed-entries</source>
