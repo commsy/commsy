@@ -43,6 +43,7 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
                 ['materialEdit', 0],
                 ['materialSave', 10],
             ],
+            ItemDeletedEvent::NAME => 'onItemDeleted',
         ];
     }
 
@@ -89,6 +90,25 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
                             $materialItem->save();
                         }
                     }
+                }
+            }
+        }
+    }
+
+    public function onItemDeleted(ItemDeletedEvent $event)
+    {
+        $enabled = $this->params->get('commsy.etherpad.enabled');
+
+        if ($enabled) {
+            $item = $event->getItem();
+            if ($item instanceof \cs_material_item) {
+                /** @var \cs_material_item $material */
+                $material = $item;
+
+                if ($material->getEtherpadEditor() && $material->getEtherpadEditorID()) {
+                    $client = $this->etherpadService->getClient();
+
+                    $client->deletePad($material->getEtherpadEditorID());
                 }
             }
         }
