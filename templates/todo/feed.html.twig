@@ -63,28 +63,26 @@
                     {{ 'due date'|trans({}, 'todo') }}: {{ todo.getDate|craue_date }}
                 </div>
             </div>
-            
-            <div class="uk-width-2-10 uk-text-right uk-text-muted">
-                {% if todo.internalStatus == 0 %}
 
-                {% elseif todo.internalStatus == 1 %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo" data-uk-tooltip title="{{ todo.status }}"></i>
-                {% elseif todo.internalStatus == 2 %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress" data-uk-tooltip title="{{ todo.status }}"></i>
-                {% elseif todo.internalStatus == 3 %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done" data-uk-tooltip title="{{ todo.status }}"></i>
-                {% else %}
-                    <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large todo" data-uk-tooltip title="{{ todo.status }}"></i>
-                {% endif %}
+            {# medium & large views #}
+            <div class="uk-width-2-10 uk-text-right uk-text-muted uk-visible-large">
+                <i class="{{ macros.iconClassForItemType(todo.itemType, todo.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ todo.status }}"></i>
             </div>
-            
             {% if showRating %}
-                <div class="uk-width-2-10 uk-text-right">
+                <div class="uk-width-2-10 uk-text-right uk-visible-large">
                     {%if showRating%}
                         {{ macros.ratingStatus(todo, ratingList) }}
                     {% endif %}
                 </div>
             {% endif %}
+
+            {# small views #}
+            <div class="uk-width-2-10 uk-text-right uk-text-muted uk-hidden-large">
+                {%if showRating%}
+                    {{ macros.ratingStatus(todo, ratingList) }}
+                {% endif %}
+                <i class="{{ macros.iconClassForItemType(todo.itemType, todo.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ todo.status }}"></i>
+            </div>
         </header>
     </article>
 {% else %}

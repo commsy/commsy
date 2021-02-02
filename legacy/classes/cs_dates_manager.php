@@ -385,9 +385,15 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
 
       $query .= ' WHERE 1';
 
-      if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND ('.$this->addDatabasePrefix('dates').'.modification_date IS NULL OR '.$this->addDatabasePrefix('dates').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
-      }
+       switch ($this->inactiveEntriesLimit) {
+           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('dates') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('dates') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+       }
+
       // fifth, insert limits into the select statement
       if ( $this->_future_limit ) {
          #$query .= ' AND (dates.datetime_end > NOW() OR dates.datetime_start > NOW())'; // this will not get all dates today

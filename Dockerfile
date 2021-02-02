@@ -45,7 +45,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 
 # Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 
 # Set up php configuration
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini

@@ -5,9 +5,8 @@ namespace App\Controller;
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
 use App\Utils\MaterialService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -18,22 +17,22 @@ class EtherpadController extends AbstractController
      * @param Request $request
      * @param MaterialService $materialService
      * @param EtherpadService $etherpadService
-     * @param LegacyEnvironment $environment
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $materialId
      * @param int $roomId
      * @return array
      */
     public function indexAction(
+        int $materialId,
+        int $roomId,
         Request $request,
         MaterialService $materialService,
         EtherpadService $etherpadService,
-        LegacyEnvironment $environment,
-        int $materialId,
-        int $roomId
+        LegacyEnvironment $legacyEnvironment
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+
         $material = $materialService->getMaterial($materialId);
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         # Init etherpad
         $client = $etherpadService->getClient();
@@ -45,22 +44,16 @@ class EtherpadController extends AbstractController
         $pads = $client->listPads($group->groupID);
 
         # If a pad for the current material does not exist, create one
-        if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $pads->padIDs)) {
+        if ($material !== null) {
+            if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $pads->padIDs)) {
+                // plain material id vs. material id + random string?
+                $pad = $client->createGroupPad($group->groupID, $materialId, '');
 
-            // plain material id vs. material id + random string?
-            $pad = $client->createGroupPad($group->groupID, $materialId, '');
-
-            $material->setEtherpadEditorID($pad->padID);
-            $material->save();
-
-            // if etherpadid is already set, but pad doesnt exist
-            // if ($material->getEtherpadEditorID()) {
-            //     // set material description
-            //     $client->setText($pad->padID, $material->getDescription());
-                
-            // }
+                $material->setEtherpadEditorID($pad->padID);
+                $material->save();
+            }
         }
-        
+
         # create etherpad session with author and group
         $timestamp = time() + (60 * 60 * 24);
         $session = $client->createSession($group->groupID, $author->authorID, $timestamp);
@@ -74,7 +67,7 @@ class EtherpadController extends AbstractController
         }
 
         return [
-            'materialId' => $materialId, 
+            'materialId' => $materialId,
             'etherpadId' => $material->getEtherpadEditorID(),
             'baseUrl' => $baseUrl,
         ];

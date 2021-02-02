@@ -767,12 +767,18 @@ class SearchController extends BaseController
                         $allowedActions[] = 'delete';
                     }
                 }
+                // NOTE: the Todos & User entities use a smallint-based status (in case of Todos, it's used for progress status)
+                $status = 0;
+                if (method_exists($searchResult, 'getStatus')) {
+                    $status = $searchResult->getStatus();
+                }
                 $results[] = [
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
                     'routeName' => 'app_' . $type . '_detail',
                     'files' => $itemService->getItemFileList($searchResult->getItemId()),
                     'type' => $type,
+                    'status' => $status,
                 ];
             }
         }

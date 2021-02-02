@@ -835,7 +835,7 @@ class AnnouncementController extends BaseController
     ) {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
             'hide-invalid-entries' => true,
         ];
 

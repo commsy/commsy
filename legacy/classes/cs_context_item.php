@@ -5806,7 +5806,7 @@ class cs_context_item extends cs_item {
     $item_manager->setContextLimit($this->getItemID());
     $item_manager->setExistenceLimit($timespread);
 #      $item_manager->setAgeLimit(7);
-    $item_manager->showNoNotActivatedEntries();
+    $item_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     $item_manager->setTypeArrayLimit($check_managers);
     $item_manager->select();
     $new_entries = $item_manager->getIDArray();
@@ -5845,7 +5845,7 @@ class cs_context_item extends cs_item {
     $item_manager->setContextLimit($this->getItemID());
     $item_manager->setReadLimit($user_id);
     $item_manager->setAgeLimit($timespread);
-    $item_manager->showNoNotActivatedEntries();
+    $item_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     $item_manager->setTypeArrayLimit($check_managers);
     $item_manager->select();
     $new_entries = $item_manager->getIDArray();

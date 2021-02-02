@@ -40,6 +40,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class PortalController extends AbstractController
 {
     /**
+     * @Route("/portal/{portalId}")
+     */
+    public function gotoAction(int $portalId, Request $request)
+    {
+        return $this->redirect($request->getBaseUrl() . '?cid=' . $portalId);
+    }
+
+    /**
      * @Route("/portal/{roomId}/impressum")
      * @Template()
      */
@@ -65,8 +73,6 @@ class PortalController extends AbstractController
     {
         return [];
     }
-
-
 
     /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")

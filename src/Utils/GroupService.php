@@ -86,7 +86,13 @@ class GroupService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $this->groupManager->showNoNotActivatedEntries();
+            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+                $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+                $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'all') {
+                $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
         }
     }
     
@@ -95,7 +101,8 @@ class GroupService
         return $this->groupManager->getNewItem();
     }
 
-    public function showNoNotActivatedEntries(){
-        $this->groupManager->showNoNotActivatedEntries();
+    public function hideDeactivatedEntries()
+    {
+        $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 }

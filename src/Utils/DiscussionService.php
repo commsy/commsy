@@ -84,7 +84,13 @@ class DiscussionService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $this->discussionManager->showNoNotActivatedEntries();
+            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'all') {
+                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
         }
 
         // rubrics
@@ -146,9 +152,9 @@ class DiscussionService
         return $this->discussionArticleManager->getNewItem();
     }
     
-    public function showNoNotActivatedEntries()
+    public function hideDeactivatedEntries()
     {
-        $this->discussionManager->showNoNotActivatedEntries();
+        $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function buildArticleTree($articleList, $root = null)

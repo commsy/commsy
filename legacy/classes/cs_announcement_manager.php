@@ -230,9 +230,16 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
       }
 
       $query .= ' WHERE 1';
-      if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND ('.$this->addDatabasePrefix('announcement').'.modification_date IS NULL OR '.$this->addDatabasePrefix('announcement').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
-      }
+
+       switch ($this->inactiveEntriesLimit) {
+           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('announcement') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('announcement') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+       }
+
       if ( isset($this->_topic_limit) ) {
          if ($this->_topic_limit == -1) {
             $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';

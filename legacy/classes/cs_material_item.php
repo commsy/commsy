@@ -334,7 +334,6 @@ class cs_material_item extends cs_item {
 
 /** End: detailed bib values **/
 
-
     public function setEtherpadEditor($value)
     {
         // use etherpad editor for material
@@ -348,12 +347,17 @@ class cs_material_item extends cs_item {
 
     public function setEtherpadEditorID($id)
     {
-      $this->_addExtra('etherpad_id', $id);
+        $this->_addExtra('etherpad_id', $id);
     }
 
     public function getEtherpadEditorID()
     {
-      return $this->_getExtra('etherpad_id');
+        return $this->_getExtra('etherpad_id');
+    }
+
+    public function unsetEtherpadEditorID(): void
+    {
+        $this->_unsetExtra('etherpad_id');
     }
 
    /** set description of a material
