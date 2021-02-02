@@ -1340,19 +1340,6 @@ services:
             $accessSecret: '%commsy.mediawiki.accessSecret%'
 
 ###############################
-## EtherpadBundle
-###############################
-    commsy.etherpad_service:
-        class: App\Services\EtherpadService
-        arguments: ["@service_container"]
-
-    etherpad.etherpad_edit_subscriber:
-        class: App\EventSubscriber\EtherpadEditSubscriber
-        arguments: ["@service_container", "@commsy_legacy.material_service"]
-        tags:
-            - { name: kernel.event_subscriber }
-
-###############################
 ## Craue\TwigExtensionsBundle
 ###############################
     # FormatDateTimeExtension
