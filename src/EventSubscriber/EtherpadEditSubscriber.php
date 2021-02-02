@@ -109,6 +109,9 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
                     $client = $this->etherpadService->getClient();
 
                     $client->deletePad($material->getEtherpadEditorID());
+
+                    $material->unsetEtherpadEditorID();
+                    $material->save();
                 }
             }
         }
