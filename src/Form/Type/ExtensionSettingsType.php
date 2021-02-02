@@ -137,6 +137,12 @@ class ExtensionSettingsType extends AbstractType
                             'mapped' => true,
                             'label' => 'User room template',
                         ])
+                        ->add('deleteUserRooms', SubmitType::class, [
+                            'label' => 'Delete user rooms',
+                            'attr' => [
+                                'class' => 'uk-button-danger',
+                            ],
+                        ])
                     ;
                 }
             })

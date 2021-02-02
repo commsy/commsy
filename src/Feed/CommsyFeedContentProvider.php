@@ -58,7 +58,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
             $feed->setLastModified($this->getLastModified());
             $feed->setTitle($this->getTitle($currentContextItem));
             $feed->setDescription($this->getDescription($currentContextItem));
-            $feed->setLink($request->getHost() . $request->getBaseUrl());
+            $feed->setLink($request->getSchemeAndHttpHost() . $request->getBaseUrl());
 
             $items = $this->getItems($currentContextItem);
 
@@ -184,7 +184,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         // Using the activated entries filter here seems not sufficient, since future modification dates
         // are only stored in their corresponding type tables.
         // This will require later filtering for now.
-        $itemManager->showNoNotActivatedEntries();
+        $itemManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
         if ($contextItem->isPrivateRoom()) {
             $ownerUserItem = $contextItem->getOwnerUserItem();

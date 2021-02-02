@@ -80,7 +80,7 @@ class TodoController extends BaseController
             // set filter conditions in todo manager
             $todoService->setFilterConditions($filterForm);
         } else {
-            $todoService->showNoNotActivatedEntries();
+            $todoService->hideDeactivatedEntries();
             $todoService->hideCompletedEntries();
         }
 
@@ -179,7 +179,7 @@ class TodoController extends BaseController
             // apply filter
             $todoService->setFilterConditions($filterForm);
         } else {
-            $todoService->showNoNotActivatedEntries();
+            $todoService->hideDeactivatedEntries();
             $todoService->hideCompletedEntries();
         }
 
@@ -957,7 +957,7 @@ class TodoController extends BaseController
         $html = $this->renderView('todo/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'todo',
-            'announcements' => $todos,
+            'todos' => $todos,
             'readerList' => $readerList,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
@@ -1154,7 +1154,7 @@ class TodoController extends BaseController
                 // apply filter
                 $todoService->setFilterConditions($filterForm);
             } else {
-                $todoService->showNoNotActivatedEntries();
+                $todoService->hideDeactivatedEntries();
                 $todoService->hideCompletedEntries();
             }
 
@@ -1172,7 +1172,7 @@ class TodoController extends BaseController
     {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
             'hide-completed-entries' => true,
         ];
 

@@ -137,7 +137,7 @@ class HashtagController extends AbstractController
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        if (!$roomItem->withBuzzwords()) {
+        if ($roomItem !== null && !$roomItem->withBuzzwords()) {
             throw $this->createAccessDeniedException('The requested room does not have hashtags enabled.');
         }
 

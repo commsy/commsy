@@ -69,7 +69,13 @@ class DateService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $dateManager->showNoNotActivatedEntries();
+            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+                $this->dateManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+                $this->dateManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'all') {
+                $dateManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
         }
 
         // past
@@ -236,7 +242,7 @@ class DateService
     
     public function hideDeactivatedEntries()
     {
-        $this->dateManager->showNoNotActivatedEntries();
+        $this->dateManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     /** Retrieves the first date item matching the given VCALENDAR UID from a calendar & room with the given IDs

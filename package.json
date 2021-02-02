@@ -23,7 +23,8 @@
   "homepage": "https://github.com/commsy/commsy#readme",
   "devDependencies": {
     "@symfony/webpack-encore": "^0.31.0",
-    "@types/jquery": "^3.3.38",
+    "@types/jquery": "^3.5.5",
+    "@types/uikit": "^2.27.6",
     "@types/urijs": "^1.19.9",
     "core-js": "^3.6.5",
     "expose-loader": "^0.7.5",
@@ -32,7 +33,7 @@
     "hard-source-webpack-plugin": "^0.13.1",
     "jquery": "^3.5.1",
     "jscolor-picker": "^2.0.4",
-    "jstree": "^3.3.9",
+    "jstree": "^3.3.10",
     "less": "^3.11.3",
     "less-loader": "^6.2.0",
     "mathjax": "^3.0.1",

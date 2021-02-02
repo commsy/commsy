@@ -91,7 +91,7 @@ class User
     public $userId;
 
     /**
-     * @var boolean
+     * @var int
      *
      * @ORM\Column(name="status", type="smallint", nullable=false)
      *
@@ -385,11 +385,11 @@ class User
     /**
      * Set status
      *
-     * @param boolean $status
+     * @param int $status
      *
      * @return User
      */
-    public function setStatus($status)
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 
@@ -399,9 +399,9 @@ class User
     /**
      * Get status
      *
-     * @return boolean
+     * @return int
      */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }

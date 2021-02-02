@@ -2,7 +2,7 @@
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as todoMacros %}
 
-    {% if item.type == 'todo' %}
+    {% if item.type is same as('todo') %}
         {% set pathName = 'app_todo_edit' %}
     {% else %}
         {% set pathName = 'app_todo_editstep' %}
@@ -169,6 +169,7 @@
                                         <strong>{{ "status"|trans({},'todo') }}:</strong>
                                     </td>
                                     <td class="uk-text-top">
+                                        <i class="{{ macros.iconClassForItemType(item.itemType, item.internalStatus) }} uk-icon-small"></i>
                                         {{ item.status }}
                                     </td>
                                 </tr>

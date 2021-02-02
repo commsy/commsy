@@ -625,12 +625,14 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $query .= ' AND '.$this->addDatabasePrefix('materials').'.deletion_date IS NULL';
       }
 
-
-/***Activating Code***/
-      if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND ('.$this->addDatabasePrefix('materials').'.modification_date IS NULL OR '.$this->addDatabasePrefix('materials').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
-      }
-/*********************/
+       switch ($this->inactiveEntriesLimit) {
+           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('materials') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('materials') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('materials') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('materials') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+       }
 
       if (isset($this->_ref_user_limit)) {
          $query .= ' AND ('.$this->addDatabasePrefix('materials').'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
