@@ -40,9 +40,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class PortalController extends AbstractController
 {
     /**
-     * @Route("/portal/{portalId}")
+     * @Route("/portal/goto/{portalId}", name="app_portal_goto")
      */
-    public function gotoAction(int $portalId, Request $request)
+    public function gotoAction(string $portalId, Request $request)
     {
         return $this->redirect($request->getBaseUrl() . '?cid=' . $portalId);
     }
