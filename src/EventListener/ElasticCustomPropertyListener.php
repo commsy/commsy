@@ -301,15 +301,26 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
-            /** @var \cs_item $creator */
-            $creator = $item->getCreatorItem();
-
-            // ignore user with ID 99 which doesn't exist and would cause an EntityNotFoundException
-            if ($creator && $creator->getItemID() === 99) {
+            if ($item->getItemType() !== CS_USER_TYPE){
                 return;
             }
 
-            $event->getDocument()->set('creator', $creator);
+            $userManager = $this->legacyEnvironment->getUserManager();
+            $user = $userManager->getItem($item->getItemID());
+
+            $creator = $user->getCreatorItem();
+            if (!$creator) {
+                // NOTE: this condition also applies to the root user item which has creator ID 99 and no
+                // matching user item in the database (which would thus cause an EntityNotFoundException)
+                return;
+            }
+
+            $creatorProperties = [
+                'firstName' => $creator->getFirstname(),
+                'lastName' => $creator->getLastname(),
+                'fullName' => $creator->getFullName(),
+            ];
+            $event->getDocument()->set('creator', $creatorProperties);
         }
     }
 
@@ -318,15 +329,26 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
-            /** @var \cs_item $modifier */
-            $modifier = $item->getModificatorItem();
-
-            // ignore user with ID 99 which doesn't exist and would cause an EntityNotFoundException
-            if ($modifier && $modifier->getItemID() === 99) {
+            if ($item->getItemType() !== CS_USER_TYPE){
                 return;
             }
 
-            $event->getDocument()->set('modifier', $modifier);
+            $userManager = $this->legacyEnvironment->getUserManager();
+            $user = $userManager->getItem($item->getItemID());
+
+            $modifier = $user->getModificatorItem();
+            if (!$modifier) {
+                // NOTE: this condition also applies to the root user item which has modifier ID 99 and no
+                // matching user item in the database (which would thus cause an EntityNotFoundException)
+                return;
+            }
+
+            $modifierProperties = [
+                'firstName' => $modifier->getFirstname(),
+                'lastName' => $modifier->getLastname(),
+                'fullName' => $modifier->getFullName(),
+            ];
+            $event->getDocument()->set('modifier', $modifierProperties);
         }
     }
 
