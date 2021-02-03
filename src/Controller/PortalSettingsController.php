@@ -336,10 +336,8 @@ class PortalSettingsController extends AbstractController
     public function authLdap(
         Portal $portal,
         Request $request,
-        EntityManagerInterface $entityManager,
-        LegacyEnvironment $environment
-    )
-    {
+        EntityManagerInterface $entityManager
+    ) {
         $defaultData = [
             'typeChoice' => 'ldap',
             'default' => 0,
@@ -347,7 +345,6 @@ class PortalSettingsController extends AbstractController
             'available' => 1,
         ];
 
-        $portalId = $portal->getId();
         $authSourceRepo = $entityManager->getRepository(AuthSource::class);
         $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'ldap');
 
@@ -385,19 +382,16 @@ class PortalSettingsController extends AbstractController
                 switch ($choice) {
                     case 'ldap':
                         return $this->redirectToRoute('app_portalsettings_authldap', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
-                        break;
                     case 'shibboleth':
                         return $this->redirectToRoute('app_portalsettings_authshibboleth', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
-                        break;
                     case 'commsy':
                         return $this->redirectToRoute('app_portalsettings_authcommsy', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
-                        break;
                 }
             } else if ($clickedButtonName == 'save' && $ldapForm->isValid()) {
                 $newAuthSource = new AuthSource();
@@ -440,7 +434,6 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $ldapForm->createView(),
-            'portalId' => $portalId,
         ];
     }
 
@@ -455,10 +448,8 @@ class PortalSettingsController extends AbstractController
     public function authCommsy(
         Portal $portal,
         Request $request,
-        EntityManagerInterface $entityManager,
-        LegacyEnvironment $environment
-    )
-    {
+        EntityManagerInterface $entityManager
+    ) {
         $defaultData = [
             'typeChoice' => 'commsy',
             'default' => 0,
@@ -466,7 +457,6 @@ class PortalSettingsController extends AbstractController
             'available' => 1,
         ];
 
-        $portalId = $portal->getId();
         $authSourceRepo = $entityManager->getRepository(AuthSource::class);
         $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'commsy');
 
@@ -475,6 +465,7 @@ class PortalSettingsController extends AbstractController
             if (is_null($existingCommsySource->getExtras())) {
                 $existingCommsySource->setExtras([]);
             }
+
             $defaultData['title'] = $existingCommsySource->getTitle();
             $defaultData['default'] = $existingCommsySource->isDefault();
             $defaultData['available'] = $existingCommsySource->getAvailable();
@@ -533,26 +524,23 @@ class PortalSettingsController extends AbstractController
                 switch ($choice) {
                     case 'ldap':
                         return $this->redirectToRoute('app_portalsettings_authldap', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
-                        break;
                     case 'commsy':
                         return $this->redirectToRoute('app_portalsettings_authcommsy', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
-                        break;
                     case 'shibboleth':
                         return $this->redirectToRoute('app_portalsettings_authshibboleth', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
-                        break;
                 }
             }
         }
 
         return [
             'form' => $authCommsyForm->createView(),
-            'portalId' => $portalId,
+            'portal' => $portal,
         ];
     }
 
@@ -567,18 +555,14 @@ class PortalSettingsController extends AbstractController
     public function authShibboleth(
         Portal $portal,
         Request $request,
-        EntityManagerInterface $entityManager,
-        LegacyEnvironment $environment
-    )
-    {
+        EntityManagerInterface $entityManager
+    ) {
         $defaultData = [
             'typeChoice' => 'shibboleth',
             'default' => 0,
             'imsDefault' => 0,
             'available' => 1,
         ];
-
-        $portalId = $portal->getId();
 
         $authSourceRepo = $entityManager->getRepository(AuthSource::class);
         $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'shibboleth');
@@ -615,17 +599,17 @@ class PortalSettingsController extends AbstractController
                 switch ($choice) {
                     case 'ldap':
                         return $this->redirectToRoute('app_portalsettings_authldap', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
                         break;
                     case 'shibboleth':
                         return $this->redirectToRoute('app_portalsettings_authshibboleth', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
                         break;
                     case 'commsy':
                         return $this->redirectToRoute('app_portalsettings_authcommsy', [
-                            'portalId' => $portalId,
+                            'portalId' => $portal->getId(),
                         ]);
                 }
             } else if ($clickedButtonName == 'save' && $authShibbolethForm->isValid()) {
@@ -667,7 +651,6 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $authShibbolethForm->createView(),
-            'portalId' => $portalId,
         ];
     }
 
