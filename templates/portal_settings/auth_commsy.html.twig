@@ -28,7 +28,7 @@
             <hr />
             {{ form_row(form.mailRegEx) }}
             <hr />
-            <a href="{{ path('app_portalsettings_translations', {'portalId': portalId}) }}" class="data-uk-button">{{'Error configuration'|trans({},'portal') }}</a>
+            <a href="{{ path('app_portalsettings_translations', { 'portalId': portal.id }) }}" class="data-uk-button">{{'Error configuration'|trans({},'portal') }}</a>
             <hr />
             {{ form_row(form.userMayCreateRooms) }}
             {{ form_end(form) }}
