@@ -589,7 +589,6 @@ fos_elastica:
                             copy_to: fullName
                         fullName:
                             type: text
-                            copy_to: title
                         creator:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
@@ -629,8 +628,6 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title:
-                            # duplicates fullName
-                            property_path: false
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
