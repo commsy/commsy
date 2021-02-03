@@ -452,10 +452,7 @@ fos_elastica:
                             type: text
                         roomDescription:
                             type: text
-                            copy_to: description
                         description:
-                            # duplicates roomDescription
-                            property_path: false
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer

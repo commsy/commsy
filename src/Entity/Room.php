@@ -691,6 +691,16 @@ class Room
     }
 
     /**
+     * Get description (which equals the room's roomDescription)
+     *
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->getRoomDescription();
+    }
+
+    /**
      * Set lastlogin
      *
      * @param \DateTime $lastlogin
