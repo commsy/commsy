@@ -13,6 +13,11 @@ class EtherpadService
      */
     private $baseUrl;
 
+    /**
+     * @var Client
+     */
+    private $client;
+
     public function __construct(ParameterBagInterface $params)
     {
         $this->baseUrl = $params->get('commsy.etherpad.base_url');
@@ -22,7 +27,9 @@ class EtherpadService
         $apiUrl = $params->get('commsy.etherpad.api_url');
 
         // init etherpad client
-        $this->client = new Client($apiKey, $apiUrl);
+        if ($apiKey !== '' && $apiUrl !== '') {
+            $this->client = new Client($apiKey, $apiUrl);
+        }
     }
 
     public function getClient(): Client
