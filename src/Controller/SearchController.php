@@ -183,6 +183,11 @@ class SearchController extends BaseController
         ]);
         $topForm->handleRequest($request);
 
+        // honor any sort arguments from the query URL
+        $sortBy = $searchData->getSortBy();
+        $sortOrder = $searchData->getSortOrder();
+        $sortArguments = !empty($sortBy) && !empty($sortOrder) ? [$sortBy => $sortOrder] : [] ;
+
         /**
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
          * according to the current query parameters.
@@ -191,7 +196,7 @@ class SearchController extends BaseController
         $this->setupSearchQueryConditions($searchManager, $searchData);
         $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
 
-        $searchResults = $searchManager->getResults();
+        $searchResults = $searchManager->getResults($sortArguments);
         $aggregations = $searchResults->getAggregations();
 
         $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
