@@ -21,7 +21,7 @@ final class Version20190924140632 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         $this->addSql('alter table auth_source add enabled tinyint default 1 not null after title;');
-        $this->addSql('alter table auth_source add type enum(\'local\', \'oidc\', \'ldap\') default \'local\' not null after title;');
+        $this->addSql('alter table auth_source add type enum(\'local\', \'oidc\', \'ldap\', \'shib\') default \'local\' not null after title;');
         $this->addSql('alter table auth_source add `default` tinyint default 0 not null;');
         $this->addSql('alter table auth_source add add_account tinyint default 0 not null;');
         $this->addSql('alter table auth_source add change_username tinyint default 0 not null;');
