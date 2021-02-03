@@ -284,6 +284,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                         discussionarticles:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
