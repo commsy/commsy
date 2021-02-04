@@ -1,7 +1,6 @@
 {% extends 'base/room.html.twig' %}
 
 {% form_theme filterForm 'form/uikit_horizontal_dynamic_layout.html.twig' %}
-{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -92,41 +91,6 @@
                             </div>
 
                             <div>
-                                {% block sortbox %}
-                                    {# sort dropdown #}
-                                    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                        <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                                                {# sorting options #}
-                                                {% if(sortField == 'title.raw') %}
-                                                    {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title.raw', 'title.raw', sortOrder) }}
-                                                {% else %}
-                                                    {{ utilsMacros.sortActorSearch('title', 'title', 'rubric', 'title.raw', 'title.raw', '') }}
-                                                {% endif %}
-                                                {% if(sortField == 'creator.fullName.raw') %}
-                                                    {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator.fullName.raw', 'creator.fullName.raw', sortOrder) }}
-                                                {% else %}
-                                                    {{ utilsMacros.sortActorSearch('creator', 'creator', 'messages', 'creator.fullName.raw', 'creator.fullName.raw', '') }}
-                                                {% endif %}
-
-                                                {% if(sortField == 'modifier.fullName.raw') %}
-                                                    {{ utilsMacros.sortActorSearch('modifier', 'modifier', 'rubric', 'modifier.fullName.raw', 'modifier.fullName.raw', sortOrder) }}
-                                                {% else %}
-                                                    {{ utilsMacros.sortActorSearch('modifier', 'modifier', 'rubric', 'modifier.fullName.raw', 'modifier.fullName.raw', '') }}
-                                                {% endif %}
-
-                                                {% if(sortField == 'modificationDate') %}
-                                                    {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'modificationDate', 'modificationDate', sortOrder) }}
-                                                {% else %}
-                                                    {{ utilsMacros.sortActorSearch('date', 'modification_date', 'rubric', 'modificationDate', 'modificationDate', '') }}
-                                                {% endif %}
-
-                                            </ul>
-                                        </div>
-                                    </div>
-                                {% endblock %}
-
                                 {% block editbox %}
                                     <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                                         <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>

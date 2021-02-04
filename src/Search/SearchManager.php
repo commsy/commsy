@@ -47,7 +47,7 @@ class SearchManager
         $this->queryConditions[] = $queryCondition;
     }
 
-    public function getResults($sortQuery = null)
+    public function getResults()
     {
         // create our basic query
         $query = new \Elastica\Query();
@@ -62,11 +62,6 @@ class SearchManager
         $boolQuery->addFilter($contextFilter);
 
         $query->setQuery($boolQuery);
-
-        // optional sorting
-        if(!is_null($sortQuery)) {
-            $query->setSort($sortQuery);
-        }
 
         // aggregation
         $typeAggregation = new Aggregations\Terms('rubrics');
