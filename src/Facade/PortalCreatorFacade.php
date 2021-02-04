@@ -5,6 +5,7 @@ namespace App\Facade;
 
 
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -19,10 +20,9 @@ class PortalCreatorFacade
 
     public function persistPortal(Portal $portal)
     {
-        $authSource = new AuthSource();
+        $authSource = new AuthSourceLocal();
         $authSource->setPortal($portal);
         $authSource->setTitle('Lokal');
-        $authSource->setType('local');
         $authSource->setEnabled(true);
         $authSource->setDefault(true);
         $authSource->setAddAccount(true);
