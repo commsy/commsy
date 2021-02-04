@@ -55,7 +55,7 @@
                         {% if portal is not null %}
                             {% for authSource in portal.authSources %}
                                 {% if authSource.enabled %}
-                                    <li class="{% if authSource.default %}uk-active{% endif %}">
+                                    <li class="{% if (lastSource is not defined and authSource.default) or (authSource.type is same as lastSource) %}uk-active{% endif %}">
                                         <a href="">
                                             {{ authSource.title }}
                                         </a>

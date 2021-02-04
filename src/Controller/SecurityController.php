@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Security\AbstractCommsyGuardAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -42,7 +44,8 @@ class SecurityController extends AbstractController
     public function login(
         AuthenticationUtils $authenticationUtils,
         EntityManagerInterface $entityManager,
-        string $context = 'server'
+        string $context = 'server',
+        Request $request
     ): Response {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -59,11 +62,17 @@ class SecurityController extends AbstractController
             $lastUsername = 'root';
         }
 
+        $lastSource = null;
+        if ($request->hasSession() && ($session = $request->getSession())->has(AbstractCommsyGuardAuthenticator::LAST_SOURCE)) {
+            $lastSource = $session->get(AbstractCommsyGuardAuthenticator::LAST_SOURCE);
+        }
+
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
             'context' => $context,
             'portal' => $portal ?? null,
+            'lastSource' => $lastSource,
         ]);
     }
 
