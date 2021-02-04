@@ -305,6 +305,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                         discussionarticles:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
@@ -477,6 +480,11 @@ fos_elastica:
                             type: text
                         roomDescription:
                             type: text
+                        description:
+                            property_path: getRoomDescription
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         activity:
                             type: integer
                     persistence:
@@ -623,6 +631,56 @@ fos_elastica:
                             copy_to: fullName
                         fullName:
                             type: text
+                        creator:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
+                        modifier:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
+                        title:
+                            property_path: getFullname
+                            type: text
+                            analyzer: commsy_analyzer
+                            search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                     persistence:
                         driver: orm
                         model: App\Entity\User

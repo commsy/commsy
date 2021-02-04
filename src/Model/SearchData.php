@@ -123,6 +123,16 @@ class SearchData
     private $modificationDateUntil;
 
     /**
+     * @var string|null $sortBy
+     */
+    private $sortBy;
+
+    /**
+     * @var string|null $sortOrder
+     */
+    private $sortOrder;
+
+    /**
      * @return SavedSearch|null
      */
     public function getSelectedSavedSearch(): ?SavedSearch
@@ -687,6 +697,42 @@ class SearchData
         foreach ($contexts as $name => $count) {
             $this->contexts[$name] = $count;
         }
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSortBy(): ?string
+    {
+        return $this->sortBy;
+    }
+
+    /**
+     * @param string|null $sortBy
+     * @return self
+     */
+    public function setSortBy(?string $sortBy): self
+    {
+        $this->sortBy = $sortBy;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSortOrder(): ?string
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param string|null $sortOrder
+     * @return self
+     */
+    public function setSortOrder(?string $sortOrder): self
+    {
+        $this->sortOrder = $sortOrder;
         return $this;
     }
 }
