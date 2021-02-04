@@ -5,7 +5,11 @@ namespace App\Security;
 
 
 use App\Entity\Account;
+use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
+use App\Entity\Portal;
+use App\Facade\AccountCreatorFacade;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,18 +27,36 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
     private $urlGenerator;
+
+    /**
+     * @var CsrfTokenManagerInterface
+     */
     private $csrfTokenManager;
+
+    /**
+     * @var AccountCreatorFacade
+     */
+    private $accountCreator;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
+        AccountCreatorFacade $accountCreator
     ) {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->accountCreator = $accountCreator;
     }
 
     /**
@@ -110,7 +132,7 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 
         // extract credentials from request
         $credentials = [
-            'context' => $request->request->get('context'),
+            'context' => $context,
             'username' => $request->server->get($authSource->getMappingUsername()),
             'firstname' => $request->server->get($authSource->getMappingFirstname()),
             'lastname' => $request->server->get($authSource->getMappingLastname()),
@@ -142,13 +164,48 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $user = null;
+        // Check we got all parameters we need
+        if ($credentials['context'] === null ||
+            $credentials['username'] === null ||
+            $credentials['firstname'] === null ||
+            $credentials['lastname'] === null ||
+            $credentials['email'] === null
+        ) {
+            throw new AuthenticationException();
+        }
 
-        // get user object if it already exists
+        /** @var Collection $authSources */
+        $authSources = $this->entityManager->getRepository(Portal::class)->find($credentials['context'])->getAuthSources();
+        $shibAuthSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceShibboleth;
+        })->first();
+
+        $account = $this->entityManager->getRepository(Account::class)
+            ->findOneByCredentials($credentials['username'], $credentials['context'], $shibAuthSource);
+
+        if ($account === null) {
+            // if we did not found an existing account, create one
+            $account = new Account();
+            $account->setAuthSource($shibAuthSource);
+            $account->setContextId($credentials['context']);
+            $account->setLanguage('de');
+            $account->setUsername($credentials['username']);
+            $account->setFirstname($credentials['firstname']);
+            $account->setLastname($credentials['lastname']);
+            $account->setEmail($credentials['email']);
+            $this->accountCreator->persistNewAccount($account);
+        }
 
         // update user object with credentials extracted from request
+        $account->setUsername($credentials['username']);
+        $account->setFirstname($credentials['firstname']);
+        $account->setLastname($credentials['lastname']);
+        $account->setEmail($credentials['email']);
 
-        return $user;
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+
+        return $account;
     }
 
     /**
@@ -233,7 +290,7 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_helper_portalenter', [
-            'context' => $request->request->get('context'),
+            'context' => $context,
         ]));
     }
 
