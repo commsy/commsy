@@ -3,7 +3,7 @@
     "license": "GPLv2",
     "type": "project",
     "require": {
-        "php": "^7.2.9",
+        "php": "^7.3.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ci/restclientbundle": "^2.0",
