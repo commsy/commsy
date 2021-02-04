@@ -689,14 +689,4 @@ class User
     {
         return trim($this->getFirstname() . ' ' . $this->getLastname());
     }
-
-    /**
-     * Get title (which equals the user's full name)
-     *
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->getFullname();
-    }
 }

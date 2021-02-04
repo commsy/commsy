@@ -453,6 +453,7 @@ fos_elastica:
                         roomDescription:
                             type: text
                         description:
+                            property_path: getRoomDescription
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
@@ -625,6 +626,7 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title:
+                            property_path: getFullname
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
