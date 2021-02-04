@@ -6,13 +6,13 @@
  * Time: 19:54
  */
 
-namespace App\User;
+namespace App\Facade;
 
 
-use App\Services\LegacyEnvironment;
 use App\Form\Model\Csv\CsvUserDataset;
+use App\Services\LegacyEnvironment;
 
-class UserBuilder
+class UserCreatorFacade
 {
     /**
      * @var \cs_environment
@@ -29,8 +29,7 @@ class UserBuilder
      */
     public function createFromCsvDataset(\cs_auth_source_item $authSourceItem, array $csvUserDatasets)
     {
-        foreach ($csvUserDatasets as $csvUserDataset)
-        {
+        foreach ($csvUserDatasets as $csvUserDataset) {
             /** CsvUserDataset $csvUserDataset */
             $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSourceItem);
             $userPassword = $csvUserDataset->getPassword() ?? $this->generatePassword();
@@ -71,7 +70,7 @@ class UserBuilder
             }
 
             $suffix++;
-            $lookup = $identifier . (string) $suffix;
+            $lookup = $identifier . (string)$suffix;
         }
 
         return $lookup;
@@ -108,8 +107,7 @@ class UserBuilder
         string $email,
         int $portalId,
         int $authSourceId
-    ): \cs_user_item
-    {
+    ): \cs_user_item {
         $authentication = $this->legacyEnvironment->getAuthenticationObject();
 
         $newAccount = $authentication->getNewItem();
