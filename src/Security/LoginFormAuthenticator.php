@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,8 +37,8 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
-        UserPasswordEncoderInterface $passwordEncoder)
-    {
+        UserPasswordEncoderInterface $passwordEncoder
+    ) {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
@@ -61,9 +62,8 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             }
 
             // Try to find an enabled authentication source of type local for the given context
-            $authSource = $this->entityManager->getRepository(AuthSource::class)
+            $authSource = $this->entityManager->getRepository(AuthSourceLocal::class)
                 ->findBy([
-                    'type' => 'local',
                     'portal' => $context,
                     'enabled' => 1,
                 ]);
@@ -94,8 +94,8 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             } else {
                 /** @var Collection $authSources */
                 $authSources = $this->entityManager->getRepository(Portal::class)->find($credentials['context'])->getAuthSources();
-                $localAuthSource = $authSources->filter(function(AuthSource $authSource) {
-                    return $authSource->getType() === 'local';
+                $localAuthSource = $authSources->filter(function (AuthSource $authSource) {
+                    return $authSource instanceof AuthSourceLocal;
                 })->first();
 
                 $user = $this->entityManager->getRepository(Account::class)

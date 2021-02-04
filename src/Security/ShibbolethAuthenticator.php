@@ -6,23 +6,23 @@ namespace App\Security;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
-use App\Entity\AuthSourceLdap;
+use App\Entity\AuthSourceShibboleth;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Ldap\Exception\ConnectionException;
-use Symfony\Component\Ldap\Ldap;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
+class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
@@ -40,25 +40,32 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         $this->csrfTokenManager = $csrfTokenManager;
     }
 
+    /**
+     * Called on every request to decide if this authenticator should be
+     * used for the request. Returning false will cause this authenticator
+     * to be skipped.
+     */
+    public function supports(Request $request)
+    {
+        return 'app_shibboleth_authshibbolethcheck' === $request->attributes->get('_route')
+            && $request->isMethod('GET')
+            && $this->isSupportedByPortalConfiguration($request);
+    }
+
     protected function getPostParameterName(): string
     {
-        return 'login_ldap';
+        // unused
+        return '';
     }
 
     public function isSupportedByPortalConfiguration(Request $request): bool
     {
-        if ($request->request->has('context')) {
-            $context = $request->request->get('context');
-
-            // If context is "server" this will be a root login as system administrator. The form authenticator
-            // is the only one that handles these requests
-            if ($context === 'server') {
-                return false;
-            }
+        if ($request->attributes->has('context')) {
+            $context = $request->attributes->get('context');
 
             // Try to find an enabled authentication source of type ldap for the given context
-            $authSource = $this->entityManager->getRepository(AuthSourceLdap::class)
-                ->findBy([
+            $authSource = $this->entityManager->getRepository(AuthSourceShibboleth::class)
+                ->findOneBy([
                     'portal' => $context,
                     'enabled' => 1,
                 ]);
@@ -69,6 +76,56 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         }
 
         return false;
+    }
+
+    /**
+     * Get the authentication credentials from the request and return them
+     * as any type (e.g. an associate array).
+     *
+     * Whatever value you return here will be passed to getUser() and checkCredentials()
+     *
+     * For example, for a form login, you might:
+     *
+     *      return [
+     *          'username' => $request->request->get('_username'),
+     *          'password' => $request->request->get('_password'),
+     *      ];
+     *
+     * Or for an API token that's on a header, you might use:
+     *
+     *      return ['api_key' => $request->headers->get('X-API-TOKEN')];
+     *
+     * @param Request $request
+     *
+     * @return mixed Any non-null value
+     *
+     * @throws \UnexpectedValueException If null is returned
+     */
+    public function getCredentials(Request $request)
+    {
+        $context = $request->attributes->get('context');
+        /** @var AuthSourceShibboleth $authSource */
+        $authSource = $this->entityManager->getRepository(AuthSourceShibboleth::class)
+            ->findOneBy([
+                'portal' => $context,
+                'enabled' => 1,
+            ]);
+
+        // extract credentials from request
+        $credentials = [
+            'context' => $request->request->get('context'),
+            'username' => $request->server->get($authSource->getMappingUsername()),
+            'firstname' => $request->server->get($authSource->getMappingFirstname()),
+            'lastname' => $request->server->get($authSource->getMappingLastname()),
+            'email' => $request->server->get($authSource->getMappingEmail()),
+        ];
+
+        $request->getSession()->set(
+            Security::LAST_USERNAME,
+            $credentials['email']
+        );
+
+        return $credentials;
     }
 
     /**
@@ -88,26 +145,13 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        if (!$this->csrfTokenManager->isTokenValid($token)) {
-            throw new InvalidCsrfTokenException();
-        }
+        $user = null;
 
-        $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
+        // get user object if it already exists
 
-        $authSource = $this->entityManager->getRepository(AuthSourceLdap::class)
-            ->findBy([
-                'portal' => $context,
-                'enabled' => 1,
-            ]);
+        // update user object with credentials extracted from request
 
-        $lookup = $this->performLdapLookup($credentials['email'], $credentials['password'], $authSource);
-
-        // TODO: Perform LDAP requests here.
-        $dummyUser = new Account();
-        $dummyUser->setUsername('test');
-
-        return $dummyUser;
+        return $user;
     }
 
     /**
@@ -148,7 +192,13 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        // TODO: Implement onAuthenticationFailure() method.
+        if ($request->hasSession()) {
+            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+        }
+
+        $url = $this->getLoginUrl($request);
+
+        return new RedirectResponse($url);
     }
 
     /**
@@ -168,11 +218,25 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        // Check if the user exists locally, update his account information
-
         /** @var Account $user */
         $user = $token->getUser();
-        $i = 5;
+
+        $context = $request->attributes->get('context');
+
+        // Store the current context and the auth source id in the user session so we can
+        // refer to it later in the user provider to get the correct user.
+        $session = $request->getSession();
+        $session->set('context', $context);
+        $session->set('authSourceId', $user->getAuthSource()->getId());
+
+        // This will redirect the user to the route they visited initially.
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('app_helper_portalenter', [
+            'context' => $request->request->get('context'),
+        ]));
     }
 
     /**
@@ -191,7 +255,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function supportsRememberMe()
     {
-        // TODO: Implement supportsRememberMe() method.
+        return false;
     }
 
     protected function getLoginUrl(Request $request): string
@@ -200,68 +264,5 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         return $this->urlGenerator->generate('app_login', [
             'context' => $request->attributes->get('context'),
         ]);
-    }
-
-    private function performLdapLookup(string $username, string $password, AuthSource $authSource)
-    {
-        if (empty($username) || empty($password)) {
-            return false;
-        }
-
-        $extras = $authSource->getExtras();
-        $ldapConnectionString = $extras['DATA']['HOST'] ?? '';
-        $ldapConnectionUser = $extras['DATA']['USER'] ?? '';
-        $ldapConnectionPassword = $extras['DATA']['PASSWORD'] ?? '';
-        $ldapFieldUserId = $extras['DATA']['DBSEARCHUSERID'] ?? '';
-        $ldapBaseDn = $extras['DATA']['BASE'] ?? '';
-        $ldapEncryption = $extras['DATA']['ENCRYPTION'] ?? 'none';
-
-        $ldap = Ldap::create('ext_ldap', [
-            'connection_string' => $ldapConnectionString,
-        ]);
-
-        try {
-            $ldap->bind($ldapConnectionUser, $this->encryptPassword($ldapConnectionPassword, $ldapEncryption));
-
-            // search for user
-            $userEntry = false;
-            $searchFilter = "($ldapFieldUserId=$username)";
-            foreach (explode(';', $ldapBaseDn) as $searchBase) {
-                $query = $ldap->query($searchBase, $searchFilter);
-                $results = $query->execute()->toArray();
-
-                if (count($results) === 1) {
-                    $userEntry = $results[0];
-                    $this->userData[$username] = $userEntry;
-                    $access = $userEntry->getDn();
-                }
-            }
-
-            if (!$userEntry) {
-//                $this->_error_array[] = $this->translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD', $username);
-                return false;
-            }
-
-            try {
-                $ldap->bind($userEntry->getDn(), $this->encryptPassword($password, $ldapEncryption));
-                return true;
-            } catch (ConnectionException $exception) {
-//                $this->_error_array[] = $this->translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD', $username);
-            }
-        } catch (ConnectionException $exception) {
-//            include_once('functions/error_functions.php');
-//            trigger_error('could not connect to server ' . $ldapConnectionString, E_USER_WARNING);
-        }
-
-        return false;
-    }
-
-    private function encryptPassword(string $password, string $encryption)
-    {
-        if ($encryption === 'md5') {
-            return md5($password);
-        }
-
-        return $password;
     }
 }

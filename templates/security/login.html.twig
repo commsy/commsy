@@ -83,7 +83,7 @@
                                         <!-- Lokal -->
                                         <div>
                                             {% if authSource.description is not empty %}
-                                                <p class="uk-text-small">{{ authSource.description }}</p>
+                                                <p class="uk-text-small">{{ authSource.description|raw }}</p>
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
@@ -132,7 +132,7 @@
                                                 <div class="uk-margin">
                                                     <div class="uk-form-controls">
                                                         <div class="uk-inline uk-width-1-1">
-                                                            <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
+                                                            <button class="uk-button uk-button-primary uk-width-1-1" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -166,7 +166,7 @@
                                         <!-- LDAP -->
                                         <div>
                                             {% if authSource.description is not empty %}
-                                                <p class="uk-text-small">{{ authSource.description }}</p>
+                                                <p class="uk-text-small">{{ authSource.escription|raw }}</p>
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
@@ -204,7 +204,7 @@
                                                 <div class="uk-margin">
                                                     <div class="uk-form-controls">
                                                         <div class="uk-inline uk-width-1-1">
-                                                            <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_ldap">{{ 'login.sign_in'|trans({}, 'login') }}</button>
+                                                            <button class="uk-button uk-button-primary uk-width-1-1" type="submit" name="login_ldap">{{ 'login.sign_in'|trans({}, 'login') }}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -214,10 +214,36 @@
                                         <!-- Shibboleth -->
                                         <div>
                                             {% if authSource.description is not empty %}
-                                                <p class="uk-text-small">{{ authSource.description }}</p>
+                                                <p class="uk-text-small">{{ authSource.description|raw }}</p>
                                             {% endif %}
 
-                                            <button class="uk-button uk-button-primary">Zum Login...</button>
+                                            {% if error %}
+                                                <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                            {% endif %}
+
+                                            {# hidden #}
+                                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                            <input type="hidden" name="context" value="{{ context }}">
+
+                                            <div class="uk-margin">
+                                                <div class="uk-form-controls">
+                                                    <div class="uk-inline uk-width-1-1">
+                                                        <a class="uk-button uk-button-primary uk-width-1-1" href="{{ path('app_shibboleth_authshibbolethinit', {
+                                                            'portalId': portal.id
+                                                        }) }}">
+                                                            {{ 'login.sign_in'|trans({}, 'login') }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% if authSource.passwordResetUrl is not empty %}
+                                                <div class="uk-margin uk-text-small">
+                                                    <div class="uk-flex uk-flex-around">
+                                                        <a href="{{ authSource.passwordResetUrl }}">{{ 'login.forget_password'|trans({}, 'login') }}</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     {% endif %}
                                 {% endif %}
@@ -274,7 +300,7 @@
                                     <div class="uk-margin">
                                         <div class="uk-form-controls">
                                             <div class="uk-inline uk-width-1-1">
-                                                <button class="uk-button uk-button-primary uk-width-1-1" id="form-stacked-submit" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
+                                                <button class="uk-button uk-button-primary uk-width-1-1" type="submit" name="login_local">{{ 'login.sign_in'|trans({}, 'login') }}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -282,7 +308,6 @@
                                 </form>
                             </div>
                         {% endif %}
-
 
                     </div>
                 </div>

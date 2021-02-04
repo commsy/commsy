@@ -30,6 +30,13 @@ final class Version20190924140632 extends AbstractMigration
         $this->addSql('alter table auth_source add change_password tinyint default 0 not null;');
         $this->addSql('alter table auth_source add create_room tinyint default 1 not null;');
         $this->addSql('alter table auth_source add description text null after title;');
+        $this->addSql('alter table auth_source add login_url varchar(255) null;');
+        $this->addSql('alter table auth_source add logout_url varchar(255) null;');
+        $this->addSql('alter table auth_source add password_reset_url varchar(255) null;');
+        $this->addSql('alter table auth_source add mapping_username varchar(50) null;');
+        $this->addSql('alter table auth_source add mapping_firstname varchar(50) null;');
+        $this->addSql('alter table auth_source add mapping_lastname varchar(50) null;');
+        $this->addSql('alter table auth_source add mapping_email varchar(50) null;');
     }
 
     public function postUp(Schema $schema): void
