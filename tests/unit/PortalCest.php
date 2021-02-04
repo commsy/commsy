@@ -5,7 +5,6 @@ namespace App\Tests;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Facade\PortalCreatorFacade;
-use App\Tests\UnitTester;
 
 class PortalCest
 {

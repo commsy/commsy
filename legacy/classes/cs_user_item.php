@@ -3133,11 +3133,6 @@ class cs_user_item extends cs_item
             }
         } else {
             global $symfonyContainer;
-
-            /** @var EntityManagerInterface $entityManager */
-            $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-            $authSourceRepository = $entityManager->getRepository(AuthSource::class);
-
             $tokenStorage = $symfonyContainer->get('security.token_storage');
             /** @var Account $user */
             $user = $tokenStorage->getToken()->getUser();

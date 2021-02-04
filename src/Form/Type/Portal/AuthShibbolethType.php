@@ -3,11 +3,14 @@
 
 namespace App\Form\Type\Portal;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,11 +30,12 @@ class AuthShibbolethType extends AbstractType
                 'choices'  => [
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
-                    'Shibboleth' => 'shibboleth',
+                    'Shibboleth' => 'shib',
                 ],
                 'required' => true,
                 'label' => 'Source',
-                'translation_domain' => 'portal',
+                'mapped' => false,
+                'data' => 'shib',
             ])
             ->add('type', SubmitType::class, [
                 'attr' => [
@@ -39,110 +43,59 @@ class AuthShibbolethType extends AbstractType
                     'formnovalidate' => '',
                 ],
                 'label' => 'Select',
-                'translation_domain' => 'portal',
                 'validation_groups' => false,
             ])
             ->add('title', TextType::class, [
                 'label' => 'Title',
-                'translation_domain' => 'portal',
                 'required' => true,
             ])
-            ->add('default', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
-                ],
-                'placeholder' => false,
-                'expanded' => true,
+            ->add('description', CKEditorType::class, [
+                'label' => 'Description',
+                'required' => false,
+                'config_name' => 'cs_mail_config',
+            ])
+            ->add('default', CheckboxType::class, [
                 'label' => 'Default',
-                'translation_domain' => 'portal',
                 'required' => false,
             ])
-            ->add('available', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
-                ],
-                'placeholder' => false,
-                'expanded' => true,
+            ->add('enabled', CheckboxType::class, [
                 'label' => 'Available',
-                'translation_domain' => 'portal',
                 'required' => false,
             ])
-            ->add('directLogin', CheckboxType::class, [
-                'label' => 'Direct login',
-                'translation_domain' => 'portal',
+            ->add('loginUrl', UrlType::class, [
+                'label' => 'Login URL',
+                'help' => 'https://sp.example.org/Shibboleth.sso/Login',
+            ])
+            ->add('logoutUrl', UrlType::class, [
+                'label' => 'Logout URL',
+                'help' => 'https://sp.example.org/Shibboleth.sso/Logout',
+            ])
+            ->add('passwordResetURL', UrlType::class, [
+                'label' => 'Password reset URL',
                 'required' => false,
             ])
-            ->add('sessionInitiatorURL', TextType::class, [
-                'label' => 'Session initiatior URL',
-                'required' => true,
-                'translation_domain' => 'portal',
+            ->add('mappingUsername', TextType::class, [
+                'label' => 'Mapping: Username',
+                'help' => 'eppn',
             ])
-            ->add('sessionLogoutURL', TextType::class, [
-                'label' => 'Session logout URL',
-                'required' => true,
-                'translation_domain' => 'portal',
+            ->add('mappingFirstname', TextType::class, [
+                'label' => 'Mapping: Firstname',
+                'help' => 'givenName',
             ])
-            ->add('changePasswordURL', TextType::class, [
-                'label' => 'Change password URL',
-                'required' => true,
-                'translation_domain' => 'portal',
+            ->add('mappingLastname', TextType::class, [
+                'label' => 'Mapping: Lastname',
+                'help' => 'sn',
             ])
-            ->add('userName', TextType::class, [
-                'label' => 'User name',
-                'required' => true,
-                'translation_domain' => 'portal',
+            ->add('mappingEmail', TextType::class, [
+                'label' => 'Mapping: Email',
+                'help' => 'mail',
             ])
-            ->add('firstName', TextType::class, [
-                'label' => 'First name',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('lastName', TextType::class, [
-                'label' => 'Last name',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('mail', TextType::class, [
-                'label' => 'Mail',
-                'required' => true,
-                'translation_domain' => 'portal',
-            ])
-            ->add('identityProviderUpdates', CheckboxType::class, [
-                'label' => 'Update data from the identity provider',
-                'translation_domain' => 'portal',
-                'required' => false,
-            ])
-            ->add('contactTelephone', TextType::class, [
-                'label' => 'Contact telephone',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('contactMail', TextType::class, [
-                'label' => 'Contact mail',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('changePasswordURL', TextType::class, [
-                'label' => 'URL for changing a password',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('userMayCreateRooms', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
-                ],
-                'placeholder' => false,
-                'expanded' => true,
+            ->add('createRoom', CheckboxType::class, [
                 'label' => 'Users may create rooms',
-                'translation_domain' => 'portal',
-                'required' => true,
+                'required' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save',
-                'translation_domain' => 'portal',
             ])
         ;
     }

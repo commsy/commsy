@@ -26,11 +26,12 @@ class AuthCommsyType extends AbstractType
                 'choices'  => [
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
-                    'Shibboleth' => 'shibboleth',
+                    'Shibboleth' => 'shib',
                 ],
                 'required' => true,
                 'label' => 'Source',
-                'translation_domain' => 'portal',
+                'mapped' => false,
+                'data' => 'commsy',
             ])
             ->add('type', SubmitType::class, [
                 'attr' => [

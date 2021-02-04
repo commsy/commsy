@@ -16,25 +16,21 @@
             {{ form_row(form.typeChoice) }}
             {{ form_row(form.type) }}
             <hr />
+            {{ form_row(form.enabled) }}
             {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
             {{ form_row(form.default) }}
-            {{ form_row(form.available) }}
             <hr />
-            {{ form_row(form.directLogin) }}
-            {{ form_row(form.sessionInitiatorURL) }}
-            {{ form_row(form.sessionLogoutURL) }}
-            {{ form_row(form.changePasswordURL) }}
-            {{ form_row(form.userName) }}
-            {{ form_row(form.firstName) }}
-            {{ form_row(form.lastName) }}
-            {{ form_row(form.mail) }}
-            {{ form_row(form.identityProviderUpdates) }}
+            {{ form_row(form.loginUrl) }}
+            {{ form_row(form.logoutUrl) }}
+            {{ form_row(form.passwordResetURL) }}
             <hr />
-            {{ form_row(form.contactTelephone) }}
-            {{ form_row(form.contactMail) }}
-            {{ form_row(form.changePasswordURL) }}
+            {{ form_row(form.mappingUsername) }}
+            {{ form_row(form.mappingFirstname) }}
+            {{ form_row(form.mappingLastname) }}
+            {{ form_row(form.mappingEmail) }}
             <hr />
-            {{ form_row(form.userMayCreateRooms) }}
+            {{ form_row(form.createRoom) }}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

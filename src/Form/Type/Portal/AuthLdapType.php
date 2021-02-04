@@ -26,11 +26,12 @@ class AuthLdapType extends AbstractType
                 'choices'  => [
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
-                    'Shibboleth' => 'shibboleth',
-                    ],
+                    'Shibboleth' => 'shib',
+                ],
                 'required' => true,
                 'label' => 'Source',
-                'translation_domain' => 'portal',
+                'mapped' => false,
+                'data' => 'ldap',
             ])
             ->add('type', SubmitType::class, [
                 'attr' => [
