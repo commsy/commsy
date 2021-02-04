@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity()
  */
-final class AuthSourceShibboleth extends AuthSource
+class AuthSourceShibboleth extends AuthSource
 {
     /**
      * @var string
