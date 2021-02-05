@@ -103,7 +103,7 @@ class AuthSourceShibboleth extends AuthSource
      * @param string $logoutUrl
      * @return self
      */
-    public function setLogoutUrl(string $logoutUrl): self
+    public function setLogoutUrl(?string $logoutUrl): self
     {
         $this->logoutUrl = $logoutUrl;
         return $this;
@@ -121,7 +121,7 @@ class AuthSourceShibboleth extends AuthSource
      * @param string $passwordResetUrl
      * @return self
      */
-    public function setPasswordResetUrl(string $passwordResetUrl): self
+    public function setPasswordResetUrl(?string $passwordResetUrl): self
     {
         $this->passwordResetUrl = $passwordResetUrl;
         return $this;
