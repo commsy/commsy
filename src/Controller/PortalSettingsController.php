@@ -345,40 +345,24 @@ class PortalSettingsController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ) {
-        $defaultData = [
-            'typeChoice' => 'ldap',
-            'default' => 0,
-            'imsDefault' => 0,
-            'available' => 1,
-        ];
+        /*
+         * Try to find an existing shibboleth auth source or create an empty one. We assume
+         * that there is only one auth source per type.
+         */
+        $authSources = $portal->getAuthSources();
 
-        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
-        $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'ldap');
+        /** @var AuthSourceShibboleth $ldapSource */
+        $ldapSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceLdap;
+        })->first();
 
-        if (!is_null($existingAuthSources) && sizeof($existingAuthSources) > 0) {
-            $existingLdapSource = $existingLdapSource = $existingAuthSources[0];
-            if (is_null($existingLdapSource->getExtras())) {
-                $existingLdapSource->setExtras([]);
-            }
-            $defaultData['title'] = $existingLdapSource->getTitle();
-            $defaultData['default'] = $existingLdapSource->isDefault();
-            $defaultData['available'] = $existingLdapSource->getAvailable();
-            $defaultData['serverAddress'] = $existingLdapSource->getServerAddress();
-            $defaultData['userIdLdapField'] = $existingLdapSource->getUserIdLdapField();
-            $defaultData['userMayCreateRooms'] = $existingLdapSource->getCreateRoom();
-            $defaultData['path'] = $existingLdapSource->getPath();
-            $defaultData['userName'] = $existingLdapSource->getUserName();
-            $defaultData['password'] = $existingLdapSource->getPassword();
-            $defaultData['changePasswordURL'] = $existingLdapSource->getChangePasswordURL();
-            $defaultData['encryption'] = $existingLdapSource->getEncryption();
-            $defaultData['contactTelephone'] = $existingLdapSource->getContactTelephone();
-            $defaultData['contactMail'] = $existingLdapSource->getContactMail();
-            $defaultData['changePasswordURL'] = $existingLdapSource->getChangePasswordURL();
-            $existingLdapSource->setPortal($portal);
+        if ($ldapSource === false) {
+            // TODO: This could be moved to a creational pattern
+            $ldapSource = new AuthSourceLdap();
+            $ldapSource->setPortal($portal);
         }
 
-        $ldapForm = $this->createForm(AuthLdapType::class, $defaultData);
-
+        $ldapForm = $this->createForm(AuthLdapType::class, $ldapSource);
         $ldapForm->handleRequest($request);
 
         if ($ldapForm->isSubmitted() && $ldapForm->isValid()) {
@@ -389,42 +373,16 @@ class PortalSettingsController extends AbstractController
                 return $this->generateRedirectForAuthType($typeSwitch, $portal);
             }
 
-            $formData = $ldapForm->getData();
-            if ($clickedButtonName == 'save') {
-                $newAuthSource = new AuthSourceLdap();
-                if ($existingAuthSources) {
-                    $newAuthSource = $existingAuthSources[0];
+            if ($clickedButtonName === 'save') {
+                if ($ldapSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($ldapSource, $entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $ldapSource->setDefault(true);
                 }
-                if (is_null($newAuthSource->getExtras())) {
-                    $newAuthSource->setExtras([]);
-                }
-                $newAuthSource->setTitle($formData['title']);
-                $newAuthSource->setDefault($formData['default']);
-                $newAuthSource->setAvailable($formData['available']);
-                $newAuthSource->setServerAddress($formData['serverAddress']);
-                $newAuthSource->setUserIdLdapField($formData['userIdLdapField']);
-                $newAuthSource->setCreateRoom($formData['userMayCreateRooms']);
-                $newAuthSource->setPath($formData['path']);
-                $newAuthSource->setUsername($formData['userName']);
-                $newAuthSource->setPassword($formData['password']);
-                $newAuthSource->setEncryption($formData['encryption']);
-                $newAuthSource->setContactTelephone($formData['contactTelephone']);
-                $newAuthSource->setContactMail($formData['contactMail']);
-                $newAuthSource->setChangePasswordURL($formData['changePasswordURL']);
 
-                $newAuthSource->setSourceOriginName('ldap');
-                $newAuthSource->setType('local');
-                $newAuthSource->setEnabled(true);
-                $newAuthSource->setAddAccount(false);
-                $newAuthSource->setChangeUsername(false);
-                $newAuthSource->setDeleteAccount(false);
-                $newAuthSource->setChangeUserdata(false);
-                $newAuthSource->setChangePassword(false);
-
-
-                $newAuthSource->setPortal($portal);
-
-                $entityManager->persist($newAuthSource);
+                $entityManager->persist($ldapSource);
                 $entityManager->flush();
             }
         }

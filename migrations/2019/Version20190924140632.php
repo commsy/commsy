@@ -37,6 +37,11 @@ final class Version20190924140632 extends AbstractMigration
         $this->addSql('alter table auth_source add mapping_firstname varchar(50) null;');
         $this->addSql('alter table auth_source add mapping_lastname varchar(50) null;');
         $this->addSql('alter table auth_source add mapping_email varchar(50) null;');
+        $this->addSql('alter table auth_source add server_url varchar(255) null;');
+        $this->addSql('alter table auth_source add uid_key varchar(50) null;');
+        $this->addSql('alter table auth_source add base_dn varchar(50) null;');
+        $this->addSql('alter table auth_source add search_dn varchar(50) null;');
+        $this->addSql('alter table auth_source add search_password varchar(50) null;');
     }
 
     public function postUp(Schema $schema): void
