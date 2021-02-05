@@ -87,7 +87,7 @@
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
-                                                {% if error %}
+                                                {% if error and authSource.type is same as lastSource %}
                                                     <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                                 {% endif %}
 
@@ -170,7 +170,7 @@
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
-                                                {% if error %}
+                                                {% if error and authSource.type is same as lastSource %}
                                                     <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                                 {% endif %}
 
@@ -217,7 +217,7 @@
                                                 <p class="uk-text-small">{{ authSource.description|raw }}</p>
                                             {% endif %}
 
-                                            {% if error %}
+                                            {% if error and authSource.type is same as lastSource %}
                                                 <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                             {% endif %}
 
