@@ -52,6 +52,7 @@ security:
             anonymous: true
             logout:
                 path: app_logout
+                success_handler: App\Security\LogoutSuccessHandler
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
