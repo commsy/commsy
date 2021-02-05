@@ -38,10 +38,6 @@ include_once('functions/date_functions.php');
  */
 include_once('classes/cs_list.php');
 
-/** cs_set is needed for caching user items
-*/
-include_once('classes/cs_set.php');
-
 
 /** class for database connection to the database table "user"
  * this class implements a database manager for the table "user"
