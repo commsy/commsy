@@ -69,6 +69,7 @@ class AuthShibbolethType extends AbstractType
             ->add('logoutUrl', UrlType::class, [
                 'label' => 'Logout URL',
                 'help' => 'https://sp.example.org/Shibboleth.sso/Logout',
+                'required' => false,
             ])
             ->add('passwordResetURL', UrlType::class, [
                 'label' => 'Password reset URL',
