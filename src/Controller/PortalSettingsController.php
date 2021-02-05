@@ -573,6 +573,14 @@ class PortalSettingsController extends AbstractController
             }
 
             if ($clickedButtonName === 'save') {
+                if ($shibSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($shibSource, $entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $shibSource->setDefault(true);
+                }
+
                 $entityManager->persist($shibSource);
                 $entityManager->flush();
             }

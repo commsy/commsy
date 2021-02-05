@@ -8,7 +8,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -57,6 +56,7 @@ class AuthShibbolethType extends AbstractType
             ->add('default', CheckboxType::class, [
                 'label' => 'Default',
                 'required' => false,
+                'help' => 'Pre select this authentication in the login box (deselect all others)'
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => 'Available',
