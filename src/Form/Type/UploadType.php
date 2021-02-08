@@ -45,7 +45,7 @@ class UploadType extends AbstractType
                 ],
             ])
             ->add('upload', FileType::class, array(
-                'label' => 'upload',
+                'label' => $this->translator->trans('Upload files up to %maxUploadSize% MB', ['%maxUploadSize%' => $options['maxUploadSize']], 'form'),
                 'attr' => array(
                      'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
                 ),
@@ -78,7 +78,7 @@ class UploadType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['uploadUrl'])
+            ->setRequired(['uploadUrl', 'maxUploadSize'])
         ;
     }
 
