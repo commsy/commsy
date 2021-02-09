@@ -436,7 +436,7 @@ services:
     # Menu
     commsy.menu.builder:
         class: App\Menu\MenuBuilder
-        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker', '@commsy.invitations_service']
+        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker']
         # tags:
         #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
         #     - { name: knp_menu.menu_builder, method: createSettingsMenu, alias: settings }
@@ -1149,9 +1149,6 @@ services:
 
     App\Services\CopyService:
         autowire: true
-
-    commsy.invitations_service:
-        alias: App\Services\InvitationsService
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
