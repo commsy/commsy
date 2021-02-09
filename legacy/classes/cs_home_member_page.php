@@ -336,8 +336,8 @@ class cs_home_member_page extends cs_left_page {
                    $auth_source_manager = $this->_environment->getAuthSourceManager();
                    $auth_source_item = $auth_source_manager->getItem($_GET['invitation_auth_source']);
                    global $symfonyContainer;
-                   $invitationsService->redeemInvitation($auth_source_item, $this->_get_vars['invitation_auth_code'], $this->_post_vars['email']);
                    $invitationsService = $symfonyContainer->get(\App\Services\InvitationsService::class);
+                   $invitationsService->redeemInvitation($auth_source_item, $this->_get_vars['invitation_auth_code']);
                }
             }
          }

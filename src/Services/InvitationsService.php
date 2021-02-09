@@ -41,25 +41,28 @@ class InvitationsService
         return false;
     }
 
-    public function existsInvitationForEmailAddress ($authSourceItem, $email) {
-        $repository = $this->em->getRepository('App:Invitations');
+    public function existsInvitationForEmailAddress($authSourceItem, $email)
+    {
+        $repository = $this->em->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->select()
-            ->where('invitations.authSourceId = :authSourceId AND invitations.email = :email')
+            ->where('invitations.authSourceId = :authSourceId')
+            ->andWhere('invitations.email = :email')
             ->setParameter('authSourceId', $authSourceItem->getItemId())
             ->setParameter('email', $email)
             ->getQuery();
         $invitations = $query->getResult();
 
-        if (sizeof($invitations) > 0) {
+        if (count($invitations) > 0) {
             return true;
         }
 
         return false;
     }
 
-    public function generateInvitationCode($authSourceItem, $contextId, $email) {
-        $invitationCode = md5(rand().time().rand());
+    public function generateInvitationCode($authSourceItem, $contextId, $email)
+    {
+        $invitationCode = md5(rand() . time() . rand());
 
         $invitation = new Invitations();
         $invitation->setEmail($email);
@@ -75,45 +78,49 @@ class InvitationsService
         return $invitationCode;
     }
 
-    public function confirmInvitationCode($authSourceItem, $invitationCode) {
-        $repository = $this->em->getRepository('App:Invitations');
+    public function confirmInvitationCode($authSourceItem, $invitationCode)
+    {
+        $repository = $this->em->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->select()
-            ->where('invitations.authSourceId = :authSourceId AND invitations.hash = :invitationCode AND invitations.expirationDate >= :expirationDate AND invitations.redeemed = :redeemed')
+            ->where('invitations.authSourceId = :authSourceId')
+            ->andWhere('invitations.hash = :invitationCode')
+            ->andWhere('invitations.expirationDate >= :expirationDate')
             ->setParameter('authSourceId', $authSourceItem->getItemId())
             ->setParameter('invitationCode', $invitationCode)
             ->setParameter('expirationDate', new \DateTime())
-            ->setParameter('redeemed', false)
             ->getQuery();
         $invitations = $query->getResult();
 
-        if (sizeof($invitations) > 0) {
+        if (count($invitations) > 0) {
             return true;
         }
 
         return false;
     }
 
-    public function redeemInvitation($authSourceItem, $invitationCode, $email){
-        $repository = $this->em->getRepository('App:Invitations');
-        $query = $repository->createQueryBuilder('invitations')
-            ->update()
-            ->set('invitations.redeemed', true)
-            ->where('invitations.authSourceId = :authSourceId AND (invitations.hash = :hash OR invitations.email = :email)')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
-            ->setParameter('hash', $invitationCode)
-            ->setParameter('email', $email)
-            ->getQuery();
-        $query->getResult();
+    public function redeemInvitation(\cs_auth_source_item $authSourceItem, string $invitationCode)
+    {
+        $repository = $this->em->getRepository(Invitations::class);
+        /** @var Invitations $invitation */
+        $invitation = $repository->findOneBy([
+            'authSourceId' => $authSourceItem->getItemId(),
+            'hash' => $invitationCode,
+        ]);
+
+        $this->em->remove($invitation);
+        $this->em->flush();
     }
 
-    public function getInvitedEmailAdressesByContextId ($authSourceItem, $contextId) {
+    public function getInvitedEmailAdressesByContextId($authSourceItem, $contextId)
+    {
         $result = array();
 
-        $repository = $this->em->getRepository('App:Invitations');
+        $repository = $this->em->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->select()
-            ->where('invitations.authSourceId = :authSourceId AND invitations.contextId = :contextId')
+            ->where('invitations.authSourceId = :authSourceId')
+            ->andWhere('invitations.contextId = :contextId')
             ->setParameter('authSourceId', $authSourceItem->getItemId())
             ->setParameter('contextId', $contextId)
             ->orderBy('invitations.email', 'ASC')
@@ -128,11 +135,13 @@ class InvitationsService
 
     }
 
-    public function removeInvitedEmailAdresses ($authSourceItem, $email) {
-        $repository = $this->em->getRepository('App:Invitations');
+    public function removeInvitedEmailAdresses($authSourceItem, $email)
+    {
+        $repository = $this->em->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->delete()
-            ->where('invitations.authSourceId = :authSourceId AND invitations.email = :email')
+            ->where('invitations.authSourceId = :authSourceId')
+            ->andWhere('invitations.email = :email')
             ->setParameter('authSourceId', $authSourceItem->getItemId())
             ->setParameter('email', $email)
             ->getQuery();
