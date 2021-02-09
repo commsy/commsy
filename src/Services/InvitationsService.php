@@ -13,29 +13,31 @@ class InvitationsService
      */
     private $em;
 
-    private $serviceContainer;
+    /**
+     * @var \cs_environment
+     */
+    private $legacyEnvironment;
 
-    public function __construct(EntityManagerInterface $entityManager, Container $container)
+    public function __construct(EntityManagerInterface $entityManager, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $entityManager;
-        $this->serviceContainer = $container;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function invitationsEnabled () {
-        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
-
-        $authSourceManager = $legacyEnvironment->getAuthSourceManager();
-        $authSourceManager->setContextLimit($legacyEnvironment->getCurrentPortalId());
+    public function invitationsEnabled()
+    {
+        $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+        $authSourceManager->setContextLimit($this->legacyEnvironment->getCurrentPortalId());
         $authSourceManager->select();
-        $authSourceArray = $authSourceManager->get()->to_array();
 
-        foreach ($authSourceArray as $authSourceItem) {
-            if ($authSourceItem->isCommSyDefault()) {
-                if ($authSourceItem->allowAddAccountInvitation()) {
-                    return true;
-                }
+        /** @var \cs_list $authSources */
+        $authSources = $authSourceManager->get();
+        foreach ($authSources as $authSource) {
+            if ($authSource->isCommSyDefault() && $authSource->allowAddAccountInvitation()) {
+                return true;
             }
         }
+
         return false;
     }
 

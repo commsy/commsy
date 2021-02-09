@@ -6,6 +6,7 @@ use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
 use App\Form\Type\Room\DeleteType;
 use App\Form\Type\Room\UserRoomDeleteType;
+use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserroomService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -514,31 +515,35 @@ class SettingsController extends Controller
      * @Template
      * @Security("is_granted('MODERATOR')")
      */
-    public function invitationsAction($roomId, Request $request, RoomService $roomService, RouterInterface $router)
-    {
-        $invitationsService = $this->get('commsy.invitations_service');
-        $translator = $this->get('translator');
-
+    public function invitationsAction(
+        int $roomId,
+        Request $request,
+        RoomService $roomService,
+        InvitationsService $invitationsService,
+        TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
         $authSourceManager = $legacyEnvironment->getAuthSourceManager();
         $authSourceManager->setContextLimit($legacyEnvironment->getCurrentPortalId());
         $authSourceManager->select();
-        $authSourceArray = $authSourceManager->get()->to_array();
+
+        /** @var \cs_list $authSources */
+        $authSources = $authSourceManager->get();
 
         $authSourceItem = null;
-        foreach ($authSourceArray as $tempAuthSourceItem) {
-            if ($tempAuthSourceItem->isCommSyDefault()) {
-                if ($tempAuthSourceItem->allowAddAccountInvitation()) {
-                    $authSourceItem = $tempAuthSourceItem;
-                }
+        foreach ($authSources as $authSource) {
+            if ($authSource->isCommSyDefault() && $authSource->allowAddAccountInvitation()) {
+                $authSourceItem = $authSource;
+                break;
             }
         }
 
@@ -549,10 +554,10 @@ class SettingsController extends Controller
             $invitees[$tempInvitee] = $tempInvitee;
         }
 
-        $form = $this->createForm(InvitationsSettingsType::class, array(), array(
+        $form = $this->createForm(InvitationsSettingsType::class, [], [
             'roomId' => $roomId,
             'invitees' => $invitees,
-        ));
+        ]);
 
         $form->handleRequest($request);
 
@@ -577,15 +582,17 @@ class SettingsController extends Controller
                 $fromAddress = $this->getParameter('commsy.email.from');
                 $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
-                $subject = $translator->trans('invitation subject %portal%', array('%portal%' => $portal->getTitle()));
+                $subject = $translator->trans('invitation subject %portal%', [
+                    '%portal%' => $portal->getTitle(),
+                ]);
                 $body = $translator->trans('invitation body %portal% %link% %sender%', [
                     '%room%' => $roomItem->getTitle(),
                     '%portal%' => $portal->getTitle(),
                     '%link%' => $invitationLink,
-                    '%roomLink%' => $router->generate('app_room_home', [
+                    '%roomLink%' => $this->generateUrl('app_room_home', [
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL),
-                    '%sender%' => $user->getFullName()
+                    '%sender%' => $user->getFullName(),
                 ]);
                 $mailMessage = (new \Swift_Message())
                     ->setSubject($subject)
@@ -599,11 +606,13 @@ class SettingsController extends Controller
                 $invitationsService->removeInvitedEmailAdresses($authSourceItem, $removeInvitee);
             }
 
-            return $this->redirectToRoute('app_settings_invitations', ["roomId" => $roomId]);
+            return $this->redirectToRoute('app_settings_invitations', [
+                "roomId" => $roomId,
+            ]);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-        );
+        ];
     }
 }

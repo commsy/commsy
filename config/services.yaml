@@ -1151,8 +1151,7 @@ services:
         autowire: true
 
     commsy.invitations_service:
-        class: App\Services\InvitationsService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+        alias: App\Services\InvitationsService
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
