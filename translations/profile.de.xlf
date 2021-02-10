@@ -464,6 +464,10 @@
                 <source>send mail</source>
                 <target>E-Mail schicken</target>
             </trans-unit>
+            <trans-unit id="stateId">
+                <source>stateId</source>
+                <target>Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

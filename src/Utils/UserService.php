@@ -280,6 +280,12 @@ class UserService
         }
         return $user;
     }
+
+    public function getUserFromLogin(String $userLoginID)
+    {
+        $userManager = $this->legacyEnvironment->getUserManager();
+        return $userList = $userManager->getAllUserItemArray($userLoginID);
+    }
     
     public function getPortalUserFromSessionId()
     {
