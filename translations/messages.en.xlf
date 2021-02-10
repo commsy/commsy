@@ -469,6 +469,18 @@ Regards,
                 <source>Select some options</source>
                 <target>Select some options</target>
             </trans-unit>
+            <trans-unit id="login_unknown">
+                <source>login unknown</source>
+                <target>Login ID unknown</target>
+            </trans-unit>
+            <trans-unit id="passwords_must_match">
+                <source>The two passwords must match.</source>
+                <target>Die beiden Passworte müssen übereinstimmen.</target>
+            </trans-unit>
+            <trans-unit id="linked_expired">
+                <source>The link expired.</source>
+                <target>The link expired.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

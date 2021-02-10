@@ -464,6 +464,10 @@
                 <source>send mail</source>
                 <target>send mail</target>
             </trans-unit>
+            <trans-unit id="stateId">
+                <source>stateId</source>
+                <target>Using your current loginname you can receive an email with a special link in it. You can change your password via this link in the next 15 minutes from this pc.</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>
