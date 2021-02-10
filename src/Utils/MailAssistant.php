@@ -267,6 +267,49 @@ class MailAssistant
         return $message;
     }
 
+    public function getSwitftMailForPasswordForgottenMail($subject, $body, $item): \Swift_Message
+    {
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
+        $recipients = [
+            'to' => [],
+            'bcc' => [],
+        ];
+
+        $recipients['to'][$item->getEmail()] = $item->getFullName();
+
+        $to = $recipients['to'];
+        $toBCC = $recipients['bcc'];
+
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        $currentUserName = $currentUser->getFullName();
+        if ($currentUser->isEmailVisible()) {
+            $replyTo[$currentUserEmail] = $currentUserName;
+        }
+
+        $portalTitle = "A title";
+        if ($portalItem) {
+            $portalTitle = $portalItem->getTitle();
+        }
+
+        $from = 'noreply@commsy.net';
+        $commsyTeam = 'CommSy Team';
+        $replyTo['noreply@commsy.net'] = 'CommSy Team';
+        $message = (new \Swift_Message())
+            ->setSubject($subject)
+            ->setBody($body, 'text/html')
+            ->setReplyTo([$from => $commsyTeam])
+            ->setFrom([$from => $portalTitle]);
+
+        if (!empty($to)) {
+            $message->setTo($to);
+        }
+
+        return $message;
+    }
+
     public function getSwiftMailForAccountIndexSendPasswordMail(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();

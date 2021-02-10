@@ -1973,6 +1973,13 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
+
+	public function getUserFromLogin($userLoginID) {
+      $user = NULL;
+        $query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".user_id = '".encode(AS_DB,$userLoginID)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL";
+        $result = $this->_db_connector->performQuery($query);
+    }
+
 	
 	public function getAllUserItemArray($uid){
 		$user = NULL;

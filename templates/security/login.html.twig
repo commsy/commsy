@@ -28,10 +28,25 @@
         </div>
     {% endif %}
 
+    {% set messageSuccess = app.flashes('messageSuccess')|first %}
+    {% set passwordUpdated = app.flashes('passwordUpdated')|first %}
+
+    {% if not messageSuccess is empty %}
+        <div class="uk-alert uk-alert-success">
+            <i class="uk-icon-check-square-o uk-icon-medium"></i>
+            {{ messageSuccess }}
+        </div>
+    {% endif %}
+
+    {% if not passwordUpdated is empty %}
+        <div class="uk-alert uk-alert-success">
+            <i class="uk-icon-check-square-o uk-icon-medium"></i>
+            {{ 'passwordChanged'|trans({}, "profile") }}
+        </div>
+    {% endif %}
+
     <div class="uk-grid-match uk-flex uk-flex-center" uk-grid>
-
         <div class="uk-width-large">
-
             <div class="uk-card uk-card-default uk-card-small">
                 {% if portal is not null %}
                     {% if portal.logoFilename is not empty %}
@@ -151,7 +166,7 @@
                                                 <div class="uk-margin uk-text-small">
                                                     <div class="uk-flex uk-flex-around">
                                                         <div class="">
-                                                            <a href="#">{{ 'login.forget_password'|trans({}, 'login') }}</a>
+                                                            <a href="{{ path('app_password_forgotten_userid', { 'context': context }) }}">{{ 'login.forget_password'|trans({}, 'login') }}</a>
                                                         </div>
 
                                                         <div class="">
