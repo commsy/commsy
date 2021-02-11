@@ -223,8 +223,8 @@
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
                                 "target": "#search-feed",
                                 "query": {
-                                    "search[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
-                                    "search[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
+                                    "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
+                                    "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
                                     "search_filter[phrase]": "{{ searchData.phrase }}",
                                     "search_filter[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
                                     "search_filter[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
