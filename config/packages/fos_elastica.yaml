@@ -9,20 +9,16 @@
 #
 #
 
-parameters:
-    env(ELASTIC_HOST): ''
-    env(ELASTIC_PORT): ''
-
 fos_elastica:
     clients:
         default:
             host: '%env(resolve:ELASTIC_HOST)%'
             port: '%env(resolve:ELASTIC_PORT)%'
-            #username: %elastic_user%
-            #password: %elastic_password%
 
     indexes:
         commsy:
+            index_name: '%env(ELASTIC_INDEX)%'
+
             client: default
 
             finder: ~
