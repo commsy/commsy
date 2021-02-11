@@ -19,7 +19,7 @@ class Invitations
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id = '0';
+    private $id;
 
     /**
      * @var string
@@ -62,13 +62,6 @@ class Invitations
      * @ORM\Column(name="expiration_date", type="datetime", nullable=true)
      */
     private $expirationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="redeemed", type="boolean", nullable=false)
-     */
-    private $redeemed = '0';
 
     /**
      * Get id
@@ -222,29 +215,5 @@ class Invitations
     public function getExpirationDate()
     {
         return $this->expirationDate;
-    }
-
-    /**
-     * Set redeemed
-     *
-     * @param boolean $redeemed
-     *
-     * @return Invitations
-     */
-    public function setRedeemed($redeemed)
-    {
-        $this->redeemed = $redeemed;
-
-        return $this;
-    }
-
-    /**
-     * Get redeemed
-     *
-     * @return boolean
-     */
-    public function getRedeemed()
-    {
-        return $this->redeemed;
     }
 }
