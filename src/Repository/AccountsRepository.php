@@ -38,6 +38,18 @@ class AccountsRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByMailAndAuthSource(string $mail, AuthSource $authSource) {
+        return $this->createQueryBuilder('a')
+            ->where('a.email = :mail')
+            ->andWhere('a.authSource = :authSource')
+            ->setParameters([
+                'mail' => $mail,
+                'authSource' => $authSource,
+            ])
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     public function findOnByCredentials(array $fields)
     {
         return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);

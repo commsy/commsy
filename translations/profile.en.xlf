@@ -468,6 +468,14 @@
                 <source>stateId</source>
                 <target>Using your current loginname you can receive an email with a special link in it. You can change your password via this link in the next 15 minutes from this pc.</target>
             </trans-unit>
+            <trans-unit id="stateLogin">
+                <source>stateLogin</source>
+                <target>Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.</target>
+            </trans-unit>
+            <trans-unit id="stateLogin">
+                <source>stateLogin</source>
+                <target>Please type your e-mail address. You will receive an e-mail with your account data shortly.</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

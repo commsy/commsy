@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
+use App\Form\Type\LoginForgottenStateMailType;
 use App\Form\Type\PasswordForgottenNewPasswordType;
 use App\Form\Type\PasswordForgottenStateUserIdType;
 use App\Services\LegacyEnvironment;
@@ -23,7 +24,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use function PHPUnit\Framework\throwException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 class SecurityController extends AbstractController
@@ -97,6 +98,93 @@ class SecurityController extends AbstractController
     {
         // controller can be blank: it will never be executed!
         throw new Exception('Don\'t forget to activate logout in security.yaml');
+    }
+
+    /**
+     * @Route("/loginforgotten/{portalId}", name="app_login_forgotten")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @param Portal $portal
+     * @Template
+     *
+     * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param MailAssistant $mailAssistant
+     * @param \Swift_Mailer $mailer
+     * @param UserService $userService
+     * @param TranslatorInterface $translatorInt
+     */
+    public function loginForgotten(
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        MailAssistant $mailAssistant,
+        \Swift_Mailer $mailer,
+        UserService $userService,
+        TranslatorInterface $translatorInt,
+        EntityManagerInterface $entityManager,
+        Portal $portal,
+        string $portalId
+    ) {
+        $form = $this->createForm(LoginForgottenStateMailType::class, [], []);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->getClickedButton()->getName() === 'cancel') {
+                return $this->redirectToRoute('app_login', [
+                    'context' => $portalId,
+                ]);
+            } elseif ($form->getClickedButton()->getName() === 'save') {
+                $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
+                $portalItem = $legacyEnvironment->getEnvironment()->getCurrentContextItem();
+
+                $data = $form->getData();
+                $mail = $data['mail'] ?? null;
+
+                if (!$mail or empty($mail)) {
+                    $translator->getMessage();
+                    $form->get('mail')->addError(new FormError($translatorInt->trans('no email')));
+                    return [
+                        'form' => $form->createView(),
+                    ];
+                }
+
+                $accountRepo = $entityManager->getRepository(Account::class);
+                $authSources = $portal->getAuthSources();
+
+                /** @var AuthSource $localAuthSource */
+                $localAuthSource = $authSources->filter(function(AuthSource $authSource) {
+                    return $authSource->getType() === 'local';
+                })->first();
+
+                $users = $accountRepo->findByMailAndAuthSource($mail, $localAuthSource);
+
+                $userLogins = [];
+                foreach ($users as $user) {
+                    $userLogins[] = $user['username'];
+                }
+
+                if (empty($userLogins)) {
+                    $form->get('mail')->addError(new FormError($translatorInt->trans('mail unknown')));
+                } else {
+                    $subject = $translator->getMessage('USER_ACCOUNT_FORGET_HEADLINE', $portalItem->getTitle());
+                    $body = $translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY', $portalItem->getTitle(), implode(', ',$userLogins));
+                    $body .= '. ' . $translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy',$portalItem->getTitle());
+
+                    $users = $userService->getUserFromLogin($users[0]['username']);
+                    $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $users[0]);
+                    $mailer->send($message);
+
+                    $mailSendMessage = $translator->getMessage('USER_ACCOUNT_FORGET_SUCCESS_TEXT',$mail);
+                    $this->addFlash('messageSuccess', strip_tags($mailSendMessage));
+
+                    return $this->redirectToRoute('app_login', [
+                        'context' => $portalId,
+                    ]);
+                }
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
     }
 
     /**

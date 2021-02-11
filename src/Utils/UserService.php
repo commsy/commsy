@@ -286,6 +286,16 @@ class UserService
         $userManager = $this->legacyEnvironment->getUserManager();
         return $userList = $userManager->getAllUserItemArray($userLoginID);
     }
+
+    public function getUserFromMailAndContext(String $email, int $contextId)
+    {
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setEMailLimit($email);
+        $userManager->setCurrentContextID($contextId);
+        $userManager->select();
+        return $userManager->get();
+    }
     
     public function getPortalUserFromSessionId()
     {

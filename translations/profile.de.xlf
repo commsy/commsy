@@ -468,6 +468,10 @@
                 <source>stateId</source>
                 <target>Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.</target>
             </trans-unit>
+            <trans-unit id="stateLogin">
+                <source>stateLogin</source>
+                <target>Kennung zusenden: Bitte geben Sie Ihre E-Mail-Adresse an. Ihre unter dieser E-Mail-Adresse registrierten Kennungen werden Ihnen sofort per E-Mail zu geschickt. </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

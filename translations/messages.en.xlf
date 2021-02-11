@@ -481,6 +481,10 @@ Regards,
                 <source>The link expired.</source>
                 <target>The link expired.</target>
             </trans-unit>
+            <trans-unit id="mail_unknown">
+                <source>mail unknown</source>
+                <target>The email address is unknown.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
