@@ -9,7 +9,7 @@ use App\Form\Type\CsvImportType;
 use App\Form\Type\LicenseSortType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
-use App\User\UserBuilder;
+use App\User\UserCreatorFacade;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -460,6 +460,7 @@ class PortalController extends AbstractController
     public function csvImportAction(
         Request $request,
         LegacyEnvironment $environment,
+        \App\Facade\UserCreatorFacade $userCreator,
         int $roomId
     ) {
         $portal = null;
@@ -508,8 +509,7 @@ class PortalController extends AbstractController
                 $authSourceManager = $legacyEnvironment->getAuthSourceManager();
                 $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
 
-                $userBuilder = $this->get(UserBuilder::class);
-                $userBuilder->createFromCsvDataset($authSourceItem, $userDatasets);
+                $userCreator->createFromCsvDataset($authSourceItem, $userDatasets);
             }
         }
 

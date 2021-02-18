@@ -150,6 +150,7 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
     {
         if ($request->hasSession()) {
             $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+            $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'local');
         }
 
         $url = $this->getLoginUrl($request);

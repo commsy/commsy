@@ -1335,10 +1335,6 @@ services:
     App\Form\DataTransformer\Base64ToCsvDatasetTransformer:
         autowire: true
 
-    # User
-    App\User\UserBuilder:
-        autowire: true
-
     # Events
     App\Event\CommsyEditEvent:
         autowire: false

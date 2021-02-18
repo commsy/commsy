@@ -16,22 +16,20 @@
             {{ form_row(form.typeChoice) }}
             {{ form_row(form.type) }}
             <hr />
+            {{ form_row(form.enabled) }}
             {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
             {{ form_row(form.default) }}
-            {{ form_row(form.available) }}
             <hr />
-            {{ form_row(form.serverAddress) }}
-            {{ form_row(form.userIdLdapField) }}
-            {{ form_row(form.path) }}
-            {{ form_row(form.userName) }}
-            {{ form_row(form.password) }}
-            {{ form_row(form.encryption) }}
+            {{ form_row(form.serverUrl) }}
+            {{ form_row(form.uidKey) }}
+            {{ form_row(form.baseDn) }}
+            {{ form_row(form.searchDn) }}
+            {{ form_row(form.searchPassword) }}
             <hr />
-            {{ form_row(form.contactTelephone) }}
-            {{ form_row(form.contactMail) }}
-            {{ form_row(form.changePasswordURL) }}
+            {{ form_row(form.authDn) }}
             <hr />
-            {{ form_row(form.userMayCreateRooms) }}
+            {{ form_row(form.createRoom) }}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}
