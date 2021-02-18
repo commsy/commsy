@@ -13,6 +13,8 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticator
 {
+    public const LAST_SOURCE = '_security.last_source';
+
     /**
      * When app_login is submitted, this post parameter will be checked in order to decide
      * which authenticator should be used.

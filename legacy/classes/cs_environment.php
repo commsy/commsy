@@ -2270,21 +2270,6 @@ class cs_environment {
       return function_exists("curl_init");
    }
 
-   public function isScribdAvailable(){
-        if(!$this->isCurlForPHPAvailable()){
-            return false;
-        }
-        $scribd_api_key = $this->getServerItem()->getScribdApiKey();
-        $scribd_secret = $this->getServerItem()->getScribdSecret();
-        if ($scribd_api_key == ''){
-            return false;
-        }
-        if ($scribd_secret == ''){
-            return false;
-        }
-        return true;
-   }
-
    public function setCacheOff () {
       $this->_cache_on = false;
    }

@@ -958,9 +958,6 @@ class misc_text_converter {
       $reg_exp_array['(:vimeo']       = '~\\(:vimeo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:mp3']         = '~\\(:mp3\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:lecture2go']  = '~\\(:lecture2go\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      if ( $this->_environment->isScribdAvailable() ) {
-         $reg_exp_array['(:office']   = '~\\(:office\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      }
       $reg_exp_array['(:slideshare']  = '~\\(:slideshare\\s(.*?):\\)~eu';
       $reg_exp_array['[slideshare']   = '~\[slideshare\\s(.*?)\]~eu';
       $reg_exp_array['(:flickr']      = '~\\(:flickr\\s(.*?):\\)~eu';
@@ -1116,9 +1113,6 @@ class misc_text_converter {
                         break;
                      } elseif ( $key == '(:lecture2go' and mb_stristr($value_new,'(:lecture2go') ) {
                         $value_new = $this->_formatLecture2go($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:office' and mb_stristr($value_new,'(:office') ) {
-                        $value_new = $this->_formatOffice($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:slideshare' and mb_stristr($value_new,'(:slideshare') ) {
                         $value_new = $this->_formatSlideshare($value_new,$args_array);
@@ -1847,114 +1841,6 @@ class misc_text_converter {
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;
-      return $retour;
-   }
-
-   private function _formatOffice ($text, $array, $file_name_array) {
-
-      // Abfrage auf curl-Funktionen einbauen.
-
-      $retour = '';
-
-      if ( !empty($array[1]) ) {
-         $source = $array[1];
-      }
-      if ( !empty($array[2]) ) {
-         $args = $this->_parseArgs($array[2]);
-      } else {
-         $args = array();
-      }
-
-      if ( !empty($args['orientation'])
-           and ( $args['orientation'] == 'portrait'
-                 or $args['orientation'] == 'landscape'
-               )
-         ) {
-         $orientation = $args['orientation'];
-      } else {
-         $orientation = 'portrait';
-      }
-
-      if ( !empty($source) ) {
-        global $c_commsy_path_file;
-        include_once($c_commsy_path_file . '/classes/external_classes/scribd/scribd.php');
-        if ( !empty($file_name_array[$source]) ) {
-           $file = $file_name_array[$source];
-        }
-
-        if ( isset($file) ) {
-            if(($file->getScribdDocId() == '') && ($file->getScribdAccessKey() == '')){
-                $scribd_api_key = $this->_environment->getServerItem()->getScribdApiKey();
-                $scribd_secret = $this->_environment->getServerItem()->getScribdSecret();
-                $scribd = new Scribd($scribd_api_key, $scribd_secret, "CommSy");
-                $filename = $c_commsy_path_file . "/" . $file->getDiskFileName();
-                $doc_type = null;
-                $access = "private";
-                $rev_id = null;
-                $result = $scribd->upload($filename, $doc_type, $access, $rev_id);
-                $file->setScribdDocId($result['doc_id']);
-                $file->setScribdAccessKey($result['access_key']);
-                $file->saveExtras();
-                $result['doc_id'] = $file->getScribdDocId();
-                $result['access_key'] = $file->getScribdAccessKey();
-            } else {
-                $result['doc_id'] = $file->getScribdDocId();
-                $result['access_key'] = $file->getScribdAccessKey();
-            }
-        }
-
-        $office_text = '';
-
-//        $office_text .= "<script type='text/javascript' src='http://www.scribd.com/javascripts/view.js'></script>".LF;
-//        $office_text .= "<div id='embedded_flash_" . $result['doc_id'] . "' >".LF;
-//        $office_text .= "</div>".LF;
-//
-//        $office_text .= '<script type="text/javascript">'.LF;
-//        $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
-//        if ( $orientation == 'portrait' ) {
-//           $office_text .= "scribd_doc.addParam('height', 740);".LF;
-//           $office_text .= "scribd_doc.addParam('width', 520);".LF;
-//        } elseif ( $orientation == 'landscape' ) {
-//           $office_text .= "scribd_doc.addParam('height', 420);".LF;
-//           $office_text .= "scribd_doc.addParam('width', 520);".LF;
-//        }
-//        $office_text .= "scribd_doc.addParam('page', 1);".LF;
-//        $office_text .= "scribd_doc.addParam('public', true);".LF;
-//        $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
-//        $office_text .= "scribd_doc.write('embedded_flash_" . $result['doc_id'] . "');".LF;
-//        $office_text .= "</script>".LF;
-
-//            $office_text .= '<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" id="doc_539262106603200" name="doc_539262106603200" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" align="middle"  height="500" width="100%">'.LF;
-//            $office_text .= '<param name="movie" value="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true">'.LF;
-//            $office_text .= '<param name="quality" value="high">'.LF;
-//            $office_text .= '<param name="play" value="true">'.LF;
-//            $office_text .= '<param name="loop" value="true">'.LF;
-//            $office_text .= '<param name="scale" value="showall">'.LF;
-//            $office_text .= '<param name="wmode" value="opaque">'.LF;
-
-//            original: opaque, aber da div layer probleme, lieber transparent -> prüfen
-//            $office_text .= '<param name="wmode" value="opaque">'.LF;
-
-//            $office_text .= '<param name="devicefont" value="false">'.LF;
-//            $office_text .= '<param name="bgcolor" value="#ffffff">'.LF;
-//            $office_text .= '<param name="menu" value="true">'.LF;
-//            $office_text .= '<param name="allowFullScreen" value="true">'.LF;
-//            $office_text .= '<param name="allowScriptAccess" value="always">'.LF;
-//            $office_text .= '<param name="salign" value="">'.LF;
-
-        if ( $orientation == 'portrait' ) {
-           $scribdHeight = 740;
-           $scribdWidth = 520;
-        } elseif ( $orientation == 'landscape' ) {
-           $scribdHeight = 420;
-           $scribdWidth = 520;
-        }
-        $office_text .= '<embed src="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" play="true" loop="true" scale="showall" wmode="opaque" devicefont="false" bgcolor="#ffffff" name="doc_' . $result['doc_id'] . '_object" menu="false" allowfullscreen="true" allowscriptaccess="always" salign="" type="application/x-shockwave-flash" align="middle" height="' . $scribdHeight . '" width="' . $scribdWidth . '"></embed>'.LF;
-
-//            $office_text .= '</object>'.LF;
-      }
-
-      $retour = $office_text;
       return $retour;
    }
 

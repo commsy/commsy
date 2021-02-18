@@ -3,10 +3,13 @@
 
 namespace App\Form\Type\Portal;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,14 +19,14 @@ class AuthLdapType extends AbstractType
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('typeChoice', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
                     'Shibboleth' => 'shib',
@@ -39,106 +42,73 @@ class AuthLdapType extends AbstractType
                     'formnovalidate' => '',
                 ],
                 'label' => 'Select',
-                'translation_domain' => 'portal',
                 'validation_groups' => false,
             ])
             ->add('title', TextType::class, [
                 'label' => 'Title',
-                'translation_domain' => 'portal',
                 'required' => true,
             ])
-            ->add('default', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
-                ],
-                'placeholder' => false,
-                'expanded' => true,
+            ->add('description', CKEditorType::class, [
+                'label' => 'Description',
+                'required' => false,
+                'config_name' => 'cs_mail_config',
+            ])
+            ->add('default', CheckboxType::class, [
                 'label' => 'Default',
-                'translation_domain' => 'portal',
                 'required' => false,
+                'help' => 'Pre select this authentication in the login box (deselect all others)'
             ])
-            ->add('available', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
-                ],
-                'placeholder' => false,
-                'expanded' => true,
+            ->add('enabled', CheckboxType::class, [
                 'label' => 'Available',
-                'translation_domain' => 'portal',
                 'required' => false,
             ])
-            ->add('serverAddress', TextType::class, [
-                'label' => 'Server',
-                'required' => true,
-                'translation_domain' => 'portal',
-            ])
-            ->add('userIdLdapField', TextType::class, [
-                'label' => 'UserID (LDAP field)',
-                'required' => true,
-                'translation_domain' => 'portal',
-                'help' => 'In which field are UserID Ldap stored? (samaccountname)',
-            ])
-            ->add('path', TextType::class, [
-                'label' => 'Path name',
-                'required' => true,
-                'translation_domain' => 'portal',
-                'help' => 'Reading rights path',
-            ])
-            ->add('userName', TextType::class, [
-                'label' => 'User name',
-                'required' => true,
-                'translation_domain' => 'portal',
-            ])
-            ->add('password', TextType::class, [
-                'label' => 'Password',
-                'required' => true,
-                'translation_domain' => 'portal',
-            ])
-            ->add('encryption', ChoiceType::class, [
-                'choices' => [
-                    'None' => '1',
-                    'MD5' => '0'
+            ->add('serverUrl', UrlType::class, [
+                'attr' => [
+                    'placeholder' => 'ldaps://my-server:636',
                 ],
-                'placeholder' => false,
-                'expanded' => true,
-                'label' => 'Encryption',
-                'translation_domain' => 'portal',
-                'required' => true,
-                'help' => 'Encryption of the passwords'
+                'label' => 'Server URL',
+                'help' => 'ldaps://example.org',
+                'default_protocol' => 'ldaps://',
             ])
-            ->add('contactTelephone', TextType::class, [
-                'label' => 'Contact telephone',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('contactMail', TextType::class, [
-                'label' => 'Contact mail',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('changePasswordURL', TextType::class, [
-                'label' => 'URL for changing a password',
-                'required' => false,
-                'translation_domain' => 'portal',
-            ])
-            ->add('userMayCreateRooms', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
+            ->add('uidKey', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'sAMAccountName',
                 ],
-                'placeholder' => false,
-                'expanded' => true,
+                'label' => 'UID Key: Username',
+                'help' => 'The entry’s key to use as its UID.',
+            ])
+            ->add('baseDn', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'dc=example,dc=com',
+                ],
+                'label' => 'Base DN',
+                'help' => 'The base DN for the directory.',
+            ])
+            ->add('searchDn', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'cn=read-only-admin,dc=example,dc=com',
+                ],
+                'label' => 'Search DN',
+                'help' => 'The read-only user’s DN, which will be used to authenticate against the LDAP server to fetch the user’s information.',
+            ])
+            ->add('searchPassword', TextType::class, [
+                'label' => 'Search Password',
+                'help' => 'The read-only user’s password, which will be used to authenticate against the LDAP server to fetch the user’s information.',
+            ])
+            ->add('authDn', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'uid={username},dc=example,dc=com',
+                ],
+                'label' => 'Auth DN',
+                'help' => 'This key defines the form of the string used to compose the DN of the user, from the username. The {username} string is replaced by the actual username of the person trying to authenticate.',
+            ])
+            ->add('createRoom', CheckboxType::class, [
                 'label' => 'Users may create rooms',
-                'translation_domain' => 'portal',
                 'required' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save',
-                'translation_domain' => 'portal',
-            ])
-        ;
+            ]);
     }
 
     /**
@@ -150,9 +120,6 @@ class AuthLdapType extends AbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'portal',
-            'attr' => [
-                'novalidate' => 'novalidate',
-            ]
         ]);
     }
 }

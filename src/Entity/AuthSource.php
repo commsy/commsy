@@ -171,7 +171,7 @@ abstract class AuthSource
      * @param string $description
      * @return self
      */
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
