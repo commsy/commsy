@@ -51,6 +51,14 @@ class AuthSourceLdap extends AuthSource
      */
     private $searchPassword;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=50, nullable=false)
+     * @Assert\Length(max=50)
+     */
+    private $authDn;
+
     public function __construct()
     {
         $this->addAccount = false;
@@ -152,6 +160,24 @@ class AuthSourceLdap extends AuthSource
     public function setSearchPassword(string $searchPassword): self
     {
         $this->searchPassword = $searchPassword;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthDn(): ?string
+    {
+        return $this->authDn;
+    }
+
+    /**
+     * @param string $authDn
+     * @return self
+     */
+    public function setAuthDn(string $authDn): self
+    {
+        $this->authDn = $authDn;
         return $this;
     }
 }
