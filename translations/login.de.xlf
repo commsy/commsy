@@ -74,6 +74,10 @@
                 <source>login.guest_login</source>
                 <target>Ohne Login fortfahren</target>
             </trans-unit>
+            <trans-unit id="login_password_reset_help">
+                <source>login.password_reset_help</source>
+                <target>Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
