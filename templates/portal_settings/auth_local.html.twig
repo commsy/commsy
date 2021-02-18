@@ -16,21 +16,14 @@
             {{ form_row(form.typeChoice) }}
             {{ form_row(form.type) }}
             <hr />
+            {{ form_row(form.enabled) }}
             {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
             {{ form_row(form.default) }}
-            {{ form_row(form.available) }}
             <hr />
-            {{ form_row(form.changeUserID) }}
-            {{ form_row(form.changeIdentification) }}
-            {{ form_row(form.changePassword) }}
-            {{ form_row(form.createIdentifiaction) }}
-            {{ form_row(form.deleteIdentifiaction) }}
+            {{ form_row(form.mailRegex) }}
             <hr />
-            {{ form_row(form.mailRegEx) }}
-            <hr />
-            <a href="{{ path('app_portalsettings_translations', { 'portalId': portal.id }) }}" class="data-uk-button">{{'Error configuration'|trans({},'portal') }}</a>
-            <hr />
-            {{ form_row(form.userMayCreateRooms) }}
+            {{ form_row(form.createRoom) }}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}
