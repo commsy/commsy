@@ -43,7 +43,7 @@ class AuthSourceLdap extends AuthSource
      */
     private $searchDn;
 
-    /**
+    /**authsourcelda
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=false)

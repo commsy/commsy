@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Entity\Account;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
@@ -267,7 +268,11 @@ class MailAssistant
         return $message;
     }
 
-    public function getSwitftMailForPasswordForgottenMail($subject, $body, $item): \Swift_Message
+    public function getSwitftMailForPasswordForgottenMail(
+        string $subject,
+        string $body,
+        Account $account
+    ): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -277,10 +282,9 @@ class MailAssistant
             'bcc' => [],
         ];
 
-        $recipients['to'][$item->getEmail()] = $item->getFullName();
+        $recipients['to'][$account->getEmail()] = $account->getFirstname() . ' ' . $account->getLastname();
 
         $to = $recipients['to'];
-        $toBCC = $recipients['bcc'];
 
         $replyTo = [];
         $currentUserEmail = $currentUser->getEmail();

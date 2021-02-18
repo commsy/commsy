@@ -4,26 +4,32 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
-use App\Form\Type\PasswordForgottenNewPasswordType;
-use App\Form\Type\PasswordForgottenStateUserIdType;
+use App\Form\Model\LocalAccount;
+use App\Form\Type\PasswordChangeType;
+use App\Form\Type\RequestPasswordResetType;
+use App\Model\Password;
+use App\Model\ResetPasswordToken;
+use App\Security\AbstractCommsyGuardAuthenticator;
 use App\Services\LegacyEnvironment;
 use App\Utils\MailAssistant;
 use App\Utils\UserService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use App\Security\AbstractCommsyGuardAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use function PHPUnit\Framework\throwException;
 
 
 class SecurityController extends AbstractController
@@ -100,90 +106,88 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/passwordforgottenuserid/{context}", name="app_password_forgotten_userid")
+     * @Route("/login/{portalId}/request_password_reset")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @Template
      * @param Request $request
      */
-    public function passwordForgottenStateUserID(
+    public function requestPasswordReset(
+        Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         \Swift_Mailer $mailer,
-        UserService $userService,
-        TranslatorInterface $translatorInt,
-        string $context
+        RouterInterface $router
     ) {
-        $form = $this->createForm(PasswordForgottenStateUserIdType::class, [], [
-        ]);
+        $localAccount = new LocalAccount($portal->getId());
+        $form = $this->createForm(RequestPasswordResetType::class, $localAccount);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $clickedButtonName = $form->getClickedButton()->getName();
 
-            if ($form->getClickedButton()->getName() === 'cancel') {
+            if ($clickedButtonName === 'cancel') {
                 return $this->redirectToRoute('app_login', [
-                    'context' => $context,
+                    'context' => $portal->getId(),
                 ]);
-            } elseif ($form->getClickedButton()->getName() === 'save') {
+            }
 
-                $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
-                $portalItem = $legacyEnvironment->getEnvironment()->getCurrentContextItem();
+            if ($clickedButtonName === 'submit') {
+                $localSource = $this->getDoctrine()->getRepository(AuthSourceLocal::class)
+                    ->findOneBy([
+                        'portal' => $localAccount->getContextId(),
+                        'enabled' => 1,
+                    ]);
+                $localAccount = $this->getDoctrine()->getRepository(Account::class)
+                    ->findOneByCredentials(
+                        $localAccount->getUsername(),
+                        $localAccount->getContextId(),
+                        $localSource
+                    );
 
-                $data = $form->getData();
-                $userLoginId = $data['userId'] ?? null;
+                $expiresAt = new \DateTime();
+                $expiresAt->add(new \DateInterval('PT15M'));
 
                 $session = $request->getSession();
-                if(!$session) {
-                    $session = new Session();
-                    $session->setId($userLoginId);
-                }
-                $this->passwordForgottenSessionCleanup($session);
-
-                $uuid = uniqid();
-                $session->set('uuid_password_forgotten', $uuid);
-
-                $now = date('Y-m-d H:i:s');
-                $session->set('password_forget_time', $now);
-                $session->set('user_login', $userLoginId);
-
-                if (isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
-                    $session->set('password_forget_ip', $_SERVER["SERVER_ADDR"]);
-                } else {
-                    $session->set('password_forget_ip', $_SERVER["HTTP_HOST"]);
+                if ($session->has('ResetPasswordToken')) {
+                    $session->remove('ResetPasswordToken');
                 }
 
-                if ($userLoginId == 'root') {
-                    $session->set('commsy_id', $_SERVER["SERVER_ADDR"]);
-                } else {
-                    $session->set('commsy_id', $legacyEnvironment->getEnvironment()->getCurrentContextID());
-                }
+                $resetPasswordToken = new ResetPasswordToken(
+                    uniqid(),
+                    $expiresAt,
+                    $localAccount,
+                    $request->getClientIp()
+                );
+                $session->set('ResetPasswordToken', $resetPasswordToken);
 
-                if (!$userLoginId) {
-                    $translator->getMessage();
-                    $form->get('userId')->addError(new FormError($translatorInt->trans('login unknown')));
-                    return [
-                        'form' => $form->createView(),
-                    ];
-                }
+                $resetUrl = $router->generate('app_security_passwordreset', [
+                    'portalId' => $portal->getId(),
+                    'token' => $resetPasswordToken->getToken(),
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                $users = $userService->getUserFromLogin($userLoginId);
-                if (empty($users)) {
-                    $form->get('userId')->addError(new FormError($translatorInt->trans('login unknown')));
-                } else {
-                    $url = 'http://' . $_SERVER['HTTP_HOST']. '/login/' . $context .'/newpassword/'. $users[0]->getItemId() . '/' . $uuid;
-                    $session->set('user_id', $users[0]->getItemId());
-                    $subject = $translator->getMessage('USER_PASSWORD_MAIL_SUBJECT', $portalItem->getTitle());
-                    $body = $translator->getMessage('USER_PASSWORD_MAIL_BODY', $userLoginId, $portalItem->getTitle(), $url, '15');
+                /**
+                 * TODO: Refactor message creation, do not use legacy translator
+                 */
+                $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
+                $subject = $translator->getMessage('USER_PASSWORD_MAIL_SUBJECT', $portal->getTitle());
+                $body = $translator->getMessage(
+                    'USER_PASSWORD_MAIL_BODY',
+                    $resetPasswordToken->getAccount()->getUsername(),
+                    $portal->getTitle(),
+                    $resetUrl,
+                    '15'
+                );
 
-                    $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $users[0]);
-                    $mailer->send($message);
+                $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $localAccount);
+                $mailer->send($message);
 
-                    $mailSendMessage = $translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT');
-                    $this->addFlash('messageSuccess', str_replace('<br/>', '', $mailSendMessage));
+                $flashMessage = $translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT');
+                $this->addFlash('primary', str_replace('<br/>', '', $flashMessage));
 
-                    return $this->redirectToRoute('app_login', [
-                        'context' => $context,
-                    ]);
-                }
+                return $this->redirectToRoute('app_login', [
+                    'context' => $portal->getId(),
+                ]);
             }
         }
 
@@ -193,105 +197,82 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login/{context}/newpassword/{userid}/{uuid}", name="app_new_password")
+     * @Route("/login/{portalId}/password_reset/{token}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @Template
      * @param Request $request
      */
-    public function newPassword (
+    public function passwordReset(
+        Portal $portal,
+        string $token,
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         UserService $userService,
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder,
-        TranslatorInterface $translator,
-        string $context,
-        string $uuid,
-        int $userid
+        TranslatorInterface $translator
     ) {
-        $form = $this->createForm(PasswordForgottenNewPasswordType::class, [], [
-        ]);
+        $session = $request->getSession();
+        if (!$session->has('ResetPasswordToken')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        /** @var ResetPasswordToken $resetPasswordToken */
+        $resetPasswordToken = $session->get('ResetPasswordToken');
+
+        if ($token !== $resetPasswordToken->getToken()) {
+            // TODO: Form validation would be a better option
+            $session->remove('ResetPasswordToken');
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($request->getClientIp() !== $resetPasswordToken->getIp()) {
+            // TODO: Form validation would be a better option
+            $session->remove('ResetPasswordToken');
+            throw $this->createAccessDeniedException();
+        }
+
+        $now = new \DateTime();
+        if ($now > $resetPasswordToken->getExpiresAt()) {
+            // TODO: Form validation would be a better option
+            $session->remove('ResetPasswordToken');
+            throw $this->createAccessDeniedException();
+        }
+
+        $password = new Password();
+        $form = $this->createForm(PasswordChangeType::class, $password);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-
-            $session = $request->getSession();
-            if(!$session) {
-                $session = new Session();
-                $session->setId($userid);
-            }
-
-            // check uuid
-            $pwForgottenUuid = $session->get('uuid_password_forgotten');
-            if (!($pwForgottenUuid === $uuid)) {
-                //TODO: errors do not show...
-                $form->get('password')->addError(new FormError($translator->trans('The link expired.')));
-                $this->passwordForgottenSessionCleanup($session);
-                return [
-                    'form' => $form->createView(),
-                ];
-            }
-
-            // check IP
-            if (isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
-                $passwordForgottenIP = $_SERVER["SERVER_ADDR"];
-            } else {
-                $passwordForgottenIP = $_SERVER["HTTP_HOST"];
-            }
-            if (! $passwordForgottenIP === $session->get('password_forget_ip')) {
-                $form->get('password')->addError(new FormError($translator->trans('The link expired.')));
-                $this->passwordForgottenSessionCleanup($session);
-                return [
-                    'form' => $form->createView(),
-                ];
-            }
-
-            // check whether no more than 15 minutes have passed
-            $compareNow = date('Y-m-d H:i:s');
-            $pwForgottenNow = $session->get('password_forget_time');
-            if ((round(abs(strtotime($pwForgottenNow) - strtotime($compareNow)) / 60,2)) > 15) {
-                $form->get('password')->addError(new FormError($translator->trans('The link expired.')));
-                $this->passwordForgottenSessionCleanup($session);
-                return [
-                    'form' => $form->createView(),
-                ];
-            }
+            /** @var Account $accountFromToken */
+            $accountFromToken = $resetPasswordToken->getAccount();
 
             // update password
-            $submittedPassword = $data['password'];
-            $user = $userService->getUser($userid);
+            $localSource = $this->getDoctrine()->getRepository(AuthSourceLocal::class)
+                ->findOneBy([
+                    'portal' => $accountFromToken->getContextId(),
+                    'enabled' => 1,
+                ]);
+            /** @var Account $localAccount */
+            $localAccount = $this->getDoctrine()->getRepository(Account::class)
+                ->findOneByCredentials(
+                    $accountFromToken->getUsername(),
+                    $accountFromToken->getContextId(),
+                    $localSource
+                );
 
-            $accountRepo = $entityManager->getRepository(Account::class);
-            $authRepo = $entityManager->getRepository(AuthSource::class);
-            $authSource = $authRepo->find($user->getAuthSource());
-            try {
-                //TODO: findOneByCredentials broken? Returns null, even though all 3 parameters match.
-                $userPwUpdate = $accountRepo->findOneByCredentials($user->getEmail(), $user->getContextID(), $authSource);
-                if (!$userPwUpdate) {
-                    // fallback
-                    $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getEmail(), $user->getContextID());
-                }
-            } catch (Exception $exception) {
-                $form->get('password')->addError(new FormError($translator->trans('action error')));
-                return [
-                    'form' => $form->createView(),
-                ];
-            }
+            $localAccount->setPasswordMd5(null);
+            $localAccount->setPassword($passwordEncoder->encodePassword($localAccount, $password->getPassword()));
 
-            $userPwUpdate->setPasswordMd5(null);
-            $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPassword));
-
-            $entityManager->persist($userPwUpdate);
+            $entityManager->persist($localAccount);
             $entityManager->flush();
 
             // clean up session to prevent attackers from spoofing
-            $this->passwordForgottenSessionCleanup($session);
+            $session->remove('ResetPasswordToken');
 
-            $this->addFlash('passwordUpdated', true);
+//            $this->addFlash('primary', 'passwordUpdated');
 
             return $this->redirectToRoute('app_login', [
-                'context' => $context,
+                'context' => $portal->getId(),
             ]);
         }
 
@@ -299,14 +280,4 @@ class SecurityController extends AbstractController
             'form' => $form->createView(),
         ];
     }
-
-    private function passwordForgottenSessionCleanup(Session $session) {
-        $session->remove('uuid_password_forgotten');
-        $session->remove('user_id');
-        $session->remove('user_login');
-        $session->remove('password_forget_time');
-        $session->remove('password_forget_ip');
-        $session->remove('commsy_id');
-    }
-
 }

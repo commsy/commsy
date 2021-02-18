@@ -148,8 +148,10 @@ services:
             - '../src/DataFixtures/'
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/Form/Model/'
             - '../src/Kernel.php'
             - '../src/Mail/Messages/'
+            - '../src/Model/'
             - '../src/Proxy/'
             - '../src/Tests/'
 
