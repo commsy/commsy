@@ -1969,7 +1969,7 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
-	
+
 	public function getAllUserItemArray($uid){
 		$user = NULL;
 		$user_array = array();

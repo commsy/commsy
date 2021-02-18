@@ -2437,13 +2437,14 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $submittedPassword = $data['password'];
 
-            $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
-                $user->getContextID());
-            $userPwUpdate->setPasswordMd5(null);
-            $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPassword));
-
-            $entityManager->persist($userPwUpdate);
-            $entityManager->flush();
+            // TODO: THIS IS WRONG
+//            $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
+//                $user->getContextID());
+//            $userPwUpdate->setPasswordMd5(null);
+//            $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPassword));
+//
+//            $entityManager->persist($userPwUpdate);
+//            $entityManager->flush();
         }
 
         return [

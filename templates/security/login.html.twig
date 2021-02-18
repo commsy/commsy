@@ -28,10 +28,17 @@
         </div>
     {% endif %}
 
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="uk-alert-{{ label }}" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <div class="uk-grid-match uk-flex uk-flex-center" uk-grid>
-
         <div class="uk-width-large">
-
             <div class="uk-card uk-card-default uk-card-small">
                 {% if portal is not null %}
                     {% if portal.logoFilename is not empty %}
@@ -151,7 +158,7 @@
                                                 <div class="uk-margin uk-text-small">
                                                     <div class="uk-flex uk-flex-around">
                                                         <div class="">
-                                                            <a href="#">{{ 'login.forget_password'|trans({}, 'login') }}</a>
+                                                            <a href="{{ path('app_security_requestpasswordreset', { 'portalId': context }) }}">{{ 'login.forget_password'|trans({}, 'login') }}</a>
                                                         </div>
 
                                                         <div class="">
