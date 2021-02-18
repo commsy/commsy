@@ -33,8 +33,8 @@ use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AnnouncementsType;
-use App\Form\Type\Portal\AuthCommsyType;
 use App\Form\Type\Portal\AuthLdapType;
+use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\GeneralType;
@@ -400,91 +400,55 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      */
-    public function authCommsy(
+    public function authLocal(
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
     ) {
-        $defaultData = [
-            'typeChoice' => 'commsy',
-            'default' => 0,
-            'imsDefault' => 0,
-            'available' => 1,
-        ];
+        /*
+         * Try to find an existing local auth source or create an empty one. We assume
+         * that there is only one auth source per type.
+         */
+        $authSources = $portal->getAuthSources();
 
-        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
-        $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'commsy');
+        /** @var AuthSourceShibboleth $localSource */
+        $localSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceLocal;
+        })->first();
 
-        if (!is_null($existingAuthSources) && sizeof($existingAuthSources) > 0) {
-            $existingCommsySource = $existingCommsySource = $existingAuthSources[0];
-            if (is_null($existingCommsySource->getExtras())) {
-                $existingCommsySource->setExtras([]);
-            }
-
-            $defaultData['title'] = $existingCommsySource->getTitle();
-            $defaultData['default'] = $existingCommsySource->isDefault();
-            $defaultData['available'] = $existingCommsySource->getAvailable();
-            $defaultData['mailRegEx'] = $existingCommsySource->getMailRegEx();
-            $defaultData['default'] = $existingCommsySource->isDefault();
-            $defaultData['changeUserID'] = $existingCommsySource->isChangeUserID();
-            $defaultData['changeIdentification'] = $existingCommsySource->isChangeIdentification();
-            $defaultData['changePassword'] = $existingCommsySource->isChangePassword();
-            $defaultData['createIdentifiaction'] = $existingCommsySource->getCreateIdentification();
-            $defaultData['deleteIdentifiaction'] = $existingCommsySource->isDeleteAccount();
-            $defaultData['userMayCreateRooms'] = $existingCommsySource->getCreateRoom();
-
-            $existingCommsySource->setPortal($portal);
+        if ($localSource === false) {
+            // TODO: This could be moved to a creational pattern
+            $localSource = new AuthSourceLocal();
+            $localSource->setPortal($portal);
         }
 
-        $authCommsyForm = $this->createForm(AuthCommsyType::class, $defaultData);
-        $authCommsyForm->handleRequest($request);
+        $localForm = $this->createForm(AuthLocalType::class, $localSource);
+        $localForm->handleRequest($request);
 
-        if ($authCommsyForm->isSubmitted() && $authCommsyForm->isValid()) {
+        if ($localForm->isSubmitted() && $localForm->isValid()) {
             // handle switch to other auth types
-            $clickedButtonName = $authCommsyForm->getClickedButton()->getName();
+            $clickedButtonName = $localForm->getClickedButton()->getName();
             if ($clickedButtonName === 'type') {
-                $typeSwitch = $authCommsyForm->get('typeChoice')->getData();
+                $typeSwitch = $localForm->get('typeChoice')->getData();
                 return $this->generateRedirectForAuthType($typeSwitch, $portal);
             }
 
-            $formData = $authCommsyForm->getData();
-            if ($clickedButtonName == 'save') {
-                $newAuthSource = new AuthSourceLocal();
-                if ($existingAuthSources) {
-                    $newAuthSource = $existingAuthSources[0];
+            if ($clickedButtonName === 'save') {
+                if ($localSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $localSource->setDefault(true);
                 }
-                if (is_null($newAuthSource->getExtras())) {
-                    $newAuthSource->setExtras([]);
-                }
-                $newAuthSource->setTitle($formData['title']);
-                $newAuthSource->setDefault($formData['default']);
-                $newAuthSource->setAvailable($formData['available']);
-                $newAuthSource->setDefault($formData['default']);
-                $newAuthSource->setChangeUserID($formData['changeUserID']);
-                $newAuthSource->setChangeIdentification($formData['changeIdentification']);
-                $newAuthSource->setChangePassword($formData['changePassword']);
-                $newAuthSource->setCreateIdentification($formData['createIdentifiaction']);
-                $newAuthSource->setDeleteAccount($formData['deleteIdentifiaction']);
-                $newAuthSource->setCreateRoom($formData['userMayCreateRooms']);
-                $newAuthSource->setMailRegEx($formData['mailRegEx']);
 
-                $newAuthSource->setSourceOriginName('commsy');
-                $newAuthSource->setType('local');
-
-                $newAuthSource->setEnabled(true);
-                $newAuthSource->setAddAccount(false);
-                $newAuthSource->setChangeUsername(false);
-                $newAuthSource->setChangeUserdata(false);
-
-                $newAuthSource->setPortal($portal);
-
-                $entityManager->persist($newAuthSource);
+                $entityManager->persist($localSource);
                 $entityManager->flush();
             }
         }
 
         return [
-            'form' => $authCommsyForm->createView(),
+            'form' => $localForm->createView(),
             'portal' => $portal,
         ];
     }
@@ -2740,7 +2704,7 @@ class PortalSettingsController extends AbstractController
                 ]);
             default:
             case 'commsy':
-                return $this->redirectToRoute('app_portalsettings_authcommsy', [
+                return $this->redirectToRoute('app_portalsettings_authlocal', [
                     'portalId' => $portal->getId(),
                 ]);
         }

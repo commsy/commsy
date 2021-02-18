@@ -518,7 +518,7 @@ class MenuBuilder
             // auth source
             $menu->addChild('Auth', [
                 'label' => 'Auth',
-                'route' => 'app_portalsettings_authcommsy',
+                'route' => 'app_portalsettings_authlocal',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'credit-card']
             ])
