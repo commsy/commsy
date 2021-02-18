@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Entity\Account;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
@@ -262,6 +263,52 @@ class MailAssistant
             if (!empty($toBCC)) {
                 $message->setBcc($toBCC);
             }
+        }
+
+        return $message;
+    }
+
+    public function getSwitftMailForPasswordForgottenMail(
+        string $subject,
+        string $body,
+        Account $account
+    ): \Swift_Message
+    {
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
+        $recipients = [
+            'to' => [],
+            'bcc' => [],
+        ];
+
+        $recipients['to'][$account->getEmail()] = $account->getFirstname() . ' ' . $account->getLastname();
+
+        $to = $recipients['to'];
+
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        $currentUserName = $currentUser->getFullName();
+        if ($currentUser->isEmailVisible()) {
+            $replyTo[$currentUserEmail] = $currentUserName;
+        }
+
+        $portalTitle = "A title";
+        if ($portalItem) {
+            $portalTitle = $portalItem->getTitle();
+        }
+
+        $from = 'noreply@commsy.net';
+        $commsyTeam = 'CommSy Team';
+        $replyTo['noreply@commsy.net'] = 'CommSy Team';
+        $message = (new \Swift_Message())
+            ->setSubject($subject)
+            ->setBody($body, 'text/html')
+            ->setReplyTo([$from => $commsyTeam])
+            ->setFrom([$from => $portalTitle]);
+
+        if (!empty($to)) {
+            $message->setTo($to);
         }
 
         return $message;

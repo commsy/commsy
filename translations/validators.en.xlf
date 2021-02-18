@@ -128,6 +128,12 @@
                 <source>A category can only be used once per portfolio.</source>
                 <target>A category can only be used once per portfolio.</target>
             </trans-unit>
+
+            <!-- password reset -->
+            <trans-unit id="violation_local_account_not_found">
+                <source>login unknown</source>
+                <target>Login ID unknown</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
