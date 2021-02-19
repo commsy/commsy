@@ -27,7 +27,7 @@ class ItemDescriptionType extends AbstractType
     {
         $builder
             ->add('description', CKEditorType::class, [
-                'config_name' => 'cs_item_config',
+                'config_name' => $options['configName'],
                 'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Description',
@@ -94,7 +94,7 @@ class ItemDescriptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId', 'uploadUrl', 'filelistUrl'])
+            ->setRequired(['itemId', 'configName', 'uploadUrl', 'filelistUrl'])
             ->setDefaults(['translation_domain' => 'form'])
         ;
     }
