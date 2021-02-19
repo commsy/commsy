@@ -16,6 +16,7 @@ use App\Search\FilterConditions\RubricFilterCondition;
 use App\Search\FilterConditions\SingleContextFilterCondition;
 use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
@@ -34,6 +35,7 @@ use App\Model\SearchData;
 use App\Filter\SearchFilterType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -44,6 +46,34 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SearchController extends BaseController
 {
+    /**
+     * @var ItemService
+     */
+    private $itemService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $router;
+
+    /**
+     * SearchController constructor.
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @param TranslatorInterface $translator
+     * @param UrlGeneratorInterface $router
+     */
+    public function __construct(RoomService $roomService, ItemService $itemService, TranslatorInterface $translator, UrlGeneratorInterface $router )
+    {
+        parent::__construct($roomService);
+        $this->itemService = $itemService;
+        $this->translator = $translator;
+        $this->router = $router;
+    }
+
     /**
      * Generates the search form and search field for embedding them into
      * a template.
@@ -710,7 +740,6 @@ class SearchController extends BaseController
         int $offset = 0,
         bool $json = false
     ) {
-        $itemService = $this->get('commsy_legacy.item_service');
 
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
@@ -723,10 +752,7 @@ class SearchController extends BaseController
             }
 
             if ($json) {
-                $translator = $this->get('translator');
-                $router = $this->container->get('router');
-
-                // construct target url
+                               // construct target url
                 $url = '#';
 
                 if ($type == 'room') {
@@ -737,7 +763,7 @@ class SearchController extends BaseController
                 }
 
                 $routeName = 'app_' . $type . '_detail';
-                if ($router->getRouteCollection()->get($routeName)) {
+                if ($this->router->getRouteCollection()->get($routeName)) {
                     $url = $this->generateUrl($routeName, [
                         'roomId' => $roomId,
                         'itemId' => $searchResult->getItemId(),
@@ -756,7 +782,7 @@ class SearchController extends BaseController
 
                 $results[] = [
                     'title' => $title,
-                    'text' => $translator->transChoice(ucfirst($type), 0, [], 'rubric'),
+                    'text' => $this->translator->trans(ucfirst($type),  [], 'rubric'),
                     'url' => $url,
                     'value' => $searchResult->getItemId(),
                 ];
@@ -776,7 +802,7 @@ class SearchController extends BaseController
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
                     'routeName' => 'app_' . $type . '_detail',
-                    'files' => $itemService->getItemFileList($searchResult->getItemId()),
+                    'files' => $this->itemService->getItemFileList($searchResult->getItemId()),
                     'type' => $type,
                     'status' => $status,
                 ];
