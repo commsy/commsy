@@ -1092,19 +1092,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
      }
   }
 
-    /**
-     * @param $value
-     * @param $databaseField
-     * @param false $isString
-     * @return string
-     */
-  function returnQuerySentenceIfFieldIsValid($value, $databaseField, $isString=false): string {
-      if(!is_null($value) && $value !== ""){
-          $doubleQuotes = $isString ? '"' : '';
-          return sprintf("%s=%s%s%s,", $databaseField, $doubleQuotes, $value, $doubleQuotes);
-      }
-      return '';
-  }
+
 
   /** save a commsy item
     * this method saves a commsy item
