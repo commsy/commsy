@@ -32,10 +32,11 @@ class ItemDescriptionType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Description',
                     'class' => 'uk-form-width-large ckeditor-upload',
-                    'data-cs-uploadurl' => '{"path": "' . $options['uploadUrl'] . '"}',
                     'data-cs-filelisturl' => '{"path": "' . $options['filelistUrl'] . '"}'
                 ],
                 'config' => [
+                    // NOTE: the form-based editor upload method has to be set explicitly, since CKEditor >=4.9.0 uses 'xhr'
+                    // as its default upload method; see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html
                     'filebrowserUploadMethod' => 'form',
                     'filebrowserUploadUrl' => $options['uploadUrl'],
                 ],
