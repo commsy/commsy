@@ -10,9 +10,11 @@ namespace App\Controller;
 
 
 use App\Entity\RoomPrivat;
+use App\Security\Authorization\Voter\GuestVoter;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -44,9 +46,12 @@ class HelperController extends AbstractController
         }
     }
 
+//* @Security("is_granted('GUEST') or is_granted('IS_AUTHENTICATED_REMEMBERED')")
+// @IsGranted("GUEST")
+
     /**
      * @Route("/portal/{context}/enter")
-     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
+     * @Security("is_granted('GUEST') or is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function portalEnter(
         EntityManagerInterface $entityManager,
@@ -72,6 +77,13 @@ class HelperController extends AbstractController
                     ]);
                 }
             }
+        }
+
+        // Guests will be redirected to all rooms list.
+        if ($context !== 'server' && $this->isGranted(GuestVoter::GUEST)) {
+            return $this->redirectToRoute('app_room_listall', [
+                'roomId' => $context,
+            ]);
         }
 
         // If we don't get a valid user, redirect to the list of all portals

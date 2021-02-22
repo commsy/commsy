@@ -55,19 +55,29 @@
                         {% if portal is not null %}
                             {% for authSource in portal.authSources %}
                                 {% if authSource.enabled %}
-                                    <li class="{% if (lastSource is not defined and authSource.default) or (authSource.type is same as lastSource) %}uk-active{% endif %}">
-                                        <a href="">
-                                            {{ authSource.title }}
-                                        </a>
-                                    </li>
+                                    {% if authSource.type is same as('guest') %}
+                                        {% if portal.isOpenForGuests and authSource.guestsMayEnter %}
+                                            <li class="{% if (lastSource is not defined and authSource.default) or (authSource.type is same as lastSource) %}uk-active{% endif %}">
+                                                <a href="">
+                                                    {{ authSource.title }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li class="{% if (lastSource is not defined and authSource.default) or (authSource.type is same as lastSource) %}uk-active{% endif %}">
+                                            <a href="">
+                                                {{ authSource.title }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
                                 {% endif %}
                             {% endfor %}
 
-                            {% if portal.isOpenForGuests %}
-                                <li>
-                                    <a href="">{{ 'login.guest_tab'|trans({}, 'login') }}</a>
-                                </li>
-                            {% endif %}
+{#                            {% if portal.isOpenForGuests %}#}
+{#                                <li>#}
+{#                                    <a href="">{{ 'login.guest_tab'|trans({}, 'login') }}</a>#}
+{#                                </li>#}
+{#                            {% endif %}#}
                         {% else %}
                             <li class="uk-active">
                                 <a href="">Admin</a>
@@ -249,18 +259,38 @@
                                 {% endif %}
                             {% endfor %}
 
-                            <!-- Gast -->
-                            {% if portal.isOpenForGuests %}
-                                <div>
-                                    <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>
 
-                                    <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {
-                                        'context': portal.id
-                                    }) }}">
-                                        {{ 'login.guest_login'|trans({}, 'login') }}
-                                    </a>
-                                </div>
+                            <!-- Gast -->
+                            {% if portal is not null %}
+                                {% for authSource in portal.authSources %}
+                                    {% if authSource.enabled %}
+                                        {% if authSource.type is same as('guest') %}
+                                            {% if portal.isOpenForGuests and authSource.guestsMayEnter%}
+                                                <div>
+                                                    <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>
+
+                                                    <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {
+                                                        'context': portal.id
+                                                    }) }}">
+                                                        {{ 'login.guest_login'|trans({}, 'login') }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
                             {% endif %}
+
+{#                                <div>#}
+{#                                    <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>#}
+
+{#                                    <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {#}
+{#                                        'context': portal.id#}
+{#                                    }) }}">#}
+{#                                        {{ 'login.guest_login'|trans({}, 'login') }}#}
+{#                                    </a>#}
+{#                                </div>#}
+{#                            {% endif %}#}
 
                         {% else %}
                             <!-- Admin -->

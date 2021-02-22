@@ -368,6 +368,8 @@ class RoomController extends AbstractController
      * })
      * @Template()
      *
+     * @Security("is_granted('GUEST') or is_granted('IS_AUTHENTICATED_REMEMBERED')")
+     *
      * @param Request $request [description]
      * @param RoomService $roomService
      * @param FilterBuilderUpdater $filterBuilderUpdater
