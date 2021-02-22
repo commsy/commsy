@@ -1319,6 +1319,10 @@
                 <source>Please including delimiter and modifier</source>
                 <target>Please including delimiter and modifier</target>
             </trans-unit>
+            <trans-unit id="guests_may_enter">
+                <source>Guests may enter</source>
+                <target>Guests may enter the list of all workspaces</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
