@@ -17,6 +17,19 @@ class AccountsRepository extends ServiceEntityRepository
     }
 
     /**
+     * IMPORTANT: DO NOT DELETE!
+     * This is used by the UniqueEntity annotation in App\Entity\Account.
+     *
+     * @param array $fields
+     * @return Account|mixed
+     * @throws NonUniqueResultException
+     */
+    public function findOnByCredentials(array $fields)
+    {
+        return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);
+    }
+
+    /**
      * @param string $username
      * @param int $context
      * @param int $authSourceId
