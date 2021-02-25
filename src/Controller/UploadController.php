@@ -180,8 +180,6 @@ class UploadController extends Controller
          * routes. Instead we default to -1.
          */
 
-        $legacyEnvironment = $legacyEnvironment->getEnvironment();
-
         // get item
         $item = $itemService->getTypedItem($itemId, $versionId === -1 ? null : $versionId);
 
@@ -206,11 +204,6 @@ class UploadController extends Controller
             $assignedFiles['files'][] = $formFile;
         }
 
-        // max upload size
-        $currentContextItem = $legacyEnvironment->getCurrentContextItem();
-        $maxUploadSizeInBytes = $currentContextItem->getMaxUploadSizeInBytes();
-        $maxUploadSizeInMegabytes = round($maxUploadSizeInBytes / 1048576);
-
         if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item->getLinkedItem()));
         } else {
@@ -222,7 +215,6 @@ class UploadController extends Controller
                 'roomId' => $roomId,
                 'itemId' => $itemId
             ]),
-            'maxUploadSize' => $maxUploadSizeInMegabytes,
         ]);
 
         $form->handleRequest($request);
@@ -243,6 +235,7 @@ class UploadController extends Controller
                 }
 
                 // update item
+                $legacyEnvironment = $legacyEnvironment->getEnvironment();
                 $item->setFileIDArray($checkedFileIds);
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
