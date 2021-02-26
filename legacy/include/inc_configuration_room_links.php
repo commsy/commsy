@@ -215,8 +215,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item->setParameter(array());
       $room_link_list->add($link_item);
    }
-   
-   if ($environment->inPortal()){
+
+// portal- and room-specific upload file size limits are currently not supported
+/*   if ($environment->inPortal()){
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('CONFIGURATION_PORTAL_UPLOAD'));
       $link_item->setDescription($translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_DESC'));
@@ -227,7 +228,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item->setParameter(array());
       $room_link_list->add($link_item);
       unset($link_item);
-   }
+   }*/
 
    $room_link_list->sortby('title');
 ?>
