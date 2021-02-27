@@ -752,7 +752,7 @@ class SearchController extends BaseController
             }
 
             if ($json) {
-                               // construct target url
+                // construct target url
                 $url = '#';
 
                 if ($type == 'room') {
@@ -782,7 +782,7 @@ class SearchController extends BaseController
 
                 $results[] = [
                     'title' => $title,
-                    'text' => $this->translator->trans(ucfirst($type),  [], 'rubric'),
+                    'text' => $this->translator->trans(ucfirst($type),  ['count' => 0], 'rubric'),
                     'url' => $url,
                     'value' => $searchResult->getItemId(),
                 ];
