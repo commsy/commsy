@@ -43,7 +43,7 @@
     "ts-loader": "^5.3.0",
     "typescript": "^3.5.3",
     "uikit": "^2.27.4",
-    "urijs": "^1.18.10",
+    "urijs": "^1.19.6",
     "video.js": "^5.19.2",
     "webpack-notifier": "^1.8.0"
   },
