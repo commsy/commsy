@@ -305,7 +305,7 @@ This is no bug, the process of compiling the required information is quite deman
 $message["CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_DESC"]["en"] = "Select and configure the elemants of the home / notice board page.";
 $message["CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE"]["en"] = "Configure home / notice board page.";
 $message["CONFIGURATION_PRIVATEROOM_HOME_WEEKLY"]["en"] = "days";
-$message["CONFIGURATION_PRIVATEROOM_LINK"]["en"] = "Private Raum";
+$message["CONFIGURATION_PRIVATEROOM_LINK"]["en"] = "My stack";
 $message["CONFIGURATION_PRIVATEROOM_LINK_OFF"]["en"] = "only available at other room memberships";
 $message["CONFIGURATION_PRIVATEROOM_LINK_ON"]["en"] = "always on (default)";
 $message["CONFIGURATION_PROJECTROOM_LINK"]["en"] = "associating <br/>
