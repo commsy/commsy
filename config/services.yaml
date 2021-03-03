@@ -944,17 +944,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # Form type extensions
-    commsy.form.extension.upload_file_type:
-        class: App\Form\Extension\UploadFileTypeExtension
-        tags:
-            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType, priority: 1 }
-
-    commsy.form.extension.image_type:
-        class: App\Form\Extension\ImageTypeExtension
-        tags:
-            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType, priority: 0 }
-
     # Controller
     commsy.item_controller:
         class: App\Controller\ItemController
