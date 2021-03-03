@@ -81,6 +81,9 @@
                                                         "search_filter[selectedRubric]": searchData.selectedRubric,
                                                     }
                                                     %}
+                                                    {% if searchData.selectedRubric is same as('todo') %}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[selectedTodoStatus]": searchData.selectedTodoStatus }) %}
+                                                    {% endif %}
                                                     {% for hashtag in searchData.selectedHashtags %}
                                                         {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
                                                         {% set val = searchData.selectedHashtags[loop.index0] %}
@@ -151,25 +154,26 @@
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
                                 "target": "#search-feed",
                                 "query": {
-                                    "search[phrase]": "{{ searchData.phrase }}",
-                                    "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
-                                    "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
-                                    "search[selectedReadStatus]": "{{ searchData.selectedReadStatus }}",
-                                    "search[selectedCreator]": "{{ searchData.selectedCreator }}",
-                                    "search[selectedContext]": "{{ searchData.selectedContext }}",
+                                    "search_filter[phrase]": "{{ searchData.phrase }}",
+                                    "search_filter[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
+                                    "search_filter[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
+                                    "search_filter[selectedReadStatus]": "{{ searchData.selectedReadStatus }}",
+                                    "search_filter[selectedCreator]": "{{ searchData.selectedCreator }}",
+                                    "search_filter[selectedContext]": "{{ searchData.selectedContext }}",
                                     {% for hashtag in searchData.selectedHashtags -%}
-                                    "search[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
+                                    "search_filter[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
                                     {%- endfor %}
 
                                     {% for category in searchData.selectedCategories -%}
-                                        "search[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
+                                        "search_filter[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
                                     {%- endfor %}
 
-                                    "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
-                                    "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
-                                    "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
-                                    "search[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
-                                    "search[selectedRubric]": "{{ searchData.selectedRubric }}"
+                                    "search_filter[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
+                                    "search_filter[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
+                                    "search_filter[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
+                                    "search_filter[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
+                                    "search_filter[selectedRubric]": "{{ searchData.selectedRubric }}",
+                                    "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0  }}"
                                 }
                         }'>
                             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
