@@ -49,7 +49,7 @@ $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";
 $message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["de"] = "Hallo %1,
 
-der Upload per E-Mail in Ihren persönlichen Raum war leider nicht erfolgreich.
+der Upload per E-Mail in Ihre Ablage war leider nicht erfolgreich.
 
 Bitte überprüfen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennwort mit folgender Zeile angegeben haben:
 
