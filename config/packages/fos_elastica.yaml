@@ -73,6 +73,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -152,6 +159,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -234,6 +248,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
                         contextId:
                             type: integer
                         creator:
@@ -321,6 +342,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -435,6 +463,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -534,6 +569,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         userId:
                             type: text
                         contextId:
@@ -560,6 +602,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         versionId:
                             type: integer
                         contextId:

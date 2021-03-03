@@ -24,9 +24,6 @@
 
                 <div id="list-filter" class="uk-hidden-small">
                     {{ form_start(filterForm) }}
-                    {# visually separate the first form field from the rest (since it expands the search results instead of restricting them) #}
-                    {{ form_row(filterForm.all_rooms) }}
-                    <hr/>
                     {{ form_end(filterForm) }}
                 </div>
             </div>
@@ -74,7 +71,9 @@
                                                         'search_filter[phrase]': searchData.phrase,
                                                         'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
                                                         "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
+                                                        "search_filter[selectedReadStatus]": searchData.selectedReadStatus,
                                                         "search_filter[selectedCreator]": searchData.selectedCreator,
+                                                        "search_filter[selectedContext]": searchData.selectedContext,
                                                         "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
                                                         "search_filter[creation_date_range][right_date]": searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '',
                                                         "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
@@ -82,11 +81,6 @@
                                                         "search_filter[selectedRubric]": searchData.selectedRubric,
                                                     }
                                                     %}
-                                                    {% if searchData.allRooms %}
-                                                        {# NOTE: for allRooms==false, the param must be left out entirely, otherwise the corresponding checkbox in
-                                                           the search filter form will get marked when handleRequest() gets called for the SearchFilterType form #}
-                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[all_rooms]": 1 }) %}
-                                                    {% endif %}
                                                     {% for hashtag in searchData.selectedHashtags %}
                                                         {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
                                                         {% set val = searchData.selectedHashtags[loop.index0] %}
@@ -158,10 +152,11 @@
                                 "target": "#search-feed",
                                 "query": {
                                     "search[phrase]": "{{ searchData.phrase }}",
-                                    "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
                                     "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
                                     "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
+                                    "search[selectedReadStatus]": "{{ searchData.selectedReadStatus }}",
                                     "search[selectedCreator]": "{{ searchData.selectedCreator }}",
+                                    "search[selectedContext]": "{{ searchData.selectedContext }}",
                                     {% for hashtag in searchData.selectedHashtags -%}
                                     "search[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
                                     {%- endfor %}
