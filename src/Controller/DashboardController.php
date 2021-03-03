@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\SavedSearch;
+use App\Form\Type\MyViewsType;
+use App\Model\SearchData;
+use App\Services\LegacyEnvironment;
 use App\Services\ReaderService;
 use App\Services\UserService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -194,6 +199,54 @@ class DashboardController extends Controller
     {
         return array(
         );
+    }
+
+    /**
+     * @Route("/dashboard/{roomId}/myviews")
+     * @Template()
+     */
+    public function myViewsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment)
+    {
+        $searchData = new SearchData();
+
+        // get the current user's saved searches
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(SavedSearch::class);
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+
+        $savedSearches = $repository->findByAccountId($portalUserId);
+        $searchData->setSavedSearches($savedSearches);
+
+        $myViewsForm = $this->createForm(MyViewsType::class, $searchData, [
+            'action' => $this->generateUrl('app_dashboard_myviews', [
+                'roomId' => $roomId,
+            ])
+        ]);
+        $myViewsForm->handleRequest($request);
+
+        if ($myViewsForm->isSubmitted() && $myViewsForm->isValid()) {
+
+            $savedSearch = $searchData->getSelectedSavedSearch();
+
+            if ($savedSearch) {
+                $savedSearchURL = $savedSearch->getSearchUrl();
+                if ($savedSearchURL) {
+                    // redirect to the search_url stored for the chosen saved search
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+
+                    return $redirectResponse;
+                }
+            } else {
+                return $this->redirectToRoute('app_search_results', [
+                    'roomId' => $roomId,
+                ]);
+            }
+        }
+
+        return [
+            'myViewsForm' => $myViewsForm->createView(),
+        ];
     }
     
     /**
