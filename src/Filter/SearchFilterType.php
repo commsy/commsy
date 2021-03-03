@@ -1,23 +1,30 @@
 <?php
 namespace App\Filter;
 
+use App\Entity\SavedSearch;
 use App\EventSubscriber\ChosenRubricSubscriber;
 use App\Form\Type\Custom\Select2ChoiceType;
-use App\Form\Type\Event\AddContextFieldListener;
 use App\Model\SearchData;
 use App\Search\SearchManager;
 use App\Utils\ReaderService;
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-
-use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface $translator
+     */
+    private $translator;
+
     private $searchManager;
 
     public function __construct(TranslatorInterface $translator, SearchManager $searchManager)
@@ -40,10 +47,65 @@ class SearchFilterType extends AbstractType
         $searchData = $builder->getData();
 
         $builder
-            /**
-             * Since this form uses the same data class as the global search form, it is important to keep the field
-             * name of the search query phrase identical
-             */
+            ->add('selectedSavedSearch', EntityType::class, [
+                'attr' => [
+                    'onchange' => "document.getElementById('search_filter_load').click()",
+                ],
+                'class' => SavedSearch::class,
+                'choices' => $searchData->getSavedSearches() ?? [],
+                'choice_label' => 'title',
+                'label' => 'My view',
+                'required' => false,
+                'placeholder' => 'New view',
+            ])
+            // due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
+            // clicking the "Save" button will require a non-empty title (which does not only consist of whitespace)
+            ->add('selectedSavedSearchTitle', Types\TextType::class, [
+                'attr' => [
+                    'class' => 'cs-form-horizontal-full-width',
+                ],
+                'label' => 'Title',
+                'required' => false,
+            ])
+            ->add('save', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+                'label' => 'save',
+                'translation_domain' => 'form',
+                'validation_groups' => 'save',
+            ])
+
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+                /** @var SearchData $searchData */
+                $searchData = $event->getData();
+                $form = $event->getForm();
+
+                $selectedSavedSearch = $searchData->getSelectedSavedSearch();
+                if ($selectedSavedSearch) {
+                    $form->add('delete', Types\SubmitType::class, [
+                        'attr' => [
+                            'class' => 'uk-button-danger',
+                        ],
+                        'label' => 'Delete',
+                        'translation_domain' => 'form',
+                        'validation_groups' => false,
+                    ]);
+                }
+            })
+
+            // the hidden `load` button will be clicked automatically when a saved search is selected from the
+            // `selectedSavedSearch` dropdown
+            ->add('load', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-hidden',
+                ],
+                'label' => 'load',
+                'translation_domain' => 'form',
+                'validation_groups' => 'false',
+            ])
+            // since this form uses the same data class as the global search form, it is important to keep the field
+            // name of the search query phrase identical
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])

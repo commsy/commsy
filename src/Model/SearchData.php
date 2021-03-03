@@ -1,8 +1,27 @@
 <?php
 namespace App\Model;
 
+use App\Entity\SavedSearch;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class SearchData
 {
+    /**
+     * @var SavedSearch|null $selectedSavedSearch the currently selected saved search (aka "view")
+     */
+    private $selectedSavedSearch;
+
+    /**
+     * @var string|null
+     * @Assert\NotBlank(normalizer="trim", groups={"save"})
+     */
+    private $selectedSavedSearchTitle;
+
+    /**
+     * @var SavedSearch[]|null $savedSearches array of all saved searches belonging to the current user's account
+     */
+    private $savedSearches;
+
     /**
      * @var string|null
      */
@@ -102,6 +121,71 @@ class SearchData
      * @var \DateTime|null $modificationDateUntil
      */
     private $modificationDateUntil;
+
+    /**
+     * @return SavedSearch|null
+     */
+    public function getSelectedSavedSearch(): ?SavedSearch
+    {
+        return $this->selectedSavedSearch;
+    }
+
+    /**
+     * @param SavedSearch|null $selectedSavedSearch
+     * @return SearchData
+     */
+    public function setSelectedSavedSearch(?SavedSearch $selectedSavedSearch): SearchData
+    {
+        $this->selectedSavedSearch = $selectedSavedSearch;
+        return $this;
+    }
+
+    /**
+     * @return SavedSearch[]|null
+     */
+    public function getSavedSearches(): ?array
+    {
+        return $this->savedSearches;
+    }
+
+    /**
+     * @param SavedSearch[]|null $savedSearches
+     * @return SearchData
+     */
+    public function setSavedSearches(?array $savedSearches): SearchData
+    {
+        $this->savedSearches = $savedSearches;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSelectedSavedSearchId(): int
+    {
+        if (!$this->selectedSavedSearch || !$this->selectedSavedSearch->getId()) {
+            return 0;
+        }
+        return $this->selectedSavedSearch->getId();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSelectedSavedSearchTitle(): ?string
+    {
+        return $this->selectedSavedSearchTitle;
+    }
+
+    /**
+     * @param string|null $title
+     * @return SearchData
+     */
+    public function setSelectedSavedSearchTitle(?string $title): SearchData
+    {
+        $this->selectedSavedSearchTitle = $title;
+        return $this;
+    }
 
     /**
      * @return string|null

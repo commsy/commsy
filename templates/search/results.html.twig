@@ -8,7 +8,35 @@
         {# sidebar #}
         <div class="uk-width-medium-1-3 uk-push-2-3">
 
+            {{ form_start(filterForm) }}
+
+            {# NOTE: the two panels in the sidebar (manage-my-views & list-filter) comprise a single form (filterForm) #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#manage-my-views'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-text-large uk-float-left">
+                            {{ 'Manage my views'|trans({}, 'search')}}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manage-my-views" class="uk-hidden-small">
+                    {{ form_row(filterForm.selectedSavedSearch) }}
+                    {{ form_row(filterForm.selectedSavedSearchTitle) }}
+                    {{ form_row(filterForm.save) }}
+                    {% if filterForm.delete is defined %}
+                        {{ form_row(filterForm.delete) }}
+                    {% endif %}
+                    {{ form_row(filterForm.load) }}
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-clearfix">
                         <div class="uk-float-right">
@@ -17,16 +45,28 @@
                             </a>
                         </div>
                         <div class="uk-text-large uk-float-left">
-                            {{ 'Restrict Results'|trans({}, 'search')}}
+                            {{ 'Restrict results'|trans({}, 'search')}}
                         </div>
                     </div>
                 </div>
 
                 <div id="list-filter" class="uk-hidden-small">
-                    {{ form_start(filterForm) }}
-                    {{ form_end(filterForm) }}
+                    {{ form_row(filterForm.appears_in) }}
+                    {{ form_row(filterForm.selectedCreator) }}
+                    {{ form_row(filterForm.creation_date_range) }}
+                    {{ form_row(filterForm.modification_date_range) }}
+                    {{ form_row(filterForm.selectedRubric) }}
+                    {% if filterForm.selectedTodoStatus is defined %}
+                        {{ form_row(filterForm.selectedTodoStatus) }}
+                    {% endif %}
+                    {{ form_row(filterForm.selectedHashtags) }}
+                    {{ form_row(filterForm.selectedCategories) }}
+                    {{ form_row(filterForm.selectedContext) }}
+                    {{ form_row(filterForm.selectedReadStatus) }}
                 </div>
             </div>
+
+            {{ form_end(filterForm) }}
 
         </div>
 
@@ -68,6 +108,8 @@
                                                 {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
                                                     {% set returnUrlParams = {
                                                         'roomId': roomId,
+                                                        'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId,
+                                                        'search_filter[selectedSavedSearchTitle]': searchData.selectedSavedSearchTitle ?? '',
                                                         'search_filter[phrase]': searchData.phrase,
                                                         'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
                                                         "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
@@ -154,6 +196,8 @@
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
                                 "target": "#search-feed",
                                 "query": {
+                                    "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
+                                    "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
                                     "search_filter[phrase]": "{{ searchData.phrase }}",
                                     "search_filter[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
                                     "search_filter[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",

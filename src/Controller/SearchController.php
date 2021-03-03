@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Entity\SavedSearch;
 use App\Filter\SearchFilterType;
 use App\Form\Type\SearchItemType;
 use App\Form\Type\SearchType;
@@ -26,10 +27,12 @@ use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
@@ -173,18 +176,21 @@ class SearchController extends BaseController
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         ReadStatusFilterCondition $readStatusFilterCondition,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator,
         ReaderService $readerService
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request);
+        $searchData = $this->populateSearchData($searchData, $request, $currentUser);
 
-        // if the top form submits a POST request it will call setPhrase() on SearchData
+        // if the top form submits a request it will call setPhrase() on SearchData
         $topForm = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId,
@@ -268,6 +274,90 @@ class SearchController extends BaseController
         ]);
         $filterForm->handleRequest($request);
 
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+
+            $clickedButton = $filterForm->getClickedButton();
+            $buttonName = $clickedButton ? $clickedButton->getName() : '';
+
+            $savedSearch = $searchData->getSelectedSavedSearch();
+
+            // NOTE: if a saved search was selected from the "Manage my views" dropdown, this performs a click (via an
+            // `onchange` attribute) on the form's hidden "load" button; opposed to this, `$buttonName` will be empty
+            // if the search params get changed for an existing saved search via the "Restrict results" form part
+            if ($buttonName === 'load' && $savedSearch) {
+                $savedSearchURL = $savedSearch->getSearchUrl();
+
+                if ($savedSearchURL) {
+                    // redirect to the search_url stored for the chosen saved search
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+
+                    return $redirectResponse;
+                }
+
+            } elseif ($buttonName === 'delete' && $savedSearch) {
+                $repository = $entityManager->getRepository(SavedSearch::class);
+                $repository->removeSavedSearch($savedSearch);
+
+                // remove the "delete" param as well as saved search related params from current search URL
+                $request = $this->setSubParamForRequestQueryParam('delete', null, 'search_filter', $request);
+                $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', null, 'search_filter', $request);
+                $request = $this->setSubParamForRequestQueryParam('selectedSavedSearchTitle', null, 'search_filter', $request);
+                $searchURL = $this->getUpdatedRequestUriForRequest($request);
+
+                $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $searchURL);
+
+                return $redirectResponse;
+
+            } elseif ($buttonName === 'save') {
+                // this handles cases where the "Save" button (in the "Manage my views" form part) was clicked
+                // with either "New view" or an existing saved search (aka "view") selected in the view dropdown
+
+                if (!$savedSearch) { // create a new saved search
+                    $savedSearch = new SavedSearch();
+                    $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+                    $savedSearch->setAccountId($portalUserId);
+                }
+
+                $savedSearchTitle = $searchData->getSelectedSavedSearchTitle();
+                if (empty($savedSearchTitle)) {
+                    // this shouldn't get hit due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
+                    $savedSearchTitle = $translator->trans('New view', [], 'search');
+                }
+                if ($savedSearchTitle !== $savedSearch->getTitle()) {
+                    $savedSearch->setTitle($savedSearchTitle);
+                }
+
+                // remove the "save" param from the search URL to be persisted
+                $request = $this->setSubParamForRequestQueryParam('save', null, 'search_filter', $request);
+                $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
+
+                if ($savedSearchURL !== $savedSearch->getSearchUrl()) {
+                    $savedSearch->setSearchUrl($savedSearchURL);
+                }
+
+                // for a newly created saved search, update its search URL with the correct ID
+                if (empty($savedSearch->getId())) {
+                    // persisting the new SavedSearch object will auto-assign an ID
+                    $entityManager->persist($savedSearch);
+                    $entityManager->flush();
+                    $savedSearchId = $savedSearch->getId();
+
+                    // update saved search ID in current search URL
+                    $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', $savedSearchId, 'search_filter', $request);
+                    $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
+
+                    $savedSearch->setSearchUrl($savedSearchURL);
+                }
+
+                $entityManager->persist($savedSearch);
+                $entityManager->flush();
+
+                $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+
+                return $redirectResponse;
+            }
+        }
+
         $totalHits = $searchResults->getTotalHits();
         $results = $this->prepareResults($searchResults, $roomId, $readerService);
 
@@ -278,7 +368,7 @@ class SearchController extends BaseController
             'results' => $results,
             'searchData' => $searchData,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getEnvironment()->getCurrentUserItem(),
+            'user' => $currentUser,
         ];
     }
 
@@ -292,6 +382,7 @@ class SearchController extends BaseController
                                       $start = 0,
                                       $sort = 'date',
                                       Request $request,
+                                      LegacyEnvironment $legacyEnvironment,
                                       SearchManager $searchManager,
                                       MultipleContextFilterCondition $multipleContextFilterCondition,
                                       ReadStatusFilterCondition $readStatusFilterCondition,
@@ -300,8 +391,10 @@ class SearchController extends BaseController
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request);
+        $searchData = $this->populateSearchData($searchData, $request, $currentUser);
 
         /**
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
@@ -351,11 +444,12 @@ class SearchController extends BaseController
      *
      * @param SearchData $searchData
      * @param Request $request
+     * @param \cs_user_item $currentUser
      * @return SearchData
      */
-    private function populateSearchData(SearchData $searchData, Request $request): SearchData
+    private function populateSearchData(SearchData $searchData, Request $request, \cs_user_item $currentUser): SearchData
     {
-        if (!isset($request)) {
+        if (!$request || !$currentUser) {
             return $searchData;
         }
 
@@ -363,11 +457,32 @@ class SearchController extends BaseController
         if (empty($requestParams)) {
             $requestParams = $request->request->all();
         }
+
+        // get all of the user's saved searches
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(SavedSearch::class);
+        $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+
+        $savedSearches = $repository->findByAccountId($portalUserId);
+        $searchData->setSavedSearches($savedSearches);
+
         if (empty($requestParams)) {
             return $searchData;
         }
 
-        $searchParams = $requestParams['search'] ?? $requestParams['search_filter'] ?? null;
+        $searchParams = $requestParams['search_filter'] ?? $requestParams['search'] ?? null;
+
+        // selected saved search parameters
+        $savedSearchId = !empty($searchParams['selectedSavedSearch']) ? $searchParams['selectedSavedSearch'] : 0;
+        if (!empty($savedSearchId)) {
+            $savedSearch = $repository->findOneById($savedSearchId);
+            $searchData->setSelectedSavedSearch($savedSearch);
+        }
+
+        $savedSearchTitle = $searchParams['selectedSavedSearchTitle'] ?? '';
+        if (!empty($savedSearchTitle)) {
+            $searchData->setSelectedSavedSearchTitle($savedSearchTitle);
+        }
 
         // search phrase parameter
         if (!$searchData->getPhrase()) {
@@ -793,5 +908,67 @@ class SearchController extends BaseController
         }
 
         return $results;
+    }
+
+    /**
+     * Modifies & returns again the given Request object by setting (or removing) the sub-parameter with the given key
+     * from the given query parameter key.
+     *
+     * @param string $subParamKey the key of the sub-parameter to be set or removed
+     * @param string|null $subParamVal the value of the sub-parameter to be set; may be null in which case it will be removed
+     * @param string $paramKey the query parameter key having the parameter with `$subParamKey` be set or reomoved
+     * @param Request $request the Request object whose query params shall be modified
+     * @return Request the modified Request object
+     */
+    private function setSubParamForRequestQueryParam(string $subParamKey, ?string $subParamVal, string $paramKey, Request $request): Request
+    {
+        if (empty($subParamKey) || empty($paramKey) || empty($request)) {
+            return $request;
+        }
+
+        $queryBag = $request->query;
+
+        /** @var array $subParams */
+        $subParams = $queryBag->get($paramKey);
+        if (!$subParams) {
+            return $request;
+        }
+
+        if (!$subParamVal) {
+            // null value: remove param if it exists
+            if (!array_key_exists($subParamKey, $subParams)) {
+                return $request;
+            } else {
+                unset($subParams[$subParamKey]);
+            }
+        } else {
+            // set param
+            $subParams[$subParamKey] = $subParamVal;
+        }
+
+        // update Request query params
+        $queryBag->set($paramKey, $subParams);
+        $request->query->replace($queryBag->all());
+
+        return $request;
+    }
+
+    /**
+     * Returns the request URI generated from the request's current path and query parameters.
+     *
+     * @return string The raw URI (i.e., not URI decoded)
+     */
+    private function getUpdatedRequestUriForRequest(Request $request): string
+    {
+        $pathInfo = $request->getPathInfo();
+
+        // NOTE: w/o calling `overrideGlobals()`, `request()->getQueryString()` would return the original
+        // query string ignoring the request's current path and query parameters
+        $request->overrideGlobals();
+        $queryString = $request->getQueryString();
+
+        $requesthUri = $pathInfo . '?' . $queryString;
+
+        return $requesthUri;
     }
 }
