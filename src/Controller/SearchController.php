@@ -2,35 +2,35 @@
 
 namespace App\Controller;
 
+use App\Action\Copy\CopyAction;
+use App\Filter\SearchFilterType;
+use App\Form\Type\SearchItemType;
+use App\Form\Type\SearchType;
+use App\Model\SearchData;
+use App\Search\FilterConditions\CreationDateFilterCondition;
+use App\Search\FilterConditions\ModificationDateFilterCondition;
+use App\Search\FilterConditions\MultipleCategoryFilterCondition;
+use App\Search\FilterConditions\MultipleContextFilterCondition;
+use App\Search\FilterConditions\MultipleHashtagFilterCondition;
+use App\Search\FilterConditions\ReadStatusFilterCondition;
+use App\Search\FilterConditions\RubricFilterCondition;
+use App\Search\FilterConditions\SingleContextFilterCondition;
+use App\Search\FilterConditions\SingleContextTitleFilterCondition;
+use App\Search\FilterConditions\SingleCreatorFilterCondition;
 use App\Search\QueryConditions\DescriptionQueryCondition;
 use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
 use App\Search\QueryConditions\TitleQueryCondition;
-use App\Search\FilterConditions\CreationDateFilterCondition;
-use App\Search\FilterConditions\ModificationDateFilterCondition;
-use App\Search\FilterConditions\MultipleContextFilterCondition;
-use App\Search\FilterConditions\SingleCreatorFilterCondition;
-use App\Search\FilterConditions\MultipleCategoryFilterCondition;
-use App\Search\FilterConditions\MultipleHashtagFilterCondition;
-use App\Search\FilterConditions\RubricFilterCondition;
-use App\Search\FilterConditions\SingleContextFilterCondition;
 use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
+use App\Utils\ReaderService;
 use App\Utils\RoomService;
-use App\Action\Copy\CopyAction;
-use App\Form\Type\SearchItemType;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use App\Form\Type\SearchType;
-use App\Model\SearchData;
-
-use App\Filter\SearchFilterType;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -94,7 +94,10 @@ class SearchController extends BaseController
      * @param $roomId
      * @param Request $request
      */
-    public function itemSearchResultsAction($roomId, Request $request, SearchManager $searchManager)
+    public function itemSearchResultsAction($roomId,
+                                            Request $request,
+                                            SearchManager $searchManager,
+                                            ReaderService $readerService)
     {
         $query = $request->get('search', '');
 
@@ -111,7 +114,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
-        $results = $this->prepareResults($searchResults, $roomId, 0, true);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
 
         $response = new JsonResponse();
 
@@ -124,7 +127,10 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/instantresults")
      * @param $roomId int The context id
      */
-    public function instantResultsAction($roomId, Request $request, SearchManager $searchManager)
+    public function instantResultsAction($roomId,
+                                         Request $request,
+                                         SearchManager $searchManager,
+                                         ReaderService $readerService)
     {
         $query = $request->get('search', '');
 
@@ -141,7 +147,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, $roomId, 0, true);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
 
         $response = new JsonResponse();
 
@@ -164,7 +170,9 @@ class SearchController extends BaseController
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
-        MultipleContextFilterCondition $multipleContextFilterCondition
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+        ReadStatusFilterCondition $readStatusFilterCondition,
+        ReaderService $readerService
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -189,7 +197,7 @@ class SearchController extends BaseController
          */
 
         $this->setupSearchQueryConditions($searchManager, $searchData);
-        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
+        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition, $readStatusFilterCondition);
 
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
@@ -206,8 +214,12 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
-        // if a rubric/creator/hashtag is selected that isn't part of the results anymore, we keep displaying it in the
-        // respective search filter form field; this also avoids a form validation error ("this value is not valid")
+        $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['contexts']);
+        $searchData->addContexts($countsByContext);
+
+        // if a rubric, creator, hashtag, category or context title is selected that isn't part of the results anymore,
+        // we keep displaying it in the respective search filter form field; this also avoids a form validation error
+        // ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
         if (!empty($selectedRubric) && $selectedRubric !== 'all' && !array_key_exists($selectedRubric, $countsByRubric)) {
             $searchData->addRubrics([$selectedRubric => 0]);
@@ -219,17 +231,26 @@ class SearchController extends BaseController
         }
 
         $selectedHashtags = $searchData->getSelectedHashtags();
-        foreach ($selectedHashtags as $hashtag) {
-            if (!array_key_exists($hashtag, $countsByHashtag)) {
-                $searchData->addHashtags([$hashtag => 0]);
+        if (!empty($selectedHashtags)) {
+            foreach ($selectedHashtags as $hashtag) {
+                if (!array_key_exists($hashtag, $countsByHashtag)) {
+                    $searchData->addHashtags([$hashtag => 0]);
+                }
             }
         }
 
         $selectedCategories = $searchData->getSelectedCategories();
-        foreach ($selectedCategories as $category) {
-            if (!array_key_exists($category, $countsByCategory)) {
-                $searchData->addCategories([$category => 0]);
+        if (!empty($selectedCategories)) {
+            foreach ($selectedCategories as $category) {
+                if (!array_key_exists($category, $countsByCategory)) {
+                    $searchData->addCategories([$category => 0]);
+                }
             }
+        }
+
+        $selectedContext = $searchData->getSelectedContext();
+        if (!empty($selectedContext) && $selectedContext !== 'all' && !array_key_exists($selectedContext, $countsByContext)) {
+            $searchData->addContexts([$selectedContext => 0]);
         }
 
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
@@ -239,7 +260,7 @@ class SearchController extends BaseController
         $filterForm->handleRequest($request);
 
         $totalHits = $searchResults->getTotalHits();
-        $results = $this->prepareResults($searchResults, $roomId);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService);
 
         return [
             'filterForm' => $filterForm->createView(),
@@ -263,7 +284,9 @@ class SearchController extends BaseController
                                       $sort = 'date',
                                       Request $request,
                                       SearchManager $searchManager,
-                                      MultipleContextFilterCondition $multipleContextFilterCondition)
+                                      MultipleContextFilterCondition $multipleContextFilterCondition,
+                                      ReadStatusFilterCondition $readStatusFilterCondition,
+                                      ReaderService $readerService)
     {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
@@ -277,7 +300,7 @@ class SearchController extends BaseController
          */
 
         $this->setupSearchQueryConditions($searchManager, $searchData);
-        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition);
+        $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition, $readStatusFilterCondition);
 
         $searchResults = $searchManager->getResults();
         $aggregations = $searchResults->getAggregations();
@@ -294,13 +317,16 @@ class SearchController extends BaseController
         $countsByCategory = $searchManager->countsByKeyFromAggregation($aggregations['tags']);
         $searchData->addCategories($countsByCategory);
 
+        $countsByContext = $searchManager->countsByKeyFromAggregation($aggregations['contexts']);
+        $searchData->addContexts($countsByContext);
+
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
         ]);
         $filterForm->handleRequest($request);
 
-        $results = $this->prepareResults($searchResults, $roomId, $start);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService, $start);
 
         return [
             'roomId' => $roomId,
@@ -317,8 +343,6 @@ class SearchController extends BaseController
      */
     private function populateSearchData(SearchData $searchData, Request $request): SearchData
     {
-        // TODO: should we better move this method to SearchData.php?
-
         if (!isset($request)) {
             return $searchData;
         }
@@ -338,11 +362,14 @@ class SearchController extends BaseController
             $searchData->setPhrase($searchParams['phrase'] ?? null);
         }
 
-        // search in all contexts parameter
-        $searchData->setAllRooms((!empty($searchParams['all_rooms']) && $searchParams['all_rooms'] === "1") ? true : false);
+        // contexts parameter
+        $searchData->setSelectedContext($searchParams['selectedContext'] ?? "all");
 
         // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
+
+        // read status parameter
+        $searchData->setSelectedReadStatus($searchParams['selectedReadStatus'] ?? 'all');
 
         // rubric parameter
         $searchData->setSelectedRubric($searchParams['selectedRubric'] ?? 'all');
@@ -409,8 +436,6 @@ class SearchController extends BaseController
     public function setupSearchQueryConditions(SearchManager $searchManager,
                                                SearchData $searchData)
     {
-        // TODO: should we better move this method to SearchData.php?
-
         if (!isset($searchManager) || !isset($searchData)) {
             return;
         }
@@ -449,25 +474,36 @@ class SearchController extends BaseController
      * @param SearchData $searchData
      * @param integer $roomId
      * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     * @param ReadStatusFilterCondition $readStatusFilterCondition
      */
     public function setupSearchFilterConditions(SearchManager $searchManager,
                                                 SearchData $searchData,
                                                 int $roomId,
-                                                MultipleContextFilterCondition $multipleContextFilterCondition)
+                                                MultipleContextFilterCondition $multipleContextFilterCondition,
+                                                ReadStatusFilterCondition $readStatusFilterCondition)
     {
-        // TODO: should we better move this method to SearchData.php?
-
-        if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition)) {
+        if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition) || !isset($readStatusFilterCondition)) {
             return;
         }
 
-        // search in all contexts parameter
-        if ($searchData->getAllRooms()) {
+        // user room IDs / read status parameter
+        // NOTE: we always restrict the search to either the context IDs of the current user's rooms, or to item IDs
+        // matching the currently selected read status (which is a user-specific property and thus isn't indexed)
+        // WARNING: this acts as a PRE-filtering mechanism which can slow things down substantially and ideally
+        // wouldn't be necessary
+        $selectedReadStatus = $searchData->getSelectedReadStatus();
+        if (empty($selectedReadStatus) || $selectedReadStatus === 'all') {
             $searchManager->addFilterCondition($multipleContextFilterCondition);
         } else {
-            $singleContextFilterCondition = new SingleContextFilterCondition();
-            $singleContextFilterCondition->setContextId($roomId);
-            $searchManager->addFilterCondition($singleContextFilterCondition);
+            $readStatusFilterCondition->setReadStatus($selectedReadStatus);
+            $searchManager->addFilterCondition($readStatusFilterCondition);
+        }
+
+        // context parameter
+        if ($searchData->getSelectedContext()) {
+            $singleContextTitleFilterCondition = new SingleContextTitleFilterCondition();
+            $singleContextTitleFilterCondition->setContextTitle($searchData->getSelectedContext());
+            $searchManager->addFilterCondition($singleContextTitleFilterCondition);
         }
 
         // rubric parameter
@@ -654,7 +690,7 @@ class SearchController extends BaseController
         }
     }
 
-    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, $offset = 0, $json = false)
+    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, ReaderService $readerService, $offset = 0, $json = false)
     {
         $itemService = $this->get('commsy_legacy.item_service');
 
@@ -718,6 +754,10 @@ class SearchController extends BaseController
                 if (method_exists($searchResult, 'getStatus')) {
                     $status = $searchResult->getStatus();
                 }
+                if (method_exists($searchResult, 'getItemId')) {
+                    $item = $itemService->getItem($searchResult->getItemId());
+                    $readStatus = $readerService->cachedReadStatusForItem($item);
+                }
                 $results[] = [
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
@@ -725,6 +765,7 @@ class SearchController extends BaseController
                     'files' => $itemService->getItemFileList($searchResult->getItemId()),
                     'type' => $type,
                     'status' => $status,
+                    'readStatus' => $readStatus,
                 ];
             }
         }
