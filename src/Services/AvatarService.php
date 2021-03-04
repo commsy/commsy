@@ -77,7 +77,7 @@ class AvatarService
 
         imagefill($image, 0, 0, $colors['background']);
         
-        $initialString = strtoupper(substr($this->user->getFirstname(), 0, 1)).strtoupper(substr($this->user->getLastname(), 0, 1));
+        $initialString = strtoupper(mb_substr($this->user->getFirstname(), 0, 1)).strtoupper(mb_substr($this->user->getLastname(), 0, 1));
         if (!$initialString) {
             $initialString = strtoupper(substr($this->user->getUserId(), 0, 1));
         }
