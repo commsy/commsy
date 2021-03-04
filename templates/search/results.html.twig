@@ -39,12 +39,12 @@
 
             <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
                 <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
-                    <div class="uk-panel-teaser cs-panel-teaser-primary">
-                        <div class="uk-clearfix">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-clearfix">
                             <div class="uk-flex uk-flex-space-between uk-flex-middle">
                                 <div class="uk-text-large">
-                                    {{ 'Restrict results'|trans({}, 'search')}}
-                                </div>
+                            {{ 'Restrict results'|trans({}, 'search')}}
+                        </div>
                                 <div class="uk-flex-right uk-flex-inline uk-flex-middle">
                                     {{ form_widget(filterForm.submit) }}
                                     <a href="#" class="button-toggle uk-button-mini uk-button-secondary uk-margin-small-left" data-uk-toggle="{target: '#list-filter'}" style="padding-top: 1px; padding-bottom: 1px">
@@ -80,18 +80,18 @@
         <div class="uk-width-medium-2-3 uk-pull-1-3">
 
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
-
+                
                 <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
-                    <div class="uk-panel-teaser cs-panel-teaser-primary">
-                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                            <div class="uk-text-large">
-                                {{ 'Search for "%query%" (%totalHits% Hits)'| trans({
-                                    '%query%': searchData.phrase,
-                                    '%totalHits%': totalHits
-                                }, 'search') }}
-                            </div>
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">
+                            {{ 'Search for "%query%" (%totalHits% Hits)'| trans({
+                                '%query%': searchData.phrase,
+                                '%totalHits%': totalHits
+                            }, 'search') }}
+                        </div>
 
-                            <div>
+                        <div>
                                 {% block sortbox %}
                                     {# sort dropdown #}
                                     <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown=""
@@ -112,86 +112,86 @@
                                     </div>
                                 {% endblock %}
 
-                                {% block editbox %}
-                                    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                            {% block editbox %}
+                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                    <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
-                                                <li>
-                                                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                        'url': path('app_search_xhrcopy', {'roomId': roomId}),
-                                                        'action': 'copy',
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'selection',
-                                                        'noSelectionMessage': 'no entry selected'|trans({},'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
-                                                    </a>
-                                                </li>
+                                            <li>
+                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                    'url': path('app_search_xhrcopy', {'roomId': roomId}),
+                                                    'action': 'copy',
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'selection',
+                                                    'noSelectionMessage': 'no entry selected'|trans({},'item')
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                                                </a>
+                                            </li>
 
-                                                <li>
-                                                    {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
-                                                        {% set returnUrlParams = {
-                                                            'roomId': roomId,
-                                                            'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId,
-                                                            'search_filter[selectedSavedSearchTitle]': searchData.selectedSavedSearchTitle ?? '',
-                                                            'search_filter[phrase]': searchData.phrase,
-                                                            'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
-                                                            "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
-                                                            "search_filter[selectedReadStatus]": searchData.selectedReadStatus,
-                                                            "search_filter[selectedCreator]": searchData.selectedCreator,
-                                                            "search_filter[selectedContext]": searchData.selectedContext,
-                                                            "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
-                                                            "search_filter[creation_date_range][right_date]": searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '',
-                                                            "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
-                                                            "search_filter[modification_date_range][right_date]": searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '',
-                                                            "search_filter[selectedRubric]": searchData.selectedRubric,
+                                            <li>
+                                                {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
+                                                    {% set returnUrlParams = {
+                                                        'roomId': roomId,
+                                                        'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId,
+                                                        'search_filter[selectedSavedSearchTitle]': searchData.selectedSavedSearchTitle ?? '',
+                                                        'search_filter[phrase]': searchData.phrase,
+                                                        'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
+                                                        "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
+                                                        "search_filter[selectedReadStatus]": searchData.selectedReadStatus,
+                                                        "search_filter[selectedCreator]": searchData.selectedCreator,
+                                                        "search_filter[selectedContext]": searchData.selectedContext,
+                                                        "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
+                                                        "search_filter[creation_date_range][right_date]": searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '',
+                                                        "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
+                                                        "search_filter[modification_date_range][right_date]": searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '',
+                                                        "search_filter[selectedRubric]": searchData.selectedRubric,
                                                             "search_filter[sortBy]": searchData.sortBy,
                                                             "search_filter[sortOrder]": searchData.sortOrder,
                                                         } %}
-                                                        {% if searchData.selectedRubric is same as('todo') %}
-                                                            {% set returnUrlParams = returnUrlParams|merge({ "search_filter[selectedTodoStatus]": searchData.selectedTodoStatus }) %}
-                                                        {% endif %}
-                                                        {% for hashtag in searchData.selectedHashtags %}
-                                                            {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
-                                                            {% set val = searchData.selectedHashtags[loop.index0] %}
-                                                            {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
-                                                        {% endfor %}
-                                                        {% for category in searchData.selectedCategories %}
-                                                            {% set key = "search_filter[selectedCategories][" ~ loop.index0 ~ "]" %}
-                                                            {% set val = searchData.selectedCategories[loop.index0] %}
-                                                            {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
-                                                        {% endfor %}
+                                                    {% if searchData.selectedRubric is same as('todo') %}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[selectedTodoStatus]": searchData.selectedTodoStatus }) %}
+                                                    {% endif %}
+                                                    {% for hashtag in searchData.selectedHashtags %}
+                                                        {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
+                                                        {% set val = searchData.selectedHashtags[loop.index0] %}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
+                                                    {% endfor %}
+                                                    {% for category in searchData.selectedCategories %}
+                                                        {% set key = "search_filter[selectedCategories][" ~ loop.index0 ~ "]" %}
+                                                        {% set val = searchData.selectedCategories[loop.index0] %}
+                                                        {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
+                                                    {% endfor %}
 
-                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                            'url': path('app_search_xhrdelete', {'roomId': roomId}),
-                                                            'action': 'delete',
-                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                            'mode': 'selection',
-                                                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
-                                                            'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
-                                                            'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
-                                                            'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                                                            'returnUrl': path('app_search_results', returnUrlParams)
-                                                        }|json_encode|e('html_attr') }}">
-                                                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
-                                                        </a>
-                                                    {%- else -%}
-                                                        <span class="uk-text-muted">
+                                                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                        'url': path('app_search_xhrdelete', {'roomId': roomId}),
+                                                        'action': 'delete',
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'selection',
+                                                        'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                                                        'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
+                                                        'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
+                                                        'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
+                                                        'returnUrl': path('app_search_results', returnUrlParams)
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                                    </a>
+                                                {%- else -%}
+                                                    <span class="uk-text-muted">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                                                     </span>
-                                                    {%- endif %}
+                                                {%- endif %}
 
-                                                </li>
+                                            </li>
 
-                                            </ul>
-                                        </div>
+                                        </ul>
                                     </div>
-                                {% endblock %}
-                            </div>
+                                </div>
+                            {% endblock%}
                         </div>
                     </div>
+                </div>
                 </div>
 
                 {# will be displayed when selection mode is active #}
