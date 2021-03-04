@@ -198,6 +198,11 @@ class SearchController extends BaseController
         ]);
         $topForm->handleRequest($request);
 
+        // honor any sort arguments from the query URL
+        $sortBy = $searchData->getSortBy();
+        $sortOrder = $searchData->getSortOrder();
+        $sortArguments = !empty($sortBy) && !empty($sortOrder) ? [$sortBy => $sortOrder] : [] ;
+
         /**
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
          * according to the current query parameters.
@@ -206,7 +211,7 @@ class SearchController extends BaseController
         $this->setupSearchQueryConditions($searchManager, $searchData);
         $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition, $readStatusFilterCondition);
 
-        $searchResults = $searchManager->getResults();
+        $searchResults = $searchManager->getResults($sortArguments);
         $aggregations = $searchResults->getAggregations();
 
         $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
@@ -379,14 +384,14 @@ class SearchController extends BaseController
      * @Template
      */
     public function moreResultsAction($roomId,
-                                      $start = 0,
-                                      $sort = 'date',
                                       Request $request,
                                       LegacyEnvironment $legacyEnvironment,
                                       SearchManager $searchManager,
                                       MultipleContextFilterCondition $multipleContextFilterCondition,
                                       ReadStatusFilterCondition $readStatusFilterCondition,
-                                      ReaderService $readerService)
+                                      ReaderService $readerService,
+                                      $start = 0,
+                                      $sort = '')
     {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
@@ -401,10 +406,31 @@ class SearchController extends BaseController
          * according to the current query parameters.
          */
 
+        // honor sort field & order chosen by the user via the sort dropdown above the search results
+        // NOTE: if $sort is set by feed.js, it contains a composite of the sort field & order (like 'title.raw__asc'
+        // or 'creationDate__desc')
+        if (!empty($sort)) {
+            $sortArgs = explode('__', $sort);
+            if (count($sortArgs) === 2) {
+                $sortBy = $sortArgs[0];
+                if (!empty($sortBy)) {
+                    $searchData->setSortBy($sortBy);
+                }
+                $sortOrder = $sortArgs[1];
+                if (!empty($sortOrder)) {
+                    $searchData->setSortOrder($sortOrder);
+                }
+            }
+        }
+        // otherwise honor any pre-existing sortBy/sortOrder URL params
+        $sortBy = $searchData->getSortBy();
+        $sortOrder = $searchData->getSortOrder();
+        $sortArguments = !empty($sortBy) && !empty($sortOrder) ? [$sortBy => $sortOrder] : [] ;
+
         $this->setupSearchQueryConditions($searchManager, $searchData);
         $this->setupSearchFilterConditions($searchManager, $searchData, $roomId, $multipleContextFilterCondition, $readStatusFilterCondition);
 
-        $searchResults = $searchManager->getResults();
+        $searchResults = $searchManager->getResults($sortArguments);
         $aggregations = $searchResults->getAggregations();
 
         $countsByRubric = $searchManager->countsByKeyFromAggregation($aggregations['rubrics']);
@@ -553,6 +579,10 @@ class SearchController extends BaseController
             }
             $searchData->setModificationDateRange($modificationDateRange);
         }
+
+        // sortBy/sortOrder parameters
+        $searchData->setSortBy($searchParams['sortBy'] ?? '');
+        $searchData->setSortOrder($searchParams['sortOrder'] ?? 'asc');
 
         return $searchData;
     }

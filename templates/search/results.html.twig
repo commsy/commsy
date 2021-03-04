@@ -1,6 +1,7 @@
 {% extends 'base/room.html.twig' %}
 
 {% form_theme filterForm 'form/uikit_horizontal_dynamic_layout.html.twig' %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -85,6 +86,23 @@
                         </div>
 
                         <div>
+                            {% block sortbox %}
+                                {# sort dropdown #}
+                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                    <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                            {# sorting options #}
+                                            {{ utilsMacros.sortActor('title', 'Title', 'search', 'title.raw__asc', 'title.raw__desc', searchData.sortBy is same as('title.raw') ? searchData.sortOrder : '') }}
+                                            {{ utilsMacros.sortActor('creator', 'Creator', 'search', 'creator.fullName.raw__asc', 'creator.fullName.raw__desc', searchData.sortBy is same as('creator.fullName.raw') ? searchData.sortOrder : '') }}
+                                            {{ utilsMacros.sortActor('modifier', 'Modifier', 'search', 'modifier.fullName.raw__asc', 'modifier.fullName.raw__desc', searchData.sortBy is same as('modifier.fullName.raw') ? searchData.sortOrder : '') }}
+                                            {{ utilsMacros.sortActor('creationDate', 'Creation date', 'search', 'creationDate__asc', 'creationDate__desc', searchData.sortBy is same as('creationDate') ? searchData.sortOrder : '') }}
+                                            {{ utilsMacros.sortActor('modificationDate', 'Modification date', 'search', 'modificationDate__asc', 'modificationDate__desc', searchData.sortBy is same as('modificationDate') ? searchData.sortOrder : '') }}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endblock %}
+
                             {% block editbox %}
 
                                 <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
@@ -121,6 +139,8 @@
                                                         "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
                                                         "search_filter[modification_date_range][right_date]": searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '',
                                                         "search_filter[selectedRubric]": searchData.selectedRubric,
+                                                        "search_filter[sortBy]": searchData.sortBy,
+                                                        "search_filter[sortOrder]": searchData.sortOrder,
                                                     }
                                                     %}
                                                     {% if searchData.selectedRubric is same as('todo') %}
@@ -191,7 +211,6 @@
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}
-                    {% if totalHits != results|length %}
                         <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
                                 "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
                                 "target": "#search-feed",
@@ -217,13 +236,14 @@
                                     "search_filter[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
                                     "search_filter[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
                                     "search_filter[selectedRubric]": "{{ searchData.selectedRubric }}",
-                                    "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0  }}"
+                                    "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0  }}",
+                                    "search_filter[sortBy]": "{{ searchData.sortBy }}",
+                                    "search_filter[sortOrder]": "{{ searchData.sortOrder }}"
                                 }
                         }'>
                             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                             <div class="cs-toggle-class"></div>
                         </div>
-                    {% endif %}
                 </div>
             </div>
 
