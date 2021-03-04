@@ -126,6 +126,18 @@
                 <source>Room search</source>
                 <target>Workspace search</target>
             </trans-unit>
+            <trans-unit id="search-sort-modifier">
+                <source>Modifier</source>
+                <target>Modifier</target>
+            </trans-unit>
+            <trans-unit id="search-sort-creation-date">
+                <source>Creation date</source>
+                <target>Creation date</target>
+            </trans-unit>
+            <trans-unit id="search-sort-modification-date">
+                <source>Modification date</source>
+                <target>Modification date</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
