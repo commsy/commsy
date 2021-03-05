@@ -2,6 +2,7 @@
 namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -20,6 +21,13 @@ class UserFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('user_search', TextType::class, [
                 'label' => 'Name',
                 'translation_domain' => 'room',
@@ -67,9 +75,6 @@ class UserFilterType extends AbstractType
         $builder->add('user_status', ChoiceType::class, array(
             'placeholder' => false,
             'choices' => $statusChoices,
-            'attr' => array(
-                'onchange' => 'this.form.submit()',
-            ),
             'label' => 'status',
             'translation_domain' => 'user',
             'required' => false,
