@@ -21,7 +21,7 @@
                             </a>
                         </div>
                         <div class="uk-text-large uk-float-left">
-                            {{ 'Manage my views'|trans({}, 'search')}}
+                            {{ 'Manage my views'|trans({}, 'search') }}
                         </div>
                     </div>
                 </div>
@@ -185,7 +185,7 @@
                                             </ul>
                                         </div>
                                     </div>
-                                {% endblock %}
+                                {% endblock%}
                             </div>
                         </div>
                     </div>
@@ -217,33 +217,33 @@
 
                     {# setup "load more" if we do not show all results yet #}
                     <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
-                            "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
+                            "url": "{{ app.request.baseURL }}/room/{{ roomId }}/searchmore/",
                             "target": "#search-feed",
                             "query": {
-                                "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
-                                "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
-                                "search_filter[phrase]": "{{ searchData.phrase }}",
-                                "search_filter[appears_in][0]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
-                                "search_filter[appears_in][1]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
-                                "search_filter[selectedReadStatus]": "{{ searchData.selectedReadStatus }}",
-                                "search_filter[selectedCreator]": "{{ searchData.selectedCreator }}",
-                                "search_filter[selectedContext]": "{{ searchData.selectedContext }}",
+                            "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
+                            "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
+                            "search_filter[phrase]": "{{ searchData.phrase }}",
+                            "search_filter[appears_in][0]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
+                            "search_filter[appears_in][1]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
+                            "search_filter[selectedReadStatus]": "{{ searchData.selectedReadStatus }}",
+                            "search_filter[selectedCreator]": "{{ searchData.selectedCreator }}",
+                            "search_filter[selectedContext]": "{{ searchData.selectedContext }}",
                                 {% for hashtag in searchData.selectedHashtags -%}
-                                "search_filter[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
+                            "search_filter[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
                                 {%- endfor %}
 
                                 {% for category in searchData.selectedCategories -%}
-                                    "search_filter[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
+                                "search_filter[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
                                 {%- endfor %}
 
-                                "search_filter[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
-                                "search_filter[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
-                                "search_filter[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
-                                "search_filter[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
-                                "search_filter[selectedRubric]": "{{ searchData.selectedRubric }}",
-                                "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0  }}",
-                                "search_filter[sortBy]": "{{ searchData.sortBy }}",
-                                "search_filter[sortOrder]": "{{ searchData.sortOrder }}"
+                            "search_filter[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
+                            "search_filter[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
+                            "search_filter[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
+                            "search_filter[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
+                            "search_filter[selectedRubric]": "{{ searchData.selectedRubric }}",
+                            "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0 }}",
+                            "search_filter[sortBy]": "{{ searchData.sortBy }}",
+                            "search_filter[sortOrder]": "{{ searchData.sortOrder }}"
                             }
                     }'>
                         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>

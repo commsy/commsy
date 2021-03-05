@@ -30,6 +30,13 @@ class RoomFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('title', Filters\TextFilterType::class, [
                 'label' => 'search-filter',
                 'translation_domain' => 'room',
@@ -107,13 +114,6 @@ class RoomFilterType extends AbstractType
                     'translation_domain' => 'room',
                 ]);
         }
-        $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Suchen',
-            ));
     }
 
     /**

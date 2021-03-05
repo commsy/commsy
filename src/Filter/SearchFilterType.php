@@ -94,6 +94,13 @@ class SearchFilterType extends AbstractType
                 }
             })
 
+            ->add('submit', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button uk-button-mini',
+                ],
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ])
             // the hidden `load` button will be clicked automatically when a saved search is selected from the
             // `selectedSavedSearch` dropdown
             ->add('load', Types\SubmitType::class, [
@@ -104,17 +111,14 @@ class SearchFilterType extends AbstractType
                 'translation_domain' => 'form',
                 'validation_groups' => 'false',
             ])
-            // since this form uses the same data class as the global search form, it is important to keep the field
-            // name of the search query phrase identical
+            /**
+             * Since this form uses the same data class as the global search form, it is important to keep the field
+             * name of the search query phrase identical
+             */
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])
             ->add('appears_in', Filters\ChoiceFilterType::class, [
-                'choice_attr' => function($choice, $key, $value) {
-                    return [
-                        'onchange' => 'this.form.submit()',
-                    ];
-                },
                 'choices' => [
                     'Title' => 'title',
                     'Description' => 'description',
@@ -127,9 +131,6 @@ class SearchFilterType extends AbstractType
                 'placeholder' => false,
             ])
             ->add('selectedCreator', Select2ChoiceType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getCreators()));
@@ -138,9 +139,6 @@ class SearchFilterType extends AbstractType
                 'required' => false,
             ])
             ->add('selectedContext', Select2ChoiceType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('All my rooms', [], 'search');
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getContexts()));
@@ -150,7 +148,6 @@ class SearchFilterType extends AbstractType
             ])
             ->add('creation_date_range', Filters\DateRangeFilterType::class, [
                 'attr' => [
-                    'onchange' => 'this.form.submit()',
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                     'autocomplete' => 'off',
                 ],
@@ -172,7 +169,6 @@ class SearchFilterType extends AbstractType
             ])
             ->add('modification_date_range', Filters\DateRangeFilterType::class, [
                 'attr' => [
-                    'onchange' => 'this.form.submit()',
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                     'autocomplete' => 'off',
                 ],
@@ -193,9 +189,6 @@ class SearchFilterType extends AbstractType
                 ],
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
                     return array_merge([$translatedTitleAny => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
@@ -205,9 +198,6 @@ class SearchFilterType extends AbstractType
                 'placeholder' => false,
             ])
             ->add('selectedReadStatus', Types\ChoiceType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choices' => [
                     $this->translator->trans('any', [], 'form') => 'all',
                     'New' => ReaderService::READ_STATUS_NEW,
@@ -220,9 +210,6 @@ class SearchFilterType extends AbstractType
             ])
             ->addEventSubscriber(new ChosenRubricSubscriber($this->translator))
             ->add('selectedHashtags', Select2ChoiceType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     return $this->buildTermChoices($searchData->getHashtags());
                 }),
@@ -232,9 +219,6 @@ class SearchFilterType extends AbstractType
                 'required' => false,
             ])
             ->add('selectedCategories', Select2ChoiceType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     return $this->buildTermChoices($searchData->getCategories());
                 }),
