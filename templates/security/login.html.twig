@@ -62,7 +62,7 @@
                         {% if portal is not null %}
                             {% for authSource in portal.authSources %}
                                 {% if authSource.enabled %}
-                                    <li class="{% if (lastSource is null and authSource.default) or (authSource.type is same as lastSource) %}uk-active{% endif %}">
+                                    <li class="{% if (lastSource is null and authSource.default) or (authSource.type is same as (lastSource)) %}uk-active{% endif %}">
                                         <a href="">
                                             {{ authSource.title }}
                                         </a>
@@ -94,7 +94,7 @@
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
-                                                {% if error and authSource.type is same as lastSource %}
+                                                {% if error and authSource.type is same as (lastSource) %}
                                                     <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                                 {% endif %}
 
@@ -177,7 +177,7 @@
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
-                                                {% if error and authSource.type is same as lastSource %}
+                                                {% if error and authSource.type is same as (lastSource) %}
                                                     <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                                 {% endif %}
 
@@ -224,7 +224,7 @@
                                                 <p class="uk-text-small">{{ authSource.description|raw }}</p>
                                             {% endif %}
 
-                                            {% if error and authSource.type is same as lastSource %}
+                                            {% if error and authSource.type is same as (lastSource) %}
                                                 <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                             {% endif %}
 
