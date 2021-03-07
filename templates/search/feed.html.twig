@@ -63,6 +63,10 @@
 
             {# title and meta #}
             <div class="uk-width-8-10">
+                <div class="uk-comment-meta">
+                    <a href="{{ app.request.baseURL }}/room/{{ entity.contextId }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
+                </div>
+
                 <h4 class="uk-comment-title">
                     <a href="{{ path(result.routeName, {'roomId': entity.contextId, 'itemId': entity.itemId}) }}">
                         {% if entity.title is defined %}
