@@ -64,7 +64,12 @@
             {# title and meta #}
             <div class="uk-width-8-10">
                 <div class="uk-comment-meta">
-                    <a href="{{ path('app_room_home', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
+                    {% set privateRoom = user.ownRoom %}
+                    {% if privateRoom.itemID == entity.contextId -%}
+                        <a href="{{ path('app_material_list', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
+                    {%- else -%}
+                        <a href="{{ path('app_room_home', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
+                    {%- endif %}
                 </div>
 
                 <h4 class="uk-comment-title">
