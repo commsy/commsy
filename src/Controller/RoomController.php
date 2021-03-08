@@ -352,7 +352,7 @@ class RoomController extends AbstractController
                 'data' => array(),
             ]);
         }
-        
+
         return array(
             'form' => $form->createView(),
         );
@@ -398,6 +398,7 @@ class RoomController extends AbstractController
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portalItem->showTime(),
             'timePulses' => $roomService->getTimePulses(),
+            'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
         ]);
 
         $filterForm->handleRequest($request);
@@ -537,6 +538,7 @@ class RoomController extends AbstractController
             $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
                 'showTime' => $portalItem->showTime(),
                 'timePulses' => $roomService->getTimePulses(),
+                'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
             ]);
 
             // manually bind values from the request
@@ -559,6 +561,8 @@ class RoomController extends AbstractController
                 $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
                     'showTime' => $portalItem->showTime(),
                     'timePulses' => $roomService->getTimePulses(),
+                    'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
+
                 ]);
                 $filterForm->submit($roomFilter);
                 $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
