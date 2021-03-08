@@ -40,13 +40,13 @@ class RoomController extends Controller
         $roomId,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
-        LegacyMarkup $legacyMarkup)
+        LegacyMarkup $legacyMarkup,
+        RoomService $roomService)
     {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         // get room item
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $roomService->getRoomItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
         if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $this->container->getParameter('liip_theme.themes'))) {
@@ -211,13 +211,17 @@ class RoomController extends Controller
      * })
      * @Template("room/list.html.twig")
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAction($roomId,
+                               $max = 10,
+                               $start = 0,
+                               $sort = 'date',
+                               Request $request,
+                               RoomService $roomService)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         // get room item for information panel
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
