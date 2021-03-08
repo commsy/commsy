@@ -462,6 +462,7 @@ class SearchController extends BaseController
         return [
             'roomId' => $roomId,
             'results' => $results,
+            'user' => $currentUser,
         ];
     }
 
