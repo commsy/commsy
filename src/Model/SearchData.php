@@ -123,16 +123,6 @@ class SearchData
     private $modificationDateUntil;
 
     /**
-     * @var string|null $sortBy
-     */
-    private $sortBy;
-
-    /**
-     * @var string|null $sortOrder
-     */
-    private $sortOrder;
-
-    /**
      * @return SavedSearch|null
      */
     public function getSelectedSavedSearch(): ?SavedSearch
@@ -196,6 +186,16 @@ class SearchData
         $this->selectedSavedSearchTitle = $title;
         return $this;
     }
+
+    /**
+     * @var string|null $sortBy
+     */
+    private $sortBy;
+
+    /**
+     * @var string|null $sortOrder
+     */
+    private $sortOrder;
 
     /**
      * @return string|null

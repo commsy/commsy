@@ -22,13 +22,13 @@ class MaterialFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
+            ->add('submit', SubmitType::class, [
+                'attr' => [
                     'class' => 'uk-button uk-button-mini',
-                ),
+                ],
                 'label' => 'Filter',
                 'translation_domain' => 'form',
-            ))
+            ])
             ->add('hide-deactivated-entries', Filters\ChoiceFilterType::class, [
                 'choices' => [
                     'only activated' => 'only_activated',

@@ -22,13 +22,13 @@ class AnnouncementFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
+            ->add('submit', SubmitType::class, [
+                'attr' => [
                     'class' => 'uk-button uk-button-mini',
-                ),
+                ],
                 'label' => 'Filter',
                 'translation_domain' => 'form',
-            ))
+            ])
             ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, [
                 'label_attr' => [
                     'class' => 'uk-form-label',

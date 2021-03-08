@@ -94,6 +94,14 @@ class SearchFilterType extends AbstractType
                 }
             })
 
+            ->add('submit', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button uk-button-mini',
+                ],
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+                'validation_groups' => 'false',
+            ])
             // the hidden `load` button will be clicked automatically when a saved search is selected from the
             // `selectedSavedSearch` dropdown
             ->add('load', Types\SubmitType::class, [
@@ -104,16 +112,10 @@ class SearchFilterType extends AbstractType
                 'translation_domain' => 'form',
                 'validation_groups' => 'false',
             ])
-            ->add('submit', Types\SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button uk-button-mini',
-                ),
-                'label' => 'Filter',
-                'translation_domain' => 'form',
-                'validation_groups' => 'false',
-            ))
-            // since this form uses the same data class as the global search form, it is important to keep the field
-            // name of the search query phrase identical
+            /**
+             * Since this form uses the same data class as the global search form, it is important to keep the field
+             * name of the search query phrase identical
+             */
             ->add('phrase', Types\HiddenType::class, [
                 'label' => false,
             ])
