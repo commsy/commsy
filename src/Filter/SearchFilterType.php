@@ -100,6 +100,7 @@ class SearchFilterType extends AbstractType
                 ],
                 'label' => 'Filter',
                 'translation_domain' => 'form',
+                'validation_groups' => 'false',
             ])
             // the hidden `load` button will be clicked automatically when a saved search is selected from the
             // `selectedSavedSearch` dropdown
@@ -252,7 +253,7 @@ class SearchFilterType extends AbstractType
             ->setRequired(['contextId'])
             ->setDefaults([
                 'csrf_protection'    => false,
-                'validation_groups'  => array('filtering'), // avoid NotBlank() constraint-related message
+                'validation_groups'  => ['filtering', 'save'], // avoid NotBlank() constraint-related message
                 'method'             => 'get',
                 'translation_domain' => 'search',
             ]);
