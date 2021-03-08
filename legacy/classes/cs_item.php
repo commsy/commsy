@@ -162,7 +162,7 @@ class cs_item {
 
 
 
-   /** asks if item is editable by everybody or just creator
+   /** asks if item is editable by everybody ('1') or just creator ('0')
     *
     * @param value
     *
@@ -175,7 +175,7 @@ class cs_item {
       return true;
    }
 
-   /** sets if tem is editable by everybody or just creator
+   /** sets if item is editable by everybody ('1') or just creator ('0')
     *
     * @param value
     */
