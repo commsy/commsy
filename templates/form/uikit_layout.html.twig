@@ -14,7 +14,7 @@
 {%- endblock %}
 
 {% block file_widget -%}
-    {% if image_url is defined and image_url is not null %}
+    {% if image_url is defined and image_url is not null %} {# image_url gets defined by ImageTypeExtension #}
         <img src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/image"/>
     {% endif %}
 
@@ -22,6 +22,10 @@
         <i class="uk-icon-cloud-upload uk-icon-medium uk-text-muted uk-margin-small-right"></i>
         {{ 'Attach files by dropping them here or'|trans({}, 'form') }}<br/>
         <a class="uk-form-file">{{ 'selecting one'|trans({}, 'form') }}{{ block('form_widget') }}</a>.
+        {% if max_upload_size is defined and max_upload_size is not null %} {# max_upload_size gets defined by UploadFileTypeExtension #}
+            <br/><br/>
+            {{ 'Upload files up to %maxUploadSize% MB'|trans({'%maxUploadSize%': max_upload_size}, 'form') }}
+        {% endif %}
     </div>
 
     <div class="uk-progress uk-hidden">
