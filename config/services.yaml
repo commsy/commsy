@@ -1130,7 +1130,7 @@ services:
 
     App\Services\AvatarService:
         arguments:
-            $kernelRootDir: '%kernel.root_dir%'
+            $kernelProjectDir: '%kernel.project_dir%'
 
     App\Services\PrintService:
         arguments:
