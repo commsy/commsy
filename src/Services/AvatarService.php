@@ -82,7 +82,7 @@ class AvatarService
             $initialString = strtoupper(substr($this->user->getUserId(), 0, 1));
         }
 
-        $font = $this->kernelProjectDir . '/assets/fonts/LiberationSans-Regular.ttf';
+        $font = $this->kernelProjectDir . '/src/Resources/fonts/LiberationSans-Regular.ttf';
         $angle = 0;
         
         $textBox = imagettfbbox($fontSize,$angle,$font,$initialString);
