@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -816,8 +817,9 @@ class DateController extends BaseController
     /**
      * @Route("/room/{roomId}/date/{itemId}/calendaredit")
      */
-    public function calendareditAction($roomId, $itemId, Request $request)
+    public function calendareditAction($roomId, $itemId, Request $request, LegacyEnvironment $legacyEnvironment)
     {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $translator = $this->get('translator');
 
         $dateService = $this->get('commsy_legacy.date_service');
@@ -866,6 +868,9 @@ class DateController extends BaseController
                 $date->setDateTime_end($endDateTime->format('Y-m-d 23:59:59'));
             }
         }
+
+        // update modifier
+        $date->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
         $date->save();
 
