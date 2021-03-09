@@ -11,7 +11,7 @@ class AvatarService
     
     private $userService;
     
-    private string $kernelProjectDir;
+    private $kernelProjectDir;
     
     private $type;
 
@@ -25,7 +25,7 @@ class AvatarService
     
     private $imageHeight;
 
-    public function __construct(UserService $userService, string $kernelProjectDir)
+    public function __construct(UserService $userService, $kernelProjectDir)
     {
         $this->userService = $userService;
         
