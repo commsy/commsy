@@ -11,7 +11,7 @@ class AvatarService
     
     private $userService;
     
-    private $kernelRootDir;
+    private $kernelProjectDir;
     
     private $type;
 
@@ -25,11 +25,11 @@ class AvatarService
     
     private $imageHeight;
 
-    public function __construct(UserService $userService, $kernelRootDir)
+    public function __construct(UserService $userService, $kernelProjectDir)
     {
         $this->userService = $userService;
         
-        $this->kernelRootDir = $kernelRootDir;
+        $this->kernelProjectDir = $kernelProjectDir;
         
         $this->imageWidth = 100;
         
@@ -58,13 +58,13 @@ class AvatarService
             return $this->generateInitialsAvatar();
         }
         
-        return file_get_contents($this->kernelRootDir.'/../assets/img/user_unknown.gif');
+        return file_get_contents($this->kernelProjectDir . '/assets/img/user_unknown.gif');
     }
     
     function generateInitialsAvatar() {
         if ($this->type == 1) {
-            $image = @imagecreatefromgif($this->kernelRootDir.'/../assets/img/user_unknown.gif');
-            $imageSize = getimagesize($this->kernelRootDir.'/../assets/img/user_unknown.gif');
+            $image = @imagecreatefromgif($this->kernelProjectDir . '/assets/img/user_unknown.gif');
+            $imageSize = getimagesize($this->kernelProjectDir . '/assets/img/user_unknown.gif');
             $this->imageWidth = $imageSize[0];
             $this->imageHeight = $imageSize[1];
             $fontSize = 50;
@@ -82,7 +82,7 @@ class AvatarService
             $initialString = strtoupper(substr($this->user->getUserId(), 0, 1));
         }
 
-        $font = $this->kernelRootDir.'/../assets/fonts/LiberationSans-Regular.ttf';
+        $font = $this->kernelProjectDir . '/src/Resources/fonts/LiberationSans-Regular.ttf';
         $angle = 0;
         
         $textBox = imagettfbbox($fontSize,$angle,$font,$initialString);
@@ -165,6 +165,6 @@ class AvatarService
     }
 
     function getUnknownUserImage() {
-        return file_get_contents($this->kernelRootDir.'/../assets/img/user_unknown.gif');
+        return file_get_contents($this->kernelProjectDir . '/assets/img/user_unknown.gif');
     }
 }
