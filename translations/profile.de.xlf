@@ -218,6 +218,10 @@
                 <source>Sign out</source>
                 <target>Abmelden</target>
             </trans-unit>
+            <trans-unit id="original_user">
+                <source>Original user</source>
+                <target>Ausgangsrolle</target>
+            </trans-unit>
             <trans-unit id="account">
                 <source>Account</source>
                 <target>Account</target>
