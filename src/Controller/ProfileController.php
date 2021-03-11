@@ -259,6 +259,8 @@ class ProfileController extends Controller
                     if (!$tempUserItem->getContextItem()->isPortal() && !$tempUserItem->getContextItem()->isPrivateRoom()) {
                         $tempUserItem->setEmail($formData['emailRoom']);
                     }
+                    $usePortalEmail = ($formData['emailChoice'] === 'account') ? 1 : 0;
+                    $tempUserItem->setUsePortalEmail($usePortalEmail);
                 }
                 if ($formData['hideEmailInAllContexts']) {
                     if ($formData['hideEmailInThisRoom']) {
