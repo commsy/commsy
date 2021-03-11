@@ -19,6 +19,7 @@ use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
+use App\Entity\RoomPrivat;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
@@ -77,6 +78,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -2187,80 +2189,23 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      */
     public function accountIndexDetailTakeOver(
-        Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        EntityManagerInterface $entityManager,
+        $portalId
     ) {
-        $session = $this->get('session');
-        $user = $userService->getUser($request->get('userId'));
-        $user_item = $user;
-        $environment = $legacyEnvironment->getEnvironment();
 
-        $legacyEnvironment = $environment;
+        $user_item = $userService->getUser($request->get('userId'));
 
-        $sessionManager = $legacyEnvironment->getSessionManager();
-        $sessionItem = $legacyEnvironment->getSessionItem();
+        $privateRoom = $entityManager->getRepository(RoomPrivat::class)
+            ->findByContextIdAndUsername($portalId, $user_item->getUserID());
 
-        if (!is_null($sessionItem)) {
-            $sessionManager->delete($sessionItem->getSessionID());
-            $legacyEnvironment->setSessionItem(null);
-
-            $cookie = $session->get('cookie');
-            $javascript = $session->get('javascript');
-            $https = $session->get('https');
-            $flash = $session->get('flash');
-            $session_id = $session->getSessionID();
-            $session = new \cs_session_item();
-            $session->createSessionID($user_item->getUserID());
-            $session->setValue('auth_source', $user_item->getAuthSource());
-            $session->setValue('root_session_id', $session_id);
-            if ($cookie == '1') {
-                $session->setValue('cookie', 2);
-            } elseif (empty($cookie)) {
-                // do nothing, so CommSy will try to save cookie
-            } else {
-                $session->setValue('cookie', 0);
-            }
-            if ($javascript == '1') {
-                $session->setValue('javascript', 1);
-            } elseif ($javascript == '-1') {
-                $session->setValue('javascript', -1);
-            }
-            if ($https == '1') {
-                $session->setValue('https', 1);
-            } elseif ($https == '-1') {
-                $session->setValue('https', -1);
-            }
-            if ($flash == '1') {
-                $session->setValue('flash', 1);
-            } elseif ($flash == '-1') {
-                $session->setValue('flash', -1);
-            }
-
-            // save portal id in session to be sure, that user didn't
-            // switch between portals
-            if ($environment->inServer()) {
-                $session->setValue('commsy_id', $environment->getServerID());
-            } else {
-                $session->setValue('commsy_id', $environment->getCurrentPortalID());
-            }
-            $environment->setSessionItem($session);
-            redirect($environment->getCurrentContextID(), 'home', 'index', array());
+        if ($privateRoom !== null) {
+            return $this->redirectToRoute('app_helper_portalenter', [
+                'context' => $portalId,
+                '_switch_user' => $user_item->getUserID(),
+            ]);
         }
-
-        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-            'portalId' => $portal->getId(),
-            'userId' => $user->getItemID(),
-        ]);
-
-        $this->addFlash('notYetImplemented', $returnUrl);
-
-        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
-        ]);
-
     }
 
     /**
