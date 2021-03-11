@@ -152,8 +152,9 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->setUsePortalEmail(1);
             } else {
                 $userObject->setUsePortalEmail(0);
-                $userObject->setEmail($userData['emailRoom']);
             }
+
+            $userObject->setEmail($userData['emailRoom']);
 
             $privateRoomUserItem = $portalUser->getRelatedPrivateRoomUserItem();
 
