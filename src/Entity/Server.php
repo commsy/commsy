@@ -207,12 +207,12 @@ class Server
      *
      * @return array
      */
-    public function getExtras():? array
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    public function getAnnouncementText():? string
+    public function getAnnouncementText(): ?string
     {
         return $this->extras['ANNOUNCEMENT_TEXT'] ?? '';
     }
@@ -223,7 +223,7 @@ class Server
         return $this;
     }
 
-    public function getAnnouncementTitle():? string
+    public function getAnnouncementTitle(): ?string
     {
         return $this->extras['ANNOUNCEMENT_TITLE'] ?? '';
     }
@@ -234,7 +234,7 @@ class Server
         return $this;
     }
 
-    public function getAnnouncementSeverity():? string
+    public function getAnnouncementSeverity(): ?string
     {
         return $this->extras['ANNOUNCEMENT_SEVERITY'] ?? '';
     }
@@ -253,6 +253,72 @@ class Server
     public function setAnnouncementEnabled(bool $enabled): self
     {
         $this->extras['ANNOUNCEMENT_ENABLED'] = $enabled;
+        return $this;
+    }
+
+    public function hasDataPrivacyEnabled(): bool
+    {
+        return $this->extras['CONTENT_DATAPRIVACY_ENABLED'] ?? false;
+    }
+
+    public function setDataPrivacyEnabled(bool $enabled): self
+    {
+        $this->extras['CONTENT_DATAPRIVACY_ENABLED'] = $enabled;
+        return $this;
+    }
+
+    public function getDataPrivacyText(): ?string
+    {
+        return $this->extras['CONTENT_DATAPRIVACY_TEXT'] ?? '';
+    }
+
+    public function setDataPrivacyText(string $text): self
+    {
+        $this->extras['CONTENT_DATAPRIVACY_TEXT'] = $text;
+        return $this;
+    }
+
+    public function hasImpressumEnabled(): bool
+    {
+        return $this->extras['CONTENT_IMPRESSUM_ENABLED'] ?? false;
+    }
+
+    public function setImpressumEnabled(bool $enabled): self
+    {
+        $this->extras['CONTENT_IMPRESSUM_ENABLED'] = $enabled;
+        return $this;
+    }
+
+    public function getImpressumText(): ?string
+    {
+        return $this->extras['CONTENT_IMPRESSUM_TEXT'] ?? '';
+    }
+
+    public function setImpressumText(string $text): self
+    {
+        $this->extras['CONTENT_IMPRESSUM_TEXT'] = $text;
+        return $this;
+    }
+
+    public function hasAccessabilityEnabled(): bool
+    {
+        return $this->extras['CONTENT_ACCESSABILITY_ENABLED'] ?? false;
+    }
+
+    public function setAccessabilityEnabled(bool $enabled): self
+    {
+        $this->extras['CONTENT_ACCESSABILITY_ENABLED'] = $enabled;
+        return $this;
+    }
+
+    public function getAccessabilityText(): ?string
+    {
+        return $this->extras['CONTENT_ACCESSABILITY_TEXT'] ?? '';
+    }
+
+    public function setAccessabilityText(string $text): self
+    {
+        $this->extras['CONTENT_ACCESSABILITY_TEXT'] = $text;
         return $this;
     }
 }

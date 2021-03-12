@@ -350,6 +350,10 @@
                 <source>No</source>
                 <target>No</target>
             </trans-unit>
+            <trans-unit id="content">
+                <source>content</source>
+                <target>Content</target>
+            </trans-unit>
             <trans-unit id="subject">
                 <source>subject</source>
                 <target>Subject</target>

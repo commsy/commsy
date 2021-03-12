@@ -426,9 +426,9 @@ class MenuBuilder
             ->setExtra('translation_domain', 'portal');
 
             // terms
-            $menu->addChild('Terms', [
-                'label' => 'terms',
-                'route' => 'app_portalsettings_terms',
+            $menu->addChild('Contents', [
+                'label' => 'contents',
+                'route' => 'app_portalsettings_contents',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'file-text']
             ])
