@@ -398,6 +398,15 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
+            // appearance
+            $menu->addChild('Appearance', [
+                'label' => 'appearance',
+                'route' => 'app_portalsettings_appearance',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'paint-bucket'],
+            ])
+            ->setExtra('translation_domain', 'menu');
+
             // support
             $menu->addChild('Support', [
                 'label' => 'Support requests',

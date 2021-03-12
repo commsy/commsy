@@ -19,6 +19,7 @@ use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
+use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
@@ -32,7 +33,7 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
-use App\Form\Type\Portal\AnnouncementsType;
+use App\Form\Type\Portal\PortalAnnouncementsType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
@@ -43,10 +44,13 @@ use App\Form\Type\Portal\LicenseSortType;
 use App\Form\Type\Portal\LicenseType;
 use App\Form\Type\Portal\MailtextsType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
+use App\Form\Type\Portal\PortalAppearanceType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
 use App\Form\Type\Portal\ProjectRoomsCreationType;
 use App\Form\Type\Portal\RoomCategoriesType;
+use App\Form\Type\Portal\ServerAnnouncementsType;
+use App\Form\Type\Portal\ServerAppearanceType;
 use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
@@ -117,6 +121,52 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/appearance")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template
+     * @param Portal $portal
+     * @param Request $request
+     */
+    public function appearance(Portal $portal, Request $request, EntityManagerInterface $entityManager)
+    {
+        $portalForm = $this->createForm(PortalAppearanceType::class, $portal);
+        $portalForm->handleRequest($request);
+        if ($portalForm->isSubmitted() && $portalForm->isValid()) {
+            if ($portalForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_appearance', [
+                    'portalId' => $portal->getId(),
+                ]);
+            }
+        }
+
+        $serverForm = null;
+        if ($this->isGranted('ROOT')) {
+            $server = $entityManager->getRepository(Server::class)->getServer();
+            $serverForm = $this->createForm(ServerAppearanceType::class, $server);
+            $serverForm->handleRequest($request);
+            if ($serverForm->isSubmitted() && $serverForm->isValid()) {
+                if ($serverForm->getClickedButton()->getName() === 'save') {
+                    $entityManager->persist($server);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_portalsettings_appearance', [
+                        'portalId' => $portal->getId(),
+                    ]);
+                }
+            }
+        }
+
+        return [
+            'portalForm' => $portalForm->createView(),
+            'serverForm' => $serverForm !== null ? $serverForm->createView() : null,
         ];
     }
 
@@ -887,15 +937,27 @@ class PortalSettingsController extends AbstractController
      */
     public function announcements(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(AnnouncementsType::class, $portal);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $portalForm = $this->createForm(PortalAnnouncementsType::class, $portal);
+        $portalForm->handleRequest($request);
+        if ($portalForm->isSubmitted() && $portalForm->isValid()) {
             $entityManager->persist($portal);
             $entityManager->flush();
         }
 
+        $serverForm = null;
+        if ($this->isGranted('ROOT')) {
+            $server = $entityManager->getRepository(Server::class)->getServer();
+            $serverForm = $this->createForm(ServerAnnouncementsType::class, $server);
+            $serverForm->handleRequest($request);
+            if ($serverForm->isSubmitted() && $serverForm->isValid()) {
+                $entityManager->persist($server);
+                $entityManager->flush();
+            }
+        }
+
         return [
-            'form' => $form->createView(),
+            'portalForm' => $portalForm->createView(),
+            'serverForm' => $serverForm !== null ? $serverForm->createView() : null,
         ];
     }
 

@@ -65,7 +65,8 @@ fos_ck_editor:
         configs:
             nonHtml: [ "@clipboard" ]
             simpleToolbar: [ "@clipboard", "@basicstyles" ]
-            fullToolbar: [ [ "html5audio" ], "@clipboard", "@basicstyles" , "@paragraph", "@justify", "@misc", "/", "@format", "@style", "@content", "@language", "@commsy" ]
+            reducedToolbar: [ "@clipboard", "@basicstyles", "@paragraph", "@justify", "/", "@format", "@style", "@content" ]
+            fullToolbar: [ [ "html5audio" ], "@clipboard", "@basicstyles", "@paragraph", "@justify", "@misc", "/", "@format", "@style", "@content", "@language", "@commsy" ]
         items:
             clipboard: [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ]
             basicstyles: [ "Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript" ]
@@ -86,6 +87,10 @@ fos_ck_editor:
             removePlugins: 'floatingspace,sharedspace,resize,elementspath'
             autoGrow_onStartup: true
             mathJaxLib: "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML"
+
+        html_reduced:
+            toolbar: "reducedToolbar"
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
 
         cs_annotation_config:
             toolbar: "simpleToolbar"

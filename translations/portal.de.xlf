@@ -90,7 +90,7 @@
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
                 <source>announcements</source>
-                <target>Portal-Ankündigungen</target>
+                <target>Ankündigungen</target>
             </trans-unit>
             <trans-unit id="Priority">
                 <source>Priority</source>
@@ -985,9 +985,11 @@
                 <source>portal.form_desc_en</source>
                 <target>Beschreibung Englisch</target>
             </trans-unit>
-            <trans-unit id="Portal logo">
-                <source>Portal logo</source>
-                <target>Logo</target>
+
+            <!-- appearance form -->
+            <trans-unit id="portal_fappearance_orm_title">
+                <source>Appearance</source>
+                <target>Darstellung</target>
             </trans-unit>
 
             <!-- Mailtexts -->

@@ -1,27 +1,27 @@
 <?php
+
 namespace App\Form\Type\Portal;
 
 use App\Entity\Portal;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints as Assert;
 
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
-
-class AnnouncementsType extends AbstractType
+class PortalAnnouncementsType extends AbstractType
 {
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('announcementEnabled' , Types\ChoiceType::class, [
+            ->add('announcementEnabled', Types\ChoiceType::class, [
                 'label' => 'Show?',
                 'expanded' => true,
                 'choices' => [
@@ -48,13 +48,7 @@ class AnnouncementsType extends AbstractType
                 'label' => 'Message',
                 'translation_domain' => 'settings',
                 'required' => false,
-            ])
-            ->add('announcementLink', Types\UrlType::class, [
-                'constraints' => [
-                    new Assert\Url(),
-                ],
-                'label' => 'Link',
-                'required' => false,
+                'config_name' => 'html_reduced',
             ])
             ->add('serverAnnouncementEnabled', Types\ChoiceType::class, [
                 'label' => 'Show server infos',
@@ -68,14 +62,13 @@ class AnnouncementsType extends AbstractType
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
-            ])
-        ;
+            ]);
     }
 
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
