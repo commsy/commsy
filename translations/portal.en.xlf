@@ -89,7 +89,7 @@
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
-                <source>Portal announcements</source>
+                <source>announcements</source>
                 <target>announcements</target>
             </trans-unit>
             <trans-unit id="Priority">
@@ -972,7 +972,7 @@
                 <target># Workspaces</target>
             </trans-unit>
 
-            <!-- form -->
+            <!-- general form -->
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Title</target>
@@ -985,9 +985,11 @@
                 <source>portal.form_desc_en</source>
                 <target>Description English</target>
             </trans-unit>
-            <trans-unit id="Portal logo">
-                <source>Portal logo</source>
-                <target>Logo</target>
+
+            <!-- appearance form -->
+            <trans-unit id="portal_fappearance_orm_title">
+                <source>Appearance</source>
+                <target>Appearance</target>
             </trans-unit>
 
             <!-- Mailtexts -->

@@ -1,0 +1,26 @@
+{% macro server(server, portal) %}
+    {# server announcements #}
+    {% set showServerNews = server.announcementEnabled|default(false) %}
+    {% if showServerNews and not (portal.serverAnnouncementEnabled ?? true) %}
+        {% set showServerNews = false %}
+    {% endif %}
+
+    {% if showServerNews %}
+        {{ _self.render(server) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro portal(portal) %}
+    {# portal announcements #}
+    {% if portal.announcementEnabled|default(false) %}
+        {{ _self.render(portal) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro render(item) %}
+    <div{% if item.announcementSeverity != 'normal' %} class="uk-alert-{{ item.announcementSeverity }}"{% endif %} uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <h3>{{ item.announcementTitle }}</h3>
+        <p>{{ item.announcementText|raw }}</p>
+    </div>
+{% endmacro %}

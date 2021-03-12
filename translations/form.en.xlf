@@ -46,6 +46,10 @@
                 <source>selecting one</source>
                 <target>Alternatively you can use the file selection dialog</target>
             </trans-unit>
+            <trans-unit id="form-file-select">
+                <source>Select a file</source>
+                <target>Select a file</target>
+            </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
                 <target>The ideal aspect ratio for workspace images is 4&#58;1 (Width&#58;Height).</target>

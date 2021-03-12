@@ -36,20 +36,25 @@
 {%- endblock range_widget %}
 
 {% block file_widget -%}
-    {% if image_url is defined and image_url is not null %}
-        <img src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/image"/>
-    {% endif %}
+{#    {% if image_url is defined and image_url is not null %}#}
+{#        <img src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/image"/>#}
+{#    {% endif %}#}
 
-    <div class="js-upload uk-placeholder uk-text-center">
-        <span uk-icon="icon: cloud-upload"></span>
-        <div class="uk-text-middle">{{ 'Attach files by dropping them here or'|trans({}, 'form') }}</div>
-        <div uk-form-custom>
-            {{ block('form_widget') }}
-            <span class="uk-link">{{ 'selecting one'|trans({}, 'form') }}</span>
-        </div>
+{#    <div class="js-upload uk-placeholder uk-text-center">#}
+{#        <span uk-icon="icon: cloud-upload"></span>#}
+{#        <div class="uk-text-middle">{{ 'Attach files by dropping them here or'|trans({}, 'form') }}</div>#}
+{#        <div uk-form-custom>#}
+{#            {{ block('form_widget') }}#}
+{#            <span class="uk-link">{{ 'selecting one'|trans({}, 'form') }}</span>#}
+{#        </div>#}
+{#    </div>#}
+
+{#    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>#}
+
+    <div class="js-upload" uk-form-custom>
+        {{ block('form_widget') }}
+        <button class="uk-button uk-button-default" type="button" tabindex="-1">{{ 'Select a file'|trans({}, 'form') }}</button>
     </div>
-
-    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
 {%- endblock %}
 
 {% block button_widget -%}

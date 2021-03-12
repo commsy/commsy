@@ -2,14 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Portal;
+use App\Entity\Server;
 use App\Utils\FileService;
 use App\Utils\RoomService;
+use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Vich\UploaderBundle\Handler\DownloadHandler;
 
 class FileController extends AbstractController
 {
@@ -191,5 +196,33 @@ class FileController extends AbstractController
             $response = new Response("Could not find background image for selected theme!", Response::HTTP_NOT_FOUND);
         }
         return $response;
+    }
+
+    /**
+     * @Route("/logo/server")
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param DownloadHandler $downloadHandler
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function serverLogo(EntityManagerInterface $entityManager, DownloadHandler $downloadHandler)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        return $downloadHandler->downloadObject($server, 'logoImageFile', null, null, false);
+    }
+
+    /**
+     * @Route("/logo/portal/{portalId}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param DownloadHandler $downloadHandler
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function portalLogo(Portal $portal, EntityManagerInterface $entityManager, DownloadHandler $downloadHandler)
+    {
+        return $downloadHandler->downloadObject($portal, 'logoFile', null, null, false);
     }
 }

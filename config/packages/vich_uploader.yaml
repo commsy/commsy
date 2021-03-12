@@ -6,6 +6,10 @@ vich_uploader:
             uri_prefix: /files/portal/logos
             upload_destination: '%kernel.project_dir%/files/portal/logos'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
-            delete_on_remove: true  # determine whether to delete file upon removal of entity
-            delete_on_update: true  # determine wheter to delete the file upon update of entity
-            inject_on_load: true   # determine whether to inject a File instance upon load
+            inject_on_load: true
+
+        server_logo:
+            uri_prefix: /files/server
+            upload_destination: '%kernel.project_dir%/files/server'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: true
