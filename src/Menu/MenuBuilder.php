@@ -695,6 +695,10 @@ class MenuBuilder
             ))
                 ->setExtra('translation_domain', 'portal');
         }
+
+        $menu->addChild('CommSy Version 1.2.3', [
+
+        ]);
         
         return $menu;
     }

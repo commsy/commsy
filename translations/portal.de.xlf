@@ -130,8 +130,8 @@
                 <source>impressum</source>
                 <target>Impressum</target>
             </trans-unit>
-            <trans-unit id="portal_content_accessability">
-                <source>accessability</source>
+            <trans-unit id="portal_content_accessibility">
+                <source>accessibility</source>
                 <target>Barrierefreiheit</target>
             </trans-unit>
 

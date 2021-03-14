@@ -86,4 +86,52 @@ class ServerController extends AbstractController
             'form' => $form->createView(),
         ];
     }
+
+    /**
+     * @Route("/server/impressum")
+     * @Template()
+     */
+    public function impressum(EntityManagerInterface $entityManager)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        if (!$server->hasImpressumEnabled()) {
+            throw $this->createNotFoundException();
+        }
+
+        return [
+            'content' => $server->getImpressumText(),
+        ];
+    }
+
+    /**
+     * @Route("/server/data_privacy")
+     * @Template()
+     */
+    public function dataPrivacy(EntityManagerInterface $entityManager)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        if (!$server->hasDataPrivacyEnabled()) {
+            throw $this->createNotFoundException();
+        }
+
+        return [
+            'content' => $server->getDataPrivacyText(),
+        ];
+    }
+
+    /**
+     * @Route("/server/accessibility")
+     * @Template()
+     */
+    public function accessibility(EntityManagerInterface $entityManager)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        if (!$server->hasAccessibilityEnabled()) {
+            throw $this->createNotFoundException();
+        }
+
+        return [
+            'content' => $server->getAccessibilityText(),
+        ];
+    }
 }
