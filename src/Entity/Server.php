@@ -300,25 +300,25 @@ class Server
         return $this;
     }
 
-    public function hasAccessabilityEnabled(): bool
+    public function hasAccessibilityEnabled(): bool
     {
-        return $this->extras['CONTENT_ACCESSABILITY_ENABLED'] ?? false;
+        return $this->extras['CONTENT_ACCESSIBILITY_ENABLED'] ?? false;
     }
 
-    public function setAccessabilityEnabled(bool $enabled): self
+    public function setAccessibilityEnabled(bool $enabled): self
     {
-        $this->extras['CONTENT_ACCESSABILITY_ENABLED'] = $enabled;
+        $this->extras['CONTENT_ACCESSIBILITY_ENABLED'] = $enabled;
         return $this;
     }
 
-    public function getAccessabilityText(): ?string
+    public function getAccessibilityText(): ?string
     {
-        return $this->extras['CONTENT_ACCESSABILITY_TEXT'] ?? '';
+        return $this->extras['CONTENT_ACCESSIBILITY_TEXT'] ?? '';
     }
 
-    public function setAccessabilityText(string $text): self
+    public function setAccessibilityText(string $text): self
     {
-        $this->extras['CONTENT_ACCESSABILITY_TEXT'] = $text;
+        $this->extras['CONTENT_ACCESSIBILITY_TEXT'] = $text;
         return $this;
     }
 }

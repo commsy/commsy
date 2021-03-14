@@ -12,7 +12,7 @@
         <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
     </head>
     <body>
-        <div class="uk-inline uk-width-1-1" uk-height-viewport>
+        <div class="uk-inline uk-width-1-1">
             {# Top navigation bar #}
             <div id="top_navigation">
                 {% block top_navigation %}{% endblock %}
@@ -22,7 +22,7 @@
             {% block sidebar_left %}{% endblock %}
 
             {# Main content area #}
-            <div id="main">
+            <div id="main" uk-height-viewport="expand: true">
                 {% block breadcrumb %}{% endblock %}
                 {% block cover %}{% endblock %}
 
@@ -35,8 +35,29 @@
 
             {# Footer #}
             <div id="footer">
-                <div class="uk-section uk-section-default uk-padding-small uk-text-small">
-                    {% block footer %}{% endblock %}
+                <div class="uk-section uk-section-default uk-section-xsmall uk-text-small">
+                    <div class="uk-container">
+                        <div class="uk-flex uk-flex-center">
+                            <div>CommSy {{ commsy.version }}</div>
+                            {% if commsy.server.dataPrivacyEnabled %}
+                                <div class="uk-margin-left">
+                                    <a href="{{ path('app_server_dataprivacy') }}">{{ 'data privacy'|trans({}, 'portal') }}</a>
+                                </div>
+                            {% endif %}
+                            {% if commsy.server.impressumEnabled %}
+                                <div class="uk-margin-left">
+                                    <a href="{{ path('app_server_impressum') }}">{{ 'impressum'|trans({}, 'portal') }}</a>
+                                </div>
+                            {% endif %}
+                            {% if commsy.server.accessibilityEnabled %}
+                                <div class="uk-margin-left">
+                                    <a href="{{ path('app_server_accessibility') }}">{{ 'accessibility'|trans({}, 'portal') }}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% block footer %}{% endblock %}
+                    </div>
                 </div>
             </div>
         </div>

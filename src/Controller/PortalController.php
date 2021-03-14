@@ -48,33 +48,6 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{roomId}/impressum")
-     * @Template()
-     */
-    public function impressum()
-    {
-        return [];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/dp")
-     * @Template()
-     */
-    public function dataPrivacy()
-    {
-        return [];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/tou")
-     * @Template()
-     */
-    public function termsOfUse()
-    {
-        return [];
-    }
-
-    /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")

@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AccessabilityType extends AbstractType
+class AccessibilityType extends AbstractType
 {
     /**
      * Builds the form.
@@ -23,7 +23,7 @@ class AccessabilityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('accessabilityEnabled', ChoiceType::class, [
+            ->add('accessibilityEnabled', ChoiceType::class, [
                 'label' => 'Show?',
                 'expanded' => true,
                 'choices' => [
@@ -32,7 +32,7 @@ class AccessabilityType extends AbstractType
                 ],
                 'choice_translation_domain' => 'form',
             ])
-            ->add('accessabilityText', CKEditorType::class, [
+            ->add('accessibilityText', CKEditorType::class, [
                 'label' => 'content',
                 'config_name' => 'html_reduced',
                 'translation_domain' => 'form',

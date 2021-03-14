@@ -23,7 +23,7 @@ use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
-use App\Form\Type\Portal\AccessabilityType;
+use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
@@ -991,7 +991,7 @@ class PortalSettingsController extends AbstractController
         $server = $entityManager->getRepository(Server::class)->getServer();
         $dataPrivacyForm = $this->createForm(DataPrivacyType::class, $server);
         $impressumForm = $this->createForm(ImpressumType::class, $server);
-        $accessibilityForm = $this->createForm(AccessabilityType::class, $server);
+        $accessibilityForm = $this->createForm(AccessibilityType::class, $server);
         if ($this->isGranted('ROOT')) {
             $dataPrivacyForm->handleRequest($request);
             if ($dataPrivacyForm->isSubmitted() && $dataPrivacyForm->isValid()) {
