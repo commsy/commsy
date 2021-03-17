@@ -93,7 +93,7 @@ class cs_item {
       $this->_type = 'item';
    }
 
-    public function getContextItem(): ?\cs_context_item
+    public function getContextItem()
     {
         if ($this->_context_item == null) {
             $contextId = $this->getContextID();
