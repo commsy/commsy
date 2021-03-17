@@ -57,8 +57,13 @@ class cs_userroom_item extends cs_room_item
 
    public function save($saveOther = true)
    {
+      $itemId = $this->getItemID();
       $manager = $this->_environment->getUserRoomManager();
       $this->_save($manager);
+
+      if (empty($itemId)) {
+         $this->initTagRootItem();
+      }
 
       $this->updateElastic();
    }

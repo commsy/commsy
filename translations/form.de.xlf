@@ -50,6 +50,10 @@
                 <source>Select a file</source>
                 <target>Datei auswählen</target>
             </trans-unit>
+            <trans-unit id="form-upload-info-maxfilesize">
+                <source>Upload files up to %maxUploadSize% MB</source>
+                <target>Sie können Dateien bis zu %maxUploadSize% MB hochladen.</target>
+            </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
                 <target>Das ideale Seitenverhältnis für Raumbilder liegt bei 4&#58;1 (Breite&#58;Höhe).</target>

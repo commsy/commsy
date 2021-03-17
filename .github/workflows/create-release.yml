@@ -1,0 +1,50 @@
+name: Create Release
+
+on: push
+
+jobs:
+    build:
+        name: Create Release
+        runs-on: ubuntu-latest
+        steps:
+            -   name: actions/checkout
+                uses: actions/checkout@v2
+            -   name: Setup node
+                uses: actions/setup-node@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '7.3'
+                    extensions: zip, imap, ldap, soap
+                    tools: composer:v1
+            -   name: Install yarn deps
+                run: yarn install
+            -   name: Copy legacy configurtion
+                run: cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
+            -   name: Install php deps
+                run: composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest
+            -   name: Dump env
+                run: composer dump-env prod
+            -   name: Dump autoload
+                run: composer dump-autoload --classmap-authoritative --no-dev
+            -   name: Run post install scripts
+                run: composer run-script --no-dev post-install-cmd
+            -   name: Build frontend package
+                run: yarn build
+            -   name: Get tag
+                id: tag
+                uses: dawidd6/action-get-tag@v1
+                if: startsWith(github.ref, 'refs/tags/')
+            -   name: Archive Release
+                uses: thedoctor0/zip-release@master
+                if: startsWith(github.ref, 'refs/tags/')
+                with:
+                    filename: commsy-${{ steps.tag.outputs.tag }}.zip
+                    exclusions: '*.git* /assets/* /docker/* /*node_modules/* /tests/* .dockerignore .env.test .travis.yml codeception.yml composer.lock composer.phar docker-compose.yml Dockerfile install.sh package.json php* symfony.lock tsconfig.json webpack.config.js yarn.lock'
+            -   name: Release
+                uses: softprops/action-gh-release@v1
+                if: startsWith(github.ref, 'refs/tags/')
+                with:
+                    files: commsy-${{ steps.tag.outputs.tag }}.zip
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

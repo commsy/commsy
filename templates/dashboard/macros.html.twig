@@ -168,3 +168,17 @@
         </div>
     {#</li>#}
 {% endmacro %}
+
+{% macro dashboardMyViews(roomItem) %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser cs-panel-teaser-primary">
+            <div class="uk-flex uk-flex-middle">
+                <div class="uk-text-large">{{ 'my views'|trans({}, "dashboard") }}</div>
+            </div>
+        </div>
+        {{ render(controller(
+            'App\\Controller\\DashboardController::myViewsAction',
+            { 'roomId': roomItem.itemId }
+        )) }}
+    </div>
+{% endmacro %}

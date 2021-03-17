@@ -30,8 +30,24 @@
                 <source>Search for "%query%" (%totalHits% Hits)</source>
                 <target>Suche nach "%query%" (%totalHits% Treffer)</target>
             </trans-unit>
+            <trans-unit id="manage-my-views">
+                <source>Manage my views</source>
+                <target>Meine Ansichten</target>
+            </trans-unit>
+            <trans-unit id="my-view">
+                <source>My view</source>
+                <target>Ansicht</target>
+            </trans-unit>
+            <trans-unit id="new-view">
+                <source>New view</source>
+                <target>Neue Ansicht</target>
+            </trans-unit>
+            <trans-unit id="view-title">
+                <source>View title</source>
+                <target>Titel</target>
+            </trans-unit>
             <trans-unit id="search-results-restrict">
-                <source>Restrict Results</source>
+                <source>Restrict results</source>
                 <target>Ergebnisse einschränken</target>
             </trans-unit>
             <trans-unit id="search-results-top50">
@@ -39,8 +55,8 @@
                 <target>Die 50 besten Treffer (nach Aktivität und Raumtyp sortiert)</target>
             </trans-unit>
             <trans-unit id="search-filter-all-my-rooms">
-                <source>Search in all my rooms</source>
-                <target>Suche in allen meinen Räumen</target>
+                <source>All my rooms</source>
+                <target>Alle meine Räume</target>
             </trans-unit>
             <trans-unit id="search-filter-appearing-in">
                 <source>Appearing in</source>
@@ -66,6 +82,10 @@
                 <source>Hashtags</source>
                 <target>Schlagwörter</target>
             </trans-unit>
+            <trans-unit id="search-filter-contexts">
+                <source>Contexts</source>
+                <target>Raum</target>
+            </trans-unit>
             <trans-unit id="search-filter-categories">
                 <source>Categories</source>
                 <target>Kategorien</target>
@@ -86,9 +106,37 @@
                 <source>Groups, Topics and Institutions</source>
                 <target>Gruppen, Themen &amp; Institutionen</target>
             </trans-unit>
+            <trans-unit id="search-filter-read-status">
+                <source>Read status</source>
+                <target>Gelesen-Status</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-new">
+                <source>New</source>
+                <target>Neu</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-modified">
+                <source>Modified</source>
+                <target>Geändert</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-read">
+                <source>Read</source>
+                <target>Gelesen</target>
+            </trans-unit>
             <trans-unit id="room-search">
                 <source>Room search</source>
                 <target>Raumsuche</target>
+            </trans-unit>
+            <trans-unit id="search-sort-modifier">
+                <source>Modifier</source>
+                <target>BearbeiterIn</target>
+            </trans-unit>
+            <trans-unit id="search-sort-creation-date">
+                <source>Creation date</source>
+                <target>Erstellungsdatum</target>
+            </trans-unit>
+            <trans-unit id="search-sort-modification-date">
+                <source>Modification date</source>
+                <target>Bearbeitungsdatum</target>
             </trans-unit>
         </body>
     </file>

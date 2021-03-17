@@ -77,10 +77,16 @@ class ItemController extends AbstractController
         $transformer = $this->get('commsy_legacy.transformer.' . $item->getItemType());
 
         $itemType = $item->getItemType();
+
+        // NOTE: we disable the CommSy-related & MathJax toolbar items for users & groups, so their CKEEditor controls
+        // won't allow any media upload; this is done since user & group detail views currently have no means to manage
+        // (e.g. delete again) any attached files
+        $configName = ($itemType === 'user' || $itemType === 'group') ? 'cs_item_nomedia_config' : 'cs_item_config' ;
         
         $formData = $transformer->transform($item);
         $formOptions = array(
             'itemId' => $itemId,
+            'configName' => $configName,
             'uploadUrl' => $this->generateUrl('app_upload_ckupload', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
