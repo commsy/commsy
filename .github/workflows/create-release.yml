@@ -19,8 +19,6 @@ jobs:
                     tools: composer:v1
             -   name: Install yarn deps
                 run: yarn install
-            -   name: Copy legacy configurtion
-                run: cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
             -   name: Install php deps
                 run: composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest
             -   name: Dump env
