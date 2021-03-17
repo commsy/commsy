@@ -451,12 +451,7 @@ services:
     commsy.menu.builder:
         class: App\Menu\MenuBuilder
         arguments:
-            - '@knp_menu.factory'
-            - '@commsy_legacy.room_service'
-            - '@commsy_legacy.environment'
-            - '@commsy_legacy.user_service'
-            - '@security.authorization_checker'
-            - '@commsy.invitations_service'
+            $factory: '@knp_menu.factory'
 
     commsy.menu.main:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
@@ -1017,12 +1012,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # Form type extension
-    commsy.form.extension.image_type:
-        class: App\Form\Extension\ImageTypeExtension
-        tags:
-            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
-
     # Controller
     commsy.item_controller:
         class: App\Controller\ItemController
@@ -1207,7 +1196,7 @@ services:
 
     App\Services\AvatarService:
         arguments:
-            $kernelRootDir: '%kernel.root_dir%'
+            $kernelProjectDir: '%kernel.project_dir%'
 
     App\Services\PrintService:
         arguments:
@@ -1220,10 +1209,6 @@ services:
 
     App\Services\CopyService:
         autowire: true
-
-    commsy.invitations_service:
-        class: App\Services\InvitationsService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
@@ -1356,7 +1341,13 @@ services:
     App\Event\UserStatusChangedEvent:
         autowire: false
 
+    App\Event\ReadStatusPreChangeEvent:
+        autowire: false
+
     App\Event\AccountChangedEvent:
+        autowire: false
+
+    App\Event\AccountDeletedEvent:
         autowire: false
 
     # Response

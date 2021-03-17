@@ -12,6 +12,7 @@
 
     <div class="uk-panel uk-panel-box uk-panel-box-primary">
     
+        <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
     <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-text-large">
@@ -126,8 +127,9 @@
                         </div>
                     </div>
                 </div>
+        </div>
 
-    <div id='calendar' data-events='{"url": "{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('app_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}", "date": "{{ 'date'|trans({}, 'date') }}", "recurringDate": "{{ 'recurring date'|trans({}, 'date') }}", "place": "{{ 'place'|trans({}, 'date') }}", "participants": "{{ 'participants'|trans({}, 'date') }}", "calendar": "{{ 'calendar'|trans({}, 'date') }}"}' data-options='{"locale": "{{ selectedLanguage() }}" }'></div>
+    <div id='calendar' class="uk-margin-top" data-events='{"url": "{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}", "dateUrl": "{{ path('app_date_list', {'roomId': roomId}) }}"}' data-confirm-change='{{ 'confirm change'|trans({},"date")}}' data-confirm-change-cancel='{{ 'confirm change cancel'|trans({},"date")}}' data-confirm-change-ok='{{ 'confirm change ok'|trans({},"date")}}' data-translations='{"prevYear": "{{ 'prevYear'|trans({}, 'date') }}", "prev": "{{ 'prev'|trans({}, 'date') }}", "next": "{{ 'next'|trans({}, 'date') }}", "nextYear": "{{ 'nextYear'|trans({}, 'date') }}", "date": "{{ 'date'|trans({}, 'date') }}", "recurringDate": "{{ 'recurring date'|trans({}, 'date') }}", "place": "{{ 'place'|trans({}, 'date') }}", "participants": "{{ 'participants'|trans({}, 'date') }}", "calendar": "{{ 'calendar'|trans({}, 'date') }}"}' data-options='{"locale": "{{ selectedLanguage() }}" }'></div>
     
     </div>
         </div>
@@ -158,20 +160,25 @@
             {% endif %}
 
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-text-large uk-float-left">
-                            {{ 'list filter'|trans({},"room")}}
+                    {{ form_start(form) }}
+                <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary">
+                        <div class="uk-clearfix">
+                            <div class="uk-flex uk-flex-space-between uk-flex-middle">
+                                <div class="uk-text-large">
+                                    {{ 'list filter'|trans({},"room")}}
+                                </div>
+                                <div class="uk-flex-right uk-flex-inline uk-flex-middle">
+                                    {{ form_widget(form.submit) }}
+                                    <a href="#" class="button-toggle uk-button-mini uk-button-secondary uk-margin-small-left" data-uk-toggle="{target: '#list-filter'}" style="padding-top: 1px; padding-bottom: 1px">
+                                        <i class="uk-icon-chevron-up"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="list-filter">
-                    {{ form_start(form) }}
+                <div id="list-filter" class="uk-margin-top">
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>

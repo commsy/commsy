@@ -1323,6 +1323,10 @@ class cs_privateroom_item extends cs_room_item
                     $retour = str_replace('%1', $user->getFullname(), $retour);
                 }
                 unset($user);
+            } else {
+                // use the translated default title for the user's private room (instead of the title of its database entry)
+                $translator = $this->_environment->getTranslationObject();
+                $retour = $translator->getMessage('COMMON_PRIVATEROOM');
             }
         }
         return $retour;

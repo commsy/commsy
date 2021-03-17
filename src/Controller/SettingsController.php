@@ -3,37 +3,34 @@
 namespace App\Controller;
 
 use App\Entity\Terms;
+use App\Event\RoomSettingsChangedEvent;
 use App\Form\DataTransformer\AdditionalSettingsTransformer;
 use App\Form\DataTransformer\AppearanceSettingsTransformer;
+use App\Form\DataTransformer\ExtensionSettingsTransformer;
 use App\Form\DataTransformer\GeneralSettingsTransformer;
 use App\Form\DataTransformer\ModerationSettingsTransformer;
-use App\Event\RoomSettingsChangedEvent;
-use App\Form\Type\Room\DeleteType;
-use App\Services\InvitationsService;
-use App\Form\Type\Room\UserRoomDeleteType;
-use App\Services\LegacyEnvironment;
-use App\Services\RoomCategoriesService;
-use cs_room_item;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use App\Utils\UserroomService;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
-use App\Form\DataTransformer\ExtensionSettingsTransformer;
-use App\Form\Type\GeneralSettingsType;
-use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\AdditionalSettingsType;
 use App\Form\Type\AppearanceSettingsType;
 use App\Form\Type\ExtensionSettingsType;
+use App\Form\Type\GeneralSettingsType;
 use App\Form\Type\InvitationsSettingsType;
+use App\Form\Type\ModerationSettingsType;
+use App\Form\Type\Room\DeleteType;
+use App\Form\Type\Room\UserRoomDeleteType;
+use App\Services\InvitationsService;
+use App\Services\LegacyEnvironment;
+use App\Services\RoomCategoriesService;
 use App\Utils\RoomService;
-
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use App\Utils\UserroomService;
+use cs_room_item;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -64,7 +61,8 @@ class SettingsController extends AbstractController
         LegacyEnvironment $environment,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ) {
+    )
+    {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room from RoomService
@@ -134,7 +132,8 @@ class SettingsController extends AbstractController
         ModerationSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ) {
+    )
+    {
         /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -179,7 +178,8 @@ class SettingsController extends AbstractController
         AdditionalSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ) {
+    )
+    {
         /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -245,7 +245,8 @@ class SettingsController extends AbstractController
         AppearanceSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ) {
+    )
+    {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -272,7 +273,7 @@ class SettingsController extends AbstractController
             ]),
         ]);
 
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $oldRoom = clone $roomItem;
@@ -284,26 +285,25 @@ class SettingsController extends AbstractController
 
             $room_image_data = $form['room_image']->getData();
 
-            if($room_image_data['choice'] == 'custom_image') {
-                if(!is_null($room_image_data['room_image_data'])){
+            if ($room_image_data['choice'] == 'custom_image') {
+                if (!is_null($room_image_data['room_image_data'])) {
                     $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
-                    if(!is_dir($saveDir)){
+                    if (!is_dir($saveDir)) {
                         mkdir($saveDir, 0777, true);
                     }
                     $file = $room_image_data['room_image_upload'];
                     $fileName = "";
                     // case 1: file was send as "input file" via "room_image_upload" field (legacy case; does not occur with current client configuration)
-                    if(!is_null($file)){
+                    if (!is_null($file)) {
                         $extension = $file->guessExtension();
-                        if(!$extension) {
+                        if (!$extension) {
                             $extension = "bin";
                         }
                         $fileName = "cid" . $roomId . "_bgimage_" . $file->getClientOriginalName();
                         $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
                         $file->move($saveDir, $fileName);
-                    }
-                    // case 2: file was send as base64 string via hidden "room_image_data" text field
-                    else{
+                    } // case 2: file was send as base64 string via hidden "room_image_data" text field
+                    else {
                         $data = $room_image_data['room_image_data'];
                         list($fileName, $type, $date) = explode(";", $data);
                         list(, $data) = explode(",", $data);
@@ -316,16 +316,16 @@ class SettingsController extends AbstractController
                     }
                     $roomItem->setBGImageFilename($fileName);
                 }
-            }  else{
+            } else {
                 $roomItem->setBGImageFilename('');
             }
 
             $room_logo_data = $form['room_logo']->getData();
 
-            if(isset($room_logo_data['activate']) && !empty($room_logo_data['activate']) && $room_logo_data['activate'] == true) {
-                if(!is_null($room_logo_data['room_logo_data'])){
+            if (isset($room_logo_data['activate']) && !empty($room_logo_data['activate']) && $room_logo_data['activate'] == true) {
+                if (!is_null($room_logo_data['room_logo_data'])) {
                     $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
-                    if(!is_dir($saveDir)){
+                    if (!is_dir($saveDir)) {
                         mkdir($saveDir, 0777, true);
                     }
                     $fileName = "";
@@ -391,7 +391,8 @@ class SettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ) {
+    )
+    {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -411,9 +412,9 @@ class SettingsController extends AbstractController
 
         $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
         $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
-        $templates['*'.$msg] = '-1';
+        $templates['*' . $msg] = '-1';
 
-        uasort($templates,  function($a, $b) {
+        uasort($templates, function ($a, $b) {
             if ($a == $b) {
                 return 0;
             }
@@ -427,11 +428,11 @@ class SettingsController extends AbstractController
             'userroomTemplates' => $templates,
             'preferredUserroomTemplates' => $defaultUserroomTemplateIDs,
         ]);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($form->get('deleteUserRooms')->isClicked()){
+            if ($form->get('deleteUserRooms')->isClicked()) {
                 return $this->redirectToRoute('app_settings_deleteuserrooms', ["roomId" => $roomId]);
             } else {
                 $oldRoom = clone $roomItem;
@@ -439,7 +440,7 @@ class SettingsController extends AbstractController
 
                 $roomItem = $extensionSettingsTransformer->applyTransformation($roomItem, $formData);
 
-                if($roomItem->getType() == 'project' and isset($formData['userroom_template'])){
+                if ($roomItem->getType() == 'project' and isset($formData['userroom_template'])) {
                     $roomItem->setUserRoomTemplateID($formData['userroom_template']);
                 }
                 $roomItem->save();
@@ -507,7 +508,8 @@ class SettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         UserroomService $userroomService,
         $deleteUserRooms
-    ) {
+    )
+    {
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -549,7 +551,6 @@ class SettingsController extends AbstractController
      * @param Request $request
      * @param InvitationsService $invitationsService
      * @param RoomService $roomService
-     * @param RouterInterface $router
      * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
      * @param int $roomId
@@ -559,11 +560,11 @@ class SettingsController extends AbstractController
         Request $request,
         InvitationsService $invitationsService,
         RoomService $roomService,
-        RouterInterface $router,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId
-    ) {
+    )
+    {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -576,14 +577,15 @@ class SettingsController extends AbstractController
         $authSourceManager = $legacyEnvironment->getAuthSourceManager();
         $authSourceManager->setContextLimit($legacyEnvironment->getCurrentPortalId());
         $authSourceManager->select();
-        $authSourceArray = $authSourceManager->get()->to_array();
+
+        /** @var \cs_list $authSources */
+        $authSources = $authSourceManager->get();
 
         $authSourceItem = null;
-        foreach ($authSourceArray as $tempAuthSourceItem) {
-            if ($tempAuthSourceItem->isCommSyDefault()) {
-                if ($tempAuthSourceItem->allowAddAccountInvitation()) {
-                    $authSourceItem = $tempAuthSourceItem;
-                }
+        foreach ($authSources as $authSource) {
+            if ($authSource->isCommSyDefault() && $authSource->allowAddAccountInvitation()) {
+                $authSourceItem = $authSource;
+                break;
             }
         }
 
@@ -594,10 +596,10 @@ class SettingsController extends AbstractController
             $invitees[$tempInvitee] = $tempInvitee;
         }
 
-        $form = $this->createForm(InvitationsSettingsType::class, array(), array(
+        $form = $this->createForm(InvitationsSettingsType::class, [], [
             'roomId' => $roomId,
             'invitees' => $invitees,
-        ));
+        ]);
 
         $form->handleRequest($request);
 
@@ -609,46 +611,54 @@ class SettingsController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // send invitation email
-            if (isset($data['email'])) {
-                $invitationCode = $invitationsService->generateInvitationCode($authSourceItem, $roomId, $data['email']);
+            $clickedButton = $form->getClickedButton()->getName();
 
-                $invitationLink = $request->getSchemeAndHttpHost();
-                $invitationLink .= '?cid=' . $portal->getItemId() . '&mod=home&fct=index&cs_modus=portalmember';
-                $invitationLink .= '&invitation_auth_source=' . $authSourceItem->getItemId();
-                $invitationLink .= '&invitation_auth_code=' . $invitationCode;
+            if ($clickedButton === 'send') {
+                // send invitation email
+                if (isset($data['email'])) {
+                    $invitationCode = $invitationsService->generateInvitationCode($authSourceItem, $roomId, $data['email']);
 
-                $mailer = $this->get('mailer');
-                $fromAddress = $this->getParameter('commsy.email.from');
-                $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+                    $invitationLink = $request->getSchemeAndHttpHost();
+                    $invitationLink .= '?cid=' . $portal->getItemId() . '&mod=home&fct=index&cs_modus=portalmember';
+                    $invitationLink .= '&invitation_auth_source=' . $authSourceItem->getItemId();
+                    $invitationLink .= '&invitation_auth_code=' . $invitationCode;
 
-                $subject = $translator->trans('invitation subject %portal%', array('%portal%' => $portal->getTitle()));
-                $body = $translator->trans('invitation body %portal% %link% %sender%', [
-                    '%room%' => $roomItem->getTitle(),
-                    '%portal%' => $portal->getTitle(),
-                    '%link%' => $invitationLink,
-                    '%roomLink%' => $router->generate('app_room_home', [
-                        'roomId' => $roomItem->getItemID(),
-                    ], UrlGeneratorInterface::ABSOLUTE_URL),
-                    '%sender%' => $user->getFullName()
-                ]);
-                $mailMessage = (new \Swift_Message())
-                    ->setSubject($subject)
-                    ->setBody($body, 'text/plain')
-                    ->setFrom([$fromAddress => $fromSender])
-                    ->setTo([$data['email']]);
-                $mailer->send($mailMessage);
+                    $mailer = $this->get('mailer');
+                    $fromAddress = $this->getParameter('commsy.email.from');
+                    $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+
+                    $subject = $translator->trans('invitation subject %portal%', [
+                        '%portal%' => $portal->getTitle(),
+                    ]);
+                    $body = $translator->trans('invitation body %portal% %link% %sender%', [
+                        '%room%' => $roomItem->getTitle(),
+                        '%portal%' => $portal->getTitle(),
+                        '%link%' => $invitationLink,
+                        '%roomLink%' => $this->generateUrl('app_room_home', [
+                            'roomId' => $roomItem->getItemID(),
+                        ], UrlGeneratorInterface::ABSOLUTE_URL),
+                        '%sender%' => $user->getFullName(),
+                    ]);
+                    $mailMessage = (new \Swift_Message())
+                        ->setSubject($subject)
+                        ->setBody($body, 'text/plain')
+                        ->setFrom([$fromAddress => $fromSender])
+                        ->setTo([$data['email']]);
+                    $mailer->send($mailMessage);
+                }
+            } else if ($clickedButton === 'delete') {
+                foreach ($data['remove_invitees'] as $removeInvitee) {
+                    $invitationsService->removeInvitedEmailAdresses($authSourceItem, $removeInvitee);
+                }
             }
 
-            foreach ($data['remove_invitees'] as $removeInvitee) {
-                $invitationsService->removeInvitedEmailAdresses($authSourceItem, $removeInvitee);
-            }
-
-            return $this->redirectToRoute('app_settings_invitations', ["roomId" => $roomId]);
+            return $this->redirectToRoute('app_settings_invitations', [
+                "roomId" => $roomId,
+            ]);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-        );
+        ];
     }
 }

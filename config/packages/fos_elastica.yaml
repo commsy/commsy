@@ -15,6 +15,7 @@ fos_elastica:
 
     indexes:
         commsy_announcement:
+            index_name: '%env(ELASTIC_INDEX)%'
             client: default
 
             finder: ~
@@ -69,6 +70,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -96,6 +104,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -199,6 +210,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -226,6 +244,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -332,6 +353,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
                         contextId:
                             type: integer
                         creator:
@@ -359,6 +387,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -369,6 +400,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                         discussionarticles:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
@@ -469,6 +503,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -496,6 +537,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -596,6 +640,20 @@ fos_elastica:
                                     fields:
                                         raw:
                                             type: keyword
+                        modifier:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -613,6 +671,11 @@ fos_elastica:
                             type: text
                         roomDescription:
                             type: text
+                        description:
+                            property_path: getRoomDescription
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         activity:
                             type: integer
                     persistence:
@@ -675,6 +738,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         contextId:
                             type: integer
                         creator:
@@ -702,6 +772,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -722,6 +795,8 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
+                        status:
+                            type: integer
                         steps:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
@@ -825,6 +900,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         userId:
                             type: text
                         contextId:
@@ -837,10 +919,56 @@ fos_elastica:
                             copy_to: fullName
                         fullName:
                             type: text
+                        creator:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
+                        modifier:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
+                        creationDate:
+                            type: date
+                            format: date_optional_time
                         modificationDate:
                             type: date
-                            property_path: creationDate
                             format: date_optional_time
+                        title:
+                            property_path: getFullname
+                            type: text
+                            analyzer: commsy_analyzer
+                            search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                     persistence:
                         driver: orm
                         model: App\Entity\User
@@ -901,6 +1029,13 @@ fos_elastica:
                     _all:
                         enabled: false
                     properties:
+                        context:
+                            type: object
+                            properties:
+                                title:
+                                    type: keyword
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
                         versionId:
                             type: integer
                         contextId:
@@ -930,6 +1065,9 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                                    fields:
+                                        raw:
+                                            type: keyword
                         creationDate:
                             type: date
                             format: date_optional_time

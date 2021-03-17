@@ -155,6 +155,7 @@ class ContextController extends AbstractController
                     $newUser->setEmail($portalUserItem->getEmail());
                 }
 
+                $newUser->setUsePortalEmail(1);
                 $newUser->setContextID($roomItem->getItemID());
 
                 $userService->cloneUserPicture($sourceUser, $newUser);

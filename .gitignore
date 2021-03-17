@@ -3,6 +3,7 @@
 ######################
 .*
 !.gitignore
+!.github
 *~
 
 # Windows image file caches

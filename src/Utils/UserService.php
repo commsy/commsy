@@ -405,6 +405,10 @@ class UserService
         $searchableRoomList->addList($groupRoomList);
         $searchableRoomList->addList($userRoomList);
 
+        // add private room
+        $privateRoomItem = $userItem->getOwnRoom();
+        $searchableRoomList->add($privateRoomItem);
+
         return $searchableRoomList->to_array();
     }
 
