@@ -1,3 +1,5 @@
+{% import 'common/footer.html.twig' as footer %}
+
 <!DOCTYPE html>
 <html lang="de">
     <head>
@@ -39,21 +41,7 @@
                     <div class="uk-container">
                         <div class="uk-flex uk-flex-center">
                             <div>CommSy {{ commsy.version }}</div>
-                            {% if commsy.server.dataPrivacyEnabled %}
-                                <div class="uk-margin-left">
-                                    <a href="{{ path('app_server_dataprivacy') }}">{{ 'data privacy'|trans({}, 'portal') }}</a>
-                                </div>
-                            {% endif %}
-                            {% if commsy.server.impressumEnabled %}
-                                <div class="uk-margin-left">
-                                    <a href="{{ path('app_server_impressum') }}">{{ 'impressum'|trans({}, 'portal') }}</a>
-                                </div>
-                            {% endif %}
-                            {% if commsy.server.accessibilityEnabled %}
-                                <div class="uk-margin-left">
-                                    <a href="{{ path('app_server_accessibility') }}">{{ 'accessibility'|trans({}, 'portal') }}</a>
-                                </div>
-                            {% endif %}
+                            {{ footer.render(commsy.server) }}
                         </div>
 
                         {% block footer %}{% endblock %}
