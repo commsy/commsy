@@ -60,7 +60,7 @@
                 {% if contextId is defined %}
                     {{ render(controller(
                         'App\\Controller\\UserController::globalNavbarAction',
-                        { 'contextId': contextId }
+                        { 'contextId': contextId, 'uikit3': true }
                     )) }}
                 {% endif %}
 
