@@ -53,7 +53,7 @@ class RoomController extends AbstractController
      * @param RoomService $roomService
      * @param RoomFeedGenerator $roomFeedGenerator
      * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $environment
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @return array
      */
@@ -63,15 +63,14 @@ class RoomController extends AbstractController
         RoomService $roomService,
         RoomFeedGenerator $roomFeedGenerator,
         LegacyMarkup $legacyMarkup,
-        LegacyEnvironment $environment,
+        LegacyEnvironment $legacyEnvironment,
         ParameterBagInterface $parameterBag,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         // get room item
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $roomService->getRoomItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
         if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $parameterBag->get('liip_theme.themes'))) {
@@ -244,14 +243,14 @@ class RoomController extends AbstractController
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
         LegacyEnvironment $environment,
+        RoomService $roomService,
         int $roomId,
         int $max = 10
     ) {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -541,6 +540,7 @@ class RoomController extends AbstractController
             $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
                 'showTime' => $portalItem->showTime(),
                 'timePulses' => $roomService->getTimePulses(),
+                'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
             ]);
 
             // manually bind values from the request
@@ -563,6 +563,8 @@ class RoomController extends AbstractController
                 $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
                     'showTime' => $portalItem->showTime(),
                     'timePulses' => $roomService->getTimePulses(),
+                    'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
+
                 ]);
                 $filterForm->submit($roomFilter);
                 $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);

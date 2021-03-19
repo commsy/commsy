@@ -7,8 +7,10 @@ use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 use cs_room_item;
 
-class AdditionalSettingsTransformer implements DataTransformerInterface
+class AdditionalSettingsTransformer extends AbstractTransformer
 {
+    protected $entity = 'additional_settings';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)

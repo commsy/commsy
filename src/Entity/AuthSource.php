@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * AuthSource
  *
  * @ORM\Table(name="auth_source", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"})
+ *     @ORM\Index(name="portal_id", columns={"portal_id"})
  * })
  * @ORM\Entity(repositoryClass="App\Repository\AuthSourceRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")

@@ -10,22 +10,26 @@
 
         {% if supportLink is not empty and tooltip is not empty %}
             <li>
-                <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank"><i class="uk-icon-question-circle"></i></a>
+                {% if not uikit3 %}
+                    <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank"><i class="uk-icon-question-circle"></i></a>
+                {% else %}
+                    <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank" uk-icon="icon: question"></a>
+                {% endif %}
             </li>
         {% endif %}
 
-        <li>
-            <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
-                <i class="uk-icon-copy"></i>
-                <small id="cs-nav-copy-indicator">
-                {% if count > 0 %}
-                    {{ count }}
-                {% endif %}
-                </small>
-            </a>
-        </li>
-
         {% if privateRoomItem %}
+            <li>
+                <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+                    <i class="uk-icon-copy"></i>
+                    <small id="cs-nav-copy-indicator">
+                        {% if count > 0 %}
+                            {{ count }}
+                        {% endif %}
+                    </small>
+                </a>
+            </li>
+
             {% if privateRoomItem.portfolioEnabled %}
                 <li>
                     <a href="{{ path('app_portfolio_index', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'Portfolios'|trans({}, "portfolio") }}">
