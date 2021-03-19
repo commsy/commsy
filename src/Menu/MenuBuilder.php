@@ -658,13 +658,7 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
-            $menu->addChild('portal_configuration_terms', array(
-                'label' => 'terms',
-                'route' => 'app_portal_terms',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
-            ))
-                ->setExtra('translation_domain', 'portal');
+
             $menu->addChild('portal_configuration_licenses', array(
                 'label' => 'Licenses',
                 'route' => 'app_portal_licenses',
