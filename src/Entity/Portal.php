@@ -1118,4 +1118,128 @@ class Portal implements \Serializable
         $this->_save($manager);
         $this->_changes = array();
     }
+
+
+    ###################################################
+    # archiving and deleting rooms
+    ###################################################
+
+    function setStatusArchivingUnusedRooms(bool $statusArchivingUnusedRooms) {
+        $this->extras['ARCHIVING_ROOMS_STATUS'] = $statusArchivingUnusedRooms ? 1 : -1;
+        return $this;
+    }
+
+    public function getStatusArchivingUnusedRooms(): bool
+    {
+        $statusArchivingUnusedRooms = $this->extras['ARCHIVING_ROOMS_STATUS'] ?? -1;
+        return $statusArchivingUnusedRooms === 1;
+    }
+
+
+    public function turnOnArchivingUnusedRooms() {
+        $this->extras['ARCHIVING_ROOMS_STATUS'] = 1;
+    }
+
+    public function turnOffArchivingUnusedRooms() {
+        $this->extras['ARCHIVING_ROOMS_STATUS'] = -1;
+    }
+
+    public function getDaysUnusedBeforeArchivingRooms():int
+    {
+        $retour = 365; //default
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE'];
+        }
+        return $retour;
+    }
+
+    public function setDaysUnusedBeforeArchivingRooms (int $value) {
+        $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE'] = $value;
+    }
+
+    public function isActivatedArchivingUnusedRooms():bool
+    {
+        $status = $this->getStatusArchivingUnusedRooms();
+        return $status === 1;
+    }
+
+    /** get days send an email before archiving an unused room
+     *
+     * @return int days send email before archiving an unused room
+     */
+    public function getDaysSendMailBeforeArchivingRooms ():int
+    {
+        $retour = 0;
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE'];
+        }
+        return $retour;
+    }
+
+    /** set days sed mail before archiving an unused room
+     *
+     * @param int days send mail before archiving an unused room
+     */
+    public function setDaysSendMailBeforeArchivingRooms (int $value) {
+        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE'] = $value;
+    }
+
+    public function turnOnDeletingUnusedRooms () {
+        $this->setStatusDeletingUnusedRooms(1);
+    }
+
+    public function turnOffDeletingUnusedRooms () {
+        $this->setStatusDeletingUnusedRooms(-1);
+    }
+
+    public function getStatusDeletingUnusedRooms():bool
+    {
+        return $this->extras['DELETING_ROOMS_STATUS'] ?? 0;
+    }
+
+    public function setStatusDeletingUnusedRooms (bool $value) {
+        $this->extras['DELETING_ROOMS_STATUS'] = $value;
+    }
+
+    /** get days before deleting an unused archived room
+     *
+     * @return int days before deleting an unused archived room
+     */
+    public function getDaysUnusedBeforeDeletingRooms():int
+    {
+        $retour = 365; //default
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE'];
+        }
+        return $retour;
+    }
+
+    /** set days before deleting an unused archived room
+     *
+     * @param int days before deleting an unused archived room
+     */
+    public function setDaysUnusedBeforeDeletingRooms (int $value) {
+        $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE'] = $value;
+    }
+
+    /** get days send an email before deleting an unused archived room
+     *
+     * @return int days send email before deleting an unused archived room
+     */
+    public function getDaysSendMailBeforeDeletingRooms ():int
+    {
+        $retour = 0;
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'];
+        }
+        return $retour;
+    }
+
+    /** set days sed mail before deleting an unused archived room
+     *
+     * @param int days send mail before deleting an unused archived room
+     */
+    public function setDaysSendMailBeforeDeletingRooms (int $value) {
+        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'] = $this;
+    }
 }

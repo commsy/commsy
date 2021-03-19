@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
-class ArchiveRoomsType extends AbstractType
+class DeleteArchiveRoomsType extends AbstractType
 {
 
     /**
@@ -22,14 +22,20 @@ class ArchiveRoomsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activated', Types\CheckboxType::class, [
-                'label' => 'activate',
+            ->add('statusDeletingUnusedRooms', Types\CheckboxType::class, [
+                'label' => 'Activate',
             ])
-            ->add('archivingDaysUnused', Types\TextType::class, [
-                'label' => 'Archivieren nach Tagen'
+            ->add('daysUnusedBeforeDeletingRooms', Types\TextType::class, [
+                'label' => 'Delete rooms after x days',
+                'required' => false,
             ])
-            ->add('sendArchivingMailInDaysAdvance', Types\TextType::class, [
-                'label' => 'Moderation Tage vorher informieren'
+            ->add('daysSendMailBeforeDeletingRooms', Types\TextType::class, [
+                'label' => 'Send mail x days before deletion',
+                'required' => false,
+            ])
+            ->add('save', Types\SubmitType::class, [
+                'label' => 'save',
+                'translation_domain' => 'form',
             ])
         ;
     }
@@ -43,7 +49,7 @@ class ArchiveRoomsType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => null,
+                'data_class' => Portal::class,
                 'translation_domain' => 'portal',
             ]);
     }
