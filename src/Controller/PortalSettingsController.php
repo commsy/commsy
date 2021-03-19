@@ -947,6 +947,11 @@ class PortalSettingsController extends AbstractController
         if ($portalForm->isSubmitted() && $portalForm->isValid()) {
             $entityManager->persist($portal);
             $entityManager->flush();
+
+            return $this->redirectToRoute('app_portalsettings_announcements', [
+                'portalId' => $portal->getId(),
+                'tab' => 'portal',
+            ]);
         }
 
         $server = $entityManager->getRepository(Server::class)->getServer();
@@ -956,12 +961,18 @@ class PortalSettingsController extends AbstractController
             if ($serverForm->isSubmitted() && $serverForm->isValid()) {
                 $entityManager->persist($server);
                 $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_announcements', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'server',
+                ]);
             }
         }
 
         return [
             'portalForm' => $portalForm->createView(),
             'serverForm' => $serverForm->createView(),
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ];
     }
 
