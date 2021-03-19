@@ -1840,11 +1840,13 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return object cs_list list of User-Items connected to this item
+     * Returns all users representing this user in other rooms this user is a member of. By default,
+     * related users from community rooms, project rooms and the user's private room are returned.
+     * @param bool $includeUserroomUsers whether related users from user rooms shall be returned as well
+     * @return object cs_list list of user items connected to this item
      */
-    function getRelatedUserList(): \cs_list
+    function getRelatedUserList($includeUserroomUsers = false): \cs_list
     {
-
         $current_context_id = $this->getContextID();
 
         $room_id_array = array();
@@ -1884,6 +1886,23 @@ class cs_user_item extends cs_item
             unset($project_list);
         }
         unset($project_manager);
+
+        if ($includeUserroomUsers) {
+            $userroom_manager = $this->_environment->getUserRoomManager();
+            $userroom_list = $userroom_manager->getRelatedUserroomListForUser($this);
+            if ($userroom_list->isNotEmpty()) {
+                $userroom = $userroom_list->getFirst();
+                while ($userroom) {
+                    if ($userroom->getItemID() != $current_context_id) {
+                        $room_id_array[] = $userroom->getItemID();
+                    }
+                    unset($userroom);
+                    $userroom = $userroom_list->getNext();
+                }
+                unset($userroom_list);
+            }
+            unset($userroom_manager);
+        }
 
         $private_room_manager = $this->_environment->getPrivateRoomManager();
         $own_room = $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
