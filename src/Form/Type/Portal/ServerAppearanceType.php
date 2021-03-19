@@ -31,7 +31,7 @@ class ServerAppearanceType extends AbstractType
                 'download_uri' => false,
                 'image_uri' => function (Server $server) {
                     if ($server->getLogoImageFile()) {
-                        $this->router->generate('app_file_serverlogo');
+                        return $this->router->generate('app_file_serverlogo');
                     }
 
                     return '';
