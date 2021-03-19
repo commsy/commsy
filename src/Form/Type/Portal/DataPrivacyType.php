@@ -36,6 +36,7 @@ class DataPrivacyType extends AbstractType
                 'label' => 'content',
                 'config_name' => 'html_reduced',
                 'translation_domain' => 'form',
+                'required' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',

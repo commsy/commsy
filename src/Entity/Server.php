@@ -272,7 +272,7 @@ class Server
         return $this->extras['CONTENT_DATAPRIVACY_TEXT'] ?? '';
     }
 
-    public function setDataPrivacyText(string $text): self
+    public function setDataPrivacyText(?string $text): self
     {
         $this->extras['CONTENT_DATAPRIVACY_TEXT'] = $text;
         return $this;
@@ -294,7 +294,7 @@ class Server
         return $this->extras['CONTENT_IMPRESSUM_TEXT'] ?? '';
     }
 
-    public function setImpressumText(string $text): self
+    public function setImpressumText(?string $text): self
     {
         $this->extras['CONTENT_IMPRESSUM_TEXT'] = $text;
         return $this;
@@ -316,7 +316,7 @@ class Server
         return $this->extras['CONTENT_ACCESSIBILITY_TEXT'] ?? '';
     }
 
-    public function setAccessibilityText(string $text): self
+    public function setAccessibilityText(?string $text): self
     {
         $this->extras['CONTENT_ACCESSIBILITY_TEXT'] = $text;
         return $this;
