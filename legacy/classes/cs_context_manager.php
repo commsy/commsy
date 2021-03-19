@@ -298,7 +298,11 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             ############################################
          }
 
-         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.encode(AS_DB,$context_id).'"';
+         if ($this->_room_type !== cs_userroom_item::ROOM_TYPE_USER) {
+             // NOTE: for user rooms, we don't include the context_id in the WHERE clause; this is since user rooms have
+             // their context_id set to the room ID of their hosting project room (and not to the portal ID)
+             $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id="' . encode(AS_DB, $context_id) . '"';
+         }
 
          if ($this->_delete_limit == true) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';

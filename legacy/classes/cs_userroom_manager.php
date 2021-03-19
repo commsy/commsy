@@ -134,6 +134,11 @@ class cs_userroom_manager extends cs_room2_manager
         $this->_template_limit = NULL;
     }
 
+    public function getRelatedUserroomListForUser($userItem)
+    {
+        return $this->_getRelatedContextListForUser($userItem->getUserID(), $userItem->getAuthSource(), $this->_environment->getCurrentPortalID());
+    }
+
     /** select user rooms limited by limits
      * this method returns a list (cs_list) of user rooms within the database limited by the limits. the select statement is a bit tricky, see source code for further information
      */

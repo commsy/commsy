@@ -119,7 +119,7 @@ class ProfileController extends Controller
             }
 
             if ($formData['imageChangeInAllContexts']) {
-                $userList = $userItem->getRelatedUserList();
+                $userList = $userItem->getRelatedUserList(true);
                 $tempUserItem = $userList->getFirst();
                 while ($tempUserItem) {
                     if ($tempUserItem->getItemId() == $userItem->getItemId()) {
@@ -187,7 +187,7 @@ class ProfileController extends Controller
             $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
 
-            $userList = $userItem->getRelatedUserList();
+            $userList = $userItem->getRelatedUserList(true);
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
                 if ($formData['titleChangeInAllContexts']) {
@@ -250,7 +250,7 @@ class ProfileController extends Controller
             $formData = $form->getData();
             $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
-            $userList = $userItem->getRelatedUserList();
+            $userList = $userItem->getRelatedUserList(true);
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
                 if ($formData['emailChangeInAllContexts']) {
