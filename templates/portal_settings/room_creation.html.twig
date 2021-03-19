@@ -2,6 +2,8 @@
 
 {% form_theme communityRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 {% form_theme projectRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme archiveRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme deleteArchiveRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% embed 'components/context_navigation.html.twig' %}
@@ -31,6 +33,30 @@
             {{ form_row(projectRoomsForm.projectRoomCreationStatus[0]) }}
             {{ form_row(projectRoomsForm.projectRoomCreationStatus[1]) }}
             {{ form_end(projectRoomsForm) }}
+        {% endblock %}
+    {% endembed %}
+
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Archiving rooms'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            {{ form_start(archiveRoomsForm) }}
+            {{ form_row(archiveRoomsForm.statusArchivingUnusedRooms) }}
+            {{ form_row(archiveRoomsForm.daysUnusedBeforeArchivingRooms) }}
+            {{ form_row(archiveRoomsForm.daysSendMailBeforeArchivingRooms) }}
+            {{ form_end(archiveRoomsForm) }}
+        {% endblock %}
+    {% endembed %}
+
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Archive deletion'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            {{ form_start(deleteArchiveRoomsForm) }}
+            {{ form_row(deleteArchiveRoomsForm.statusDeletingUnusedRooms) }}
+            {{ form_row(deleteArchiveRoomsForm.daysUnusedBeforeDeletingRooms) }}
+            {{ form_row(deleteArchiveRoomsForm.daysSendMailBeforeDeletingRooms) }}
+            {{ form_end(deleteArchiveRoomsForm) }}
         {% endblock %}
     {% endembed %}
 {% endblock %}

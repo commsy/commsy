@@ -299,6 +299,34 @@
                 <source>Default template help text</source>
                 <target>By choosing a template, a newly created workspace will be prepopulated with contents from the template workspace (except for user information)</target>
             </trans-unit>
+            <trans-unit id="archiving_rooms">
+                <source>Archiving rooms</source>
+                <target>ARchiving</target>
+            </trans-unit>
+            <trans-unit id="archive_deletion">
+                <source>Archive deletion</source>
+                <target>Deletion of archiv. rooms</target>
+            </trans-unit>
+            <trans-unit id="activate">
+                <source>Activate</source>
+                <target>activate</target>
+            </trans-unit>
+            <trans-unit id="archive_after_x_days">
+                <source>Archive rooms after x days</source>
+                <target>Archive rooms after x days</target>
+            </trans-unit>
+            <trans-unit id="send_mail_x_days_before_archiving">
+                <source>Send mail x days before archiving</source>
+                <target>Send mail x days before archiving</target>
+            </trans-unit>
+            <trans-unit id="delete_after_x_days">
+                <source>Delete rooms after x days</source>
+                <target>Delete rooms after x days</target>
+            </trans-unit>
+            <trans-unit id="send_mail_x_days_before_deletion">
+                <source>Send mail x days before deletion</source>
+                <target>Send mail x days before deletion</target>
+            </trans-unit>
 
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">

@@ -33,6 +33,8 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
+use App\Form\Type\Portal\ArchiveRoomsType;
+use App\Form\Type\Portal\DeleteArchiveRoomsType;
 use App\Form\Type\Portal\PortalAnnouncementsType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
@@ -287,9 +289,33 @@ class PortalSettingsController extends AbstractController
             }
         }
 
+        // archiving rooms form
+        $archiveRoomsForm = $this->createForm(ArchiveRoomsType::class, $portal, []);
+        $archiveRoomsForm->handleRequest($request);
+        if ($archiveRoomsForm->isSubmitted() && $archiveRoomsForm->isValid()) {
+
+            if ($archiveRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        // deleting archived rooms form
+        $deleteArchiveRoomsForm = $this->createForm(DeleteArchiveRoomsType::class, $portal, []);
+        $deleteArchiveRoomsForm->handleRequest($request);
+        if ($deleteArchiveRoomsForm->isSubmitted() && $deleteArchiveRoomsForm->isValid()) {
+
+            if ($deleteArchiveRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
         return [
             'communityRoomsForm' => $communityRoomsForm->createView(),
             'projectRoomsForm' => $projectRoomsForm->createView(),
+            'archiveRoomsForm' => $archiveRoomsForm->createView(),
+            'deleteArchiveRoomsForm' => $deleteArchiveRoomsForm->createView(),
         ];
     }
 
