@@ -5,8 +5,10 @@ use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 use App\Services\LegacyMarkup;
 
-class MaterialTransformer implements DataTransformerInterface
+class MaterialTransformer extends AbstractTransformer
 {
+    protected $entity = 'material';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

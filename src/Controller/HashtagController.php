@@ -6,6 +6,8 @@ use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Form\Model\MergeHashtags;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -16,6 +18,7 @@ use App\Form\Type\HashtagMergeType;
 use App\Entity\Labels;
 
 use App\Event\CommsyEditEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class HashtagController extends AbstractController
 {
@@ -70,16 +73,16 @@ class HashtagController extends AbstractController
      * @Route("/room/{roomId}/hashtag/add")
      * @Security("is_granted('CATEGORY_EDIT')")
      * @param Request $request
-     * @param LegacyEnvironment $environment
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @return JsonResponse
      */
     public function addAction(
         Request $request,
-        LegacyEnvironment $environment,
+        LegacyEnvironment $legacyEnvironment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -121,18 +124,19 @@ class HashtagController extends AbstractController
      * @Template()
      * @Security("is_granted('CATEGORY_EDIT')")
      * @param Request $request
-     * @param LegacyEnvironment $environment
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int|null $labelId
      * @return array|RedirectResponse
      */
     public function editAction(
         Request $request,
-        LegacyEnvironment $environment,
+        LegacyEnvironment $legacyEnvironment,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $labelId = null
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -154,7 +158,6 @@ class HashtagController extends AbstractController
         }
 
         $editForm = $this->createForm(HashtagEditType::class, $hashtag);
-
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -195,19 +198,22 @@ class HashtagController extends AbstractController
             $hashtag->setName(html_entity_decode($hashtag->getName()));
         }
 
-        $mergeForm = $this->createForm(HashtagMergeType::class, null, ['roomId'=>$roomId]);
+        $mergeData = new MergeHashtags();
+
+        $mergeForm = $this->createForm(HashtagMergeType::class, $mergeData, [
+            'roomId' => $roomId
+        ]);
 
         $mergeForm->handleRequest($request);
         if ($mergeForm->isSubmitted() && $mergeForm->isValid()) {
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
-            $mergeData=$mergeForm->getData();
-            $firstID=$mergeData['first']->getItemId();
-            $secondID=$mergeData['second']->getItemId();
+            $firstId = $mergeData->getFirst()->getItemId();
+            $secondId = $mergeData->getSecond()->getItemId();
 
-            $buzzwordItemOne = $labelManager->getItem($firstID);
-            $buzzwordItemTwo = $labelManager->getItem($secondID);
+            $buzzwordItemOne = $labelManager->getItem($firstId);
+            $buzzwordItemTwo = $labelManager->getItem($secondId);
                     
             // change name of item one, save it and delete the item two
             $buzzwordOne = $buzzwordItemOne->getName();
@@ -225,8 +231,7 @@ class HashtagController extends AbstractController
             ]);
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+        $eventDispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
 
         return [
             'editForm' => $editForm->createView(),

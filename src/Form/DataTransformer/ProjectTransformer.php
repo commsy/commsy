@@ -4,8 +4,10 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-class ProjectTransformer implements DataTransformerInterface
+class ProjectTransformer extends AbstractTransformer
 {
+    protected $entity = 'project';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

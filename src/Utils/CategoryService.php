@@ -45,6 +45,11 @@ class CategoryService
 
         if (!$parentTagId) {
             $rootTagItem = $tagManager->getRootTagItemFor($roomId);
+            if (!$rootTagItem) {
+                $tagManager->createRootTagItemFor($roomId);
+                $tagManager->forceSQL();
+                $rootTagItem = $tagManager->getRootTagItemFor($roomId);
+            }
             $parentTagId = $rootTagItem->getItemID();
         }
 

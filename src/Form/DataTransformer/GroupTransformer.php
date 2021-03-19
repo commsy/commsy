@@ -5,8 +5,10 @@ use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class GroupTransformer implements DataTransformerInterface
+class GroupTransformer extends AbstractTransformer
 {
+    protected $entity = 'group';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

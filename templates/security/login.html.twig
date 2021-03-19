@@ -1,5 +1,7 @@
 {% extends 'layout.html.twig' %}
 
+{% import 'common/announcements.html.twig' as announcements %}
+
 {% block title %}
     {{ portal.title|default('CommSy') }}
 {% endblock %}
@@ -14,19 +16,29 @@
     </div>
 {% endblock %}
 
-{% block main %}
-    {% if portal.announcementEnabled|default(false) %}
-        <div{% if portal.announcementSeverity != 'normal' %} class="uk-alert-{{ portal.announcementSeverity }}"{% endif %} uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <h3>{{ portal.announcementTitle }}</h3>
-            <p>{{ portal.announcementText|raw }}</p>
+{% block cover %}
+    {% if server.logoImageName %}
+        <div class="uk-section uk-section-small">
+            <div class="uk-container uk-container-large">
+                <div class="uk-flex uk-flex-between">
+                    <div>
+                        <img data-src="{{ path('app_file_serverlogo') }}" width="300" height="120" alt="server logo" uk-img>
+                    </div>
 
-            {% if portal.announcementLink is not empty %}
-                <p>{{ portal.announcementLink }}</p>
-            {% endif %}
-{#            <p class="uk-text-meta">Erstellt am ...</p>#}
+                    {% if portal is not null and portal.logoFilename is not empty %}
+                        <div>
+                            <img data-src="{{ path('app_file_portallogo', { 'portalId': portal.id }) }}" width="260" height="80" alt="portal logo" uk-img>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block main %}
+    {{ announcements.server(server, portal) }}
+    {{ announcements.portal(portal) }}
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}
@@ -40,16 +52,7 @@
     <div class="uk-grid-match uk-flex uk-flex-center" uk-grid>
         <div class="uk-width-large">
             <div class="uk-card uk-card-default uk-card-small">
-                {% if portal is not null %}
-                    {% if portal.logoFilename is not empty %}
-                        <div class="uk-card-body uk-padding-remove">
-                            {# TODO: Just a placeholder from the mockup, please replace #}
-                            {# TODO: try images in 220px by 80 px and play around with uk-padding-remove #}
-                            {# TODO: of parent element, cheers #}
-                            <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
-                        </div>
-                    {% endif %}
-                {% else %}
+                {% if portal is null %}
                     <div class="uk-card-header">
                         <h3 class="uk-card-title">{{ 'login.system_admin'|trans({}, 'login') }}</h3>
                     </div>
@@ -126,14 +129,14 @@
                                                 </div>
 
                                                 {#
-                                                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                                                    See https://symfony.com/doc/current/security/remember_me.html
+                                                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                                                See https://symfony.com/doc/current/security/remember_me.html
 
-                                                    <div class="checkbox mb-3">
-                                                        <label>
-                                                            <input type="checkbox" name="_remember_me"> Remember me
-                                                        </label>
-                                                    </div>
+                                                <div class="checkbox mb-3">
+                                                    <label>
+                                                        <input type="checkbox" name="_remember_me"> Remember me
+                                                    </label>
+                                                </div>
                                                 #}
 
                                                 <div class="uk-margin">
@@ -145,14 +148,14 @@
                                                 </div>
 
                                                 {% if authSource.addAccount %}
-                                                <div class="uk-margin">
-                                                    <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
-                                                    <div class="uk-form-controls">
-                                                        <div class="uk-inline uk-width-1-1">
-                                                            <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
+                                                    <div class="uk-margin">
+                                                        <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
+                                                        <div class="uk-form-controls">
+                                                            <div class="uk-inline uk-width-1-1">
+                                                                <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 {% endif %}
 
                                                 <div class="uk-margin uk-text-small">
