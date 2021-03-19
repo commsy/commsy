@@ -18,18 +18,18 @@
             </li>
         {% endif %}
 
-        <li>
-            <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
-                <i class="uk-icon-copy"></i>
-                <small id="cs-nav-copy-indicator">
-                {% if count > 0 %}
-                    {{ count }}
-                {% endif %}
-                </small>
-            </a>
-        </li>
-
         {% if privateRoomItem %}
+            <li>
+                <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+                    <i class="uk-icon-copy"></i>
+                    <small id="cs-nav-copy-indicator">
+                        {% if count > 0 %}
+                            {{ count }}
+                        {% endif %}
+                    </small>
+                </a>
+            </li>
+
             {% if privateRoomItem.portfolioEnabled %}
                 <li>
                     <a href="{{ path('app_portfolio_index', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'Portfolios'|trans({}, "portfolio") }}">
