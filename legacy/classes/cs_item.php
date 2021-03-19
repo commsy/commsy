@@ -2809,7 +2809,7 @@ function getExternalViewerArray(){
 
     protected function deleteElasticItem($objectPersister, $repository)
     {
-        $elasticHost = $_ENV['ELASTIC_HOST'];
+        $elasticHost = $_ENV['ELASTICSEARCH_URL'];
 
         if ($elasticHost) {
             $object = $repository->findOneByItemId($this->getItemID());
