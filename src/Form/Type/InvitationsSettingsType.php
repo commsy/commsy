@@ -34,26 +34,31 @@ class InvitationsSettingsType extends AbstractType
         $roomItem = $roomManager->getItem($options['roomId']);
 
         $builder
-            ->add('email', TextType::class, array(
-                'label' => 'email',
-                'attr' => array(
+            ->add('email', TextType::class, [
+                'label' => false,
+                'attr' => [
                     'placeholder' => 'Email-adrress of new invitee',
                     'class' => 'uk-form-width-medium',
-                ),
+                ],
                 'required' => false,
-            ))
-            ->add('remove_invitees', ChoiceType::class, array(
+            ])
+            ->add('send', SubmitType::class, [
+                'label' => 'Send',
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+            ])
+            ->add('remove_invitees', ChoiceType::class, [
                 'choices' => $options['invitees'],
                 'multiple' => true,
-                'expanded' => true
-            ))
-            ->add('send', SubmitType::class, array(
-                'label' => 'Send',
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                )
-            ))
-            ;
+                'expanded' => true,
+            ])
+            ->add('delete', SubmitType::class, [
+                'label' => 'Delete',
+                'attr' => [
+                    'class' => 'uk-button-danger',
+                ],
+            ])
         ;
     }
 
@@ -67,7 +72,7 @@ class InvitationsSettingsType extends AbstractType
     {
         $resolver
             ->setRequired(['roomId'])
-            ->setDefaults(array('translation_domain' => 'settings'))
+            ->setDefaults(['translation_domain' => 'settings'])
             ->setRequired(['invitees'])
         ;
     }

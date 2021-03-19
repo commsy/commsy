@@ -3,7 +3,7 @@
 <br/><br/>
 
 {{ 'Title: %title%'|trans({ '%title%': item.title }, 'mail') }}<br/>
-{{ 'Rubric: %rubric%'|trans({ '%rubric%': item.type|capitalize|transchoice(1, {}, 'rubric') }, 'mail') }}<br/>
+{{ 'Rubric: %rubric%'|trans({ '%rubric%': item.type|capitalize|trans({}, 'rubric') }, 'mail') }}<br/>
 {{ 'Deleter: %deleter%'|trans({ '%deleter%': deleter.fullName }, 'mail') }}<br/>
 {{ 'Workspace: %workspace%'|trans({ '%workspace%': item.contextItem.title }, 'mail') }}
 

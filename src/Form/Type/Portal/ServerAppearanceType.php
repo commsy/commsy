@@ -29,7 +29,13 @@ class ServerAppearanceType extends AbstractType
         $builder
             ->add('logoImageFile', VichImageType::class, [
                 'download_uri' => false,
-                'image_uri' => $this->router->generate('app_file_serverlogo'),
+                'image_uri' => function (Server $server) {
+                    if ($server->getLogoImageFile()) {
+                        return $this->router->generate('app_file_serverlogo');
+                    }
+
+                    return '';
+                },
                 'required' => false,
                 'label' => 'Logo',
             ])

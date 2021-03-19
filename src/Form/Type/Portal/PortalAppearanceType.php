@@ -32,9 +32,15 @@ class PortalAppearanceType extends AbstractType
         $builder
             ->add('logoFile', VichImageType::class, [
                 'download_uri' => false,
-                'image_uri' => $this->router->generate('app_file_portallogo', [
-                    'portalId' => $portal->getId(),
-                ]),
+                'image_uri' => function (Portal $portal) {
+                    if ($portal->getLogoFile()) {
+                        return $this->router->generate('app_file_portallogo', [
+                            'portalId' => $portal->getId(),
+                        ]);
+                    }
+
+                    return '';
+                },
                 'required' => false,
                 'label' => 'Logo',
             ])

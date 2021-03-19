@@ -4,8 +4,10 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-class DiscussionarticleTransformer implements DataTransformerInterface
+class DiscussionarticleTransformer extends AbstractTransformer
 {
+    protected $entity = 'discarticle';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

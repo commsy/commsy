@@ -15,8 +15,8 @@
 
         {% block body %}
             <ul uk-tab>
-                <li class="uk-active"><a href="#">Portal</a></li>
-                {% if is_granted('ROOT') %}<li><a class="uk-text-danger" href="#">Server</a></li>{% endif %}
+                <li class="{% if tab is same as 'portal' %}uk-active{% endif %}"><a href="#">Portal</a></li>
+                {% if is_granted('ROOT') %}<li class="{% if tab is same as 'server' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">Server</a></li>{% endif %}
             </ul>
 
             <ul class="uk-switcher uk-margin">

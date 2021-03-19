@@ -24,12 +24,12 @@ class MultipleContextFilterCondition implements FilterConditionInterface
      */
     public function getConditions(): array
     {
-        $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
+        $currentUser = $this->userService->getCurrentUserItem();
+        $searchableRooms = $this->userService->getSearchableRooms($currentUser);
 
-        $contextIds = [];
-        foreach ($searchableRooms as $searchableRoom) {
-            $contextIds[] = $searchableRoom->getItemId();
-        }
+        $contextIds = array_map(function (\cs_room_item $room) {
+            return $room->getItemID();
+        }, $searchableRooms);
 
         $contextFilter = new Terms();
         $contextFilter->setTerms('contextId', $contextIds);

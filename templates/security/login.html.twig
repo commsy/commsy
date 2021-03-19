@@ -65,7 +65,7 @@
                         {% if portal is not null %}
                             {% for authSource in portal.authSources %}
                                 {% if authSource.enabled %}
-                                    <li class="{% if (lastSource is null and authSource.default) or (authSource.type is same as lastSource) %}uk-active{% endif %}">
+                                    <li class="{% if (lastSource is null and authSource.default) or (authSource.type is same as (lastSource)) %}uk-active{% endif %}">
                                         <a href="">
                                             {{ authSource.title }}
                                         </a>
@@ -97,7 +97,7 @@
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
-                                                {% if error and authSource.type is same as lastSource %}
+                                                {% if error and authSource.type is same as (lastSource) %}
                                                     <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                                 {% endif %}
 
@@ -129,14 +129,14 @@
                                                 </div>
 
                                                 {#
-                                                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                                                    See https://symfony.com/doc/current/security/remember_me.html
+                                                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                                                See https://symfony.com/doc/current/security/remember_me.html
 
-                                                    <div class="checkbox mb-3">
-                                                        <label>
-                                                            <input type="checkbox" name="_remember_me"> Remember me
-                                                        </label>
-                                                    </div>
+                                                <div class="checkbox mb-3">
+                                                    <label>
+                                                        <input type="checkbox" name="_remember_me"> Remember me
+                                                    </label>
+                                                </div>
                                                 #}
 
                                                 <div class="uk-margin">
@@ -148,14 +148,14 @@
                                                 </div>
 
                                                 {% if authSource.addAccount %}
-                                                <div class="uk-margin">
-                                                    <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
-                                                    <div class="uk-form-controls">
-                                                        <div class="uk-inline uk-width-1-1">
-                                                            <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
+                                                    <div class="uk-margin">
+                                                        <label class="uk-form-label" for="form-stacked-register">{{ 'registration.no_account'|trans({}, 'registration' ) }}</label>
+                                                        <div class="uk-form-controls">
+                                                            <div class="uk-inline uk-width-1-1">
+                                                                <a class="uk-button uk-button-default uk-width-1-1" href="{{ path('app_account_signup', { 'id': context }) }}">{{ 'registration.sign_up'|trans({}, 'registration' ) }}</a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 {% endif %}
 
                                                 <div class="uk-margin uk-text-small">
@@ -180,7 +180,7 @@
                                             {% endif %}
 
                                             <form class="uk-form-stacked" method="post">
-                                                {% if error and authSource.type is same as lastSource %}
+                                                {% if error and authSource.type is same as (lastSource) %}
                                                     <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                                 {% endif %}
 
@@ -227,7 +227,7 @@
                                                 <p class="uk-text-small">{{ authSource.description|raw }}</p>
                                             {% endif %}
 
-                                            {% if error and authSource.type is same as lastSource %}
+                                            {% if error and authSource.type is same as (lastSource) %}
                                                 <div class="uk-form-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                             {% endif %}
 

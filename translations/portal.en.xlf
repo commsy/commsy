@@ -117,6 +117,24 @@
                 <target>Address</target>
             </trans-unit>
 
+            <!-- portal content -->
+            <trans-unit id="portal_content_title">
+                <source>contents</source>
+                <target>Contents</target>
+            </trans-unit>
+            <trans-unit id="portal_content_terms">
+                <source>data privacy</source>
+                <target>Data privacy</target>
+            </trans-unit>
+            <trans-unit id="portal_content_impressum">
+                <source>impressum</source>
+                <target>Impressum</target>
+            </trans-unit>
+            <trans-unit id="portal_content_accessibility">
+                <source>accessibility</source>
+                <target>Accessability</target>
+            </trans-unit>
+
             <!-- portal terms -->
             <trans-unit id="portal_agb">
                 <source>terms</source>
