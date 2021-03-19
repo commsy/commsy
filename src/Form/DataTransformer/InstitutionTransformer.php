@@ -5,8 +5,10 @@ use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class InstitutionTransformer implements DataTransformerInterface
+class InstitutionTransformer  extends AbstractTransformer
 {
+    protected $entity = 'institution';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

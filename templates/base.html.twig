@@ -1,3 +1,5 @@
+{% import 'common/footer.html.twig' as footer %}
+
 <!DOCTYPE html>
 <html lang="{{ selectedLanguage() }}">
     <head>
@@ -20,9 +22,22 @@
                 <div id="commsy_logo"></div>
             </a>
 
-            {# Context Navigation #}
-            {% block side_navigation %}
-            {% endblock %}
+            <div class="uk-flex uk-flex-wrap uk-flex-wrap-space-between uk-height-1-1">
+                <div>
+                    {# Context Navigation #}
+                    {% block side_navigation %}
+                    {% endblock %}
+                </div>
+
+                <div class="uk-margin-large-bottom uk-flex-item-1">
+                    <div class="uk-accordion" data-uk-accordion="{showfirst: false}">
+                        <div class="uk-accordion-title"><span class="uk-text-small">CommSy {{ commsy.version }}</span></div>
+                        <div class="uk-accordion-content">
+                            {{ footer.render(commsy.server) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {# Off-canvase context navigation for small devices #}
@@ -43,7 +58,7 @@
                             {{ render(controller(
                                 'App\\Controller\\SearchController::searchFormAction', {
                                     'roomId': app.request.attributes.get('roomId'),
-                                    'requestData': app.request.request.get('search') ?? app.request.query.get('search_filter')
+                                    'requestData': app.request.query.get('search') ?? app.request.query.get('search_filter')
                                 }
                             ))}}
                         {% endif %}

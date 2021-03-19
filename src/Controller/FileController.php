@@ -209,6 +209,10 @@ class FileController extends AbstractController
     public function serverLogo(EntityManagerInterface $entityManager, DownloadHandler $downloadHandler)
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
+        if (!$server->getLogoImageFile()) {
+            throw $this->createNotFoundException('logo not found');
+        }
+
         return $downloadHandler->downloadObject($server, 'logoImageFile', null, null, false);
     }
 
@@ -223,6 +227,9 @@ class FileController extends AbstractController
      */
     public function portalLogo(Portal $portal, EntityManagerInterface $entityManager, DownloadHandler $downloadHandler)
     {
+        if (!$portal->getLogoFile()) {
+            throw $this->createNotFoundException('logo not found');
+        }
         return $downloadHandler->downloadObject($portal, 'logoFile', null, null, false);
     }
 }

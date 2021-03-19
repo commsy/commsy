@@ -4,8 +4,10 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-class StepTransformer implements DataTransformerInterface
+class StepTransformer extends AbstractTransformer
 {
+    protected $entity = 'step';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

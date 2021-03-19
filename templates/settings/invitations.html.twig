@@ -12,23 +12,29 @@
 
                 <div>
                     {{ form_start(form) }}
-                    <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                        <h1 class='uk-panel-title'>{{ 'New invitation'|trans({}, 'settings') }}</h1>
-                        <div style="margin-bottom: 25px;">{{ 'New invitation text'|trans({}, 'settings') }}</div>
-                        {{ form_errors(form.email) }}
-                        {{ form_widget(form.email) }}
-                    </div>
-                    {% if form.remove_invitees|length > 0 %}
-                    <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                        <h1 class='uk-panel-title'>{{ 'Remove invitation'|trans({}, 'settings') }}</h1>
-                        <div style="margin-bottom: 25px;">{{ 'Remove invitation text'|trans({}, 'settings') }}</div>
-                        {% for child in form.remove_invitees %}
-                            {{ form_widget(child) }} {{ form_label(child) }}<br/>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                        {% do form.remove_invitees.setRendered %}
-                    {% endif %}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'New invitation'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">{{ 'New invitation text'|trans({}, 'settings') }}</div>
+
+                            {{ form_row(form.email) }}
+                            {{ form_row(form.send) }}
+                        </div>
+
+                        {% if form.remove_invitees|length > 0 %}
+                            <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                                <h1 class='uk-panel-title'>{{ 'Remove invitation'|trans({}, 'settings') }}</h1>
+                                <div style="margin-bottom: 25px;">{{ 'Remove invitation text'|trans({}, 'settings') }}</div>
+                                {% for child in form.remove_invitees %}
+                                    {{ form_widget(child) }} {{ form_label(child) }}<br>
+                                {% endfor %}
+
+                                <br>
+                                {{ form_row(form.delete) }}
+                            </div>
+                        {% else %}
+                            {% do form.remove_invitees.setRendered %}
+                            {% do form.delete.setRendered %}
+                        {% endif %}
                     {{ form_end(form) }}
                 </div>
             </div>

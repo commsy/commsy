@@ -4,8 +4,10 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class PortfolioTransformer implements DataTransformerInterface
+class PortfolioTransformer extends AbstractTransformer
 {
+    protected $entity = 'portfolio';
+
     private $legacyEnvironment;
 
     private $portfolioManager;

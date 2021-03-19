@@ -35,7 +35,7 @@
 
 {% block taskinfo %}
     {% if isModerator and userTasks|length > 0 %}
-        <div class="uk-alert uk-alert-danger">
+        <div class="uk-alert uk-alert-danger" style="margin-top: -2px; margin-left: -10px; margin-right: -10px">
             {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('app_user_list', {'roomId': roomId,'user_filter[user_status]':1}) }}">
                 {{ 'show user'|trans({},'user') }}
             </a>
