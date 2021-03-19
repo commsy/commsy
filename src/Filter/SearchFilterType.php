@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filter;
 
 use App\Entity\SavedSearch;
@@ -37,9 +38,9 @@ class SearchFilterType extends AbstractType
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -156,14 +157,14 @@ class SearchFilterType extends AbstractType
                 'required' => false,
                 // NOTE: while the left/right date labels won't display, specifying them helps with proper formatting
                 'left_date_options' => [
-                    'label'  => 'from',
-                    'input'  => 'datetime',
+                    'label' => 'from',
+                    'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
                 ],
                 'right_date_options' => [
-                    'label'  => 'until',
-                    'input'  => 'datetime',
+                    'label' => 'until',
+                    'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
                 ],
@@ -177,14 +178,14 @@ class SearchFilterType extends AbstractType
                 'required' => false,
                 // NOTE: while the left/right date labels won't display, specifying them helps with proper formatting
                 'left_date_options' => [
-                    'label'  => 'from',
-                    'input'  => 'datetime',
+                    'label' => 'from',
+                    'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
                 ],
                 'right_date_options' => [
-                    'label'  => 'until',
-                    'input'  => 'datetime',
+                    'label' => 'until',
+                    'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
                 ],
@@ -234,7 +235,7 @@ class SearchFilterType extends AbstractType
      * Returns the prefix of the template block name for this type.
      * The block prefix defaults to the underscored short class name with the "Type" suffix removed
      * (e.g. "UserProfileType" => "user_profile").
-     * 
+     *
      * @return string The prefix of the template block name
      */
     public function getBlockPrefix()
@@ -244,8 +245,8 @@ class SearchFilterType extends AbstractType
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -272,7 +273,7 @@ class SearchFilterType extends AbstractType
 
         $choices = [];
         foreach ($rubrics as $name => $count) {
-            $translatedTitle = $this->translator->transChoice(ucfirst($name), 1, [], 'rubric');
+            $translatedTitle = $this->translator->trans(ucfirst($name), [], 'rubric');
             if ($name === "label") {
                 $translatedTitle = $this->translator->trans("Groups, Topics and Institutions", [], 'search');
             }
