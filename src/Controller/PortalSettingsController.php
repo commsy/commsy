@@ -146,6 +146,7 @@ class PortalSettingsController extends AbstractController
 
                 return $this->redirectToRoute('app_portalsettings_appearance', [
                     'portalId' => $portal->getId(),
+                    'tab' => 'portal',
                 ]);
             }
         }
@@ -161,6 +162,7 @@ class PortalSettingsController extends AbstractController
 
                     return $this->redirectToRoute('app_portalsettings_appearance', [
                         'portalId' => $portal->getId(),
+                        'tab' => 'server',
                     ]);
                 }
             }
@@ -169,6 +171,7 @@ class PortalSettingsController extends AbstractController
         return [
             'portalForm' => $portalForm->createView(),
             'serverForm' => $serverForm->createView(),
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ];
     }
 
@@ -984,6 +987,7 @@ class PortalSettingsController extends AbstractController
 
                 return $this->redirectToRoute('app_portalsettings_contents', [
                     'portalId' => $portal->getId(),
+                    'tab' => 'tou',
                 ]);
             }
         }
@@ -1001,6 +1005,7 @@ class PortalSettingsController extends AbstractController
 
                     return $this->redirectToRoute('app_portalsettings_contents', [
                         'portalId' => $portal->getId(),
+                        'tab' => 'data_privacy',
                     ]);
                 }
             }
@@ -1013,6 +1018,7 @@ class PortalSettingsController extends AbstractController
 
                     return $this->redirectToRoute('app_portalsettings_contents', [
                         'portalId' => $portal->getId(),
+                        'tab' => 'impressum',
                     ]);
                 }
             }
@@ -1025,6 +1031,7 @@ class PortalSettingsController extends AbstractController
 
                     return $this->redirectToRoute('app_portalsettings_contents', [
                         'portalId' => $portal->getId(),
+                        'tab' => 'accessibility',
                     ]);
                 }
             }
@@ -1037,6 +1044,7 @@ class PortalSettingsController extends AbstractController
             'impressumForm' => $impressumForm->createView(),
             'accessibilityForm' => $accessibilityForm->createView(),
             'portal' => $portal,
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ];
     }
 

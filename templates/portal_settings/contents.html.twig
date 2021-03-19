@@ -17,11 +17,11 @@
 
         {% block body %}
             <ul uk-tab>
-                <li class="uk-active"><a href="#">{{ 'terms'|trans({}, "portal") }}</a></li>
+                <li class="{% if tab is same as 'tou' %}uk-active{% endif %}"><a href="#">{{ 'terms'|trans({}, "portal") }}</a></li>
                 {% if is_granted('ROOT') %}
-                    <li><a class="uk-text-danger" href="#">{{ 'data privacy'|trans({}, 'portal') }}</a></li>
-                    <li><a class="uk-text-danger" href="#">{{ 'impressum'|trans({}, 'portal') }}</a></li>
-                    <li><a class="uk-text-danger" href="#">{{ 'accessibility'|trans({}, 'portal') }}</a></li>
+                    <li class="{% if tab is same as 'data_privacy' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'data privacy'|trans({}, 'portal') }}</a></li>
+                    <li class="{% if tab is same as 'impressum' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'impressum'|trans({}, 'portal') }}</a></li>
+                    <li class="{% if tab is same as 'accessibility' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'accessibility'|trans({}, 'portal') }}</a></li>
                 {% endif %}
             </ul>
 
