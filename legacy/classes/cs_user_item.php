@@ -1840,77 +1840,64 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return object cs_list list of User-Items connected to this item
+     * Returns all users representing this user in other rooms this user is a member of. By default,
+     * related users from community rooms, project rooms and the user's private room are returned.
+     *
+     * @param bool $includeUserroomUsers whether related users from user rooms shall be returned as well
+     * @return \cs_list list of user items connected to this item
      */
-    function getRelatedUserList(): \cs_list
+    public function getRelatedUserList(bool $includeUserroomUsers = false): \cs_list
     {
+        include_once('classes/cs_list.php');
+        $emptyList = new cs_list();
+        $currentContextId = $this->getContextID();
+        $currentPortalId = $this->_environment->getCurrentPortalID();
 
-        $current_context_id = $this->getContextID();
-
-        $room_id_array = array();
-        if ($this->_environment->getCurrentPortalID() != $current_context_id) {
-            $portalID = $this->_environment->getCurrentPortalID();
-            if (!empty($portalID)) {
-                $room_id_array[] = $this->_environment->getCurrentPortalID();
-            }
+        // current portal
+        if (!empty($portalID) && $currentPortalId != $currentContextId) {
+            $roomIds[] = $currentPortalId;
         }
 
-        $community_manager = $this->_environment->getCommunityManager();
-        $community_list = $community_manager->getRelatedCommunityListForUser($this);
-        if ($community_list->isNotEmpty()) {
-            $community_room = $community_list->getFirst();
-            while ($community_room) {
-                if ($community_room->getItemID() != $current_context_id) {
-                    $room_id_array[] = $community_room->getItemID();
-                }
-                unset($community_room);
-                $community_room = $community_list->getNext();
-            }
-            unset($community_list);
-        }
-        unset($community_manager);
+        // community rooms
+        $communityManager = $this->_environment->getCommunityManager();
+        $communityRooms = $communityManager->getRelatedCommunityListForUser($this);
 
-        $project_manager = $this->_environment->getProjectManager();
-        $project_list = $project_manager->getRelatedProjectListForUser($this, $current_context_id);
-        if ($project_list->isNotEmpty()) {
-            $project_room = $project_list->getFirst();
-            while ($project_room) {
-                if ($project_room->getItemID() != $current_context_id) {
-                    $room_id_array[] = $project_room->getItemID();
-                }
-                unset($project_room);
-                $project_room = $project_list->getNext();
-            }
-            unset($project_list);
-        }
-        unset($project_manager);
+        // project rooms
+        $projectManager = $this->_environment->getProjectManager();
+        $projectRooms = $projectManager->getRelatedProjectListForUser($this, $currentContextId);
 
-        $private_room_manager = $this->_environment->getPrivateRoomManager();
-        $own_room = $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
-        if (isset($own_room) and !empty($own_room)) {
-            $room_id = $own_room->getItemID();
-            if (!empty($room_id)) {
-                $room_id_array[] = $room_id;
-            }
-            unset($own_room);
-        }
-        unset($private_room_manager);
+        // user rooms
+        $userroomManager = $this->_environment->getUserRoomManager();
+        $userRooms = ($includeUserroomUsers) ? $userroomManager->getRelatedUserroomListForUser($this) : $emptyList;
 
-        if (!empty($room_id_array)) {
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->resetLimits();
-            $user_manager->setContextArrayLimit($room_id_array);
-            $user_manager->setUserIDLimit($this->getUserID());
-            $user_manager->setAuthSourceLimit($this->getAuthSource());
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            unset($user_manager);
-        } else {
-            include_once('classes/cs_list.php');
-            $user_list = new cs_list();
+        // gather all room IDs sans the current context ID
+        $roomIds = array_merge($communityRooms->getIDArray(), $projectRooms->getIDArray(), $userRooms->getIDArray());
+        $roomIds = array_filter($roomIds, function (int $roomId) use ($currentContextId) {
+            return ($roomId != $currentContextId);
+        });
+
+        // private room
+        $privateRoomManager = $this->_environment->getPrivateRoomManager();
+        $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($this, $currentPortalId);
+        if ($privateRoom) {
+            $roomIds[] = $privateRoom->getItemID();
         }
 
-        return $user_list;
+        if (empty($roomIds)) {
+            return $emptyList;
+        }
+
+        // gather IDs of all related users
+        $userManager = $this->_environment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextArrayLimit($roomIds);
+        $userManager->setUserIDLimit($this->getUserID());
+        $userManager->setAuthSourceLimit($this->getAuthSource());
+        $userManager->select();
+        /** @var \cs_list $relatedUsers */
+        $relatedUsers = $userManager->get();
+
+        return $relatedUsers;
     }
 
     public function getRelatedUserItemInContext($value):? \cs_user_item
