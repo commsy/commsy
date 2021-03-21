@@ -5,6 +5,7 @@ namespace App\Twig\Extension;
 use App\Services\LegacyMarkup;
 use App\Utils\ItemService;
 use Masterminds\HTML5;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -15,11 +16,17 @@ class MarkupExtension extends AbstractExtension
     private $itemService;
     private $legacyMarkup;
 
-    public function __construct(RouterInterface $router, ItemService $itemService, LegacyMarkup $legacyMarkup)
+    /**
+     * @var RequestStack $requestStack
+     */
+    private $requestStack;
+
+    public function __construct(RequestStack $requestStack, RouterInterface $router, ItemService $itemService, LegacyMarkup $legacyMarkup)
     {
         $this->router = $router;
         $this->itemService = $itemService;
         $this->legacyMarkup = $legacyMarkup;
+        $this->requestStack = $requestStack;
     }
 
     public function getFilters()
@@ -49,6 +56,8 @@ class MarkupExtension extends AbstractExtension
         }
 
         $text = $this->legacyMarkup->convertToHTML($text);
+
+        $text = $this->handleRelativeURLs($text);
 
 //        // format reference to link
 //        $text = $this->_parseText2ID($text);
@@ -100,6 +109,24 @@ class MarkupExtension extends AbstractExtension
         foreach ($values as $key => $value) {
             $text = str_replace('COMMSY_FCKEDITOR'.$key.' ',$value,$text);
         }
+
+        return $text;
+    }
+
+    /**
+     * Prepends the current CommSy base URL to any root-relative URLs used in `src` or `href` attributes.
+     *
+     * @param $text string to process
+     * @return string the processed string
+     */
+    private function handleRelativeURLs(string $text): string
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if (!$currentRequest) {
+            return $text;
+        }
+
+        $text = preg_replace('~((?:src|href)=["\'])(?=/)~', '$1' . $currentRequest->getSchemeAndHttpHost(), $text);
 
         return $text;
     }

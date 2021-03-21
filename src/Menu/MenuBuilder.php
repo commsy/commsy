@@ -398,6 +398,15 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
+            // appearance
+            $menu->addChild('Appearance', [
+                'label' => 'appearance',
+                'route' => 'app_portalsettings_appearance',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'paint-bucket'],
+            ])
+            ->setExtra('translation_domain', 'menu');
+
             // support
             $menu->addChild('Support', [
                 'label' => 'Support requests',
@@ -417,9 +426,9 @@ class MenuBuilder
             ->setExtra('translation_domain', 'portal');
 
             // terms
-            $menu->addChild('Terms', [
-                'label' => 'terms',
-                'route' => 'app_portalsettings_terms',
+            $menu->addChild('Contents', [
+                'label' => 'contents',
+                'route' => 'app_portalsettings_contents',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'file-text']
             ])
@@ -649,13 +658,7 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
-            $menu->addChild('portal_configuration_terms', array(
-                'label' => 'terms',
-                'route' => 'app_portal_terms',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
-            ))
-                ->setExtra('translation_domain', 'portal');
+
             $menu->addChild('portal_configuration_licenses', array(
                 'label' => 'Licenses',
                 'route' => 'app_portal_licenses',

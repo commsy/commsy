@@ -48,33 +48,6 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{roomId}/impressum")
-     * @Template()
-     */
-    public function impressum()
-    {
-        return [];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/dp")
-     * @Template()
-     */
-    public function dataPrivacy()
-    {
-        return [];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/tou")
-     * @Template()
-     */
-    public function termsOfUse()
-    {
-        return [];
-    }
-
-    /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
@@ -159,50 +132,6 @@ class PortalController extends AbstractController
             'roomCategoryId' => $roomCategoryId,
             'item' => $legacyEnvironment->getCurrentPortalItem(),
         ];
-    }
-
-    /**
-     * Handles portal terms configuration
-     *
-     * @Route("/portal/{roomId}/terms")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @return array
-     */
-    public function termsAction(
-        Request $request,
-        LegacyEnvironment $environment
-    ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $portalTerms = $portalItem->getAGBTextArray();
-        $portalTerms['status'] = $portalItem->getAGBStatus();
-
-        $termsForm = $this->createForm(PortalTermsType::class, $portalTerms, []);
-
-        $termsForm->handleRequest($request);
-        if ($termsForm->isSubmitted() && $termsForm->isValid()) {
-            if ($termsForm->getClickedButton()->getName() == 'save') {
-                $formData = $termsForm->getData();
-
-                $portalItem->setAGBTextArray(array_filter($formData, function($key) {
-                    return $key == 'DE' || $key == 'EN';
-                }, ARRAY_FILTER_USE_KEY));
-                $portalItem->setAGBStatus($formData['status']);
-                $portalItem->setAGBChangeDate();
-                $portalItem->save();
-            }
-        }
-
-        return [
-            'form' => $termsForm->createView(),
-            'portal' => $portalItem,
-        ];
-
     }
 
     /**

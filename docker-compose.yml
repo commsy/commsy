@@ -36,11 +36,9 @@ services:
       - db
     volumes:
       - commsy-data:/var/www/html/files
-      - commsy-cache:/var/www/html/var/cache
       - ./:/var/www/html:cached
       - ./docker/php/conf.d/commsy.dev.ini/:/usr/local/etc/php/conf.d/commsy.ini
 
 volumes:
   db-data:
   commsy-data:
-  commsy-cache:

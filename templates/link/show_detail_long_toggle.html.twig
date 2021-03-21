@@ -8,7 +8,7 @@
             <div id="detail_toggle_long">
                 {% for type,rubric in linkedItemsByRubric %}
                     <div class="uk-accordion-title cs-accordion-detail uk-margin-remove">
-                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|capitalize|transchoice(1,{},"rubric") }} ({{ rubric|length }})</a>
+                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|capitalize|trans({},"rubric") }} ({{ rubric|length }})</a>
                     </div>
                     <div class="uk-accordion-content uk-padding-remove">
                         <ul class="uk-list uk-margin-bottom">

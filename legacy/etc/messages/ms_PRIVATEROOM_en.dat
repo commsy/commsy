@@ -15,8 +15,8 @@ $message["PRIVATEROOM_COMMON_X_FROM_Z_FROM_ALL"]["en"] = "%1 of %1 workspaces";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z"]["en"] = "%1 to %2 of %3 workspaces";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["en"] = "%1 to %2 of %3";
 $message["PRIVATEROOM_CREATE_NEW_ENTRY_BOX"]["en"] = "Create new entry";
-$message["PRIVATEROOM_EXPORT"]["en"] = "Export private workspace";
-$message["PRIVATEROOM_LOCK"]["en"] = "Lock private workspace";
+$message["PRIVATEROOM_EXPORT"]["en"] = "Export my stack";
+$message["PRIVATEROOM_LOCK"]["en"] = "Lock my stack";
 $message["PRIVATEROOM_MAIL_SUBJECT_DAILY"]["en"] = "Daily CommSy newsletter";
 $message["PRIVATEROOM_MAIL_SUBJECT_FOOTER"]["en"] = "You can unsubscribe this newsletter by switching off the according feature in your profile.";
 $message["PRIVATEROOM_MAIL_SUBJECT_HEADER_DAILY"]["en"] = "This daily newsletter is send by &quot;%1&quot;. It includes information about unread items of all rooms you are member of.";
@@ -37,5 +37,5 @@ $message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON"]["en"] = "Add new list";
 $message["PRIVATEROOM_RELEASED_FOR"]["en"] = "released for";
 $message["PRIVATEROOM_RELEASED_FROM"]["en"] = "released by";
 $message["PRIVATEROOM_ROOMWIDE_SEARCH_BOX"]["en"] = "Search overall my workspaces";
-$message["PRIVATEROOM_UNLOCK"]["en"] = "Unlock private workspace";
+$message["PRIVATEROOM_UNLOCK"]["en"] = "Unlock my stack";
 ?>

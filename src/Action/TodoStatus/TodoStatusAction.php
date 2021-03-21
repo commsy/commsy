@@ -80,14 +80,14 @@ class TodoStatusAction implements ActionInterface
         }
 
         if (isset($statusMap[$this->newStatus])) {
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('Set status of %count% entries to ' . $this->newStatus, count($items), [
-                '%count%' => count($items),
-            ]);
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('Set status of %count% entries to ' . $this->newStatus, [
+                    '%count%' => count($items),
+                ]);
         } else {
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('Set status of %count% entries to %status%', count($items), [
-                '%count%' => count($items),
-                '%status%' => $this->newStatus,
-            ]);
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('Set status of %count% entries to %status%', [
+                    '%count%' => count($items),
+                    '%status%' => $this->newStatus,
+                ]);
         }
 
         return new JsonDataResponse([
