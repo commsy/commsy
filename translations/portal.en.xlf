@@ -921,6 +921,18 @@
                 <source>Inactive</source>
                 <target>Deleting inactive users</target>
             </trans-unit>
+            <trans-unit id="deprovisioning">
+                <source>Deprovisioning</source>
+                <target>Deprovisioning</target>
+            </trans-unit>
+            <trans-unit id="archive_inactive_rooms">
+                <source>Archive inactive rooms</source>
+                <target>Archive inactive rooms</target>
+            </trans-unit>
+            <trans-unit id="delete_inactive_rooms">
+                <source>Delete inactive rooms</source>
+                <target>Delete inactive rooms</target>
+            </trans-unit>
 
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">

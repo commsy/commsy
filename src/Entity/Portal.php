@@ -1240,6 +1240,6 @@ class Portal implements \Serializable
      * @param int days send mail before deleting an unused archived room
      */
     public function setDaysSendMailBeforeDeletingRooms (int $value) {
-        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'] = $this;
+        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'] = $value;
     }
 }
