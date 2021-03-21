@@ -24,6 +24,7 @@ class DeleteArchiveRoomsType extends AbstractType
         $builder
             ->add('statusDeletingUnusedRooms', Types\CheckboxType::class, [
                 'label' => 'Activate',
+                'required' => false,
             ])
             ->add('daysUnusedBeforeDeletingRooms', Types\TextType::class, [
                 'label' => 'Delete rooms after x days',
