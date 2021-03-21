@@ -28,7 +28,7 @@ class SwitchToUserVoter extends Voter
     protected function supports($attribute, $subject)
     {
 
-        return in_array($attribute, ['ROLE_ADMIN'])
+        return in_array($attribute, ['ROLE_ALLOWED_TO_SWITCH'])
             && $subject instanceof UserInterface;
     }
 
@@ -44,6 +44,7 @@ class SwitchToUserVoter extends Voter
         }
 
         if ($this->security->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
+            //TODO: Check whether subject is allowed to switch users
             return true;
         }
 
