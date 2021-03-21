@@ -59,6 +59,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
             $this->addFilesRawContent($event);
         }
 
+        if (isset($fields['context'])) {
+            $this->addContext($event);
+        }
+
         if (isset($fields['discussionarticles'])) {
             $this->addDiscussionArticles($event);
         }
@@ -73,6 +77,14 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
         if (isset($fields['parentId'])) {
             $this->addParentRoomIds($event);
+        }
+
+        if (isset($fields['creator'])) {
+            $this->addCreator($event);
+        }
+
+        if (isset($fields['modifier'])) {
+            $this->addModifier($event);
         }
     }
 
@@ -125,6 +137,20 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 if (!empty($objectTags)) {
                     $event->getDocument()->set('tags', $objectTags);
                 }
+            }
+        }
+    }
+
+    private function addContext(TransformEvent $event)
+    {
+        $item = $this->getItemCached($event->getObject()->getItemId());
+
+        if ($item) {
+            $context = $item->getContextItem();
+            if ($context) {
+                $event->getDocument()->set('context', [
+                    'title' => $context->getTitle(),
+                ]);
             }
         }
     }
@@ -358,7 +384,63 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
-    private function getItemCached($itemId)
+    public function addCreator($event)
+    {
+        $item = $this->getItemCached($event->getObject()->getItemId());
+
+        if ($item) {
+            if ($item->getItemType() !== CS_USER_TYPE){
+                return;
+            }
+
+            $userManager = $this->legacyEnvironment->getUserManager();
+            $user = $userManager->getItem($item->getItemID());
+
+            $creator = $user->getCreatorItem();
+            if (!$creator) {
+                // NOTE: this condition also applies to the root user item which has creator ID 99 and no
+                // matching user item in the database (which would thus cause an EntityNotFoundException)
+                return;
+            }
+
+            $creatorProperties = [
+                'firstName' => $creator->getFirstname(),
+                'lastName' => $creator->getLastname(),
+                'fullName' => $creator->getFullName(),
+            ];
+            $event->getDocument()->set('creator', $creatorProperties);
+        }
+    }
+
+    public function addModifier($event)
+    {
+        $item = $this->getItemCached($event->getObject()->getItemId());
+
+        if ($item) {
+            if ($item->getItemType() !== CS_USER_TYPE){
+                return;
+            }
+
+            $userManager = $this->legacyEnvironment->getUserManager();
+            $user = $userManager->getItem($item->getItemID());
+
+            $modifier = $user->getModificatorItem();
+            if (!$modifier) {
+                // NOTE: this condition also applies to the root user item which has modifier ID 99 and no
+                // matching user item in the database (which would thus cause an EntityNotFoundException)
+                return;
+            }
+
+            $modifierProperties = [
+                'firstName' => $modifier->getFirstname(),
+                'lastName' => $modifier->getLastname(),
+                'fullName' => $modifier->getFullName(),
+            ];
+            $event->getDocument()->set('modifier', $modifierProperties);
+        }
+    }
+
+    private function getItemCached($itemId): ?\cs_item
     {
         // cache wiping
         if (sizeof($this->itemCache) >= 10000) {

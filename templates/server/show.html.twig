@@ -1,10 +1,23 @@
 {% extends 'layout.html.twig' %}
 
+{% import 'common/announcements.html.twig' as announcements %}
+
 {% block top_navigation_left %}
-{#    <div class="uk-navbar-item uk-logo">Portalübersicht</div>#}
+{% endblock %}
+
+{% block cover %}
+    {% if server.logoImageName %}
+        <div class="uk-section uk-section-small">
+            <div class="uk-container uk-container-large">
+                <img data-src="{{ path('app_file_serverlogo') }}" width="300" height="120" alt="server logo" uk-img>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block main %}
+    {{ announcements.server(server) }}
+
     {% if activePortals is not empty %}
         <div class="uk-grid-match uk-child-width-expand@m uk-flex uk-flex-center" uk-grid>
 
@@ -13,23 +26,22 @@
                     <div class="uk-card uk-card-default uk-card-small">
                         {% if activePortal.logoFilename is not empty %}
                             <div class="uk-card-body uk-padding-remove">
-                                {# TODO: Just a placeholder from the mockup, please replace #}
-                                {# TODO: try images in 220px by 80 px and play around with uk-padding-remove #}
-                                {# TODO: of parent element, cheers #}
-                                <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                                <img data-src="{{ path('app_file_portallogo', { 'portalId': activePortal.id }) }}" width="260" height="80" alt="portal logo" uk-img>
                             </div>
                         {% endif %}
 
-                        <div class="uk-card-header">
+                        <div class="uk-card-body uk-margin-large-bottom">
+                            <h3 class="uk-card-title">{{ activePortal.title }}</h3>
+
                             <div class="uk-grid-small uk-child-width-1-2" uk-grid>
                                 <div>
-                                    <dl class="uk-description-list uk-text-meta uk-text">
+                                    <dl class="uk-description-list">
                                         <dt>{{ 'portal.num_rooms'|trans({}, 'portal') }}</dt>
                                         <dd>{{ usageInformation[activePortal.id].rooms }}</dd>
                                     </dl>
                                 </div>
                                 <div>
-                                    <dl class="uk-description-list uk-text-meta uk-text">
+                                    <dl class="uk-description-list">
                                         <dt>{{ 'portal.num_members'|trans({}, 'portal') }}</dt>
                                         <dd>{{ usageInformation[activePortal.id].users }}</dd>
                                     </dl>
@@ -57,10 +69,7 @@
                             {%- endmacro -%}
 
                             <progress class="uk-progress" value="{{- _self.activityPercentage(activePortal.activity, totalMaxActivity) -}}" max="100"></progress>
-                        </div>
 
-                        <div class="uk-card-body uk-margin-large-bottom">
-                            <h3 class="uk-card-title">{{ activePortal.title }}</h3>
                             {% if app.request.locale is same as("de") %}
                                 {% set description = activePortal.descriptionGerman %}
                             {% else %}

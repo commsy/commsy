@@ -6,6 +6,7 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
+use App\Entity\Server;
 use App\Form\Model\LocalAccount;
 use App\Form\Type\PasswordChangeType;
 use App\Form\Type\RequestPasswordResetType;
@@ -86,11 +87,14 @@ class SecurityController extends AbstractController
             $lastSource = $session->get(AbstractCommsyGuardAuthenticator::LAST_SOURCE);
         }
 
+        $server = $entityManager->getRepository(Server::class)->getServer();
+
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
             'context' => $context,
             'portal' => $portal ?? null,
+            'server' => $server,
             'lastSource' => $lastSource,
         ]);
     }

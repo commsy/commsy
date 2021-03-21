@@ -31,9 +31,11 @@ class TermsType extends AbstractType
             ])
             ->add('termsGerman', CKEditorType::class, [
                 'label' => 'content_de',
+                'config_name' => 'html_reduced',
             ])
             ->add('termsEnglish', CKEditorType::class, [
                 'label' => 'content_en',
+                'config_name' => 'html_reduced',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',

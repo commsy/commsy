@@ -7,7 +7,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\MediawikiService;
 use cs_room_item;
 
-class ExtensionSettingsTransformer implements DataTransformerInterface
+class ExtensionSettingsTransformer extends AbstractTransformer
 {
     private $legacyEnvironment;
     private $roomService;

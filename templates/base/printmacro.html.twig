@@ -49,12 +49,12 @@
                                     {% endfor %}
                                 </td>
                                 <td class="uk-padding-top-remove uk-padding-bottom-remove uk-text-right">
-                                    {% set ratingDisplay = 'rating'|transchoice(1, {}, 'material') %}
+                                    {% set ratingDisplay = 'rating'|trans({}, 'material') %}
                                     <span class="uk-text-bold uk-margin-left">
                                     {% if ratingArray.ratingDetail[ratingValue] is defined %}
                                         {{ ratingArray.ratingDetail[ratingValue] }}
                                         {% if ratingArray.ratingDetail[ratingValue] == 1 %}
-                                            {% set ratingDisplay = 'rating'|transchoice(0, {}, 'material') %}
+                                            {% set ratingDisplay = 'rating'|trans({}, 'material') %}
                                         {% endif %}
                                     {% else %}
                                         0
@@ -308,7 +308,7 @@
 
                 {# preview #}
                 <div>
-                    {{ content|raw }}
+                    {{ content|commsyMarkup(item)|raw }}
                 </div>
 
             </div>

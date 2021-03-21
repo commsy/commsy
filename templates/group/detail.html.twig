@@ -24,12 +24,16 @@
                             {# back navigation #}
                             <div class="uk-margin-right">
                                 {% if firstItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                    <a class="uk-button-primary"
+                                       href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i
+                                                class="uk-icon-small uk-icon-angle-double-left"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
                                 {% endif %}
                                 {% if prevItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                    <a class="uk-button-primary"
+                                       href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i
+                                                class="uk-icon-small uk-icon-angle-left"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
                                 {% endif %}
@@ -38,16 +42,23 @@
                             {# item dropdown #}
                             <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
-                                    {{ 'Group'|transchoice(0, {}, "rubric")}} {{ counterPosition }} / {{ count }}
+                                    {{ 'Group'|trans({}, "rubric") }} {{ counterPosition }} / {{ count }}
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
                                 <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
-                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                                       {% for tempGroup in groupList %}
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                        {% for tempGroup in groupList %}
                                             {% if tempGroup.itemId != group.itemId %}
-                                                <li><a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': tempGroup.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|decodeHtmlEntity }}">{{ tempGroup.title|decodeHtmlEntity|truncate(25) }}</a></li>
+                                                <li>
+                                                    <a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': tempGroup.itemId}) }}"
+                                                       data-uk-tooltip="{delay:'250'}"
+                                                       title="{{ tempGroup.title|decodeHtmlEntity }}">{{ tempGroup.title|decodeHtmlEntity|truncate(25) }}</a>
+                                                </li>
                                             {% else %}
-                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempGroup.title|decodeHtmlEntity|truncate(20)  }}</a></li>
+                                                <li><a href="#" data-uk-tooltip="{delay:'250'}"
+                                                       title="{{ tempGroup.title|decodeHtmlEntity }}"
+                                                       class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempGroup.title|decodeHtmlEntity|truncate(20) }}</a>
+                                                </li>
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
@@ -57,12 +68,16 @@
                             {# forward navigation #}
                             <div>
                                 {% if nextItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                    <a class="uk-button-primary"
+                                       href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i
+                                                class="uk-icon-small uk-icon-angle-right"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
                                 {% endif %}
                                 {% if lastItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                    <a class="uk-button-primary"
+                                       href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i
+                                                class="uk-icon-small uk-icon-angle-double-right"></i></a>
                                 {% else %}
                                     <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
                                 {% endif %}
@@ -105,7 +120,8 @@
                                                 </li>
                                             {% endif %}
                                             <li id="leave-group-link" {% if not userIsMember %} class="uk-hidden" {% elseif memberStatus == 'enter' %} data-uk-tooltip title="{{ 'leave grouproom before group'|trans({},'group') }}" {% endif %}>
-                                                <a id="leave-group-link" {% if memberStatus == 'enter'%} class="uk-text-muted" style="pointer-events: none;" {% endif%} href="#" data-cs-action="{{ {
+                                                <a id="leave-group-link" {% if memberStatus == 'enter' %} class="uk-text-muted" style="pointer-events: none;" {% endif %}
+                                                   href="#" data-cs-action="{{ {
                                                     'url': path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}),
                                                     'action': 'leave',
                                                     'itemId': group.itemId,
@@ -121,15 +137,17 @@
                                         {% if is_granted('ITEM_EDIT', 'NEW') %}
                                             {# new entry #}
                                             <li>
-                                                <a class="" href="{{ path('app_group_create', {'roomId': roomId}) }}" id="newEntry">
+                                                <a class="" href="{{ path('app_group_create', {'roomId': roomId}) }}"
+                                                   id="newEntry">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                                 </a>
                                             </li>
                                         {% endif %}
-                                        
+
                                         {# print #}
                                         <li>
-                                            <a href="{{ path('app_group_print', {'roomId': roomId, 'itemId': group.itemId}) }}" target="_blank" id="print">
+                                            <a href="{{ path('app_group_print', {'roomId': roomId, 'itemId': group.itemId}) }}"
+                                               target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -157,7 +175,7 @@
                                         {% if is_granted('ITEM_EDIT', item.itemId) %}
                                             {# delete #}
                                             <li>
-                                                <a  href="#" data-cs-action="{{ {
+                                                <a href="#" data-cs-action="{{ {
                                                     'url': path('app_group_xhrdelete', {'roomId': roomId, 'itemId': group.itemId}),
                                                     'action': 'delete',
                                                     'itemId': group.itemId,
@@ -184,11 +202,11 @@
 
                 {% if alert %}
                     {{ macros.showAlert(alert) }}
-                {%  endif %}
+                {% endif %}
 
                 {% if pathTopicItem %}
                     {{ macros.showPath(pathTopicItem, group) }}
-                {%  endif %}
+                {% endif %}
 
                 {# content #}
                 <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
@@ -196,19 +214,20 @@
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosGroup.title(group, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                     </div>
-            
+
                     {# description #}
-                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe
+                         data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', group, true, group.description, draft) }}
                     </div>
-            
+
                     {# members #}
                     {% if userRubricVisible %}
                         <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
                             {{ macrosGroup.members(group, members) }}
                         </div>
                     {% endif %}
- 
+
                     {# grouproom #}
                     <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
                         <hr class="uk-width-9-10"/>
@@ -217,11 +236,14 @@
 
                     {% if not draft %}
                         {# links #}
-                        <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                        <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe
+                             data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
                             {{ macrosItem.linksAssociations(group, showHashtags, showCategories, roomCategories, draft, showAssociations) }}
                         </div>
                         {% if (showCategories or showHashtags) %}
-                            <div id="categoriesAndBuzzwords{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                            <div id="categoriesAndBuzzwords{{ group.itemId }}" class="cs-edit-section cs-toggle"
+                                 data-uk-observe
+                                 data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
                                 {{ macrosItem.links(group, showHashtags, showCategories, roomCategories, draft, buzzExpanded, catzExpanded) }}
                             </div>
                         {% endif %}
@@ -249,22 +271,26 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ group.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#description{{ group.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon"
+                        data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ group.itemId }}\']'}"
+                        data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                        <li><a href="#description{{ group.itemId }}">{{ 'entry description'|trans({}) }}</a></li>
                         {% if userRubricVisible %}
-                            <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({})}}</a></li>
+                            <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({}) }}</a></li>
                         {% endif %}
-                        <li><a href="#grouproom{{ group.itemId }}">{{ 'grouproom'|trans({},'group')}}</a></li>
-                        <li><a href="#links{{ group.itemId }}">{{ 'links'|trans({})}}</a></li>
+                        <li><a href="#grouproom{{ group.itemId }}">{{ 'grouproom'|trans({},'group') }}</a></li>
+                        <li><a href="#links{{ group.itemId }}">{{ 'links'|trans({}) }}</a></li>
                         {% if (showCategories or showHashtags) %}
-                            <li><a href="#categoriesAndBuzzwords{{ group.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                            <li>
+                                <a href="#categoriesAndBuzzwords{{ group.itemId }}">{{ 'categoriesAndBuzzwords'|trans({}) }}</a>
+                            </li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
 
         </div>
-      
+
     </div>
 {% endblock %}
 
