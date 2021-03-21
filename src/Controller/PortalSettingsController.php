@@ -2194,18 +2194,10 @@ class PortalSettingsController extends AbstractController
         EntityManagerInterface $entityManager,
         $portalId
     ) {
-
-        $user_item = $userService->getUser($request->get('userId'));
-
-        $privateRoom = $entityManager->getRepository(RoomPrivat::class)
-            ->findByContextIdAndUsername($portalId, $user_item->getUserID());
-
-        if ($privateRoom !== null) {
-            return $this->redirectToRoute('app_helper_portalenter', [
-                'context' => $portalId,
-                '_switch_user' => $user_item->getUserID(),
-            ]);
-        }
+        return $this->redirectToRoute('app_helper_portalenter', [
+            'context' => $portalId,
+            '_switch_user' => $userService->getUser($request->get('userId'))->getUserID(),
+        ]);
     }
 
     /**
