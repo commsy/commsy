@@ -163,7 +163,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
-        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
+        $results = $this->prepareResults($searchResults,  $readerService, $roomId, 0, true);
 
         $response = new JsonResponse();
 
@@ -201,7 +201,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
+        $results = $this->prepareResults($searchResults, $readerService, $roomId, 0, true);
 
         $response = new JsonResponse();
 
