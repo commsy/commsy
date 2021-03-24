@@ -1835,6 +1835,7 @@ class PortalSettingsController extends AbstractController
         $userList = $userService->getListUsers($portal->getId());
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
         $form->handleRequest($request);
+        $portalUser = $userService->getPortalUser($this->getUser())->getFirst();
         $user = $userService->getUser($request->get('userId'));
         $authSource = $user->getAuthSource();
         $authRepo = $this->getDoctrine()->getRepository(AuthSource::class);
@@ -1946,6 +1947,7 @@ class PortalSettingsController extends AbstractController
 
         return [
             'user' => $user,
+            'portalUser' => $portalUser,
             'form' => $form->createView(),
             'portal' => $portal,
             'communities' => implode(', ', $communityListNames),
@@ -2131,7 +2133,7 @@ class PortalSettingsController extends AbstractController
         $userChangeStatus->setCurrentStatus($trans);
         $userChangeStatus->setNewStatus(strtolower($currentStatus));
         $userChangeStatus->setContact($user->isContact());
-        $userChangeStatus->setLoginIsDeactivated('2');
+        $userChangeStatus->setLoginIsDeactivated($user->isDeactivatedLoginAsAnotherUser());
 
         $form = $this->createForm(AccountIndexDetailChangeStatusType::class, $userChangeStatus);
         $form->handleRequest($request);
@@ -2157,7 +2159,9 @@ class PortalSettingsController extends AbstractController
             }
 
             $deactivateTakeOver = $data->getLoginIsDeactivated();
-            if ($deactivateTakeOver == '2') {
+            if ($deactivateTakeOver === false) {
+                $user->unsetDeactivateLoginAsAnotherUser();
+            } else if ($deactivateTakeOver === true) {
                 $user->deactivateLoginAsAnotherUser();
             }
 

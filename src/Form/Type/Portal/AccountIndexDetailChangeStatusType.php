@@ -63,8 +63,8 @@ class AccountIndexDetailChangeStatusType extends AbstractType
                 'expanded' => true,
                 'placeholder' => false,
                 'choices'  => [
-                    'Yes' => '1',
-                    'No' => '2',
+                    'Yes' => true,
+                    'No' => false,
                 ],
                 'translation_domain' => 'portal',
                 'required' => false,
