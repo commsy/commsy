@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Entity\Account;
 use Symfony\Component\Form\Form;
 
 use App\Services\LegacyEnvironment;
@@ -279,6 +280,17 @@ class UserService
             $user->setBirthday("");
         }
         return $user;
+    }
+
+    public function getPortalUser(Account $account): object
+    {
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setUserIDLimit($account->getUsername());
+        $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
+        $userManager->setContextLimit($account->getContextId());
+        $userManager->select();
+
+        return $this->userManager->get();
     }
     
     public function getPortalUserFromSessionId()

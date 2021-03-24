@@ -25,9 +25,6 @@ security:
                 users:
                     api: { password: '%env(API_SECRET)%' }
 
-    role_hierarchy:
-        PORTAL_MODERATOR: [ ROLE_ALLOWED_TO_SWITCH ]
-
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

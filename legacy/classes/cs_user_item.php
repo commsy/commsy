@@ -2723,7 +2723,8 @@ class cs_user_item extends cs_item
 
     function deactivateLoginAsAnotherUser()
     {
-        $this->_addExtra('DEACTIVATE_LOGIN_AS', '1');
+        $this->_addExtra('DEACTIVATE_LOGIN_AS', true);
+        return $this;
     }
 
     function unsetDeactivateLoginAsAnotherUser()
@@ -2731,19 +2732,16 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
             $this->_unsetExtra('DEACTIVATE_LOGIN_AS');
         }
-        #$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
     }
 
-    function isDeactivatedLoginAsAnotherUser()
+    function isDeactivatedLoginAsAnotherUser(): bool
     {
-        $retour = '';
+        $retour = false;
         if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
             $flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
             $retour = $flag;
         }
-
         return $retour;
-
     }
 
     function setPasswordExpireDate($days)
