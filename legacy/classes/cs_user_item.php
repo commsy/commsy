@@ -1382,7 +1382,7 @@ class cs_user_item extends cs_item
         // ContactPersonString
         $context_item = $this->getContextItem();
         // get grouproom
-        if ($context_item->getType() == 'group') {
+        if ($context_item && $context_item->getType() == 'group') {
             $grouproom_array = $context_item->_getItemData();
             $grouproom_id = $grouproom_array['extras']['GROUP_ROOM_ID'];
             $room_manager = $this->_environment->getRoomManager();

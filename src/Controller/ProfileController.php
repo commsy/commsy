@@ -256,7 +256,8 @@ class ProfileController extends Controller
                 if ($formData['emailChangeInAllContexts']) {
                     // do not change the account email address (or private room) even if the user
                     // wants to change all related room users
-                    if (!$tempUserItem->getContextItem()->isPortal() && !$tempUserItem->getContextItem()->isPrivateRoom()) {
+                    $contextItem = $tempUserItem->getContextItem();
+                    if ($contextItem && !$contextItem->isPortal() && !$contextItem->isPrivateRoom()) {
                         $tempUserItem->setEmail($formData['emailRoom']);
                     }
                     $usePortalEmail = ($formData['emailChoice'] === 'account') ? 1 : 0;
