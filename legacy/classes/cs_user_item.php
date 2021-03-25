@@ -1854,7 +1854,7 @@ class cs_user_item extends cs_item
         $currentPortalId = $this->_environment->getCurrentPortalID();
 
         // current portal
-        if (!empty($portalID) && $currentPortalId != $currentContextId) {
+        if (!empty($currentPortalId) && $currentPortalId != $currentContextId) {
             $roomIds[] = $currentPortalId;
         }
 
@@ -1875,6 +1875,10 @@ class cs_user_item extends cs_item
         $roomIds = array_filter($roomIds, function (int $roomId) use ($currentContextId) {
             return ($roomId != $currentContextId);
         });
+
+        // NOTE: we reindex the $roomIds array (so that its array values start from 0) since cs_user_manager->_performQuery()
+        //       for some reason requires a _context_array_limit array to start with index 0
+        $roomIds = array_values($roomIds);
 
         // private room
         $privateRoomManager = $this->_environment->getPrivateRoomManager();
