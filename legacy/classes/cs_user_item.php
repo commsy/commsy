@@ -1854,7 +1854,7 @@ class cs_user_item extends cs_item
         $currentPortalId = $this->_environment->getCurrentPortalID();
 
         // current portal
-        if (!empty($portalID) && $currentPortalId != $currentContextId) {
+        if (!empty($currentPortalId) && $currentPortalId != $currentContextId) {
             $roomIds[] = $currentPortalId;
         }
 
