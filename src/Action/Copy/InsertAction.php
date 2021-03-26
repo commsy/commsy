@@ -117,7 +117,7 @@ class InsertAction
 
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('inserted %count% entries in this room', count($items), [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('inserted %count% entries in this room',[
                 '%count%' => count($items),
             ]),
         ]);

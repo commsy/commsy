@@ -6,8 +6,10 @@ use \DateTime;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-class ItemTransformer implements DataTransformerInterface
+class ItemTransformer extends AbstractTransformer
 {
+    protected $entity = 'item';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

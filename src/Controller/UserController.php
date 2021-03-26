@@ -1288,7 +1288,8 @@ class UserController extends BaseController
         $contextId,
         LegacyEnvironment $legacyEnvironment,
         SessionInterface $session,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        bool $uikit3 = false
     ) {
         $currentUserItem = $this->userService->getCurrentUserItem();
         $privateRoomItem = $currentUserItem->getOwnRoom();
@@ -1324,6 +1325,7 @@ class UserController extends BaseController
             'tooltip' => $portalItem ? $portalItem->getSupportPageLinkTooltip() : '',
             'showPortalConfigurationLink' => $showPortalConfigurationLink,
             'portal' => $portalItem,
+            'uikit3' => $uikit3,
         ];
     }
 

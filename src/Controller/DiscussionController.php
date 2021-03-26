@@ -606,7 +606,7 @@ class DiscussionController extends BaseController
         // create a new discussion
         $discussionItem = $discussionService->getNewDiscussion();
         $discussionItem->setDraftStatus(1);
-        $discussionItem->setPrivateEditing('1');
+        $discussionItem->setPrivateEditing('0'); // editable only by creator
         $discussionItem->save();
 
         return $this->redirectToRoute('app_discussion_detail', [
@@ -1126,9 +1126,9 @@ class DiscussionController extends BaseController
                 $article->setTitle($form->getData()['title']);
 
                 if ($form->getData()['permission']) {
-                    $article->setPrivateEditing('0');
+                    $article->setPrivateEditing('0'); // editable only by creator
                 } else {
-                    $article->setPrivateEditing('1');
+                    $article->setPrivateEditing('1'); // editable by everyone
                 }
 
                 if ($item->isDraft()) {

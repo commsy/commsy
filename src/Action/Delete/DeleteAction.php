@@ -83,7 +83,7 @@ class DeleteAction implements ActionInterface
         }
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $this->translator->transChoice('%count% deleted entries', $numDeletedItems, [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $this->translator->trans('%count% deleted entries', [
                 '%count%' => $numDeletedItems,
             ]),
         ]);

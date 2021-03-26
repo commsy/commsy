@@ -233,6 +233,10 @@ class cs_group_item extends cs_label_item {
       $label_manager = $this->_environment->getLabelManager();
       $this->_save($label_manager);
 
+      // NOTE: media upload in a group item's description field is currently disabled
+      // $this->_saveFiles();     // this must be done before saveFileLinks
+      // $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
+
       if ( isset($save_time) and $save_time ) {
          $context_item = $this->_environment->getCurrentContextItem();
          if ( $context_item->isContinuous() ) {

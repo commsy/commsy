@@ -42,9 +42,9 @@ class CopyAction implements ActionInterface
         }
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> ' . $this->translator->transChoice('%count% copied entries', count($items), [
-                '%count%' => count($items),
-            ]),
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> ' . $this->translator->trans('%count% copied entries', [
+                    '%count%' => count($items),
+                ]),
             'count' => count($currentClipboardIds),
         ]);
     }

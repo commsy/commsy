@@ -1330,12 +1330,22 @@ class cs_user_manager extends cs_manager {
    * @param cs_user_item the user item to be deleted
    */
    function delete ($item_id) {
+       /** @var \cs_user_item $user_item */
       $user_item = $this->getItem($item_id);
       if ( $this->_environment->inPortal() ) {
          if ( isset($user_item)
               and !empty($user_item)
               and $user_item->getContextID() == $this->_environment->getCurrentContextID()
          ) {
+            // fire an AccountDeletedEvent (which will e.g. trigger deletion of the user's saved searches)
+            global $symfonyContainer;
+
+            /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+            $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+
+            $accountDeletedEvent = new \App\Event\AccountDeletedEvent($user_item);
+            $eventDispatcher->dispatch($accountDeletedEvent, \App\Event\AccountDeletedEvent::class);
+
             // delete private room - part I
             $private_room_manager = $this->_environment->getPrivateRoomManager();
             $own_room = $private_room_manager->getRelatedOwnRoomForUser($user_item,$this->_environment->getCurrentPortalID());
@@ -1347,6 +1357,7 @@ class cs_user_manager extends cs_manager {
                   $delete_own_room = false;
                }
             }
+
             // delete related user in project rooms and community rooms and private room
             $user_list = $user_item->getRelatedUserList();
             if ( !$user_list->isEmpty() ) {
@@ -1976,7 +1987,7 @@ class cs_user_manager extends cs_manager {
         $result = $this->_db_connector->performQuery($query);
     }
 
-	
+
 	public function getAllUserItemArray($uid){
 		$user = NULL;
 		$user_array = array();

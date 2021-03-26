@@ -19,9 +19,11 @@ use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
+use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
+use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
@@ -32,21 +34,26 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
-use App\Form\Type\Portal\AnnouncementsType;
-use App\Form\Type\Portal\AuthCommsyType;
 use App\Form\Type\Portal\AuthLdapType;
+use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
+use App\Form\Type\Portal\DataPrivacyType;
 use App\Form\Type\Portal\GeneralType;
+use App\Form\Type\Portal\ImpressumType;
 use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\LicenseSortType;
 use App\Form\Type\Portal\LicenseType;
 use App\Form\Type\Portal\MailtextsType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
+use App\Form\Type\Portal\PortalAnnouncementsType;
+use App\Form\Type\Portal\PortalAppearanceType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
 use App\Form\Type\Portal\ProjectRoomsCreationType;
 use App\Form\Type\Portal\RoomCategoriesType;
+use App\Form\Type\Portal\ServerAnnouncementsType;
+use App\Form\Type\Portal\ServerAppearanceType;
 use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
@@ -117,6 +124,54 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/appearance")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template
+     * @param Portal $portal
+     * @param Request $request
+     */
+    public function appearance(Portal $portal, Request $request, EntityManagerInterface $entityManager)
+    {
+        $portalForm = $this->createForm(PortalAppearanceType::class, $portal);
+        $portalForm->handleRequest($request);
+        if ($portalForm->isSubmitted() && $portalForm->isValid()) {
+            if ($portalForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_appearance', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'portal',
+                ]);
+            }
+        }
+
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        $serverForm = $this->createForm(ServerAppearanceType::class, $server);
+        if ($this->isGranted('ROOT')) {
+            $serverForm->handleRequest($request);
+            if ($serverForm->isSubmitted() && $serverForm->isValid()) {
+                if ($serverForm->getClickedButton()->getName() === 'save') {
+                    $entityManager->persist($server);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_portalsettings_appearance', [
+                        'portalId' => $portal->getId(),
+                        'tab' => 'server',
+                    ]);
+                }
+            }
+        }
+
+        return [
+            'portalForm' => $portalForm->createView(),
+            'serverForm' => $serverForm->createView(),
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ];
     }
 
@@ -400,91 +455,55 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      */
-    public function authCommsy(
+    public function authLocal(
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
     ) {
-        $defaultData = [
-            'typeChoice' => 'commsy',
-            'default' => 0,
-            'imsDefault' => 0,
-            'available' => 1,
-        ];
+        /*
+         * Try to find an existing local auth source or create an empty one. We assume
+         * that there is only one auth source per type.
+         */
+        $authSources = $portal->getAuthSources();
 
-        $authSourceRepo = $entityManager->getRepository(AuthSource::class);
-        $existingAuthSources = $authSourceRepo->findByPortalAndTypeOriginName($portal, 'commsy');
+        /** @var AuthSourceShibboleth $localSource */
+        $localSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceLocal;
+        })->first();
 
-        if (!is_null($existingAuthSources) && sizeof($existingAuthSources) > 0) {
-            $existingCommsySource = $existingCommsySource = $existingAuthSources[0];
-            if (is_null($existingCommsySource->getExtras())) {
-                $existingCommsySource->setExtras([]);
-            }
-
-            $defaultData['title'] = $existingCommsySource->getTitle();
-            $defaultData['default'] = $existingCommsySource->isDefault();
-            $defaultData['available'] = $existingCommsySource->getAvailable();
-            $defaultData['mailRegEx'] = $existingCommsySource->getMailRegEx();
-            $defaultData['default'] = $existingCommsySource->isDefault();
-            $defaultData['changeUserID'] = $existingCommsySource->isChangeUserID();
-            $defaultData['changeIdentification'] = $existingCommsySource->isChangeIdentification();
-            $defaultData['changePassword'] = $existingCommsySource->isChangePassword();
-            $defaultData['createIdentifiaction'] = $existingCommsySource->getCreateIdentification();
-            $defaultData['deleteIdentifiaction'] = $existingCommsySource->isDeleteAccount();
-            $defaultData['userMayCreateRooms'] = $existingCommsySource->getCreateRoom();
-
-            $existingCommsySource->setPortal($portal);
+        if ($localSource === false) {
+            // TODO: This could be moved to a creational pattern
+            $localSource = new AuthSourceLocal();
+            $localSource->setPortal($portal);
         }
 
-        $authCommsyForm = $this->createForm(AuthCommsyType::class, $defaultData);
-        $authCommsyForm->handleRequest($request);
+        $localForm = $this->createForm(AuthLocalType::class, $localSource);
+        $localForm->handleRequest($request);
 
-        if ($authCommsyForm->isSubmitted() && $authCommsyForm->isValid()) {
+        if ($localForm->isSubmitted() && $localForm->isValid()) {
             // handle switch to other auth types
-            $clickedButtonName = $authCommsyForm->getClickedButton()->getName();
+            $clickedButtonName = $localForm->getClickedButton()->getName();
             if ($clickedButtonName === 'type') {
-                $typeSwitch = $authCommsyForm->get('typeChoice')->getData();
+                $typeSwitch = $localForm->get('typeChoice')->getData();
                 return $this->generateRedirectForAuthType($typeSwitch, $portal);
             }
 
-            $formData = $authCommsyForm->getData();
-            if ($clickedButtonName == 'save') {
-                $newAuthSource = new AuthSourceLocal();
-                if ($existingAuthSources) {
-                    $newAuthSource = $existingAuthSources[0];
+            if ($clickedButtonName === 'save') {
+                if ($localSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $localSource->setDefault(true);
                 }
-                if (is_null($newAuthSource->getExtras())) {
-                    $newAuthSource->setExtras([]);
-                }
-                $newAuthSource->setTitle($formData['title']);
-                $newAuthSource->setDefault($formData['default']);
-                $newAuthSource->setAvailable($formData['available']);
-                $newAuthSource->setDefault($formData['default']);
-                $newAuthSource->setChangeUserID($formData['changeUserID']);
-                $newAuthSource->setChangeIdentification($formData['changeIdentification']);
-                $newAuthSource->setChangePassword($formData['changePassword']);
-                $newAuthSource->setCreateIdentification($formData['createIdentifiaction']);
-                $newAuthSource->setDeleteAccount($formData['deleteIdentifiaction']);
-                $newAuthSource->setCreateRoom($formData['userMayCreateRooms']);
-                $newAuthSource->setMailRegEx($formData['mailRegEx']);
 
-                $newAuthSource->setSourceOriginName('commsy');
-                $newAuthSource->setType('local');
-
-                $newAuthSource->setEnabled(true);
-                $newAuthSource->setAddAccount(false);
-                $newAuthSource->setChangeUsername(false);
-                $newAuthSource->setChangeUserdata(false);
-
-                $newAuthSource->setPortal($portal);
-
-                $entityManager->persist($newAuthSource);
+                $entityManager->persist($localSource);
                 $entityManager->flush();
             }
         }
 
         return [
-            'form' => $authCommsyForm->createView(),
+            'form' => $localForm->createView(),
             'portal' => $portal,
         ];
     }
@@ -923,20 +942,42 @@ class PortalSettingsController extends AbstractController
      */
     public function announcements(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(AnnouncementsType::class, $portal);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $portalForm = $this->createForm(PortalAnnouncementsType::class, $portal);
+        $portalForm->handleRequest($request);
+        if ($portalForm->isSubmitted() && $portalForm->isValid()) {
             $entityManager->persist($portal);
             $entityManager->flush();
+
+            return $this->redirectToRoute('app_portalsettings_announcements', [
+                'portalId' => $portal->getId(),
+                'tab' => 'portal',
+            ]);
+        }
+
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        $serverForm = $this->createForm(ServerAnnouncementsType::class, $server);
+        if ($this->isGranted('ROOT')) {
+            $serverForm->handleRequest($request);
+            if ($serverForm->isSubmitted() && $serverForm->isValid()) {
+                $entityManager->persist($server);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_announcements', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'server',
+                ]);
+            }
         }
 
         return [
-            'form' => $form->createView(),
+            'portalForm' => $portalForm->createView(),
+            'serverForm' => $serverForm->createView(),
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ];
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/terms")
+     * @Route("/portal/{portalId}/settings/contents")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
@@ -944,23 +985,77 @@ class PortalSettingsController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      */
-    public function terms(Portal $portal, Request $request, EntityManagerInterface $entityManager)
+    public function contents(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(TermsType::class, $portal);
+        $termsForm = $this->createForm(TermsType::class, $portal);
+        $termsForm->handleRequest($request);
+        if ($termsForm->isSubmitted() && $termsForm->isValid()) {
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            if ($form->getClickedButton()->getName() === 'save') {
+            if ($termsForm->getClickedButton()->getName() === 'save') {
                 $portal->setAGBChangeDate(new \DateTime());
                 $entityManager->persist($portal);
                 $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_contents', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'tou',
+                ]);
             }
         }
 
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        $dataPrivacyForm = $this->createForm(DataPrivacyType::class, $server);
+        $impressumForm = $this->createForm(ImpressumType::class, $server);
+        $accessibilityForm = $this->createForm(AccessibilityType::class, $server);
+        if ($this->isGranted('ROOT')) {
+            $dataPrivacyForm->handleRequest($request);
+            if ($dataPrivacyForm->isSubmitted() && $dataPrivacyForm->isValid()) {
+                if ($dataPrivacyForm->getClickedButton()->getName() === 'save') {
+                    $entityManager->persist($server);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_portalsettings_contents', [
+                        'portalId' => $portal->getId(),
+                        'tab' => 'data_privacy',
+                    ]);
+                }
+            }
+
+            $impressumForm->handleRequest($request);
+            if ($impressumForm->isSubmitted() && $impressumForm->isValid()) {
+                if ($impressumForm->getClickedButton()->getName() === 'save') {
+                    $entityManager->persist($server);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_portalsettings_contents', [
+                        'portalId' => $portal->getId(),
+                        'tab' => 'impressum',
+                    ]);
+                }
+            }
+
+            $accessibilityForm->handleRequest($request);
+            if ($accessibilityForm->isSubmitted() && $accessibilityForm->isValid()) {
+                if ($accessibilityForm->getClickedButton()->getName() === 'save') {
+                    $entityManager->persist($server);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_portalsettings_contents', [
+                        'portalId' => $portal->getId(),
+                        'tab' => 'accessibility',
+                    ]);
+                }
+            }
+        }
+
+
         return [
-            'form' => $form->createView(),
+            'termsForm' => $termsForm->createView(),
+            'dataPrivacyForm' => $dataPrivacyForm->createView(),
+            'impressumForm' => $impressumForm->createView(),
+            'accessibilityForm' => $accessibilityForm->createView(),
             'portal' => $portal,
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ];
     }
 
@@ -2437,13 +2532,14 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $submittedPassword = $data['password'];
 
-            $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
-                $user->getContextID());
-            $userPwUpdate->setPasswordMd5(null);
-            $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPassword));
-
-            $entityManager->persist($userPwUpdate);
-            $entityManager->flush();
+            // TODO: THIS IS WRONG
+//            $userPwUpdate = $accountRepo->findOneByCredentialsShort($user->getUserID(),
+//                $user->getContextID());
+//            $userPwUpdate->setPasswordMd5(null);
+//            $userPwUpdate->setPassword($passwordEncoder->encodePassword($userPwUpdate, $submittedPassword));
+//
+//            $entityManager->persist($userPwUpdate);
+//            $entityManager->flush();
         }
 
         return [
@@ -2739,7 +2835,7 @@ class PortalSettingsController extends AbstractController
                 ]);
             default:
             case 'commsy':
-                return $this->redirectToRoute('app_portalsettings_authcommsy', [
+                return $this->redirectToRoute('app_portalsettings_authlocal', [
                     'portalId' => $portal->getId(),
                 ]);
         }

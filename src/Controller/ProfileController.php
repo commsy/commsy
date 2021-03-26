@@ -302,7 +302,11 @@ class ProfileController extends AbstractController
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
                 if ($formData['emailChangeInAllContexts']) {
-                    $tempUserItem->setEmail($formData['emailRoom']);
+                    // do not change the account email address (or private room) even if the user
+                    // wants to change all related room users
+                    if (!$tempUserItem->getContextItem()->isPortal() && !$tempUserItem->getContextItem()->isPrivateRoom()) {
+                        $tempUserItem->setEmail($formData['emailRoom']);
+                    }
                 }
                 if ($formData['hideEmailInAllContexts']) {
                     if ($formData['hideEmailInThisRoom']) {
@@ -850,8 +854,12 @@ class ProfileController extends AbstractController
             $deleteForm->handleRequest($request);
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
                 // delete account
+                // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, since one can also delete users via
+                // the legacy portal config, we do this centrally in the legacy code: `cs_authentication->delete()` will
+                // eventually cause `cs_user_manager->delete()` to get called which, in turn, will fire an `AccountDeletedEvent`
                 $authentication = $legacyEnvironment->getAuthenticationObject();
                 $authentication->delete($portalUser->getItemID());
+
                 // delete session
                 $sessionManager->delete($sessionItem->getSessionID());
                 $legacyEnvironment->setSessionItem(null);
