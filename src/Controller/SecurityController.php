@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
-use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\Server;
@@ -21,13 +20,9 @@ use App\Utils\MailAssistant;
 use App\Utils\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use App\Security\AbstractCommsyGuardAuthenticator;
-use App\Services\LegacyEnvironment;
-use App\Utils\MailAssistant;
-use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,13 +32,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 class SecurityController extends AbstractController
