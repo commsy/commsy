@@ -56,8 +56,8 @@ class AuthGuestType extends AbstractType
             ])
             ->add('available', ChoiceType::class, [
                 'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
+                    'Yes' => true,
+                    'No' => false
                 ],
                 'placeholder' => false,
                 'expanded' => true,
@@ -67,8 +67,8 @@ class AuthGuestType extends AbstractType
             ])
             ->add('guestsMayEnter', ChoiceType::class, [
                 'choices' => [
-                    'Yes' => '1',
-                    'No' => '0'
+                    'Yes' => true,
+                    'No' => false
                 ],
                 'placeholder' => false,
                 'expanded' => true,

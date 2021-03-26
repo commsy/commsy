@@ -14,6 +14,21 @@ use Doctrine\ORM\Mapping as ORM;
 class AuthSourceGuest extends AuthSource
 {
 
+
+    /**
+     * AuthSourceGuest constructor.
+     */
+    public function __construct()
+    {
+        $this->setDefault(false);
+        $this->setAddAccount(false);
+        $this->setChangeUsername(false);
+        $this->setDeleteAccount(false);
+        $this->setChangeUserdata(false);
+        $this->setChangePassword(false);
+        $this->setCreateRoom(false);
+    }
+
     public function getType(): string
     {
         return 'guest';
