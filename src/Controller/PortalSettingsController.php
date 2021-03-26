@@ -434,7 +434,6 @@ class PortalSettingsController extends AbstractController
             $defaultData['createIdentifiaction'] = $existingCommsySource->getCreateIdentification();
             $defaultData['deleteIdentifiaction'] = $existingCommsySource->isDeleteAccount();
             $defaultData['userMayCreateRooms'] = $existingCommsySource->getCreateRoom();
-            $defaultData['guestsMayEnter'] = $existingCommsySource->isGuestsMayEnter();
 
             $existingCommsySource->setPortal($portal);
         }
@@ -534,28 +533,14 @@ class PortalSettingsController extends AbstractController
             }
 
             if ($clickedButtonName === 'save') {
-                if ($guestSource->isDefault()) {
-                    $authSources->map(function (AuthSource $authSource) use ($guestSource, $entityManager) {
-                        $authSource->setDefault(false);
-                        $entityManager->persist($authSource);
-                    });
-                    $guestSource->setDefault(true);
-                }
+                $data = $authGuestForm->getData();
 
                 // disable or enable guest login in portal, depending on guest auth source setting
-                $portal->setIsOpenForGuests($authGuestForm->get('guestsMayEnter')->getData());
+                $portal->setIsOpenForGuests($data->isGuestsMayEnter());
                 $entityManager->persist($portal);
                 $entityManager->flush();
 
-                // restrict almost everythign, as guests should not have priviledges.
-                $guestSource->setEnabled(true);
-                $guestSource->setDefault(false);
-                $guestSource->setAddAccount(false);
-                $guestSource->setChangeUsername(false);
-                $guestSource->setDeleteAccount(false);
-                $guestSource->setChangeUserdata(false);
-                $guestSource->setChangePassword(false);
-                $guestSource->setCreateRoom(false);
+                $guestSource->setEnabled($data->getAvailable());
 
                 $entityManager->persist($guestSource);
                 $entityManager->flush();

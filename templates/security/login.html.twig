@@ -259,16 +259,18 @@
                                 {% endif %}
                             {% endfor %}
 
-
-                            <!-- Gast -->
+                            <!-- Guest -->
                             {% if portal is not null %}
                                 {% for authSource in portal.authSources %}
                                     {% if authSource.enabled %}
                                         {% if authSource.type is same as('guest') %}
-                                            {% if portal.isOpenForGuests and authSource.guestsMayEnter%}
+                                            {% if portal.isOpenForGuests and authSource.guestsMayEnter %}
                                                 <div>
-                                                    <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>
-
+                                                    {% if authSource.description is not empty %}
+                                                        <p class="uk-text-small">{{ authSource.description|raw }}</p>
+                                                    {% else %}
+                                                        <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>
+                                                    {% endif %}
                                                     <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {
                                                         'context': portal.id
                                                     }) }}">
@@ -280,19 +282,8 @@
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
-
-{#                                <div>#}
-{#                                    <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>#}
-
-{#                                    <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {#}
-{#                                        'context': portal.id#}
-{#                                    }) }}">#}
-{#                                        {{ 'login.guest_login'|trans({}, 'login') }}#}
-{#                                    </a>#}
-{#                                </div>#}
-{#                            {% endif %}#}
-
                         {% else %}
+
                             <!-- Admin -->
                             <div>
                                 <form class="uk-form-stacked" method="post">

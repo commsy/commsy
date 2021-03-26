@@ -27,7 +27,7 @@ final class Version20200617133036 extends AbstractMigration
         $this->addSql('alter table portal add terms_de text null after description_en;');
         $this->addSql('alter table portal add terms_en text null after terms_de;');
         $this->addSql('alter table portal add logo_filename varchar(255) null after terms_en;');
-        $this->addSql('alter table auth_source modify column \'type\' enum(\'local\', \'oidc\', \'ldap\', \'shib\', \'guest\') default \'local\';)');
+        $this->addSql('alter table auth_source modify column type enum(\'local\', \'oidc\', \'ldap\', \'shib\', \'guest\') default \'local\';)');
     }
 
     public function postUp(Schema $schema): void

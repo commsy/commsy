@@ -213,7 +213,7 @@ abstract class AuthSource
         return $this->createRoom;
     }
 
-    public function setCreateRoom(?bool $createRoom): self
+    public function setCreateRoom(bool $createRoom): self
     {
         $this->createRoom = $createRoom;
 
@@ -232,7 +232,7 @@ abstract class AuthSource
      * @param bool $enabled
      * @return self
      */
-    public function setEnabled(?bool $enabled): self
+    public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
         return $this;
@@ -268,7 +268,7 @@ abstract class AuthSource
      * @param bool $addAccount
      * @return self
      */
-    public function setAddAccount(?bool $addAccount): self
+    public function setAddAccount(bool $addAccount): self
     {
         $this->addAccount = $addAccount;
         return $this;
@@ -286,7 +286,7 @@ abstract class AuthSource
      * @param bool $changeUsername
      * @return self
      */
-    public function setChangeUsername(?bool $changeUsername): self
+    public function setChangeUsername(bool $changeUsername): self
     {
         $this->changeUsername = $changeUsername;
         return $this;
@@ -304,7 +304,7 @@ abstract class AuthSource
      * @param bool $deleteAccount
      * @return self
      */
-    public function setDeleteAccount(?bool $deleteAccount): self
+    public function setDeleteAccount(bool $deleteAccount): self
     {
         $this->deleteAccount = $deleteAccount;
         return $this;
@@ -322,7 +322,7 @@ abstract class AuthSource
      * @param bool $changeUserdata
      * @return self
      */
-    public function setChangeUserdata(?bool $changeUserdata): self
+    public function setChangeUserdata(bool $changeUserdata): self
     {
         $this->changeUserdata = $changeUserdata;
         return $this;
@@ -340,7 +340,7 @@ abstract class AuthSource
      * @param bool $changePassword
      * @return self
      */
-    public function setChangePassword(?bool $changePassword): self
+    public function setChangePassword(bool $changePassword): self
     {
         $this->changePassword = $changePassword;
         return $this;

@@ -46,9 +46,6 @@ class HelperController extends AbstractController
         }
     }
 
-//* @Security("is_granted('GUEST') or is_granted('IS_AUTHENTICATED_REMEMBERED')")
-// @IsGranted("GUEST")
-
     /**
      * @Route("/portal/{context}/enter")
      * @Security("is_granted('GUEST') or is_granted('IS_AUTHENTICATED_REMEMBERED')")

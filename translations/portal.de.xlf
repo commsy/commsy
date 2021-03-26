@@ -941,6 +941,10 @@
                 <source>Default Source</source>
                 <target>Standard-Quelle</target>
             </trans-unit>
+            <trans-unit id="portal_auth_guest">
+                <source>Guest</source>
+                <target>Gäste</target>
+            </trans-unit>
 
             <!-- general -->
             <trans-unit id="portal_settings">

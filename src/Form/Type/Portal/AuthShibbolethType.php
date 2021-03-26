@@ -30,6 +30,7 @@ class AuthShibbolethType extends AbstractType
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
                     'Shibboleth' => 'shib',
+                    'Guest' => 'guest'
                 ],
                 'required' => true,
                 'label' => 'Source',
