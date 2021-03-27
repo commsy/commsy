@@ -2676,23 +2676,6 @@ class cs_user_item extends cs_item
         }
     }
 
-    function setNewGenerationPassword($password)
-    {
-        $portal_item = $this->_environment->getCurrentPortalItem();
-
-        $i = $portal_item->getPasswordGeneration();
-        if ($i != 0) {
-            // shift hashes for a new generation password
-            for ($i; $i > 0; $i--) {
-                if ($this->_issetExtra('PW_GENERATION_' . ($i - 1)) AND $i != 1) {
-                    $this->_addExtra('PW_GENERATION_' . $i, $this->_getExtra('PW_GENERATION_' . ($i - 1)));
-                }
-            }
-            $this->_addExtra('PW_GENERATION_1', $password);
-        }
-        unset($portal_item);
-    }
-
     function isPasswordInGeneration($password)
     {
         $portal_item = $this->_environment->getCurrentPortalItem();

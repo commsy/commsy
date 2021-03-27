@@ -2,16 +2,17 @@
 
 namespace App\Controller;
 
-use App\Form\DataTransformer\PrivateRoomTransformer;
-use App\Form\DataTransformer\UserTransformer;
-use App\Utils\DiscService;
-use App\Utils\UserService;
-use cs_user_item;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use App\Entity\Calendars;
+use App\Account\AccountMerger;
+use App\Entity\Account;
+use App\Entity\AuthSource;
+use App\Entity\AuthSourceLdap;
+use App\Entity\AuthSourceLocal;
+use App\Entity\AuthSourceShibboleth;
+use App\Entity\Portal;
 use App\Event\AccountChangedEvent;
 use App\Event\UserLeftRoomEvent;
+use App\Form\DataTransformer\PrivateRoomTransformer;
+use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Profile\DeleteAccountType;
 use App\Form\Type\Profile\DeleteType;
 use App\Form\Type\Profile\ProfileAccountType;
@@ -27,18 +28,32 @@ use App\Form\Type\Profile\RoomProfileContactType;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileNotificationsType;
 use App\Privacy\PersonalDataCollector;
+use App\Security\AbstractCommsyGuardAuthenticator;
+use App\Security\LdapAuthenticator;
+use App\Security\LoginFormAuthenticator;
+use App\Security\ShibbolethAuthenticator;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Utils\DiscService;
 use App\Utils\RoomService;
+use App\Utils\UserService;
+use cs_user_item;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -71,7 +86,7 @@ class ProfileController extends AbstractController
      * @param int $itemId
      * @return array|RedirectResponse
      */
-    public function generalAction(
+    public function general(
         Request $request,
         DiscService $discService,
         RoomService $roomService,
@@ -97,7 +112,7 @@ class ProfileController extends AbstractController
 
         $form = $this->createForm(RoomProfileGeneralType::class, $userData, [
             'itemId' => $itemId,
-            'uploadUrl' => $this->generateUrl('app_upload_upload',[
+            'uploadUrl' => $this->generateUrl('app_upload_upload', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
@@ -108,8 +123,8 @@ class ProfileController extends AbstractController
             $formData = $form->getData();
 
             // use custom profile picture if given
-            if($formData['useProfileImage']) {
-                if($formData['image_data']) {
+            if ($formData['useProfileImage']) {
+                if ($formData['image_data']) {
                     $saveDir = implode("/", [
                         $this->getParameter('files_directory'),
                         $roomService->getRoomFileDirectory($userItem->getContextID()),
@@ -123,7 +138,7 @@ class ProfileController extends AbstractController
                     list(, $extension) = explode("/", $type);
                     $data = base64_decode($data);
                     $fileName = implode("_", [
-                        'cid'.$userItem->getContextID(),
+                        'cid' . $userItem->getContextID(),
                         $userItem->getUserID(),
                         $fileName,
                     ]);
@@ -153,7 +168,8 @@ class ProfileController extends AbstractController
                         continue;
                     }
                     if ($formData['useProfileImage']) {
-                        $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
+                        $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(),
+                            $tempUserItem->getContextId());
                         if ($tempFilename) {
                             $tempUserItem->setPicture($tempFilename);
                         }
@@ -197,7 +213,7 @@ class ProfileController extends AbstractController
      * @param int $itemId
      * @return array|RedirectResponse
      */
-    public function addressAction(
+    public function address(
         Request $request,
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
@@ -272,7 +288,7 @@ class ProfileController extends AbstractController
      * @param int $itemId
      * @return array|RedirectResponse
      */
-    public function contactAction(
+    public function contact(
         Request $request,
         PrivateRoomTransformer $privateRoomTransformer,
         UserService $userService,
@@ -351,7 +367,7 @@ class ProfileController extends AbstractController
      * @param int $itemId
      * @return array
      */
-    public function notificationsAction(
+    public function notifications(
         Request $request,
         UserService $userService,
         int $itemId
@@ -385,57 +401,54 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/personal")
+     * @Route("/portal/{portalId}/account/personal")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
      * @param UserTransformer $userTransformer
-     * @param int $roomId
-     * @param int $itemId
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param CoreSecurity $security
      * @return array|RedirectResponse
      */
-    public function personalAction(
+    public function personal(
         Request $request,
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
         EventDispatcherInterface $eventDispatcher,
-        int $roomId,
-        int $itemId
+        CoreSecurity $security
     ) {
-        /** @var cs_user_item $userItem */
-        $userItem = $userService->getUser($itemId);
-        $userData = $userTransformer->transform($userItem);
+        /** @var Account $account */
+        $account = $security->getUser();
+        $portalUser = $userService->getPortalUser($account);
 
-        $portalUser = $userItem->getRelatedPortalUserItem();
+        $userData = $userTransformer->transform($portalUser);
 
-        $request->setLocale($userItem->getLanguage());
+        $request->setLocale($portalUser->getLanguage());
 
-        $privateRoomItem = $userItem->getOwnRoom();
+        $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
         $userData = array_merge($userData, $privateRoomData);
 
         $form = $this->createForm(ProfilePersonalInformationType::class, $userData, [
-            'itemId' => $itemId,
             'portalUser' => $portalUser,
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldUserItem = clone $userItem;
+            $oldUserItem = clone $portalUser;
 
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-            $userItem->save();
+            $userItem = $userTransformer->applyTransformation($portalUser, $form->getData());
+            $portalUser->save();
 
-            $event = new AccountChangedEvent($oldUserItem, $userItem);
+            $event = new AccountChangedEvent($oldUserItem, $portalUser);
             $eventDispatcher->dispatch($event);
 
             return $this->redirectToRoute('app_profile_personal', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
+                'portalId' => $portalUser->getContextID(),
             ]);
         }
 
@@ -446,248 +459,199 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/account")
+     * @Route("/portal/{portalId}/account/merge")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
-    public function accountAction(
-        Request $request,
-        UserService $userService,
-        PrivateRoomTransformer $privateRoomTransformer,
-        UserTransformer $userTransformer,
-        int $roomId,
-        int $itemId
-    ) {
-        /** @var cs_user_item $userItem */
-        $userItem = $userService->getUser($itemId);
-        $userData = $userTransformer->transform($userItem);
-
-        $request->setLocale($userItem->getLanguage());
-
-        $privateRoomItem = $userItem->getOwnRoom();
-        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
-
-        $userData = array_merge($userData, $privateRoomData);
-
-        $form = $this->createForm(ProfileAccountType::class, $userData, array(
-            'itemId' => $itemId,
-        ));
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-            $userItem->save();
-            return $this->redirectToRoute('app_profile_account', array('roomId' => $roomId, 'itemId' => $itemId));
-        }
-
-        return array(
-            'form' => $form->createView(),
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/mergeaccounts")
-     * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
-     * @param Request $request
-     * @param UserService $userService
      * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @param int $itemId
+     * @param Portal $portal
      * @return array|RedirectResponse
      */
-    public function mergeAccountsAction(
+    public function mergeAccounts(
         Request $request,
+        Portal $portal,
+        CoreSecurity $security,
         UserService $userService,
-        LegacyEnvironment $environment,
-        int $roomId,
-        int $itemId
+        EntityManagerInterface $entityManager,
+        LdapAuthenticator $ldapAuthenticator,
+        ShibbolethAuthenticator $shibbolethAuthenticator,
+        LoginFormAuthenticator $loginFormAuthenticator,
+        AccountMerger $accountMerger
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
+        /** @var Account $account */
+        $account = $security->getUser();
+        $portalUser = $userService->getPortalUser($account);
 
-        // account administration page => set language to user preferences
-        $userItem = $userService->getUser($itemId);
-
-        // external auth sources
-        $current_portal_item = $legacyEnvironment->getCurrentPortalItem();
-        if(!isset($current_portal_item)) $current_portal_item = $legacyEnvironment->getServerItem();
-        $auth_sources = [];
-        $auth_source_list = $current_portal_item->getAuthSourceListEnabled();
-        if(isset($auth_source_list) && !$auth_source_list->isEmpty()) {
-            $auth_source_item = $auth_source_list->getFirst();
-
-            while($auth_source_item) {
-                $auth_sources[$auth_source_item->getTitle()] = $auth_source_item->getItemID();
-                $auth_source_item = $auth_source_list->getNext();
-            }
-        }
-
-        // TODO: default auth source!
-
-        // only show auth source list if more than one auth source is configured
-        $show_auth_source = count($auth_sources) > 1;
-        $form = $this->createForm(ProfileMergeAccountsType::class, [], array(
-            'itemId' => $itemId,
-            'auth_source_array' => $auth_sources,
-            'show_auth_source' => $show_auth_source,
-        ));
+        $form = $this->createForm(ProfileMergeAccountsType::class, [], [
+            'portal' => $portal,
+        ]);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted()) {
-
-            $authentication = $legacyEnvironment->getAuthenticationObject();
-
             $formData = $form->getData();
 
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
-            if ( strtolower($currentUser->getUserID()) == strtolower($formData['combineUserId']) &&
-                isset($formData['auth_source']) &&
-                (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
-            {
+            if (strtolower($portalUser->getUserID()) == strtolower($formData['combineUserId']) &&
+                $formData['auth_source'] === $account->getAuthSource()
+            ) {
                 $form->get('combineUserId')->addError(new FormError('Invalid user'));
-            }
-            else
-            {
-                $user_manager = $legacyEnvironment->getUserManager();
-                $user_manager->setUserIDLimitBinary($formData['combineUserId']);
-                $user_manager->setContextLimit($current_portal_item->getItemId());
+            } else {
+                $accountRepository = $entityManager->getRepository(Account::class);
 
-                $user_manager->select();
-                $user = $user_manager->get();
-                $first_user = $user->getFirst();
+                /** @var AuthSource $selectedAuthSource */
+                $selectedAuthSource = $formData['auth_source'];
 
-                if(!empty($first_user)){
-                    if(!isset($formData['auth_source']) || empty($formData['auth_source'])) {
-                        $authManager = $authentication->getAuthManager($currentUser->getAuthSource());
-                    } else {
-                        $authManager = $authentication->getAuthManager($formData['auth_source']);
+                try {
+                    $accountToMerge = $accountRepository->findOneByCredentials(
+                        $formData['combineUserId'],
+                        $portal->getId(),
+                        $selectedAuthSource
+                    );
+
+                    if ($accountToMerge === null) {
+                        throw new \UnexpectedValueException();
                     }
-                    if ( !$authManager->checkAccount($formData['combineUserId'], $formData['combinePassword']) )
-                    {
+
+                    $authSourceGuardAuthenticatorMap = [
+                        AuthSourceLocal::class => $loginFormAuthenticator,
+                        AuthSourceLdap::class => $ldapAuthenticator,
+                        AuthSourceShibboleth::class => $shibbolethAuthenticator,
+                    ];
+
+                    /** @var AbstractCommsyGuardAuthenticator $guardAuthenticator */
+                    $guardAuthenticator = $authSourceGuardAuthenticatorMap[get_class($selectedAuthSource)];
+
+                    $credentials = [
+                        'email' => $accountToMerge->getUsername(),
+                        'password' => $formData['combinePassword'],
+                        'context' => $accountToMerge->getContextId(),
+                    ];
+
+                    if (!$guardAuthenticator->checkCredentials($credentials, $accountToMerge)) {
                         $form->get('combineUserId')->addError(new FormError('Authentication error'));
                     }
-                } else {
+
+                    if ($form->isSubmitted() && $form->isValid()) {
+                        $accountMerger->mergeAccounts($accountToMerge, $account);
+
+                        return $this->redirectToRoute('app_profile_mergeaccounts', [
+                            'portalId' => $portal->getId(),
+                        ]);
+                    }
+                } catch (NonUniqueResultException | \UnexpectedValueException $e) {
                     $form->get('combineUserId')->addError(new FormError('User not found'));
                 }
             }
-
-            if ( isset($formData['auth_source']) )
-            {
-                $authSourceOld = $formData['auth_source'];
-            }
-            else
-            {
-                $authSourceOld = $legacyEnvironment->getCurrentPortalItem()->getAuthDefault();
-            }
-            if($form->isSubmitted() && $form->isValid()) {
-                $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
-
-                return $this->redirectToRoute('app_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
-            }
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-            'show_auth_source' => $show_auth_source,
-        );
+        ];
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/newsletter")
+     * @Route("/portal/{portalId}/account/newsletter")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
      * @param UserTransformer $userTransformer
-     * @param int $itemId
+     * @param CoreSecurity $security
      * @return array
      */
-    public function newsletterAction(
+    public function newsletter(
         Request $request,
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
-        int $itemId
+        CoreSecurity $security
     ) {
-        /** @var cs_user_item $userItem */
-        $userItem = $userService->getUser($itemId);
-        $userData = $userTransformer->transform($userItem);
+        /** @var Account $account */
+        $account = $security->getUser();
+        $portalUser = $userService->getPortalUser($account);
 
-        $request->setLocale($userItem->getLanguage());
 
-        $privateRoomItem = $userItem->getOwnRoom();
+        $userData = $userTransformer->transform($portalUser);
+
+        $request->setLocale($portalUser->getLanguage());
+
+        $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(ProfileNewsletterType::class, $userData, array(
-            'itemId' => $itemId,
-        ));
+        $form = $this->createForm(ProfileNewsletterType::class, $userData);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-            $userItem->save();
+            $portalUser = $userTransformer->applyTransformation($portalUser, $form->getData());
+            $portalUser->save();
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
             $privateRoomItem->save();
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-            'portalEmail' => $userItem->getRelatedPortalUserItem()->getRoomEmail(),
-        );
+            'portalEmail' => $portalUser->getRoomEmail(),
+        ];
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/privacy")
+     * @Route("/portal/{portalId}/acount/privacy")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function privacyAction($roomId, $itemId, Request $request)
+    public function privacy($portalId, Request $request)
     {
-        $form = $this->createForm(ProfilePrivacyType::class, null, [
-            'attr' => array(
-                'target' => '_blank'
-            )
-        ]);
+        $form = $this->createForm(ProfilePrivacyType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // generate & serve a PDF with the user's personal master data
-            return $this->redirectToRoute('app_profile_privacyprint', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_privacyprint', [
+                'portalId' => $portalId,
+            ]);
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-        );
+        ];
     }
+
     /**
-     * @Route("/room/{roomId}/user/{itemId}/privacy/print")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Route("/portal/{portalId}/acount/privacy/print")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @param Portal $portal
+     * @param PersonalDataCollector $dataCollector
+     * @param PrintService $printService
+     * @param RoomService $roomService
+     * @param CoreSecurity $security
+     * @param UserService $userService
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function privacyPrintAction($roomId, $itemId, LegacyEnvironment $legacyEnvironment, PersonalDataCollector $dataCollector, PrintService $printService, RoomService $roomService)
-    {
-        $legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $portal = $legacyEnvironment->getCurrentPortalItem();
+    public function privacyPrint(
+        Portal $portal,
+        PersonalDataCollector $dataCollector,
+        PrintService $printService,
+        RoomService $roomService,
+        CoreSecurity $security,
+        UserService $userService
+    ) {
+        /** @var Account $account */
+        $account = $security->getUser();
+        $portalUser = $userService->getPortalUser($account);
 
         $serviceLink = $roomService->buildServiceLink();
         $serviceEmail = $roomService->getServiceEmail();
 
         // gather the user's personal master data
-        $personalData = $dataCollector->getPersonalDataForUserID($itemId);
+        $personalData = $dataCollector->getPersonalDataForUserID($portalUser->getItemID());
 
         // generate HTML data
         $html = $this->renderView('profile/privacy_print.html.twig', [
-            'roomId' => $roomId,
+            'portalId' => $portal->getId(),
             'printProfileImages' => true, // set to `false` to omit profile images when generating the PDF (much faster)
             'accountData' => $personalData->getAccountData(),
             'communityRoomProfileDataArray' => $personalData->getCommunityRoomProfileDataArray(),
@@ -705,51 +669,53 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/additional")
+     * @Route("/portal/{portalId}/account/additional")
      * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param UserService $userService
      * @param PrivateRoomTransformer $privateRoomTransformer
      * @param UserTransformer $userTransformer
-     * @param int $itemId
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param CoreSecurity $security
      * @return array|RedirectResponse
      */
-    public function additionalAction(
+    public function additional(
         Request $request,
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
         EventDispatcherInterface $eventDispatcher,
-        int $itemId
+        CoreSecurity $security
     ) {
-        /** @var cs_user_item $userItem */
-        $userItem = $userService->getUser($itemId);
-        $userData = $userTransformer->transform($userItem);
+        /** @var Account $account */
+        $account = $security->getUser();
+        $portalUser = $userService->getPortalUser($account);
 
-        $request->setLocale($userItem->getLanguage());
+        $userData = $userTransformer->transform($portalUser);
 
-        $privateRoomItem = $userItem->getOwnRoom();
+        $request->setLocale($portalUser->getLanguage());
+
+        $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
         $userData = array_merge($userData, $privateRoomData);
 
         $form = $this->createForm(ProfileAdditionalType::class, $userData, [
-            'itemId' => $itemId,
             'emailToCommsy' => $this->getParameter('commsy.upload.enabled'),
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $oldUserItem = clone $userItem;
+            $oldUserItem = clone $portalUser;
 
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-            $userItem->save();
+            $portalUser = $userTransformer->applyTransformation($portalUser, $form->getData());
+            $portalUser->save();
 
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
             $privateRoomItem->save();
 
-            $event = new AccountChangedEvent($oldUserItem, $userItem);
+            $event = new AccountChangedEvent($oldUserItem, $portalUser);
             $eventDispatcher->dispatch($event);
 
             return $this->redirect($request->getUri());
@@ -758,7 +724,7 @@ class ProfileController extends AbstractController
         return [
             'form' => $form->createView(),
             'uploadEmail' => $this->getParameter('commsy.upload.account'),
-            'portalEmail' => $userItem->getRelatedPortalUserItem()->getRoomEmail(),
+            'portalEmail' => $portalUser->getRoomEmail(),
         ];
     }
 
@@ -768,7 +734,7 @@ class ProfileController extends AbstractController
      * @param UserService $userService
      * @return array
      */
-    public function imageAction(
+    public function image(
         UserService $userService
     ) {
         return array('user' => $userService->getCurrentUserItem());
@@ -782,7 +748,7 @@ class ProfileController extends AbstractController
      * @param int $roomId
      * @return array
      */
-    public function menuAction(
+    public function menu(
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId
@@ -798,7 +764,7 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
+     * @Route("/portal/{portalId}/account/delete")
      * @Template
      * @Security("is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
@@ -806,7 +772,7 @@ class ProfileController extends AbstractController
      * @param LegacyEnvironment $environment
      * @return array|RedirectResponse
      */
-    public function deleteAccountAction(
+    public function deleteAccount(
         Request $request,
         UserService $userService,
         LegacyEnvironment $environment,
@@ -816,7 +782,7 @@ class ProfileController extends AbstractController
 
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteAccountType::class, [
             'confirm_string' => $this->translator->trans('lock', [], 'profile'),
-        ],[])->getForm();
+        ], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteAccountType::class, [
             'confirm_string' => $this->translator->trans('delete', [], 'profile'),
         ], [])->getForm();
@@ -847,9 +813,7 @@ class ProfileController extends AbstractController
 
                 return $this->redirect($portalUrl);
             }
-        }
-
-        // Delete account
+        } // Delete account
         elseif ($request->request->has('delete_form')) {
             $deleteForm->handleRequest($request);
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
@@ -877,57 +841,45 @@ class ProfileController extends AbstractController
 
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/changepassword")
+     * @Route("/portal/{portalId}/account/changepassword")
      * @Template
-     * @Security("is_granted('ITEM_ENTER', roomId)")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
-     * @param LegacyEnvironment $environment
+     * @param CoreSecurity $security
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param EntityManagerInterface $entityManager
      * @return array
      */
-    public function changePasswordAction(
+    public function changePassword(
         Request $request,
-        LegacyEnvironment $environment
+        CoreSecurity $security,
+        UserPasswordEncoderInterface $passwordEncoder,
+        EntityManagerInterface $entityManager
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        if ( !$legacyEnvironment->inPortal() ) {
-            $portalUser = $legacyEnvironment->getPortalUserItem();
-        }
-        else {
-            $portalUser = $legacyEnvironment->getCurrentUserItem();
-        }
-
         $form = $this->createForm(ProfileChangePasswordType::class);
 
-        $changed = false;
+        $passwordChanged = false;
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {                 // checks old password and new password criteria constraints
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Account $user */
+            $account = $security->getUser();
+            if ($account !== null) {
+                $formData = $form->getData();
 
-            $form_data = $form->getData();
+                $account->setPassword($passwordEncoder->encodePassword($account, $formData['new_password']));
 
-            $current_portal_item = $legacyEnvironment->getCurrentPortalItem();
-            $authentication = $legacyEnvironment->getAuthenticationObject();
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
-            $auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
+                $entityManager->persist($account);
+                $entityManager->flush();
 
-            $portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
-            $portalUser->save();
-            $auth_manager->changePassword($currentUser->getUserID(), $form_data['new_password']);
-
-            $changed = true;
-
-            $error_number = $auth_manager->getErrorNumber();
-
-            if(empty($error_number)) {
-                $portalUser->setNewGenerationPassword($form_data['old_password']);
+                $passwordChanged = true;
             }
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-            'passwordChanged' => $changed,
-        );
+            'passwordChanged' => $passwordChanged,
+        ];
     }
 
 
@@ -942,7 +894,7 @@ class ProfileController extends AbstractController
      * @param int $roomId
      * @return array|RedirectResponse
      */
-    public function deleteRoomProfileAction(
+    public function deleteRoomProfile(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         UserService $userService,
@@ -980,9 +932,7 @@ class ProfileController extends AbstractController
 
                 return $this->redirect($portalUrl);
             }
-        }
-
-        // Delete room profile
+        } // Delete room profile
         elseif ($request->request->has('delete_form')) {
             $deleteForm->handleRequest($request);
 
@@ -1001,115 +951,5 @@ class ProfileController extends AbstractController
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView(),
         ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/calendars")
-     * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function calendarsAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy_legacy.item_service');
-        $userItem = $legacyEnvironment->getCurrentUserItem();
-
-        $request->setLocale($userItem->getLanguage());
-
-        /**
-         * Workaround:
-         * Instead of calling getRelatedUserList directly on the current (room) user, we use the portal user.
-         * getRelatedUserList will exclude the current context and the list remains incomplete. As a portal
-         * cannot contain calenders, we make sure all relevant rooms are included.
-         */
-        $portalUser = $userItem->getRelatedPortalUserItem();
-        $relatedUsers = $portalUser->getRelatedUserList()->to_array();
-
-        $userContextIds = [];
-        foreach ($relatedUsers as $relatedUser) {
-            /** @var \cs_user_item $relatedUser */
-            if ($relatedUser->isModerator()) {
-                $userContextIds[] = $relatedUser->getContextID();
-            }
-        }
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $repository = $this->getDoctrine()->getRepository(Calendars::class);
-        /** @noinspection PhpUndefinedMethodInspection */
-        $calendars = $repository->findBy([
-            'context_id' => $userContextIds,
-            'external_url' => [
-                '',
-                null,
-            ],
-        ]);
-
-        $dashboard = [];
-        $caldav = [];
-        $roomTitles = [];
-
-        $privateRoomItem = $userItem->getOwnRoom();
-        $calendarSelection = $privateRoomItem->getCalendarSelection();
-
-        $options = [];
-        if ($calendarSelection) {
-            $options = $calendarSelection;
-        }
-
-        foreach ($calendars as $calendar) {
-            $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
-            $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
-
-            $dashboard[] = $calendar->getId();
-            $caldav[] = $calendar->getId();
-            $roomTitles[] = $roomItemCalendar->getTitle().' / '.$calendar->getTitle();
-            if ($calendarSelection === false) {
-                $options['calendarsDashboard'][] = $calendar->getId();
-                $options['calendarsCalDAV'][] = $calendar->getId();
-            }
-        }
-
-        $form = $this->createForm(ProfileCalendarsType::class, $options, array(
-            'itemId' => $itemId,
-            'dashboard' => $dashboard,
-            'caldav' => $caldav,
-        ));
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $privateRoomItem->setCalendarSelection($form->getData());
-            $privateRoomItem->save();
-        }
-
-        $protocoll = 'https://';
-        if ($_SERVER['HTTPS'] == 'off') {
-            $protocoll = 'http://';
-        }
-        $caldavUrl = $protocoll . $_SERVER['HTTP_HOST'];
-
-        $caldavPath = $this->generateUrl('app_caldav_caldavprincipal', array(
-            'portalId' => $legacyEnvironment->getCurrentPortalId(),
-            'userId' => $legacyEnvironment->getCurrentUser()->getUserId(),
-        ));
-
-        $allNoneDashboard = false;
-        if (isset($options['calendarsDashboard'])) {
-            $allNoneDashboard = (sizeof($calendars) == sizeof($options['calendarsDashboard']));
-        }
-
-        $allNoneCaldav = false;
-        if (isset($options['calendarsCalDAV'])) {
-            $allNoneCaldav = (sizeof($calendars) == sizeof($options['calendarsCalDAV']));
-        }
-
-        return array(
-            'form' => $form->createView(),
-            'roomTitles' => $roomTitles,
-            'user' => $userItem,
-            'caldavUrl' => $caldavUrl,
-            'caldavPath' => $caldavPath,
-            'allNoneDashboard' => $allNoneDashboard,
-            'allNoneCaldav' => $allNoneCaldav,
-        );
     }
 }

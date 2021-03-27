@@ -392,4 +392,9 @@ class PortalProxy
         return $hideAccountName === '1';
 
     }
+
+    public function getRoomType(): string
+    {
+        return 'portal';
+    }
 }

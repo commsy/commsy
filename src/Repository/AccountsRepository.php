@@ -32,11 +32,11 @@ class AccountsRepository extends ServiceEntityRepository
     /**
      * @param string $username
      * @param int $context
-     * @param int $authSourceId
-     * @return mixed
+     * @param AuthSource $authSource
+     * @return Account|null
      * @throws NonUniqueResultException
      */
-    public function findOneByCredentials(string $username, int $context, AuthSource $authSource)
+    public function findOneByCredentials(string $username, int $context, AuthSource $authSource): ?Account
     {
         return $this->createQueryBuilder('a')
             ->where('a.username = :username')
