@@ -85,7 +85,7 @@ class MenuBuilder
         if ($currentUser->getItemId() != '' && $account != null) {
 
             $menu->addChild('personal', [
-                'route' => 'app_profile_personal',
+                'route' => 'app_account_personal',
                 'routeParameters' => [
                     'portalId' => $account->getContextId(),
                 ],
@@ -98,7 +98,7 @@ class MenuBuilder
 
             if ($currentUser->isRoot() || ($authSource !== null && $authSource->isChangePassword())) {
                 $menu->addChild('changePassword', [
-                    'route' => 'app_profile_changepassword',
+                    'route' => 'app_account_changepassword',
                     'routeParameters' => [
                         'portalId' => $account->getContextId(),
                     ],
@@ -113,7 +113,7 @@ class MenuBuilder
             if(!$currentUser->isRoot()) {
                 $menu->addChild('mergeAccounts', [
                     'label' => 'combineAccount',
-                    'route' => 'app_profile_mergeaccounts',
+                    'route' => 'app_account_mergeaccounts',
                     'routeParameters' => [
                         'portalId' => $account->getContextId(),
                     ],
@@ -126,7 +126,7 @@ class MenuBuilder
             }
 
             $menu->addChild('newsletter', [
-                'route' => 'app_profile_newsletter',
+                'route' => 'app_account_newsletter',
                 'routeParameters' => [
                     'portalId' => $account->getContextId(),
                 ],
@@ -140,7 +140,7 @@ class MenuBuilder
             if(!$currentUser->isRoot()) {
                 $menu->addChild('privacy', [
                     'label' => 'Privacy',
-                    'route' => 'app_profile_privacy',
+                    'route' => 'app_account_privacy',
                     'routeParameters' => [
                         'portalId' => $account->getContextId(),
                     ],
@@ -153,7 +153,7 @@ class MenuBuilder
             }
 
             $menu->addChild('additional', [
-                'route' => 'app_profile_additional',
+                'route' => 'app_account_additional',
                 'routeParameters' => [
                     'portalId' => $account->getContextId(),
                 ],
@@ -165,7 +165,7 @@ class MenuBuilder
             ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('deleteAccount', [
-                'route' => 'app_profile_deleteaccount',
+                'route' => 'app_account_deleteaccount',
                 'routeParameters' => [
                     'portalId' => $account->getContextId(),
                 ],

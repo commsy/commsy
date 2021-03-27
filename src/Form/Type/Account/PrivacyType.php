@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Form\Type\Profile;
+namespace App\Form\Type\Account;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProfileNewsletterType extends AbstractType
+class PrivacyType extends AbstractType
 {
     /**
      * Builds the form.
@@ -21,21 +20,8 @@ class ProfileNewsletterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('newsletterStatus', ChoiceType::class, [
-                'placeholder' => false,
-                'expanded' => true,
-                'multiple' => false,
-                'choices' => [
-                    'none' => '1',
-                    'weekly' => '2',
-                    'daily' => '3'
-                ],
-                'label' => 'newsletterStatus',
-                'required' => false,
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'save',
-                'translation_domain' => 'form',
+            ->add('download', SubmitType::class, [
+                'label' => 'Display PDF',
                 'attr' => [
                     'class' => 'uk-button-primary',
                 ]
@@ -50,7 +36,7 @@ class ProfileNewsletterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['translation_domain' => 'profile']);
+            ->setDefaults(['translation_domain' => 'profile', 'attr' => ['target' => '_blank']]);
     }
 
     /**

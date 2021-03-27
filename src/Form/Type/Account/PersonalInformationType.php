@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Type\Profile;
+namespace App\Form\Type\Account;
 
 use App\Entity\Account;
 use Symfony\Component\Form\AbstractType;
@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
 
-class ProfilePersonalInformationType extends AbstractType
+class PersonalInformationType extends AbstractType
 {
     /**
      * @var Security $security

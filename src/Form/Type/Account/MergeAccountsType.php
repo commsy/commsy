@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Type\Profile;
+namespace App\Form\Type\Account;
 
 use App\Entity\AuthSource;
 use App\Entity\Portal;
@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProfileMergeAccountsType extends AbstractType
+class MergeAccountsType extends AbstractType
 {
     /**
      * Builds the form.

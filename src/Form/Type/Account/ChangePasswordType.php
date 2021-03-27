@@ -1,17 +1,27 @@
 <?php
 
-namespace App\Form\Type\Profile;
+namespace App\Form\Type\Account;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
-class ProfileAdditionalType extends AbstractType
+class ChangePasswordType extends AbstractType
 {
+    private $legacyEnvironment;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -23,40 +33,29 @@ class ProfileAdditionalType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('language', ChoiceType::class, [
-                'placeholder' => false,
-                'choices' => [
-                    'browser' => 'browser',
-                    'de' => 'de',
-                    'en' => 'en'
+            ->add('old_password', PasswordType::class, [
+                'label' => 'currentPassword',
+                'required' => true,
+                'constraints' => [
+                    new UserPassword(),
                 ],
-                'label' => 'language',
-                'required' => false,
-                'empty_data' => 'browser',
-            ]);
-        if ($options['emailToCommsy']) {
-            $builder
-                ->add('emailToCommsy', CheckboxType::class, [
-                    'label' => 'Activate',
-                    'required' => false,
-                    'label_attr' => [
-                        'class' => 'uk-form-label',
+            ])
+            ->add('new_password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Passwords do not match',
+                'label' => 'newPassword',
+                'options' => [
+                    'required' => true
+                ],
+                'first_options' => [
+                    'label' => 'newPassword',
+                    'constraints' => [
+                        new NotBlank(),
+                        new NotCompromisedPassword(),
                     ],
-                    'translation_domain' => 'settings',
-                ])
-                ->add('emailToCommsySecret', TextType::class, [
-                    'label' => 'emailToCommsySecret',
-                    'required' => false,
-                ]);
-        }
-
-        $builder
-            ->add('portfolio', CheckboxType::class, [
-                'label' => 'Activate',
-                'translation_domain' => 'settings',
-                'required' => false,
-                'label_attr' => [
-                    'class' => 'uk-form-label',
+                ],
+                'second_options' => [
+                    'label' => 'newPasswordConfirm'
                 ],
             ])
             ->add('save', SubmitType::class, [
@@ -64,7 +63,7 @@ class ProfileAdditionalType extends AbstractType
                 'translation_domain' => 'form',
                 'attr' => [
                     'class' => 'uk-button-primary',
-                ]
+                ],
             ]);
     }
 
@@ -76,7 +75,6 @@ class ProfileAdditionalType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['emailToCommsy'])
             ->setDefaults(['translation_domain' => 'profile']);
     }
 
@@ -89,7 +87,6 @@ class ProfileAdditionalType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'room_profile';
+        return 'profile_changepassword';
     }
-
 }
