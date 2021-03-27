@@ -36,7 +36,7 @@
                                 <tr>
                                     <td>{{ form_row(form.combinePassword) }}</td>
                                 </tr>
-                                {% if show_auth_source %}
+                                {% if form.auth_source is defined %}
                                     <tr>
                                         <td>{{ form_row(form.auth_source) }}</td>
                                     </tr>

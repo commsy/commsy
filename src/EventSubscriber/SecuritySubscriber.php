@@ -39,8 +39,7 @@ class SecuritySubscriber implements EventSubscriberInterface
                 if ($portalUser->hasToChangeEmail()) {
                     // generate route to profile
                     $route = $this->router->generate('app_profile_personal', [
-                        'roomId' => $privateRoom->getItemId(),
-                        'itemId' => $privateRoomUser->getItemId()
+                        'portalId' => $portalUser->getContextID(),
                     ]);
 
                     // redirect user to account mail settings

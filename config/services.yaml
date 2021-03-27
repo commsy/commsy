@@ -717,18 +717,6 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
-    commsy.validator.password_criteria_constraint:
-        class: App\Validator\Constraints\PasswordCriteriaConstraintValidator
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.user_password_constraint:
-        class: App\Validator\Constraints\UserPasswordConstraintValidator
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
     commsy.validator.send_recipients_constraint:
         class: App\Validator\Constraints\SendRecipientsConstraintValidator
         arguments: ['@commsy_legacy.environment']
@@ -812,89 +800,6 @@ services:
 
     commsy.form.type.section:
         class: App\Form\Type\SectionType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile:
-        class: App\Form\Type\Profile\RoomProfileType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_general:
-        class: App\Form\Type\Profile\RoomProfileGeneralType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_address:
-        class: App\Form\Type\Profile\RoomProfileAddressType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_contact:
-        class: App\Form\Type\Profile\RoomProfileContactType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_personalinformation:
-        class: App\Form\Type\Profile\ProfilePersonalInformationType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_account:
-        class: App\Form\Type\Profile\ProfileAccountType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_changepassword:
-        class: App\Form\Type\Profile\ProfileChangePasswordType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_mergeaccounts:
-        class: App\Form\Type\Profile\ProfileMergeAccountsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_newsletter:
-        class: App\Form\Type\Profile\ProfileNewsletterType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_privacy:
-        class: App\Form\Type\Profile\ProfilePrivacyType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_notifications:
-        class: App\Form\Type\Profile\RoomProfileNotificationsType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_calendars:
-        class: App\Form\Type\Profile\ProfileCalendarsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_additional:
-        class: App\Form\Type\Profile\ProfileAdditionalType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_deleteroomprofile:
-        class: App\Form\Type\Profile\DeleteRoomProfileType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
