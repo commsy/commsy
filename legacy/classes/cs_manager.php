@@ -622,9 +622,6 @@ class cs_manager {
      */
     public function get(): ?\cs_list
     {
-        // ------------------
-        // --->UTF8 - OK<----
-        // ------------------
         return $this->_data;
     }
 
