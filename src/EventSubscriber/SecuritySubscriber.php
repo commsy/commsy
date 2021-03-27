@@ -22,7 +22,7 @@ class SecuritySubscriber implements EventSubscriberInterface
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
-        if ($event->getRequest()->attributes->get('_route') === 'app_profile_personal') {
+        if ($event->getRequest()->attributes->get('_route') === 'app_account_personal') {
             return;
         }
 
@@ -38,7 +38,7 @@ class SecuritySubscriber implements EventSubscriberInterface
             if ($portalUser) {
                 if ($portalUser->hasToChangeEmail()) {
                     // generate route to profile
-                    $route = $this->router->generate('app_profile_personal', [
+                    $route = $this->router->generate('app_account_personal', [
                         'portalId' => $portalUser->getContextID(),
                     ]);
 
