@@ -2,56 +2,28 @@
 
 namespace App\Controller;
 
-use App\Account\AccountMerger;
-use App\Entity\Account;
-use App\Entity\AuthSource;
-use App\Entity\AuthSourceLdap;
-use App\Entity\AuthSourceLocal;
-use App\Entity\AuthSourceShibboleth;
-use App\Entity\Portal;
-use App\Event\AccountChangedEvent;
 use App\Event\UserLeftRoomEvent;
 use App\Form\DataTransformer\PrivateRoomTransformer;
 use App\Form\DataTransformer\UserTransformer;
-use App\Form\Type\Profile\DeleteAccountType;
 use App\Form\Type\Profile\DeleteType;
 use App\Form\Type\Profile\ProfileAccountType;
-use App\Form\Type\Profile\ProfileAdditionalType;
 use App\Form\Type\Profile\ProfileCalendarsType;
-use App\Form\Type\Profile\ProfileChangePasswordType;
-use App\Form\Type\Profile\ProfileMergeAccountsType;
-use App\Form\Type\Profile\ProfileNewsletterType;
-use App\Form\Type\Profile\ProfilePersonalInformationType;
-use App\Form\Type\Profile\ProfilePrivacyType;
 use App\Form\Type\Profile\RoomProfileAddressType;
 use App\Form\Type\Profile\RoomProfileContactType;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileNotificationsType;
-use App\Privacy\PersonalDataCollector;
-use App\Security\AbstractCommsyGuardAuthenticator;
-use App\Security\LdapAuthenticator;
-use App\Security\LoginFormAuthenticator;
-use App\Security\ShibbolethAuthenticator;
 use App\Services\LegacyEnvironment;
-use App\Services\PrintService;
 use App\Utils\DiscService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_user_item;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -62,16 +34,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ProfileController extends AbstractController
 {
-    /**
-     * @var TranslatorInterface $translator
-     */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     /**
      * @Route("/room/{roomId}/user/{itemId}/general")
      * @Template
@@ -401,334 +363,6 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/account/personal")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param CoreSecurity $security
-     * @return array|RedirectResponse
-     */
-    public function personal(
-        Request $request,
-        UserService $userService,
-        PrivateRoomTransformer $privateRoomTransformer,
-        UserTransformer $userTransformer,
-        EventDispatcherInterface $eventDispatcher,
-        CoreSecurity $security
-    ) {
-        /** @var Account $account */
-        $account = $security->getUser();
-        $portalUser = $userService->getPortalUser($account);
-
-        $userData = $userTransformer->transform($portalUser);
-
-        $request->setLocale($portalUser->getLanguage());
-
-        $privateRoomItem = $portalUser->getOwnRoom();
-        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
-
-        $userData = array_merge($userData, $privateRoomData);
-
-        $form = $this->createForm(ProfilePersonalInformationType::class, $userData, [
-            'portalUser' => $portalUser,
-        ]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $oldUserItem = clone $portalUser;
-
-            $userItem = $userTransformer->applyTransformation($portalUser, $form->getData());
-            $portalUser->save();
-
-            $event = new AccountChangedEvent($oldUserItem, $portalUser);
-            $eventDispatcher->dispatch($event);
-
-            return $this->redirectToRoute('app_profile_personal', [
-                'portalId' => $portalUser->getContextID(),
-            ]);
-        }
-
-        return [
-            'form' => $form->createView(),
-            'hasToChangeEmail' => $portalUser->hasToChangeEmail(),
-        ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/account/merge")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param Portal $portal
-     * @return array|RedirectResponse
-     */
-    public function mergeAccounts(
-        Request $request,
-        Portal $portal,
-        CoreSecurity $security,
-        UserService $userService,
-        EntityManagerInterface $entityManager,
-        LdapAuthenticator $ldapAuthenticator,
-        ShibbolethAuthenticator $shibbolethAuthenticator,
-        LoginFormAuthenticator $loginFormAuthenticator,
-        AccountMerger $accountMerger
-    ) {
-        /** @var Account $account */
-        $account = $security->getUser();
-        $portalUser = $userService->getPortalUser($account);
-
-        $form = $this->createForm(ProfileMergeAccountsType::class, [], [
-            'portal' => $portal,
-        ]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $formData = $form->getData();
-
-            if (strtolower($portalUser->getUserID()) == strtolower($formData['combineUserId']) &&
-                $formData['auth_source'] === $account->getAuthSource()
-            ) {
-                $form->get('combineUserId')->addError(new FormError('Invalid user'));
-            } else {
-                $accountRepository = $entityManager->getRepository(Account::class);
-
-                /** @var AuthSource $selectedAuthSource */
-                $selectedAuthSource = $formData['auth_source'];
-
-                try {
-                    $accountToMerge = $accountRepository->findOneByCredentials(
-                        $formData['combineUserId'],
-                        $portal->getId(),
-                        $selectedAuthSource
-                    );
-
-                    if ($accountToMerge === null) {
-                        throw new \UnexpectedValueException();
-                    }
-
-                    $authSourceGuardAuthenticatorMap = [
-                        AuthSourceLocal::class => $loginFormAuthenticator,
-                        AuthSourceLdap::class => $ldapAuthenticator,
-                        AuthSourceShibboleth::class => $shibbolethAuthenticator,
-                    ];
-
-                    /** @var AbstractCommsyGuardAuthenticator $guardAuthenticator */
-                    $guardAuthenticator = $authSourceGuardAuthenticatorMap[get_class($selectedAuthSource)];
-
-                    $credentials = [
-                        'email' => $accountToMerge->getUsername(),
-                        'password' => $formData['combinePassword'],
-                        'context' => $accountToMerge->getContextId(),
-                    ];
-
-                    if (!$guardAuthenticator->checkCredentials($credentials, $accountToMerge)) {
-                        $form->get('combineUserId')->addError(new FormError('Authentication error'));
-                    }
-
-                    if ($form->isSubmitted() && $form->isValid()) {
-                        $accountMerger->mergeAccounts($accountToMerge, $account);
-
-                        return $this->redirectToRoute('app_profile_mergeaccounts', [
-                            'portalId' => $portal->getId(),
-                        ]);
-                    }
-                } catch (NonUniqueResultException | \UnexpectedValueException $e) {
-                    $form->get('combineUserId')->addError(new FormError('User not found'));
-                }
-            }
-        }
-
-        return [
-            'form' => $form->createView(),
-        ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/account/newsletter")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param CoreSecurity $security
-     * @return array
-     */
-    public function newsletter(
-        Request $request,
-        UserService $userService,
-        PrivateRoomTransformer $privateRoomTransformer,
-        UserTransformer $userTransformer,
-        CoreSecurity $security
-    ) {
-        /** @var Account $account */
-        $account = $security->getUser();
-        $portalUser = $userService->getPortalUser($account);
-
-
-        $userData = $userTransformer->transform($portalUser);
-
-        $request->setLocale($portalUser->getLanguage());
-
-        $privateRoomItem = $portalUser->getOwnRoom();
-        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
-
-        $userData = array_merge($userData, $privateRoomData);
-
-        $form = $this->createForm(ProfileNewsletterType::class, $userData);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $portalUser = $userTransformer->applyTransformation($portalUser, $form->getData());
-            $portalUser->save();
-            $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
-            $privateRoomItem->save();
-        }
-
-        return [
-            'form' => $form->createView(),
-            'portalEmail' => $portalUser->getRoomEmail(),
-        ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/acount/privacy")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function privacy($portalId, Request $request)
-    {
-        $form = $this->createForm(ProfilePrivacyType::class);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // generate & serve a PDF with the user's personal master data
-            return $this->redirectToRoute('app_profile_privacyprint', [
-                'portalId' => $portalId,
-            ]);
-        }
-
-        return [
-            'form' => $form->createView(),
-        ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/acount/privacy/print")
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @param Portal $portal
-     * @param PersonalDataCollector $dataCollector
-     * @param PrintService $printService
-     * @param RoomService $roomService
-     * @param CoreSecurity $security
-     * @param UserService $userService
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function privacyPrint(
-        Portal $portal,
-        PersonalDataCollector $dataCollector,
-        PrintService $printService,
-        RoomService $roomService,
-        CoreSecurity $security,
-        UserService $userService
-    ) {
-        /** @var Account $account */
-        $account = $security->getUser();
-        $portalUser = $userService->getPortalUser($account);
-
-        $serviceLink = $roomService->buildServiceLink();
-        $serviceEmail = $roomService->getServiceEmail();
-
-        // gather the user's personal master data
-        $personalData = $dataCollector->getPersonalDataForUserID($portalUser->getItemID());
-
-        // generate HTML data
-        $html = $this->renderView('profile/privacy_print.html.twig', [
-            'portalId' => $portal->getId(),
-            'printProfileImages' => true, // set to `false` to omit profile images when generating the PDF (much faster)
-            'accountData' => $personalData->getAccountData(),
-            'communityRoomProfileDataArray' => $personalData->getCommunityRoomProfileDataArray(),
-            'projectRoomProfileDataArray' => $personalData->getProjectRoomProfileDataArray(),
-            'groupRoomProfileDataArray' => $personalData->getGroupRoomProfileDataArray(),
-            'serviceLink' => $serviceLink,
-            'serviceEmail' => $serviceEmail,
-        ]);
-
-        $fileName = $this->translator->trans('Self assessment', [], 'profile')
-            . ' (' . $portal->getTitle() . ').pdf';
-
-        // return HTML Response containing a PDF generated from the HTML data
-        return $printService->buildPdfResponse($html, false, $fileName);
-    }
-
-    /**
-     * @Route("/portal/{portalId}/account/additional")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param CoreSecurity $security
-     * @return array|RedirectResponse
-     */
-    public function additional(
-        Request $request,
-        UserService $userService,
-        PrivateRoomTransformer $privateRoomTransformer,
-        UserTransformer $userTransformer,
-        EventDispatcherInterface $eventDispatcher,
-        CoreSecurity $security
-    ) {
-        /** @var Account $account */
-        $account = $security->getUser();
-        $portalUser = $userService->getPortalUser($account);
-
-        $userData = $userTransformer->transform($portalUser);
-
-        $request->setLocale($portalUser->getLanguage());
-
-        $privateRoomItem = $portalUser->getOwnRoom();
-        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
-
-        $userData = array_merge($userData, $privateRoomData);
-
-        $form = $this->createForm(ProfileAdditionalType::class, $userData, [
-            'emailToCommsy' => $this->getParameter('commsy.upload.enabled'),
-        ]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $oldUserItem = clone $portalUser;
-
-            $portalUser = $userTransformer->applyTransformation($portalUser, $form->getData());
-            $portalUser->save();
-
-            $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
-            $privateRoomItem->save();
-
-            $event = new AccountChangedEvent($oldUserItem, $portalUser);
-            $eventDispatcher->dispatch($event);
-
-            return $this->redirect($request->getUri());
-        }
-
-        return [
-            'form' => $form->createView(),
-            'uploadEmail' => $this->getParameter('commsy.upload.account'),
-            'portalEmail' => $portalUser->getRoomEmail(),
-        ];
-    }
-
-    /**
      * @Route("/room/{roomId}/user/profileImage")
      * @Template
      * @param UserService $userService
@@ -764,133 +398,15 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/account/delete")
-     * @Template
-     * @Security("is_granted('ITEM_ENTER', roomId)")
-     * @param Request $request
-     * @param UserService $userService
-     * @param LegacyEnvironment $environment
-     * @return array|RedirectResponse
-     */
-    public function deleteAccount(
-        Request $request,
-        UserService $userService,
-        LegacyEnvironment $environment,
-        ParameterBagInterface $parameterBag
-    ) {
-        $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
-
-        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteAccountType::class, [
-            'confirm_string' => $this->translator->trans('lock', [], 'profile'),
-        ], [])->getForm();
-        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteAccountType::class, [
-            'confirm_string' => $this->translator->trans('delete', [], 'profile'),
-        ], [])->getForm();
-
-        $currentUser = $userService->getCurrentUserItem();
-        $portalUser = $currentUser->getRelatedCommSyUserItem();
-
-        $legacyEnvironment = $environment->getEnvironment();
-        $portal = $legacyEnvironment->getCurrentPortalItem();
-
-        $sessionManager = $legacyEnvironment->getSessionManager();
-        $sessionItem = $legacyEnvironment->getSessionItem();
-
-        $portalUrl = $this->generateUrl('app_helper_portalenter', [
-            'context' => $portal->getItemId(),
-        ]);
-
-        // Lock account
-        if ($request->request->has('lock_form')) {
-            $lockForm->handleRequest($request);
-            if ($lockForm->isSubmitted() && $lockForm->isValid()) {
-                // lock account
-                $portalUser->reject();
-                $portalUser->save();
-                // delete session
-                $sessionManager->delete($sessionItem->getSessionID());
-                $legacyEnvironment->setSessionItem(null);
-
-                return $this->redirect($portalUrl);
-            }
-        } // Delete account
-        elseif ($request->request->has('delete_form')) {
-            $deleteForm->handleRequest($request);
-            if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-                // delete account
-                // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, since one can also delete users via
-                // the legacy portal config, we do this centrally in the legacy code: `cs_authentication->delete()` will
-                // eventually cause `cs_user_manager->delete()` to get called which, in turn, will fire an `AccountDeletedEvent`
-                $authentication = $legacyEnvironment->getAuthenticationObject();
-                $authentication->delete($portalUser->getItemID());
-
-                // delete session
-                $sessionManager->delete($sessionItem->getSessionID());
-                $legacyEnvironment->setSessionItem(null);
-
-                return $this->redirect($portalUrl);
-            }
-        }
-
-        return [
-            'override' => $deleteParameter,
-            'form_lock' => $lockForm->createView(),
-            'form_delete' => $deleteForm->createView()
-        ];
-    }
-
-
-    /**
-     * @Route("/portal/{portalId}/account/changepassword")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param CoreSecurity $security
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param EntityManagerInterface $entityManager
-     * @return array
-     */
-    public function changePassword(
-        Request $request,
-        CoreSecurity $security,
-        UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $entityManager
-    ) {
-        $form = $this->createForm(ProfileChangePasswordType::class);
-
-        $passwordChanged = false;
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Account $user */
-            $account = $security->getUser();
-            if ($account !== null) {
-                $formData = $form->getData();
-
-                $account->setPassword($passwordEncoder->encodePassword($account, $formData['new_password']));
-
-                $entityManager->persist($account);
-                $entityManager->flush();
-
-                $passwordChanged = true;
-            }
-        }
-
-        return [
-            'form' => $form->createView(),
-            'passwordChanged' => $passwordChanged,
-        ];
-    }
-
-
-    /**
      * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
      * @Template
      * @Security("is_granted('ITEM_ENTER', roomId)")
      * @param Request $request
      * @param LegacyEnvironment $legacyEnvironment
      * @param UserService $userService
-     * @param RoomService $roomService
+     * @param ParameterBagInterface $parameterBag
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param TranslatorInterface $translator
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -900,14 +416,15 @@ class ProfileController extends AbstractController
         UserService $userService,
         ParameterBagInterface $parameterBag,
         EventDispatcherInterface $eventDispatcher,
+        TranslatorInterface $translator,
         int $roomId
     ) {
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
-            'confirm_string' => $this->translator->trans('lock', [], 'profile'),
+            'confirm_string' => $translator->trans('lock', [], 'profile'),
         ], [])->getForm();
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, [
-            'confirm_string' => $this->translator->trans('delete', [], 'profile')
+            'confirm_string' => $translator->trans('delete', [], 'profile')
         ], [])->getForm();
 
         $currentUser = $userService->getCurrentUserItem();
