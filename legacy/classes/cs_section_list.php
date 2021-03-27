@@ -198,4 +198,3 @@ class cs_section_list {
       return $this->_data;
    }
 }
-?>
