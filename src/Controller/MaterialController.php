@@ -52,10 +52,7 @@ class MaterialController extends BaseController
      * @var MaterialService
      */
     private $materialService;
-    /**
-     * @var ItemService
-     */
-    private $itemService;
+
     /**
      * @var AnnotationService
      */
@@ -63,12 +60,11 @@ class MaterialController extends BaseController
     /**
      * @var LegacyEnvironment
      */
-    private $legacyEnvironment;
-    /**
-     * @var ReaderService
-     */
-    private $readerService;
+    protected $legacyEnvironment;
 
+    /**
+     * @var CategoryService
+     */
     private $categoryService;
 
     /**
@@ -90,15 +86,6 @@ class MaterialController extends BaseController
 
     /**
      * @required
-     * @param mixed $itemService
-     */
-    public function setItemService(ItemService $itemService): void
-    {
-        $this->itemService = $itemService;
-    }
-
-    /**
-     * @required
      * @param mixed $annotationService
      */
     public function setAnnotationService(AnnotationService $annotationService): void
@@ -106,21 +93,6 @@ class MaterialController extends BaseController
         $this->annotationService = $annotationService;
     }
 
-    /**
-     * @required
-     * @param LegacyEnvironment $legacyEnvironment
-     */
-    public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment){
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
-
-    /**
-     * @required
-     * @param ReaderService $readerService
-     */
-    public function setReaderService(ReaderService $readerService){
-        $this->readerService = $readerService;
-    }
 
     /**
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
