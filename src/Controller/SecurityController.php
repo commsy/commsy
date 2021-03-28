@@ -15,6 +15,7 @@ use App\Model\ResetPasswordToken;
 use App\Form\Type\LoginForgottenStateMailType;
 use App\Form\Type\PasswordForgottenNewPasswordType;
 use App\Form\Type\PasswordForgottenStateUserIdType;
+use App\Repository\AccountsRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\MailAssistant;
 use App\Utils\UserService;
@@ -136,10 +137,14 @@ class SecurityController extends AbstractController
         Portal $portal,
         string $portalId
     ) {
+        $localAccount = new LocalAccount($portal->getId());
         $form = $this->createForm(LoginForgottenStateMailType::class, [], []);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->getClickedButton()->getName() === 'cancel') {
+            $clickedButtonName = $form->getClickedButton()->getName();
+
+            if ($clickedButtonName === 'cancel') {
                 return $this->redirectToRoute('app_login', [
                     'context' => $portalId,
                 ]);
@@ -158,15 +163,36 @@ class SecurityController extends AbstractController
                     ];
                 }
 
+                $localSource = $this->getDoctrine()->getRepository(AuthSourceLocal::class)
+                    ->findOneBy([
+                        'portal' => $localAccount->getContextId(),
+                        'enabled' => 1,
+                    ]);
+
+                /**
+                 * TODO: Possibly adapt from requestPasswordReset? Currently not working
+                 */
+                if ($localAccount->getUsername()) {
+                    $localAccount = $this->getDoctrine()->getRepository(Account::class)
+                        ->findOneByCredentials(
+                            $localAccount->getUsername(),
+                            $localAccount->getContextId(),
+                            $localSource
+                        );
+                }
+
                 $accountRepo = $entityManager->getRepository(Account::class);
                 $authSources = $portal->getAuthSources();
 
                 /** @var AuthSource $localAuthSource */
-                $localAuthSource = $authSources->filter(function(AuthSource $authSource) {
+                $localAuthSource = $authSources->filter(function (AuthSource $authSource) {
                     return $authSource->getType() === 'local';
                 })->first();
 
                 $users = $accountRepo->findByMailAndAuthSource($mail, $localAuthSource);
+                if ($localAccount) {
+                    $users = $accountRepo->findByMailAndAuthSource($mail, $localAuthSource);
+                }
 
                 $userLogins = [];
                 foreach ($users as $user) {
@@ -177,14 +203,20 @@ class SecurityController extends AbstractController
                     $form->get('mail')->addError(new FormError($translatorInt->trans('mail unknown')));
                 } else {
                     $subject = $translator->getMessage('USER_ACCOUNT_FORGET_HEADLINE', $portalItem->getTitle());
-                    $body = $translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY', $portalItem->getTitle(), implode(', ',$userLogins));
-                    $body .= '. ' . $translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy',$portalItem->getTitle());
+                    $body = $translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY', $portalItem->getTitle(),
+                        implode(', ', $userLogins));
+                    $body .= '. ' . $translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy', $portalItem->getTitle());
 
+                    $accountRepo = $entityManager->getRepository(Account::class);
                     $users = $userService->getUserFromLogin($users[0]['username']);
-                    $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $users[0]);
+                    /** @var \cs_user_item $cs_user_item */
+                    $cs_user_item = $users[0];
+                    $user = $accountRepo->findOneByCredentialsShort($cs_user_item->getUserID(), $portalId);
+
+                    $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $user);
                     $mailer->send($message);
 
-                    $mailSendMessage = $translator->getMessage('USER_ACCOUNT_FORGET_SUCCESS_TEXT',$mail);
+                    $mailSendMessage = $translator->getMessage('USER_ACCOUNT_FORGET_SUCCESS_TEXT', $mail);
                     $this->addFlash('messageSuccess', strip_tags($mailSendMessage));
 
                     return $this->redirectToRoute('app_login', [
@@ -211,6 +243,7 @@ class SecurityController extends AbstractController
         \Swift_Mailer $mailer,
         UserService $userService,
         TranslatorInterface $translatorInt,
+        EntityManagerInterface $entityManager,
         string $context
     ) {
         $form = $this->createForm(PasswordForgottenStateUserIdType::class, [], [
@@ -274,7 +307,12 @@ class SecurityController extends AbstractController
                     $subject = $translator->getMessage('USER_PASSWORD_MAIL_SUBJECT', $portalItem->getTitle());
                     $body = $translator->getMessage('USER_PASSWORD_MAIL_BODY', $userLoginId, $portalItem->getTitle(), $url, '15');
 
-                    $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $users[0]);
+                    $accountRepo = $entityManager->getRepository(Account::class);
+                    $users = $userService->getUserFromLogin($userLoginId);
+                    /** @var \cs_user_item $cs_user_item */ $cs_user_item = $users[0];
+                    $user = $accountRepo->findOneByCredentialsShort($cs_user_item->getUserID(), $context);
+
+                    $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $user);
                     $mailer->send($message);
 
                     $mailSendMessage = $translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT');
