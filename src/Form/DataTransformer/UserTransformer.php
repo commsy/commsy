@@ -174,7 +174,8 @@ class UserTransformer implements DataTransformerInterface
                     $userObject->setEmail($portalUser->getEmail());
 
                     $authentication = $this->legacyEnvironment->getAuthenticationObject();
-                    $authManager = $authentication->getAuthManager($portalUser->getAuthSource());
+                    $authSourceId = $portalUser->getAuthSource();
+                    $authManager = $authentication->getAuthManager($authSourceId);
 
                     /** @var \cs_auth_item $authItem */
                     $authItem = $authManager->getItem($portalUser->getUserID());
@@ -184,6 +185,7 @@ class UserTransformer implements DataTransformerInterface
                      * sources, because (as of CS9) they do not create an entry in the database
                      */
                     if ($authItem) {
+                        $authItem->setAuthSourceID($authSourceId);
                         $authItem->setEmail($portalUser->getEmail());
 
                         $authentication->save($authItem);
