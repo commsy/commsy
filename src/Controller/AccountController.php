@@ -520,8 +520,10 @@ class AccountController extends AbstractController
             $lockForm->handleRequest($request);
             if ($lockForm->isSubmitted() && $lockForm->isValid()) {
                 // lock account
-                $portalUser->reject();
-                $portalUser->save();
+
+                /** @var $account Account */
+                $account = $security->getUser();
+                $accountManager->lock($account);
 
                 return $this->redirectToRoute('app_logout');
             }
