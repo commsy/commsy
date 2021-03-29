@@ -106,7 +106,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|null
-     * @throws AuthenticationException
      *
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
