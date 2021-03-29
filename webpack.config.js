@@ -1,6 +1,5 @@
-let Encore = require('@symfony/webpack-encore');
+const Encore = require('@symfony/webpack-encore');
 let webpack = require('webpack');
-let HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -18,9 +17,6 @@ Encore
 
     /*
      * ENTRY CONFIG
-     *
-     * Add 1 entry for each "page" of your app
-     * (including one that's included on every page - e.g. "app")
      *
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
@@ -43,6 +39,9 @@ Encore
     // entry points UiKit3
     .addEntry('app_portal', './assets/uikit3/js/app_portal.js')
 
+    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
+    // .enableStimulusBridge('./assets/controllers.json')
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
@@ -57,7 +56,7 @@ Encore
     ])
 
     .addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /uikit\/dist\/js\/components$/))
-    .addPlugin(new HardSourceWebpackPlugin())
+    //.addPlugin(new HardSourceWebpackPlugin())
 
     /*
      * FEATURE CONFIG
@@ -71,6 +70,10 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
+
+    .configureBabel((config) => {
+        config.plugins.push('@babel/plugin-proposal-class-properties');
+    })
 
     // enables @babel/preset-env polyfills
     .configureBabelPresetEnv((config) => {
@@ -94,16 +97,15 @@ Encore
     // uncomment if you use TypeScript
     .enableTypeScriptLoader()
 
+    // uncomment if you use React
+    //.enableReactPreset()
+
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
     //.enableIntegrityHashes(Encore.isProduction())
 
     // uncomment if you're having problems with a jQuery plugin
     .autoProvidejQuery()
-
-    // uncomment if you use API Platform Admin (composer req api-admin)
-    //.enableReactPreset()
-    //.addEntry('admin', './assets/admin.js')
 ;
 
 module.exports = Encore.getWebpackConfig();
