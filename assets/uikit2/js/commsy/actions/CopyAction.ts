@@ -13,7 +13,7 @@ export class CopyAction extends XHRAction {
     }
 
     public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             let payload: any = backendResponse.payload;
 
             UIkit.notify(payload.message, 'success');
