@@ -96,10 +96,22 @@ class UserRoomSubscriber implements EventSubscriberInterface
         /**
          * @var \cs_user_item[] $relatedUsers
          */
-        $relatedUsers = $portalUser->getRelatedUserList()->to_array();
+        $relatedUsers = $portalUser->getRelatedUserList(true)->to_array();
 
         foreach ($relatedUsers as $relatedUser) {
             $room = $relatedUser->getContextItem();
+            if (!$room) {
+                continue;
+            }
+
+            // if the user's email just changed, update the email for each of the related user room users
+            if ($room->isUserroom()) {
+                $newUserEmail = $newUser->getRoomEmail();
+                if ($oldUser->getRoomEmail() !== $newUserEmail) {
+                    $relatedUser->setEmail($newUserEmail);
+                    $relatedUser->save();
+                }
+            }
 
             if (!$room->isProjectRoom() || !($relatedUser->isUser() || $relatedUser->isModerator())) {
                 continue;
