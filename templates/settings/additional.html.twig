@@ -43,17 +43,20 @@
                         </div>
 
                         {# template #}
-                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
-                            <div class='uk-form-row'>
-                                {{ form_label(form.template.status) }}
-                                <div class='uk-form-controls'>
-                                    {{ form_widget(form.template.status) }} {{ 'Template status'|trans({}, 'settings') }}
+                        {# user rooms use project room templates, so a user room shouldn't be made available as a template #}
+                        {% if not isUserroom %}
+                            <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                                <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1>
+                                <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
+                                <div class='uk-form-row'>
+                                    {{ form_label(form.template.status) }}
+                                    <div class='uk-form-controls'>
+                                        {{ form_widget(form.template.status) }} {{ 'Template status'|trans({}, 'settings') }}
+                                    </div>
                                 </div>
+                                {{ form_rest(form.template) }}
                             </div>
-                            {{ form_rest(form.template) }}
-                        </div>
+                        {% endif %}
 
                         {# archived #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
