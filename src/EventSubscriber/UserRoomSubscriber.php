@@ -100,6 +100,9 @@ class UserRoomSubscriber implements EventSubscriberInterface
 
         foreach ($relatedUsers as $relatedUser) {
             $room = $relatedUser->getContextItem();
+            if (!$room) {
+                continue;
+            }
 
             // if the user's email just changed, update the email for each of the related user room users
             if ($room->isUserroom()) {
