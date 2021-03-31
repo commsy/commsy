@@ -206,6 +206,7 @@ class SettingsController extends Controller
 
         return [
             'form' => $form->createView(),
+            'isUserroom' => $roomItem->isUserroom(),
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
         ];
