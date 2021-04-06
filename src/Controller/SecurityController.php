@@ -3,28 +3,29 @@
 namespace App\Controller;
 
 use App\Entity\Account;
-use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\Server;
 use App\Form\Model\LocalAccount;
+use App\Form\Model\RequestAccounts;
 use App\Form\Type\PasswordChangeType;
+use App\Form\Type\RequestAccountsType;
 use App\Form\Type\RequestPasswordResetType;
 use App\Model\Password;
 use App\Model\ResetPasswordToken;
 use App\Security\AbstractCommsyGuardAuthenticator;
 use App\Services\LegacyEnvironment;
 use App\Utils\MailAssistant;
-use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -66,7 +67,8 @@ class SecurityController extends AbstractController
         EntityManagerInterface $entityManager,
         string $context = 'server',
         Request $request
-    ): Response {
+    ): Response
+    {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -110,19 +112,113 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * @Route("/login/{portalId}/request_accounts")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template
+     * @param Portal $portal
+     * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param MailAssistant $mailAssistant
+     * @param Swift_Mailer $mailer
+     * @param TranslatorInterface $translator
+     * @return array|RedirectResponse
+     */
+    public function requestAccounts(
+        Portal $portal,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        MailAssistant $mailAssistant,
+        Swift_Mailer $mailer,
+        TranslatorInterface $symfonyTranslator
+    )
+    {
+        $requestAccounts = new RequestAccounts($portal->getId());
+        $form = $this->createForm(RequestAccountsType::class, $requestAccounts);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $clickedButtonName = $form->getClickedButton()->getName();
+
+            if ($clickedButtonName === 'cancel') {
+                return $this->redirectToRoute('app_login', [
+                    'context' => $portal->getId(),
+                ]);
+            }
+
+            if ($clickedButtonName === 'submit') {
+                $accountsRepository = $this->getDoctrine()->getRepository(Account::class);
+                $matchingAccounts = $accountsRepository->findByEmailAndPortalId(
+                    $requestAccounts->getEmail(),
+                    $portal->getId()
+                );
+
+                if ($matchingAccounts) {
+                    $usernames = [];
+                    foreach ($matchingAccounts as $matchingAccount) {
+                        /** @var Account $matchingAccount */
+                        $usernames[] = $matchingAccount->getUsername();
+                    }
+
+                    /**
+                     * TODO: Refactor message creation, do not use legacy translator
+                     */
+                    $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
+                    $subject = $translator->getMessage('USER_ACCOUNT_FORGET_HEADLINE', $portal->getTitle());
+                    $body = $translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY', $portal->getTitle(),
+                        implode(', ', $usernames));
+                    $body .= '. ' . $translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy', $portal->getTitle());
+
+                    $message = $mailAssistant->getSwiftMessageFromPortalToAccount(
+                        $subject,
+                        $body,
+                        $portal,
+                        $matchingAccounts[0]
+                    );
+                    $mailer->send($message);
+
+                    $flashMessage = $translator->getMessage(
+                        'USER_ACCOUNT_FORGET_SUCCESS_TEXT',
+                        $requestAccounts->getEmail()
+                    );
+                } else {
+                    $flashMessage = $symfonyTranslator->trans('login.request_accounts_none', [], 'login');
+                }
+
+                $this->addFlash('primary', strip_tags($flashMessage));
+
+                return $this->redirectToRoute('app_login', [
+                    'context' => $portal->getId(),
+                ]);
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
      * @Route("/login/{portalId}/request_password_reset")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @Template
+     * @param Portal $portal
      * @param Request $request
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param MailAssistant $mailAssistant
+     * @param Swift_Mailer $mailer
+     * @param RouterInterface $router
+     * @return array|RedirectResponse
+     * @throws NonUniqueResultException
      */
     public function requestPasswordReset(
         Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
-        \Swift_Mailer $mailer,
+        Swift_Mailer $mailer,
         RouterInterface $router
-    ) {
+    )
+    {
         $localAccount = new LocalAccount($portal->getId());
         $form = $this->createForm(RequestPasswordResetType::class, $localAccount);
 
@@ -183,7 +279,7 @@ class SecurityController extends AbstractController
                     '15'
                 );
 
-                $message = $mailAssistant->getSwitftMailForPasswordForgottenMail($subject, $body, $localAccount);
+                $message = $mailAssistant->getSwiftMessageFromPortalToAccount($subject, $body, $portal, $localAccount);
                 $mailer->send($message);
 
                 $flashMessage = $translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT');
@@ -204,17 +300,22 @@ class SecurityController extends AbstractController
      * @Route("/login/{portalId}/password_reset/{token}")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @Template
+     * @param Portal $portal
+     * @param string $token
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return array|RedirectResponse
+     * @throws NonUniqueResultException
      */
     public function passwordReset(
         Portal $portal,
         string $token,
         Request $request,
-        UserService $userService,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder,
-        TranslatorInterface $translator
-    ) {
+        UserPasswordEncoderInterface $passwordEncoder
+    )
+    {
         $session = $request->getSession();
         if (!$session->has('ResetPasswordToken')) {
             throw $this->createAccessDeniedException();
@@ -272,8 +373,6 @@ class SecurityController extends AbstractController
 
             // clean up session to prevent attackers from spoofing
             $session->remove('ResetPasswordToken');
-
-//            $this->addFlash('primary', 'passwordUpdated');
 
             return $this->redirectToRoute('app_login', [
                 'context' => $portal->getId(),

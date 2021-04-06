@@ -5,12 +5,12 @@ namespace App\Form\Type;
 
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RequestPasswordResetType extends AbstractType
+class RequestAccountsType extends AbstractType
 {
     /**
      * Builds the form.
@@ -23,10 +23,10 @@ class RequestPasswordResetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', TextType::class, [
-                'label' => 'login.label_username',
+            ->add('email', EmailType::class, [
+                'label' => 'login.label_email',
                 'translation_domain' => 'login',
-                'help' => 'login.password_reset_help',
+                'help' => 'login.request_accounts_help',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'send',
@@ -62,6 +62,6 @@ class RequestPasswordResetType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'request_pw_reset';
+        return 'request_accounts';
     }
 }
