@@ -302,14 +302,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         return false;
     }
 
-    protected function getLoginUrl(Request $request): string
-    {
-        // TODO
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
-    }
-
     private function performLdapLookup(string $username, string $password, AuthSource $authSource)
     {
         if (empty($username) || empty($password)) {

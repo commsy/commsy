@@ -312,12 +312,4 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
     {
         return false;
     }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        // TODO
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
-    }
 }
