@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Portal;
 use App\Form\Type\TouAcceptType;
 use App\Services\LegacyEnvironment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -64,6 +66,24 @@ class TouController extends AbstractController
             'context' => $currentContext,
             'touText' => $touText,
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/terms")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template("tou/show.html.twig")
+     *
+     * @return array
+     */
+    public function showPortal(Portal $portal): array
+    {
+        if (!$portal->hasAGBEnabled()) {
+            throw $this->createNotFoundException('terms are disabled');
+        }
+
+        return [
+            'portal' => $portal,
         ];
     }
 }

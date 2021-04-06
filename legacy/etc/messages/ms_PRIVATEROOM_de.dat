@@ -15,8 +15,8 @@ $message["PRIVATEROOM_COMMON_X_FROM_Z_FROM_ALL"]["de"] = "%1 von %1 Räumen";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z"]["de"] = "%1 bis %2 von %3 Räumen";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["de"] = "%1 bis %2 von %3";
 $message["PRIVATEROOM_CREATE_NEW_ENTRY_BOX"]["de"] = "Neuen Eintrag erstellen";
-$message["PRIVATEROOM_EXPORT"]["de"] = "Persönlichen Raum exportieren";
-$message["PRIVATEROOM_LOCK"]["de"] = "Persönlichen Raum sperren";
+$message["PRIVATEROOM_EXPORT"]["de"] = "Meine Ablage exportieren";
+$message["PRIVATEROOM_LOCK"]["de"] = "Meine Ablage sperren";
 $message["PRIVATEROOM_MAIL_SUBJECT_DAILY"]["de"] = "Täglicher CommSy-Newsletter";
 $message["PRIVATEROOM_MAIL_SUBJECT_FOOTER"]["de"] = "Falls Sie den Newsletter nicht mehr erhalten möchten, bestellen Sie ihn bitte in Ihrem Profil beim Menüpunkt Newsletter ab.";
 $message["PRIVATEROOM_MAIL_SUBJECT_HEADER_DAILY"]["de"] = "Dieser tägliche Newsletter listet neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals &quot;%1&quot; auf. Berücksichtigt werden ungelesene Beiträge aus allen Räumen, in denen Sie Mitglied sind.";
@@ -37,5 +37,5 @@ $message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON"]["de"] = "Neue Liste erstel
 $message["PRIVATEROOM_RELEASED_FOR"]["de"] = "freigegeben für";
 $message["PRIVATEROOM_RELEASED_FROM"]["de"] = "freigegeben durch";
 $message["PRIVATEROOM_ROOMWIDE_SEARCH_BOX"]["de"] = "Raumübergreifende Suche";
-$message["PRIVATEROOM_UNLOCK"]["de"] = "Persönlichen Raum entsperren";
+$message["PRIVATEROOM_UNLOCK"]["de"] = "Meine Ablage entsperren";
 ?>

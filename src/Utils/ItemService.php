@@ -2,14 +2,18 @@
 
 namespace App\Utils;
 
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
 
 class ItemService
 {
+    /**
+     * @var LegacyEnvironment $legacyEnvironment
+     */
     private $legacyEnvironment;
 
+    /**
+     * @var \cs_item_manager $itemManager
+     */
     private $itemManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -48,6 +52,9 @@ class ItemService
             }
             
             $manager = $this->legacyEnvironment->getManager($type);
+            if (!$manager) {
+                return null;
+            }
 
             if ($versionId === null) {
                 return $manager->getItem($item->getItemID());
@@ -135,6 +142,42 @@ class ItemService
         }
 
         return [];
+    }
+
+    /**
+     * Returns all searchable items contained in rooms specified by the given room IDs.
+     * @param integer[] $contextIds array of room IDs for rooms whose items shall be returned
+     * @return \cs_item[]
+     */
+    public function getSearchableItemsForContextIds(array $contextIds): array
+    {
+        if (empty($contextIds)) {
+            return [];
+        }
+
+        $itemManager = $this->itemManager;
+        $searchableTypes = [
+            CS_ANNOUNCEMENT_TYPE,
+            CS_DATE_TYPE,
+            CS_DISCUSSION_TYPE,
+            CS_LABEL_TYPE, // groups, topics & institutions
+            CS_MATERIAL_TYPE,
+            CS_TODO_TYPE,
+            CS_USER_TYPE,
+            \cs_userroom_item::ROOM_TYPE_USER,
+        ];
+
+        $itemManager->resetLimits();
+        $itemManager->setNoIntervalLimit();
+        $itemManager->setTypeArrayLimit($searchableTypes);
+        $itemManager->setContextArrayLimit($contextIds);
+
+        $itemManager->select();
+
+        /** @var \cs_list $itemList */
+        $itemList = $itemManager->get();
+
+        return $itemList->to_array();
     }
 
     /**

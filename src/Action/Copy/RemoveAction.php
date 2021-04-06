@@ -50,9 +50,9 @@ class RemoveAction implements ActionInterface
         $this->copyService->removeEntries($roomItem->getItemID(), $ids);
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $this->translator->transChoice('removed %count% entries from list', count($items), [
-                '%count%' => count($items),
-            ]),
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $this->translator->trans('removed %count% entries from list', [
+                    '%count%' => count($items),
+                ]),
         ]);
     }
 }

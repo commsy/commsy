@@ -90,7 +90,7 @@
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
                 <source>announcements</source>
-                <target>Portal-Ankündigungen</target>
+                <target>Ankündigungen</target>
             </trans-unit>
             <trans-unit id="Priority">
                 <source>Priority</source>
@@ -115,6 +115,24 @@
             <trans-unit id="Link">
                 <source>Link</source>
                 <target>Adresse</target>
+            </trans-unit>
+
+            <!-- portal content -->
+            <trans-unit id="portal_content_title">
+                <source>contents</source>
+                <target>Inhalte</target>
+            </trans-unit>
+            <trans-unit id="portal_content_terms">
+                <source>data privacy</source>
+                <target>Datenschutz</target>
+            </trans-unit>
+            <trans-unit id="portal_content_impressum">
+                <source>impressum</source>
+                <target>Impressum</target>
+            </trans-unit>
+            <trans-unit id="portal_content_accessibility">
+                <source>accessibility</source>
+                <target>Barrierefreiheit</target>
             </trans-unit>
 
             <!-- portal terms -->
@@ -989,9 +1007,11 @@
                 <source>portal.form_desc_en</source>
                 <target>Beschreibung Englisch</target>
             </trans-unit>
-            <trans-unit id="Portal logo">
-                <source>Portal logo</source>
-                <target>Logo</target>
+
+            <!-- appearance form -->
+            <trans-unit id="portal_fappearance_orm_title">
+                <source>Appearance</source>
+                <target>Darstellung</target>
             </trans-unit>
 
             <!-- Mailtexts -->

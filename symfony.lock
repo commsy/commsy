@@ -117,7 +117,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "2.0",
-            "ref": "a9f2463b9f73efe74482f831f03a204a41328555"
+            "ref": "40631978d2c4adc9b11220b13eba539b727c36a8"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -187,6 +187,12 @@
     "exsyst/swagger": {
         "version": "v0.4.1"
     },
+    "ezimuel/guzzlestreams": {
+        "version": "3.0.1"
+    },
+    "ezimuel/ringphp": {
+        "version": "1.1.2"
+    },
     "ezyang/htmlpurifier": {
         "version": "v4.12.0"
     },
@@ -234,12 +240,6 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
-    },
-    "guzzlehttp/ringphp": {
-        "version": "1.1.1"
-    },
-    "guzzlehttp/streams": {
-        "version": "3.0.0"
     },
     "idci/color-scheme-bundle": {
         "version": "dev-master"
@@ -304,7 +304,7 @@
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "1.8",
-            "ref": "1d42bc3f713130582e6e0c475c49bc327ab0a2a2"
+            "ref": "5a5bdc2d0e2533ed6935d5ae562f2b318a8fc1ee"
         },
         "files": [
             "config/packages/liip_imagine.yaml",
@@ -609,7 +609,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "4.4",
-            "ref": "2257d2a1754c7840f49ad04e1d529c402415f4b5"
+            "ref": "df1f2fe60b8fbb5cf7e26a7af19445c128a13b90"
         },
         "files": [
             "config/bootstrap.php",
@@ -866,15 +866,18 @@
         ]
     },
     "symfony/webpack-encore-bundle": {
-        "version": "1.6",
+        "version": "1.9",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "1.6",
-            "ref": "69e1d805ad95964088bd510c05995e87dc391564"
+            "version": "1.9",
+            "ref": "9399a0bfc6ee7a0c019f952bca46d6a6045dd451"
         },
         "files": [
             "assets/app.js",
+            "assets/bootstrap.js",
+            "assets/controllers.json",
+            "assets/controllers/hello_controller.js",
             "assets/styles/app.css",
             "config/packages/assets.yaml",
             "config/packages/prod/webpack_encore.yaml",

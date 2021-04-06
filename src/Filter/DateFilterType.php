@@ -5,6 +5,7 @@ namespace App\Filter;
 use App\Form\Type\Custom\DateSelectType;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,10 +22,14 @@ class DateFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('hide-deactivated-entries', Filters\ChoiceFilterType::class, [
+            ->add('submit', SubmitType::class, [
                 'attr' => [
-                    'onchange' => 'this.form.submit()',
+                    'class' => 'uk-button uk-button-mini',
                 ],
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ])
+            ->add('hide-deactivated-entries', Filters\ChoiceFilterType::class, [
                 'choices' => [
                     'only activated' => 'only_activated',
                     'only deactivated' => 'only_deactivated',
@@ -34,9 +39,6 @@ class DateFilterType extends AbstractType
                 'placeholder' => false,
             ])
             ->add('hide-past-dates', Filters\CheckboxFilterType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'label_attr' => [
                     'class' => 'uk-form-label',
                 ],

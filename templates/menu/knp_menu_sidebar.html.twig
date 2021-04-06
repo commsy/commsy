@@ -34,7 +34,7 @@
     {% if options.allow_safe_labels and item.getExtra('safe_label', false) %}
         {{ item.label|raw }}
      {% else %}
-        {{ item.label|transchoice(1, {}, item.getExtra('translation_domain'))|upper }}
+        {{ item.label|trans({}, item.getExtra('translation_domain'))|upper }}
     {% endif %}
 {% endblock %}
 

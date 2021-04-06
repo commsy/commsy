@@ -7,8 +7,10 @@ use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 use cs_room_item;
 
-class ModerationSettingsTransformer implements DataTransformerInterface
+class ModerationSettingsTransformer  extends AbstractTransformer
 {
+    protected $entity = 'moderation_settings';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)

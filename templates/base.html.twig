@@ -1,3 +1,5 @@
+{% import 'common/footer.html.twig' as footer %}
+
 <!DOCTYPE html>
 <html lang="{{ selectedLanguage() }}">
     <head>
@@ -20,9 +22,22 @@
                 <div id="commsy_logo"></div>
             </a>
 
-            {# Context Navigation #}
-            {% block side_navigation %}
-            {% endblock %}
+            <div class="uk-flex uk-flex-wrap uk-flex-wrap-space-between uk-height-1-1">
+                <div>
+                    {# Context Navigation #}
+                    {% block side_navigation %}
+                    {% endblock %}
+                </div>
+
+                <div class="uk-margin-large-bottom uk-flex-item-1">
+                    <div class="uk-accordion" data-uk-accordion="{showfirst: false}">
+                        <div class="uk-accordion-title"><span class="uk-text-small">CommSy {{ commsy.version }}</span></div>
+                        <div class="uk-accordion-content">
+                            {{ footer.render(commsy.server) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {# Off-canvase context navigation for small devices #}
@@ -42,8 +57,8 @@
                         {% if app.request.attributes.get('_route') is not same as('app_tou_accept') %}
                             {{ render(controller(
                                 'App\\Controller\\SearchController::searchFormAction', {
-                                    'roomId': app.request.attributes.get('roomId'),
-                                    'requestData': app.request.request.get('search') ?? app.request.query.get('search_filter')
+                                    'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId'),
+                                    'requestData': app.request.query.get('search') ?? app.request.query.get('search_filter')
                                 }
                             ))}}
                         {% endif %}
@@ -52,20 +67,20 @@
                     {# global actions #}
                     {{ render(controller(
                         'App\\Controller\\UserController::globalNavbarAction',
-                        { 'contextId': app.request.attributes.get('roomId') }
+                        { 'contextId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }
                     )) }}
 
                     <div class="uk-navbar-content">
                         <ul class="uk-navbar-nav">
                             <li id="navbar_user_icon" class="uk-parent" data-uk-dropdown>
                                 {{ render(controller(
-                                    'App\\Controller\\ProfileController::imageAction',
-                                    { 'roomId': app.request.attributes.get('roomId') }
+                                    'App\\Controller\\ProfileController::image',
+                                    { 'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }
                                 ))}}
 
                                 {{ render(controller(
-                                    'App\\Controller\\ProfileController::menuAction',
-                                    { 'roomId': app.request.attributes.get('roomId') }
+                                    'App\\Controller\\ProfileController::menu',
+                                    { 'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }
                                 ))}}
                             </li>
                         </ul>
@@ -84,7 +99,7 @@
 
                     {# room navigation #}
                     <li id="room-navigation" data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
-                        source:'{{ path('app_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
+                        source:'{{ path('app_search_roomnavigation', {'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }) }}',
                         minLength: 0,
                         msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
                     }">
@@ -132,7 +147,7 @@
                         </div>
                     </li>
                     <li>
-                        <img id="room-logo-navbar" src="{{ path('getLogo', {'roomId': app.request.attributes.get('roomId')}) }}">
+                        <img id="room-logo-navbar" src="{{ path('getLogo', {'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId')}) }}">
                     </li>
                 </ul>
                 

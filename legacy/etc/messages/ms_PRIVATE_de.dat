@@ -15,6 +15,6 @@ $message["PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_ROOMS"]["de"] = "Suche auf folgende R
 $message["PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_TYPES"]["de"] = "Suche auf folgende Rubriken einschränken";
 $message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION"]["de"] = "Neue Einträge der letzten %1 Tage";
 $message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2"]["de"] = "Neue Einträge seit gestern";
-$message["PRIVATE_ROOM_TITLE"]["de"] = "Persönlicher Raum von";
-$message["PRIVATE_ROOM_USER_EXPORT_IMPORT"]["de"] = "Privater Raum von:";
+$message["PRIVATE_ROOM_TITLE"]["de"] = "Private Ablage von";
+$message["PRIVATE_ROOM_USER_EXPORT_IMPORT"]["de"] = "Private Ablage von:";
 ?>

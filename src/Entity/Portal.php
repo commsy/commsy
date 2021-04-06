@@ -556,17 +556,6 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getAnnouncementLink():? string
-    {
-        return $this->extras['ANNOUNCEMENT_LINK'] ?? '';
-    }
-
-    public function setAnnouncementLink(?string $link): Portal
-    {
-        $this->extras['ANNOUNCEMENT_LINK'] = $link;
-        return $this;
-    }
-
     public function getAnnouncementTitle():? string
     {
         return $this->extras['ANNOUNCEMENT_TITLE'] ?? '';

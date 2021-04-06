@@ -17,13 +17,26 @@ class AccountsRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $username
-     * @param int $context
-     * @param int $authSourceId
-     * @return mixed
+     * IMPORTANT: DO NOT DELETE!
+     * This is used by the UniqueEntity annotation in App\Entity\Account.
+     *
+     * @param array $fields
+     * @return Account|mixed
      * @throws NonUniqueResultException
      */
-    public function findOneByCredentials(string $username, int $context, AuthSource $authSource)
+    public function findOnByCredentials(array $fields)
+    {
+        return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);
+    }
+
+    /**
+     * @param string $username
+     * @param int $context
+     * @param AuthSource $authSource
+     * @return Account|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByCredentials(string $username, int $context, AuthSource $authSource): ?Account
     {
         return $this->createQueryBuilder('a')
             ->where('a.username = :username')
@@ -38,28 +51,16 @@ class AccountsRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findOnByCredentials(array $fields)
-    {
-        return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);
-    }
-
-    /**
-     * @param string $usernameOrEmail
-     * @param int $context
-     * @return mixed
-     * @throws NonUniqueResultException
-     */
-    public function findOneByCredentialsShort(string $usernameOrEmail, int $context)
+    public function findByEmailAndPortalId(string $email, int $portalId)
     {
         return $this->createQueryBuilder('a')
-            ->where('a.username = :query OR a.email = :query')
+            ->where('a.email = :email')
             ->andWhere('a.contextId = :contextId')
             ->setParameters([
-                'query' => $usernameOrEmail,
-                'contextId' => $context,
+                'email' => $email,
+                'contextId' => $portalId,
             ])
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
-
 }

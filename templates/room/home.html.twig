@@ -124,9 +124,9 @@
                     <li class="uk-flex">
                         <div class="uk-width-1-3">{{ 'Entries:'|trans({}, "room") }}</div>
                         <div class="uk-width-2-3">
-                            {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
+                            {% trans with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
                             One new entry in the last %days% days|%num% new entries in the last %days% days
-                            {% endtranschoice %}
+                            {% endtrans %}
                         </div>
                     </li>
                     <li class="uk-flex">
@@ -178,44 +178,50 @@
 
             {# filter #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#list-filter'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-text-large uk-float-left">
-                            {{ 'list filter'|trans({}, "room") }}
+                {{ form_start(form) }}
+                <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary">
+                        <div class="uk-clearfix">
+                            <div class="uk-flex uk-flex-space-between uk-flex-middle">
+                                <div class="uk-text-large">
+                                    {{ 'list filter'|trans({},"room")}}
+                                </div>
+                                <div class="uk-flex-right uk-flex-inline uk-flex-middle">
+                                    {{ form_widget(form.submit) }}
+                                    <a href="#" class="button-toggle uk-button-mini uk-button-primary uk-margin-small-left" data-uk-toggle="{target: '#list-filter'}" style="padding-top: 1px; padding-bottom: 1px">
+                                        <i class="uk-icon-chevron-up"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="list-filter" class="uk-hidden-small">
-                    {{ form_start(form) }}
+                <div id="list-filter" class="uk-hidden-small uk-margin-top">
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
-
             </div>
 {% endblock %}
 
 {% block main_content %}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{ header|trans({}, "room") }}</div>
-                     </div>
+                <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="uk-text-large">{{ header|trans({}, "room") }}</div>
+                         </div>
+                    </div>
                 </div>
 
                 {% if isModerator and userTasks|length > 0 %}
-                    <div class="uk-alert uk-alert-danger">
+                    <div class="uk-alert uk-alert-danger" style="margin-top: -2px; margin-left: -10px; margin-right: -10px">
                         {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('app_user_list', {'roomId': roomItem.itemId,'user_filter[user_status]':1}) }}">
                             {{ 'show user'|trans({},'user') }}
                         </a>
                     </div>
                 {% endif %}
 
-                <div class="feed">
+                <div class="feed uk-margin-top">
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
                             'App\\Controller\\RoomController::feedAction',

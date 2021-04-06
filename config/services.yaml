@@ -148,8 +148,10 @@ services:
             - '../src/DataFixtures/'
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/Form/Model/'
             - '../src/Kernel.php'
             - '../src/Mail/Messages/'
+            - '../src/Model/'
             - '../src/Proxy/'
             - '../src/Tests/'
 
@@ -169,6 +171,9 @@ services:
     _instanceof:
         App\DocumentConverter\DocumentConverterInterface:
             tags: ['app.document_converter']
+        App\Form\DataTransformer\DataTransformerInterface:
+            tags: [ 'app.data_transformer' ]
+
 
 
 ###############################
@@ -320,7 +325,6 @@ services:
     # Transformer
     commsy_legacy.transformer.general_settings:
         class: App\Form\DataTransformer\GeneralSettingsTransformer
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.moderation_settings:
         class: App\Form\DataTransformer\ModerationSettingsTransformer
@@ -449,12 +453,7 @@ services:
     commsy.menu.builder:
         class: App\Menu\MenuBuilder
         arguments:
-            - '@knp_menu.factory'
-            - '@commsy_legacy.room_service'
-            - '@commsy_legacy.environment'
-            - '@commsy_legacy.user_service'
-            - '@security.authorization_checker'
-            - '@commsy.invitations_service'
+            $factory: '@knp_menu.factory'
 
     commsy.menu.main:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
@@ -630,6 +629,11 @@ services:
         arguments:
             - !tagged 'app.document_converter'
 
+    App\Form\DataTransformer\TransformerManager:
+        class: App\Form\DataTransformer\TransformerManager
+        arguments:
+            - !tagged 'app.data_transformer'
+
     App\Search\SearchManager:
         autowire: false
         arguments:
@@ -710,18 +714,6 @@ services:
     commsy.validator.unique_label_name:
         class: App\Validator\Constraints\UniqueLabelNameValidator
         arguments: [ '@doctrine.orm.entity_manager' ]
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.password_criteria_constraint:
-        class: App\Validator\Constraints\PasswordCriteriaConstraintValidator
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.user_password_constraint:
-        class: App\Validator\Constraints\UserPasswordConstraintValidator
-        arguments: ['@commsy_legacy.environment']
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
@@ -808,89 +800,6 @@ services:
 
     commsy.form.type.section:
         class: App\Form\Type\SectionType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile:
-        class: App\Form\Type\Profile\RoomProfileType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_general:
-        class: App\Form\Type\Profile\RoomProfileGeneralType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_address:
-        class: App\Form\Type\Profile\RoomProfileAddressType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_contact:
-        class: App\Form\Type\Profile\RoomProfileContactType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_personalinformation:
-        class: App\Form\Type\Profile\ProfilePersonalInformationType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_account:
-        class: App\Form\Type\Profile\ProfileAccountType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_changepassword:
-        class: App\Form\Type\Profile\ProfileChangePasswordType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_mergeaccounts:
-        class: App\Form\Type\Profile\ProfileMergeAccountsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_newsletter:
-        class: App\Form\Type\Profile\ProfileNewsletterType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_privacy:
-        class: App\Form\Type\Profile\ProfilePrivacyType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_notifications:
-        class: App\Form\Type\Profile\RoomProfileNotificationsType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_calendars:
-        class: App\Form\Type\Profile\ProfileCalendarsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_additional:
-        class: App\Form\Type\Profile\ProfileAdditionalType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_deleteroomprofile:
-        class: App\Form\Type\Profile\DeleteRoomProfileType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
@@ -1014,12 +923,6 @@ services:
     App\Form\Type\PortfolioEditCategoryType:
         autowire: true
         autoconfigure: true
-
-    # Form type extension
-    commsy.form.extension.image_type:
-        class: App\Form\Extension\ImageTypeExtension
-        tags:
-            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
 
     # Controller
     commsy.item_controller:
@@ -1205,7 +1108,7 @@ services:
 
     App\Services\AvatarService:
         arguments:
-            $kernelRootDir: '%kernel.root_dir%'
+            $kernelProjectDir: '%kernel.project_dir%'
 
     App\Services\PrintService:
         arguments:
@@ -1218,10 +1121,6 @@ services:
 
     App\Services\CopyService:
         autowire: true
-
-    commsy.invitations_service:
-        class: App\Services\InvitationsService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
@@ -1354,7 +1253,13 @@ services:
     App\Event\UserStatusChangedEvent:
         autowire: false
 
+    App\Event\ReadStatusPreChangeEvent:
+        autowire: false
+
     App\Event\AccountChangedEvent:
+        autowire: false
+
+    App\Event\AccountDeletedEvent:
         autowire: false
 
     # Response

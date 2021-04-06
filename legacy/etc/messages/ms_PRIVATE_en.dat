@@ -15,6 +15,6 @@ $message["PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_ROOMS"]["en"] = "Narrow search to the
 $message["PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_TYPES"]["en"] = "Narrow search to the following rubrics";
 $message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION"]["en"] = "New items in the last %1 days";
 $message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2"]["en"] = "New items since yesterday";
-$message["PRIVATE_ROOM_TITLE"]["en"] = "Private workspace of";
-$message["PRIVATE_ROOM_USER_EXPORT_IMPORT"]["en"] = "Private room of:";
+$message["PRIVATE_ROOM_TITLE"]["en"] = "Private stack of";
+$message["PRIVATE_ROOM_USER_EXPORT_IMPORT"]["en"] = "Private stack of:";
 ?>

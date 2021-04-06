@@ -10,6 +10,7 @@ FROM php:${PHP_VERSION} AS commsy_php
 
 # install additinal packages and PHP extensions
 RUN apt-get update && apt-get install -y \
+        acl \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
@@ -122,6 +123,8 @@ RUN set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
+
+VOLUME /var/www/html/var
 
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint

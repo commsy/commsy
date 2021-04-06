@@ -7,15 +7,20 @@ namespace App\Security;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLdap;
+use App\Facade\AccountCreatorFacade;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
+use Symfony\Component\Ldap\Security\LdapUserProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
@@ -26,18 +31,36 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
     private $urlGenerator;
+
+    /**
+     * @var CsrfTokenManagerInterface
+     */
     private $csrfTokenManager;
+
+    /**
+     * @var AccountCreatorFacade
+     */
+    private $accountCreator;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
+        AccountCreatorFacade $accountCreator
     ) {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->accountCreator = $accountCreator;
     }
 
     protected function getPostParameterName(): string
@@ -83,7 +106,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|null
-     * @throws AuthenticationException
      *
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
@@ -95,19 +117,62 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
 
         $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
 
-        $authSource = $this->entityManager->getRepository(AuthSourceLdap::class)
-            ->findBy([
+        /** @var AuthSourceLdap $ldapSource */
+        $ldapSource = $this->entityManager->getRepository(AuthSourceLdap::class)
+            ->findOneBy([
                 'portal' => $context,
                 'enabled' => 1,
             ]);
 
-        $lookup = $this->performLdapLookup($credentials['email'], $credentials['password'], $authSource);
+        /**
+         * TODO: Instead of creating a new user provider here we should utilize security.yaml or the service container
+         * to already get a useful UserProvider from the parameter (check chained user provider or a compiler
+         * pass or ...)
+         */
+        $ldap = Ldap::create('ext_ldap', [
+            'connection_string' => $ldapSource->getServerUrl(),
+        ]);
 
-        // TODO: Perform LDAP requests here.
-        $dummyUser = new Account();
-        $dummyUser->setUsername('test');
+        $ldapProvider = new LdapUserProvider(
+            $ldap,
+            $ldapSource->getBaseDn(),
+            $ldapSource->getSearchDn(),
+            $ldapSource->getSearchPassword(),
+            [],
+            $ldapSource->getUidKey(),
+            null,
+            null,
+            ['email', 'givenName', 'sn']
+        );
 
-        return $dummyUser;
+        $ldapUser = $ldapProvider->loadUserByUsername($credentials['email']);
+
+        $account = $this->entityManager->getRepository(Account::class)
+            ->findOneByCredentials($credentials['email'], $credentials['context'], $ldapSource);
+        $extraFields = $ldapUser->getExtraFields();
+
+        if ($account === null) {
+            // if we did not found an existing account, create one
+            $account = new Account();
+            $account->setAuthSource($ldapSource);
+            $account->setContextId($credentials['context']);
+            $account->setLanguage('de');
+            $account->setUsername($ldapUser->getUsername());
+            $account->setFirstname($extraFields['givenName']);
+            $account->setLastname($extraFields['sn']);
+            $account->setEmail($extraFields['email']);
+            $this->accountCreator->persistNewAccount($account);
+        }
+
+        // update user object with credentials extracted from request
+        $account->setFirstname($extraFields['givenName']);
+        $account->setLastname($extraFields['sn']);
+        $account->setEmail($extraFields['email']);
+
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+
+        return $account;
     }
 
     /**
@@ -128,8 +193,30 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        // Credentials are checked remotely.
-        return true;
+        /** @var Account $account */
+        $account = $user;
+
+        $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
+
+        /** @var AuthSourceLdap $ldapSource */
+        $ldapSource = $this->entityManager->getRepository(AuthSourceLdap::class)
+            ->findOneBy([
+                'portal' => $context,
+                'enabled' => 1,
+            ]);
+
+        try {
+            $ldap = Ldap::create('ext_ldap', [
+                'connection_string' => $ldapSource->getServerUrl(),
+            ]);
+            $dn = str_replace('{username}', $user->getUsername(), $ldapSource->getAuthDn());
+            $ldap->bind($dn, $credentials['password']);
+
+            return true;
+        } catch (\Exception $e) {
+        }
+
+        return false;
     }
 
     /**
@@ -148,7 +235,14 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        // TODO: Implement onAuthenticationFailure() method.
+        if ($request->hasSession()) {
+            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+            $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'ldap');
+        }
+
+        $url = $this->getLoginUrl($request);
+
+        return new RedirectResponse($url);
     }
 
     /**
@@ -168,11 +262,25 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        // Check if the user exists locally, update his account information
-
         /** @var Account $user */
         $user = $token->getUser();
-        $i = 5;
+
+        $context = $request->attributes->get('context');
+
+        // Store the current context and the auth source id in the user session so we can
+        // refer to it later in the user provider to get the correct user.
+        $session = $request->getSession();
+        $session->set('context', $context);
+        $session->set('authSourceId', $user->getAuthSource()->getId());
+
+        // This will redirect the user to the route they visited initially.
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('app_helper_portalenter', [
+            'context' => $context,
+        ]));
     }
 
     /**
@@ -191,7 +299,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     public function supportsRememberMe()
     {
-        // TODO: Implement supportsRememberMe() method.
+        return false;
     }
 
     protected function getLoginUrl(Request $request): string

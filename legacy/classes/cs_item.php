@@ -110,8 +110,8 @@ class cs_item {
                 $item_manager = $this->_environment->getItemManager(true);
                 $item = $item_manager->getItem($this->getContextID());
 
-                if (isset($item) && is_object($item) ) {
-                    $manager = $this->_environment->getManager($item->getItemType(), true);
+                if (isset($item) && is_object($item)) {
+                    $manager = $this->_environment->getManager($item->getItemType());
                     $this->_context_item = $manager->getItem($this->getContextId());
                     return $this->_context_item;
                 }
@@ -177,7 +177,7 @@ class cs_item {
 
 
 
-   /** asks if item is editable by everybody or just creator
+   /** asks if item is editable by everybody ('1') or just creator ('0')
     *
     * @param value
     *
@@ -190,7 +190,7 @@ class cs_item {
       return true;
    }
 
-   /** sets if tem is editable by everybody or just creator
+   /** sets if item is editable by everybody ('1') or just creator ('0')
     *
     * @param value
     */
@@ -2809,7 +2809,7 @@ function getExternalViewerArray(){
 
     protected function deleteElasticItem($objectPersister, $repository)
     {
-        $elasticHost = $_ENV['ELASTIC_HOST'];
+        $elasticHost = $_ENV['ELASTICSEARCH_URL'];
 
         if ($elasticHost) {
             $object = $repository->findOneByItemId($this->getItemID());

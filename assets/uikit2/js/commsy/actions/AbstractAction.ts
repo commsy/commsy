@@ -25,19 +25,19 @@ export abstract class BaseAction {
     }
 
     public preExecute(actionActor: JQuery): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             resolve();
         });
     }
 
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
-        return new Promise((resolve) => {
-            resolve();
+        return new Promise<ActionResponse>((resolve) => {
+            resolve(null);
         });
     }
 
     public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             resolve(backendResponse);
         });
     }
@@ -66,7 +66,7 @@ export abstract class XHRAction extends BaseAction {
     }
 
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
-        return new Promise((resolve, reject) => {
+        return new Promise<ActionResponse>((resolve, reject) => {
             $.extend(actionPayload, {
                 payload: this.getExtraData()
             });

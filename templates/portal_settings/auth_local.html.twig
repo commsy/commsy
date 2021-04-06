@@ -1,0 +1,30 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% embed 'components/context_navigation.html.twig' %}
+        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Auth'|trans({}, "portal") }}{% endblock %}
+        {% block body %}
+            {{ form_start(form) }}
+            {{ form_row(form.typeChoice) }}
+            {{ form_row(form.type) }}
+            <hr />
+            {{ form_row(form.enabled) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.default) }}
+            <hr />
+            {{ form_row(form.mailRegex) }}
+            <hr />
+            {{ form_row(form.createRoom) }}
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
