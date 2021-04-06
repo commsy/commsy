@@ -171,11 +171,4 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
     {
         return true;
     }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
-    }
 }
