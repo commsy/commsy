@@ -560,10 +560,6 @@ class PortalSettingsController extends AbstractController
                     $guestSource->setDefault(true);
                 }
 
-                // disable or enable guest login in portal, depending on guest auth source setting
-                $portal->setIsOpenForGuests($guestSource->isEnabled());
-
-                $entityManager->persist($portal);
                 $entityManager->persist($guestSource);
                 $entityManager->flush();
             }
