@@ -9,28 +9,26 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AuthGuestType extends AbstractType
 {
-
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('typeChoice', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
                     'Shibboleth' => 'shib',
-                    'Guest' => 'guest'
+                    'Guest' => 'guest',
                 ],
                 'required' => true,
                 'label' => 'Source',
@@ -54,32 +52,18 @@ class AuthGuestType extends AbstractType
                 'required' => false,
                 'config_name' => 'cs_mail_config',
             ])
-            ->add('available', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => true,
-                    'No' => false
-                ],
-                'placeholder' => false,
-                'expanded' => true,
-                'label' => 'Available',
-                'translation_domain' => 'portal',
+            ->add('default', CheckboxType::class, [
+                'label' => 'Default',
                 'required' => false,
+                'help' => 'Pre select this authentication in the login box (deselect all others)'
             ])
-            ->add('guestsMayEnter', ChoiceType::class, [
-                'choices' => [
-                    'Yes' => true,
-                    'No' => false
-                ],
-                'placeholder' => false,
-                'expanded' => true,
-                'label' => 'Guests may enter',
-                'translation_domain' => 'portal',
+            ->add('enabled', CheckboxType::class, [
+                'label' => 'Available',
                 'required' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save',
-            ])
-        ;
+            ]);
     }
 
     /**

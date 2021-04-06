@@ -72,12 +72,6 @@
                                     </li>
                                 {% endif %}
                             {% endfor %}
-
-                            {% if portal.isOpenForGuests %}
-                                <li>
-                                    <a href="">{{ 'login.guest_tab'|trans({}, 'login') }}</a>
-                                </li>
-                            {% endif %}
                         {% else %}
                             <li class="uk-active">
                                 <a href="">Admin</a>
@@ -255,23 +249,24 @@
                                                 </div>
                                             {% endif %}
                                         </div>
+                                    {% elseif authSource.type is same as('guest') %}
+                                        <!-- Guest login -->
+                                        <div>
+                                            <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>
+
+                                            {% if authSource.description is not empty %}
+                                                <p class="uk-text-small">{{ authSource.description|raw }}</p>
+                                            {% endif %}
+
+                                            <a class="uk-button uk-button-primary" href="{{ path('app_room_listall', {
+                                                'roomId': portal.id
+                                            }) }}">
+                                                {{ 'login.guest_login'|trans({}, 'login') }}
+                                            </a>
+                                        </div>
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
-
-                            <!-- Gast -->
-                            {% if portal.isOpenForGuests %}
-                                <div>
-                                    <p class="uk-text-small">{{ 'login.guest_about'|trans({}, 'login') }}</p>
-
-                                    <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {
-                                        'context': portal.id
-                                    }) }}">
-                                        {{ 'login.guest_login'|trans({}, 'login') }}
-                                    </a>
-                                </div>
-                            {% endif %}
-
                         {% else %}
                             <!-- Admin -->
                             <div>

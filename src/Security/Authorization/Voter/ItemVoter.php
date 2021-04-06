@@ -1,16 +1,15 @@
 <?php
+
 namespace App\Security\Authorization\Voter;
 
-use App\Entity\Account;
 use App\Entity\Portal;
 use App\Proxy\PortalProxy;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\User;
 
 class ItemVoter extends Voter
@@ -33,8 +32,8 @@ class ItemVoter extends Voter
         LegacyEnvironment $legacyEnvironment,
         ItemService $itemService,
         RequestStack $requestStack,
-        EntityManagerInterface $entityManager)
-    {
+        EntityManagerInterface $entityManager
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
         $this->requestStack = $requestStack;
@@ -64,7 +63,7 @@ class ItemVoter extends Voter
         // if (!$user instanceof User) {
         //     return false
         // }
-        
+
         $itemId = $object;
 
         $item = $this->itemService->getTypedItem($itemId);
@@ -104,15 +103,17 @@ class ItemVoter extends Voter
                 case self::DELETE:
                     return $this->canDelete($item, $currentUser);
             }
-        } else if ($itemId == 'NEW') {
-            if ($attribute == self::EDIT) {
-                if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
-                    return false;
+        } else {
+            if ($itemId == 'NEW') {
+                if ($attribute == self::EDIT) {
+                    if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
+                        return false;
+                    }
+
+                    $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+
+                    return !$currentRoom->isArchived();
                 }
-
-                $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-
-                return !$currentRoom->isArchived();
             }
         }
 
@@ -215,34 +216,34 @@ class ItemVoter extends Voter
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($item->getItemID());
 
-        try{
+        try {
             if ($item->isPrivateRoom()) {
                 return true;
             }
 
-        if ($roomItem) {
+            if ($roomItem) {
                 if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
                     return true;
                 }
             }
 
-        if ($item->isPortal()) {
-            if ($currentUser->isRoot()) {
-                return true;
-            }
+            if ($item->isPortal()) {
+                if ($currentUser->isRoot()) {
+                    return true;
+                }
 
-            if ($item->isLocked()) {
-                return false;
-            }
+                if ($item->isLocked()) {
+                    return false;
+                }
 
-            if ($item->isOpenForGuests()) {
-                return true;
-            }
+                if ($item->isOpenForGuests()) {
+                    return true;
+                }
 
-            // allow access if user is authenticated
-            return $user instanceof User;
+                // allow access if user is authenticated
+                return $user instanceof User;
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -254,15 +255,17 @@ class ItemVoter extends Voter
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($item->getItemID());
 
-        try{
+        try {
             if ($roomItem->getType() == 'userroom') {
                 return false;
-            } else if ($roomItem) {
-                if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
-                    return true;
+            } else {
+                if ($roomItem) {
+                    if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+                        return true;
+                    }
                 }
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -271,10 +274,10 @@ class ItemVoter extends Voter
 
     private function hasUserroomItemPriviledges($item, $currentUser)
     {
-            if($item->getContextItem()->getType() == 'userroom'
-                && $this->canParticipate($item, $currentUser)){
-                return true;
-            }
-            return false;
+        if ($item->getContextItem()->getType() == 'userroom'
+            && $this->canParticipate($item, $currentUser)) {
+            return true;
+        }
+        return false;
     }
 }

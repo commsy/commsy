@@ -959,10 +959,6 @@
                 <source>Default Source</source>
                 <target>Standard-Quelle</target>
             </trans-unit>
-            <trans-unit id="portal_auth_guest">
-                <source>Guest</source>
-                <target>Gäste</target>
-            </trans-unit>
 
             <!-- general -->
             <trans-unit id="portal_settings">
@@ -1342,10 +1338,6 @@
             <trans-unit id="mail_reg_ex_help">
                 <source>Please including delimiter and modifier</source>
                 <target>Bitte inkl. Delimiter und Modifier angeben</target>
-            </trans-unit>
-            <trans-unit id="guests_may_enter">
-                <source>Guests may enter</source>
-                <target>Gäste dürfen die Raumliste betreten</target>
             </trans-unit>
         </body>
     </file>
