@@ -89,7 +89,7 @@
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
-                <source>Portal announcements</source>
+                <source>announcements</source>
                 <target>announcements</target>
             </trans-unit>
             <trans-unit id="Priority">
@@ -115,6 +115,24 @@
             <trans-unit id="Link">
                 <source>Link</source>
                 <target>Address</target>
+            </trans-unit>
+
+            <!-- portal content -->
+            <trans-unit id="portal_content_title">
+                <source>contents</source>
+                <target>Contents</target>
+            </trans-unit>
+            <trans-unit id="portal_content_terms">
+                <source>data privacy</source>
+                <target>Data privacy</target>
+            </trans-unit>
+            <trans-unit id="portal_content_impressum">
+                <source>impressum</source>
+                <target>Impressum</target>
+            </trans-unit>
+            <trans-unit id="portal_content_accessibility">
+                <source>accessibility</source>
+                <target>Accessability</target>
             </trans-unit>
 
             <!-- portal terms -->
@@ -976,7 +994,7 @@
                 <target># Workspaces</target>
             </trans-unit>
 
-            <!-- form -->
+            <!-- general form -->
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Title</target>
@@ -989,9 +1007,11 @@
                 <source>portal.form_desc_en</source>
                 <target>Description English</target>
             </trans-unit>
-            <trans-unit id="Portal logo">
-                <source>Portal logo</source>
-                <target>Logo</target>
+
+            <!-- appearance form -->
+            <trans-unit id="portal_fappearance_orm_title">
+                <source>Appearance</source>
+                <target>Appearance</target>
             </trans-unit>
 
             <!-- Mailtexts -->

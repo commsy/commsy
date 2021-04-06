@@ -60,7 +60,7 @@
                 {% if contextId is defined %}
                     {{ render(controller(
                         'App\\Controller\\UserController::globalNavbarAction',
-                        { 'contextId': contextId }
+                        { 'contextId': contextId, 'uikit3': true }
                     )) }}
                 {% endif %}
 
@@ -69,13 +69,13 @@
                         <li>
                             <a href="#">
                                 {{ render(controller(
-                                    'App\\Controller\\ProfileController::imageAction',
+                                    'App\\Controller\\ProfileController::image',
                                     { 'roomId': contextId }
                                 ))}}
                             </a>
                             <div class="uk-navbar-dropdown uk-padding-small">
                                 {{ render(controller(
-                                    'App\\Controller\\ProfileController::menuAction',
+                                    'App\\Controller\\ProfileController::menu',
                                     { 'roomId': contextId }
                                 ))}}
                             </div>

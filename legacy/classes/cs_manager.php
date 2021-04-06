@@ -615,17 +615,15 @@ class cs_manager {
      return $this->_version_id;
   }
 
-  /** get the data of the manager
-    * this method returns a list of commsy items
-    *
-    * @return object cs_list list of commsy items
-    */
-  function get () {
-     // ------------------
-     // --->UTF8 - OK<----
-     // ------------------
-     return $this->_data;
-  }
+    /** get the data of the manager
+     * this method returns a list of commsy items
+     *
+     * @return cs_list|null list of commsy items
+     */
+    public function get(): ?\cs_list
+    {
+        return $this->_data;
+    }
 
   /** get one item (newest version)
     * this method returns an item in his newest version - this method needs to be overwritten
@@ -2162,5 +2160,19 @@ class cs_manager {
         if (isset($limits['categories'])) {
             $this->setTagArrayLimit($limits['categories']);
         }
+    }
+
+    /**
+     * @param $value
+     * @param $databaseField
+     * @param false $isString
+     * @return string
+     */
+    protected function returnQuerySentenceIfFieldIsValid($value, $databaseField, $isString=false): string {
+        if(!is_null($value) && $value !== ""){
+            $doubleQuotes = $isString ? '"' : '';
+            return sprintf("%s=%s%s%s,", $databaseField, $doubleQuotes, $value, $doubleQuotes);
+        }
+        return '';
     }
 }

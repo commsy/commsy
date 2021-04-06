@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Export\WordpressExporter;
 use App\Form\DataTransformer\MaterialTransformer;
@@ -47,6 +48,52 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class MaterialController extends BaseController
 {
+    /**
+     * @var MaterialService
+     */
+    private $materialService;
+
+    /**
+     * @var AnnotationService
+     */
+    private $annotationService;
+    /**
+     * @var LegacyEnvironment
+     */
+    protected $legacyEnvironment;
+
+    /**
+     * @var CategoryService
+     */
+    private $categoryService;
+
+    /**
+     * @required
+     * @param CategoryService $categoryService
+     */
+    public function setCategoryService(CategoryService $categoryService){
+        $this->categoryService = $categoryService;
+    }
+
+    /**
+     * @required
+     * @param mixed $materialService
+     */
+    public function setMaterialService(MaterialService $materialService): void
+    {
+        $this->materialService = $materialService;
+    }
+
+    /**
+     * @required
+     * @param mixed $annotationService
+     */
+    public function setAnnotationService(AnnotationService $annotationService): void
+    {
+        $this->annotationService = $annotationService;
+    }
+
+
     /**
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
@@ -332,25 +379,9 @@ class MaterialController extends BaseController
         $canExportToWordpress = false;
         // TODO: check if no version is specified
         // !isset($_GET['version_id'])
-        if ($wordpressExporter->isEnabled()) {
-            if ($wordpressExporter->isExportAllowed($material)) {
-                if ($this->isGranted('ITEM_EDIT', $material->getItemID())) {
-                    $canExportToWordpress = true;
-                }
-            }
-        }
 
-        $wikiExporter = $this->get('commsy.export.wiki');
+
         $canExportToWiki = false;
-        // TODO: check if no version is specified
-        // !isset($_GET['version_id'])
-        if ($wikiExporter->isEnabled()) {
-            if ($wikiExporter->isExportAllowed($material)) {
-                if ($this->isGranted('ITEM_EDIT', $material->getItemID())) {
-                    $canExportToWiki = true;
-                }
-            }
-        }
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -516,22 +547,17 @@ class MaterialController extends BaseController
     ) {
         $infoArray = array();
 
-        $materialService = $this->get('commsy_legacy.material_service');
-        $itemService = $this->get('commsy_legacy.item_service');
-
-        $annotationService = $this->get('commsy_legacy.annotation_service');
-
         /** @var cs_material_item $material */
         $material = null;
         if ($versionId === null) {
-            $material = $materialService->getMaterial($itemId);
+            $material = $this->materialService->getMaterial($itemId);
         } else {
-            $material = $materialService->getMaterialByVersion($itemId, $versionId);
+            $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
         }
         
         if($material == null) {
-            $section = $materialService->getSection($itemId);
-            $material = $materialService->getMaterial($section->getLinkedItemID());
+            $section = $this->materialService->getSection($itemId);
+            $material = $this->materialService->getMaterial($section->getLinkedItemID());
         }
         
         $sectionList = $material->getSectionList()->to_array();
@@ -539,13 +565,12 @@ class MaterialController extends BaseController
         $itemArray = array($material);
         $itemArray = array_merge($itemArray, $sectionList);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -573,22 +598,21 @@ class MaterialController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
+
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
+            $reader = $this->readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                $readerList[$item->getItemId()] = 'changed';
             }
             
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
         
-        $materials = $materialService->getListMaterials($roomId);
+        $materials = $this->materialService->getListMaterials($roomId);
         $materialList = array();
         $counterBefore = 0;
         $counterAfter = 0;
@@ -641,7 +665,7 @@ class MaterialController extends BaseController
         $workflowUnread = false;
 
         if ($current_context->withWorkflowReader()) {
-            $itemManager = $legacyEnvironment->getItemManager();
+            $itemManager = $this->legacyEnvironment->getItemManager();
             $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($material->getItemID());
             $persons_array = array();
             foreach($users_read_array as $user_read){
@@ -649,8 +673,8 @@ class MaterialController extends BaseController
             }
 
             if($current_context->getWorkflowReaderGroup() == '1'){
-                $group_manager = $legacyEnvironment->getGroupManager();
-                $group_manager->setContextLimit($legacyEnvironment->getCurrentContextID());
+                $group_manager = $this->legacyEnvironment->getGroupManager();
+                $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
                 $group_manager->setTypeLimit('group');
                 $group_manager->select();
                 $group_list = $group_manager->get();
@@ -694,8 +718,8 @@ class MaterialController extends BaseController
                 }
             }
 
-            $currentContextItem = $legacyEnvironment->getCurrentContextItem();
-            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+            $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
             
             if ($currentContextItem->withWorkflow()) {
                 if (!$currentUserItem->isRoot()) {
@@ -734,9 +758,8 @@ class MaterialController extends BaseController
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($material);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $reader_manager = $legacyEnvironment->getReaderManager();
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
 
         $item = $material;
         $reader = $reader_manager->getLatestReader($item->getItemID());
@@ -751,7 +774,7 @@ class MaterialController extends BaseController
 
         // mark annotations as read
         $annotationList = $material->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         $readsectionList = $material->getSectionList();
 
@@ -772,15 +795,15 @@ class MaterialController extends BaseController
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $this->categoryService->getTags($roomId);
             $materialCategories = $material->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $materialCategories);
         }
 
         $versions = array();
-        $versionList = $materialService->getVersionList($material->getItemId())->to_array();
+        $versionList = $this->materialService->getVersionList($material->getItemId())->to_array();
 
-        if (sizeof($versionList > 1)) {
+        if (count($versionList) > 1) {
             $minTimestamp = time();
             $maxTimestamp = -1;
             $first = true;
@@ -865,10 +888,10 @@ class MaterialController extends BaseController
         $infoArray['workflowResubmissionDate'] = $material->getWorkflowResubmissionDate();
         $infoArray['workflowUnread'] = $workflowUnread;
         $infoArray['workflowRead'] = $workflowRead;
-        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
-        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
@@ -1655,13 +1678,13 @@ class MaterialController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        DeleteAction $deleteAction
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.delete.generic');
-        return $action->execute($room, $items);
+        return $deleteAction->execute($room, $items);
     }
 
     /**
@@ -1699,7 +1722,6 @@ class MaterialController extends BaseController
         $itemIds = []
     ) {
         // get the material manager service
-        $materialService = $this->get('commsy_legacy.material_service');
 
         if ($selectAll) {
             if ($request->query->has('material_filter')) {
@@ -1710,14 +1732,14 @@ class MaterialController extends BaseController
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $materialService->setFilterConditions($filterForm);
+                $this->materialService->setFilterConditions($filterForm);
             } else {
-                $materialService->hideDeactivatedEntries();
+                $this->materialService->hideDeactivatedEntries();
             }
 
-            return $materialService->getListMaterials($roomItem->getItemID());
+            return $this->materialService->getListMaterials($roomItem->getItemID());
         } else {
-            return $materialService->getMaterialsById($roomItem->getItemID(), $itemIds);
+            return $this->materialService->getMaterialsById($roomItem->getItemID(), $itemIds);
         }
     }
 }

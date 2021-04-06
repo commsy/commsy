@@ -1,0 +1,29 @@
+{% macro render(server, portal) %}
+    {% if portal is defined and portal is not null %}
+        {% if portal.AGBEnabled %}
+            <div class="uk-margin-left">
+                <a href="{{ path('app_tou_showportal', {
+                    'portalId': portal.id
+                }) }}" target="_blank">
+                    {{ 'terms'|trans({}, 'portal') }}
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {% if commsy.server.dataPrivacyEnabled %}
+        <div class="uk-margin-left">
+            <a href="{{ path('app_server_dataprivacy') }}" target="_blank">{{ 'data privacy'|trans({}, 'portal') }}</a>
+        </div>
+    {% endif %}
+    {% if commsy.server.impressumEnabled %}
+        <div class="uk-margin-left">
+            <a href="{{ path('app_server_impressum') }}" target="_blank">{{ 'impressum'|trans({}, 'portal') }}</a>
+        </div>
+    {% endif %}
+    {% if commsy.server.accessibilityEnabled %}
+        <div class="uk-margin-left">
+            <a href="{{ path('app_server_accessibility') }}" target="_blank">{{ 'accessibility'|trans({}, 'portal') }}</a>
+        </div>
+    {% endif %}
+{% endmacro %}

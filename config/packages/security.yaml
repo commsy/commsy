@@ -50,6 +50,7 @@ security:
 
         main:
             anonymous: true
+            user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
                 success_handler: App\Security\LogoutSuccessHandler

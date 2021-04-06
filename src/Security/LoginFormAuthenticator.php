@@ -76,6 +76,20 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         return false;
     }
 
+    /**
+     * Return a UserInterface object based on the credentials.
+     *
+     * The *credentials* are the return value from getCredentials()
+     *
+     * You may throw an AuthenticationException if you wish. If you return
+     * null, then a UsernameNotFoundException is thrown for you.
+     *
+     * @param mixed $credentials
+     * @param UserProviderInterface $userProvider
+     *
+     * @return UserInterface|null
+     *
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
@@ -103,11 +117,6 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             }
         } catch (NonUniqueResultException $e) {
             throw new CustomUserMessageAuthenticationException('A problem with your account occurred.');
-        }
-
-        if (!$user) {
-            // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
         }
 
         return $user;

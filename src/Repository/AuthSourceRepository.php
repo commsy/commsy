@@ -9,7 +9,6 @@
 namespace App\Repository;
 
 use App\Entity\AuthSource;
-use App\Entity\Portal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,48 +21,14 @@ class AuthSourceRepository extends ServiceEntityRepository
 
     /**
      * @param int $portalId
-     * @return mixed
+     * @return int|mixed|string
      */
     public function findByPortal(int $portalId)
     {
         return $this->createQueryBuilder('a')
-            ->where('a.deleterId IS NULL')
-            ->andWhere('a.deletionDate IS NULL')
-            ->andWhere('a.contextId = :portalId')
+            ->where('a.portal = :portalId')
             ->setParameter('portalId', $portalId)
             ->getQuery()
             ->getResult();
-    }
-
-    public function findByPortalAndTypeOriginName(Portal $portal, string $typeOriginName)
-    {
-        $returnVal = [];
-        $results = $this->createQueryBuilder('a')
-            ->where('a.portal = :portal')
-            ->setParameter('portal', $portal)
-            ->getQuery()
-            ->getResult();
-        foreach($results as $result){
-            if($result->getSourceOriginName() == $typeOriginName){
-                array_push($returnVal, $result);
-            }
-        }
-        return $returnVal;
-    }
-
-    public function findByPortalAndTitle(Portal $portal, string $title)
-    {
-        $returnVal = [];
-        $results = $this->createQueryBuilder('a')
-            ->where('a.portal = :portal')
-            ->setParameter('portal', $portal)
-            ->getQuery()
-            ->getResult();
-        foreach($results as $result){
-            if($result->getTitle() == $title){
-                array_push($returnVal, $result);
-            }
-        }
-        return $returnVal;
     }
 }
