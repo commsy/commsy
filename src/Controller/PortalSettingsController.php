@@ -35,6 +35,7 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
+use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
@@ -551,15 +552,18 @@ class PortalSettingsController extends AbstractController
             }
 
             if ($clickedButtonName === 'save') {
-                $data = $authGuestForm->getData();
+                if ($guestSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($guestSource, $entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $guestSource->setDefault(true);
+                }
 
                 // disable or enable guest login in portal, depending on guest auth source setting
-                $portal->setIsOpenForGuests($data->isGuestsMayEnter());
+                $portal->setIsOpenForGuests($guestSource->isEnabled());
+
                 $entityManager->persist($portal);
-                $entityManager->flush();
-
-                $guestSource->setEnabled($data->getAvailable());
-
                 $entityManager->persist($guestSource);
                 $entityManager->flush();
             }

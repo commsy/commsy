@@ -65,10 +65,9 @@ class SecurityController extends AbstractController
     public function login(
         AuthenticationUtils $authenticationUtils,
         EntityManagerInterface $entityManager,
-        string $context = 'server',
-        Request $request
-    ): Response
-    {
+        Request $request,
+        string $context = 'server'
+    ): Response {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -120,7 +119,7 @@ class SecurityController extends AbstractController
      * @param LegacyEnvironment $legacyEnvironment
      * @param MailAssistant $mailAssistant
      * @param Swift_Mailer $mailer
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface $symfonyTranslator
      * @return array|RedirectResponse
      */
     public function requestAccounts(
@@ -130,8 +129,7 @@ class SecurityController extends AbstractController
         MailAssistant $mailAssistant,
         Swift_Mailer $mailer,
         TranslatorInterface $symfonyTranslator
-    )
-    {
+    ) {
         $requestAccounts = new RequestAccounts($portal->getId());
         $form = $this->createForm(RequestAccountsType::class, $requestAccounts);
 
@@ -217,8 +215,7 @@ class SecurityController extends AbstractController
         MailAssistant $mailAssistant,
         Swift_Mailer $mailer,
         RouterInterface $router
-    )
-    {
+    ) {
         $localAccount = new LocalAccount($portal->getId());
         $form = $this->createForm(RequestPasswordResetType::class, $localAccount);
 
@@ -314,8 +311,7 @@ class SecurityController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder
-    )
-    {
+    ) {
         $session = $request->getSession();
         if (!$session->has('ResetPasswordToken')) {
             throw $this->createAccessDeniedException();

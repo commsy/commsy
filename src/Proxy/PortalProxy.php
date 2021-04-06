@@ -4,6 +4,8 @@
 namespace App\Proxy;
 
 
+use App\Entity\AuthSource;
+use App\Entity\AuthSourceGuest;
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 
@@ -298,7 +300,9 @@ class PortalProxy
 
     public function isOpenForGuests(): bool
     {
-        return $this->portal->getIsOpenForGuests();
+        return $this->portal->getAuthSources()->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceGuest && $authSource->isEnabled();
+        })->count() > 0;
     }
 
     public function save()

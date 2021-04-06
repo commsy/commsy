@@ -112,7 +112,7 @@ abstract class AuthSource
     /**
      * @ORM\Column(type="boolean")
      */
-    private $createRoom;
+    protected $createRoom;
 
     abstract public function getType(): string;
 

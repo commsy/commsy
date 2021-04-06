@@ -23,6 +23,7 @@ use App\Utils\UserService;
 use cs_user_item;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\UserRepository;
 use App\Services\LegacyMarkup;
@@ -367,8 +368,6 @@ class RoomController extends AbstractController
      * })
      * @Template()
      *
-     * @Security("is_granted('GUEST')")
-     *
      * @param Request $request [description]
      * @param RoomService $roomService
      * @param FilterBuilderUpdater $filterBuilderUpdater
@@ -491,6 +490,7 @@ class RoomController extends AbstractController
      * @param RoomService $roomService
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
+     * @param UserRepository $userRepository
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -740,6 +740,7 @@ class RoomController extends AbstractController
      * @Route("/room/{roomId}/all/{itemId}/request", requirements={
      *     "itemId": "\d+"
      * }))
+     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
      * @Template()
      * @param Request $request
      * @param LegacyEnvironment $environment
@@ -1285,7 +1286,7 @@ class RoomController extends AbstractController
             } else {
                 // in case of the guest user, $roomUser is null
                 if ($currentUser->isReallyGuest()) {
-                    $mayEnter = $item->mayEnter($currentUser);
+                        $mayEnter = $item->mayEnter($currentUser);
                 }
             }
 
