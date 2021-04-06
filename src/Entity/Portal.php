@@ -135,13 +135,6 @@ class Portal implements \Serializable
     private $activity = '0';
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_open_for_guests", type="boolean", nullable=false)
-     */
-    private $isOpenForGuests = '1';
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuthSource", mappedBy="portal")
      */
     private $authSources;
@@ -392,30 +385,6 @@ class Portal implements \Serializable
     public function getActivity()
     {
         return $this->activity;
-    }
-
-    /**
-     * Set isOpenForGuests
-     *
-     * @param boolean $isOpenForGuests
-     *
-     * @return Portal
-     */
-    public function setIsOpenForGuests($isOpenForGuests)
-    {
-        $this->isOpenForGuests = $isOpenForGuests;
-
-        return $this;
-    }
-
-    /**
-     * Get isOpenForGuests
-     *
-     * @return boolean
-     */
-    public function getIsOpenForGuests()
-    {
-        return $this->isOpenForGuests;
     }
 
     /**
