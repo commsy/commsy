@@ -9,6 +9,7 @@ use App\Entity\AccountIndexSendMergeMail;
 use App\Entity\AccountIndexSendPasswordMail;
 use App\Entity\AccountIndexUser;
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceGuest;
 use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceLocal;
 use App\Entity\AuthSourceShibboleth;
@@ -35,6 +36,7 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
+use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
@@ -507,6 +509,66 @@ class PortalSettingsController extends AbstractController
         return [
             'form' => $localForm->createView(),
             'portal' => $portal,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/auth/guest")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     */
+    public function authGuest(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ) {
+        /*
+         * Try to find an existing shibboleth auth source or create an empty one. We assume
+         * that there is only one auth source per type.
+         */
+        $authSources = $portal->getAuthSources();
+
+        /** @var AuthSourceGuest $guestSource */
+        $guestSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceGuest;
+        })->first();
+
+        if ($guestSource === false) {
+            // TODO: This could be moved to a creational pattern
+            $guestSource = new AuthSourceGuest();
+            $guestSource->setPortal($portal);
+        }
+
+        $authGuestForm = $this->createForm(AuthGuestType::class, $guestSource);
+        $authGuestForm->handleRequest($request);
+
+        if ($authGuestForm->isSubmitted() && $authGuestForm->isValid()) {
+            // handle switch to other auth types
+            $clickedButtonName = $authGuestForm->getClickedButton()->getName();
+            if ($clickedButtonName === 'type') {
+                $typeSwitch = $authGuestForm->get('typeChoice')->getData();
+                return $this->generateRedirectForAuthType($typeSwitch, $portal);
+            }
+
+            if ($clickedButtonName === 'save') {
+                if ($guestSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($guestSource, $entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $guestSource->setDefault(true);
+                }
+
+                $entityManager->persist($guestSource);
+                $entityManager->flush();
+            }
+        }
+
+        return [
+            'form' => $authGuestForm->createView(),
         ];
     }
 
@@ -2772,6 +2834,10 @@ class PortalSettingsController extends AbstractController
                 ]);
             case 'shib':
                 return $this->redirectToRoute('app_portalsettings_authshibboleth', [
+                    'portalId' => $portal->getId(),
+                ]);
+            case 'guest':
+                return $this->redirectToRoute('app_portalsettings_authguest', [
                     'portalId' => $portal->getId(),
                 ]);
             default:

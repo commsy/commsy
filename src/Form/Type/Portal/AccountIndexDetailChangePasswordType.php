@@ -1,7 +1,6 @@
 <?php
 namespace App\Form\Type\Portal;
 
-use App\Validator\Constraints\UserPasswordConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

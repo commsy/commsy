@@ -5302,11 +5302,6 @@ class SoapService
 //                        }
 //                    }
 //
-//                    // password expiration
-//                    if ($contextItem->isPasswordExpirationActive()) {
-//                        $portalUser->setPasswordExpireDate($contextItem->getPasswordExpiration());
-//                    }
-//
 //                    // send mail to moderators
 //                    $savedLanguage = $translator->getSelectedLanguage();
 //

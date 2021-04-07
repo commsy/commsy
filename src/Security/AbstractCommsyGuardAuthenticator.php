@@ -31,7 +31,12 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     abstract protected function isSupportedByPortalConfiguration(Request $request): bool;
 
-    abstract protected function getLoginUrl(Request $request): string;
+    public function getLoginUrl($context): string
+    {
+        return $this->urlGenerator->generate('app_login', [
+            'context' => $context,
+        ]);
+    }
 
     /**
      * Called on every request to decide if this authenticator should be
@@ -109,7 +114,7 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $url = $this->getLoginUrl($request);
+        $url = $this->getLoginUrl($request->attributes->get('context'));
 
         return new RedirectResponse($url);
     }

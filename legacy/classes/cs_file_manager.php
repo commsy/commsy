@@ -343,10 +343,6 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
       $this->_limit_newer = '';
    }
 
-   function get() {
-      return $this->_data;
-   }
-
    function _performQuery ($count = false) {
       $query  = 'SELECT  '.$this->addDatabasePrefix('files').'.files_id, '.$this->addDatabasePrefix('files').'.creator_id, '.$this->addDatabasePrefix('files').'.deleter_id, '.$this->addDatabasePrefix('files').'.creation_date, '.$this->addDatabasePrefix('files').'.modification_date, '.$this->addDatabasePrefix('files').'.deletion_date, '.$this->addDatabasePrefix('files').'.filename, '.$this->addDatabasePrefix('files').'.filepath, '.$this->addDatabasePrefix('files').'.context_id, '.$this->addDatabasePrefix('files').'.size, '.$this->addDatabasePrefix('files').'.has_html, '.$this->addDatabasePrefix('files').'.scan, '.$this->addDatabasePrefix('files').'.extras';
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);

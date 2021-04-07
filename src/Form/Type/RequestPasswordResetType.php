@@ -22,7 +22,6 @@ class RequestPasswordResetType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder
             ->add('username', TextType::class, [
                 'label' => 'login.label_username',
@@ -36,7 +35,9 @@ class RequestPasswordResetType extends AbstractType
                 'label' => 'cancel',
                 'attr' => [
                     'class' => 'uk-button-default',
-                ]
+                    'formnovalidate' => 'formnovalidate',
+                ],
+                'validation_groups' => false,
             ]);
     }
 
@@ -61,6 +62,6 @@ class RequestPasswordResetType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'extension_settings';
+        return 'request_pw_reset';
     }
 }

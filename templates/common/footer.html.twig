@@ -1,4 +1,16 @@
-{% macro render(server) %}
+{% macro render(server, portal) %}
+    {% if portal is defined and portal is not null %}
+        {% if portal.AGBEnabled %}
+            <div class="uk-margin-left">
+                <a href="{{ path('app_tou_showportal', {
+                    'portalId': portal.id
+                }) }}" target="_blank">
+                    {{ 'terms'|trans({}, 'portal') }}
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+
     {% if commsy.server.dataPrivacyEnabled %}
         <div class="uk-margin-left">
             <a href="{{ path('app_server_dataprivacy') }}" target="_blank">{{ 'data privacy'|trans({}, 'portal') }}</a>

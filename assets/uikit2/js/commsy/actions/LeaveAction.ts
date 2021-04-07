@@ -16,7 +16,7 @@ export class LeaveAction extends XHRAction {
     }
 
     public preExecute(actionActor: JQuery): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             this.successMessage = actionActor.data('cs-action').successMessage;
             this.groupId = actionActor.data('cs-action').itemId;
 
@@ -25,7 +25,7 @@ export class LeaveAction extends XHRAction {
     }
 
     public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             UIkit.notify(this.successMessage, 'success');
 
             window.location.href = window.location.href;

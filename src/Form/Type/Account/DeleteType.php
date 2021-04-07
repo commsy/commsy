@@ -1,5 +1,5 @@
 <?php
-namespace App\Form\Type\Profile;
+namespace App\Form\Type\Account;
 
 use App\Validator\Constraints\ModeratorAccountDeleteConstraint;
 use App\Validator\Constraints\UniqueModeratorConstraint;
@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Utils\UserService;
 
-class DeleteAccountType extends AbstractType
+class DeleteType extends AbstractType
 {
     /**
      * Builds the form.
