@@ -18,7 +18,8 @@ class SwitchToUserVoter extends Voter
 
     /**
      * SwitchToUserVoter constructor.
-     * @param $security
+     * @param Security $security
+     * @param UserService $userService
      */
     public function __construct(Security $security, UserService $userService)
     {
@@ -40,19 +41,24 @@ class SwitchToUserVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        /** @var Account $userAccount */ $userAccount = $token->getUser();
-        /** @var \cs_user_item $userObject */ $userObject = $this->userService->getPortalUser($userAccount)->getFirst();
+        /** @var Account $account */
+        $account = $token->getUser();
 
-        if (!$userAccount instanceof UserInterface || !$subject instanceof UserInterface) {
+        /** @var \cs_user_item $portalUser */
+        $portalUser = $this->userService->getPortalUser($account);
+
+        if (!$account instanceof UserInterface || !$subject instanceof UserInterface) {
             return false;
         }
 
-        if(!$userObject->isDeactivatedLoginAsAnotherUser()) {
-            return true;
-        }
-
-        if ($this->security->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
-            return true;
+        // check if the user is allowed to impersonate by flag
+        if ($portalUser->getCanImpersonateAnotherUser()) {
+            // check if the impersonate grant is expired
+            $now = new \DateTimeImmutable();
+            $expiryDate = $portalUser->getImpersonateExpiryDate();
+            if ($expiryDate === null || $expiryDate >= $now) {
+                return true;
+            }
         }
 
         return false;

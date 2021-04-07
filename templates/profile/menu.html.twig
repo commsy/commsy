@@ -20,8 +20,8 @@
 
             {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                 <li>
-                    <a href="{{ path('app_logout', {'_switch_user': '_exit'}) }}" title="{{ 'Original user'|trans([], 'profile') }}">
-                        <i class="uk-icon-sign-out"></i> {{ 'Original user'|trans([], 'profile') }}
+                    <a href="{{ path('app_logout', {'_switch_user': '_exit'}) }}" title="{{ 'profile.exit_impersonation'|trans([], 'profile') }}">
+                        <i class="uk-icon-sign-out"></i> {{ 'profile.exit_impersonation'|trans([], 'profile') }}
                     </a>
                 </li>
             {% endif %}

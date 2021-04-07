@@ -45,7 +45,7 @@
             <div style="border: 1px solid black; padding: 10px; width: 50%;">
                 <ul style="list-style: none;">
                     <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Edit'|trans({},'portal') }}</a></li>
-                    {% if portalUser.isDeactivatedLoginAsAnotherUser() %}
+                    {% if not portalUser.canImpersonateAnotherUser or (portalUser.impersonateExpiryDate is not null and portalUser.impersonateExpiryDate < date())%}
                         <li style="font-style:italic; color:lightgrey">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</li>
                     {% else %}
                         <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
@@ -92,10 +92,10 @@
                     </tr>
                     <tr>
                         <td>{{'Login as... active'|trans({},'portal') }}</td>
-                        <td>{% if user.isDeactivatedLoginAsAnotherUser() %}
-                                {{'No'|trans({},'portal') }}
-                        {% elseif user.isTemporaryAllowedToLoginAs() %}
-                            {{ user.getTimestampForLoginAs() }}
+                        <td>{% if not user.canImpersonateAnotherUser %}
+                            {{'No'|trans({},'portal') }}
+                        {% elseif user.impersonateExpiryDate is not null %}
+                            {{ user.impersonateExpiryDate|craue_date }}
                         {% else %}
                             {{'Yes'|trans({},'portal') }}
                         {%  endif %}</td>
