@@ -29,6 +29,7 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
      * LogoutSuccessHandler constructor.
      * @param Security $security
      * @param HttpUtils $httpUtils
+     * @param UrlGeneratorInterface $urlGenerator
      * @param string $targetUrl
      */
     public function __construct(
@@ -62,8 +63,9 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
                 // Redirect to portal login if we find the id in the session
                 $session = $request->getSession();
                 if ($session->has('context')) {
+                    $context = $session->get('context') === 99 ? 'server' : $session->get('context');
                     $loginUrl = $this->urlGenerator->generate('app_login', [
-                        'context' => $session->get('context'),
+                        'context' => $context,
                     ]);
                     return $this->httpUtils->createRedirectResponse($request, $loginUrl);
                 }
