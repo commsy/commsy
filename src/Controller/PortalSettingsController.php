@@ -63,6 +63,7 @@ use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TranslationType;
 use App\Model\TimePulseTemplate;
+use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
@@ -2233,8 +2234,11 @@ class PortalSettingsController extends AbstractController
                 $user->makeNoContactPerson();
             }
 
-            $user->setCanImpersonateAnotherUser(!$data->getLoginIsDeactivated());
-            $user->setImpersonateExpiryDate($data->getImpersonateExpiryDate());
+            if ($this->isGranted(RootVoter::ROOT)) {
+                $user->setCanImpersonateAnotherUser(!$data->getLoginIsDeactivated());
+                $user->setImpersonateExpiryDate($data->getImpersonateExpiryDate());
+            }
+
             $user->save();
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
