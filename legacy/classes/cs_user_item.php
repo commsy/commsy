@@ -23,8 +23,6 @@
 //    along with CommSy.
 
 use App\Entity\Account;
-use App\Entity\AuthSource;
-use Doctrine\ORM\EntityManagerInterface;
 
 include_once('classes/cs_item.php');
 
@@ -2704,29 +2702,29 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function deactivateLoginAsAnotherUser()
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setCanImpersonateAnotherUser(bool $enabled): self
     {
-        $this->_addExtra('DEACTIVATE_LOGIN_AS', '1');
-    }
-
-    function unsetDeactivateLoginAsAnotherUser()
-    {
-        if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
-            $this->_unsetExtra('DEACTIVATE_LOGIN_AS');
-        }
-        #$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
-    }
-
-    function isDeactivatedLoginAsAnotherUser()
-    {
-        $retour = '';
-        if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
-            $flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
-            $retour = $flag;
+        if ($enabled === true) {
+            if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
+                $this->_unsetExtra('DEACTIVATE_LOGIN_AS');
+            }
+        } else {
+            $this->_addExtra('DEACTIVATE_LOGIN_AS', true);
         }
 
-        return $retour;
+        return $this;
+    }
 
+    /**
+     * @return bool
+     */
+    public function getCanImpersonateAnotherUser(): bool
+    {
+        return !$this->_issetExtra('DEACTIVATE_LOGIN_AS');
     }
 
     function setPasswordExpireDate($days)
@@ -2783,34 +2781,36 @@ class cs_user_item extends cs_item
         $this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
     }
 
-    function setDaysForLoginAs($days)
+    /**
+     * @param DateTimeImmutable|null $expiry
+     * @return cs_user_item
+     */
+    public function setImpersonateExpiryDate(?DateTimeImmutable $expiry): cs_user_item
     {
-        $this->_addExtra('LOGIN_AS_TMSP', getCurrentDateTimePlusDaysInMySQL($days));
-    }
-
-    function unsetDaysForLoginAs()
-    {
-        $this->_unsetExtra('LOGIN_AS_TMSP');
-    }
-
-    function getTimestampForLoginAs()
-    {
-        $return = false;
-        if ($this->_issetExtra('LOGIN_AS_TMSP')) {
-            $return = $this->_getExtra('LOGIN_AS_TMSP');
+        if ($expiry === null) {
+            $this->_unsetExtra('LOGIN_AS_TMSP');
+        } else {
+            $this->_addExtra('LOGIN_AS_TMSP', $expiry->format(DateTimeInterface::ATOM));
         }
-        return $return;
+
+        return $this;
     }
 
-    function isTemporaryAllowedToLoginAs()
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getImpersonateExpiryDate(): ?DateTimeImmutable
     {
-        $return = false;
         if ($this->_issetExtra('LOGIN_AS_TMSP')) {
-            if ($this->_getExtra('LOGIN_AS_TMSP') >= getCurrentDateTimeInMySQL()) {
-                $return = true;
+            if ($val = DateTimeImmutable::createFromFormat(
+                DateTimeInterface::ATOM,
+                $this->_getExtra('LOGIN_AS_TMSP'))
+            ) {
+                return $val;
             }
         }
-        return $return;
+
+        return null;
     }
 
     function setMailSendLocked()
