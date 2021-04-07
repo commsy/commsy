@@ -22,6 +22,10 @@
                 <source>login.label_username</source>
                 <target>Username</target>
             </trans-unit>
+            <trans-unit id="login_label_email">
+                <source>login.label_email</source>
+                <target>E-Mail</target>
+            </trans-unit>
             <trans-unit id="login_placeholder_username">
                 <source>login.placeholder_username</source>
                 <target>Username</target>
@@ -77,6 +81,14 @@
             <trans-unit id="login_password_reset_help">
                 <source>login.password_reset_help</source>
                 <target>Using your current loginname you can receive an email with a special link in it. You can change your password via this link in the next 15 minutes from this pc.</target>
+            </trans-unit>
+            <trans-unit id="login_request_accounts_help">
+                <source>login.request_accounts_help</source>
+                <target>Please type your email address. You will receive an email with your account data shortly.</target>
+            </trans-unit>
+            <trans-unit id="login_request_accounts_none">
+                <source>login.request_accounts_none</source>
+                <target>No accounts where found for the provided email address.</target>
             </trans-unit>
         </body>
     </file>

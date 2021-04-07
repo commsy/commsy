@@ -1643,112 +1643,111 @@ class cs_environment {
    	}
    }
 
-  /** get instance of cs_XXX_manager by item_type
-   *
-   * @param string type of an item
-   *
-   * @return cs_XXX_manager
-   * @access public
-   */
-   function getManager ($type, $force = false) {
-      if (!empty($type)) {
-         if ($type == CS_DATE_TYPE) {
-            return $this->getDateManager();
-         } elseif ($type == CS_TODO_TYPE or $type == 'todos') {
-            return $this->getTodosManager();
-         } elseif ($type == 'contact' or $type == 'contacts' or $type == CS_USER_TYPE or $type == 'users' or $type == 'account') {
-            return $this->getUserManager();
-         } elseif ($type == CS_MATERIAL_TYPE or $type == 'materials') {
-            return $this->getMaterialManager();
-         } elseif ($type == CS_ANNOTATION_TYPE or $type == 'annotations') {
-            return $this->getAnnotationManager();
-		   } elseif ($type == CS_ASSESSMENT_TYPE or $type == 'assessments') {
-		 	   return $this->getAssessmentManager();
-         } elseif ($type == 'discussion' or $type == 'discussions') {
-            return $this->getDiscussionManager();
-         } elseif ($type == 'discarticle' or $type == 'discarticles') {
-            return $this->getDiscussionArticlesManager();
-         } elseif ($type == 'announcements' or $type == CS_ANNOUNCEMENT_TYPE) {
-            return $this->getAnnouncementManager();
-         } elseif ($type == 'portfolio' or $type == CS_PORTFOLIO_TYPE) {
-            return $this->getPortfolioManager();
-         } elseif ($type == CS_TOPIC_TYPE) {
-            return $this->getTopicManager();
-         } elseif ($type == 'group' or $type == 'groups') {
-            return $this->getGroupManager();
-         } elseif ($type == 'task' or $type == 'tasks') {
-            return $this->getTaskManager();
-         } elseif ($type == 'section') {
-            return $this->getSectionManager();
-         } elseif ($type == 'label') {
-            return $this->getLabelManager();
-         } elseif ($type == 'log') {
-            return $this->getLogManager();
-         } elseif ($type == 'log_archive') {
-            return $this->getLogArchiveManager();
-         } elseif ($type == CS_PROJECT_TYPE) {
-            return $this->getProjectManager($force);
-         } elseif ($type == CS_STEP_TYPE) {
-            return $this->getStepManager();
-         } elseif ($type == CS_ROOM_TYPE) {
-            return $this->getRoomManager($force);
-         } elseif ($type == CS_COMMUNITY_TYPE) {
-            return $this->getCommunityManager($force);
-         } elseif ($type == CS_PRIVATEROOM_TYPE) {
-            return $this->getPrivateRoomManager($force);
-         } elseif ($type == CS_GROUPROOM_TYPE) {
-            return $this->getGroupRoomManager($force);
-         } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
-             return $this->getUserRoomManager($force);
-         } elseif ($type == CS_MYROOM_TYPE) {
-            return $this->getMyRoomManager();
-         } elseif ($type == CS_PORTAL_TYPE) {
-            return $this->getPortalManager($force);
-         } elseif ($type == CS_SERVER_TYPE) {
-            return $this->getServerManager($force);
-         } elseif ($type == CS_FILE_TYPE) {
-            return $this->getFileManager();
-         } elseif ($type == CS_LINK_TYPE) {
-            return $this->getLinkManager();
-         } elseif ($type == CS_LINKITEM_TYPE) {
-            return $this->getLinkItemManager();
-         } elseif ($type == CS_LINKMODITEM_TYPE) {
-            return $this->getLinkModifierItemManager();
-         } elseif ($type == CS_LINKITEMFILE_TYPE) {
-            return $this->getLinkItemFileManager();
-         } elseif ($type == CS_ITEM_TYPE or $type == 'items') {
-            return $this->getItemManager();
-         } elseif ($type == CS_READER_TYPE) {
-            return $this->getReaderManager();
-         } elseif ($type == CS_NOTICED_TYPE) {
-            return $this->getNoticedManager();
-         } elseif ($type == CS_TIME_TYPE) {
-            return $this->getTimeManager();
-         } elseif ($type == CS_WIKI_TYPE) {
-            return $this->getWikiManager();
-         } elseif ($type == 'chat') {
-            return '';
-         } elseif ($type == CS_TAG_TYPE) {
-            return $this->getTagManager();
-         } elseif ($type == CS_TAG2TAG_TYPE) {
-            return $this->getTag2TagManager();
-         } elseif ($type == CS_BUZZWORD_TYPE) {
-            return $this->getBuzzwordManager();
-         } elseif ($type == CS_MYLIST_TYPE) {
-            return $this->getMylistManager();
-         } elseif ($type == CS_MATRIX_TYPE) {
-            return $this->getMatrixManager();
-         } elseif ($type == CS_ITEM_BACKUP) {
-            return $this->getBackupItemManager();
-         } elseif ($type == CS_ENTRY_TYPE) {
-            return $this->getEntryManager();
-         } elseif ( !$this->isPlugin($type) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('do not know this type ['.$type.']',E_USER_ERROR);
-         }
-      }
-      return NULL;
-   }
+    /** get instance of cs_XXX_manager by item_type
+     *
+     * @param string type of an item
+     * @param bool $force
+     * @return cs_manager|null
+     * @access public
+     */
+    public function getManager($type): ?cs_manager
+    {
+        if (!empty($type)) {
+            if ($type == CS_DATE_TYPE) {
+                return $this->getDateManager();
+            } elseif ($type == CS_TODO_TYPE || $type == 'todos') {
+                return $this->getTodosManager();
+            } elseif ($type == 'contact' || $type == 'contacts' || $type == CS_USER_TYPE || $type == 'users' || $type == 'account') {
+                return $this->getUserManager();
+            } elseif ($type == CS_MATERIAL_TYPE || $type == 'materials') {
+                return $this->getMaterialManager();
+            } elseif ($type == CS_ANNOTATION_TYPE || $type == 'annotations') {
+                return $this->getAnnotationManager();
+            } elseif ($type == CS_ASSESSMENT_TYPE || $type == 'assessments') {
+                return $this->getAssessmentManager();
+            } elseif ($type == 'discussion' || $type == 'discussions') {
+                return $this->getDiscussionManager();
+            } elseif ($type == 'discarticle' || $type == 'discarticles') {
+                return $this->getDiscussionArticlesManager();
+            } elseif ($type == 'announcements' || $type == CS_ANNOUNCEMENT_TYPE) {
+                return $this->getAnnouncementManager();
+            } elseif ($type == 'portfolio' || $type == CS_PORTFOLIO_TYPE) {
+                return $this->getPortfolioManager();
+            } elseif ($type == CS_TOPIC_TYPE) {
+                return $this->getTopicManager();
+            } elseif ($type == 'group' || $type == 'groups') {
+                return $this->getGroupManager();
+            } elseif ($type == 'task' || $type == 'tasks') {
+                return $this->getTaskManager();
+            } elseif ($type == 'section') {
+                return $this->getSectionManager();
+            } elseif ($type == 'label') {
+                return $this->getLabelManager();
+            } elseif ($type == 'log') {
+                return $this->getLogManager();
+            } elseif ($type == 'log_archive') {
+                return $this->getLogArchiveManager();
+            } elseif ($type == CS_PROJECT_TYPE) {
+                return $this->getProjectManager();
+            } elseif ($type == CS_STEP_TYPE) {
+                return $this->getStepManager();
+            } elseif ($type == CS_ROOM_TYPE) {
+                return $this->getRoomManager();
+            } elseif ($type == CS_COMMUNITY_TYPE) {
+                return $this->getCommunityManager();
+            } elseif ($type == CS_PRIVATEROOM_TYPE) {
+                return $this->getPrivateRoomManager();
+            } elseif ($type == CS_GROUPROOM_TYPE) {
+                return $this->getGroupRoomManager();
+            } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                return $this->getUserRoomManager();
+            } elseif ($type == CS_MYROOM_TYPE) {
+                return $this->getMyRoomManager();
+            } elseif ($type == CS_PORTAL_TYPE) {
+                return $this->getPortalManager();
+            } elseif ($type == CS_SERVER_TYPE) {
+                return $this->getServerManager();
+            } elseif ($type == CS_FILE_TYPE) {
+                return $this->getFileManager();
+            } elseif ($type == CS_LINK_TYPE) {
+                return $this->getLinkManager();
+            } elseif ($type == CS_LINKITEM_TYPE) {
+                return $this->getLinkItemManager();
+            } elseif ($type == CS_LINKMODITEM_TYPE) {
+                return $this->getLinkModifierItemManager();
+            } elseif ($type == CS_LINKITEMFILE_TYPE) {
+                return $this->getLinkItemFileManager();
+            } elseif ($type == CS_ITEM_TYPE || $type == 'items') {
+                return $this->getItemManager();
+            } elseif ($type == CS_READER_TYPE) {
+                return $this->getReaderManager();
+            } elseif ($type == CS_NOTICED_TYPE) {
+                return $this->getNoticedManager();
+            } elseif ($type == CS_TIME_TYPE) {
+                return $this->getTimeManager();
+            } elseif ($type == CS_WIKI_TYPE) {
+                return $this->getWikiManager();
+            } elseif ($type == CS_TAG_TYPE) {
+                return $this->getTagManager();
+            } elseif ($type == CS_TAG2TAG_TYPE) {
+                return $this->getTag2TagManager();
+            } elseif ($type == CS_BUZZWORD_TYPE) {
+                return $this->getBuzzwordManager();
+            } elseif ($type == CS_MYLIST_TYPE) {
+                return $this->getMylistManager();
+            } elseif ($type == CS_MATRIX_TYPE) {
+                return $this->getMatrixManager();
+            } elseif ($type == CS_ITEM_BACKUP) {
+                return $this->getBackupItemManager();
+            } elseif ($type == CS_ENTRY_TYPE) {
+                return $this->getEntryManager();
+            } elseif (!$this->isPlugin($type)) {
+                include_once('functions/error_functions.php');
+                trigger_error('do not know this type [' . $type . ']', E_USER_ERROR);
+            }
+        }
+        return null;
+    }
 
   /** get boolean, if you are in the community room or not
    *

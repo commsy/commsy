@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\AuthSourceRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"local" = "AuthSourceLocal", "oidc" = "AuthSourceOIDC", "ldap" = "AuthSourceLdap", "shib" = "AuthSourceShibboleth"})
+ * @ORM\DiscriminatorMap({"local" = "AuthSourceLocal", "oidc" = "AuthSourceOIDC", "ldap" = "AuthSourceLdap", "shib" = "AuthSourceShibboleth", "guest" = "AuthSourceGuest"})
  */
 abstract class AuthSource
 {
@@ -112,7 +112,7 @@ abstract class AuthSource
     /**
      * @ORM\Column(type="boolean")
      */
-    private $createRoom;
+    protected $createRoom;
 
     abstract public function getType(): string;
 

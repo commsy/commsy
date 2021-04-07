@@ -106,7 +106,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|null
-     * @throws AuthenticationException
      *
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
@@ -301,14 +300,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
-    }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        // TODO
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
     }
 
     private function performLdapLookup(string $username, string $password, AuthSource $authSource)

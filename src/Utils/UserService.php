@@ -3,8 +3,6 @@
 namespace App\Utils;
 
 use App\Entity\Account;
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\FormInterface;
 
@@ -18,9 +16,9 @@ class UserService
     private $roomManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
-    { 
+    {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        
+
         $this->userManager = $this->legacyEnvironment->getUserManager();
         $this->userManager->reset();
 
@@ -68,8 +66,7 @@ class UserService
         int $contextID,
         int $userStatus = 2,
         \cs_user_item $creator = null
-    ): ?\cs_user_item
-    {
+    ): ?\cs_user_item {
         // TODO: use a facade/factory to create a new room (also compare with UserCreatorFacade->addUserToRooms())
 
         if (!isset($sourceUser) || empty($contextID)) {
@@ -179,12 +176,12 @@ class UserService
      * @param string $sort
      * @return \cs_user_item[]
      */
-    public function getListUsers($roomId, $max = NULL, $start = NULL, $moderation = false, $sort = NULL)
+    public function getListUsers($roomId, $max = null, $start = null, $moderation = false, $sort = null)
     {
         $this->userManager->reset();
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($roomId);
-        if ($max !== NULL && $start !== NULL) {
+        if ($max !== null && $start !== null) {
             $this->userManager->setIntervalLimit($start, $max);
         }
         if (!$moderation) {
@@ -209,7 +206,8 @@ class UserService
      * @param integer[] $ids
      * @return \cs_user_item[]
      */
-    public function getUsersById($roomId, $ids) {
+    public function getUsersById($roomId, $ids)
+    {
         $this->userManager->setContextLimit($roomId);
         $this->userManager->setIDArrayLimit($ids);
 
@@ -217,6 +215,25 @@ class UserService
         $userList = $this->userManager->get();
 
         return $userList->to_array();
+    }
+
+    public function getPortalUser(Account $account): ?\cs_user_item
+    {
+        $this->userManager->resetLimits();
+        $this->userManager->setContextLimit($account->getContextId());
+        $this->userManager->setUserIDLimit($account->getUsername());
+        $this->userManager->setAuthSourceLimit($account->getAuthSource()->getId());
+        $this->userManager->select();
+        $userList = $this->userManager->get();
+
+        /** @var \cs_user_item $user */
+        $user = null;
+
+        if ($userList->getCount() === 1) {
+            $user = $userList->getFirst();
+        }
+
+        return $user;
     }
 
     public function setFilterConditions(FormInterface $filterForm)
@@ -230,14 +247,14 @@ class UserService
                 $relatedLabel = $formData['rubrics']['group'];
                 $this->userManager->setGroupLimit($relatedLabel->getItemId());
             }
-            
+
             // topic
             if (isset($formData['rubrics']['topic'])) {
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->userManager->setTopicLimit($relatedLabel->getItemId());
             }
         }
-        
+
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {
@@ -257,7 +274,7 @@ class UserService
                 }
             }
         }
-        
+
         // status
         if (isset($formData['user_status'])) {
             if ($formData['user_status'] != 'is contact') {
@@ -268,11 +285,11 @@ class UserService
         }
 
         if (isset($formData['user_search'])) {
-            $this->userManager->setNameLimit('%'.$formData['user_search'].'%');
+            $this->userManager->setNameLimit('%' . $formData['user_search'] . '%');
         }
     }
 
-    public function getUser($userId):? \cs_user_item
+    public function getUser($userId): ?\cs_user_item
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings
@@ -282,29 +299,18 @@ class UserService
         return $user;
     }
 
-    public function getPortalUser(Account $account): object
-    {
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setUserIDLimit($account->getUsername());
-        $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
-        $userManager->setContextLimit($account->getContextId());
-        $userManager->select();
-
-        return $this->userManager->get();
-    }
-    
     public function getPortalUserFromSessionId()
     {
         if (isset($_COOKIE['SID'])) {
             $sid = $_COOKIE['SID'];
-            
+
             $sessionManager = $this->legacyEnvironment->getSessionManager();
             $sessionItem = $sessionManager->get($sid);
 
             if ($sessionItem) {
                 $userManager = $this->legacyEnvironment->getUserManager();
                 $userList = $userManager->getAllUserItemArray($sessionItem->getValue('user_id'));
-                $portalUser = NULL;
+                $portalUser = null;
                 if (!empty($userList)) {
                     //$contextID = $userList[0]->getContextId();
                     //$portalUser = $userList[0];
@@ -345,46 +351,46 @@ class UserService
 
     public function grantAccessToAllPendingApplications()
     {
-       $this->userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-       $this->userManager->setRegisteredLimit();
-       $this->userManager->select();
-       $requested_user_list = $this->userManager->get();
+        $this->userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+        $this->userManager->setRegisteredLimit();
+        $this->userManager->select();
+        $requested_user_list = $this->userManager->get();
 
-       if (!empty($requested_user_list)){
-          $requested_user = $requested_user_list->getFirst();
-          while($requested_user){
-             $requested_user->makeUser();
-             $requested_user->save();
-             $task_manager = $this->legacyEnvironment->getTaskManager();
-             $task_list = $task_manager->getTaskListForItem($requested_user);
-             if (!empty($task_list)){
-                $task = $task_list->getFirst();
-                while($task){
-                   if ($task->getStatus() == 'REQUEST' and ($task->getTitle() == 'TASK_USER_REQUEST' or $task->getTitle() == 'TASK_PROJECT_MEMBER_REQUEST')) {
-                      $task->setStatus('CLOSED');
-                      $task->save();
-                   }
-                   $task = $task_list->getNext();
+        if (!empty($requested_user_list)) {
+            $requested_user = $requested_user_list->getFirst();
+            while ($requested_user) {
+                $requested_user->makeUser();
+                $requested_user->save();
+                $task_manager = $this->legacyEnvironment->getTaskManager();
+                $task_list = $task_manager->getTaskListForItem($requested_user);
+                if (!empty($task_list)) {
+                    $task = $task_list->getFirst();
+                    while ($task) {
+                        if ($task->getStatus() == 'REQUEST' and ($task->getTitle() == 'TASK_USER_REQUEST' or $task->getTitle() == 'TASK_PROJECT_MEMBER_REQUEST')) {
+                            $task->setStatus('CLOSED');
+                            $task->save();
+                        }
+                        $task = $task_list->getNext();
+                    }
                 }
-             }
-             $requested_user = $requested_user_list->getNext();
-          }
-       }
+                $requested_user = $requested_user_list->getNext();
+            }
+        }
     }
 
     /**
      * Get the current user item
-     * 
+     *
      * @return \cs_user_item The current user object
      */
     public function getCurrentUserItem()
     {
         return $this->legacyEnvironment->getCurrentUserItem();
     }
-    
+
     /**
      * Returns a list of searchable rooms
-     * 
+     *
      * @return array of searchable room items
      */
     public function getSearchableRooms(\cs_user_item $userItem)
@@ -536,7 +542,8 @@ class UserService
      * @param \cs_user_item $user
      * @param int $roomId
      */
-    public function updateAllGroupStatus($user, $roomId) {
+    public function updateAllGroupStatus($user, $roomId)
+    {
 
         $userGroups = $user->getGroupList();
         if ($userGroups->isEmpty()) {

@@ -4,9 +4,11 @@
 namespace App\Twig;
 
 
+use App\Entity\Portal;
 use App\Entity\Server;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CommsyGlobals
 {
@@ -20,10 +22,19 @@ class CommsyGlobals
      */
     private $parameterBag;
 
-    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $parameterBag)
-    {
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ParameterBagInterface $parameterBag,
+        RequestStack $requestStack
+    ) {
         $this->entityManager = $entityManager;
         $this->parameterBag = $parameterBag;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -34,6 +45,25 @@ class CommsyGlobals
     public function server(): Server
     {
         return $this->entityManager->getRepository(Server::class)->getServer();
+    }
+
+    /**
+     * Return the portal context entity or null
+     *
+     * @return Portal|null
+     */
+    public function portal(): ?Portal
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request !== null) {
+            $portalId = $request->attributes->get('portalId')
+                ?? $request->attributes->get('context');
+            if ($portalId !== null) {
+                return $this->entityManager->getRepository(Portal::class)->find($portalId);
+            }
+        }
+
+        return null;
     }
 
     /**

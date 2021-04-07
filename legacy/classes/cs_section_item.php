@@ -218,17 +218,10 @@ class cs_section_item extends cs_item {
       return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
    }
 
-   /** get groups of a section
-    * this method returns a list of groups which are linked to the section
-    *
-    * @return object cs_list a list of groups (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function getNumber() {
-      return $this->_getValue('number');
-   }
-
+    public function getNumber(): int
+    {
+        return (int) $this->_getValue('number');
+    }
 
    function getOldNumber(){
      return $this->_getValue('oldnumber');

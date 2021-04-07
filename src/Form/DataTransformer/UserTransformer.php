@@ -1,24 +1,55 @@
 <?php
 namespace App\Form\DataTransformer;
 
+use App\Account\AccountManager;
+use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
+use cs_environment;
+use cs_user_item;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
 class UserTransformer extends AbstractTransformer
 {
     protected $entity = 'user';
 
+    /**
+     * @var cs_environment
+     */
     private $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * @var AccountManager
+     */
+    private $accountManager;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        EntityManagerInterface $entityManager,
+        Security $security,
+        AccountManager $accountManager
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->entityManager = $entityManager;
+        $this->security = $security;
+        $this->accountManager = $accountManager;
     }
 
     /**
      * Transforms a cs_room_item object to an array
      *
-     * @param cs_room_item $roomItem
+     * @param cs_user_item $userItem
      * @return array
      */
     public function transform($userItem)
@@ -74,13 +105,12 @@ class UserTransformer extends AbstractTransformer
      * Applies an array of data to an existing object
      *
      * @param object $userObject
-     * @param array $roomData
-     * @return cs_room_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @param array $userData
+     * @return cs_user_item|null
      */
     public function applyTransformation($userObject, $userData)
     {
-        /** @var \cs_user_item $userObject */
+        /** @var cs_user_item $userObject */
         if ($userObject) {
             $userObject->setUserId($userData['userId']);
 
@@ -90,27 +120,26 @@ class UserTransformer extends AbstractTransformer
             } else {
                 $portalUser = $this->legacyEnvironment->getCurrentUserItem();
             }
-            $authentication = $userObject->_environment->getAuthenticationObject();
 
-            $authManager = $this->legacyEnvironment->getAuthSourceManager();
-            $authSourceItem = $authManager->getItem($portalUser->getAuthSource());
+            /** @var Account $account */
+            $account = $this->security->getUser();
 
-            if ($authSourceItem->allowChangeUserID()) {
+            if ($account->getAuthSource()->isChangeUsername()) {
                 // check if userid has changed
                 if ($portalUser->getUserID() != $userData['userId']) {
-                    if ($authentication->changeUserID($userData['userId'], $portalUser)) {
-                        $session_manager = $this->legacyEnvironment->getSessionManager();
-                        $session = $this->legacyEnvironment->getSessionItem();
-                        $session_id_old = $session->getSessionID();
-                        $session_manager->delete($session_id_old, true);
-                        $session->createSessionID($userData['userId']);
-                        $cookie = $session->getValue('cookie');
-                        if ($cookie == 1) $session->setValue('cookie', 2);
+                    if ($this->accountManager->propagateUsernameChange($account, $portalUser, $userData['userId'])) {
+//                        $session_manager = $this->legacyEnvironment->getSessionManager();
+//                        $session = $this->legacyEnvironment->getSessionItem();
+//                        $session_id_old = $session->getSessionID();
+//                        $session_manager->delete($session_id_old, true);
+//                        $session->createSessionID($userData['userId']);
+//                        $cookie = $session->getValue('cookie');
+//                        if ($cookie == 1) $session->setValue('cookie', 2);
+//
+//                        $session_manager->save($session);
+//                        unset($session_manager);
 
-                        $session_manager->save($session);
-                        unset($session_manager);
-
-                        $portalUser->setUserId($userData['userId']); // Important, as this object is savd again later!
+                        $portalUser->setUserId($userData['userId']); // Important, as this object is saved again later!
                     } else {
                         die("ERROR: changing User ID not successful");
                     }
@@ -174,21 +203,9 @@ class UserTransformer extends AbstractTransformer
                 if ($this->legacyEnvironment->inPortal()) {
                     $userObject->setEmail($portalUser->getEmail());
 
-                    $authentication = $this->legacyEnvironment->getAuthenticationObject();
-                    $authManager = $authentication->getAuthManager($portalUser->getAuthSource());
-
-                    /** @var \cs_auth_item $authItem */
-                    $authItem = $authManager->getItem($portalUser->getUserID());
-
-                    /**
-                     * Check if we have an instance of an auth item. This might not be true for external authentication
-                     * sources, because (as of CS9) they do not create an entry in the database
-                     */
-                    if ($authItem) {
-                        $authItem->setEmail($portalUser->getEmail());
-
-                        $authentication->save($authItem);
-                    }
+                    $account->setEmail($portalUser->getEmail());
+                    $this->entityManager->persist($account);
+                    $this->entityManager->flush();
                 }
             }
 
