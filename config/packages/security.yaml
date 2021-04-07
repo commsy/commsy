@@ -61,7 +61,9 @@ security:
                     - App\Security\ShibbolethAuthenticator
                 entry_point: App\Security\LoginFormAuthenticator
                 provider: commsy_user_provider
-            switch_user: { role: CAN_SWITCH_USER, provider: commsy_user_provider }
+            switch_user:
+                role: CAN_SWITCH_USER
+                provider: commsy_user_provider
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

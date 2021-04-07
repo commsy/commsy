@@ -21,7 +21,6 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Server;
-use App\Entity\RoomPrivat;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\UserTransformer;
@@ -82,6 +81,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -313,7 +313,7 @@ class PortalSettingsController extends AbstractController
      * @param RoomCategoriesService $roomCategoriesService
      * @param EventDispatcherInterface $dispatcher
      * @param EntityManagerInterface $entityManager
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return array|RedirectResponse
      */
     public function roomCategories(
         Portal $portal,
@@ -1886,22 +1886,30 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param UserService $userService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param RoomService $roomService
+     * @param Security $security
+     * @return array|RedirectResponse
      */
     public function accountIndexDetail(
         Portal $portal,
         Request $request,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        RoomService $roomService
+        RoomService $roomService,
+        Security $security
     ) {
+        /** @var Account $account */
+        $account = $security->getUser();
+
         $userList = $userService->getListUsers($portal->getId());
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
         $form->handleRequest($request);
-        $portalUser = $userService->getPortalUser($this->getUser())->getFirst();
+        $portalUser = $userService->getPortalUser($account);
         $user = $userService->getUser($request->get('userId'));
-        $authSource = $user->getAuthSource();
-        $authRepo = $this->getDoctrine()->getRepository(AuthSource::class);
-        $authSourceItem = $authRepo->find($authSource); //TODO: could be useful for authsource settings, but it is not even used in legacy code?
 
         $communityArchivedListNames = [];
         $communityListNames = [];
@@ -2164,12 +2172,16 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param UserService $userService
+     * @param TranslatorInterface $translator
+     * @return array|RedirectResponse
      */
     public function accountIndexDetailChangeStatus(
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
         TranslatorInterface $translator
     ) {
         $user = $userService->getUser($request->get('userId'));
@@ -2195,7 +2207,8 @@ class PortalSettingsController extends AbstractController
         $userChangeStatus->setCurrentStatus($trans);
         $userChangeStatus->setNewStatus(strtolower($currentStatus));
         $userChangeStatus->setContact($user->isContact());
-        $userChangeStatus->setLoginIsDeactivated($user->isDeactivatedLoginAsAnotherUser());
+        $userChangeStatus->setLoginIsDeactivated(!$user->getCanImpersonateAnotherUser());
+        $userChangeStatus->setImpersonateExpiryDate($user->getImpersonateExpiryDate());
 
         $form = $this->createForm(AccountIndexDetailChangeStatusType::class, $userChangeStatus);
         $form->handleRequest($request);
@@ -2220,17 +2233,8 @@ class PortalSettingsController extends AbstractController
                 $user->makeNoContactPerson();
             }
 
-            $deactivateTakeOver = $data->getLoginIsDeactivated();
-            if ($deactivateTakeOver === false) {
-                $user->unsetDeactivateLoginAsAnotherUser();
-            } else if ($deactivateTakeOver === true) {
-                $user->deactivateLoginAsAnotherUser();
-            }
-
-            if (!empty($data->getLoginAsActiveForDays())) {
-                $user->setDaysForLoginAs();
-            }
-
+            $user->setCanImpersonateAnotherUser(!$data->getLoginIsDeactivated());
+            $user->setImpersonateExpiryDate($data->getImpersonateExpiryDate());
             $user->save();
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
@@ -2384,16 +2388,19 @@ class PortalSettingsController extends AbstractController
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/takeOver")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @param UserService $userService
+     * @param $portalId
+     * @param $userId
+     * @return RedirectResponse
      */
     public function accountIndexDetailTakeOver(
-        Request $request,
         UserService $userService,
-        EntityManagerInterface $entityManager,
-        $portalId
+        $portalId,
+        $userId
     ) {
         return $this->redirectToRoute('app_helper_portalenter', [
             'context' => $portalId,
-            '_switch_user' => $userService->getUser($request->get('userId'))->getUserID(),
+            '_switch_user' => $userService->getUser($userId)->getUserID(),
         ]);
     }
 
@@ -2561,7 +2568,7 @@ class PortalSettingsController extends AbstractController
      * @param int $translationId
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return array|RedirectResponse
      */
     public function translations(
         Portal $portal,
