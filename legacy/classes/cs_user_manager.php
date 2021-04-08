@@ -1600,49 +1600,52 @@ class cs_user_manager extends cs_manager {
       // implemented in class cs_authentication
    }
 
-   function changeUserID ($new, $old_item) {
-     $room_manager = $this->_environment->getRoomManager();
-     $room_list = $room_manager->getAllRelatedRoomListForUser($old_item);
-     $room_item_ids = array();
-     $room_item_ids[] = $this->_environment->getCurrentPortalID();
-     if ( !$room_list->isEmpty() ) {
-        $room_item = $room_list->getFirst();
-        while ( $room_item ) {
-           $room_item_ids[] = $room_item->getItemID();
-           $room_item = $room_list->getNext();
+    public function changeUserID(string $username, cs_user_item $userItem)
+    {
+        $room_manager = $this->_environment->getRoomManager();
+        $room_list = $room_manager->getAllRelatedRoomListForUser($userItem);
+        $room_item_ids = array();
+        $room_item_ids[] = $this->_environment->getCurrentPortalID();
+        if (!$room_list->isEmpty()) {
+            $room_item = $room_list->getFirst();
+            while ($room_item) {
+                $room_item_ids[] = $room_item->getItemID();
+                $room_item = $room_list->getNext();
+            }
         }
-     }
 
-     # private room
-     $own_room = $old_item->getOwnRoom();
-     if ( isset($own_room) ) {
-        $room_item_ids[] = $own_room->getItemID();
-        unset($own_room);
-     }
+        # private room
+        $own_room = $userItem->getOwnRoom();
+        if (isset($own_room)) {
+            $room_item_ids[] = $own_room->getItemID();
+            unset($own_room);
+        }
 
-     # user rooms
-     $relatedUserrooms = $old_item->getRelatedUserroomsList();
-     foreach ($relatedUserrooms as $userroom) {
-           $room_item_ids[] = $userroom->getItemID();
-     }
+        # user rooms
+        $relatedUserrooms = $userItem->getRelatedUserroomsList();
+        foreach ($relatedUserrooms as $userroom) {
+            $room_item_ids[] = $userroom->getItemID();
+        }
 
-     $update  = "UPDATE ".$this->addDatabasePrefix("user")." SET ";
-     $update .= " user_id = '".encode(AS_DB,$new)."',";
+        $update = "UPDATE " . $this->addDatabasePrefix("user") . " SET ";
+        $update .= " user_id = '" . encode(AS_DB, $username) . "',";
 
-     $update .= " modifier_id=creator_id,";
-     $update .= " modification_date='".getCurrentDateTimeInMySQL()."'";
-     $update .= " WHERE user_id = '".encode(AS_DB,$old_item->getUserID())."' AND context_id IN (".implode(',',encode(AS_DB,$room_item_ids)).") AND auth_source='".encode(AS_DB,$old_item->getAuthSource())."'";
-     $result = $this->_db_connector->performQuery($update);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems changing user id.',E_USER_WARNING);
-        $success = false;
-     } else {
-        unset($result);
-        $success = true;
-     }
-     return $success;
-  }
+        $update .= " modifier_id=creator_id,";
+        $update .= " modification_date='" . getCurrentDateTimeInMySQL() . "'";
+        $update .= " WHERE user_id = '" . encode(AS_DB, $userItem->getUserID()) . "' AND context_id IN (" . implode(',',
+                encode(AS_DB, $room_item_ids)) . ") AND auth_source='" . encode(AS_DB,
+                $userItem->getAuthSource()) . "'";
+        $result = $this->_db_connector->performQuery($update);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems changing user id.', E_USER_WARNING);
+            $success = false;
+        } else {
+            unset($result);
+            $success = true;
+        }
+        return $success;
+    }
 
    public function getCountAuthSourceOfRoom ( $context_id ) {
       $query = 'SELECT count(DISTINCT '.$this->addDatabasePrefix('user').'.auth_source) as number FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').'.context_id = "'.encode(AS_DB,$context_id).'" and '.$this->addDatabasePrefix('user').'.deletion_date IS NULL and '.$this->addDatabasePrefix('user').'.auth_source > 0';

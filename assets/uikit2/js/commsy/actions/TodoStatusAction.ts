@@ -16,7 +16,7 @@ export class TodoStatusAction extends XHRAction {
     }
 
     public preExecute(actionActor: JQuery): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             this.setExtraData('status', this.status);
 
             resolve();
@@ -24,7 +24,7 @@ export class TodoStatusAction extends XHRAction {
     }
 
     public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             let payload: any = backendResponse.payload;
 
             UIkit.notify(payload.message, 'success');

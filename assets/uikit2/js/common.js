@@ -7,9 +7,6 @@ require('video.js/dist/video-js.css');
 require('select2/dist/css/select2.css');
 
 // JS
-import "@babel/polyfill";
-
-// load third party packages
 require('expose-loader?$!jquery');
 
 require('jstree/dist/jstree');

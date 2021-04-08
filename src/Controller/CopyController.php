@@ -27,13 +27,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class CopyController extends BaseController
 {
-    private $roomService;
+    protected $roomService;
 
-    public function __construct(RoomService $roomService)
-    {
-        parent::__construct($roomService);
-        $this->roomService = $roomService;
-    }
 
     /**
      * @Route("/room/{roomId}/copy/feed/{start}/{sort}")

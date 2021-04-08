@@ -10,10 +10,7 @@
             <div class="uk-card uk-card-default uk-card-small">
                 {% if portal.logoFilename is not empty %}
                     <div class="uk-card-body uk-padding-remove">
-                        {# TODO: Just a placeholder from the mockup, please replace #}
-                        {# TODO: try images in 220px by 80 px and play around with uk-padding-remove #}
-                        {# TODO: of parent element, cheers #}
-                        <img src="{{ asset('build/agora_logo.png') }}" style="height: 80px">
+                        <img data-src="{{ path('app_file_portallogo', { 'portalId': portal.id }) }}" width="260" height="80" alt="portal logo" uk-img>
                     </div>
                 {% endif %}
 
