@@ -408,7 +408,7 @@ class SearchController extends BaseController
         }
 
         $totalHits = $searchResults->getTotalHits();
-        $results = $this->prepareResults($searchResults, $roomId, $readerService);
+        $results = $this->prepareResults($searchResults, $readerService, $roomId );
 
         return [
             'filterForm' => $filterForm->createView(),
@@ -509,7 +509,7 @@ class SearchController extends BaseController
         ]);
         $filterForm->handleRequest($request);
 
-        $results = $this->prepareResults($searchResults, $roomId, $readerService, $start);
+        $results = $this->prepareResults($searchResults, $readerService,  $roomId, $start);
 
         return [
             'roomId' => $roomId,
