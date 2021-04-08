@@ -52,12 +52,12 @@
                                                 <li>
                                                     <a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': tempGroup.itemId}) }}"
                                                        data-uk-tooltip="{delay:'250'}"
-                                                       title="{{ tempGroup.title|decodeHtmlEntity }}">{{ tempGroup.title|decodeHtmlEntity|truncate(25) }}</a>
+                                                       title="{{ tempGroup.title|decodeHtmlEntity }}">{{ tempGroup.title|decodeHtmlEntity|u.truncate(25) }}</a>
                                                 </li>
                                             {% else %}
                                                 <li><a href="#" data-uk-tooltip="{delay:'250'}"
                                                        title="{{ tempGroup.title|decodeHtmlEntity }}"
-                                                       class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempGroup.title|decodeHtmlEntity|truncate(20) }}</a>
+                                                       class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempGroup.title|decodeHtmlEntity|u.truncate(20) }}</a>
                                                 </li>
                                             {% endif %}
                                         {% endfor %}

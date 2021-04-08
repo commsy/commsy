@@ -45,9 +45,9 @@
                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                        {% for tempUser in userList %}
                                             {% if tempUser.itemId != user.itemId %}
-                                                <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|truncate(25) }}</a></li>
+                                                <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(25) }}</a></li>
                                             {% else %}
-                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|truncate(20)  }}</a></li>
+                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(20)  }}</a></li>
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
