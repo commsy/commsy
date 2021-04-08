@@ -1086,6 +1086,27 @@ class Portal implements \Serializable
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function getAddAccountInvitation() :bool
+    {
+        return ($this->getExtras()['ADD_ACCOUNT_INVITATION']) ?? false;
+    }
+
+    /**
+     * @param bool $value
+     * @return array
+     */
+    public function setAddAccountInvitation(bool $value): array
+    {
+        $extras = $this->getExtras();
+        $extras['ADD_ACCOUNT_INVITATION'] = $value;
+        $this->setExtras($extras);
+
+        return $extras;
+    }
+
     /** exists the extra information with the name $key ?
      * this method returns a boolean, if the value exists or not
      *

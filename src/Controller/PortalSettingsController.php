@@ -477,6 +477,7 @@ class PortalSettingsController extends AbstractController
             $localSource->setPortal($portal);
         }
 
+        $localSource->setPortal($portal);
         $localForm = $this->createForm(AuthLocalType::class, $localSource);
         $localForm->handleRequest($request);
 
@@ -490,7 +491,7 @@ class PortalSettingsController extends AbstractController
 
             if ($clickedButtonName === 'save') {
                 if ($localSource->isDefault()) {
-                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager) {
+                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager, $portal) {
                         $authSource->setDefault(false);
                         $entityManager->persist($authSource);
                     });

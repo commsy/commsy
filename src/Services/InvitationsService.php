@@ -28,10 +28,7 @@ class InvitationsService
             return $authSource->getType() === 'local';
         })->first();
 
-        $localAuthSourceExtras = $localAuthSource->getExtras();
-        $configValue = ($localAuthSourceExtras['CONFIGURATION']['ADD_ACCOUNT_INVITATION']) ?? 0;
-
-        return $configValue === 1;
+        return $localAuthSource->isAddAccount() === AuthSource::ADD_ACCOUNT_INVITE;
     }
 
     public function existsInvitationForEmailAddress($authSourceItem, $email): bool
@@ -41,7 +38,7 @@ class InvitationsService
             ->select()
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.email = :email')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceItem->getId())
             ->setParameter('email', $email)
             ->getQuery();
         $invitations = $query->getResult();
@@ -59,7 +56,7 @@ class InvitationsService
 
         $invitation = new Invitations();
         $invitation->setEmail($email);
-        $invitation->setAuthSourceId($authSourceItem->getItemId());
+        $invitation->setAuthSourceId($authSourceItem->getId());
         $invitation->setContextId($contextId);
         $invitation->setHash($invitationCode);
         $invitation->setCreationDate(new \DateTime());
@@ -79,7 +76,7 @@ class InvitationsService
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.hash = :invitationCode')
             ->andWhere('invitations.expirationDate >= :expirationDate')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceItem->getId())
             ->setParameter('invitationCode', $invitationCode)
             ->setParameter('expirationDate', new \DateTime())
             ->getQuery();
@@ -97,7 +94,7 @@ class InvitationsService
         $repository = $this->em->getRepository(Invitations::class);
         /** @var Invitations $invitation */
         $invitation = $repository->findOneBy([
-            'authSourceId' => $authSourceItem->getItemId(),
+            'authSourceId' => $authSourceItem->getId(),
             'hash' => $invitationCode,
         ]);
 
@@ -114,7 +111,7 @@ class InvitationsService
             ->select()
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.contextId = :contextId')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceItem->getId())
             ->setParameter('contextId', $contextId)
             ->orderBy('invitations.email', 'ASC')
             ->getQuery();
@@ -135,7 +132,7 @@ class InvitationsService
             ->delete()
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.email = :email')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceItem->getId())
             ->setParameter('email', $email)
             ->getQuery();
         $query->getResult();

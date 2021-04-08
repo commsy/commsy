@@ -23,10 +23,12 @@ use App\Form\Type\Account\PersonalInformationType;
 use App\Form\Type\Account\PrivacyType;
 use App\Form\Type\SignUpFormType;
 use App\Privacy\PersonalDataCollector;
+use App\Repository\PortalRepository;
 use App\Security\AbstractCommsyGuardAuthenticator;
 use App\Security\LdapAuthenticator;
 use App\Security\LoginFormAuthenticator;
 use App\Security\ShibbolethAuthenticator;
+use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use App\Utils\RoomService;
@@ -52,6 +54,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountController extends AbstractController
 {
+
     /**
      * @Route("/register/{id}")
      * @Template()
@@ -78,7 +81,7 @@ class AccountController extends AbstractController
             return $authSource->getType() === 'local';
         })->first();
 
-        if ($localAuthSource->isAddAccount() === false) {
+        if ($localAuthSource->isAddAccount() === AuthSource::ADD_ACCOUNT_NO) {
             throw $this->createAccessDeniedException('Self-Registration is disabled!');
         }
 
@@ -101,6 +104,79 @@ class AccountController extends AbstractController
             $account->setPassword($password);
 
             $accountFacade->persistNewAccount($account);
+
+            return $this->redirectToRoute('app_login', [
+                'context' => $portal->getId(),
+            ]);
+        }
+
+        return [
+            'portal' => $portal,
+            'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("{portalId}/register/{roomId}/invitation/{token}")
+     * @Template("account/sign_up.html.twig")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param AccountCreatorFacade $accountFacade
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param String $token
+     * @return array|Response
+     */
+    public function invitationSignUp(
+        Request $request,
+        UserPasswordEncoderInterface $passwordEncoder,
+        AccountCreatorFacade $accountFacade,
+        LegacyEnvironment $legacyEnvironment,
+        PortalRepository $portalRepository,
+        InvitationsService $invitationsService,
+        $portalId,
+        $token
+    ) {
+        $portal = $portalRepository->find($portalId);
+        $legacyEnvironment->getEnvironment()->setCurrentPortalID($portalId);
+
+        /** @var AuthSource $localAuthSource */
+        $localAuthSource = $portal->getAuthSources()->filter(function (AuthSource $authSource) {
+            return $authSource->getType() === 'local';
+        })->first();
+
+        // this should not be accessed if the invite option is switched off
+        if ($localAuthSource->isAddAccount() != AuthSource::ADD_ACCOUNT_INVITE) {
+            throw $this->createAccessDeniedException('Self-Registration is disabled!');
+        }
+
+        if ($invitationsService->confirmInvitationCode($localAuthSource, $token) === false) {
+            $this->addFlash('performedSuccessfully', 'The token is invalid');
+            return $this->redirectToRoute('app_login', [
+                'context' => $portal->getId(),
+            ]);
+        }
+
+        $account = new Account();
+        $account->setAuthSource($localAuthSource);
+        $account->setContextId($portal->getId());
+
+        $form = $this->createForm(SignUpFormType::class, $account);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('app_login', [
+                    'context' => $portal->getId(),
+                ]);
+            }
+            $account->setLanguage('de');
+
+            $password = $passwordEncoder->encodePassword($account, $account->getPlainPassword());
+            $account->setPassword($password);
+
+            $accountFacade->persistNewAccount($account);
+
+            $invitationsService->redeemInvitation($localAuthSource, $token);
 
             return $this->redirectToRoute('app_login', [
                 'context' => $portal->getId(),

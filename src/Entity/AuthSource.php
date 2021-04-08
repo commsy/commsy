@@ -6,6 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+define("ADD_ACCOUNT_YES", 1);
+define("ADD_ACCOUNT_NO", 2);
+define("ADD_ACCOUNT_INVITE", 3);
+
 /**
  * AuthSource
  *
@@ -19,6 +23,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 abstract class AuthSource
 {
+    const ADD_ACCOUNT_YES = 1;
+    const ADD_ACCOUNT_NO = 2;
+    const ADD_ACCOUNT_INVITE = 3;
+
     /**
      * @var integer
      *
@@ -77,7 +85,7 @@ abstract class AuthSource
     /**
      * @var boolean
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="integer")
      */
     protected $addAccount;
 
@@ -115,6 +123,14 @@ abstract class AuthSource
     private $createRoom;
 
     abstract public function getType(): string;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="extras", type="array", nullable=true)
+     */
+    private $extras;
+
 
     /**
      * @return int
@@ -250,19 +266,33 @@ abstract class AuthSource
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isAddAccount(): bool
+    public function isAddAccount(): int
     {
         return $this->addAccount;
     }
 
     /**
-     * @param bool $addAccount
+     * @param int $addAccount
      * @return self
      */
-    public function setAddAccount(bool $addAccount): self
+    public function setAddAccount(int $addAccount): self
     {
+        if(gettype($addAccount) === "string") {
+            switch ($addAccount) {
+                case "ADD_ACCOUNT_YES":
+                    $addAccount = self::ADD_ACCOUNT_YES;
+                    break;
+                case "ADD_ACCOUNT_NO":
+                    $addAccount = self::ADD_ACCOUNT_NO;
+                    break;
+                case "ADD_ACCOUNT_INVITE":
+                    $addAccount = self::ADD_ACCOUNT_INVITE;
+                    break;
+            }
+        }
+
         $this->addAccount = $addAccount;
         return $this;
     }
