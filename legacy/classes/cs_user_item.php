@@ -2090,7 +2090,7 @@ class cs_user_item extends cs_item
         $new_room_user->unsetItemID();
         $new_room_user->unsetCreatorID();
         $new_room_user->unsetCreatorDate();
-        $new_room_user->unsetAGBAcceptanceDate();
+        $new_room_user->setAGBAcceptanceDate(null);
         $new_room_user->unsetLinkedUserroomItemID();
         $new_room_user->unsetLinkedProjectUserItemID();
         $new_room_user->_unsetValue('modifier_id');
@@ -2185,29 +2185,33 @@ class cs_user_item extends cs_item
         }
     }
 
-    function setAGBAcceptance()
+    /**
+     * @param DateTimeImmutable|null $agbAcceptanceDate
+     * @return $this
+     */
+    public function setAGBAcceptanceDate(?DateTimeImmutable $agbAcceptanceDate): cs_user_item
     {
-        include_once('functions/date_functions.php');
-        $this->_setAGBAcceptanceDate(getCurrentDateTimeInMySQL());
+        $this->_addExtra(
+            'AGB_ACCEPTANCE_DATE',
+            $agbAcceptanceDate ? $agbAcceptanceDate->format('Y-m-d H:i:s') : ''
+        );
+
+        return $this;
     }
 
-    function unsetAGBAcceptanceDate()
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getAGBAcceptanceDate(): ?DateTimeImmutable
     {
-        $this->_setAGBAcceptanceDate('');
-    }
-
-    function _setAGBAcceptanceDate($value)
-    {
-        $this->_addExtra('AGB_ACCEPTANCE_DATE', $value);
-    }
-
-    function getAGBAcceptanceDate()
-    {
-        $retour = '';
         if ($this->_issetExtra('AGB_ACCEPTANCE_DATE')) {
-            $retour = $this->_getExtra('AGB_ACCEPTANCE_DATE');
+            $agbAcceptanceDate = $this->_getExtra('AGB_ACCEPTANCE_DATE') ?? '';
+            return !empty($agbAcceptanceDate) ?
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbAcceptanceDate) :
+                null;
         }
-        return $retour;
+
+        return null;
     }
 
     /** OLD FUNCTION
