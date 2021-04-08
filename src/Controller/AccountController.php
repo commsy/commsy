@@ -488,7 +488,6 @@ class AccountController extends AbstractController
      * @Template
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
-     * @param UserService $userService
      * @param ParameterBagInterface $parameterBag
      * @param TranslatorInterface $translator
      * @param AccountManager $accountManager
@@ -497,7 +496,6 @@ class AccountController extends AbstractController
      */
     public function deleteAccount(
         Request $request,
-        UserService $userService,
         ParameterBagInterface $parameterBag,
         TranslatorInterface $translator,
         AccountManager $accountManager,
@@ -511,9 +509,6 @@ class AccountController extends AbstractController
         $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, [
             'confirm_string' => $translator->trans('delete', [], 'profile'),
         ], [])->getForm();
-
-        $currentUser = $userService->getCurrentUserItem();
-        $portalUser = $currentUser->getRelatedCommSyUserItem();
 
         // Lock account
         if ($request->request->has('lock_form')) {

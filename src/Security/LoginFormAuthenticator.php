@@ -28,9 +28,19 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
-    private $urlGenerator;
+
+    /**
+     * @var CsrfTokenManagerInterface
+     */
     private $csrfTokenManager;
+
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $passwordEncoder;
 
     public function __construct(
@@ -39,8 +49,9 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         CsrfTokenManagerInterface $csrfTokenManager,
         UserPasswordEncoderInterface $passwordEncoder
     ) {
+        parent::__construct($urlGenerator);
+
         $this->entityManager = $entityManager;
-        $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
     }
@@ -170,12 +181,5 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
     public function supportsRememberMe()
     {
         return true;
-    }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
     }
 }

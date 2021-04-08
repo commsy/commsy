@@ -13,7 +13,7 @@
                     <div class="uk-accordion-content uk-padding-remove">
                         <ul class="uk-list uk-margin-bottom-remove">
                         {% for linkedItem in rubric [0:10] %}
-                            <li><a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title|decodeHtmlEntity|truncate(30) }}</a></li>
+                            <li><a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title|decodeHtmlEntity|u.truncate(30) }}</a></li>
                         {% endfor %}
                         </ul>
                         {% if rubric|length > 10 %}

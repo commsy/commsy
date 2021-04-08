@@ -19,7 +19,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -37,11 +36,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     private $entityManager;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
      * @var CsrfTokenManagerInterface
      */
     private $csrfTokenManager;
@@ -57,8 +51,9 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         CsrfTokenManagerInterface $csrfTokenManager,
         AccountCreatorFacade $accountCreator
     ) {
+        parent::__construct($urlGenerator);
+
         $this->entityManager = $entityManager;
-        $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->accountCreator = $accountCreator;
     }
@@ -300,14 +295,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
-    }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        // TODO
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
     }
 
     private function performLdapLookup(string $username, string $password, AuthSource $authSource)

@@ -2,7 +2,7 @@
     {% if portal is defined and portal is not null %}
         {% if portal.AGBEnabled %}
             <div class="uk-margin-left">
-                <a href="{{ path('app_tou_showportal', {
+                <a href="{{ path('app_tou_portal', {
                     'portalId': portal.id
                 }) }}" target="_blank">
                     {{ 'terms'|trans({}, 'portal') }}

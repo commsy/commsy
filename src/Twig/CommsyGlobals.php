@@ -5,6 +5,7 @@ namespace App\Twig;
 
 
 use App\Entity\Portal;
+use App\Entity\Room;
 use App\Entity\Server;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -60,6 +61,15 @@ class CommsyGlobals
                 ?? $request->attributes->get('context');
             if ($portalId !== null) {
                 return $this->entityManager->getRepository(Portal::class)->find($portalId);
+            }
+
+            $roomId = $request->attributes->get('roomId');
+            if ($roomId !== null) {
+                /** @var Room $room */
+                $room = $this->entityManager->getRepository(Room::class)->find($roomId);
+                if ($room !== null) {
+                    return $this->entityManager->getRepository(Portal::class)->find($room->getContextId());
+                }
             }
         }
 

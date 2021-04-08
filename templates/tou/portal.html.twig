@@ -1,0 +1,45 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}
+            {{ 'AGB'|trans({}, "room") }} - {{ 'Portal'|trans({}, "portal") }} "{{ portal.title }}"
+        {% endblock %}
+
+        {% block body %}
+            <div>
+                {% if portalUser.aGBAcceptanceDate < portal.aGBChangeDate %}
+                    <div>{{ 'tou.explanation'|trans({}, 'tou') }}</div>
+                {% else %}
+                    <div>
+                        {{ 'tou.explanation_accepted'|trans({
+                            '%datetime%': portalUser.aGBAcceptanceDate|craue_datetime
+                        }, 'tou') }}
+                    </div>
+                {% endif %}
+
+                <div>{{ 'last changed'|trans()|capitalize }}: {{ portal.aGBChangeDate|craue_datetime }}</div>
+
+                <blockquote>
+                    <header class="uk-text-small">{{ 'Translation german'|trans({}, 'translation') }}</header>
+                    <p>{{ portal.termsGerman|raw }}</p>
+                </blockquote>
+                <blockquote>
+                    <header class="uk-text-small">{{ 'Translation english'|trans({}, 'translation') }}</header>
+                    <p>{{ portal.termsEnglish|raw }}</p>
+                </blockquote>
+
+                {% if portalUser.aGBAcceptanceDate < portal.aGBChangeDate %}
+                    {{ form_start(form) }}
+                        <div class="uk-flex uk-flex-between">
+                            {{ form_widget(form.accept) }}
+                            {{ form_widget(form.decline) }}
+                        </div>
+                    {{ form_end(form) }}
+                {% endif %}
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
