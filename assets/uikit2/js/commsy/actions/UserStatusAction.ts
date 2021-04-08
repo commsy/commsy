@@ -15,7 +15,7 @@ export class UserStatusAction extends XHRAction {
     }
 
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             let currentURI = new URI(location.href);
             let requestURI = new URI(this.url);
             requestURI.search(function() {
@@ -44,7 +44,7 @@ export class UserStatusAction extends XHRAction {
             $('body').append($form);
             $form.trigger('submit');
 
-            resolve();
+            resolve(null);
         });
     }
 }

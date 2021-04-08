@@ -372,19 +372,19 @@
                 <div class="uk-flex uk-flex-space-between">
                     <div>
                         {% if member.telephone %}
-                            <a href="tel:{{member.telephone}}" data-uk-tooltip title="{{member.telephone}}" >{{ member.telephone|truncate(20) }}</a><br/>
+                            <a href="tel:{{member.telephone}}" data-uk-tooltip title="{{member.telephone}}" >{{ member.telephone|u.truncate(20) }}</a><br/>
                         {% else %}
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no telephone'|trans({}) }}">---</span><br/>
                         {% endif %}
                         {% if member.cellularphone %}
-                            <a href="tel:{{member.cellularphone}}" data-uk-tooltip title="{{member.cellularphone}}" >{{ member.cellularphone|truncate(20) }}</a>
+                            <a href="tel:{{member.cellularphone}}" data-uk-tooltip title="{{member.cellularphone}}" >{{ member.cellularphone|u.truncate(20) }}</a>
                         {% else %}
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">---</span>
                         {% endif %}
                     </div>
                     <div>
                         {% if member.street %}
-                            <span data-uk-tooltip title="{{member.street}}">{{ member.street |truncate(20)}}</span><br/>
+                            <span data-uk-tooltip title="{{member.street}}">{{ member.street |u.truncate(20)}}</span><br/>
                         {% else %}
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">---</span><br/>
                         {% endif %}

@@ -50,6 +50,7 @@ security:
 
         main:
             anonymous: true
+            user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
                 success_handler: App\Security\LogoutSuccessHandler
@@ -59,6 +60,9 @@ security:
                     - App\Security\LdapAuthenticator
                     - App\Security\ShibbolethAuthenticator
                 entry_point: App\Security\LoginFormAuthenticator
+                provider: commsy_user_provider
+            switch_user:
+                role: CAN_SWITCH_USER
                 provider: commsy_user_provider
 
     # Easy way to control access for large sections of your site

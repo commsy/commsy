@@ -4,7 +4,7 @@
             {% if userId != "" and userId != "0" %}
                 {% if portalUser is defined and portalUser is not null %}
                     <li>
-                        <a href="{{ path('app_profile_personal', {'roomId': portalUser.contextId, 'itemId': portalUser.itemId }) }}"><i class="uk-icon-justify uk-icon-user"></i> {{ 'Account'|trans([], 'profile') }}</a>
+                        <a href="{{ path('app_account_personal', {'portalId': portalUser.contextId }) }}"><i class="uk-icon-justify uk-icon-user"></i> {{ 'Account'|trans([], 'profile') }}</a>
                     </li>
                 {% endif %}
                 {% if not inPrivateRoom and not inPortal %}
@@ -17,6 +17,15 @@
             <li>
                 <a href="{{ path('app_logout') }}"><i class="uk-icon-justify uk-icon-power-off"></i> {{ 'Sign out'|trans([], 'profile') }}</a>
             </li>
+
+            {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                <li>
+                    <a href="{{ path('app_logout', {'_switch_user': '_exit'}) }}" title="{{ 'profile.exit_impersonation'|trans([], 'profile') }}">
+                        <i class="uk-icon-sign-out"></i> {{ 'profile.exit_impersonation'|trans([], 'profile') }}
+                    </a>
+                </li>
+            {% endif %}
+
         </ul>
     </div>
 {% endif %}

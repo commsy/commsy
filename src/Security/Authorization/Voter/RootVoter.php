@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class RootVoter extends Voter
 {
-    public const ROOT = 'ROOT';
+    public const ROOT = 'ROLE_ROOT';
 
     protected function supports($attribute, $subject)
     {
