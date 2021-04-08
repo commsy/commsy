@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\AuthSource;
+use App\Entity\Portal;
 use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
 use App\Form\DataTransformer\AdditionalSettingsTransformer;
@@ -17,6 +19,7 @@ use App\Form\Type\InvitationsSettingsType;
 use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\Room\DeleteType;
 use App\Form\Type\Room\UserRoomDeleteType;
+use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
@@ -32,6 +35,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -42,6 +46,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SettingsController extends AbstractController
 {
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
     /**
      * @var ParameterBagInterface
      */
@@ -577,6 +591,8 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
+        PortalRepository $portalRepository,
+        \Swift_Mailer $mailer,
         int $roomId
     )
     {
@@ -587,18 +603,15 @@ class SettingsController extends AbstractController
         }
 
         $legacyEnvironment = $environment->getEnvironment();
-        $portal = $legacyEnvironment->getCurrentPortalItem();
 
-        $authSourceManager = $legacyEnvironment->getAuthSourceManager();
-        $authSourceManager->setContextLimit($legacyEnvironment->getCurrentPortalId());
-        $authSourceManager->select();
+        /** @var Portal $portal */
+        $portal = $portalRepository->find($roomItem->getContextID());
 
-        /** @var \cs_list $authSources */
-        $authSources = $authSourceManager->get();
+        $authSources = $portal->getAuthSources();
 
         $authSourceItem = null;
         foreach ($authSources as $authSource) {
-            if ($authSource->isCommSyDefault() && $authSource->allowAddAccountInvitation()) {
+            if ($authSource->isDefault() && $authSource->isAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
                 $authSourceItem = $authSource;
                 break;
             }
@@ -634,11 +647,17 @@ class SettingsController extends AbstractController
                     $invitationCode = $invitationsService->generateInvitationCode($authSourceItem, $roomId, $data['email']);
 
                     $invitationLink = $request->getSchemeAndHttpHost();
-                    $invitationLink .= '?cid=' . $portal->getItemId() . '&mod=home&fct=index&cs_modus=portalmember';
-                    $invitationLink .= '&invitation_auth_source=' . $authSourceItem->getItemId();
+                    $invitationLink .= '?cid=' . $portal->getId() . '&mod=home&fct=index&cs_modus=portalmember';
+                    $invitationLink .= '&invitation_auth_source=' . $authSourceItem->getId();
                     $invitationLink .= '&invitation_auth_code=' . $invitationCode;
 
-                    $mailer = $this->get('mailer');
+                    $invitationLink = $request->getSchemeAndHttpHost();
+                    $invitationLink .= $this->router->generate('app_account_invitationsignup', [
+                        'portalId' => $portal->getId(),
+                        'roomId' => $roomItem->getItemID(),
+                        'token' => $invitationCode,
+                    ]);
+
                     $fromAddress = $this->getParameter('commsy.email.from');
                     $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
@@ -651,7 +670,7 @@ class SettingsController extends AbstractController
                         '%link%' => $invitationLink,
                         '%roomLink%' => $this->generateUrl('app_room_home', [
                             'roomId' => $roomItem->getItemID(),
-                        ], UrlGeneratorInterface::ABSOLUTE_URL),
+                        ], UrlGeneratorInterface::ABSOLUTE_URL)." ",
                         '%sender%' => $user->getFullName(),
                     ]);
                     $mailMessage = (new \Swift_Message())
@@ -659,6 +678,7 @@ class SettingsController extends AbstractController
                         ->setBody($body, 'text/plain')
                         ->setFrom([$fromAddress => $fromSender])
                         ->setTo([$data['email']]);
+
                     $mailer->send($mailMessage);
                 }
             } else if ($clickedButton === 'delete') {

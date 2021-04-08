@@ -57,6 +57,16 @@ class AuthLocalType extends AbstractType
                 'required' => false,
                 'help' => 'Pre select this authentication in the login box (deselect all others)'
             ])
+            ->add('addAccount', ChoiceType::class, [
+                'label' => 'Add account',
+                'expanded' => true,
+                'choices' => [
+                    'Yes' => 1,
+                    'No' => 2,
+                    'Invitation' => 3
+                ],
+                'choice_translation_domain' => 'portal',
+            ])
             ->add('enabled', CheckboxType::class, [
                 'label' => 'Available',
                 'required' => false,
