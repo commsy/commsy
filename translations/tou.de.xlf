@@ -3,8 +3,12 @@
     <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="tou_explanation">
-                <source>The terms of usage has been updated. In order to continue you need to accept them.</source>
+                <source>tou.explanation</source>
                 <target>Die Nutzungsbedingungen wurden aktualisiert. Sie müssen diese vor der weiteren Nutzung akzeptieren.</target>
+            </trans-unit>
+            <trans-unit id="tou_explanation_accepted">
+                <source>tou.explanation_accepted</source>
+                <target>Sie haben diese Nutzungsbedingungen am %datetime% akzeptiert.</target>
             </trans-unit>
             <trans-unit id="tou_button_accept">
                 <source>Accept</source>

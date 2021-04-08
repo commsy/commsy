@@ -71,6 +71,7 @@ use App\Utils\MailAssistant;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
@@ -1057,7 +1058,7 @@ class PortalSettingsController extends AbstractController
         if ($termsForm->isSubmitted() && $termsForm->isValid()) {
 
             if ($termsForm->getClickedButton()->getName() === 'save') {
-                $portal->setAGBChangeDate(new \DateTime());
+                $portal->setAGBChangeDate(new DateTimeImmutable());
                 $entityManager->persist($portal);
                 $entityManager->flush();
 

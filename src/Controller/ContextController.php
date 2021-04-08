@@ -7,6 +7,7 @@ use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ProjectService;
+use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Utils\UserService;
@@ -179,7 +180,7 @@ class ContextController extends AbstractController
                 }
 
                 if ($roomItem->getAGBStatus()) {
-                    $newUser->setAGBAcceptance();
+                    $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 }
 
                 if ($legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {

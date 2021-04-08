@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use DateTimeImmutable;
 use Symfony\Component\Form\FormInterface;
 
 
@@ -87,7 +88,7 @@ class UserService
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($contextID);
         if ($roomItem->getAGBStatus()) {
-            $newUser->setAGBAcceptance();
+            $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
         }
 
         if ($this->legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
