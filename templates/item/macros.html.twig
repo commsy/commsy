@@ -115,7 +115,7 @@
                                         </div>
                                     {% endif %}
                                     <div class="uk-vertical-align-middle" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
-                                        <a href="{{ path('app_file_getfile', {'fileId': file.fileId}) }}" target="_blank">{{ file.filename|truncate(20) }}</a><br/>
+                                        <a href="{{ path('app_file_getfile', {'fileId': file.fileId}) }}" target="_blank">{{ file.filename|u.truncate(20) }}</a><br/>
                                         ({{ file.fileSize }} kb)
                                     </div>
                                 </div>

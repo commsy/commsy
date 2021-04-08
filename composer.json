@@ -57,7 +57,8 @@
         "symfony/webpack-encore-bundle": "^1.6",
         "symfony/yaml": "4.4.*",
         "tomnomnom/etherpad-lite-client": "^0.1.2",
-        "twig/extensions": "^1.5",
+        "twig/extra-bundle": "^3.3",
+        "twig/string-extra": "^3.3",
         "vich/uploader-bundle": "^1.16"
     },
     "require-dev": {

@@ -1258,12 +1258,7 @@ services:
     App\Http\JsonRedirectResponse:
         autowire: false
 
-    # Twig
-    twig.extension.text:
-        class: Twig_Extensions_Extension_Text
-        tags:
-            - { name: twig.extension }
-
+    # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }

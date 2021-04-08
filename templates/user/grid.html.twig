@@ -68,19 +68,19 @@
             <div class="uk-flex uk-flex-space-between">
                 <div>
                     {% if user.telephone %}
-                        <a href="tel:{{user.telephone}}">{{ user.telephone|truncate(20) }}</a><br/>
+                        <a href="tel:{{user.telephone}}">{{ user.telephone|u.truncate(20) }}</a><br/>
                     {% else %}
                         <span class="uk-text-muted" data-uk-tooltip title="{{'no telephone'|trans({}) }}">&#8230;</span><br/>
                     {% endif %}
                     {% if user.cellularphone %}
-                        <a href="tel:{{user.cellularphone}}">{{ user.cellularphone|truncate(20) }}</a>
+                        <a href="tel:{{user.cellularphone}}">{{ user.cellularphone|u.truncate(20) }}</a>
                     {% else %}
                         <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">&#8230;</span>
                     {% endif %}
                 </div>
                 <div>
                     {% if user.street %}
-                        <span>{{ user.street |truncate(20)}}</span><br/>
+                        <span>{{ user.street |u.truncate(20)}}</span><br/>
                     {% else %}
                         <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">&#8230;</span><br/>
                     {% endif %}
