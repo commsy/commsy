@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ItemVoter extends Voter
 {
@@ -241,7 +241,7 @@ class ItemVoter extends Voter
                 }
 
                 // allow access if user is authenticated
-                return $user instanceof User;
+                return $user instanceof UserInterface;
             }
         } catch (\Exception $e) {
             return false;
