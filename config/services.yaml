@@ -6,7 +6,6 @@
 parameters:
     locale: '%env(LOCALE)%'
 
-    legacy.site_index: "%kernel.project_dir%/public/commsy_legacy.php"
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
@@ -179,24 +178,8 @@ services:
 ###############################
 ## Commsy\LegacyBundle
 ###############################
-    # Legacy kernel
-    commsy_legacy.kernel:
-        alias: App\Kernel\LegacyKernel
-
-    App\Kernel\LegacyKernel:
-        arguments:
-            $legacyAppPath: '%legacy.site_index%'
-
-    # Legacy authentication
-    commsy_legacy.legacy_authentication:
-        class: App\Authentication\LegacyAuthentication
-        arguments: ['@commsy_legacy.environment']
-
     # Event subscriber
     App\EventSubscriber\KernelSubscriber:
-        arguments:
-            $legacyKernel: '@commsy_legacy.kernel'
-            $legacyAuthentication: '@commsy_legacy.legacy_authentication'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -207,7 +190,7 @@ services:
     App\Services\LegacyEnvironment:
         public: true
         autowire: true
-        arguments: ['%legacy.site_index%', '@service_container']
+        arguments: ['%kernel.project_dir%', '@service_container']
 
     commsy_legacy.category_service:
         alias: App\Utils\CategoryService
