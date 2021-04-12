@@ -21,14 +21,12 @@ class AuthSourceRepository extends ServiceEntityRepository
 
     /**
      * @param int $portalId
-     * @return mixed
+     * @return int|mixed|string
      */
     public function findByPortal(int $portalId)
     {
         return $this->createQueryBuilder('a')
-            ->where('a.deleterId IS NULL')
-            ->andWhere('a.deletionDate IS NULL')
-            ->andWhere('a.contextId = :portalId')
+            ->where('a.portal = :portalId')
             ->setParameter('portalId', $portalId)
             ->getQuery()
             ->getResult();

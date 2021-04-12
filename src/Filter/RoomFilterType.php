@@ -30,6 +30,13 @@ class RoomFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('title', Filters\TextFilterType::class, [
                 'label' => 'search-filter',
                 'translation_domain' => 'room',
@@ -101,19 +108,12 @@ class RoomFilterType extends AbstractType
         if ($options['showTime']) {
             $builder
                 ->add('timePulses', Filters\ChoiceFilterType::class, [
-                    'label' => 'time pulses',
+                    'label' => $options['timePulsesDisplayName'],
                     'choices' => $options['timePulses'],
                     'placeholder' => 'All',
                     'translation_domain' => 'room',
                 ]);
         }
-        $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Suchen',
-            ));
     }
 
     /**
@@ -136,7 +136,7 @@ class RoomFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['showTime', 'timePulses'])
+            ->setRequired(['showTime', 'timePulses', 'timePulsesDisplayName'])
             ->setDefaults([
                 'csrf_protection'   => false,
                 'validation_groups' => ['filtering'], // avoid NotBlank() constraint-related message

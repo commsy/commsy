@@ -7,8 +7,10 @@ use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 use cs_room_item;
 
-class GeneralSettingsTransformer implements DataTransformerInterface
+class GeneralSettingsTransformer  extends AbstractTransformer
 {
+    protected $entity = 'general_settings';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
@@ -63,7 +65,7 @@ class GeneralSettingsTransformer implements DataTransformerInterface
 
             $linkedCommunityRooms = array();
 
-            if (!$roomItem->isGroupRoom()) {
+            if (!$roomItem->isGroupRoom() && !$roomItem->isUserroom()) {
                 foreach ($roomItem->getCommunityList()->to_array() as $key => $communityRoom) {
                     if ($communityRoom) {
                         $linkedCommunityRooms[] = $communityRoom->getItemID();

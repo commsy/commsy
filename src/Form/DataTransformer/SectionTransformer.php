@@ -4,8 +4,10 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-class SectionTransformer implements DataTransformerInterface
+class SectionTransformer  extends AbstractTransformer
 {
+    protected $entity = 'section';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

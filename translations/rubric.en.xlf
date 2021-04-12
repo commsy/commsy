@@ -218,13 +218,25 @@
                 <source>markdone</source>
                 <target>Mark entries as "done"</target>
             </trans-unit>
+            <trans-unit id="markdonesingle">
+                <source>markdonesingle</source>
+                <target>Mark entry as "done"</target>
+            </trans-unit>
             <trans-unit id="markinprogress">
                 <source>markinprogress</source>
                 <target>Mark entries as "in progress"</target>
             </trans-unit>
+            <trans-unit id="markinprogresssingle">
+                <source>markinprogresssingle</source>
+                <target>Mark entry as "in progress"</target>
+            </trans-unit>
             <trans-unit id="markpending">
                 <source>markpending</source>
                 <target>Mark entries as "pending"</target>
+            </trans-unit>
+            <trans-unit id="markpendingsingle">
+                <source>markpendingsingle</source>
+                <target>Mark entry as "pending"</target>
             </trans-unit>
             <trans-unit id="marktodostatus">
                 <source>marktodostatus</source>

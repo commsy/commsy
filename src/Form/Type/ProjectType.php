@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\Room;
 use App\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -47,7 +48,26 @@ class ProjectType extends AbstractType
                 'label_attr' => [
                     'style' => 'display: none;',
                 ]
-            ]);
+            ])
+            ->add('createUserRooms', CheckboxType::class, [
+                'label' => 'User room',
+                'translation_domain' => 'settings',
+                'mapped' => false,
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+                'help' => 'User room tooltip',
+            ])
+            ->add('userroom_template', ChoiceType::class, [
+                'choices' => $options['templates'],
+                'placeholder' => 'No template',
+                'required' => false,
+                'mapped' => false,
+                'label' => 'User room template',
+                'translation_domain' => 'settings',
+            ])
+        ;
             if (!empty($options['times'])) {
                 $builder->add('time_interval', Select2ChoiceType::class, [
                     'choices' => $options['times'],

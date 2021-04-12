@@ -22,6 +22,8 @@
                                     {{ 'project'|trans([], 'room') }}
                                 {% elseif item.isGroupRoom %}
                                     {{ 'grouproom'|trans([], 'room') }}
+                                {% elseif item.isUserroom %}
+                                    {{ 'userroom'|trans([], 'room') }}
                                 {% else %}
                                     {{ 'community'|trans([], 'room') }}
                                 {% endif %}

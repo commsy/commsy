@@ -36,7 +36,7 @@ class CopyService
     public function getCountArray($roomId)
     {
         $currentClipboardIds = array();
-        if ($this->sessionItem->issetValue('clipboard_ids')) {
+        if ($this->sessionItem && $this->sessionItem->issetValue('clipboard_ids')) {
             $currentClipboardIds = $this->sessionItem->getValue('clipboard_ids');
         }
 
@@ -60,7 +60,7 @@ class CopyService
     public function getListEntries($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $currentClipboardIds = array();
-        if ($this->sessionItem->issetValue('clipboard_ids')) {
+        if ($this->sessionItem && $this->sessionItem->issetValue('clipboard_ids')) {
             $currentClipboardIds = $this->sessionItem->getValue('clipboard_ids');
         }
         
@@ -119,7 +119,7 @@ class CopyService
     
     public function removeEntries ($roomId, $entries) {
         $currentClipboardIds = array();
-        if ($this->sessionItem->issetValue('clipboard_ids')) {
+        if ($this->sessionItem && $this->sessionItem->issetValue('clipboard_ids')) {
             $currentClipboardIds = $this->sessionItem->getValue('clipboard_ids');
         }
         

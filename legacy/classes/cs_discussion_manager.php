@@ -247,9 +247,15 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
 
      $query .= ' WHERE 1';
 
-      if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND ('.$this->addDatabasePrefix('discussions').'.modification_date IS NULL OR '.$this->addDatabasePrefix('discussions').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
-      }
+       switch ($this->inactiveEntriesLimit) {
+           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('discussions') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('discussions') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+       }
+
      // fifth, insert limits into the select statement
      if ( !empty($this->_room_array_limit)
           and is_array($this->_room_array_limit)

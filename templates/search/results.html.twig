@@ -1,6 +1,7 @@
 {% extends 'base/room.html.twig' %}
 
 {% form_theme filterForm 'form/uikit_horizontal_dynamic_layout.html.twig' %}
+{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -8,28 +9,70 @@
         {# sidebar #}
         <div class="uk-width-medium-1-3 uk-push-2-3">
 
+            {{ form_start(filterForm) }}
+
+            {# NOTE: the two panels in the sidebar (manage-my-views & list-filter) comprise a single form (filterForm) #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-clearfix">
                         <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter'}">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#manage-my-views'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         </div>
                         <div class="uk-text-large uk-float-left">
-                            {{ 'Restrict Results'|trans({}, 'search')}}
+                            {{ 'Manage my views'|trans({}, 'search') }}
                         </div>
                     </div>
                 </div>
 
-                <div id="list-filter" class="uk-hidden-small">
-                    {{ form_start(filterForm) }}
-                    {# visually separate the first form field from the rest (since it expands the search results instead of restricting them) #}
-                    {{ form_row(filterForm.all_rooms) }}
-                    <hr/>
-                    {{ form_end(filterForm) }}
+                <div id="manage-my-views" class="uk-hidden-small">
+                    {{ form_row(filterForm.selectedSavedSearch) }}
+                    {{ form_row(filterForm.selectedSavedSearchTitle) }}
+                    {{ form_row(filterForm.save) }}
+                    {% if filterForm.delete is defined %}
+                        {{ form_row(filterForm.delete) }}
+                    {% endif %}
+                    {{ form_row(filterForm.load) }}
                 </div>
             </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
+                <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary">
+                        <div class="uk-clearfix">
+                            <div class="uk-flex uk-flex-space-between uk-flex-middle">
+                                <div class="uk-text-large">
+                                    {{ 'Restrict results'|trans({}, 'search')}}
+                                </div>
+                                <div class="uk-flex-right uk-flex-inline uk-flex-middle">
+                                    {{ form_widget(filterForm.submit) }}
+                                    <a href="#" class="button-toggle uk-button-mini uk-button-secondary uk-margin-small-left" data-uk-toggle="{target: '#list-filter'}" style="padding-top: 1px; padding-bottom: 1px">
+                                        <i class="uk-icon-chevron-up"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="list-filter" class="uk-hidden-small uk-margin-top">
+                    {{ form_row(filterForm.appears_in) }}
+                    {{ form_row(filterForm.selectedCreator) }}
+                    {{ form_row(filterForm.creation_date_range) }}
+                    {{ form_row(filterForm.modification_date_range) }}
+                    {{ form_row(filterForm.selectedRubric) }}
+                    {% if filterForm.selectedTodoStatus is defined %}
+                        {{ form_row(filterForm.selectedTodoStatus) }}
+                    {% endif %}
+                    {{ form_row(filterForm.selectedHashtags) }}
+                    {{ form_row(filterForm.selectedCategories) }}
+                    {{ form_row(filterForm.selectedContext) }}
+                    {{ form_row(filterForm.selectedReadStatus) }}
+                </div>
+            </div>
+
+            {{ form_end(filterForm) }}
 
         </div>
 
@@ -37,98 +80,119 @@
         <div class="uk-width-medium-2-3 uk-pull-1-3">
 
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">
-                            {{ 'Search for "%query%" (%totalHits% Hits)'| trans({
-                                '%query%': searchData.phrase,
-                                '%totalHits%': totalHits
-                            }, 'search') }}
-                        </div>
 
-                        <div>
-                            {% block editbox %}
+                <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="uk-text-large">
+                                {{ 'Search for "%query%" (%totalHits% Hits)'| trans({
+                                    '%query%': searchData.phrase,
+                                    '%totalHits%': totalHits
+                                }, 'search') }}
+                            </div>
 
-                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                    <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                    <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                            <div>
+                                {% block sortbox %}
+                                    {# sort dropdown #}
+                                    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                        <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                                {# sorting options #}
+                                                {{ utilsMacros.sortActor('title', 'Title', 'search', 'title.raw__asc', 'title.raw__desc', searchData.sortBy is same as('title.raw') ? searchData.sortOrder : '') }}
+                                                {{ utilsMacros.sortActor('creator', 'Creator', 'search', 'creator.fullName.raw__asc', 'creator.fullName.raw__desc', searchData.sortBy is same as('creator.fullName.raw') ? searchData.sortOrder : '') }}
+                                                {{ utilsMacros.sortActor('modifier', 'Modifier', 'search', 'modifier.fullName.raw__asc', 'modifier.fullName.raw__desc', searchData.sortBy is same as('modifier.fullName.raw') ? searchData.sortOrder : '') }}
+                                                {{ utilsMacros.sortActor('creationDate', 'Creation date', 'search', 'creationDate__asc', 'creationDate__desc', searchData.sortBy is same as('creationDate') ? searchData.sortOrder : '') }}
+                                                {{ utilsMacros.sortActor('modificationDate', 'Modification date', 'search', 'modificationDate__asc', 'modificationDate__desc', searchData.sortBy is same as('modificationDate') ? searchData.sortOrder : '') }}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% endblock %}
 
-                                            <li>
-                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                    'url': path('app_search_xhrcopy', {'roomId': roomId}),
-                                                    'action': 'copy',
-                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                    'mode': 'selection',
-                                                    'noSelectionMessage': 'no entry selected'|trans({},'item')
-                                                }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
-                                                </a>
-                                            </li>
+                                {% block editbox %}
+                                    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
-                                            <li>
-                                                {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
-                                                    {% set returnUrlParams = {
-                                                        'roomId': roomId,
-                                                        'search_filter[phrase]': searchData.phrase,
-                                                        'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
-                                                        "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
-                                                        "search_filter[selectedCreator]": searchData.selectedCreator,
-                                                        "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
-                                                        "search_filter[creation_date_range][right_date]": searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '',
-                                                        "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
-                                                        "search_filter[modification_date_range][right_date]": searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '',
-                                                        "search_filter[selectedRubric]": searchData.selectedRubric,
-                                                    }
-                                                    %}
-                                                    {% if searchData.allRooms %}
-                                                        {# NOTE: for allRooms==false, the param must be left out entirely, otherwise the corresponding checkbox in
-                                                           the search filter form will get marked when handleRequest() gets called for the SearchFilterType form #}
-                                                        {% set returnUrlParams = returnUrlParams|merge({ "search_filter[all_rooms]": 1 }) %}
-                                                    {% endif %}
-                                                    {% for hashtag in searchData.selectedHashtags %}
-                                                        {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
-                                                        {% set val = searchData.selectedHashtags[loop.index0] %}
-                                                        {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
-                                                    {% endfor %}
-                                                    {% for category in searchData.selectedCategories %}
-                                                        {% set key = "search_filter[selectedCategories][" ~ loop.index0 ~ "]" %}
-                                                        {% set val = searchData.selectedCategories[loop.index0] %}
-                                                        {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
-                                                    {% endfor %}
-
+                                                <li>
                                                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                        'url': path('app_search_xhrdelete', {'roomId': roomId}),
-                                                        'action': 'delete',
+                                                        'url': path('app_search_xhrcopy', {'roomId': roomId}),
+                                                        'action': 'copy',
                                                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                         'mode': 'selection',
-                                                        'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
-                                                        'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
-                                                        'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
-                                                        'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                                                        'returnUrl': path('app_search_results', returnUrlParams)
+                                                        'noSelectionMessage': 'no entry selected'|trans({},'item')
                                                     }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
                                                     </a>
-                                                {%- else -%}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
-                                                    </span>
-                                                {%- endif %}
+                                                </li>
 
-                                            </li>
+                                                <li>
+                                                    {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
+                                                        {% set returnUrlParams = {
+                                                            'roomId': roomId,
+                                                            'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId,
+                                                            'search_filter[selectedSavedSearchTitle]': searchData.selectedSavedSearchTitle ?? '',
+                                                            'search_filter[phrase]': searchData.phrase,
+                                                            'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
+                                                            "search_filter[appears_in][1]": searchData.appearsInDescription ? 'description' : '',
+                                                            "search_filter[selectedReadStatus]": searchData.selectedReadStatus,
+                                                            "search_filter[selectedCreator]": searchData.selectedCreator,
+                                                            "search_filter[selectedContext]": searchData.selectedContext,
+                                                            "search_filter[creation_date_range][left_date]": searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '',
+                                                            "search_filter[creation_date_range][right_date]": searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '',
+                                                            "search_filter[modification_date_range][left_date]": searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '',
+                                                            "search_filter[modification_date_range][right_date]": searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '',
+                                                            "search_filter[selectedRubric]": searchData.selectedRubric,
+                                                            "search_filter[sortBy]": searchData.sortBy,
+                                                            "search_filter[sortOrder]": searchData.sortOrder,
+                                                        } %}
+                                                        {% if searchData.selectedRubric is same as('todo') %}
+                                                            {% set returnUrlParams = returnUrlParams|merge({ "search_filter[selectedTodoStatus]": searchData.selectedTodoStatus }) %}
+                                                        {% endif %}
+                                                        {% for hashtag in searchData.selectedHashtags %}
+                                                            {% set key = "search_filter[selectedHashtags][" ~ loop.index0 ~ "]" %}
+                                                            {% set val = searchData.selectedHashtags[loop.index0] %}
+                                                            {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
+                                                        {% endfor %}
+                                                        {% for category in searchData.selectedCategories %}
+                                                            {% set key = "search_filter[selectedCategories][" ~ loop.index0 ~ "]" %}
+                                                            {% set val = searchData.selectedCategories[loop.index0] %}
+                                                            {% set returnUrlParams = returnUrlParams|merge({ (key): val }) %}
+                                                        {% endfor %}
 
-                                        </ul>
+                                                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                            'url': path('app_search_xhrdelete', {'roomId': roomId}),
+                                                            'action': 'delete',
+                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                            'mode': 'selection',
+                                                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                                                            'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
+                                                            'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
+                                                            'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
+                                                            'returnUrl': path('app_search_results', returnUrlParams)
+                                                        }|json_encode|e('html_attr') }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                                        </a>
+                                                    {%- else -%}
+                                                        <span class="uk-text-muted">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                                        </span>
+                                                    {%- endif %}
+
+                                                </li>
+
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            {% endblock%}
+                                {% endblock%}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {# will be displayed when selection mode is active #}
-                <div id="commsy-select-actions" class="uk-hidden" data-uk-sticky>
+                <div id="commsy-select-actions" class="uk-hidden" style="margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px" data-uk-sticky>
                     <div class="uk-grid uk-margin-remove">
 
                         {# change selection #}
@@ -146,41 +210,45 @@
                     </div>
                 </div>
 
-                <div class="feed">
+                <div class="feed uk-margin-top">
                     <ul id="search-feed" class="uk-comment-list" data-uk-observe>
                         {% include 'search/feed.html.twig' %}
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}
-                    {% if totalHits != results|length %}
-                        <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
-                                "url": "{{ app.request.baseURL  }}/room/{{ roomId  }}/searchmore/",
-                                "target": "#search-feed",
-                                "query": {
-                                    "search[phrase]": "{{ searchData.phrase }}",
-                                    "search[all_rooms]": "{{ searchData.allRooms ? 1 : 0 }}",
-                                    "search[appears_in][]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
-                                    "search[appears_in][]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
-                                    "search[selectedCreator]": "{{ searchData.selectedCreator }}",
-                                    {% for hashtag in searchData.selectedHashtags -%}
-                                    "search[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
-                                    {%- endfor %}
+                    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
+                            "url": "{{ app.request.baseURL }}/room/{{ roomId }}/searchmore/",
+                            "target": "#search-feed",
+                            "query": {
+                            "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
+                            "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
+                            "search_filter[phrase]": "{{ searchData.phrase }}",
+                            "search_filter[appears_in][0]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
+                            "search_filter[appears_in][1]": "{{ searchData.appearsInDescription ? 'description' : '' }}",
+                            "search_filter[selectedReadStatus]": "{{ searchData.selectedReadStatus }}",
+                            "search_filter[selectedCreator]": "{{ searchData.selectedCreator }}",
+                            "search_filter[selectedContext]": "{{ searchData.selectedContext }}",
+                                {% for hashtag in searchData.selectedHashtags -%}
+                            "search_filter[selectedHashtags][{{ loop.index0 }}]": "{{ searchData.selectedHashtags[loop.index0] }}",
+                                {%- endfor %}
 
-                                    {% for category in searchData.selectedCategories -%}
-                                        "search[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
-                                    {%- endfor %}
+                                {% for category in searchData.selectedCategories -%}
+                                "search_filter[selectedCategories][{{ loop.index0 }}]": "{{ searchData.selectedCategories[loop.index0] }}",
+                                {%- endfor %}
 
-                                    "search[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
-                                    "search[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
-                                    "search[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
-                                    "search[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
-                                    "search[selectedRubric]": "{{ searchData.selectedRubric }}"
-                                }
-                        }'>
-                            <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
-                            <div class="cs-toggle-class"></div>
-                        </div>
-                    {% endif %}
+                            "search_filter[creation_date_range][left_date]": "{{ searchData.creationDateFrom ? searchData.creationDateFrom.format('d.m.Y') : '' }}",
+                            "search_filter[creation_date_range][right_date]": "{{ searchData.creationDateUntil ? searchData.creationDateUntil.format('d.m.Y') : '' }}",
+                            "search_filter[modification_date_range][left_date]": "{{ searchData.modificationDateFrom ? searchData.modificationDateFrom.format('d.m.Y') : '' }}",
+                            "search_filter[modification_date_range][right_date]": "{{ searchData.modificationDateUntil ? searchData.modificationDateUntil.format('d.m.Y') : '' }}",
+                            "search_filter[selectedRubric]": "{{ searchData.selectedRubric }}",
+                            "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0 }}",
+                            "search_filter[sortBy]": "{{ searchData.sortBy }}",
+                            "search_filter[sortOrder]": "{{ searchData.sortOrder }}"
+                            }
+                    }'>
+                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                        <div class="cs-toggle-class"></div>
+                    </div>
                 </div>
             </div>
 

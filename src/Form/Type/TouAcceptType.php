@@ -12,6 +12,7 @@ class TouAcceptType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $sizeClass = $options['uikit3'] ? ' uk-width-large' : '';
         $builder
             ->add('accept', SubmitType::class, [
                 'translation_domain' => 'tou',
@@ -22,7 +23,7 @@ class TouAcceptType extends AbstractType
             ->add('decline', SubmitType::class, [
                 'translation_domain' => 'tou',
                 'attr' => [
-                    'class' => 'uk-button-danger',
+                    'class' => 'uk-button-danger' . $sizeClass,
                 ]
             ])
         ;
@@ -30,8 +31,7 @@ class TouAcceptType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            // Configure your form options here
-        ]);
+        $resolver
+            ->setRequired(['uikit3']);
     }
 }

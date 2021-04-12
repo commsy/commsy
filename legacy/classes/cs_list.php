@@ -23,321 +23,288 @@
 //    along with CommSy.
 
 /** class for lists of commsy items (objects)
- * this class implements a list of ojects. An object is a commsy item
+ * this class implements a list of objects. An object is a commsy item
  */
-class cs_list implements IteratorAggregate {
+class cs_list implements IteratorAggregate
+{
+    /**
+     * string - containing the type of the list resp. the type of the elements
+     */
+    protected $type;
 
-   /**
-    * string - containing the type of the list resp. the type of the elements
-    */
-   var $_type;
+    /**
+     * array - containing the elements of the list
+     */
+    protected $data = [];
 
-   /**
-    * array - containing the elements of the list
-    */
-   var $_data = array();
+    /** constructor: cs_list
+     * the only available constructor, initial values for internal variables
+     */
+    public function __construct()
+    {
+        $this->type = 'list';
+    }
 
-   /** constructor: cs_list
-    * the only available constructor, initial values for internal variables
-    */
-   function __construct() {
-      $this->_type = 'list';
-   }
+    /** is the type of the list = $type ?
+     * this method returns a boolean expressing if type of the list is $type or not
+     *
+     * @param string type string to compare with type of list ($type)
+     *
+     * @return boolean   true - type of this list is $type
+     *                   false - type of this list is not $type
+     */
+    public function isA($type): bool
+    {
+        return $this->type == $type;
+    }
 
-   /** is the type of the list = $type ?
-    * this method returns a boolean expressing if type of the list is $type or not
-    *
-    * @param string type string to compare with type of list (_type)
-    *
-    * @return boolean   true - type of this list is $type
-    *                   false - type of this list is not $type
-    */
-   function isA ($type) {
-      return $this->_type == $type;
-   }
+    /** reset internal variables
+     *
+     * this method resets the list
+     */
+    public function reset(): void
+    {
+        reset($this->data);
+    }
 
-   /** reset internal variables
-    *
-    * this method resets the list
-    */
-   function reset () {
-      reset($this->_data);
-   }
+    /** reset internal cursor
+     *
+     * this method resets the cursor
+     */
+    public function resetCursor()
+    {
+        reset($this->data);
+    }
 
-   /** reset internal cursor
-    *
-    * this method resets the cursor
-    */
-   function resetCursor () {
-      reset($this->_data);
-   }
+    /** get next element
+     * this method returns the next element from the internal array
+     *
+     * @return object|false cs_item returns an object with the information about the next element
+     */
+    public function getNext()
+    {
+        return next($this->data);
+    }
 
-   /** get next element
-    * this method returns the next element from the internal array
-    *
-    * @return object cs_item returns an object with the information about the next element
-    */
-   function getNext () {
-      return next($this->_data);
-   }
+    /** add an element
+     * this method adds a new element to the list
+     *
+     * @param object cs_item a commsy item (object)
+     */
+    public function add($item): void
+    {
+        $this->data[] = $item;
+    }
 
-   /** add an element
-    * this method adds a new element to the list
-    *
-    * @param object cs_item a commsy item (object)
-    */
-   function add ($item) {
-      $this->_data[] = $item;
-   }
+    /** get first element
+     * this method returns the first element from the internal array
+     *
+     * @return object|false cs_item an commsy item with the information about the first element
+     */
+    public function getFirst()
+    {
+        $this->reset();
+        return current($this->data);
+    }
 
-   /** get first element
-    * this method returns the first element from the internal array
-    *
-    * @return object cs_item an commsy item with the information about the first element
-    */
-   function getFirst () {
-      $this->reset();
-      return current($this->_data);
-   }
+    public function getSubList($position, $length): cs_list
+    {
+        $sub_list = new cs_list();
+        $subdata_array = array_slice($this->data, $position, $length);
+        foreach ($subdata_array as $subdata_item) {
+            $sub_list->add($subdata_item);
+        }
+        return $sub_list;
+    }
 
-   function getSubList($position, $length){
-      $sub_list = new cs_list();
-      $sub_data_array = array_slice($this->_data,$position,$length);
-      foreach($sub_data_array as $sub_data_item){
-         $sub_list->add($sub_data_item);
-      }
-      return $sub_list;
-   }
-
-   /** get last element
-    * this method returns the last element from the internal array
-    *
-    * @return object cs_item an commsy item with the information about the last element
-    */
-   function getLast () {
-      return end($this->_data);
-   }
+    /** get last element
+     * this method returns the last element from the internal array
+     *
+     * @return object|false cs_item an commsy item with the information about the last element
+     */
+    public function getLast()
+    {
+        return end($this->data);
+    }
 
 
-   /** add a list of commsy items to this list
-    * this method adds a list of commsy items to this list, like array_merge
-    *
-    * @param object cs_list a list of commsy items (object)
-    */
-   function addList ($list) {
-      // performance ??? (TBD)
-      $item = $list->getFirst();
-      while($item) {
-         $this->add($item);
-         $item = $list->getNext();
-      }
-   }
+    /** add a list of commsy items to this list
+     * this method adds a list of commsy items to this list, like array_merge
+     *
+     * @param object cs_list a list of commsy items (object)
+     */
+    public function addList($list): void
+    {
+        // performance ??? (TBD)
+        $item = $list->getFirst();
+        while ($item) {
+            $this->add($item);
+            $item = $list->getNext();
+        }
+    }
 
-   /** count list
-    * this method returns the number of elements
-    *
-    * @return integer number of elements within the list
-    */
-   function getCount () {
-      return count($this->_data);
-   }
+    /** count list
+     * this method returns the number of elements
+     *
+     * @return integer number of elements within the list
+     */
+    public function getCount(): int
+    {
+        return count($this->data);
+    }
 
-   /** is list empty
-    * this method returns a boolean: true if list is empty
-    *
-    * @return boolean list empty?
-    */
-   function isEmpty () {
-      $retour = true;
-      if ($this->getCount() > 0) {
-         $retour = false;
-      }
-      return $retour;
-   }
+    /** is list empty
+     * this method returns a boolean: true if list is empty
+     *
+     * @return boolean list empty?
+     */
+    public function isEmpty(): bool
+    {
+        return $this->getCount() === 0;
+    }
 
-   /** is list not empty
-    * this method returns a boolean: true if list is not empty
-    *
-    * @return boolean list not empty?
-    */
-   function isNotEmpty () {
-      return !$this->isEmpty();
-   }
+    /** is list not empty
+     * this method returns a boolean: true if list is not empty
+     *
+     * @return boolean list not empty?
+     */
+    public function isNotEmpty(): bool
+    {
+        return !$this->isEmpty();
+    }
 
-   private function _translateUmlaute ( $value ) {
-      $value = str_replace('Ä','Azzz',$value);
-      $value = str_replace('Ö','Ozzz',$value);
-      $value = str_replace('Ü','Uzzz',$value);
-      $value = str_replace('ä','azzz',$value);
-      $value = str_replace('ö','ozzz',$value);
-      $value = str_replace('ü','uzzz',$value);
-      return $value;
-   }
-
-   /** sort list
-    * this method sort list by $sort_by
-    *
-    * @param string sort_by keyword for sorting list
-    */
-   function sortby ($sort_by) {
-      // prepare temp array to sort
-      if (count($this->_data) > 1) {
-         $old_list = $this->_data;
-         $temp_array = array();
-         for ($i=0; $i<count($old_list); $i++) {
-            $temp_array2['position'] = $i;
-            if ($sort_by == 'name') {
-               $temp_array2[$sort_by] = $this->_translateUmlaute($old_list[$i]->getName());
-            } elseif ($sort_by == 'lastname') {
-               $temp_array2[$sort_by] = $this->_translateUmlaute($old_list[$i]->getLastname());
-            } elseif ($sort_by == 'modification_date') {
-               $temp_array2[$sort_by] = $old_list[$i]->getModificationDate();
-            } elseif ($sort_by == 'title') {
-               $temp_array2[$sort_by] = $this->_translateUmlaute($old_list[$i]->getTitle());
-            } elseif ($sort_by == 'sorting') {
-               $temp_array2[$sort_by] = $old_list[$i]->getSortingFieldContent();
-            } elseif ($sort_by == 'filename') {
-               $temp_array2[$sort_by] = $old_list[$i]->getDisplayName();
-            } elseif ($sort_by == 'date') {
-               $temp_array2[$sort_by] = $old_list[$i]->getDateTime_start().$old_list[$i]->getDateTime_end();
-            } elseif ($sort_by == 'treePosition') {
-                $temp_array2[$sort_by] = $old_list[$i]->getPosition();
-            } else {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems sorting list because '.$sort_by.' is not implemented yet.',E_USER_ERROR);
+    /** sort list
+     * this method sort list by $sort_by
+     *
+     * @param string sort_by keyword for sorting list
+     */
+    public function sortby($sort_by): void
+    {
+        // prepare temp array to sort
+        if (count($this->data) > 1) {
+            $old_list = $this->data;
+            $temp_array = array();
+            for ($i = 0; $i < count($old_list); $i++) {
+                $temp_array2['position'] = $i;
+                if ($sort_by == 'name') {
+                    $temp_array2[$sort_by] = $this->translateUmlaute($old_list[$i]->getName());
+                } elseif ($sort_by == 'lastname') {
+                    $temp_array2[$sort_by] = $this->translateUmlaute($old_list[$i]->getLastname());
+                } elseif ($sort_by == 'modification_date') {
+                    $temp_array2[$sort_by] = $old_list[$i]->getModificationDate();
+                } elseif ($sort_by == 'title') {
+                    $temp_array2[$sort_by] = $this->translateUmlaute($old_list[$i]->getTitle());
+                } elseif ($sort_by == 'sorting') {
+                    $temp_array2[$sort_by] = $old_list[$i]->getSortingFieldContent();
+                } elseif ($sort_by == 'filename') {
+                    $temp_array2[$sort_by] = $old_list[$i]->getDisplayName();
+                } elseif ($sort_by == 'date') {
+                    $temp_array2[$sort_by] = $old_list[$i]->getDateTime_start() . $old_list[$i]->getDateTime_end();
+                } elseif ($sort_by == 'treePosition') {
+                    $temp_array2[$sort_by] = $old_list[$i]->getPosition();
+                } else {
+                    throw new LogicException("not implemented");
+                }
+                $temp_array[] = $temp_array2;
             }
-            $temp_array[] = $temp_array2;
-         }
 
-         // sort temp aray
-         usort($temp_array,create_function('$a,$b','return strnatcasecmp($a[\''.$sort_by.'\'],$b[\''.$sort_by.'\']);'));
+            // sort temp array
+            usort($temp_array, function ($a, $b) use ($sort_by) {
+                return strnatcasecmp($a[$sort_by], $b[$sort_by]);
+            });
 
-         // create sorted list array
-         unset($this->_data);
-         $this->_data = array();
-         for ($i=0; $i<count($temp_array); $i++) {
-            $this->_data[$i] = $old_list[$temp_array[$i]['position']];
-         }
-      }
-   }
-
-   /** sort room list by page impressions for $days
-    * this method sort list by page impressions $days
-    *
-    * @param int $days
-    */
-   function sortbyPageImpressions ($days) {
-      // prepare temp array to sort
-      if (count($this->_data) > 1) {
-         $old_list = $this->_data;
-         $temp_array = array();
-         for ($i=0; $i<count($old_list); $i++) {
-            $temp_array2['position'] = $i;
-            $temp_array2[$days] = $old_list[$i]->getPageImpressions($days);
-            $temp_array[] = $temp_array2;
-         }
-
-         // sort temp aray
-         usort($temp_array,create_function('$a,$b','return strnatcasecmp($a[\''.$days.'\'],$b[\''.$days.'\']);'));
-         $temp_array = array_reverse($temp_array);
-
-         // create sorted list array
-         unset($this->_data);
-         $this->_data = array();
-         for ($i=0; $i<count($temp_array); $i++) {
-            $this->_data[$i] = $old_list[$temp_array[$i]['position']];
-         }
-      }
-   }
-
-   /** reverse list elements
-    * this method reverse the list
-    */
-   function reverse () {
-      $this->_data = array_reverse($this->_data);
-   }
-
-   /** list unique
-    * this method is like array_unique
-    */
-   function unique () {
-      if (count($this->_data) > 1) {
-         $a = $this->_data;
-         $r = array();
-         for ( $i=0; $i<count($a); $i++) {
-            if ( !in_array($a[$i], $r) ) {
-               $r[] = $a[$i];
+            // create sorted list array
+            unset($this->data);
+            $this->data = array();
+            for ($i = 0; $i < count($temp_array); $i++) {
+                $this->data[$i] = $old_list[$temp_array[$i]['position']];
             }
-         }
-         $this->_data = $r;
-      }
-   }
+        }
+    }
 
-   function removeElement ($item) {
-      foreach($this->_data as $pos => $list_item){
-         if ($list_item->getItemID()==$item->getItemID() AND $list_item->getVersionID()==$item->getVersionID()) {
-            array_splice($this->_data,$pos,1);
-         }
-      }
-   }
+    /** reverse list elements
+     * this method reverse the list
+     */
+    public function reverse(): void
+    {
+        $this->data = array_reverse($this->data);
+    }
 
-   function getElement ($item) {
-      $return_item = new cs_list();
-      foreach($this->_data as $pos => $list_item){
-         if ($list_item->getItemID()==$item->getItemID() AND $list_item->getVersionID()==$item->getVersionID()) {
-            $return_item = $list_item;
-         }
-      }
-      return $return_item;
-   }
-
-   function getElementByID ($id) {
-      $return_item = new cs_list();
-      foreach($this->_data as $pos => $list_item){
-         if ($list_item->getItemID() == $id) {
-            $return_item = $list_item;
-         }
-      }
-      return $return_item;
-   }
-
-   function get($pos) {
-      return $this->_data[$pos];
-   }
-
-
-   function inList ($item) {
-      $boolean = false;
-      if ( isset($item)
-           and $item->getItemID() > 0
-         ) {
-         foreach($this->_data as $pos => $list_item){
-            if ($list_item->getItemID()==$item->getItemID() AND $list_item->getVersionID()==$item->getVersionID()) {
-               $boolean = true;
-               // optimized:
-               return true;
+    /** list unique
+     * this method is like array_unique
+     */
+    public function unique(): void
+    {
+        if (count($this->data) > 1) {
+            $a = $this->data;
+            $r = array();
+            for ($i = 0; $i < count($a); $i++) {
+                if (!in_array($a[$i], $r)) {
+                    $r[] = $a[$i];
+                }
             }
-         }
-      }
-      return $boolean;
-   }
+            $this->data = $r;
+        }
+    }
 
-   function to_array () {
-      return $this->_data;
-   }
+    public function removeElement($item): void
+    {
+        foreach ($this->data as $pos => $list_item) {
+            if ($list_item->getItemID() == $item->getItemID() and $list_item->getVersionID() == $item->getVersionID()) {
+                array_splice($this->data, $pos, 1);
+            }
+        }
+    }
 
-   public function getIDArray () {
-      $retour = array();
-      $item = $this->getFirst();
-      while ( $item ) {
-         if ( method_exists($item,'getItemID') ) {
-            $retour[] = $item->getItemID();
-         }
-         $item = $this->getNext();
-      }
+    public function getElement($item): object
+    {
+        $return_item = new cs_list();
+        foreach ($this->data as $pos => $list_item) {
+            if ($list_item->getItemID() == $item->getItemID() and $list_item->getVersionID() == $item->getVersionID()) {
+                $return_item = $list_item;
+            }
+        }
+        return $return_item;
+    }
 
-      return $retour;
-   }
+    public function get(int $pos): object
+    {
+        return $this->data[$pos];
+    }
+
+    function inList($item): bool
+    {
+        if (isset($item)
+            and $item->getItemID() > 0
+        ) {
+            foreach ($this->data as $pos => $list_item) {
+                if ($list_item->getItemID() == $item->getItemID() and $list_item->getVersionID() == $item->getVersionID()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    function to_array(): array
+    {
+        return $this->data;
+    }
+
+    public function getIDArray(): array
+    {
+        $retour = array();
+        $item = $this->getFirst();
+        while ($item) {
+            if (method_exists($item, 'getItemID')) {
+                $retour[] = $item->getItemID();
+            }
+            $item = $this->getNext();
+        }
+
+        return $retour;
+    }
 
     /**
      * Retrieve an external iterator
@@ -349,5 +316,16 @@ class cs_list implements IteratorAggregate {
     public function getIterator()
     {
         return new ArrayIterator($this->to_array());
+    }
+
+    private function translateUmlaute(string $value): string
+    {
+        $value = str_replace('Ä', 'Azzz', $value);
+        $value = str_replace('Ö', 'Ozzz', $value);
+        $value = str_replace('Ü', 'Uzzz', $value);
+        $value = str_replace('ä', 'azzz', $value);
+        $value = str_replace('ö', 'ozzz', $value);
+        $value = str_replace('ü', 'uzzz', $value);
+        return $value;
     }
 }

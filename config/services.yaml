@@ -6,7 +6,6 @@
 parameters:
     locale: '%env(LOCALE)%'
 
-    legacy.site_index: "%kernel.project_dir%/public/commsy_legacy.php"
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
@@ -143,13 +142,22 @@ services:
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,DataFixtures,Proxy,Tests,Mail/Messages,Kernel.php}'
+        resource: '../src/'
+        exclude:
+            - '../src/DataFixtures/'
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Form/Model/'
+            - '../src/Kernel.php'
+            - '../src/Mail/Messages/'
+            - '../src/Model/'
+            - '../src/Proxy/'
+            - '../src/Tests/'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
-        resource: '../src/Controller'
+        resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
@@ -159,29 +167,19 @@ services:
         autoconfigure: false
         tags:
             - 'doctrine.fixture.orm'
+    _instanceof:
+        App\DocumentConverter\DocumentConverterInterface:
+            tags: ['app.document_converter']
+        App\Form\DataTransformer\DataTransformerInterface:
+            tags: [ 'app.data_transformer' ]
+
 
 
 ###############################
 ## Commsy\LegacyBundle
 ###############################
-    # Legacy kernel
-    commsy_legacy.kernel:
-        alias: App\Kernel\LegacyKernel
-
-    App\Kernel\LegacyKernel:
-        arguments:
-            $legacyAppPath: '%legacy.site_index%'
-
-    # Legacy authentication
-    commsy_legacy.legacy_authentication:
-        class: App\Authentication\LegacyAuthentication
-        arguments: ['@commsy_legacy.environment']
-
     # Event subscriber
     App\EventSubscriber\KernelSubscriber:
-        arguments:
-            $legacyKernel: '@commsy_legacy.kernel'
-            $legacyAuthentication: '@commsy_legacy.legacy_authentication'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -192,7 +190,7 @@ services:
     App\Services\LegacyEnvironment:
         public: true
         autowire: true
-        arguments: ['%legacy.site_index%', '@service_container']
+        arguments: ['%kernel.project_dir%', '@service_container']
 
     commsy_legacy.category_service:
         alias: App\Utils\CategoryService
@@ -211,6 +209,18 @@ services:
         alias: App\Utils\RoomService
 
     App\Utils\RoomService:
+        autowire: true
+
+    commsy_legacy.userroom_service:
+        alias: App\Utils\UserroomService
+
+    App\Utils\UserroomService:
+        autowire: true
+
+    commsy_legacy.timepulses_service:
+        alias: App\Utils\TimePulsesService
+
+    App\Utils\TimePulsesService:
         autowire: true
 
     commsy_legacy.file_service:
@@ -255,10 +265,6 @@ services:
         class: App\Utils\ReaderService
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service']
 
-    commsy_legacy.date_service:
-        class: App\Utils\DateService
-        arguments: ['@commsy_legacy.environment']
-
     commsy_legacy.annotation_service:
         class: App\Utils\AnnotationService
         arguments: ['@commsy_legacy.environment']
@@ -302,7 +308,6 @@ services:
     # Transformer
     commsy_legacy.transformer.general_settings:
         class: App\Form\DataTransformer\GeneralSettingsTransformer
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.moderation_settings:
         class: App\Form\DataTransformer\ModerationSettingsTransformer
@@ -385,6 +390,10 @@ services:
         class: App\Form\DataTransformer\ProjectTransformer
         arguments: ['@commsy_legacy.environment']
 
+    commsy_legacy.transformer.userroom:
+        class: App\Form\DataTransformer\UserroomTransformer
+        arguments: ['@commsy_legacy.environment']
+
     commsy_legacy.transformer.portfolio:
         class: App\Form\DataTransformer\PortfolioTransformer
         arguments: ['@commsy_legacy.environment']
@@ -427,12 +436,7 @@ services:
     commsy.menu.builder:
         class: App\Menu\MenuBuilder
         arguments:
-            - '@knp_menu.factory'
-            - '@commsy_legacy.room_service'
-            - '@commsy_legacy.environment'
-            - '@commsy_legacy.user_service'
-            - '@security.authorization_checker'
-            - '@commsy.invitations_service'
+            $factory: '@knp_menu.factory'
 
     commsy.menu.main:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
@@ -581,10 +585,11 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: form.event_subscriber }
-
     commsy.listener.elastic.custom_property:
         class: App\EventListener\ElasticCustomPropertyListener
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+            $legacyEnvironment: '@commsy_legacy.environment'
+            $file2TextService: '@App\Services\File2TextService'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -599,14 +604,89 @@ services:
     commsy.search.manager:
         alias: App\Search\SearchManager
 
+
+    App\Services\File2TextService: ~
+
+    App\DocumentConverter\ConverterManager:
+        class: App\DocumentConverter\ConverterManager
+        arguments:
+            - !tagged 'app.document_converter'
+
+    App\Form\DataTransformer\TransformerManager:
+        class: App\Form\DataTransformer\TransformerManager
+        arguments:
+            - !tagged 'app.data_transformer'
+
     App\Search\SearchManager:
         autowire: false
         arguments:
-            $commsyFinder: '@fos_elastica.finder.commsy'
+            $commsyFinder: '@FOS\ElasticaBundle\Finder\TransformedFinder'
             $userService: '@App\Utils\UserService'
             $itemService: '@App\Utils\ItemService'
 
+    App\Search\MultiIndex:
+        arguments:
+            $name: 'commsy'
+            $client: '@fos_elastica.client.default'
+        calls:
+            - [ addIndices, [[
+                                 '@fos_elastica.index.commsy_announcement',
+                                 '@fos_elastica.index.commsy_date',
+                                 '@fos_elastica.index.commsy_discussion',
+                                 '@fos_elastica.index.commsy_label',
+                                 '@fos_elastica.index.commsy_user',
+                                 '@fos_elastica.index.commsy_room',
+                                 '@fos_elastica.index.commsy_todo',
+                                 '@fos_elastica.index.commsy_material',
+                             ]]]
+
+    FOS\ElasticaBundle\Finder\TransformedFinder: ~
+
+    FOS\ElasticaBundle\Finder\PaginatedFinderInterface: '@FOS\ElasticaBundle\Finder\TransformedFinder'
+
+    Elastica\SearchableInterface: '@App\Search\MultiIndex'
+
+    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection'
+
+    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection:
+        arguments:
+            - {
+                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement.announcement',
+                date: '@fos_elastica.elastica_to_model_transformer.commsy_date.date',
+                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion.discussion',
+                label: '@fos_elastica.elastica_to_model_transformer.commsy_label.label',
+                room: '@fos_elastica.elastica_to_model_transformer.commsy_room.room',
+                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo.todo',
+                user: '@fos_elastica.elastica_to_model_transformer.commsy_user.user',
+                material: '@fos_elastica.elastica_to_model_transformer.commsy_material.material',
+            }
+
+
     commsy.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_announcement.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_date.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_discussion.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_label.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_room.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_todo.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_user.search.indexable_checker:
+        alias: App\Search\IndexableChecker
+
+    commsy_material.search.indexable_checker:
         alias: App\Search\IndexableChecker
 
     App\Search\IndexableChecker:
@@ -617,18 +697,6 @@ services:
     commsy.validator.unique_label_name:
         class: App\Validator\Constraints\UniqueLabelNameValidator
         arguments: [ '@doctrine.orm.entity_manager' ]
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.password_criteria_constraint:
-        class: App\Validator\Constraints\PasswordCriteriaConstraintValidator
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.user_password_constraint:
-        class: App\Validator\Constraints\UserPasswordConstraintValidator
-        arguments: ['@commsy_legacy.environment']
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
@@ -715,89 +783,6 @@ services:
 
     commsy.form.type.section:
         class: App\Form\Type\SectionType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile:
-        class: App\Form\Type\Profile\RoomProfileType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_general:
-        class: App\Form\Type\Profile\RoomProfileGeneralType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_address:
-        class: App\Form\Type\Profile\RoomProfileAddressType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.room_profile_contact:
-        class: App\Form\Type\Profile\RoomProfileContactType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_personalinformation:
-        class: App\Form\Type\Profile\ProfilePersonalInformationType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_account:
-        class: App\Form\Type\Profile\ProfileAccountType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_changepassword:
-        class: App\Form\Type\Profile\ProfileChangePasswordType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_mergeaccounts:
-        class: App\Form\Type\Profile\ProfileMergeAccountsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_newsletter:
-        class: App\Form\Type\Profile\ProfileNewsletterType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_privacy:
-        class: App\Form\Type\Profile\ProfilePrivacyType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_notifications:
-        class: App\Form\Type\Profile\RoomProfileNotificationsType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_calendars:
-        class: App\Form\Type\Profile\ProfileCalendarsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_additional:
-        class: App\Form\Type\Profile\ProfileAdditionalType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.profile_deleteroomprofile:
-        class: App\Form\Type\Profile\DeleteRoomProfileType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
@@ -922,12 +907,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # Form type extension
-    commsy.form.extension.image_type:
-        class: App\Form\Extension\ImageTypeExtension
-        tags:
-            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
-
     # Controller
     commsy.item_controller:
         class: App\Controller\ItemController
@@ -1036,6 +1015,14 @@ services:
         class: App\Services\SoapService
         arguments: ['@commsy_legacy.environment', '@service_container']
 
+    # Feed
+    debril.rss_atom.provider:
+        class: App\Feed\CommsyFeedContentProvider
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@translator'
+            - '@commsy.feed.creator_factory'
+
     commsy.feed.creator_factory:
         class: App\Feed\FeedCreatorFactory
         arguments: ['@commsy_legacy.item_service', '@commsy_legacy.environment', '@translator', '@router']
@@ -1104,7 +1091,7 @@ services:
 
     App\Services\AvatarService:
         arguments:
-            $kernelRootDir: '%kernel.root_dir%'
+            $kernelProjectDir: '%kernel.project_dir%'
 
     App\Services\PrintService:
         arguments:
@@ -1117,10 +1104,6 @@ services:
 
     App\Services\CopyService:
         autowire: true
-
-    commsy.invitations_service:
-        class: App\Services\InvitationsService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
@@ -1234,15 +1217,32 @@ services:
     App\Form\DataTransformer\Base64ToCsvDatasetTransformer:
         autowire: true
 
-    # User
-    App\User\UserBuilder:
-        autowire: true
-
     # Events
     App\Event\CommsyEditEvent:
         autowire: false
 
     App\Event\ItemDeletedEvent:
+        autowire: false
+
+    App\Event\UserJoinedRoomEvent:
+        autowire: false
+
+    App\Event\UserLeftRoomEvent:
+        autowire: false
+
+    App\Event\RoomSettingsChangedEvent:
+        autowire: false
+
+    App\Event\UserStatusChangedEvent:
+        autowire: false
+
+    App\Event\ReadStatusPreChangeEvent:
+        autowire: false
+
+    App\Event\AccountChangedEvent:
+        autowire: false
+
+    App\Event\AccountDeletedEvent:
         autowire: false
 
     # Response
@@ -1258,12 +1258,7 @@ services:
     App\Http\JsonRedirectResponse:
         autowire: false
 
-    # Twig
-    twig.extension.text:
-        class: Twig_Extensions_Extension_Text
-        tags:
-            - { name: twig.extension }
-
+    # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }
@@ -1280,19 +1275,6 @@ services:
             $consumerSecret: '%commsy.mediawiki.consumerSecret%'
             $accessToken: '%commsy.mediawiki.accessToken%'
             $accessSecret: '%commsy.mediawiki.accessSecret%'
-
-###############################
-## EtherpadBundle
-###############################
-    commsy.etherpad_service:
-        class: App\Services\EtherpadService
-        arguments: ["@service_container"]
-
-    etherpad.etherpad_edit_subscriber:
-        class: App\EventSubscriber\EtherpadEditSubscriber
-        arguments: ["@service_container", "@commsy_legacy.material_service"]
-        tags:
-            - { name: kernel.event_subscriber }
 
 ###############################
 ## Craue\TwigExtensionsBundle

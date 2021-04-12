@@ -6,7 +6,7 @@
             {# title and meta #}
             <div class="uk-width-1-1">
                 <h4 class="uk-comment-title">
-                    <a title="{{ announcement.title|decodeHtmlEntity}}" href="{{ path('app_announcement_detail', {'roomId': roomId, 'itemId': announcement.itemId}) }}">{{ announcement.title|truncate(35)|decodeHtmlEntity }}</a>
+                    <a title="{{ announcement.title|decodeHtmlEntity}}" href="{{ path('app_announcement_detail', {'roomId': roomId, 'itemId': announcement.itemId}) }}">{{ announcement.title|u.truncate(35)|decodeHtmlEntity }}</a>
                 </h4>
                 <div class="uk-comment-meta">
                     {% if announcement.secondDateTime != '' %}

@@ -183,57 +183,84 @@ class cs_reader_manager {
         return $reader;
     }
 
-   /** mark an item/version as read by the current user
-     *
-     * @param integer item_id    id of the item
-     * @param integer version_id id of the version
-     */
-   function markRead ( $item_id, $version_id ) {
-      if ( empty($this->_current_user_id) ) {
-      	  $this->_current_user_id = $this->_environment->getCurrentUserID();
-      }
-      if ( !empty($this->_current_user_id) ) {
-         /*
-          * There was a problem in reader- and noticed-manager when marking an entry as read, if
-          * it was a non-active entry. In this case, the manager tried to execute the same insert
-          * statement twice, which caused an error because of the tables primary key.
-          * To fix this, the query was changed to "INSERT IGNORE INTO..."
-          */
-         include_once('functions/development_functions.php');
-         $query = 'INSERT IGNORE INTO '.$this->addDatabasePrefix('reader').' SET '.
-                  ' item_id="'.encode(AS_DB,$item_id).'", '.
-                  ' version_id="'.encode(AS_DB,$version_id).'", '.
-                  ' user_id="'.encode(AS_DB,$this->_current_user_id).'", '.
-                  ' read_date="'.getCurrentDateTimeInMySQL().'"';
-         $result = $this->_db_connector->performQuery($query);
-          if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems marking item as read from query: "'.$query.'"');
-         }
-      }
+   /**
+    * Marks the item with the given item ID & version ID as read by the current user.
+    *
+    * @param integer $itemId ID of the item to be marked as read
+    * @param integer $versionId ID of the item version to be marked as read
+    */
+   public function markRead(int $itemId, int $versionId)
+   {
+       if (!empty($itemId)) {
+           $this->markItemsAsRead([$itemId], $versionId); // defaults to current user
+       }
    }
 
    /**
-    * mark an array of items/version as read by the current user
+    * Marks an array of items (of the given version ID) as read by the given users
+    * (or the current user in case no user IDs were given).
     *
-    * @param $id_array
-    * @param $version_id
+    * @param integer[] $itemIds Array of item IDs for items to be marked as read
+    * @param integer $versionId ID of the item version (applied to all given items) to be marked as read
+    * @param integer[]|null $userIds Optional array of user IDs specifying the users for whom the given items shall
+    * be marked as read; defaults to null in which case given items will be marked as read for the current user
     */
-   function markReadArray($id_array, $version_id) {
-      if( !empty($this->_current_user_id) ) {
-         $query = 'INSERT IGNORE INTO ' . $this->addDatabasePrefix('reader') . ' (item_id, version_id, user_id, read_date) VALUES ';
-         foreach($id_array as $key => $id) {
-            $query .= '("' . encode(AS_DB, $id) . '", "' . encode(AS_DB, $version_id) . '", "' . encode(AS_DB, $this->_current_user_id) . '", "' . getCurrentDateTimeInMySQL() . '")';
-            if( isset($id_array[$key+1]) ) {
-               $query .= ', ';
-            }
-         }
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems marking item as read from query: "'.$query.'"');
-         }
-      }
+   public function markItemsAsRead(array $itemIds, int $versionId, array $userIds = null)
+   {
+       if (empty($itemIds)) {
+           return;
+       }
+
+       if (empty($userIds)) {
+           if (empty($this->_current_user_id)) {
+               $this->_current_user_id = $this->_environment->getCurrentUserID();
+               if (empty($this->_current_user_id)) {
+                   return;
+               }
+           }
+           $userIds = [$this->_current_user_id];
+       }
+
+       /*
+        * There was a problem in reader- and noticed-manager when marking an entry as read, if
+        * it was a non-active entry. In this case, the manager tried to execute the same insert
+        * statement twice, which caused an error because of the tables primary key.
+        * To fix this, the query was changed to "INSERT IGNORE INTO..."
+        */
+       $query = 'INSERT IGNORE INTO ' . $this->addDatabasePrefix('reader')
+           . ' (item_id, version_id, user_id, read_date) VALUES ';
+
+       $valueRows = [];
+       $currentDateTime = getCurrentDateTimeInMySQL();
+
+       foreach ($itemIds as $itemId) {
+           foreach ($userIds as $userId) {
+               $valueRow = '("'
+                   . encode(AS_DB, $itemId) . '", "'
+                   . encode(AS_DB, $versionId) . '", "'
+                   . encode(AS_DB, $userId) . '", "'
+                   . $currentDateTime
+                   . '")';
+               $valueRows[] = $valueRow;
+
+               // fire a ReadStatusPreChangeEvent (which will e.g. trigger invalidation of the read status cache for this item & user)
+               global $symfonyContainer;
+
+               /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+               $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+
+               $readStatusPreChangeEvent = new \App\Event\ReadStatusPreChangeEvent($userId, $itemId, \App\Utils\ReaderService::READ_STATUS_SEEN);
+               $eventDispatcher->dispatch($readStatusPreChangeEvent, \App\Event\ReadStatusPreChangeEvent::class);
+           }
+       }
+       $query .= implode(', ', $valueRows);
+
+       $result = $this->_db_connector->performQuery($query);
+
+       if (!isset($result)) {
+           include_once('functions/error_functions.php');
+           trigger_error('Problems marking item(s) as read from query: "' . $query . '"');
+       }
    }
 
    function mergeAccounts($new_id,$old_id) {

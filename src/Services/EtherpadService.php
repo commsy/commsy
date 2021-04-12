@@ -2,39 +2,43 @@
 
 namespace App\Services;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use EtherpadLite\Client;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 class EtherpadService
 {
-    private $client;
-
-    private $container;
-
+    /**
+     * @var string
+     */
     private $baseUrl;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * @var Client
+     */
+    private $client;
+
+    public function __construct(ParameterBagInterface $params)
     {
-        $this->container = $container;
-        $this->baseUrl = $this->container->getParameter('commsy.etherpad.base_url');
+        $this->baseUrl = $params->get('commsy.etherpad.base_url');
 
         // get configuration params
-        $apiKey = $this->container->getParameter('commsy.etherpad.api_key');
-        $apiUrl = $this->container->getParameter('commsy.etherpad.api_url');
+        $apiKey = $params->get('commsy.etherpad.api_key');
+        $apiUrl = $params->get('commsy.etherpad.api_url');
 
         // init etherpad client
-        $this->client = new \EtherpadLite\Client($apiKey, $apiUrl);
+        if ($apiKey !== '' && $apiUrl !== '') {
+            $this->client = new Client($apiKey, $apiUrl);
+        }
     }
 
-    public function getClient()
+    public function getClient(): Client
     {
         return $this->client;
     }
 
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
-
-    
 }

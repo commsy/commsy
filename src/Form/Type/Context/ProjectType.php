@@ -3,6 +3,7 @@ namespace App\Form\Type\Context;
 
 use App\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -52,6 +53,23 @@ class ProjectType extends AbstractType
                 'expanded' => false,
                 'label' => 'Community rooms',
                 'help' => 'Community rooms tip',
+                'translation_domain' => 'settings',
+            ])
+            ->add('createUserRooms', CheckboxType::class, [
+                'label' => 'User room',
+                'translation_domain' => 'settings',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+                'help' => 'User room tooltip',
+            ])
+            ->add('userroom_template', ChoiceType::class, [
+                'choices' => $options['templates'],
+                'placeholder' => false,
+                'required' => false,
+                'mapped' => false,
+                'label' => 'User room template',
                 'translation_domain' => 'settings',
             ])
         ;

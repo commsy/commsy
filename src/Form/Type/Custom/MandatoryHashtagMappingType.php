@@ -26,20 +26,6 @@ class MandatoryHashtagMappingType extends AbstractType
                 'required' => true,
                 'expanded' => true,
                 'multiple' => true,
-                'constraints' => array(
-                    new Callback([
-                        'callback' => function ($object, ExecutionContextInterface $context) use ($builder) {
-                            /** @var FormInterface $form */
-                            $form = $context->getObject();
-                            $data = $form->getParent()->get('newHashtag')->getData();
-
-                            if (!$object && !$data) {
-                                $context->buildViolation('Please select at least one hashtag')
-                                    ->addViolation();
-                            }
-                        }
-                    ]),
-                ),
             ))
             ->add('newHashtag', TextType::class, array(
                 'attr' => array(
@@ -66,8 +52,21 @@ class MandatoryHashtagMappingType extends AbstractType
     {
         $resolver
             ->setRequired(['hashTagPlaceholderText', 'hashtags', 'hashtagEditUrl'])
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setDefaults([
+                'translation_domain' => 'form',
+                'constraints' => [
+                    new Callback([$this, 'validate']),
+                ]
+            ])
         ;
     }
 
+    public function validate(array $data, ExecutionContextInterface $context): void
+    {
+        if (!$data['hashtags'] && !$data['newHashtag']) {
+            $context->buildViolation('Please select at least one hashtag')
+                ->atPath('hashtags')
+                ->addViolation();
+        }
+    }
 }

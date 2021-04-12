@@ -131,11 +131,11 @@
                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
                             'status': 'pending'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large"></i> {{ 'markpending'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large"></i> {{ 'markpending'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -152,11 +152,11 @@
                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
                             'status': 'inprogress'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -173,11 +173,11 @@
                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
                             'status': 'done'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large"></i> {{ 'markdone'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large"></i> {{ 'markdone'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>

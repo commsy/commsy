@@ -47,7 +47,7 @@ class SearchManager
         $this->queryConditions[] = $queryCondition;
     }
 
-    public function getResults()
+    public function getResults($sortArguments = [])
     {
         // create our basic query
         $query = new \Elastica\Query();
@@ -62,6 +62,11 @@ class SearchManager
         $boolQuery->addFilter($contextFilter);
 
         $query->setQuery($boolQuery);
+
+        // sorting
+        if (!empty($sortArguments)) {
+            $query->setSort($sortArguments);
+        }
 
         // aggregation
         $typeAggregation = new Aggregations\Terms('rubrics');
@@ -85,6 +90,18 @@ class SearchManager
         // return at most 100 of the most used categories (default is 10)
         $categoriesAggregation->setSize(100);
         $query->addAggregation($categoriesAggregation);
+
+        $contextsAggregation = new Aggregations\Terms('contexts');
+        $contextsAggregation->setField('context.title');
+        // return at most 100 of the most used contexts (default is 10)
+        $contextsAggregation->setSize(100);
+        $query->addAggregation($contextsAggregation);
+
+        $statusesAggregation = new Aggregations\Terms('todostatuses');
+        $statusesAggregation->setField('status');
+        // return at most 100 of the most used statuses (default is 10)
+        $statusesAggregation->setSize(100);
+        $query->addAggregation($statusesAggregation);
 
         // aggregations
 //        $filterAggregation = new Aggregations\Filter('filterContext');
@@ -137,7 +154,7 @@ class SearchManager
         $query->setQuery($boolQuery);
 
         // sort by activity
-        $sortArray = ['activity' => 'desc'];
+        $sortArray = ['activity' => ["order" => 'desc', "unmapped_type" => "long"]];
 
         $query->setSort($sortArray);
 

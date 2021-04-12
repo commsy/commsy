@@ -1,14 +1,16 @@
 <?php
 namespace App\Form\DataTransformer;
 
+use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
 use cs_room_item;
+use DateTimeImmutable;
 
-class AdditionalSettingsTransformer implements DataTransformerInterface
+class AdditionalSettingsTransformer extends AbstractTransformer
 {
+    protected $entity = 'additional_settings';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
@@ -280,7 +282,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $roomObject->setAGBStatus($roomData['terms']['status']);
             $roomObject->setAGBTextArray($agbtext_array);
             $roomObject->setAGBChangeDate();
-            $current_user->setAGBAcceptance();
+            $current_user->setAGBAcceptanceDate(new DateTimeImmutable());
             $current_user->save();
          }
          

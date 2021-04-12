@@ -16,18 +16,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CommsyFeedContentProvider implements FeedProviderInterface
 {
     private $legacyEnvironment;
-    private $requestStack;
     private $translator;
     private $feedCreatorFactory;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        RequestStack $requestStack,
         TranslatorInterface $translator,
         FeedCreatorFactory $feedCreatorFactory)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->requestStack = $requestStack;
         $this->translator = $translator;
         $this->feedCreatorFactory = $feedCreatorFactory;
     }
@@ -45,13 +42,12 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         $this->legacyEnvironment->setCurrentContextID($contextId);
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-        if ($this->isGranted($currentContextItem)) {
+        if ($this->isGranted($currentContextItem, $request)) {
             $userItem = null;
 
             $isGuestAccess = true;
-            $currentRequest = $this->requestStack->getCurrentRequest();
-            if ($currentRequest->query->has('hid')) {
-                $hash = $currentRequest->query->get('hid');
+            if ($request->query->has('hid')) {
+                $hash = $request->query->get('hid');
                 $userItem = $currentContextItem->getUserByRSSHash($hash);
                 $isGuestAccess = false;
             }
@@ -62,7 +58,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
             $feed->setLastModified($this->getLastModified());
             $feed->setTitle($this->getTitle($currentContextItem));
             $feed->setDescription($this->getDescription($currentContextItem));
-            $feed->setLink($currentRequest->getHost() . $currentRequest->getBaseUrl());
+            $feed->setLink($request->getSchemeAndHttpHost() . $request->getBaseUrl());
 
             $items = $this->getItems($currentContextItem);
 
@@ -79,7 +75,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         throw new FeedNotFoundException();
     }
 
-    private function isGranted($currentContextItem)
+    private function isGranted($currentContextItem, Request $request): bool
     {
         if ($currentContextItem->isOpenForGuests()) {
             return true;
@@ -87,9 +83,8 @@ class CommsyFeedContentProvider implements FeedProviderInterface
 
         if (!$currentContextItem->isPortal() && !$currentContextItem->isServer()) {
             if (!$currentContextItem->isLocked()) {
-                $currentRequest = $this->requestStack->getCurrentRequest();
-                if ($currentRequest->query->has('hid')) {
-                    $hash = $currentRequest->query->get('hid');
+                if ($request->query->has('hid')) {
+                    $hash = $request->query->get('hid');
 
                     $hashManager = $this->legacyEnvironment->getHashManager();
                     if ($hashManager->isRSSHashValid($hash, $currentContextItem)) {
@@ -102,7 +97,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         return false;
     }
 
-    private function getLastModified()
+    private function getLastModified(): \DateTime
     {
         $itemManager = $this->legacyEnvironment->getItemManager();
 
@@ -115,7 +110,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         return new \DateTime($modificationDate);
     }
 
-    private function getTitle($currentContextItem)
+    private function getTitle($currentContextItem): string
     {
         if ($currentContextItem->isPrivateRoom()) {
             $currentPortalItem = $this->legacyEnvironment->getCurrentPortalItem();
@@ -189,7 +184,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         // Using the activated entries filter here seems not sufficient, since future modification dates
         // are only stored in their corresponding type tables.
         // This will require later filtering for now.
-        $itemManager->showNoNotActivatedEntries();
+        $itemManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
         if ($contextItem->isPrivateRoom()) {
             $ownerUserItem = $contextItem->getOwnerUserItem();

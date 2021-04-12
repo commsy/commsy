@@ -133,9 +133,10 @@
             // override form submit behaviour
             article.find('button').click(function (event) {
                 let $button = $(this);
+                let buttonNameAttr = $button.attr('name');
 
                 // cancel is not handled via ajax
-                if ($button.attr('name').indexOf('cancel') > -1) {
+                if (buttonNameAttr.indexOf('cancel') > -1) {
                     event.preventDefault ? event.preventDefault() : (event.returnValue = false);
                     /*
                     // cancel editing a NEW entry => return to list view
@@ -176,7 +177,7 @@
                         }
                     });
                 } else {
-                    if (!$button.attr('name').indexOf('newHashtagAdd') > -1) {
+                    if (!(buttonNameAttr.indexOf('newHashtagAdd') > -1 || buttonNameAttr.indexOf('itemLinks[newHashtagAdd]') > -1)) {
                         let form = $(this).closest('form');
                         if (form[0].checkValidity()) {
                             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
@@ -220,6 +221,7 @@
 
                                     if ($result.find('ul.form-errors').length) {
                                         article.html($result);
+                                        registerDraftFormButtonEvents();
                                         $this.handleFormSubmit(article);
                                     } else {
                                         article.html($result);
@@ -261,6 +263,13 @@
     });
 
     let registerDraftFormButtonEvents = function() {
+        /**
+         * This should not be mandatory in order to ensure the event listener is only fired once
+         * due to the .one() call. However, it fixes the problem where the handler is called multiple
+         * times, resulting in a lot of unwanted ajax requests when saving.
+         */
+        $('#draft-save-combine-link').off('click');
+
         $('#draft-save-combine-link').one('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             $(this).parents('article').find('form').each(function () {

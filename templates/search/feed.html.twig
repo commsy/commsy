@@ -7,6 +7,25 @@
 
         <header class="uk-comment-header uk-flex">
 
+            {# change status (aka read status) #}
+            {% if result.readStatus is same as('new') %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({}) }}">
+                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+                </div>
+            {% elseif result.readStatus is same as('changed') %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif result.readStatus is same as('new_annotation') %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif result.readStatus is same as('changed_annotation') %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% endif %}
+
             <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
                 <form class="uk-form">
                     <input type="checkbox" value="{{ entity.itemId }}">
@@ -44,6 +63,15 @@
 
             {# title and meta #}
             <div class="uk-width-8-10">
+                <div class="uk-comment-meta">
+                    {% set privateRoom = user.ownRoom %}
+                    {% if privateRoom.itemID == entity.contextId -%}
+                        <a href="{{ path('app_material_list', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
+                    {%- else -%}
+                        <a href="{{ path('app_room_home', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
+                    {%- endif %}
+                </div>
+
                 <h4 class="uk-comment-title">
                     <a href="{{ path(result.routeName, {'roomId': entity.contextId, 'itemId': entity.itemId}) }}">
                         {% if entity.title is defined %}
@@ -57,7 +85,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if result.type == 'date' %}
+                    {% if result.type is same as('date') %}
                         {{ formatDateTimeRange(entity.wholeDay, entity.datetimeStart, entity.datetimeEnd) }}{% if entity.place != '' %}, {{ entity.place }}{% endif %}
                     {% elseif entity.author is defined and entity.author is not empty %}
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
@@ -74,7 +102,12 @@
             </div>
 
             <div class="uk-width-2-10 uk-text-right">
-                <i class="{{ macros.iconClassForItemType(result.type) }} uk-icon-small"></i>
+                {% if result.type is same as('todo') and result.status in [1, 2, 3] %}
+                    {% set statusDescriptions = ['pending'|trans({},'todo'), 'in progress'|trans({},'todo'), 'done'|trans({},'todo')] %}
+                    <i class="{{ macros.iconClassForItemType(result.type, result.status) }} uk-icon-small" data-uk-tooltip title="{{ statusDescriptions[result.status - 1] }}"></i>
+                {% else %}
+                    <i class="{{ macros.iconClassForItemType(result.type) }} uk-icon-small"></i>
+                {% endif %}
             </div>
         </header>
     </article>

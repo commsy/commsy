@@ -56,6 +56,12 @@
                 <target>Institutionen</target>
             </trans-unit>
 
+            <!-- breadcrumb bar only -->
+            <trans-unit id="userroom">
+                <source>userroom</source>
+                <target>Personen</target>
+            </trans-unit>
+
             <!-- settings sidebar menu entries -->
             <trans-unit id="general_settings">
                 <source>General</source>

@@ -38,6 +38,10 @@
                 <source>Combine</source>
                 <target>Zusammenlegen</target>
             </trans-unit>
+            <trans-unit id="hashtag-form-choose-placeholder">
+                <source>Choose a hashtag</source>
+                <target>Schlagwort auswählen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

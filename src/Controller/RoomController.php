@@ -5,32 +5,35 @@ namespace App\Controller;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Entity\ZzzRoom;
+use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
-use App\Repository\RoomRepository;
-use App\Repository\ZzzRoomRepository;
+use App\Repository\UserRepository;
 use App\RoomFeed\RoomFeedGenerator;
+use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
+use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_user_item;
+use DateTimeImmutable;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Repository\UserRepository;
-use App\Services\LegacyMarkup;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -50,7 +53,7 @@ class RoomController extends AbstractController
      * @param RoomService $roomService
      * @param RoomFeedGenerator $roomFeedGenerator
      * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $environment
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @return array
      */
@@ -60,15 +63,14 @@ class RoomController extends AbstractController
         RoomService $roomService,
         RoomFeedGenerator $roomFeedGenerator,
         LegacyMarkup $legacyMarkup,
-        LegacyEnvironment $environment,
+        LegacyEnvironment $legacyEnvironment,
         ParameterBagInterface $parameterBag,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         // get room item
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $roomService->getRoomItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
         if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $parameterBag->get('liip_theme.themes'))) {
@@ -137,7 +139,7 @@ class RoomController extends AbstractController
         $serviceContact = [
             'show' => false,
         ];
-        $portalItem = $roomItem->getContextItem();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
         if ($portalItem->showServiceLink()) {
             $serviceContact['show'] = true;
             $serviceContact['link'] = $roomService->buildServiceLink();
@@ -241,14 +243,14 @@ class RoomController extends AbstractController
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
         LegacyEnvironment $environment,
+        RoomService $roomService,
         int $roomId,
         int $max = 10
     ) {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -352,7 +354,7 @@ class RoomController extends AbstractController
                 'data' => array(),
             ]);
         }
-        
+
         return array(
             'form' => $form->createView(),
         );
@@ -398,6 +400,7 @@ class RoomController extends AbstractController
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portalItem->showTime(),
             'timePulses' => $roomService->getTimePulses(),
+            'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
         ]);
 
         $filterForm->handleRequest($request);
@@ -486,6 +489,7 @@ class RoomController extends AbstractController
      * @param RoomService $roomService
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
+     * @param UserRepository $userRepository
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -537,6 +541,7 @@ class RoomController extends AbstractController
             $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
                 'showTime' => $portalItem->showTime(),
                 'timePulses' => $roomService->getTimePulses(),
+                'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
             ]);
 
             // manually bind values from the request
@@ -559,6 +564,8 @@ class RoomController extends AbstractController
                 $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
                     'showTime' => $portalItem->showTime(),
                     'timePulses' => $roomService->getTimePulses(),
+                    'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
+
                 ]);
                 $filterForm->submit($roomFilter);
                 $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
@@ -608,25 +615,6 @@ class RoomController extends AbstractController
             'portal' => $portalItem,
             'rooms' => $rooms,
             'projectsMemberStatus' => $projectsMemberStatus,
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/logo")
-     * @Template()
-     * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
-     * @return array
-     */
-    public function logoAction(
-        Request $request,
-        LegacyEnvironment $legacyEnvironment
-    ) {
-        $environment = $legacyEnvironment->getEnvironment();
-        $portalItem = $environment->getCurrentPortalItem();
-
-        return [
-            'portalUrl' => $request->getSchemeAndHttpHost() . '?cid=' . $portalItem->getItemId(),
         ];
     }
 
@@ -751,6 +739,7 @@ class RoomController extends AbstractController
      * @Route("/room/{roomId}/all/{itemId}/request", requirements={
      *     "itemId": "\d+"
      * }))
+     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
      * @Template()
      * @param Request $request
      * @param LegacyEnvironment $environment
@@ -761,6 +750,7 @@ class RoomController extends AbstractController
     public function requestAction(
         Request $request,
         LegacyEnvironment $environment,
+        UserService $userService,
         int $roomId,
         int $itemId
     ) {
@@ -799,29 +789,17 @@ class RoomController extends AbstractController
                 // provided the correct code if necessary (or provided no code at all).
                 // We can now build a new user item and set the appropriate status
 
+                // TODO: try to make use of UserService->cloneUser() instead
+
                 $currentUserItem = $legacyEnvironment->getCurrentUserItem();
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
 
-                if ($privateRoomUserItem) {
-                    $newUser = $privateRoomUserItem->cloneData();
-                    $newPicture = $privateRoomUserItem->getPicture();
-                } else {
-                    $newUser = $currentUserItem->cloneData();
-                    $newPicture = $currentUserItem->getPicture();
-                }
+                $sourceUser = $privateRoomUserItem ?? $currentUserItem;
+                $newUser = $sourceUser->cloneData();
 
                 $newUser->setContextID($roomItem->getItemID());
 
-                if (!empty($newPicture)) {
-                    $values = explode('_', $newPicture);
-                    $values[0] = 'cid' . $newUser->getContextID();
-
-                    $newPictureName = implode('_', $values);
-
-                    $discManager = $legacyEnvironment->getDiscManager();
-                    $discManager->copyImageFromRoomToRoom($newPicture, $newUser->getContextID());
-                    $newUser->setPicture($newPictureName);
-                }
+                $userService->cloneUserPicture($sourceUser, $newUser);
 
                 if ($formData['description']) {
                     $newUser->setUserComment($formData['description']);
@@ -838,20 +816,11 @@ class RoomController extends AbstractController
                     $isRequest = false;
 
                     // link user with group "all"
-                    $groupManager = $legacyEnvironment->getLabelManager();
-                    $groupManager->setExactNameLimit('ALL');
-                    $groupManager->setContextLimit($roomItem->getItemID());
-                    $groupManager->select();
-                    $groupList = $groupManager->get();
-                    $group = $groupList->getFirst();
-
-                    if ($group) {
-                        $group->addMember($newUser);
-                    }
+                    $userService->addUserToSystemGroupAll($newUser, $roomItem);
                 }
 
                 if ($roomItem->getAGBStatus()) {
-                    $newUser->setAGBAcceptance();
+                    $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 }
 
                 // check if user id already exists
@@ -1066,8 +1035,11 @@ class RoomController extends AbstractController
     public function createAction(
         Request $request,
         RoomService $roomService,
+        UserService $userService,
         RoomCategoriesService $roomCategoriesService,
         LegacyEnvironment $environment,
+        EventDispatcherInterface $eventDispatcher,
+        CalendarsService $calendarsService,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -1146,10 +1118,17 @@ class RoomController extends AbstractController
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
+        if(!isset($type)){
+            $type = 'project'; //TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
+        }
+
+        $translator = $legacyEnvironment->getTranslationObject();
+        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+
         $templates = $roomService->getAvailableTemplates($type);
 
         // necessary, since the data field malfunctions when added via listener call (#2979)
-        $templates['No template'] = '-1';
+        $templates['*'.$msg] = '-1';
 
         // re-sort array by elements
         foreach($templates as $index => $entry){
@@ -1158,6 +1137,13 @@ class RoomController extends AbstractController
                 $templates[$index] = $entry;
             }
         }
+
+        uasort($templates,  function($a, $b) {
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
 
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
@@ -1186,6 +1172,7 @@ class RoomController extends AbstractController
                 else {
                     throw new UnexpectedValueException("Error Processing Request: Unrecognized room type", 1);
                 }
+
                 $legacyRoom = $roomManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -1203,6 +1190,17 @@ class RoomController extends AbstractController
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
 
+                // user room-related options will only be set in project workspaces
+                if (isset($context['type_sub']['createUserRooms'])) {
+                    $legacyRoom->setShouldCreateUserRooms($context['type_sub']['createUserRooms']);
+                }
+                if (isset($context['type_sub']['userroom_template'])) {
+                    $userroomTemplate = $roomService->getRoomItem($context['type_sub']['userroom_template']);
+                    if ($userroomTemplate) {
+                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
+                    }
+                }
+
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
                     $legacyRoom->setContinuous();
@@ -1215,7 +1213,6 @@ class RoomController extends AbstractController
                 // persist with legacy code
                 $legacyRoom->save();
 
-                $calendarsService = $this->get('commsy.calendars_service');
                 $calendarsService->createCalendar($legacyRoom, null, null, true);
 
                 // take values from a template?
@@ -1230,6 +1227,12 @@ class RoomController extends AbstractController
                 // would get overwritten by the room template's language setting
                 $legacyRoom->setLanguage($context['language']);
                 $legacyRoom->save();
+
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                foreach ($legacyRoomUsers as $user) {
+                    $event = new UserJoinedRoomEvent($user, $legacyRoom);
+                    $eventDispatcher->dispatch($event);
+                }
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
@@ -1282,7 +1285,7 @@ class RoomController extends AbstractController
             } else {
                 // in case of the guest user, $roomUser is null
                 if ($currentUser->isReallyGuest()) {
-                    $mayEnter = $item->mayEnter($currentUser);
+                        $mayEnter = $item->mayEnter($currentUser);
                 }
             }
 

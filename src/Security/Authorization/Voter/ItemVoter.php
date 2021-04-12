@@ -1,17 +1,16 @@
 <?php
+
 namespace App\Security\Authorization\Voter;
 
-use App\Entity\Account;
 use App\Entity\Portal;
 use App\Proxy\PortalProxy;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
-use Symfony\Component\Security\Core\User\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ItemVoter extends Voter
 {
@@ -21,6 +20,8 @@ class ItemVoter extends Voter
     const PARTICIPATE = 'ITEM_PARTICIPATE';
     const MODERATE = 'ITEM_MODERATE';
     const ENTER = 'ITEM_ENTER';
+    const USERROOM = 'ITEM_USERROOM';
+    const DELETE = 'ITEM_DELETE';
 
     private $legacyEnvironment;
     private $itemService;
@@ -31,8 +32,8 @@ class ItemVoter extends Voter
         LegacyEnvironment $legacyEnvironment,
         ItemService $itemService,
         RequestStack $requestStack,
-        EntityManagerInterface $entityManager)
-    {
+        EntityManagerInterface $entityManager
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
         $this->requestStack = $requestStack;
@@ -48,6 +49,8 @@ class ItemVoter extends Voter
             self::PARTICIPATE,
             self::MODERATE,
             self::ENTER,
+            self::USERROOM,
+            self::DELETE,
         ));
     }
 
@@ -60,7 +63,7 @@ class ItemVoter extends Voter
         // if (!$user instanceof User) {
         //     return false
         // }
-        
+
         $itemId = $object;
 
         $item = $this->itemService->getTypedItem($itemId);
@@ -69,7 +72,7 @@ class ItemVoter extends Voter
             $portal = $this->entityManager->getRepository(Portal::class)->find($itemId);
 
             if ($portal) {
-                $item = new PortalProxy($portal);
+                $item = new PortalProxy($portal, $this->legacyEnvironment);
             }
         }
 
@@ -93,16 +96,24 @@ class ItemVoter extends Voter
 
                 case self::ENTER:
                     return $this->canEnter($item, $currentUser, $user);
+
+                case self::USERROOM:
+                    return $this->hasUserroomItemPriviledges($item, $currentUser);
+
+                case self::DELETE:
+                    return $this->canDelete($item, $currentUser);
             }
-        } else if ($itemId == 'NEW') {
-            if ($attribute == self::EDIT) {
-                if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
-                    return false;
+        } else {
+            if ($itemId == 'NEW') {
+                if ($attribute == self::EDIT) {
+                    if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
+                        return false;
+                    }
+
+                    $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+
+                    return !$currentRoom->isArchived();
                 }
-
-                $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-
-                return !$currentRoom->isArchived();
             }
         }
 
@@ -205,33 +216,68 @@ class ItemVoter extends Voter
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($item->getItemID());
 
-        if ($item->isPrivateRoom()) {
+        try {
+            if ($item->isPrivateRoom()) {
+                return true;
+            }
+
+            if ($roomItem) {
+                if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+                    return true;
+                }
+            }
+
+            if ($item->isPortal()) {
+                if ($currentUser->isRoot()) {
+                    return true;
+                }
+
+                if ($item->isLocked()) {
+                    return false;
+                }
+
+                if ($item->isOpenForGuests()) {
+                    return true;
+                }
+
+                // allow access if user is authenticated
+                return $user instanceof UserInterface;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return false;
+    }
+
+    private function canDelete($item, $currentUser)
+    {
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($item->getItemID());
+
+        try {
+            if ($roomItem->getType() == 'userroom') {
+                return false;
+            } else {
+                if ($roomItem) {
+                    if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return false;
+    }
+
+    private function hasUserroomItemPriviledges($item, $currentUser)
+    {
+        if ($item->getContextItem()->getType() == 'userroom'
+            && $this->canParticipate($item, $currentUser)) {
             return true;
         }
-
-        if ($roomItem) {
-            if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
-                return true;
-            }
-        }
-
-        if ($item->isPortal()) {
-            if ($currentUser->isRoot()) {
-                return true;
-            }
-
-            if ($item->isLocked()) {
-                return false;
-            }
-
-            if ($item->isOpenForGuests()) {
-                return true;
-            }
-
-            // allow access if user is authenticated
-            return $user instanceof User;
-        }
-
         return false;
     }
 }

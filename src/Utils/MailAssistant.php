@@ -2,26 +2,27 @@
 
 namespace App\Utils;
 
+use App\Entity\Account;
+use App\Entity\Portal;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\FormInterface;
+use Twig\Environment;
 
-use Symfony\Component\Translation\TranslatorInterface;
-
-use \Twig_Environment;
 
 class MailAssistant
 {
     private $legacyEnvironment;
-    private $translator;
     private $twig;
     private $from;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator, Twig_Environment $twig, $from)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        Environment $twig,
+        $from
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->translator = $translator;
         $this->twig = $twig;
         $this->from = $from;
     }
@@ -107,7 +108,9 @@ class MailAssistant
     public function getSwiftMessageContactForm(
         FormInterface $form,
         $item,
-        $forceBCCMail = false
+        $forceBCCMail = false,
+        $moderatorIds = null,
+        UserService $userService
     ): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
@@ -120,6 +123,13 @@ class MailAssistant
         ];
 
         $recipients['to'][$item->getEmail()] = $item->getFullName();
+        if(!is_null($moderatorIds)){
+            $moderatorIds = explode(', ', $moderatorIds);
+            foreach($moderatorIds as $moderatorId){
+                $moderator = $userService->getUser($moderatorId);
+                $recipients['to'][$moderator->getEmail()] = $moderator->getFullName();
+            }
+        }
 
         $to = $recipients['to'];
         $toBCC = $recipients['bcc'];
@@ -132,7 +142,6 @@ class MailAssistant
         }
 
         $formDataSubject = $formData['subject'];
-
         $formDataMessage = $formData['message'];
 
         $from = '';
@@ -255,6 +264,23 @@ class MailAssistant
                 $message->setBcc($toBCC);
             }
         }
+
+        return $message;
+    }
+
+    public function getSwiftMessageFromPortalToAccount(
+        string $subject,
+        string $body,
+        Portal $portal,
+        Account $account
+    ): \Swift_Message
+    {
+        $message = (new \Swift_Message())
+            ->setSubject($subject)
+            ->setBody($body, 'text/html')
+            ->setFrom([$this->from => $portal->getTitle()]);
+
+        $message->setTo([$account->getEmail() => $account->getFirstname() . ' ' . $account->getLastname()]);
 
         return $message;
     }

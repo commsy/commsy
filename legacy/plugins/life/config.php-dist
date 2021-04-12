@@ -1,5 +1,0 @@
-<?php
-   $life_url_to_life = 'http://life.epb.uni-hamburg.de';
-   $life_proxy_ip = '';
-   $life_proxy_port = '';
-?>

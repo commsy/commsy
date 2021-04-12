@@ -13,6 +13,7 @@ import {SendMailAction} from "./SendMailAction";
 import {UserStatusAction} from "./UserStatusAction";
 import {InsertAction} from "./InsertAction";
 import {RemoveAction} from "./RemoveAction";
+import {InsertUserroomAction} from "./InsertUserroomAction";
 
 'use strict';
 
@@ -126,6 +127,8 @@ export function createAction(actionData: ActionData): BaseAction {
             return new CopyAction(actionData);
         case 'insert':
             return new InsertAction(actionData);
+        case 'insertuserroom':
+            return new InsertUserroomAction(actionData);
         case 'remove':
             return new RemoveAction(actionData);
         case 'workflow':

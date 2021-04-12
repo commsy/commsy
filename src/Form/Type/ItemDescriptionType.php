@@ -26,57 +26,62 @@ class ItemDescriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', CKEditorType::class, array(
-                'config_name' => 'cs_item_config',
+            ->add('description', CKEditorType::class, [
+                'config_name' => $options['configName'],
                 'label' => 'Description',
-                'attr' => array(
+                'attr' => [
                     'placeholder' => 'Description',
                     'class' => 'uk-form-width-large ckeditor-upload',
-                    'data-cs-uploadurl' => '{"path": "' . $options['uploadUrl'] . '"}',
                     'data-cs-filelisturl' => '{"path": "' . $options['filelistUrl'] . '"}'
-                ),
+                ],
+                'config' => [
+                    // NOTE: the form-based editor upload method has to be set explicitly, since CKEditor >=4.9.0 uses 'xhr'
+                    // as its default upload method; see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html
+                    'filebrowserUploadMethod' => 'form',
+                    'filebrowserUploadUrl' => $options['uploadUrl'],
+                ],
                 'translation_domain' => 'material',
                 'required' => false,
-            ))
+            ])
         ;
             
         if (!isset($options['attr']['unsetRecurrence'])) {
             $builder
-                ->add('save', SubmitType::class, array(
-                    'attr' => array(
+                ->add('save', SubmitType::class, [
+                    'attr' => [
                         'class' => 'uk-button-primary',
-                    ),
+                    ],
                     'label' => 'save',
-                ))
-                ->add('cancel', SubmitType::class, array(
-                    'attr' => array(
+                ])
+                ->add('cancel', SubmitType::class, [
+                    'attr' => [
                         'formnovalidate' => '',
-                    ),
+                    ],
                     'label' => 'cancel',
-                ))
+                ])
             ;
         } else {
             $builder
-                ->add('saveThisDate', SubmitType::class, array(
-                    'attr' => array(
+                ->add('saveThisDate', SubmitType::class, [
+                    'attr' => [
                         'class' => 'uk-button-primary',
-                    ),
+                        ],
                     'label' => 'saveThisDate',
                     'translation_domain' => 'date',
-                ))
-                ->add('saveAllDates', SubmitType::class, array(
-                    'attr' => array(
+                ])
+                ->add('saveAllDates', SubmitType::class, [
+                    'attr' => [
                         'class' => 'uk-button-primary',
-                    ),
+                        ],
                     'label' => 'saveAllDates',
                     'translation_domain' => 'date',
-                ))
-                ->add('cancel', SubmitType::class, array(
-                    'attr' => array(
+                ])
+                ->add('cancel', SubmitType::class, [
+                    'attr' => [
                         'formnovalidate' => '',
-                    ),
+                        ],
                     'label' => 'cancel',
-                ))
+                ])
             ;
         }
     }
@@ -89,8 +94,8 @@ class ItemDescriptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId', 'uploadUrl', 'filelistUrl'])
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setRequired(['itemId', 'configName', 'uploadUrl', 'filelistUrl'])
+            ->setDefaults(['translation_domain' => 'form'])
         ;
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Event\UserJoinedRoomEvent;
 use App\Form\Type\ProjectType;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
@@ -24,6 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\Type\Room\DeleteType;
 use App\Filter\ProjectFilterType;
 use App\Entity\Room;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ProjectController
@@ -32,6 +35,22 @@ use App\Entity\Room;
  */
 class ProjectController extends AbstractController
 {
+    private $legacyEnvironment;
+    private $translator;
+
+
+    /**
+     * ProjectController constructor.
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
+    {
+        $this->legacyEnvironment = $legacyEnvironment;
+        $this->translator = $translator;
+    }
+
+
     /**
      * @Route("/room/{roomId}/project/feed/{start}/{sort}")
      * @Template()
@@ -181,7 +200,7 @@ class ProjectController extends AbstractController
         $roomItem = $roomManager->getItem($itemId);
         
         $currentUser = $legacyEnvironment->getCurrentUser();
-        $infoArray = $this->getDetailInfo($roomItem);
+        $infoArray = $this->getDetailInfo($itemId, $environment, $itemService);
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
@@ -220,7 +239,9 @@ class ProjectController extends AbstractController
         CalendarsService $calendarsService,
         RoomCategoriesService $roomCategoriesService,
         RoomService $roomService,
+        UserService $userService,
         LegacyEnvironment $legacyEnvironment,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -239,7 +260,7 @@ class ProjectController extends AbstractController
         $times = $roomService->getTimePulses(true);
 
         $room = new Room();
-        $templates = $this->getAvailableTemplates();
+        $templates = $this->getAvailableTemplates($legacyEnvironment);
         $roomCategories = [];
         foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
@@ -263,8 +284,9 @@ class ProjectController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 // create a new room using the legacy code
                 $communityRoom = $roomService->getRoomItem($roomId);
-
+                $context = $request->get('project');
                 $projectManager = $legacyEnvironment->getProjectManager();
+
                 $legacyRoom = $projectManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -280,7 +302,16 @@ class ProjectController extends AbstractController
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
 
-                $context = $request->get('project');
+                if (isset($context['createUserRooms'])) {
+                    $legacyRoom->setShouldCreateUserRooms($context['createUserRooms']);
+                }
+                if (isset($context['userroom_template'])) {
+                    $userroomTemplate = $roomService->getRoomItem($context['userroom_template']);
+                    if ($userroomTemplate) {
+                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
+                    }
+                }
+
                 $timeIntervals = $context['time_interval'] ?? [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
                     $legacyRoom->setContinuous();
@@ -301,7 +332,7 @@ class ProjectController extends AbstractController
 
                     $masterRoom = $roomService->getRoomItem($masterTemplate);
                     if ($masterRoom) {
-                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
+                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyEnvironment);
                     }
                 }
 
@@ -309,6 +340,12 @@ class ProjectController extends AbstractController
                 // would get overwritten by the room template's language setting
                 $legacyRoom->setLanguage($room->getLanguage());
                 $legacyRoom->save();
+
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                foreach ($legacyRoomUsers as $user) {
+                    $event = new UserJoinedRoomEvent($user, $legacyRoom);
+                    $eventDispatcher->dispatch($event);
+                }
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
@@ -364,7 +401,10 @@ class ProjectController extends AbstractController
         int $roomId,
         int $itemId
     ) {
-        $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
+
+        $form = $this->createForm(DeleteType::class, [], [
+            'confirm_string' => $this->translator->trans('delete', [], 'profile')
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -387,20 +427,21 @@ class ProjectController extends AbstractController
     }
 
     private function getDetailInfo(
-        int $room
+        int $roomId,
+        LegacyEnvironment $legacyEnvironment,
+        ItemService $itemService
     ) {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $legacyEnvironment->getEnvironment()->getReaderManager();
 
         $info = [];
 
         // modifier
-        $info['modifierList'][$room->getItemId()] = $itemService->getAdditionalEditorsForItem($room);
+        $room = $itemService->getItem($roomId);
+        $info['modifierList'][$roomId] = $itemService->getAdditionalEditorsForItem($room);
 
         // total user count
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $legacyEnvironment->getEnvironment()->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getEnvironment()->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $userList = $userManager->get();
@@ -439,14 +480,14 @@ class ProjectController extends AbstractController
         return $info;
     }
 
-    private function copySettings($masterRoom, $targetRoom)
+    private function copySettings($masterRoom, $targetRoom, LegacyEnvironment $legacyEnvironment)
     {
         $old_room = $masterRoom;
         $new_room = $targetRoom;
 
         $old_room_id = $old_room->getItemID();
 
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $environment = $legacyEnvironment->getEnvironment();
 
         /**/
         $user_manager = $environment->getUserManager();
@@ -488,11 +529,15 @@ class ProjectController extends AbstractController
         return $targetRoom;
     }
 
-    private function getAvailableTemplates($type = 'project')
+
+    /**
+     * @param \cs_environment $legacyEnvironment
+     * @param string $type
+     * @return array
+     */
+    private function getAvailableTemplates(\cs_environment $legacyEnvironment, $type = 'project')
     {
         $templates = [];
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
@@ -582,7 +627,7 @@ class ProjectController extends AbstractController
     private function memberStatus($item)
     {
         $status = 'closed';
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $relatedUserArray = $currentUser->getRelatedUserList()->to_array();

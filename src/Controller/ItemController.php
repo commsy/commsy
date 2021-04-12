@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\ItemTransformer;
+use App\Form\DataTransformer\TransformerManager;
 use App\Form\Model\Send;
 use App\Form\Type\ItemCatsBuzzType;
 use App\Form\Type\ItemDescriptionType;
@@ -37,7 +38,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Zend\Validator\Translator\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -47,6 +48,18 @@ use Zend\Validator\Translator\TranslatorInterface;
  */
 class ItemController extends AbstractController
 {
+    private $transformerManager;
+
+    /**
+     * @required
+     * @param mixed $transformerManager
+     */
+    public function setTransformerManager(TransformerManager $transformerManager): void
+    {
+        $this->transformerManager = $transformerManager;
+    }
+
+
     /**
      * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
      * @Template()
@@ -73,14 +86,20 @@ class ItemController extends AbstractController
     ) {
         /** @var cs_item $item */
         $item = $itemService->getTypedItem($itemId);
-        
-        $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
+
+        $transformer = $this->transformerManager->getConverter($item->getItemType());
 
         $itemType = $item->getItemType();
+
+        // NOTE: we disable the CommSy-related & MathJax toolbar items for users & groups, so their CKEEditor controls
+        // won't allow any media upload; this is done since user & group detail views currently have no means to manage
+        // (e.g. delete again) any attached files
+        $configName = ($itemType === 'user' || $itemType === 'group') ? 'cs_item_nomedia_config' : 'cs_item_config' ;
         
         $formData = $transformer->transform($item);
         $formOptions = array(
             'itemId' => $itemId,
+            'configName' => $configName,
             'uploadUrl' => $this->generateUrl('app_upload_ckupload', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId

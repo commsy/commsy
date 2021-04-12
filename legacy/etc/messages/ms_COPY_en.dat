@@ -2,6 +2,6 @@
 $message["COPY_FROM"]["en"] = "Copies from";
 $message["COPY_FROM_COMMUNITYROOM"]["en"] = "Copies from %_COMMUNITY_SUB_NOMS_BIG";
 $message["COPY_FROM_GROUPROOM"]["en"] = "Copies from group workspace";
-$message["COPY_FROM_PRIVATEROOM"]["en"] = "Copies from private workspace";
+$message["COPY_FROM_PRIVATEROOM"]["en"] = "Copies from my stack";
 $message["COPY_FROM_PROJECTROOM"]["en"] = "Copies from %_PROJECT_SUB_DATS_BIG";
 ?>

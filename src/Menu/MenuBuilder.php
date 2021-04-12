@@ -2,25 +2,29 @@
 
 namespace App\Menu;
 
+use App\Entity\Account;
+use App\Entity\Portal;
+use App\Repository\PortalRepository;
+use App\Services\InvitationsService;
+use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
+use App\Utils\UserService;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use App\Utils\RoomService;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use App\Services\LegacyEnvironment;
-use App\Utils\UserService;
-use App\Services\InvitationsService;
+use Symfony\Component\Security\Core\Security;
 
 class MenuBuilder
 {
     /**
-    * @var Knp\Menu\FactoryInterface $factory
+    * @var FactoryInterface $factory
     */
     private $factory;
 
     private $roomService;
 
     private $legacyEnvironment;
-    
+
     private $userService;
 
     private $authorizationChecker;
@@ -28,41 +32,62 @@ class MenuBuilder
     private $invitationsService;
 
     /**
-    * @param FactoryInterface $factory
-    */
+     * @var PortalRepository
+     */
+    private $portalRepository;
+
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * @param FactoryInterface $factory
+     * @param RoomService $roomService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param UserService $userService
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param InvitationsService $invitationsService
+     * @param PortalRepository $portalRepository
+     * @param Security $security
+     */
     public function __construct(
         FactoryInterface $factory,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
         UserService $userService,
         AuthorizationCheckerInterface $authorizationChecker,
-        InvitationsService $invitationsService)
-    {
+        InvitationsService $invitationsService,
+        PortalRepository $portalRepository,
+        Security $security
+    ) {
         $this->factory = $factory;
         $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->userService = $userService;
         $this->authorizationChecker = $authorizationChecker;
         $this->invitationsService = $invitationsService;
+        $this->portalRepository = $portalRepository;
+        $this->security = $security;
     }
 
-    public function createAccountMenu(RequestStack $requestStack)
+    public function createAccountMenu()
     {
-       // create profile
-        $currentStack = $requestStack->getCurrentRequest();
+        // create profile
         $currentUser = $this->legacyEnvironment->getCurrentUser();
-        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
-        $authSourceItem = $currentPortal->getAuthSource($currentUser->getAuthSource());
+
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        $authSource = $account !== null ? $account->getAuthSource() : null;
 
         $menu = $this->factory->createItem('root');
 
-        if ($currentUser->getItemId() != '') {
+        if ($currentUser->getItemId() != '' && $account != null) {
 
             $menu->addChild('personal', [
-                'route' => 'app_profile_personal',
+                'route' => 'app_account_personal',
                 'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
+                    'portalId' => $account->getContextId(),
                 ],
                 'extras' => [
                     'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
@@ -71,12 +96,11 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            if((isset($authSourceItem) && $authSourceItem->allowChangePassword()) || $currentUser->isRoot()) {
+            if ($currentUser->isRoot() || ($authSource !== null && $authSource->isChangePassword())) {
                 $menu->addChild('changePassword', [
-                    'route' => 'app_profile_changepassword',
+                    'route' => 'app_account_changepassword',
                     'routeParameters' => [
-                        'roomId' => $currentStack->attributes->get('roomId'),
-                        'itemId' => $currentUser->getItemId(),
+                        'portalId' => $account->getContextId(),
                     ],
                     'extras' => [
                         'icon' => 'uk-icon-lock uk-icon-small uk-icon-justify',
@@ -89,10 +113,9 @@ class MenuBuilder
             if(!$currentUser->isRoot()) {
                 $menu->addChild('mergeAccounts', [
                     'label' => 'combineAccount',
-                    'route' => 'app_profile_mergeaccounts',
+                    'route' => 'app_account_mergeaccounts',
                     'routeParameters' => [
-                        'roomId' => $currentStack->attributes->get('roomId'),
-                        'itemId' => $currentUser->getItemId(),
+                        'portalId' => $account->getContextId(),
                     ],
                     'extras' => [
                         'icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify',
@@ -103,10 +126,9 @@ class MenuBuilder
             }
 
             $menu->addChild('newsletter', [
-                'route' => 'app_profile_newsletter',
+                'route' => 'app_account_newsletter',
                 'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
+                    'portalId' => $account->getContextId(),
                 ],
                 'extras' => [
                     'icon' => 'uk-icon-newspaper-o uk-icon-small uk-icon-justify',
@@ -118,10 +140,9 @@ class MenuBuilder
             if(!$currentUser->isRoot()) {
                 $menu->addChild('privacy', [
                     'label' => 'Privacy',
-                    'route' => 'app_profile_privacy',
+                    'route' => 'app_account_privacy',
                     'routeParameters' => [
-                        'roomId' => $currentStack->attributes->get('roomId'),
-                        'itemId' => $currentUser->getItemId(),
+                        'portalId' => $account->getContextId(),
                     ],
                     'extras' => [
                         'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
@@ -131,26 +152,10 @@ class MenuBuilder
                     ->setExtra('translation_domain', 'profile');
             }
 
-            if ($currentUser->getRelatedPortalUserItem()->isAllowedToUseCalDAV()) {
-                $menu->addChild('calendars', [
-                    'route' => 'app_profile_calendars',
-                    'routeParameters' => [
-                        'roomId' => $currentStack->attributes->get('roomId'),
-                        'itemId' => $currentUser->getItemId(),
-                    ],
-                    'extras' => [
-                        'icon' => 'uk-icon-calendar uk-icon-small uk-icon-justify',
-                        'user' => $currentUser,
-                    ]
-                ])
-                    ->setExtra('translation_domain', 'menu');
-            }
-
             $menu->addChild('additional', [
-                'route' => 'app_profile_additional',
+                'route' => 'app_account_additional',
                 'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
+                    'portalId' => $account->getContextId(),
                 ],
                 'extras' => [
                     'icon' => 'uk-icon-plus-square uk-icon-small uk-icon-justify',
@@ -160,10 +165,9 @@ class MenuBuilder
             ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('deleteAccount', [
-                'route' => 'app_profile_deleteaccount',
+                'route' => 'app_account_deleteaccount',
                 'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
+                    'portalId' => $account->getContextId(),
                 ],
                 'extras' => [
                     'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
@@ -274,6 +278,10 @@ class MenuBuilder
         // get room Id
         $currentStack = $requestStack->getCurrentRequest();
         $roomId = $currentStack->attributes->get('roomId');
+        $room = $this->roomService->getRoomItem($roomId);
+
+        /** @var Portal $portal */
+        $portal = $this->portalRepository->find($room->getContextID());
 
         // create root item
         $menu = $this->factory->createItem('root');
@@ -295,7 +303,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'menu');            
+            ->setExtra('translation_domain', 'menu');
 
             // additional settings
             $menu->addChild('Additional', array(
@@ -314,7 +322,7 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-paint-brush uk-icon-small uk-icon-justify'),
             ))
             ->setExtra('translation_domain', 'menu');
-            
+
             // extensions
             $menu->addChild('Extensions', array(
                 'label' => 'extensions',
@@ -326,7 +334,7 @@ class MenuBuilder
 
 
             // invitations
-            if ($this->invitationsService->invitationsEnabled()) {
+            if ($this->invitationsService->invitationsEnabled($portal)) {
                 $menu->addChild('Invitations', array(
                     'label' => 'invitations',
                     'route' => 'app_settings_invitations',
@@ -337,20 +345,22 @@ class MenuBuilder
             }
 
             // delete
-            $menu->addChild('Delete', [
-                'label' => 'delete',
-                'route' => 'app_settings_delete',
-                'routeParameters' => [
-                    'roomId' => $roomId,
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
-                ],
-            ])
-            ->setAttributes([
-                'class' => 'uk-button-danger',
-            ])
-            ->setExtra('translation_domain', 'menu');
+            if ($this->roomService->getRoomItem($roomId)->getType() !== 'userroom') {
+                $menu->addChild('Delete', [
+                    'label' => 'delete',
+                    'route' => 'app_settings_delete',
+                    'routeParameters' => [
+                        'roomId' => $roomId,
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
+                    ],
+                ])
+                    ->setAttributes([
+                        'class' => 'uk-button-danger',
+                    ])
+                    ->setExtra('translation_domain', 'menu');
+            }
 
             $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
@@ -382,6 +392,15 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
+            // appearance
+            $menu->addChild('Appearance', [
+                'label' => 'appearance',
+                'route' => 'app_portalsettings_appearance',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'paint-bucket'],
+            ])
+            ->setExtra('translation_domain', 'menu');
+
             // support
             $menu->addChild('Support', [
                 'label' => 'Support requests',
@@ -401,9 +420,9 @@ class MenuBuilder
             ->setExtra('translation_domain', 'portal');
 
             // terms
-            $menu->addChild('Terms', [
-                'label' => 'terms',
-                'route' => 'app_portalsettings_terms',
+            $menu->addChild('Contents', [
+                'label' => 'contents',
+                'route' => 'app_portalsettings_contents',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'file-text']
             ])
@@ -445,10 +464,10 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
-            // time
+            // time pulses
             $menu->addChild('Time', [
-                'label' => 'Time',
-                'route' => 'app_portalsettings_time',
+                'label' => 'Time pulses',
+                'route' => 'app_portalsettings_timepulses',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'calendar']
             ])
@@ -496,6 +515,15 @@ class MenuBuilder
                 'route' => 'app_portalsettings_mailtexts',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'mail']
+            ])
+                ->setExtra('translation_domain', 'portal');
+
+            // auth source
+            $menu->addChild('Auth', [
+                'label' => 'Auth',
+                'route' => 'app_portalsettings_authlocal',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'credit-card']
             ])
                 ->setExtra('translation_domain', 'portal');
         }
@@ -624,13 +652,7 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
-            $menu->addChild('portal_configuration_terms', array(
-                'label' => 'terms',
-                'route' => 'app_portal_terms',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
-            ))
-                ->setExtra('translation_domain', 'portal');
+
             $menu->addChild('portal_configuration_licenses', array(
                 'label' => 'Licenses',
                 'route' => 'app_portal_licenses',
@@ -661,7 +683,7 @@ class MenuBuilder
             ))
                 ->setExtra('translation_domain', 'portal');
         }
-        
+
         return $menu;
     }
 
@@ -704,7 +726,7 @@ class MenuBuilder
             case 'institution':
                 $class = "uk-icon-justify uk-icon-institution uk-icon-small";
                 break;
-            
+
             default:
                 $class = "uk-icon-justify uk-icon-home uk-icon-small";
                 break;

@@ -7,7 +7,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\MediawikiService;
 use cs_room_item;
 
-class ExtensionSettingsTransformer implements DataTransformerInterface
+class ExtensionSettingsTransformer extends AbstractTransformer
 {
     private $legacyEnvironment;
     private $roomService;
@@ -70,6 +70,7 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             $roomData['workflow']['resubmission_show_to'] = $roomItem->getWorkflowReaderShowTo();
 
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
+            $roomData['createUserRooms'] = ($roomItem->isProjectRoom()) ? $roomItem->getShouldCreateUserRooms() : false;
         }
 
         return $roomData;
@@ -93,6 +94,10 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             $roomObject->setAssessmentActive();
         } else {
             $roomObject->setAssessmentInactive();
+        }
+
+        if ($roomObject->isProjectRoom()) {
+            $roomObject->setShouldCreateUserRooms($roomData['createUserRooms']);
         }
 
         $isset_workflow = false;
@@ -182,6 +187,6 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             }
         }
 
-        $roomObject->save();
+        return $roomObject;
     }
 }

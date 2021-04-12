@@ -87,7 +87,7 @@ class DiscussionController extends BaseController
             $discussionService->setFilterConditions($filterForm);
         }
         else {
-            $discussionService->showNoNotActivatedEntries();
+            $discussionService->hideDeactivatedEntries();
         }
 
         // get discussion list from manager service
@@ -140,6 +140,7 @@ class DiscussionController extends BaseController
     public function listAction(
         Request $request,
         LegacyEnvironment $environment,
+        DiscussionService $discussionService,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -150,7 +151,6 @@ class DiscussionController extends BaseController
         }
 
         // get the discussion manager service
-        $discussionService = $this->get('commsy_legacy.discussion_service');
         $filterForm = $this->createFilterForm($roomItem);
 
         // apply filter
@@ -160,7 +160,7 @@ class DiscussionController extends BaseController
             $discussionService->setFilterConditions($filterForm);
         }
         else {
-            $discussionService->showNoNotActivatedEntries();
+            $discussionService->hideDeactivatedEntries();
         }
 
         // get discussion list from manager service
@@ -349,10 +349,14 @@ class DiscussionController extends BaseController
         ];
     }
     
-    private function getDetailInfo ($roomId, $itemId, LegacyMarkup $legacyMarkup) {
+    private function getDetailInfo (
+        $roomId,
+        $itemId,
+        DiscussionService $discussionService,
+        LegacyMarkup $legacyMarkup)
+    {
         $infoArray = array();
         
-        $discussionService = $this->get('commsy_legacy.discussion_service');
         $itemService = $this->get('commsy_legacy.item_service');
 
         $discussion = $discussionService->getDiscussion($itemId);
@@ -519,7 +523,7 @@ class DiscussionController extends BaseController
             $categories = $this->getTagDetailArray($roomCategories, $discussionCategories);
         }
 
-        $articleTree = $this->get('commsy_legacy.discussion_service')->buildArticleTree($articleList);
+        $articleTree = $discussionService->buildArticleTree($articleList);
 
         $infoArray['discussion'] = $discussion;
         $infoArray['articleList'] = $articleList->to_array();
@@ -602,7 +606,7 @@ class DiscussionController extends BaseController
         // create a new discussion
         $discussionItem = $discussionService->getNewDiscussion();
         $discussionItem->setDraftStatus(1);
-        $discussionItem->setPrivateEditing('1');
+        $discussionItem->setPrivateEditing('0'); // editable only by creator
         $discussionItem->save();
 
         return $this->redirectToRoute('app_discussion_detail', [
@@ -1122,9 +1126,9 @@ class DiscussionController extends BaseController
                 $article->setTitle($form->getData()['title']);
 
                 if ($form->getData()['permission']) {
-                    $article->setPrivateEditing('0');
+                    $article->setPrivateEditing('0'); // editable only by creator
                 } else {
-                    $article->setPrivateEditing('1');
+                    $article->setPrivateEditing('1'); // editable by everyone
                 }
 
                 if ($item->isDraft()) {
@@ -1232,7 +1236,7 @@ class DiscussionController extends BaseController
     ) {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
         ];
 
         return $this->createForm(DiscussionFilterType::class, $defaultFilterValues, [
@@ -1271,7 +1275,7 @@ class DiscussionController extends BaseController
                 // apply filter
                 $discussionService->setFilterConditions($filterForm);
             } else {
-                $discussionService->showNoNotActivatedEntries();
+                $discussionService->hideDeactivatedEntries();
             }
 
             return $discussionService->getListDiscussions($roomItem->getItemID());

@@ -213,9 +213,16 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
       }elseif (isset($this->_room_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('todos').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
-      if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND ('.$this->addDatabasePrefix('todos').'.modification_date IS NULL OR '.$this->addDatabasePrefix('todos').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
-      }
+
+       switch ($this->inactiveEntriesLimit) {
+           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('todos') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('todos') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
+               $query .= ' AND (' . $this->addDatabasePrefix('todos') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('todos') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               break;
+       }
+
 #      if ( $this->_future_limit ) {
 #         $date = date("Y-m-d").' 00:00:00';
 #         $query .= ' AND todos.date >= "'.$date.'"';

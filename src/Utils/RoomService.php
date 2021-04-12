@@ -2,15 +2,106 @@
 
 namespace App\Utils;
 
+use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 
 class RoomService
 {
     private $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    /**
+     * @var CalendarsService
+     */
+    private $calendarsService;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, CalendarsService $calendarsService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->calendarsService = $calendarsService;
+    }
+
+    /**
+     * Returns a new room with the given properties, created by the given room manager
+     * @param \cs_room2_manager $roomManager the room manager to be used to create the room (which also defines its type)
+     * @param int $contextID the ID of the room which hosts the created room
+     * @param string $title the title of the created room
+     * @param string $description (optional) the description of the created room
+     * @param \cs_room_item|null (optional) $roomTemplate the room to be used as a template when creating the new room
+     * @param \cs_user_item|null (optional) $creator the user who will be specified as the room's creator; if left out,
+     * the current user will be used
+     * @param \cs_user_item|null (optional) $modifier the user who will be specified as the room's modifier; if left out,
+     * the current user will be used
+     * @return \cs_room_item|null the newly created room, or null if an error occurred
+     */
+    public function createRoom(
+        \cs_room2_manager $roomManager,
+        int $contextID,
+        string $title,
+        string $description = "",
+        \cs_room_item $roomTemplate = null,
+        \cs_user_item $creator = null,
+        \cs_user_item $modifier = null
+    ): ?\cs_room_item
+    {
+        // TODO: use a facade/factory to create a new room
+
+        if (!isset($roomManager) || empty($contextID) || empty($title)) {
+            return null;
+        }
+
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $creator = $creator ?? $currentUser;
+        $modifier = $modifier ?? $currentUser;
+
+        $newRoom = $roomManager->getNewItem();
+        if (!$newRoom) {
+            return null;
+        }
+
+        $newRoom->setCreatorItem($creator);
+        $newRoom->setModificatorItem($modifier);
+        $newRoom->setCreationDate(date('Y-m-d H:i:s'));
+
+        $newRoom->setContextID($contextID);
+        $newRoom->open();
+
+        $newRoom->setTitle($title);
+        $newRoom->setDescription($description);
+
+        // TODO: in case of a project room, assign the community rooms to which this room belongs (from a method parameter)
+        // TODO: set the room's time intervals (from a method parameter)
+
+        // persist room (which will also call $roomManager->saveItem())
+        $newRoom->save();
+
+        $this->calendarsService->createCalendar($newRoom, null, null, true);
+
+        // TODO: setRoomContext?
+
+        if ($roomTemplate) {
+            $newRoom = $this->copySettings($roomTemplate, $newRoom);
+        }
+
+        // TODO: set the room's system language (from a method parameter)
+
+        // mark the room as edited
+        $linkModifierItemManager = $this->legacyEnvironment->getLinkModifierItemManager();
+        $linkModifierItemManager->markEdited($newRoom->getItemID(), $modifier->getItemID());
+
+        // TODO: set any room categories (from a method parameter)
+
+        return $newRoom;
+    }
+
+    public function updateRoomTemplate($roomId, $roomTemplateID)
+    {
+        $roomItem = $this->getRoomItem($roomId);
+        $roomTemplate = $this->getRoomItem($roomTemplateID);
+        if ($roomTemplate) {
+            $roomItem = $this->copySettings($roomTemplate, $roomItem);
+        }
+        $roomItem->save();
+        return $roomItem;
     }
 
     /**
@@ -41,6 +132,57 @@ class RoomService
                 return $rubrics;
             }
         }
+    }
+
+    private function copySettings($masterRoom, $targetRoom)
+    {
+        // NOTE: the variable names in this method are required by the below included files
+        $old_room = $masterRoom;
+        $new_room = $targetRoom;
+        $old_room_id = $old_room->getItemID();
+        $environment = $this->legacyEnvironment;
+
+// TODO: check if the commented code is still necessary
+// (when creating a project room with user rooms, the commented code would hit the exception since the user room creator is not a room member)
+
+        /**/
+        $user_manager = $environment->getUserManager();
+        $creator_item = $user_manager->getItem($new_room->getCreatorID());
+//        if ($creator_item->getContextID() == $new_room->getItemID()) {
+            $creator_id = $creator_item->getItemID();
+//        } else {
+//            $user_manager->resetLimits();
+//            $user_manager->setContextLimit($new_room->getItemID());
+//            $user_manager->setUserIDLimit($creator_item->getUserID());
+//            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
+//            $user_manager->setModeratorLimit();
+//            $user_manager->select();
+//            $user_list = $user_manager->get();
+//            if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
+//                $creator_item = $user_list->getFirst();
+//                $creator_id = $creator_item->getItemID();
+//            } else {
+//                throw new \Exception('can not get creator of new room');
+//            }
+//        }
+//        $creator_item->setAccountWantMail('yes');
+//        $creator_item->setOpenRoomWantMail('yes');
+//        $creator_item->setPublishMaterialWantMail('yes');
+//        $creator_item->save();
+
+        // copy room settings
+        require('include/inc_room_copy_config.php');
+
+        // save new room
+        $new_room->save();
+
+        // copy data
+        require('include/inc_room_copy_data.php');
+        /**/
+
+        $targetRoom = $new_room;
+
+        return $targetRoom;
     }
 
     /**
@@ -259,11 +401,11 @@ class RoomService
     }
 
     /**
-     * Returns the list of room templates available for the given room type
-     * @param string $roomType The type of the room (CS_PROJECT_TYPE or CS_COMMUNITY_TYPE)
-     * @return string service email address
+     * Returns all room templates available for the given room type
+     * @param string $type the type of the room
+     * @return array array of room template IDs keyed by room title & ID
      */
-    public function getAvailableTemplates(string $roomType)
+    public function getAvailableTemplates(string $roomType): array
     {
         $templates = [];
 
@@ -278,8 +420,8 @@ class RoomService
         if ($templateList->isNotEmpty()) {
             $template = $templateList->getFirst();
             while ($template) {
-                $availability = $template->getTemplateAvailability(); // $roomType === CS_PROJECT_TYPE
-                if ($roomType === CS_COMMUNITY_TYPE) {
+                $availability = $template->getTemplateAvailability(); // $roomType === 'project'
+                if ($roomType === 'community') {
                     $availability = $template->getCommunityTemplateAvailability();
                 }
 

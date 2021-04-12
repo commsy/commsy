@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="form-filter-hide-deactivated-entries">
                 <source>Hide-deactivated-entries</source>
-                <target>Deaktivierte Einträge ausblenden</target>
+                <target>Aktivierte und deaktivierte Einträge</target>
             </trans-unit>
             <trans-unit id="form-filter-hide-completed-entries">
                 <source>Hide-completed-entries</source>
@@ -45,6 +45,14 @@
             <trans-unit id="form-upload-2">
                 <source>selecting one</source>
                 <target>Oder verwenden Sie den Dateiauswahldialog</target>
+            </trans-unit>
+            <trans-unit id="form-file-select">
+                <source>Select a file</source>
+                <target>Datei auswählen</target>
+            </trans-unit>
+            <trans-unit id="form-upload-info-maxfilesize">
+                <source>Upload files up to %maxUploadSize% MB</source>
+                <target>Sie können Dateien bis zu %maxUploadSize% MB hochladen.</target>
             </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
@@ -278,6 +286,14 @@
                 <source>ALL</source>
                 <target>Alle</target>
             </trans-unit>
+            <trans-unit id="form-choice-only-activated">
+                <source>only activated</source>
+                <target>Nur aktivierte</target>
+            </trans-unit>
+            <trans-unit id="form-choice-only-deactivated">
+                <source>only deactivated</source>
+                <target>Nur deaktivierte</target>
+            </trans-unit>
             <trans-unit id="edit workflow">
                 <source>edit workflow</source>
                 <target>Workflow bearbeiten</target>
@@ -337,6 +353,10 @@
             <trans-unit id="formNo">
                 <source>No</source>
                 <target>Nein</target>
+            </trans-unit>
+            <trans-unit id="content">
+                <source>content</source>
+                <target>Inhalt</target>
             </trans-unit>
             <trans-unit id="subject">
                 <source>subject</source>

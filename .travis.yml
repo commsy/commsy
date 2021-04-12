@@ -1,8 +1,7 @@
 language: php
 sudo: required
 
-# TODO: Stay on trusty for now as mariadb is unable to install on xenial right now
-dist: trusty
+dist: bionic
 
 matrix:
   # Fast finish allows to set the build as "finished" even if the "allow_failures" matrix elements are not finished yet.
@@ -22,7 +21,7 @@ services:
   - elasticsearch
 
 addons:
-  mariadb: 10.1
+  mariadb: 10.3
   chrome: stable
   apt:
     update: true
@@ -42,7 +41,7 @@ before_install:
   - install_nginx
 
   # Install yarn
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.17.3
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.5
   - export PATH=$HOME/.yarn/bin:$PATH
 
   # Setup Database
@@ -50,7 +49,7 @@ before_install:
   - mysql -e 'USE mysql; UPDATE user SET password=PASSWORD("root") WHERE user="root"; FLUSH PRIVILEGES;'
 
   # ChromeDriver
-  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/81.0.4044.69/chromedriver_linux64.zip
+  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/85.0.4183.87/chromedriver_linux64.zip
   - unzip -o -q chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - chromedriver --url-base=/wd/hub &

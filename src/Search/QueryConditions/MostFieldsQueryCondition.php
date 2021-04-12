@@ -64,6 +64,8 @@ class MostFieldsQueryCondition implements QueryConditionInterface
             // discussion articles
             'discussionarticles.subject^1.3',
             'discussionarticles.description^1.3',
+            'discussionarticles.filesRaw',
+
 
             // user
             'fullName',
@@ -74,6 +76,9 @@ class MostFieldsQueryCondition implements QueryConditionInterface
 
             'steps.description',
             'sections.description',
+
+            'steps.filesRaw',
+            'sections.filesRaw',
 
             'userId',
 //            'creationDate',
@@ -87,6 +92,8 @@ class MostFieldsQueryCondition implements QueryConditionInterface
 
             'contactPersons',
             'roomDescription',
+
+            'filesRaw',
         ];
 
         /**

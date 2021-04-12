@@ -27,14 +27,29 @@
                 </div>
             {% endif %}
             {{ form_start(form) }}
-            {{ form_row(form.previous) }}
-            {{ form_row(form.next) }}
+
+            {% if(hasPrevious) %}
+                {{ form_row(form.previous) }}
+            {% else %}
+                {{ form_row(form.hasNoPrevious) }}
+            {% endif %}
+
+            {% if(hasNext) %}
+                {{ form_row(form.next) }}
+            {% else %}
+                {{ form_row(form.hasNoNext) }}
+            {% endif %}
+
             <h1>{{ user.firstname }} {{ user.lastname }}</h1>
             <hr />
             <div style="border: 1px solid black; padding: 10px; width: 50%;">
                 <ul style="list-style: none;">
                     <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Edit'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
+                    {% if not portalUser.canImpersonateAnotherUser or (portalUser.impersonateExpiryDate is not null and portalUser.impersonateExpiryDate < date())%}
+                        <li style="font-style:italic; color:lightgrey">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</li>
+                    {% else %}
+                        <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
+                    {% endif %}
                 </ul>
             </div>
             <hr />
@@ -44,7 +59,6 @@
                     <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change password'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailchangestatus', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change status'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailassignworkspace', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Assign workspace'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailterminatemembership', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Terminate membership'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailhidemail', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Hide mail'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailhidemailallwrks', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Hide mail all wrks'|trans({},'portal') }}</a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailshowmail', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Show mail'|trans({},'portal') }}</a></li>
@@ -58,8 +72,10 @@
                     </tr>
                     <tr>
                         <td> {{'Status'|trans({},'portal') }}: </td>
-                        {% if(user.getStatus() == 2) %}
-                            <td>{{'Contact'|trans({},'portal') }}</td>
+                        {% if(user.getStatus() == 1) %}
+                            <td>{{'Applying'|trans({},'portal') }}</td>
+                        {% elseif(user.getStatus() == 2) %}
+                            <td>{{'User'|trans({},'portal') }}</td>
                         {% elseif(user.getStatus() == 3) %}
                             <td>{{'Moderator'|trans({},'portal') }}</td>
                         {% else %}
@@ -76,12 +92,12 @@
                     </tr>
                     <tr>
                         <td>{{'Login as... active'|trans({},'portal') }}</td>
-                        <td>{% if user.isDeactivatedLoginAsAnotherUser() %}
-
-                        {% elseif user.isTemporaryAllowedToLoginAs() %}
-                            {{ user.getTimestampForLoginAs() }}
-                        {% else %}
+                        <td>{% if not user.canImpersonateAnotherUser %}
                             {{'No'|trans({},'portal') }}
+                        {% elseif user.impersonateExpiryDate is not null %}
+                            {{ user.impersonateExpiryDate|craue_date }}
+                        {% else %}
+                            {{'Yes'|trans({},'portal') }}
                         {%  endif %}</td>
                     </tr>
                     <tr>
@@ -137,7 +153,11 @@
                         <td>{{'Lock'|trans({},'profile') }}</td>
                     </tr>
                     <tr>
-                        <td>{{'Workspace membership'|trans({},'portal') }}</td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                    <tr>
+                        <td>{{'Workspace membership'|trans({},'portal') }}:</td>
                         <td> </td>
                     </tr>
                     <tr>
@@ -149,19 +169,43 @@
                         <td>{{ projects }}</td>
                     </tr>
                     <tr>
-                        <td>{{'Archived workspaces'|trans({},'portal') }}</td>
-                        <td> </td>
+                        <td>{{'Userroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ userrooms }}</td>
                     </tr>
                     <tr>
+                        <td>{{'Privateroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ privaterooms }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                    <tr style="font-style:italic; color:lightgrey">
+                        <td>{{'Archived workspaces'|trans({},'portal') }}: </td>
+                        <td> </td>
+                    </tr>
+                    <tr style="font-style:italic; color:lightgrey">
                         <td>{{'Community workspaces'|trans({},'portal') }}</td>
                         <td>{{ communitiesArchived }}</td>
                     </tr>
-                    <tr>
+                    <tr style="font-style:italic; color:lightgrey">
                         <td>{{'Project workspaces'|trans({},'portal') }}</td>
                         <td>{{ projectsArchived }}</td>
                     </tr>
+                    <tr style="font-style:italic; color:lightgrey">
+                        <td>{{'Userroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ userroomsArchived }}</td>
+                    </tr>
+                    <tr style="font-style:italic; color:lightgrey">
+                        <td>{{'Privateroom workspaces'|trans({},'portal') }}</td>
+                        <td>{{ privateRoomsArchived }}</td>
+                    </tr>
                 </table>
             {{ form_row(form.back) }}
+            {% do form.next.setRendered %}
+            {% do form.hasNoNext.setRendered %}
+            {% do form.previous.setRendered %}
+            {% do form.hasNoPrevious.setRendered %}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

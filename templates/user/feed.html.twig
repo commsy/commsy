@@ -73,11 +73,11 @@
                 {% endif %}
                 <br/>
                 {% if user.telephone %}
-                    <span>{{ 'phone'|trans({}, 'user')}}: <a href="tel:{{user.telephone}}">{{ user.telephone|truncate(20) }}</a></span>
+                    <span>{{ 'phone'|trans({}, 'user')}}: <a href="tel:{{user.telephone}}">{{ user.telephone|u.truncate(20) }}</a></span>
                 {% endif %}
                 <br/>
                 {% if user.cellularphone %}
-                    <span>{{ 'mobile'|trans({}, 'user')}}: <a href="tel:{{user.cellularphone}}">{{ user.cellularphone|truncate(20) }}</a></span>
+                    <span>{{ 'mobile'|trans({}, 'user')}}: <a href="tel:{{user.cellularphone}}">{{ user.cellularphone|u.truncate(20) }}</a></span>
                 {% endif %}
             </div>
             <div class="uk-width-1-10">
@@ -97,6 +97,10 @@
                         <i class="uk-icon-times uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Reject'|trans({}, 'user') }}</span>
                     </a>
+                {% endif %}
+                {% set userKey = user.itemId %}
+                {% if linkedUserRooms[userKey] is defined %}
+                    <a href="{{ path('app_room_home', {'roomId': linkedUserRooms[user.itemId].itemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'Enter user room'|trans({}, 'room') }}"></a>
                 {% endif %}
             </div>
         </header>

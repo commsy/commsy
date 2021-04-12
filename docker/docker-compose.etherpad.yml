@@ -4,6 +4,6 @@ services:
   etherpad:
     build: ./docker/etherpad
 
-  commsy_php:
+  php:
     depends_on:
       - etherpad

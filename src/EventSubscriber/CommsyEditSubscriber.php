@@ -2,18 +2,27 @@
 
 namespace App\EventSubscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use App\Event\CommsyEditEvent;
+use App\Utils\ReaderService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CommsyEditSubscriber implements EventSubscriberInterface {
 
+    /**
+     * @var ContainerInterface $container
+     */
     private $container;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * @var ReaderService $readerService
+     */
+    private $readerService;
+
+    public function __construct(ContainerInterface $container, ReaderService $readerService)
     {
         $this->container = $container;
+        $this->readerService = $readerService;
     }
 
     public function onCommsyEdit(CommsyEditEvent $event) {
@@ -26,6 +35,7 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
 
     public function onCommsySave(CommsyEditEvent $event) {
         if ($event->getItem()) {
+            /** @var \cs_item $item */
             $item = $event->getItem();
 
             if ($item->hasLocking()) {
@@ -39,6 +49,10 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
 
             if (method_exists($item, 'updateElastic')) {
                 $item->updateElastic();
+
+                // NOTE: read status cache items also get invalidated via the ReadStatusPreChangeEvent
+                // which will be triggered when items get marked as read
+                $this->readerService->invalidateCachedReadStatusForItem($item);
             }
         }
     }

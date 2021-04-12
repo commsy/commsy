@@ -10,6 +10,10 @@
                 <source>This email has been sent by ... from project room ...</source>
                 <target>Diese E-Mail wurde von %sender_name% über den Projektraum "%room_name%" versendet.</target>
             </trans-unit>
+            <trans-unit id="mailFromUserRoom">
+                <source>This email has been sent by ... from userroom ...</source>
+                <target>Diese E-Mail wurde von %sender_name% über den Personenraum "%room_name%" an %recipients% versendet.</target>
+            </trans-unit>
             <trans-unit id="mailFromGroupRoom">
                 <source>This email has been sent by ... from group room ...</source>
                 <target>Diese E-Mail wurde von %sender_name% über den Gruppenraum "%room_name%" versendet.</target>

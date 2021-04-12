@@ -2,6 +2,6 @@
 $message["COPY_FROM"]["de"] = "Kopien aus dem";
 $message["COPY_FROM_COMMUNITYROOM"]["de"] = "Kopien aus %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG";
 $message["COPY_FROM_GROUPROOM"]["de"] = "Kopien aus dem Gruppenraum";
-$message["COPY_FROM_PRIVATEROOM"]["de"] = "Kopien aus dem persönlichen Raum";
+$message["COPY_FROM_PRIVATEROOM"]["de"] = "Kopien aus meiner Ablage";
 $message["COPY_FROM_PROJECTROOM"]["de"] = "Kopien aus %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG";
 ?>

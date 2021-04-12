@@ -9,7 +9,7 @@ import * as URI from "urijs";
 export class SendMailAction extends BaseAction {
 
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             let currentURI = new URI(location.href);
             let requestURI = new URI(this.url);
             requestURI.search(function() {
@@ -36,7 +36,7 @@ export class SendMailAction extends BaseAction {
             $('body').append($form);
             $form.trigger('submit');
 
-            resolve();
+            resolve(null);
         });
     }
 }
