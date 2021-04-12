@@ -9,7 +9,7 @@ use App\Form\Type\CsvImportType;
 use App\Form\Type\LicenseSortType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
-use App\User\UserBuilder;
+use App\User\UserCreatorFacade;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,33 +40,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class PortalController extends AbstractController
 {
     /**
-     * @Route("/portal/{roomId}/impressum")
-     * @Template()
+     * @Route("/portal/goto/{portalId}", name="app_portal_goto")
      */
-    public function impressum()
+    public function gotoAction(string $portalId, Request $request)
     {
-        return [];
+        return $this->redirect($request->getBaseUrl() . '?cid=' . $portalId);
     }
-
-    /**
-     * @Route("/portal/{roomId}/dp")
-     * @Template()
-     */
-    public function dataPrivacy()
-    {
-        return [];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/tou")
-     * @Template()
-     */
-    public function termsOfUse()
-    {
-        return [];
-    }
-
-
 
     /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")
@@ -153,50 +132,6 @@ class PortalController extends AbstractController
             'roomCategoryId' => $roomCategoryId,
             'item' => $legacyEnvironment->getCurrentPortalItem(),
         ];
-    }
-
-    /**
-     * Handles portal terms configuration
-     *
-     * @Route("/portal/{roomId}/terms")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @return array
-     */
-    public function termsAction(
-        Request $request,
-        LegacyEnvironment $environment
-    ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $portalTerms = $portalItem->getAGBTextArray();
-        $portalTerms['status'] = $portalItem->getAGBStatus();
-
-        $termsForm = $this->createForm(PortalTermsType::class, $portalTerms, []);
-
-        $termsForm->handleRequest($request);
-        if ($termsForm->isSubmitted() && $termsForm->isValid()) {
-            if ($termsForm->getClickedButton()->getName() == 'save') {
-                $formData = $termsForm->getData();
-
-                $portalItem->setAGBTextArray(array_filter($formData, function($key) {
-                    return $key == 'DE' || $key == 'EN';
-                }, ARRAY_FILTER_USE_KEY));
-                $portalItem->setAGBStatus($formData['status']);
-                $portalItem->setAGBChangeDate();
-                $portalItem->save();
-            }
-        }
-
-        return [
-            'form' => $termsForm->createView(),
-            'portal' => $portalItem,
-        ];
-
     }
 
     /**
@@ -454,6 +389,7 @@ class PortalController extends AbstractController
     public function csvImportAction(
         Request $request,
         LegacyEnvironment $environment,
+        \App\Facade\UserCreatorFacade $userCreator,
         int $roomId
     ) {
         $portal = null;
@@ -502,8 +438,7 @@ class PortalController extends AbstractController
                 $authSourceManager = $legacyEnvironment->getAuthSourceManager();
                 $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
 
-                $userBuilder = $this->get(UserBuilder::class);
-                $userBuilder->createFromCsvDataset($authSourceItem, $userDatasets);
+                $userCreator->createFromCsvDataset($authSourceItem, $userDatasets);
             }
         }
 

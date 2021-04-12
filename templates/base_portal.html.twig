@@ -1,3 +1,5 @@
+{% import 'common/footer.html.twig' as footer %}
+
 <!DOCTYPE html>
 <html lang="de">
     <head>
@@ -12,7 +14,7 @@
         <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
     </head>
     <body>
-        <div class="uk-inline uk-width-1-1" uk-height-viewport>
+        <div class="uk-inline uk-width-1-1">
             {# Top navigation bar #}
             <div id="top_navigation">
                 {% block top_navigation %}{% endblock %}
@@ -22,7 +24,7 @@
             {% block sidebar_left %}{% endblock %}
 
             {# Main content area #}
-            <div id="main">
+            <div id="main" uk-height-viewport="expand: true">
                 {% block breadcrumb %}{% endblock %}
                 {% block cover %}{% endblock %}
 
@@ -35,8 +37,15 @@
 
             {# Footer #}
             <div id="footer">
-                <div class="uk-section uk-section-default uk-padding-small uk-text-small">
-                    {% block footer %}{% endblock %}
+                <div class="uk-section uk-section-default uk-section-xsmall uk-text-small">
+                    <div class="uk-container">
+                        <div class="uk-flex uk-flex-center">
+                            <div>CommSy {{ commsy.version }}</div>
+                            {{ footer.render(commsy.server, commsy.portal) }}
+                        </div>
+
+                        {% block footer %}{% endblock %}
+                    </div>
                 </div>
             </div>
         </div>

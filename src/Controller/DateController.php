@@ -5,7 +5,13 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
+use App\Entity\Calendars;
+use App\Event\CommsyEditEvent;
+use App\Filter\DateFilterType;
 use App\Form\DataTransformer\DateTransformer;
+use App\Form\Type\AnnotationType;
+use App\Form\Type\DateImportType;
+use App\Form\Type\DateType;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -15,33 +21,21 @@ use App\Utils\CategoryService;
 use App\Utils\DateService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
-use App\Utils\RoomService;
 use App\Utils\TopicService;
 use cs_dates_item;
 use cs_room_item;
 use cs_user_item;
 use DateTime;
-
 use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
 use Symfony\Component\HttpFoundation\JsonResponse;
-
-use App\Form\Type\DateType;
-use App\Form\Type\AnnotationType;
-use App\Form\Type\DateImportType;
-
-use App\Filter\DateFilterType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
-use App\Event\CommsyEditEvent;
-use App\Entity\Calendars;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -901,8 +895,10 @@ class DateController extends BaseController
         Request $request,
         DateService $dateService,
         TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment,
         int $itemId
     ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $date = $dateService->getDate($itemId);
 
         $requestContent = json_decode($request->getContent());
@@ -948,6 +944,9 @@ class DateController extends BaseController
                 $date->setDateTime_end($endDateTime->format('Y-m-d 23:59:59'));
             }
         }
+
+        // update modifier
+        $date->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
         $date->save();
 
@@ -1951,7 +1950,7 @@ class DateController extends BaseController
     {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
             'hide-past-dates' => $hidePastDates,
         ];
 

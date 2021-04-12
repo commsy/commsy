@@ -1,0 +1,56 @@
+{% extends 'base/settings.html.twig' %}
+{% import "utils/macros.html.twig" as utilsMacros %}
+
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-4-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-danger">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'Delete userrooms'|trans({}, 'settings') }}</div>
+                    </div>
+                </div>
+
+                <div class="uk-alert uk-alert-danger">
+                    <p class="uk-text-uppercase uk-text-bold">
+                        {{ 'Delete user rooms text'|trans({}, 'settings') }}
+                    </p>
+                    <p class="uk-text-bold">
+                        {{ 'Project workspace unchanged'|trans({}, 'settings') }}
+                    </p>
+                    <div class="uk-margin">
+                        {{ 'Delete explanation start'|trans({}, 'settings') }}
+                        <span class="uk-text-uppercase uk-text-bold">{{ 'delete'|trans({}, 'profile') }}</span>
+                        {{ 'Delete explanation end'|trans({}, 'settings') }}
+                    </div>
+                    <div class="uk-margin">
+                        {{ form_start(form) }}
+
+                        <div class="uk-form-row">
+                            {% for error in form.confirm.vars.errors  %}
+                                {% if ' ' not in error.message %}
+                                    <br /><a href="/room/{{ error.message}}">
+                                    {{ error.message | roomtitle}}
+                                </a><br />
+                                {% else %}
+                                    {{ error.message | trans({}, "validators")}}<br/>
+                                {% endif %}
+                            {% endfor %}
+                            {{ form_label(form.confirm) }}
+                            {{ form_widget(form.confirm) }}
+                        </div>
+
+                        <div class="uk-form-row">
+                            {{ form_widget(form.delete) }}
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

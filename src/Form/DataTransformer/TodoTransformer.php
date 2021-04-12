@@ -4,8 +4,10 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-class TodoTransformer implements DataTransformerInterface
+class TodoTransformer extends AbstractTransformer
 {
+    protected $entity = 'todo';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)

@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
 include_once('classes/cs_list.php');
+include_once('classes/cs_userroom_item.php');
 include_once('classes/interfaces/cs_export_import_interface.php');
 
    /** This class returns an instance of a cs_mananger subclass on request.
@@ -232,7 +233,7 @@ class cs_environment {
              $portal = $entityManager->getRepository(Portal::class)->find($this->current_context_id);
 
              if ($portal) {
-                 $this->current_context = new PortalProxy($portal);
+                 $this->current_context = new PortalProxy($portal, $this);
                  return $this->current_context;
              }
 
@@ -248,6 +249,8 @@ class cs_environment {
                   $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
                } elseif ($type == CS_GROUPROOM_TYPE) {
                   $manager = $this->getRoomManager(); // room_manager for caching
+               } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                   $manager = $this->getRoomManager(); // room_manager for caching
                } elseif ($type == CS_PORTAL_TYPE) {
                   $manager = $this->getPortalManager();
                } elseif ($type == CS_SERVER_TYPE) {
@@ -283,6 +286,8 @@ class cs_environment {
                      $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
                   } elseif ($type == CS_GROUPROOM_TYPE) {
                      $manager = $this->getRoomManager(); // room_manager for caching
+                  } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                      $manager = $this->getRoomManager(); // room_manager for caching
                   } elseif ($type == CS_PORTAL_TYPE) {
                      $manager = $this->getPortalManager();
                   } elseif ($type == CS_SERVER_TYPE) {
@@ -349,13 +354,20 @@ class cs_environment {
            } elseif ( $contextItem->isPortal() ) {
                $this->_current_portal = $contextItem;
            } else {
+               $currentPortalId = $contextItem->getContextID();
+
+               if ($contextItem->getType() === cs_userroom_item::ROOM_TYPE_USER) {
+                   // NOTE: for user rooms, the context item is the project room that hosts the user room (not the portal item)
+                   $currentPortalId = $contextItem->getPortalId();
+               }
+
                global $symfonyContainer;
                /** @var EntityManagerInterface $entityManager */
                $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-               $portal = $entityManager->getRepository(Portal::class)->find($contextItem->getContextID());
+               $portal = $entityManager->getRepository(Portal::class)->find($currentPortalId);
 
                if ($portal) {
-                   $this->_current_portal = new PortalProxy($portal);
+                   $this->_current_portal = new PortalProxy($portal, $this);
                }
            }
        } else {
@@ -365,7 +377,7 @@ class cs_environment {
            $portal = $entityManager->getRepository(Portal::class)->find($this->_current_portal_id);
 
            if ($portal) {
-               $this->_current_portal = new PortalProxy($portal);
+               $this->_current_portal = new PortalProxy($portal, $this);
            }
        }
 
@@ -1124,6 +1136,28 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_grouproom_manager');
    }
 
+  /** get instance of cs_userroom_manager
+   *
+   * @return cs_userroom_manager
+   * @access public
+   */
+   function getUserRoomManager () {
+       if ( !$this->isArchiveMode() ) {
+           return $this->_getInstance('cs_userroom_manager');
+       } else {
+           return $this->getZzzUserRoomManager();
+       }
+   }
+
+  /** get instance of cs_zzz_userroom_manager
+   *
+   * @return cs_zzz_item_manager
+   * @access public
+   */
+   public function getZzzUserRoomManager() {
+      return $this->_getInstance('cs_zzz_userroom_manager');
+   }
+
   /** get instance of cs_myroom_manager
    *
    * @return cs_myroom_manager
@@ -1609,112 +1643,113 @@ class cs_environment {
    	}
    }
 
-  /** get instance of cs_XXX_manager by item_type
-   *
-   * @param string type of an item
-   *
-   * @return cs_XXX_manager
-   * @access public
-   */
-   function getManager ($type, $force = false) {
-      if (!empty($type)) {
-         if ($type == CS_DATE_TYPE) {
-            return $this->getDateManager();
-         } elseif ($type == CS_TODO_TYPE or $type == 'todos') {
-            return $this->getTodosManager();
-         } elseif ($type == 'contact' or $type == 'contacts' or $type == CS_USER_TYPE or $type == 'users' or $type == 'account') {
-            return $this->getUserManager();
-         } elseif ($type == CS_MATERIAL_TYPE or $type == 'materials') {
-            return $this->getMaterialManager();
-         } elseif ($type == CS_ANNOTATION_TYPE or $type == 'annotations') {
-            return $this->getAnnotationManager();
-		   } elseif ($type == CS_ASSESSMENT_TYPE or $type == 'assessments') {
-		 	   return $this->getAssessmentManager();
-         } elseif ($type == 'discussion' or $type == 'discussions') {
-            return $this->getDiscussionManager();
-         } elseif ($type == 'discarticle' or $type == 'discarticles') {
-            return $this->getDiscussionArticlesManager();
-         } elseif ($type == 'announcements' or $type == CS_ANNOUNCEMENT_TYPE) {
-            return $this->getAnnouncementManager();
-         } elseif ($type == 'portfolio' or $type == CS_PORTFOLIO_TYPE) {
-            return $this->getPortfolioManager();
-         } elseif ($type == CS_TOPIC_TYPE) {
-            return $this->getTopicManager();
-         } elseif ($type == 'group' or $type == 'groups') {
-            return $this->getGroupManager();
-         } elseif ($type == 'task' or $type == 'tasks') {
-            return $this->getTaskManager();
-         } elseif ($type == 'section') {
-            return $this->getSectionManager();
-         } elseif ($type == 'label') {
-            return $this->getLabelManager();
-         } elseif ($type == 'log') {
-            return $this->getLogManager();
-         } elseif ($type == 'log_archive') {
-            return $this->getLogArchiveManager();
-         } elseif ($type == CS_PROJECT_TYPE) {
-            return $this->getProjectManager($force);
-         } elseif ($type == CS_STEP_TYPE) {
-            return $this->getStepManager();
-         } elseif ($type == CS_ROOM_TYPE) {
-            return $this->getRoomManager($force);
-         } elseif ($type == CS_COMMUNITY_TYPE) {
-            return $this->getCommunityManager($force);
-         } elseif ($type == CS_PRIVATEROOM_TYPE) {
-            return $this->getPrivateRoomManager($force);
-         } elseif ($type == CS_GROUPROOM_TYPE) {
-            return $this->getGroupRoomManager($force);
-         } elseif ($type == CS_MYROOM_TYPE) {
-            return $this->getMyRoomManager();
-         } elseif ($type == CS_PORTAL_TYPE) {
-            return $this->getPortalManager($force);
-         } elseif ($type == CS_SERVER_TYPE) {
-            return $this->getServerManager($force);
-         } elseif ($type == CS_FILE_TYPE) {
-            return $this->getFileManager();
-         } elseif ($type == CS_LINK_TYPE) {
-            return $this->getLinkManager();
-         } elseif ($type == CS_LINKITEM_TYPE) {
-            return $this->getLinkItemManager();
-         } elseif ($type == CS_LINKMODITEM_TYPE) {
-            return $this->getLinkModifierItemManager();
-         } elseif ($type == CS_LINKITEMFILE_TYPE) {
-            return $this->getLinkItemFileManager();
-         } elseif ($type == CS_ITEM_TYPE or $type == 'items') {
-            return $this->getItemManager();
-         } elseif ($type == CS_READER_TYPE) {
-            return $this->getReaderManager();
-         } elseif ($type == CS_NOTICED_TYPE) {
-            return $this->getNoticedManager();
-         } elseif ($type == CS_TIME_TYPE) {
-            return $this->getTimeManager();
-         } elseif ($type == CS_WIKI_TYPE) {
-            return $this->getWikiManager();
-         } elseif ($type == 'chat') {
-            return '';
-         } elseif ($type == CS_TAG_TYPE) {
-            return $this->getTagManager();
-         } elseif ($type == CS_TAG2TAG_TYPE) {
-            return $this->getTag2TagManager();
-         } elseif ($type == CS_BUZZWORD_TYPE) {
-            return $this->getBuzzwordManager();
-         } elseif ($type == CS_MYLIST_TYPE) {
-            return $this->getMylistManager();
-         } elseif ($type == CS_MATRIX_TYPE) {
-            return $this->getMatrixManager();
-         } elseif ($type == CS_ITEM_BACKUP) {
-            return $this->getBackupItemManager();
-         } elseif ($type == CS_ENTRY_TYPE) {
-            return $this->getEntryManager();
-         } elseif ( !$this->isPlugin($type) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('do not know this type ['.$type.']',E_USER_ERROR);
-         }
-      }
-      return NULL;
-   }
+    /** get instance of cs_XXX_manager by item_type
+     *
+     * @param string type of an item
+     * @param bool $force
+     * @return cs_manager|null
+     * @access public
+     */
+    public function getManager($type): ?cs_manager
+    {
+        if (!empty($type)) {
+            if ($type == CS_DATE_TYPE) {
+                return $this->getDateManager();
+            } elseif ($type == CS_TODO_TYPE || $type == 'todos') {
+                return $this->getTodosManager();
+            } elseif ($type == 'contact' || $type == 'contacts' || $type == CS_USER_TYPE || $type == 'users' || $type == 'account') {
+                return $this->getUserManager();
+            } elseif ($type == CS_MATERIAL_TYPE || $type == 'materials') {
+                return $this->getMaterialManager();
+            } elseif ($type == CS_ANNOTATION_TYPE || $type == 'annotations') {
+                return $this->getAnnotationManager();
+            } elseif ($type == CS_ASSESSMENT_TYPE || $type == 'assessments') {
+                return $this->getAssessmentManager();
+            } elseif ($type == 'discussion' || $type == 'discussions') {
+                return $this->getDiscussionManager();
+            } elseif ($type == 'discarticle' || $type == 'discarticles') {
+                return $this->getDiscussionArticlesManager();
+            } elseif ($type == 'announcements' || $type == CS_ANNOUNCEMENT_TYPE) {
+                return $this->getAnnouncementManager();
+            } elseif ($type == 'portfolio' || $type == CS_PORTFOLIO_TYPE) {
+                return $this->getPortfolioManager();
+            } elseif ($type == CS_TOPIC_TYPE) {
+                return $this->getTopicManager();
+            } elseif ($type == 'group' || $type == 'groups') {
+                return $this->getGroupManager();
+            } elseif ($type == 'task' || $type == 'tasks') {
+                return $this->getTaskManager();
+            } elseif ($type == 'section') {
+                return $this->getSectionManager();
+            } elseif ($type == 'label') {
+                return $this->getLabelManager();
+            } elseif ($type == 'log') {
+                return $this->getLogManager();
+            } elseif ($type == 'log_archive') {
+                return $this->getLogArchiveManager();
+            } elseif ($type == CS_PROJECT_TYPE) {
+                return $this->getProjectManager();
+            } elseif ($type == CS_STEP_TYPE) {
+                return $this->getStepManager();
+            } elseif ($type == CS_ROOM_TYPE) {
+                return $this->getRoomManager();
+            } elseif ($type == CS_COMMUNITY_TYPE) {
+                return $this->getCommunityManager();
+            } elseif ($type == CS_PRIVATEROOM_TYPE) {
+                return $this->getPrivateRoomManager();
+            } elseif ($type == CS_GROUPROOM_TYPE) {
+                return $this->getGroupRoomManager();
+            } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
+                return $this->getUserRoomManager();
+            } elseif ($type == CS_MYROOM_TYPE) {
+                return $this->getMyRoomManager();
+            } elseif ($type == CS_PORTAL_TYPE) {
+                return $this->getPortalManager();
+            } elseif ($type == CS_SERVER_TYPE) {
+                return $this->getServerManager();
+            } elseif ($type == CS_FILE_TYPE) {
+                return $this->getFileManager();
+            } elseif ($type == CS_LINK_TYPE) {
+                return $this->getLinkManager();
+            } elseif ($type == CS_LINKITEM_TYPE) {
+                return $this->getLinkItemManager();
+            } elseif ($type == CS_LINKMODITEM_TYPE) {
+                return $this->getLinkModifierItemManager();
+            } elseif ($type == CS_LINKITEMFILE_TYPE) {
+                return $this->getLinkItemFileManager();
+            } elseif ($type == CS_ITEM_TYPE || $type == 'items') {
+                return $this->getItemManager();
+            } elseif ($type == CS_READER_TYPE) {
+                return $this->getReaderManager();
+            } elseif ($type == CS_NOTICED_TYPE) {
+                return $this->getNoticedManager();
+            } elseif ($type == CS_TIME_TYPE) {
+                return $this->getTimeManager();
+            } elseif ($type == CS_WIKI_TYPE) {
+                return $this->getWikiManager();
+            } elseif ($type == CS_TAG_TYPE) {
+                return $this->getTagManager();
+            } elseif ($type == CS_TAG2TAG_TYPE) {
+                return $this->getTag2TagManager();
+            } elseif ($type == CS_BUZZWORD_TYPE) {
+                return $this->getBuzzwordManager();
+            } elseif ($type == CS_MYLIST_TYPE) {
+                return $this->getMylistManager();
+            } elseif ($type == CS_MATRIX_TYPE) {
+                return $this->getMatrixManager();
+            } elseif ($type == CS_ITEM_BACKUP) {
+                return $this->getBackupItemManager();
+            } elseif ($type == CS_ENTRY_TYPE) {
+                return $this->getEntryManager();
+            } elseif (!$this->isPlugin($type)) {
+                include_once('functions/error_functions.php');
+                trigger_error('do not know this type [' . $type . ']', E_USER_ERROR);
+            }
+        }
+        return null;
+    }
 
-  /** get boolean, if your are in the community room or not
+  /** get boolean, if you are in the community room or not
    *
    * @return boolean, true  = you are in the community room
    *                  false = you are not in the community room
@@ -1724,7 +1759,7 @@ class cs_environment {
       return $context_item->isCommunityRoom();
    }
 
-  /** get boolean, if your are in the private room or not
+  /** get boolean, if you are in the private room or not
    *
    * @return boolean, true  = you are in the private room
    *                  false = you are not in the private room
@@ -1739,7 +1774,7 @@ class cs_environment {
       return $context_item->isOpenForGuests();
    }
 
-  /** get boolean, if your are in a group room or not
+  /** get boolean, if you are in a group room or not
    *
    * @return boolean, true  = you are in a group room
    *                  false = you are not in a group room
@@ -1749,7 +1784,17 @@ class cs_environment {
       return $context_item->isGroupRoom();
    }
 
-  /** get boolean, if your are in a project room or not
+  /** get boolean, if you are in a user room or not
+   *
+   * @return boolean, true  = you are in a user room
+   *                  false = you are not in a user room
+   */
+  function inUserroom () {
+      $context_item = $this->getCurrentContextItem();
+      return $context_item->isUserroom();
+  }
+
+  /** get boolean, if you are in a project room or not
    *
    * @return boolean, true  = you are in a project room
    *                  false = you are not in a project room
@@ -1759,7 +1804,7 @@ class cs_environment {
       return $context_item->isProjectRoom();
    }
 
-  /** get boolean, if your are in a portal or not
+  /** get boolean, if you are in a portal or not
    *
    * @return boolean, true  = you are in a portal
    *                  false = you are not in a portal
@@ -1769,7 +1814,7 @@ class cs_environment {
       return $context_item->isPortal();
    }
 
-  /** get boolean, if your are in a server or not
+  /** get boolean, if you are in a server or not
    *
    * @return boolean, true  = you are in a server
    *                  false = you are not in a server
@@ -1815,6 +1860,10 @@ class cs_environment {
             $this->instance['translation_object']->setContext(CS_GROUPROOM_TYPE);
             $portal_item = $context_item->getContextItem();
             $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
+         } elseif ( $this->inUserroom() ) {
+             $this->instance['translation_object']->setContext(cs_userroom_item::ROOM_TYPE_USER);
+             $portal_item = $context_item->getPortalItem();
+             $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
          } elseif ( $this->inPrivateRoom() ) {
             $this->instance['translation_object']->setContext('private');
             $portal_item = $context_item->getContextItem();
@@ -2218,21 +2267,6 @@ class cs_environment {
 
    public function isCurlForPHPAvailable(){
       return function_exists("curl_init");
-   }
-
-   public function isScribdAvailable(){
-        if(!$this->isCurlForPHPAvailable()){
-            return false;
-        }
-        $scribd_api_key = $this->getServerItem()->getScribdApiKey();
-        $scribd_secret = $this->getServerItem()->getScribdSecret();
-        if ($scribd_api_key == ''){
-            return false;
-        }
-        if ($scribd_secret == ''){
-            return false;
-        }
-        return true;
    }
 
    public function setCacheOff () {

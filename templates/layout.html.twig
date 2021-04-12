@@ -3,11 +3,11 @@
 {% block top_navigation %}
     <nav class="uk-navbar-container" uk-navbar>
         <div class="uk-navbar-left">
-            <a id="commsy_logo" class="uk-navbar-item uk-logo uk-visible@s" href="#">
+            <a id="commsy_logo" class="uk-navbar-item uk-logo uk-visible@s" href="{{ path('app_server_show') }}">
                 <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_120.png') }}"/>
             </a>
 
-            <a class="uk-navbar-item uk-logo" href="#">
+            <a class="uk-navbar-item uk-logo" href="{{ path('app_server_show') }}">
                 <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_short.png')}}"/>
             </a>
 
@@ -60,7 +60,7 @@
                 {% if contextId is defined %}
                     {{ render(controller(
                         'App\\Controller\\UserController::globalNavbarAction',
-                        { 'contextId': contextId }
+                        { 'contextId': contextId, 'uikit3': true }
                     )) }}
                 {% endif %}
 
@@ -69,13 +69,13 @@
                         <li>
                             <a href="#">
                                 {{ render(controller(
-                                    'App\\Controller\\ProfileController::imageAction',
+                                    'App\\Controller\\ProfileController::image',
                                     { 'roomId': contextId }
                                 ))}}
                             </a>
                             <div class="uk-navbar-dropdown uk-padding-small">
                                 {{ render(controller(
-                                    'App\\Controller\\ProfileController::menuAction',
+                                    'App\\Controller\\ProfileController::menu',
                                     { 'roomId': contextId }
                                 ))}}
                             </div>

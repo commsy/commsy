@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\InsertAction;
+use App\Action\Copy\InsertUserroomAction;
 use App\Action\Copy\RemoveAction;
 use App\Services\CopyService;
 use App\Services\LegacyEnvironment;
@@ -26,12 +27,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class CopyController extends BaseController
 {
+    protected $roomService;
+
+
     /**
      * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
      * @param CopyService $copyService
-     * @param RoomService $roomService
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
@@ -42,7 +45,6 @@ class CopyController extends BaseController
     public function feedAction(
         Request $request,
         CopyService $copyService,
-        RoomService $roomService,
         LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
@@ -67,7 +69,7 @@ class CopyController extends BaseController
                 "todo" => "todo",
             ];
         } else {
-            $rubrics = $roomService->getRubricInformation($roomId);
+            $rubrics = $this->roomService->getRubricInformation($roomId);
             $rubrics = array_combine($rubrics, $rubrics);
         }
 
@@ -280,8 +282,7 @@ class CopyController extends BaseController
                 "todo" => "todo",
             ];
         } else {
-            $roomService = $this->get('commsy_legacy.room_service');
-            $rubrics = $roomService->getRubricInformation($room->getItemID());
+            $rubrics = $this->roomService->getRubricInformation($room->getItemID());
             $rubrics = array_combine($rubrics, $rubrics);
         }
 

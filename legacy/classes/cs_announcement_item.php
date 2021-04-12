@@ -169,7 +169,7 @@ class cs_announcement_item extends cs_item {
    public function updateElastic()
    {
        global $symfonyContainer;
-       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_announcement.announcement');
        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
        $repository = $em->getRepository('App:Announcement');
 
@@ -195,7 +195,7 @@ class cs_announcement_item extends cs_item {
         // delete associated annotations
         $this->deleteAssociatedAnnotations();
 
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_announcement.announcement');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Announcement');
 

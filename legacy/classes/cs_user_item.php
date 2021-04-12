@@ -23,8 +23,6 @@
 //    along with CommSy.
 
 use App\Entity\Account;
-use App\Entity\AuthSource;
-use Doctrine\ORM\EntityManagerInterface;
 
 include_once('classes/cs_item.php');
 
@@ -46,6 +44,18 @@ class cs_user_item extends cs_item
     var $_changed_values = array();
 
     private $_context_id_array = NULL;
+
+    /**
+     * the user room associated with this user
+     * @var \cs_userroom_item|null
+     */
+    private $_userroomItem = NULL;
+
+    /**
+     * for a user item in a user room, returns the project room user associated with this user
+     * @var \cs_user_item|null
+     */
+    private $_projectUserItem = NULL;
 
     /** constructor: cs_user_item
      * the only available constructor, initial values for internal variables
@@ -196,6 +206,90 @@ class cs_user_item extends cs_item
     function setTopic($value)
     {
         $this->setTopicByID($value->getItemID());
+    }
+
+    /**
+     * For a user item in a project room, returns any user room associated with this user
+     * @return \cs_userroom_item|null the user room associated with this user
+     */
+    public function getLinkedUserroomItem(): ?\cs_userroom_item
+    {
+        if (isset($this->_userroomItem) && !$this->_userroomItem->isDeleted()) {
+            return $this->_userroomItem;
+        }
+
+        $userroomItemId = $this->getLinkedUserroomItemID();
+        if (isset($userroomItemId)) {
+            $userroomManager = $this->_environment->getUserroomManager();
+            $userroomItem = $userroomManager->getItem($userroomItemId);
+            if (isset($userroomItem) and !$userroomItem->isDeleted()) {
+                $this->_userroomItem = $userroomItem;
+            }
+            return $this->_userroomItem;
+        }
+
+        return null;
+    }
+
+    public function getLinkedUserroomItemID(): ?int
+    {
+        if ($this->_issetExtra('USERROOM_ITEM_ID')) {
+            return $this->_getExtra('USERROOM_ITEM_ID');
+        }
+        return null;
+    }
+
+    public function setLinkedUserroomItemID($roomId)
+    {
+        $this->_setExtra('USERROOM_ITEM_ID', (int)$roomId);
+    }
+
+    public function unsetLinkedUserroomItemID()
+    {
+        $this->_unsetExtra('USERROOM_ITEM_ID');
+    }
+
+    /**
+     * For a user item in a user room, returns the project room user who corresponds to this user
+     * @return \cs_user_item|null the project room user associated with this user
+     */
+    public function getLinkedProjectUserItem(): ?\cs_user_item
+    {
+        if (isset($this->_projectUserItem)) {
+            return $this->_projectUserItem;
+        }
+
+        $userItemId = $this->getLinkedProjectUserItemID();
+        if (isset($userItemId)) {
+            $userManager = $this->_environment->getUserManager();
+            if ($userManager->existsItem($userItemId)) {
+                $userItem = $userManager->getItem($userItemId);
+                if (isset($userItem) and !$userItem->isDeleted()) {
+                    $this->_projectUserItem = $userItem;
+                }
+                return $this->_projectUserItem;
+            }
+        }
+
+        return null;
+    }
+
+    public function getLinkedProjectUserItemID(): ?int
+    {
+        if ($this->_issetExtra('PROJECT_USER_ITEM_ID')) {
+            return $this->_getExtra('PROJECT_USER_ITEM_ID');
+        }
+        return null;
+    }
+
+    public function setLinkedProjectUserItemID($userId)
+    {
+        $this->_setExtra('PROJECT_USER_ITEM_ID', (int)$userId);
+    }
+
+    public function unsetLinkedProjectUserItemID()
+    {
+        $this->_unsetExtra('PROJECT_USER_ITEM_ID');
     }
 
     /** get firstname of the user
@@ -1144,6 +1238,12 @@ class cs_user_item extends cs_item
         return $list;
     }
 
+    public function getRelatedUserroomsList(): \cs_list
+    {
+        $manager = $this->_environment->getRoomManager();
+        return $manager->getUserRoomsUserIsMemberOf($this)  ;
+    }
+
     function getUserRelatedProjectList()
     {
         $manager = $this->_environment->getProjectManager();
@@ -1273,6 +1373,10 @@ class cs_user_item extends cs_item
             $this->setItemID($user_manager->getCreateID());
         }
 
+        // NOTE: media upload in a user item's description field is currently disabled
+        // $this->_saveFiles();     // this must be done before saveFileLinks
+        // $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
+
         plugin_hook('user_save', $this);
 
         // ContactPersonString
@@ -1330,7 +1434,7 @@ class cs_user_item extends cs_item
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_user.user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:User');
 
@@ -1374,11 +1478,18 @@ class cs_user_item extends cs_item
             }
         }
 
+        // in case of portal user, delete own room
         if ($this->_environment->getCurrentPortalID() == $this->getContextID()) {
             $own_room = $this->getOwnRoom();
             if (isset($own_room)) {
                 $own_room->delete();
             }
+        }
+
+        // delete any associated user room
+        $userroom = $this->getLinkedUserroomItem();
+        if ($userroom) {
+            $userroom->delete();
         }
 
         $this->makeNoContactPerson();
@@ -1411,7 +1522,7 @@ class cs_user_item extends cs_item
         }
 
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_user.user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:User');
 
@@ -1979,7 +2090,9 @@ class cs_user_item extends cs_item
         $new_room_user->unsetItemID();
         $new_room_user->unsetCreatorID();
         $new_room_user->unsetCreatorDate();
-        $new_room_user->unsetAGBAcceptanceDate();
+        $new_room_user->setAGBAcceptanceDate(null);
+        $new_room_user->unsetLinkedUserroomItemID();
+        $new_room_user->unsetLinkedProjectUserItemID();
         $new_room_user->_unsetValue('modifier_id');
         return $new_room_user;
     }
@@ -2072,29 +2185,33 @@ class cs_user_item extends cs_item
         }
     }
 
-    function setAGBAcceptance()
+    /**
+     * @param DateTimeImmutable|null $agbAcceptanceDate
+     * @return $this
+     */
+    public function setAGBAcceptanceDate(?DateTimeImmutable $agbAcceptanceDate): cs_user_item
     {
-        include_once('functions/date_functions.php');
-        $this->_setAGBAcceptanceDate(getCurrentDateTimeInMySQL());
+        $this->_addExtra(
+            'AGB_ACCEPTANCE_DATE',
+            $agbAcceptanceDate ? $agbAcceptanceDate->format('Y-m-d H:i:s') : ''
+        );
+
+        return $this;
     }
 
-    function unsetAGBAcceptanceDate()
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getAGBAcceptanceDate(): ?DateTimeImmutable
     {
-        $this->_setAGBAcceptanceDate('');
-    }
-
-    function _setAGBAcceptanceDate($value)
-    {
-        $this->_addExtra('AGB_ACCEPTANCE_DATE', $value);
-    }
-
-    function getAGBAcceptanceDate()
-    {
-        $retour = '';
         if ($this->_issetExtra('AGB_ACCEPTANCE_DATE')) {
-            $retour = $this->_getExtra('AGB_ACCEPTANCE_DATE');
+            $agbAcceptanceDate = $this->_getExtra('AGB_ACCEPTANCE_DATE') ?? '';
+            return !empty($agbAcceptanceDate) ?
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbAcceptanceDate) :
+                null;
         }
-        return $retour;
+
+        return null;
     }
 
     /** OLD FUNCTION
@@ -2561,23 +2678,6 @@ class cs_user_item extends cs_item
         }
     }
 
-    function setNewGenerationPassword($password)
-    {
-        $portal_item = $this->_environment->getCurrentPortalItem();
-
-        $i = $portal_item->getPasswordGeneration();
-        if ($i != 0) {
-            // shift hashes for a new generation password
-            for ($i; $i > 0; $i--) {
-                if ($this->_issetExtra('PW_GENERATION_' . ($i - 1)) AND $i != 1) {
-                    $this->_addExtra('PW_GENERATION_' . $i, $this->_getExtra('PW_GENERATION_' . ($i - 1)));
-                }
-            }
-            $this->_addExtra('PW_GENERATION_1', $password);
-        }
-        unset($portal_item);
-    }
-
     function isPasswordInGeneration($password)
     {
         $portal_item = $this->_environment->getCurrentPortalItem();
@@ -2606,29 +2706,29 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function deactivateLoginAsAnotherUser()
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setCanImpersonateAnotherUser(bool $enabled): self
     {
-        $this->_addExtra('DEACTIVATE_LOGIN_AS', '1');
-    }
-
-    function unsetDeactivateLoginAsAnotherUser()
-    {
-        if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
-            $this->_unsetExtra('DEACTIVATE_LOGIN_AS');
-        }
-        #$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
-    }
-
-    function isDeactivatedLoginAsAnotherUser()
-    {
-        $retour = '';
-        if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
-            $flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
-            $retour = $flag;
+        if ($enabled === true) {
+            if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
+                $this->_unsetExtra('DEACTIVATE_LOGIN_AS');
+            }
+        } else {
+            $this->_addExtra('DEACTIVATE_LOGIN_AS', true);
         }
 
-        return $retour;
+        return $this;
+    }
 
+    /**
+     * @return bool
+     */
+    public function getCanImpersonateAnotherUser(): bool
+    {
+        return !$this->_issetExtra('DEACTIVATE_LOGIN_AS');
     }
 
     function setPasswordExpireDate($days)
@@ -2685,34 +2785,36 @@ class cs_user_item extends cs_item
         $this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
     }
 
-    function setDaysForLoginAs($days)
+    /**
+     * @param DateTimeImmutable|null $expiry
+     * @return cs_user_item
+     */
+    public function setImpersonateExpiryDate(?DateTimeImmutable $expiry): cs_user_item
     {
-        $this->_addExtra('LOGIN_AS_TMSP', getCurrentDateTimePlusDaysInMySQL($days));
-    }
-
-    function unsetDaysForLoginAs()
-    {
-        $this->_unsetExtra('LOGIN_AS_TMSP');
-    }
-
-    function getTimestampForLoginAs()
-    {
-        $return = false;
-        if ($this->_issetExtra('LOGIN_AS_TMSP')) {
-            $return = $this->_getExtra('LOGIN_AS_TMSP');
+        if ($expiry === null) {
+            $this->_unsetExtra('LOGIN_AS_TMSP');
+        } else {
+            $this->_addExtra('LOGIN_AS_TMSP', $expiry->format(DateTimeInterface::ATOM));
         }
-        return $return;
+
+        return $this;
     }
 
-    function isTemporaryAllowedToLoginAs()
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getImpersonateExpiryDate(): ?DateTimeImmutable
     {
-        $return = false;
         if ($this->_issetExtra('LOGIN_AS_TMSP')) {
-            if ($this->_getExtra('LOGIN_AS_TMSP') >= getCurrentDateTimeInMySQL()) {
-                $return = true;
+            if ($val = DateTimeImmutable::createFromFormat(
+                DateTimeInterface::ATOM,
+                $this->_getExtra('LOGIN_AS_TMSP'))
+            ) {
+                return $val;
             }
         }
-        return $return;
+
+        return null;
     }
 
     function setMailSendLocked()
@@ -3022,11 +3124,6 @@ class cs_user_item extends cs_item
             }
         } else {
             global $symfonyContainer;
-
-            /** @var EntityManagerInterface $entityManager */
-            $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-            $authSourceRepository = $entityManager->getRepository(AuthSource::class);
-
             $tokenStorage = $symfonyContainer->get('security.token_storage');
             /** @var Account $user */
             $user = $tokenStorage->getToken()->getUser();

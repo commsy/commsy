@@ -27,6 +27,16 @@ class AccountIndexDetailType extends AbstractType
                 'label' => 'Next',
                 'translation_domain' => 'portal',
             ])
+            ->add('hasNoPrevious', Types\SubmitType::class, [
+                'label' => 'Previous',
+                'translation_domain' => 'portal',
+                'attr' => ['disabled' => 'true'],
+            ])
+            ->add('hasNoNext', Types\SubmitType::class, [
+                'label' => 'Next',
+                'translation_domain' => 'portal',
+                'attr' => ['disabled' => 'true'],
+            ])
             ->add('back', Types\SubmitType::class, [
                 'label' => 'Back',
                 'translation_domain' => 'portal',

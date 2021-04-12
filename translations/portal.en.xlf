@@ -89,7 +89,7 @@
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
-                <source>Portal announcements</source>
+                <source>announcements</source>
                 <target>announcements</target>
             </trans-unit>
             <trans-unit id="Priority">
@@ -115,6 +115,24 @@
             <trans-unit id="Link">
                 <source>Link</source>
                 <target>Address</target>
+            </trans-unit>
+
+            <!-- portal content -->
+            <trans-unit id="portal_content_title">
+                <source>contents</source>
+                <target>Contents</target>
+            </trans-unit>
+            <trans-unit id="portal_content_terms">
+                <source>data privacy</source>
+                <target>Data privacy</target>
+            </trans-unit>
+            <trans-unit id="portal_content_impressum">
+                <source>impressum</source>
+                <target>Impressum</target>
+            </trans-unit>
+            <trans-unit id="portal_content_accessibility">
+                <source>accessibility</source>
+                <target>Accessability</target>
             </trans-unit>
 
             <!-- portal terms -->
@@ -305,6 +323,26 @@
                 <source>Accounts</source>
                 <target>Accounts</target>
             </trans-unit>
+            <trans-unit id="portal_yes">
+                <source>Yes</source>
+                <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="portal_no">
+                <source>No</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="search_for_user_ids">
+                <source>Search for user IDs</source>
+                <target>Search for user IDs</target>
+            </trans-unit>
+            <trans-unit id="help_text_search">
+                <source>Account index search string help</source>
+                <target>Input of search strings: user IDs, first or last names and emails. The search is not case sensetive.</target>
+            </trans-unit>
+            <trans-unit id="applying">
+                <source>Applying</source>
+                <target>In application</target>
+            </trans-unit>
             <trans-unit id="execute">
                 <source>Execute</source>
                 <target>execute</target>
@@ -352,6 +390,14 @@
             <trans-unit id="status_moderator">
                 <source>Status moderator</source>
                 <target>Status: moderator</target>
+            </trans-unit>
+            <trans-unit id="workspace_already_assigned">
+                <source>Workspace already assigned</source>
+                <target>This workspace has been assigned already.</target>
+            </trans-unit>
+            <trans-unit id="workspace_assign_help">
+                <source>Workspace assign help</source>
+                <target>Search for workspaces. If you leave this empty and click 'search', all possible workspaces will become available in the workspace selection dropdown list.</target>
             </trans-unit>
             <trans-unit id="make_contact">
                 <source>Make contact</source>
@@ -473,6 +519,14 @@
                 <source>Standard</source>
                 <target>Standard</target>
             </trans-unit>
+            <trans-unit id="userrooms">
+                <source>Userroom workspaces</source>
+                <target>Userrooms</target>
+            </trans-unit>
+            <trans-unit id="privaterooms">
+                <source>Privateroom workspaces</source>
+                <target>Privaterooms</target>
+            </trans-unit>
 
             <!-- Account Index send Password Mail -->
             <trans-unit id="copy_cc_to_moderator">
@@ -498,40 +552,6 @@
             <trans-unit id="names">
                 <source>Names</source>
                 <target>Namen</target>
-            </trans-unit>
-
-            <!-- time -->
-            <trans-unit id="time">
-                <source>Time</source>
-                <target>Time cycle</target>
-            </trans-unit>
-            <trans-unit id="showtime">
-                <source>Show time</source>
-                <target>Show time cycles</target>
-            </trans-unit>
-            <trans-unit id="time_cycle_name">
-                <source>Time cycle name</source>
-                <target>Name of the time cycle</target>
-            </trans-unit>
-            <trans-unit id="future_time_cycles">
-                <source>Future time cycles</source>
-                <target>Future time cycles</target>
-            </trans-unit>
-            <trans-unit id="add_life_cycle">
-                <source>Add life cycle</source>
-                <target>Add life cycle</target>
-            </trans-unit>
-            <trans-unit id="delete_time_cycle">
-                <source>Delete time cycle %company%</source>
-                <target>Delete time cycle %company%</target>
-            </trans-unit>
-            <trans-unit id="time_cycle_from">
-                <source>Time cycle from</source>
-                <target>Von</target>
-            </trans-unit>
-            <trans-unit id="time_cycle_to">
-                <source>Time cycle to</source>
-                <target>Bis</target>
             </trans-unit>
 
             <!-- user edit -->
@@ -651,18 +671,6 @@
                 <source>Found users</source>
                 <target>Gefundene Nutzer</target>
             </trans-unit>
-            <trans-unit id="time_help">
-                <source>Time help</source>
-                <target>Placeholder für 4 digit dates:
-                        %1 = current year
-                        %2 = next year
-                        %3 = last year
-                        Placeholder for 2 digit dates:
-                        %4 = current year
-                        %5 = next year
-                        %6 = last year
-                        Format at "from to": DD.MM</target>
-            </trans-unit>
 
             <!-- account index change status -->
             <trans-unit id="is_login_deactivated">
@@ -721,10 +729,6 @@
                 <source>...As</source>
                 <target> </target>
             </trans-unit>
-            <trans-unit id="change_password">
-                <source>Change password</source>
-                <target>Change password</target>
-            </trans-unit>
             <trans-unit id="change_status">
                 <source>Change status</source>
                 <target>Change status</target>
@@ -782,6 +786,76 @@
             <trans-unit id="please_choose">
                 <source>Please choose</source>
                 <target>Please choose (possibly search workspaces before)</target>
+            </trans-unit>
+
+            <!-- time pulses -->
+            <trans-unit id="Time_pulses">
+                <source>Time pulses</source>
+                <target>Time pulses</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse">
+                <source>Time pulse</source>
+                <target>Time pulse</target>
+            </trans-unit>
+            <trans-unit id="Show_time_pulses">
+                <source>Show time pulses</source>
+                <target>Show time pulses</target>
+            </trans-unit>
+            <trans-unit id="Time_pulses_name">
+                <source>Time pulses name</source>
+                <target>Label used for time pulses</target>
+            </trans-unit>
+            <trans-unit id="Number_of_future_time_pulses">
+                <source>Number of future time pulses</source>
+                <target>Number of future time pulses</target>
+            </trans-unit>
+            <trans-unit id="New_time_pulse">
+                <source>New time pulse</source>
+                <target>New time pulse</target>
+            </trans-unit>
+            <trans-unit id="Edit_time_pulses">
+                <source>Edit time pulses</source>
+                <target>Edit time pulses</target>
+            </trans-unit>
+            <trans-unit id="Edit_time_pulse">
+                <source>Edit time pulse</source>
+                <target>Edit time pulse</target>
+            </trans-unit>
+            <trans-unit id="Save_time_pulse">
+                <source>Save time pulse</source>
+                <target>Save time pulse</target>
+            </trans-unit>
+            <trans-unit id="Add_time_pulse">
+                <source>Add time pulse</source>
+                <target>Add time pulse</target>
+            </trans-unit>
+            <trans-unit id="Delete_time_pulse">
+                <source>Delete time pulse</source>
+                <target>Delete time pulse</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_start">
+                <source>Time pulse start</source>
+                <target>Starts at</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_end">
+                <source>Time pulse end</source>
+                <target>Ends at</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_select_day">
+                <source>Time pulse select day</source>
+                <target>Day...</target>
+            </trans-unit>
+            <trans-unit id="Time_pulse_select_month">
+                <source>Time pulse select month</source>
+                <target>Month...</target>
+            </trans-unit>
+            <trans-unit id="Show_time_pulses_help_text">
+                <source>Show time pulses help text</source>
+                <target>Enable time pulses if you want to associate project workspaces with certain divisions of a year (like a semester or trimester). The options below allow you to specify the name used for time pulses in the user interface, and how many time pulses shall be created from the templates defined below:</target>
+            </trans-unit>
+            <trans-unit id="Time_pulses_help">
+                <source>Time pulses help</source>
+                <target>Placeholders for 4-digit years:<![CDATA[<br />]]>%1 = current year<![CDATA[<br />]]>%2 = next year<![CDATA[<br />]]>%3 = last year<![CDATA[<br /><br />]]>Placeholders for 2-digit years:<![CDATA[<br />]]>%4 = current year<![CDATA[<br />]]>%5 = next year<![CDATA[<br />]]>%6 = last year</target>
             </trans-unit>
 
             <!-- privacy -->
@@ -916,7 +990,7 @@
                 <target># Workspaces</target>
             </trans-unit>
 
-            <!-- form -->
+            <!-- general form -->
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Title</target>
@@ -929,9 +1003,11 @@
                 <source>portal.form_desc_en</source>
                 <target>Description English</target>
             </trans-unit>
-            <trans-unit id="Portal logo">
-                <source>Portal logo</source>
-                <target>Logo</target>
+
+            <!-- appearance form -->
+            <trans-unit id="portal_fappearance_orm_title">
+                <source>Appearance</source>
+                <target>Appearance</target>
             </trans-unit>
 
             <!-- Mailtexts -->
@@ -1030,6 +1106,238 @@
             <trans-unit id="goodbye">
                 <source>Goodbye</source>
                 <target>Goodbye</target>
+            </trans-unit>
+
+            <!-- Auth -->
+            <trans-unit id="auth">
+                <source>Auth</source>
+                <target>Authentification</target>
+            </trans-unit>
+            <trans-unit id="source">
+                <source>Source</source>
+                <target>Source</target>
+            </trans-unit>
+            <trans-unit id="no_source">
+                <source>No source</source>
+                <target>Source</target>
+            </trans-unit>
+            <trans-unit id="new">
+                <source>New</source>
+                <target>Enter new source</target>
+            </trans-unit>
+            <trans-unit id="select">
+                <source>Select</source>
+                <target>Select</target>
+            </trans-unit>
+            <trans-unit id="second_intervall">
+                <source>Intervall in seconds</source>
+                <target>Intervall in seconds</target>
+            </trans-unit>
+            <trans-unit id="number_of_tries">
+                <source>Number of tries</source>
+                <target>Number of tries</target>
+            </trans-unit>
+            <trans-unit id="lock_in_minutes">
+                <source>Lock in minutes</source>
+                <target>Lock in minutes</target>
+            </trans-unit>
+            <trans-unit id="lock_user_id">
+                <source>Lock user ID</source>
+                <target>Lock user ID</target>
+            </trans-unit>
+
+            <!-- Auth new -->
+            <trans-unit id="no_type">
+                <source>No type</source>
+                <target>No type</target>
+            </trans-unit>
+            <trans-unit id="mysql_general">
+                <source>MySQLGeneral</source>
+                <target>MySQL: general</target>
+            </trans-unit>
+            <trans-unit id="available">
+                <source>Available</source>
+                <target>Available</target>
+            </trans-unit>
+            <trans-unit id="path">
+                <source>Path</source>
+                <target>Path</target>
+            </trans-unit>
+            <trans-unit id="contactTelephone">
+                <source>Contact telephone</source>
+                <target>Contact telephone</target>
+            </trans-unit>
+            <trans-unit id="contactMail">
+                <source>Contact mail</source>
+                <target>Contact mail</target>
+            </trans-unit>
+            <trans-unit id="urlChangePW">
+                <source>URL for changing a password</source>
+                <target>URL for changing a password</target>
+            </trans-unit>
+            <trans-unit id="usersMayCreateRooms">
+                <source>Users may create rooms</source>
+                <target>Users may create rooms</target>
+            </trans-unit>
+            <trans-unit id="UderIdLdapField">
+                <source>UserID (LDAP field)</source>
+                <target>UserID (LDAP field)</target>
+            </trans-unit>
+            <trans-unit id="pathName">
+                <source>Path name</source>
+                <target>Path name</target>
+            </trans-unit>
+            <trans-unit id="userName">
+                <source>User name</source>
+                <target>User name</target>
+            </trans-unit>
+            <trans-unit id="crypto">
+                <source>Encryption</source>
+                <target>Encryption</target>
+            </trans-unit>
+            <trans-unit id="none">
+                <source>None</source>
+                <target>none</target>
+            </trans-unit>
+            <trans-unit id="database">
+                <source>Database</source>
+                <target>Database</target>
+            </trans-unit>
+            <trans-unit id="database_table">
+                <source>Database table</source>
+                <target>Database table</target>
+            </trans-unit>
+            <trans-unit id="stabase_table_with_user_name">
+                <source>Column with user name</source>
+                <target>Column with user names</target>
+            </trans-unit>
+            <trans-unit id="column_with_passwords">
+                <source>Column with passwords</source>
+                <target>Column with passwords</target>
+            </trans-unit>
+            <trans-unit id="direct_login">
+                <source>Direct login</source>
+                <target>Direkte Anmeldung aktivieren</target>
+            </trans-unit>
+            <trans-unit id="session_initiator_URL">
+                <source>Session initiator URL</source>
+                <target>Session Initiator URL</target>
+            </trans-unit>
+            <trans-unit id="session_logout_URL">
+                <source>Session logout URL</source>
+                <target>Session Logout URL</target>
+            </trans-unit>
+            <trans-unit id="data_from_provider">
+                <source>Update data from the identity provider</source>
+                <target>Dqaten vom Identity Provider aktualisieren</target>
+            </trans-unit>
+            <trans-unit id="path_to_cas_login">
+                <source>Path to cas login</source>
+                <target>/path/to/cas/login</target>
+            </trans-unit>
+            <trans-unit id="cas_path">
+                <source>Cas path</source>
+                <target>https://www.cas-server.com ... /login</target>
+            </trans-unit>
+           <trans-unit id="encryption_help_text">
+                <source>Encryption of the passwords</source>
+                <target>Encryption of the passwords of the users</target>
+            </trans-unit>
+            <trans-unit id="field_ldap_name_stored_help">
+                <source>In which field are UserID Ldap stored? (samaccountname)</source>
+                <target>In which field are UserID Ldap stored? (samaccountname)</target>
+            </trans-unit>
+            <trans-unit id="reading_rights_path_help_text">
+                <source>Reading rights path</source>
+                <target>and possibly for sorting out the path of a person the statement of their ID (if different to the path also as self-designation) with thorough reading rights</target>
+            </trans-unit>
+            <trans-unit id="change_user_id">
+                <source>Change user ID</source>
+                <target>Change user ID</target>
+            </trans-unit>
+            <trans-unit id="change_identification">
+                <source>Change identification</source>
+                <target>Change identification</target>
+            </trans-unit>
+            <trans-unit id="change_password">
+                <source>Change password</source>
+                <target>Change password</target>
+            </trans-unit>
+            <trans-unit id="create_identification">
+                <source>Create identification</source>
+                <target>Create identification</target>
+            </trans-unit>
+            <trans-unit id="after_invitation">
+                <source>After invitation</source>
+                <target>after invitation</target>
+            </trans-unit>
+            <trans-unit id="delete_identification">
+                <source>Delete identification</source>
+                <target>Delete identification</target>
+            </trans-unit>
+            <trans-unit id="activate_password_traffig_light">
+                <source>Activate password traffic light</source>
+                <target>Activate password traffic light</target>
+            </trans-unit>
+            <trans-unit id="all_caps_letters">
+                <source>All capital letters</source>
+                <target>Capital letters</target>
+            </trans-unit>
+            <trans-unit id="all_small_letters">
+                <source>All small letters</source>
+                <target>Small letters</target>
+            </trans-unit>
+            <trans-unit id="special_chars">
+                <source>Special characters</source>
+                <target>Special characters</target>
+            </trans-unit>
+            <trans-unit id="minimum_length">
+                <source>Minimum length</source>
+                <target>Minimum length</target>
+            </trans-unit>
+            <trans-unit id="expiration_days">
+                <source>Expiration days</source>
+                <target>Expiration of the password after X days</target>
+            </trans-unit>
+            <trans-unit id="notification_expiration">
+                <source>Notification expiration</source>
+                <target>Notification of expiration</target>
+            </trans-unit>
+            <trans-unit id="password_generation">
+                <source>Password generations</source>
+                <target>Password generations</target>
+            </trans-unit>
+            <trans-unit id="may_not_repeat">
+                <source>May not repeat itself X-times</source>
+                <target>Password may not repeat itself X-times</target>
+            </trans-unit>
+            <trans-unit id="regular_expression_mail">
+                <source>Regular expression for mail validation</source>
+                <target>Regular expression for email validation</target>
+            </trans-unit>
+            <trans-unit id="include_modifiers">
+                <source>Please include delimiter and modifiers</source>
+                <target>Please include delimiter and modifiers</target>
+            </trans-unit>
+            <trans-unit id="configure_error_message">
+                <source>Configure error message</source>
+                <target>Error message</target>
+            </trans-unit>
+            <trans-unit id="error_configuration">
+                <source>Error configuration</source>
+                <target>Error configuration</target>
+            </trans-unit>
+            <trans-unit id="change_password_url">
+                <source>Change password URL</source>
+                <target>Change password URL</target>
+            </trans-unit>
+            <trans-unit id="mail_reg_ex">
+                <source>Mail regular expression</source>
+                <target>Regular expression of the email validation</target>
+            </trans-unit>
+            <trans-unit id="mail_reg_ex_help">
+                <source>Please including delimiter and modifier</source>
+                <target>Please including delimiter and modifier</target>
             </trans-unit>
         </body>
     </file>

@@ -23,7 +23,7 @@
                     <div class="uk-text-large">
                         {% if not module is empty %}
 
-                            {{module|transchoice(1, {}, "rubric")|capitalize }}
+                            {{module|trans({}, "rubric")|capitalize }}
                         {% else %}
                             Missing rubric title
                         {% endif %}
@@ -37,27 +37,27 @@
 
             <div>
                 {% block feed %}
-                    {% for announcement in announcements %}
+                    {% for todo in todos %}
                         <article class="uk-comment page-break-inside">
 
                             {# item change information #}
-                            {{ macros.statusColor(readerList, announcement.itemId) }}
+                            {{ macros.statusColor(readerList, todo.itemId) }}
 
                             <header class="uk-grid uk-comment-header">
 
                                 {# user icon and modification time #}
                                 <div class="uk-width-1-10">
-                                    {% if not announcement.modificatorItem.isDeleted and announcement.modificatorItem.isUser %}
-                                        {{ macros.userIconLink(announcement.modificatorItem) }}
+                                    {% if not todo.modificatorItem.isDeleted and todo.modificatorItem.isUser %}
+                                        {{ macros.userIconLink(todo.modificatorItem) }}
                                     {% else %}
-                                        {{ macros.userIcon(announcement.modificatorItem) }}
+                                        {{ macros.userIcon(todo.modificatorItem) }}
                                     {% endif %}
                                     <div class="uk-comment-meta">
                                         <span class="uk-text-nowrap">
-                                            {% if announcement.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                {{ 'today'|trans({})|capitalize }}, {{ announcement.modificationDate|date("H:i") }}
+                                            {% if todo.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                {{ 'today'|trans({})|capitalize }}, {{ todo.modificationDate|date("H:i") }}
                                             {% else %}
-                                                {{ announcement.modificationDate|craue_date }}
+                                                {{ todo.modificationDate|craue_date }}
                                             {% endif %}
                                         </span>
                                     </div>
@@ -66,29 +66,28 @@
                                 {# title and meta #}
                                 <div class="uk-width-7-10">
                                     <h4 class="uk-comment-title">
-                                        <a>{{ announcement.title|decodeHtmlEntity }}</a>
+                                        <a>{{ todo.title|decodeHtmlEntity }}</a>
                                     </h4>
 
                                     <div class="uk-comment-meta">
 
-                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(announcement.modificatorItem) }} ({{ announcement.creationDate|craue_date }})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(todo.modificatorItem) }} ({{ todo.creationDate|craue_date }})
 
                                     </div>
 
                                     <div class="uk-comment-meta">
-                                        {{ macros.fileListShort(announcement) }}
+                                        {{ macros.fileListShort(todo) }}
                                     </div>
                                 </div>
-                                {% if showRating or showWorkflow %}
-                                    <div class="uk-width-2-10 uk-text-right">
-                                        {%if showRating%}
-                                            {{ macros.ratingStatus(announcement, ratingList) }}
-                                        {% endif %}
-                                        {%if showWorkflow%}
-                                            {{ macros.workflowTrafficLight(announcement) }}
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
+                                <div class="uk-width-2-10 uk-text-right">
+                                    {% if showRating %}
+                                        {{ macros.ratingStatus(todo, ratingList) }}
+                                    {% endif %}
+                                    {% if showWorkflow %}
+                                        {{ macros.workflowTrafficLight(todo) }}
+                                    {% endif %}
+                                    <i class="{{ macros.iconClassForItemType(todo.itemType, todo.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ todo.status }}"></i>
+                                </div>
                             </header>
                         </article>
                     {% else %}

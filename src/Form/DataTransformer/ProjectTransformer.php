@@ -4,8 +4,10 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-class ProjectTransformer implements DataTransformerInterface
+class ProjectTransformer extends AbstractTransformer
 {
+    protected $entity = 'project';
+
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -16,7 +18,7 @@ class ProjectTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_project_item object to an array
      *
-     * @param cs_topic_item $dateItem
+     * @param \cs_project_item $projectItem
      * @return array
      */
     public function transform($projectItem)
@@ -36,7 +38,7 @@ class ProjectTransformer implements DataTransformerInterface
      *
      * @param object $projectObject
      * @param array $projectData
-     * @return cs_project_item|null
+     * @return \cs_project_item|null
      * @throws TransformationFailedException if room item is not found.
      */
     public function applyTransformation($projectObject, $projectData)

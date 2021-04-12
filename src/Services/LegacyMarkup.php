@@ -36,28 +36,28 @@ class LegacyMarkup
     public function convertToHTML($text)
     {
         $regExpFatherArray = [
-            '~\\(:(.*?):\\)~eu',
-            '~\[(.*?)\]~eu',
+            '~\\(:(.*?):\\)~u',
+            '~\[(.*?)\]~u',
         ];
 
         $regExpArray = [];
-        $regExpArray['(:file'] = '~\\(:file\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:image'] = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:item'] = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:link'] = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:file'] = '~\\(:file\\s(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:image'] = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:item'] = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:link'] = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~u';
 
-        $regExpArray['(:quicktime'] = '~\\(:quicktime\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:wmplayer'] = '~\\(:wmplayer\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:youtube'] = '~\\(:youtube\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:podcampus'] = '~\\(:podcampus\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:googlevideo'] = '~\\(:googlevideo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:vimeo'] = '~\\(:vimeo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:mp3'] = '~\\(:mp3\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:lecture2go'] = '~\\(:lecture2go\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-        $regExpArray['(:slideshare'] = '~\\(:slideshare\\s(.*?):\\)~eu';
-        $regExpArray['[slideshare'] = '~\[slideshare\\s(.*?)\]~eu';
-        $regExpArray['(:flickr'] = '~\\(:flickr\\s(.*?):\\)~eu';
-        $regExpArray['(:mdo'] = '~\\(:mdo\\s(.*?):\\)~eu';
+        $regExpArray['(:quicktime'] = '~\\(:quicktime\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:wmplayer'] = '~\\(:wmplayer\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:youtube'] = '~\\(:youtube\\s(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:podcampus'] = '~\\(:podcampus\\s(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:googlevideo'] = '~\\(:googlevideo\\s(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:vimeo'] = '~\\(:vimeo\\s(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:mp3'] = '~\\(:mp3\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:lecture2go'] = '~\\(:lecture2go\\s(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $regExpArray['(:slideshare'] = '~\\(:slideshare\\s(.*?):\\)~u';
+        $regExpArray['[slideshare'] = '~\[slideshare\\s(.*?)\]~u';
+        $regExpArray['(:flickr'] = '~\\(:flickr\\s(.*?):\\)~u';
+        $regExpArray['(:mdo'] = '~\\(:mdo\\s(.*?):\\)~u';
 
         $matches = [];
 

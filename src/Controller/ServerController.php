@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Portal;
 use App\Entity\Room;
+use App\Entity\Server;
 use App\Entity\User;
 use App\Facade\PortalCreatorFacade;
 use App\Form\Type\Portal\GeneralType;
@@ -26,6 +27,8 @@ class ServerController extends AbstractController
      */
     public function show(EntityManagerInterface $entityManager)
     {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+
         $activePortals = $this->getDoctrine()->getRepository(Portal::class)
             ->findAllActive();
 
@@ -49,6 +52,7 @@ class ServerController extends AbstractController
             'activePortals' => $activePortals,
             'usageInformation' => $usageInformation,
             'totalMaxActivity' => $totalMaxActivity,
+            'server' => $server,
         ];
     }
 
@@ -80,6 +84,54 @@ class ServerController extends AbstractController
 
         return [
             'form' => $form->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/server/impressum")
+     * @Template()
+     */
+    public function impressum(EntityManagerInterface $entityManager)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        if (!$server->hasImpressumEnabled()) {
+            throw $this->createNotFoundException();
+        }
+
+        return [
+            'content' => $server->getImpressumText(),
+        ];
+    }
+
+    /**
+     * @Route("/server/data_privacy")
+     * @Template()
+     */
+    public function dataPrivacy(EntityManagerInterface $entityManager)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        if (!$server->hasDataPrivacyEnabled()) {
+            throw $this->createNotFoundException();
+        }
+
+        return [
+            'content' => $server->getDataPrivacyText(),
+        ];
+    }
+
+    /**
+     * @Route("/server/accessibility")
+     * @Template()
+     */
+    public function accessibility(EntityManagerInterface $entityManager)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        if (!$server->hasAccessibilityEnabled()) {
+            throw $this->createNotFoundException();
+        }
+
+        return [
+            'content' => $server->getAccessibilityText(),
         ];
     }
 }

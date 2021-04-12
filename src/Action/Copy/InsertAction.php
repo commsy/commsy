@@ -9,6 +9,7 @@
 namespace App\Action\Copy;
 
 
+use App\Services\CopyService;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Http\JsonDataResponse;
@@ -33,11 +34,17 @@ class InsertAction
      */
     private $itemService;
 
-    public function __construct(TranslatorInterface $translator, LegacyEnvironment $legacyEnvironment, ItemService $itemService)
+    /**
+     * @var CopyService
+     */
+    private $copyService;
+
+    public function __construct(TranslatorInterface $translator, LegacyEnvironment $legacyEnvironment, ItemService $itemService, CopyService $copyService)
     {
         $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
+        $this->copyService = $copyService;
     }
 
     public function execute(\cs_room_item $roomItem, array $items): Response
@@ -54,35 +61,63 @@ class InsertAction
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items as read only user is not allowed'));
         }
 
-        foreach ($items as $item) {
-            // archive
-            $toggleArchive = false;
-            if ($item->isArchived() and !$this->legacyEnvironment->isArchiveMode()) {
-                $toggleArchive = true;
-                $this->legacyEnvironment->toggleArchiveMode();
+        if($roomItem->getType() == 'userroom'){
+            $imports = $this->copyService->getListEntries(0);
+
+            foreach ($items as $user) {
+                /** @var \cs_user_item $user */
+                //$userRoom = $user->getLinkedUserroomItem();
+
+                foreach ($imports as $import) {
+                    /** @var \cs_item $import */
+                    $import = $this->itemService->getTypedItem($import->getItemId());
+
+                    $oldContextId = $this->legacyEnvironment->getCurrentContextID();
+                    $this->legacyEnvironment->setCurrentContextID($roomItem->getItemID());
+                    $copy = $import->copy();
+                    $this->legacyEnvironment->setCurrentContextID($oldContextId);
+
+                    if (empty($copy->getErrorArray())) {
+                        $readerManager = $this->legacyEnvironment->getReaderManager();
+                        $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
+                        $noticedManager = $this->legacyEnvironment->getNoticedManager();
+                        $noticedManager->markNoticed($copy->getItemID(), $copy->getVersionID());
+                    }
+                }
             }
+        }else{
+            foreach ($items as $item) {
+                // archive
+                $toggleArchive = false;
+                if ($item->isArchived() and !$this->legacyEnvironment->isArchiveMode()) {
+                    $toggleArchive = true;
+                    $this->legacyEnvironment->toggleArchiveMode();
+                }
 
-            // archive
-            $importItem = $this->itemService->getTypedItem($item->getItemId());
+                // archive
+                $importItem = $this->itemService->getTypedItem($item->getItemId());
 
-            // archive
-            if ($toggleArchive) {
-                $this->legacyEnvironment->toggleArchiveMode();
-            }
+                // archive
+                if ($toggleArchive) {
+                    $this->legacyEnvironment->toggleArchiveMode();
+                }
 
-            // archive
-            $copy = $importItem->copy();
+                // archive
+                $copy = $importItem->copy();
 
-            if (empty($copy->getErrorArray())) {
-                $readerManager = $this->legacyEnvironment->getReaderManager();
-                $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
-                $noticedManager = $this->legacyEnvironment->getNoticedManager();
-                $noticedManager->markNoticed($copy->getItemID(), $copy->getVersionID());
+                if (empty($copy->getErrorArray())) {
+                    $readerManager = $this->legacyEnvironment->getReaderManager();
+                    $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
+                    $noticedManager = $this->legacyEnvironment->getNoticedManager();
+                    $noticedManager->markNoticed($copy->getItemID(), $copy->getVersionID());
+                }
             }
         }
 
+
+
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->transChoice('inserted %count% entries in this room', count($items), [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('inserted %count% entries in this room',[
                 '%count%' => count($items),
             ]),
         ]);

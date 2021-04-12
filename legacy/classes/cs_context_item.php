@@ -197,6 +197,10 @@ class cs_context_item extends cs_item {
     return false;
   }
 
+  function isUserroom () {
+    return false;
+  }
+
   function isProjectRoom () {
     return false;
   }
@@ -614,13 +618,6 @@ class cs_context_item extends cs_item {
     $this->_addExtra('AGBTEXTARRAY',(array)$value);
   }
 
-  /** set agb change date
-   */
-  function setAGBChangeDate () {
-    include_once('functions/date_functions.php');
-    $this->_addExtra('AGB_CHANGE_DATE',getCurrentDateTimeInMySQL());
-  }
-
   /** get agb status
    *
    * @return integer agb status 1 = yes, 2 = no
@@ -652,13 +649,27 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
-  function getAGBChangeDate () {
-    $retour = '';
-    if ($this->_issetExtra('AGB_CHANGE_DATE')) {
-      $retour = $this->_getExtra('AGB_CHANGE_DATE');
+    public function getAGBChangeDate(): ?DateTimeImmutable
+    {
+        if ($this->_issetExtra('AGB_CHANGE_DATE')) {
+            $agbChangeDate = $this->_getExtra('AGB_CHANGE_DATE') ?? '';
+            return !empty($agbChangeDate) ?
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDate) :
+                null;
+        }
+
+        return null;
     }
-    return $retour;
-  }
+
+    public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): self
+    {
+      $this->_addExtra(
+          'AGB_CHANGE_DATE',
+          $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : ''
+      );
+
+      return $this;
+    }
 
   function setWithTodoManagment() {
     $this->_addExtra('TODOMANAGEMENT',2);
@@ -1199,6 +1210,7 @@ class cs_context_item extends cs_item {
             and ( $this->isProjectRoom()
                   or $this->isCommunityRoom()
                   or $this->isGroupRoom()
+                  or $this->isUserroom()
                 )
             and $this->isClosed()
             and !$this->_environment->isArchiveMode()
@@ -4971,7 +4983,9 @@ class cs_context_item extends cs_item {
             $manager = $this->_environment->getProjectManager();
         } elseif ($this->isGroupRoom()) {
             $manager = $this->_environment->getGrouproomManager();
-        } elseif ($this->isCommunityRoom()) {
+        } elseif ($this->isUserroom() ) {
+      $manager = $this->_environment->getUserRoomManager();
+    } elseif ( $this->isCommunityRoom()) {
             $manager = $this->_environment->getCommunityManager();
         } elseif ($this->isPortal()) {
             $manager = $this->_environment->getPortalManager();
@@ -5799,7 +5813,7 @@ class cs_context_item extends cs_item {
     $item_manager->setContextLimit($this->getItemID());
     $item_manager->setExistenceLimit($timespread);
 #      $item_manager->setAgeLimit(7);
-    $item_manager->showNoNotActivatedEntries();
+    $item_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     $item_manager->setTypeArrayLimit($check_managers);
     $item_manager->select();
     $new_entries = $item_manager->getIDArray();
@@ -5838,7 +5852,7 @@ class cs_context_item extends cs_item {
     $item_manager->setContextLimit($this->getItemID());
     $item_manager->setReadLimit($user_id);
     $item_manager->setAgeLimit($timespread);
-    $item_manager->showNoNotActivatedEntries();
+    $item_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     $item_manager->setTypeArrayLimit($check_managers);
     $item_manager->select();
     $new_entries = $item_manager->getIDArray();
@@ -5859,7 +5873,7 @@ class cs_context_item extends cs_item {
     $user_manager->setUserLimit();
     $user_manager->setLastLoginLimit($timespread);
     $ids = $user_manager->getIDArray();
-    $active = count($ids);
+    $active = !empty($ids) ? count($ids) : 0;
     unset($user_manager);
     return $active;
   }

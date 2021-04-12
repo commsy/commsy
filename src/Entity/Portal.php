@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Services\LegacyEnvironment;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +11,6 @@ use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
-
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -133,13 +133,6 @@ class Portal implements \Serializable
      * @ORM\Column(name="activity", type="integer", nullable=false)
      */
     private $activity = '0';
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_open_for_guests", type="boolean", nullable=false)
-     */
-    private $isOpenForGuests = '1';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuthSource", mappedBy="portal")
@@ -395,30 +388,6 @@ class Portal implements \Serializable
     }
 
     /**
-     * Set isOpenForGuests
-     *
-     * @param boolean $isOpenForGuests
-     *
-     * @return Portal
-     */
-    public function setIsOpenForGuests($isOpenForGuests)
-    {
-        $this->isOpenForGuests = $isOpenForGuests;
-
-        return $this;
-    }
-
-    /**
-     * Get isOpenForGuests
-     *
-     * @return boolean
-     */
-    public function getIsOpenForGuests()
-    {
-        return $this->isOpenForGuests;
-    }
-
-    /**
      * @return Collection
      */
     public function getAuthSources(): Collection
@@ -467,7 +436,7 @@ class Portal implements \Serializable
         if ($logoFile !== null) {
             // VichUploaderBundle NOTE: it is required that at least one field changes if you are
             // using Doctrine otherwise the event listeners won't be called and the file is lost
-            $this->modificationDate = new \DateTimeImmutable();
+            $this->modificationDate = new DateTimeImmutable();
         }
         return $this;
     }
@@ -545,28 +514,6 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getShowTime():? int
-    {
-        return $this->extras['SHOW_TIME'] ?? 0;
-    }
-
-    public function setShowTime(?int $showTime): Portal
-    {
-        $this->extras['SHOW_TIME'] = $showTime;
-        return $this;
-    }
-
-    public function getFutureTimeCycles():? int
-    {
-        return $this->extras['FUTURE_TIME_CYCLES'] ?? 1;
-    }
-
-    public function setFutureTimeCycles(?int $futureCycles): Portal
-    {
-        $this->extras['FUTURE_TIME_CYCLES'] = $futureCycles;
-        return $this;
-    }
-
     public function getAnnouncementText():? string
     {
         return $this->extras['ANNOUNCEMENT_TEXT'] ?? '';
@@ -575,39 +522,6 @@ class Portal implements \Serializable
     public function setAnnouncementText(?string $text): Portal
     {
         $this->extras['ANNOUNCEMENT_TEXT'] = $text;
-        return $this;
-    }
-
-    public function getAnnouncementLink():? string
-    {
-        return $this->extras['ANNOUNCEMENT_LINK'] ?? '';
-    }
-
-    public function setTimeCycleNameGerman(?string $text): Portal
-    {
-        $this->extras['TIME_CYCLE_NAME_GERMAN'] = $text;
-        return $this;
-    }
-
-    public function getTimeCycleNameGerman():? string
-    {
-        return $this->extras['TIME_CYCLE_NAME_GERMAN'] ?? '';
-    }
-
-    public function setTimeCycleNameEnglish(?string $text): Portal
-    {
-        $this->extras['TIME_CYCLE_NAME_ENGLISH'] = $text;
-        return $this;
-    }
-
-    public function getTimeCycleNameEnglish():? string
-    {
-        return $this->extras['TIME_CYCLE_NAME_ENGLISH'] ?? '';
-    }
-
-    public function setAnnouncementLink(?string $link): Portal
-    {
-        $this->extras['ANNOUNCEMENT_LINK'] = $link;
         return $this;
     }
 
@@ -655,14 +569,22 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getAGBChangeDate(): ?\DateTime
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getAGBChangeDate(): ?DateTimeImmutable
     {
         $agbChangeDateString = $this->extras['AGB_CHANGE_DATE'] ?? '';
-        $agbChangeDate = !empty($agbChangeDateString) ? \DateTime::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) : null;
-        return $agbChangeDate;
+        return !empty($agbChangeDateString) ?
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) :
+            null;
     }
 
-    public function setAGBChangeDate(?\DateTime $agbChangeDate): Portal
+    /**
+     * @param DateTimeImmutable|null $agbChangeDate
+     * @return $this
+     */
+    public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): Portal
     {
         $agbChangeDateString = $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : '';
         $this->extras['AGB_CHANGE_DATE'] = $agbChangeDateString;
@@ -677,7 +599,7 @@ class Portal implements \Serializable
          */
         $agbStatus = $this->extras['AGBSTATUS'] ?? 2;
 
-        return $agbStatus === 1 ? true : false;
+        return $agbStatus === 1;
     }
 
     public function setAGBEnabled(bool $enabled): Portal
@@ -962,109 +884,86 @@ class Portal implements \Serializable
     }
 
 
+    public function getShowTimePulses(): bool
+    {
+        /**
+         * show time pulses: 1 = yes, -1 = no (default)
+         * @var integer
+         */
+        $showTimePulses = $this->extras['TIME_SHOW'] ?? -1;
 
+        return $showTimePulses === 1 ? true : false;
+    }
 
+    public function setShowTimePulses(?bool $showTimePulses): Portal
+    {
+        $this->extras['TIME_SHOW'] = $showTimePulses ? 1 : -1;
+        return $this;
+    }
 
+    public function getTimePulseNameGerman(): string
+    {
+        return $this->getTimeNameArray()['DE'] ?? '';
+    }
 
-
-
-
-
-
-
-    /** is room a normal open ?
-     * this method returns a boolean explaining if a room is open
-     *
-     * @return boolean true, if a room is open
-     *                 false, if a room is not open
-     */
-    public function isOpen () {
-        $retour = false;
-        if ( !empty($this->_data['status'])
-            and $this->_data['status'] == CS_ROOM_OPEN
-        ) {
-            $retour = true;
+    public function setTimePulseNameGerman(?string $timePulseName): Portal
+    {
+        $timePulseName = $timePulseName ?? '';
+        if ($this->getTimePulseNameGerman() !== $timePulseName) {
+            $timePulseNamesByLanguage = $this->getTimeNameArray();
+            $timePulseNamesByLanguage['DE'] = $timePulseName;
+            $this->setTimeNameArray($timePulseNamesByLanguage);
         }
-        return $retour;
+        return $this;
     }
 
-    /** open the room for usage
-     * this method sets the status of the room to open
-     */
-    public function open () {
-        $this->_data['status'] = CS_ROOM_OPEN;
-    }
-
-    /** close a room
-     * this method sets the status of the room to closed
-     */
-    public function close () {
-        $this->_data['status'] = CS_ROOM_CLOSED;
-    }
-
-    public function setNotShowTime ()
+    public function getTimePulseNameEnglish(): string
     {
-        $this->getExtras()['SHOW_TIME'] = 0;
+        return $this->getTimeNameArray()['EN'] ?? '';
     }
 
-    public function getTimeNameArray () : array
+    public function setTimePulseNameEnglish(?string $timePulseName): Portal
     {
-        $retour = array();
-        if ($this->getExtras()['TIME_NAME_ARRAY']) {
-            $retour = $this->getExtras()['TIME_NAME_ARRAY'];
+        $timePulseName = $timePulseName ?? '';
+        if ($this->getTimePulseNameEnglish() !== $timePulseName) {
+            $timePulseNamesByLanguage = $this->getTimeNameArray();
+            $timePulseNamesByLanguage['EN'] = $timePulseName;
+            $this->setTimeNameArray($timePulseNamesByLanguage);
         }
-        return $retour;
+        return $this;
     }
 
-    public function setTimeNameArray($value)
+    public function getTimeNameArray(): array
     {
-        $this->getExtras()['TIME_NAME_ARRAY'] = $value;
-
-        $value2 = array();
-        $value2['NAME'] = CS_TIME_TYPE;
-
-        foreach ($value as $lang => $name) {
-            $value2[mb_strtoupper($lang, 'UTF-8')]['NOMPL'] = $name;
-        }
-        $this->setRubricArray(CS_TIME_TYPE, $value2);
+        return $this->extras['TIME_NAME_ARRAY'] ?? [];
     }
 
-    /** set RubricArray
-     * this method sets the Rubric Name
-     *
-     * @param array value name cases
-     */
-    public function setRubricArray($rubric, $array)
+    public function setTimeNameArray(array $timePulseNamesByLanguage): Portal
     {
-
-        $rubricTranslationArray = array();
-        try {
-            $rubricTranslationArray = $this->getExtras()['RUBRIC_TRANSLATION_ARRAY'];
-        } catch (\ErrorException $e) {
-        }
-
-        if (empty($rubricTranslationArray) or sizeof($rubricTranslationArray) > 1) {
-            $rubricTranslationArray = array();
-        }
-        $extras = $this->getExtras();
-        $rubricTranslationArray[cs_strtoupper($rubric)] = $array;
-        $extras['RUBRIC_TRANSLATION_ARRAY'] = $rubricTranslationArray;
-        $this->setExtras($extras);
+        $this->extras['TIME_NAME_ARRAY'] = $timePulseNamesByLanguage;
+        return $this;
     }
 
-    public function getTimeInFuture()
+    public function getNumberOfFutureTimePulses(): int
     {
-        return ($this->getExtras()['TIME_IN_FUTURE']) ?? 0;
+        return $this->extras['TIME_IN_FUTURE'] ?? 0;
     }
 
-    public function setTimeInFuture($value)
+    public function setNumberOfFutureTimePulses(?int $count): Portal
     {
-        $this->getExtras()['TIME_IN_FUTURE'] = $value;
+        $this->extras['TIME_IN_FUTURE'] = $count ?? 0;
+        return $this;
     }
 
-    public function setTimeTextArray($value)
+    public function getTimeTextArray(): array
     {
-        $this->getExtras()['TIME_TEXT_ARRAY'] = $value;
+        return $this->extras['TIME_TEXT_ARRAY'] ?? [];
+    }
+
+    public function setTimeTextArray(array $timePulseTemplates): Portal
+    {
+        $this->extras['TIME_TEXT_ARRAY'] = $timePulseTemplates;
+        return $this;
     }
 
     public function getIndexViewAction()
@@ -1109,14 +1008,6 @@ class Portal implements \Serializable
             unset($manager);
         }
         return $this->_room_list_continuous;
-    }
-
-    public function saveWithoutChangingModificationInformation(LegacyEnvironment $environment)
-    {
-        $manager = $environment->getEnvironment()->getPortalManager();
-        $manager->saveWithoutChangingModificationInformation();
-        $this->_save($manager);
-        $this->_changes = array();
     }
 
 

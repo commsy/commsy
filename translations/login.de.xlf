@@ -22,6 +22,10 @@
                 <source>login.label_username</source>
                 <target>Kennung</target>
             </trans-unit>
+            <trans-unit id="login_label_email">
+                <source>login.label_email</source>
+                <target>E-Mail</target>
+            </trans-unit>
             <trans-unit id="login_placeholder_username">
                 <source>login.placeholder_username</source>
                 <target>Ihre Kennung</target>
@@ -73,6 +77,18 @@
             <trans-unit id="login_guest_login">
                 <source>login.guest_login</source>
                 <target>Ohne Login fortfahren</target>
+            </trans-unit>
+            <trans-unit id="login_password_reset_help">
+                <source>login.password_reset_help</source>
+                <target>Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.</target>
+            </trans-unit>
+            <trans-unit id="login_request_accounts_help">
+                <source>login.request_accounts_help</source>
+                <target>Bitte geben Sie Ihre E-Mailadresse an. Ihre unter dieser E-Mailadresse registrierten Kennungen werden Ihnen per E-Mail zu geschickt.</target>
+            </trans-unit>
+            <trans-unit id="login_request_accounts_none">
+                <source>login.request_accounts_none</source>
+                <target>Für diese E-Mailadresse wurden keine Kennungen gefunden.</target>
             </trans-unit>
         </body>
     </file>

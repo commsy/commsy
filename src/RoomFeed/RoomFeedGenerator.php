@@ -112,7 +112,9 @@ class RoomFeedGenerator
         if ($lastId) {
             $lastFeedItem = $this->itemService->getTypedItem($lastId);
             if ($lastFeedItem) {
-                $lastModificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
+                $lastModificationDate = ($lastFeedItem instanceof \cs_user_item) ?
+                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getCreationDate()) :
+                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
 
                 $previousFeedEntries = [];
                 foreach ($contextIdsByRubric as $rubric => $contextIds) {
@@ -254,25 +256,21 @@ class RoomFeedGenerator
         $roomIds = [];
 
         $projectRooms = $currentUser->getUserRelatedProjectList();
-        if (isset($projectRooms) && $projectRooms->isNotEmpty()) {
-            $projectRoom = $projectRooms->getFirst();
+        foreach ($projectRooms as $projectRoom) {
+            /** @var \cs_project_item $projectRoom */
+            $roomIds[] = $projectRoom->getItemID();
+        }
 
-            while ($projectRoom) {
-                $roomIds[] = $projectRoom->getItemId();
-
-                $projectRoom = $projectRooms->getNext();
-            }
+        $userRooms = $currentUser->getRelatedUserroomsList();
+        foreach ($userRooms as $userRoom) {
+            /** @var \cs_userroom_item $userRoom */
+            $roomIds[] = $userRoom->getItemID();
         }
 
         $communityRooms = $currentUser->getUserRelatedCommunityList();
-        if (isset($communityRooms) && $communityRooms->isNotEmpty()) {
-            $communityRoom = $communityRooms->getFirst();
-
-            while ($communityRoom) {
-                $roomIds[] = $communityRoom->getItemId();
-
-                $communityRoom = $communityRooms->getNext();
-            }
+        foreach ($communityRooms as $communityRoom) {
+            /** @var \cs_community_item $communityRoom */
+            $roomIds[] = $communityRoom->getItemID();
         }
 
         /**

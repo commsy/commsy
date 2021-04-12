@@ -12,7 +12,18 @@
     {% embed 'components/card.html.twig' %}
         {% block title %}{{ 'Accounts'|trans({}, "portal") }}{% endblock %}
         {% block body %}
+            {% set unsuccessfull = app.flashes('unsuccessful')|first %}
             {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.userId) }}
+            {{ form_row(form.searchForWorkspace) }}
+            {{ form_row(form.search) }}
+            {% if(unsuccessfull) %}
+                <p class="uk-text-danger">{{'Workspace already assigned'|trans({},'portal') }}</p>
+            {% endif %}
+            {{ form_row(form.workspaceSelection) }}
+            {{ form_row(form.descriptionOfParticipation) }}
+            {{ form_row(form.save) }}
             {{ form_end(form) }}
             <a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}" class="data-uk-button">{{'Cancel'|trans({},'portal') }}</a>
         {% endblock %}

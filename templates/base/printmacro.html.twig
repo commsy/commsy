@@ -49,12 +49,12 @@
                                     {% endfor %}
                                 </td>
                                 <td class="uk-padding-top-remove uk-padding-bottom-remove uk-text-right">
-                                    {% set ratingDisplay = 'rating'|transchoice(1, {}, 'material') %}
+                                    {% set ratingDisplay = 'rating'|trans({}, 'material') %}
                                     <span class="uk-text-bold uk-margin-left">
                                     {% if ratingArray.ratingDetail[ratingValue] is defined %}
                                         {{ ratingArray.ratingDetail[ratingValue] }}
                                         {% if ratingArray.ratingDetail[ratingValue] == 1 %}
-                                            {% set ratingDisplay = 'rating'|transchoice(0, {}, 'material') %}
+                                            {% set ratingDisplay = 'rating'|trans({}, 'material') %}
                                         {% endif %}
                                     {% else %}
                                         0
@@ -308,7 +308,7 @@
 
                 {# preview #}
                 <div>
-                    {{ content|raw }}
+                    {{ content|commsyMarkup(item)|raw }}
                 </div>
 
             </div>
@@ -327,9 +327,9 @@
     {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
     {% set pathName = '' %}
-    {% if item.itemType == 'material' %}
+    {% if item.itemType is same as('material') %}
         {% set pathName = 'app_material_edit' %}
-    {% elseif item.itemType == 'section' %}
+    {% elseif item.itemType is same as('section') %}
         <a name="section{{item.ItemID}}"></a>
         {% set pathName = 'app_material_edit' %}
     {% endif %}
@@ -342,23 +342,25 @@
             <div >
                 <div  >        
                     <div>
-                    {% if item.itemType != 'section' %}
+                    {% if item.itemType is not same as('section') %}
                         <div>
                             <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
-                            {% if item.itemType == 'material' %}
-                                {% set material = item %}
+                            {% if item.itemType is same as('material') or item.itemType is same as('todo') %}
                                 <div top-padding=0>
-                                {% if showRating or showWorkflow%}
-                                
-                                    {% if showRating%}
-                                        {{ macros.ratingStatusDetail(material, ratingArray) }}
+                                    {% if showRating and ratingArray is not null %}
+                                        {{ macros.ratingStatusDetail(item, ratingArray) }}
                                     {% endif %}
-                                    {% if showWorkflow%}
-                                        {{ macros.workflowTrafficLight(material) }}
+                                    {% if item.itemType is same as('material') %}
+                                        {% if showWorkflow %}
+                                            {{ macros.workflowTrafficLight(item) }}
+                                        {% endif %}
+                                        {% include 'material/biblio.html.twig' %}
                                     {% endif %}
-                                {% endif %}
-                            </div>
-                            {% include 'material/biblio.html.twig' %}
+                                    {% if item.itemType is same as('todo') %}
+                                        <i class="{{ macros.iconClassForItemType(item.itemType, item.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ item.status }}"></i>
+                                        {{ item.status }}
+                                    {% endif %}
+                                </div>
                             {% endif %}
 
                         </div>
@@ -565,7 +567,7 @@
     {% set styleAttribute = '' %}
     {% set additionalClasses = '' %}
 
-    {% if size == 'small' %}
+    {% if size is same as('small') %}
         {% set styleAttribute = ' style="height:30px; width:30px;"' %}
     {% elseif size matches '/^\\d+$/' %}
         {% set styleAttribute = ' style="height:' ~ size ~ 'px; width:' ~ size ~ 'px;"' %}
@@ -586,21 +588,21 @@
 
 
 {% macro iconClassForFileType(type) %}
-    {% if type == 'xlsx' or type == 'xls' %}
+    {% if type is same as('xlsx') or type is same as('xls') %}
         uk-icon-file-excel-o
-    {% elseif type == 'docx' or type == 'doc' or type == 'ods' %}
+    {% elseif type is same as('docx') or type is same as('doc') or type is same as('ods') %}
         uk-icon-file-word-o
-    {% elseif type == 'pptx' or type == 'ppt' %}
+    {% elseif type is same as('pptx') or type is same as('ppt') %}
         uk-icon-file-powerpoint-o
-    {% elseif type == 'pdf' %}
+    {% elseif type is same as('pdf') %}
         uk-icon-file-pdf-o
-    {% elseif type == 'zip' or type == 'ipa' %}
+    {% elseif type is same as('zip') or type is same as('ipa') %}
         uk-icon-file-archive-o
-    {% elseif type == 'png' or type == 'jpg' or type == 'eps' or type == 'gif' or type == 'svg' %}
+    {% elseif type is same as('png') or type is same as('jpg') or type is same as('eps') or type is same as('gif') or type is same as('svg') %}
         uk-icon-file-image-o
-    {% elseif type == 'txt' or type == 'csv' or type == 'md' %}
+    {% elseif type is same as('txt') or type is same as('csv') or type is same as('md') %}
         uk-icon-file-text-o
-    {% elseif type == 'mpg' or type == 'wmv' or type == 'mp4' or type == 'avi' %}
+    {% elseif type is same as('mpg') or type is same as('wmv') or type is same as('mp4') or type is same as('avi') %}
         uk-icon-file-movie-o
     {% else %}
         uk-icon-file-o
@@ -609,7 +611,7 @@
 
 {% macro fileListShort(item) %}
     {% import _self as macros %}
-    {% if item.itemType != 'material' %}
+    {% if item.itemType is not same as('material') %}
         {% set fileArray = item.fileList.to_array %}
     {% else %}
         {% set fileArray = item.fileListWithFilesFromSections.to_array %}
@@ -620,24 +622,33 @@
         {% endfor %}
     {% endif %}
 {% endmacro %}
-{% macro iconClassForItemType(type) %}
-    {% if type == 'announcement' %}
+
+{% macro iconClassForItemType(type, status = 0) %}
+    {% if type is same as('announcement') %}
         uk-icon-comment-o
-    {% elseif type == 'date' %}
+    {% elseif type is same as('date') %}
         uk-icon-calendar
-    {% elseif type == 'material' %}
+    {% elseif type is same as('material') %}
         uk-icon-file-o
-    {% elseif type == 'section' %}
+    {% elseif type is same as('section') %}
         uk-icon-file-o
-    {% elseif type == 'discussion' %}
+    {% elseif type is same as('discussion') %}
         uk-icon-comments-o
-    {% elseif type == 'user' %}
+    {% elseif type is same as('user') %}
         uk-icon-user
-    {% elseif type == 'group' %}
+    {% elseif type is same as('group') %}
         uk-icon-group
-    {% elseif type == 'todo' %}
-        uk-icon-check
-    {% elseif type == 'task' %}
+    {% elseif type is same as('todo') %}
+        {% if status == 1 %}
+            uk-icon-circle-o todo
+        {% elseif status == 2 %}
+            uk-icon-dot-circle-o inProgress
+        {% elseif status == 3 %}
+            uk-icon-check-circle-o done
+        {% else %}
+            uk-icon-check
+        {% endif %}
+    {% elseif type is same as('task') %}
         uk-icon-home
     {% endif %}
 {% endmacro %}
@@ -757,9 +768,9 @@
     {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
     {% set pathName = '' %}
-    {% if item.itemType == 'user' %}
+    {% if item.itemType is same as('user') %}
         {% set pathName = 'app_user_edit' %}
-    {% elseif item.itemType == 'section' %}
+    {% elseif item.itemType is same as('section') %}
         <a name="section{{item.ItemID}}"></a>
         {% set pathName = 'app_user_edit' %}
     {% endif %}
@@ -969,21 +980,21 @@
 
 
 {% macro statusColor(readerList, itemId, type='comment') %}
-    {% if type == 'grid' %}
+    {% if type is same as('grid') %}
         {% if readerList[itemId] is defined %}
-           {% if readerList[itemId] == 'new' %}
+           {% if readerList[itemId] is same as('new') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
                     <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed' %}
+            {% elseif readerList[itemId] is same as('changed') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'new_annotation' %}
+            {% elseif readerList[itemId] is same as('new_annotation') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed_annotation' %}
+            {% elseif readerList[itemId] is same as('changed_annotation') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
@@ -991,19 +1002,19 @@
         {% endif %}
     {% else %}
         {% if readerList[itemId] is defined %}
-           {% if readerList[itemId] == 'new' %}
+           {% if readerList[itemId] is same as('new') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
                     <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed' %}
+            {% elseif readerList[itemId] is same as('changed') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'new_annotation' %}
+            {% elseif readerList[itemId] is same as('new_annotation') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
-            {% elseif readerList[itemId] == 'changed_annotation' %}
+            {% elseif readerList[itemId] is same as('changed_annotation') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
                      <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>

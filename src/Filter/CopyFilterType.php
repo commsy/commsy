@@ -2,6 +2,7 @@
 namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,18 +23,22 @@ class CopyFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button uk-button-mini',
+                ),
+                'label' => 'Filter',
+                'translation_domain' => 'form',
+            ))
             ->add('type', ChoiceType::class, array(
                 'label_attr' => array('class' => 'uk-form-label'),
                 'expanded' => false,
                 'multiple' => false,
                 'choices' => $options['rubrics'],
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'required' => false,
                 'placeholder' => 'no restrictions',
                 'translation_domain' => 'form',
-            ))
+                ))
         ;
     }
 

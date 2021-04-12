@@ -10,11 +10,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * AuthSource
  *
  * @ORM\Table(name="auth_source", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"})
+ *     @ORM\Index(name="portal_id", columns={"portal_id"})
  * })
  * @ORM\Entity(repositoryClass="App\Repository\AuthSourceRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({"local" = "AuthSourceLocal", "oidc" = "AuthSourceOIDC", "ldap" = "AuthSourceLdap", "shib" = "AuthSourceShibboleth", "guest" = "AuthSourceGuest"})
  */
-class AuthSource
+abstract class AuthSource
 {
     /**
      * @var integer
@@ -58,20 +61,6 @@ class AuthSource
     private $portal;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", columnDefinition="ENUM('local')")
-     */
-    private $type;
-
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="extras", type="object", nullable=true)
-     */
-    private $extras;
-
-    /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
@@ -90,40 +79,42 @@ class AuthSource
      *
      * @ORM\Column(type="boolean")
      */
-    private $addAccount;
+    protected $addAccount;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    private $changeUsername;
+    protected $changeUsername;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    private $deleteAccount;
+    protected $deleteAccount;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    private $changeUserdata;
+    protected $changeUserdata;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    private $changePassword;
+    protected $changePassword;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $createRoom;
+    protected $createRoom;
+
+    abstract public function getType(): string;
 
     /**
      * @return int
@@ -135,9 +126,9 @@ class AuthSource
 
     /**
      * @param int $id
-     * @return AuthSource
+     * @return self
      */
-    public function setId(int $id): AuthSource
+    public function setId(int $id): self
     {
         $this->id = $id;
         return $this;
@@ -146,16 +137,16 @@ class AuthSource
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
     /**
      * @param string $title
-     * @return AuthSource
+     * @return self
      */
-    public function setTitle(string $title): AuthSource
+    public function setTitle(string $title): self
     {
         $this->title = $title;
         return $this;
@@ -171,9 +162,9 @@ class AuthSource
 
     /**
      * @param string $description
-     * @return AuthSource
+     * @return self
      */
-    public function setDescription(string $description): AuthSource
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
@@ -184,46 +175,29 @@ class AuthSource
         return $this->portal;
     }
 
-    public function setPortal(?Portal $portal): AuthSource
+    public function setPortal(?Portal $portal): self
     {
         $this->portal = $portal;
 
         return $this;
     }
 
+
     /**
      * @return array
      */
-    public function getExtras(): array
+    public function getExtras()
     {
         return $this->extras;
     }
 
     /**
      * @param array $extras
-     * @return AuthSource
+     * @return self
      */
-    public function setExtras(array $extras): AuthSource
+    public function setExtras(array $extras): self
     {
         $this->extras = $extras;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     * @return AuthSource
-     */
-    public function setType(string $type): AuthSource
-    {
-        $this->type = $type;
         return $this;
     }
 
@@ -232,7 +206,7 @@ class AuthSource
         return $this->createRoom;
     }
 
-    public function setCreateRoom(bool $createRoom): AuthSource
+    public function setCreateRoom(bool $createRoom): self
     {
         $this->createRoom = $createRoom;
 
@@ -242,16 +216,16 @@ class AuthSource
     /**
      * @return bool
      */
-    public function isEnabled(): bool
+    public function isEnabled(): ?bool
     {
         return $this->enabled;
     }
 
     /**
      * @param bool $enabled
-     * @return AuthSource
+     * @return self
      */
-    public function setEnabled(bool $enabled): AuthSource
+    public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
         return $this;
@@ -260,16 +234,16 @@ class AuthSource
     /**
      * @return bool
      */
-    public function isDefault(): bool
+    public function isDefault(): ?bool
     {
         return $this->default;
     }
 
     /**
      * @param bool $default
-     * @return AuthSource
+     * @return self
      */
-    public function setDefault(bool $default): AuthSource
+    public function setDefault(bool $default): self
     {
         $this->default = $default;
         return $this;
@@ -285,9 +259,9 @@ class AuthSource
 
     /**
      * @param bool $addAccount
-     * @return AuthSource
+     * @return self
      */
-    public function setAddAccount(bool $addAccount): AuthSource
+    public function setAddAccount(bool $addAccount): self
     {
         $this->addAccount = $addAccount;
         return $this;
@@ -303,9 +277,9 @@ class AuthSource
 
     /**
      * @param bool $changeUsername
-     * @return AuthSource
+     * @return self
      */
-    public function setChangeUsername(bool $changeUsername): AuthSource
+    public function setChangeUsername(bool $changeUsername): self
     {
         $this->changeUsername = $changeUsername;
         return $this;
@@ -321,9 +295,9 @@ class AuthSource
 
     /**
      * @param bool $deleteAccount
-     * @return AuthSource
+     * @return self
      */
-    public function setDeleteAccount(bool $deleteAccount): AuthSource
+    public function setDeleteAccount(bool $deleteAccount): self
     {
         $this->deleteAccount = $deleteAccount;
         return $this;
@@ -339,9 +313,9 @@ class AuthSource
 
     /**
      * @param bool $changeUserdata
-     * @return AuthSource
+     * @return self
      */
-    public function setChangeUserdata(bool $changeUserdata): AuthSource
+    public function setChangeUserdata(bool $changeUserdata): self
     {
         $this->changeUserdata = $changeUserdata;
         return $this;
@@ -357,9 +331,9 @@ class AuthSource
 
     /**
      * @param bool $changePassword
-     * @return AuthSource
+     * @return self
      */
-    public function setChangePassword(bool $changePassword): AuthSource
+    public function setChangePassword(bool $changePassword): self
     {
         $this->changePassword = $changePassword;
         return $this;

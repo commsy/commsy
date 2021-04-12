@@ -83,9 +83,16 @@ class TopicService
     public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
+
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $this->topicManager->showNoNotActivatedEntries();
+            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+                $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+                $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'all') {
+                $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
         }
     }
     
@@ -94,7 +101,8 @@ class TopicService
         return $this->topicManager->getNewItem();
     }
 
-    public function showNoNotActivatedEntries(){
-        $this->topicManager->showNoNotActivatedEntries();
+    public function hideDeactivatedEntries()
+    {
+        $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 }

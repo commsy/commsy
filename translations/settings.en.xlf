@@ -646,6 +646,30 @@
                 <source>Guest Access</source>
                 <target>Guest Access</target>
             </trans-unit>
+            <trans-unit id="user_room">
+                <source>User room</source>
+                <target>Create personal workspaces?</target>
+            </trans-unit>
+            <trans-unit id="user_room_tooltip">
+                <source>User room tooltip</source>
+                <target>Personal workspaces can be used for bilateral exchange between a single user and the workspace moderators</target>
+            </trans-unit>
+            <trans-unit id="user_room_heading">
+                <source>User room heading</source>
+                <target>Personal workspaces</target>
+            </trans-unit>
+            <trans-unit id="user_room_text">
+                <source>User room text</source>
+                <target>If this function is activated, a personal workspace will be created for each member of this project workspace. Personal workspaces can be used for bilateral exchange between a single user and the workspace moderators.</target>
+            </trans-unit>
+            <trans-unit id="user_room_template">
+                <source>User room template</source>
+                <target>Template for personal workspaces</target>
+            </trans-unit>
+            <trans-unit id="delete_user_rooms">
+                <source>Delete user rooms</source>
+                <target>Delete user rooms</target>
+            </trans-unit>
 
             <!-- Invitations -->
             <trans-unit id="send">
@@ -658,9 +682,21 @@
                 <source>Delete room</source>
                 <target>Delete workspace</target>
             </trans-unit>
+            <trans-unit id="settings_delete_userrooms">
+                <source>Delete userrooms</source>
+                <target>Delete personal workspaces</target>
+            </trans-unit>
+            <trans-unit id="project_workspace_unchanged">
+                <source>Project workspace unchanged</source>
+                <target>The project workspace will stay unchanged.</target>
+            </trans-unit>
             <trans-unit id="settings_delete_intro">
                 <source>Delete intro</source>
                 <target>Attention: The entire workspace and all data will be deleted. This action cannot be undone!</target>
+            </trans-unit>
+            <trans-unit id="delete_user_rooms_text">
+                <source>Delete user rooms text</source>
+                <target>Attention: All personal workspaces of this project workspaces will be deleted. This action cannot be undone!</target>
             </trans-unit>
             <trans-unit id="settings_delete_explanation_start">
                 <source>Delete explanation start</source>

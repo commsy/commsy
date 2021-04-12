@@ -38,10 +38,6 @@ use App\Form\Type\TodoType;
 use App\Form\Type\StepType;
 use App\Form\Type\AnnotationType;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
 use App\Event\CommsyEditEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -84,7 +80,7 @@ class TodoController extends BaseController
             // set filter conditions in todo manager
             $todoService->setFilterConditions($filterForm);
         } else {
-            $todoService->showNoNotActivatedEntries();
+            $todoService->hideDeactivatedEntries();
             $todoService->hideCompletedEntries();
         }
 
@@ -169,6 +165,7 @@ class TodoController extends BaseController
         }
 
         $roomItem = $roomService->getRoomItem($roomId);
+
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
@@ -182,7 +179,7 @@ class TodoController extends BaseController
             // apply filter
             $todoService->setFilterConditions($filterForm);
         } else {
-            $todoService->showNoNotActivatedEntries();
+            $todoService->hideDeactivatedEntries();
             $todoService->hideCompletedEntries();
         }
 
@@ -200,7 +197,9 @@ class TodoController extends BaseController
         foreach ($todos as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
 
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
+                ($this->isGranted('ITEM_ENTER',$roomId)) and $roomItem->getType() == 'userroom'
+            or ($roomItem->getType() == 'project' and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete', 'markpending', 'markinprogress', 'markdone');
                 
                 $statusArray = $roomItem->getExtraToDoStatusArray();
@@ -427,7 +426,7 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template("todo/edit_step.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId) or is_granted('ITEM_PARTICIPATE', itemId)")
      * @param TodoService $todoService
      * @param TodoTransformer $transformer
      * @param TranslatorInterface $translator
@@ -958,7 +957,7 @@ class TodoController extends BaseController
         $html = $this->renderView('todo/list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'todo',
-            'announcements' => $todos,
+            'todos' => $todos,
             'readerList' => $readerList,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
@@ -981,7 +980,7 @@ class TodoController extends BaseController
      * @param int $roomId
      * @param int $itemId
      * @return RedirectResponse
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_PARTICIPATE', itemId)")
      */
     public function participateAction(
         TodoService $todoService,
@@ -1111,6 +1110,25 @@ class TodoController extends BaseController
     }
 
     /**
+     * @Route("/room/{roomId}/todo/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrStatusFromDetailAction ($roomId, $itemId, Request $request, TodoService $todoService, RoomService $roomService)
+    {
+        $room = $roomService->getRoomItem($roomId);
+        $items = [$todoService->getTodo($itemId)];
+        $payload = $request->request->get('payload');
+        if (!isset($payload['status'])) {
+            throw new \Exception('new status string not provided');
+        }
+        $newStatus = $payload['status'];
+
+        $action = $this->get(TodoStatusAction::class);
+        $action->setNewStatus($newStatus);
+        return $action->execute($room, $items);
+    }
+
+    /**
      * @param Request $request
      * @param cs_room_item $roomItem
      * @param boolean $selectAll
@@ -1136,7 +1154,7 @@ class TodoController extends BaseController
                 // apply filter
                 $todoService->setFilterConditions($filterForm);
             } else {
-                $todoService->showNoNotActivatedEntries();
+                $todoService->hideDeactivatedEntries();
                 $todoService->hideCompletedEntries();
             }
 
@@ -1154,7 +1172,7 @@ class TodoController extends BaseController
     {
         // setup filter form default values
         $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
+            'hide-deactivated-entries' => 'only_activated',
             'hide-completed-entries' => true,
         ];
 

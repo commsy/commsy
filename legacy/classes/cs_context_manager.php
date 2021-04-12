@@ -201,6 +201,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
     * @return object cs_item a new EMPTY room
     */
    function _getNewRoomItem ($type) {
+       include_once('classes/cs_userroom_item.php');
       if ( (empty($type)) ) {
          $retour = NULL;
       } elseif ( $type == CS_PROJECT_TYPE ) {
@@ -218,6 +219,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       } elseif ( $type == CS_GROUPROOM_TYPE ) {
          include_once('classes/cs_grouproom_item.php');
          $retour = new cs_grouproom_item($this->_environment);
+      } elseif ( $type == cs_userroom_item::ROOM_TYPE_USER ) {
+         $retour = new cs_userroom_item($this->_environment);
       } elseif ( $type == CS_PORTAL_TYPE ) {
          include_once('classes/cs_portal_item.php');
          $retour = new cs_portal_item($this->_environment);
@@ -421,7 +424,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          if ( !isset($this->_cache_object[$item_id])
               and !isset($this->_cache_row[$item_id])
             ) {
-            $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB,$item_id)."'";
+            // NOTE: as of migration Version20191007171054.php, the `portal` table's `item_id` column is now called `id`
+            $id_column_name = ($this->_db_table === 'portal') ? 'id' : 'item_id';
+            $query = "SELECT * FROM " . $this->addDatabasePrefix($this->_db_table) . " WHERE " . $this->addDatabasePrefix($this->_db_table) . "." . $id_column_name . "='" . encode(AS_DB, $item_id) . "'";
             $result = $this->_db_connector->performQuery($query);
             unset($query);
             if ( !isset($result) ) {
@@ -435,7 +440,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                	   ) {
                		$data_array['zzz_table'] = 1;
                	}
-                  $retour = $this->_buildItem($data_array);
+               	if ($this->_db_table === 'portal') {
+               	    // NOTE: as of migration Version20200617133036.php, the `portal` table has no `type` column
+                    // anymore so we add the type here in order to maintain compatibility with `_getNewRoomItem()`
+                    $data_array['type'] = 'portal';
+                }
+                $retour = $this->_buildItem($data_array);
                }
                unset($result);
             }
@@ -770,6 +780,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if ($item->getItemType() == 'grouproom') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getItem($id);
+         } else if ($item->getItemType() == 'userroom') {
+             $userroom_manager = $this->_environment->getUserRoomManager();
+             $context_item = $userroom_manager->getItem($id);
          } else if ($item->getItemType() == 'privateroom') {
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
             $context_item = $privateroom_manager->getItem($id);
@@ -997,6 +1010,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if (((string)$xml->type[0]) == 'grouproom') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getNewItem();
+         } else if (((string)$xml->type[0]) == 'userroom') {
+             $userroom_manager = $this->_environment->getUserRoomManager();
+             $context_item = $userroom_manager->getNewItem();
          } else if (((string)$xml->type[0]) == 'privateroom') {
             $this->_environment->setCurrentContextID($this->_environment->getCurrentPortalID());
             $privateroom_manager = $this->_environment->getPrivateRoomManager();

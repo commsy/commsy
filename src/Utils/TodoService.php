@@ -102,7 +102,13 @@ class TodoService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            $this->todoManager->showNoNotActivatedEntries();
+            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } else if ($formData['hide-deactivated-entries'] === 'all') {
+                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
         }
 
         // hide completed todos
@@ -176,8 +182,9 @@ class TodoService
         return $this->stepManager->getNewItem();
     }
     
-    public function showNoNotActivatedEntries() {
-        $this->todoManager->showNoNotActivatedEntries();
+    public function hideDeactivatedEntries()
+    {
+        $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function hideCompletedEntries()

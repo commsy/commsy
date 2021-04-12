@@ -1,0 +1,58 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme termsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme dataPrivacyForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme impressumForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme accessibilityForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% embed 'components/context_navigation.html.twig' %}
+        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'contents'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            <ul uk-tab>
+                <li class="{% if tab is same as 'tou' %}uk-active{% endif %}"><a href="#">{{ 'terms'|trans({}, "portal") }}</a></li>
+                {% if is_granted('ROOT') %}
+                    <li class="{% if tab is same as 'data_privacy' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'data privacy'|trans({}, 'portal') }}</a></li>
+                    <li class="{% if tab is same as 'impressum' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'impressum'|trans({}, 'portal') }}</a></li>
+                    <li class="{% if tab is same as 'accessibility' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'accessibility'|trans({}, 'portal') }}</a></li>
+                {% endif %}
+            </ul>
+
+            <ul class="uk-switcher uk-margin">
+                <li>
+                    {{ form_start(termsForm) }}
+                    {{ form_row(termsForm.AGBEnabled)}}
+                    {{ form_row(termsForm.termsGerman)}}
+                    {{ form_row(termsForm.termsEnglish)}}
+                    <div class="uk-form-row uk-margin">
+                        <label class="uk-form-label"><em>{{ 'Notes'|trans({}, "portal") }}</em></label>
+                        <div class="uk-form-controls">
+                            <div class="uk-alert">
+                                {# TODO: use route `app_portalsettings_roomtermstemplates` with param `portalId` instead #}
+                                <a href="{{ path('app_portal_roomtermstemplates', { 'roomId': portal.id }) }}">{{ 'You can set up templates for room terms here'|trans({}, 'portal') }}</a>
+                            </div>
+
+                            <div class="uk-alert-danger">
+                                {{ 'terms update note'|trans({}, "portal") }}
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_end(termsForm) }}
+                </li>
+
+                {% if is_granted('ROOT') %}
+                    <li>{{ form(dataPrivacyForm) }}</li>
+                    <li>{{ form(impressumForm) }}</li>
+                    <li>{{ form(accessibilityForm) }}</li>
+                {% endif %}
+            </ul>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

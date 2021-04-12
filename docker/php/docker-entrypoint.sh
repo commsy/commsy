@@ -13,25 +13,32 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
     fi
     ln -sf "$PHP_INI_RECOMMENDED" "$PHP_INI_DIR/php.ini"
 
-	  mkdir -p var/cache var/cache/htmlpurifier var/log
-#	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
-#	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
-    chown -R www-data:www-data var/cache
-    chown -R www-data:www-data var/log
-    chown -R www-data:www-data files/
+    mkdir -p var/cache var/cache/htmlpurifier var/log
+    setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
+    setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
 
-#    if [ "$APP_ENV" != 'prod' ]; then
-#      composer install --prefer-dist --no-progress --no-suggest --no-interaction
-#    fi
-#
-#    echo "Waiting for db to be ready..."
-#    until bin/console doctrine:query:sql "SELECT 1" > /dev/null 2>&1; do
-#      sleep 1
-#    done
-#
-#    if ls -A src/Migrations/*.php > /dev/null 2>&1; then
-#      bin/console doctrine:migrations:migrate --no-interaction
-#    fi
+    if [ "$APP_ENV" != 'prod' ]; then
+        composer install --prefer-dist --no-progress --no-suggest --no-interaction
+    fi
+
+    echo "Waiting for db to be ready..."
+    ATTEMPTS_LEFT_TO_REACH_DATABASE=60
+    until [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ] || bin/console doctrine:query:sql "SELECT 1" > /dev/null 2>&1; do
+        sleep 1
+        ATTEMPTS_LEFT_TO_REACH_DATABASE=$((ATTEMPTS_LEFT_TO_REACH_DATABASE-1))
+        echo "Still waiting for db to be ready... Or maybe the db is not reachable. $ATTEMPTS_LEFT_TO_REACH_DATABASE attempts left"
+    done
+
+    if [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ]; then
+        echo "The db is not up or not reachable"
+        exit 1
+    else
+        echo "The db is now ready and reachable"
+    fi
+
+    if ls -A migrations/*/*.php > /dev/null 2>&1; then
+        bin/console doctrine:migrations:migrate --no-interaction
+    fi
 fi
 
 exec docker-php-entrypoint "$@"

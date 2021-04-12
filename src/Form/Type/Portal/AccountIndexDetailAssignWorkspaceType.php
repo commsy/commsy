@@ -38,6 +38,7 @@ class AccountIndexDetailAssignWorkspaceType extends AbstractType
                 'label' => 'Search for workspace',
                 'translation_domain' => 'portal',
                 'required' => false,
+                'help' => 'Workspace assign help',
             ])
             ->add('search', Types\SubmitType::class, [
                 'label' => 'Search',

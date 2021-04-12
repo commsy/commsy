@@ -7,12 +7,20 @@ namespace App\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticator
 {
+    public const LAST_SOURCE = '_security.last_source';
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    protected $urlGenerator;
+
     /**
      * When app_login is submitted, this post parameter will be checked in order to decide
      * which authenticator should be used.
@@ -29,7 +37,17 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     abstract protected function isSupportedByPortalConfiguration(Request $request): bool;
 
-    abstract protected function getLoginUrl(Request $request): string;
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    public function getLoginUrl($context): string
+    {
+        return $this->urlGenerator->generate('app_login', [
+            'context' => $context,
+        ]);
+    }
 
     /**
      * Called on every request to decide if this authenticator should be
@@ -107,7 +125,7 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $url = $this->getLoginUrl($request);
+        $url = $this->getLoginUrl($request->attributes->get('context'));
 
         return new RedirectResponse($url);
     }

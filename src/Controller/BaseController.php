@@ -10,23 +10,90 @@ namespace App\Controller;
 
 
 use App\Action\ActionFactory;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use cs_item;
 use cs_room_item;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 
 abstract class BaseController extends AbstractController
 {
 
-    private $roomService;
+    /**
+     * @var ItemService
+     */
+    protected $itemService;
+
+    /**
+     * @var LegacyEnvironment
+     */
+    protected $legacyEnvironment;
+
+    /**
+     * @var RoomService
+     */
+    protected $roomService;
+
+    /**
+     * @var ReaderService
+     */
+    protected $readerService;
+
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    /**
+     * @required
+     * @param ItemService $itemService
+     */
+    public function setItemService(ItemService $itemService): void
+    {
+        $this->itemService = $itemService;
+    }
+
+    /**
+     * @required
+     * @param LegacyEnvironment $legacyEnvironment
+     */
+    public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
+    {
+        $this->legacyEnvironment = $legacyEnvironment;
+    }
+
+    /**
+     * @required
+     * @param ReaderService $readerService
+     */
+    public function setReaderService(ReaderService $readerService): void
+    {
+        $this->readerService = $readerService;
+    }
+
+    /**
+     * @required
+     * @param TranslatorInterface $translator
+     */
+    public function setTranslator(TranslatorInterface $translator): void
+    {
+        $this->translator = $translator;
+    }
+
+
     function __construct(
         RoomService $service
     ) {
         $this->roomService = $service;
-        //$this->roomService = $this->get('commsy_legacy.room_service');
     }
+
+
 
     /**
      * @param cs_room_item $room
