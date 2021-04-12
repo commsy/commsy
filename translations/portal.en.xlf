@@ -350,7 +350,7 @@
                 <target>Satus: user</target>
             </trans-unit>
             <trans-unit id="status_moderator">
-                <source>Satus moderator</source>
+                <source>Status moderator</source>
                 <target>Status: moderator</target>
             </trans-unit>
             <trans-unit id="make_contact">
