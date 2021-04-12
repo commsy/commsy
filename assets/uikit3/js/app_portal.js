@@ -6,9 +6,6 @@ require('select2/dist/css/select2.css');
 require("flatpickr/dist/themes/light.css");
 
 // JS
-import "@babel/polyfill";
-
-// load third party packages
 require('expose-loader?$!jquery');
 
 require('expose-loader?NProgress!nprogress/nprogress');

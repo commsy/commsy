@@ -1,54 +1,45 @@
 <?php
-namespace App\Form\Type\Profile;
 
-use Doctrine\ORM\EntityManagerInterface;
+namespace App\Form\Type\Account;
+
+use App\Entity\Account;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraints\NotBlank;
-
-use App\Services\LegacyEnvironment;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
 
-class ProfilePersonalInformationType extends AbstractType
+class PersonalInformationType extends AbstractType
 {
-    private $em;
-    private $legacyEnvironment;
+    /**
+     * @var Security $security
+     */
+    private $security;
 
-    private $userItem;
-
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(Security $security)
     {
-        $this->em = $em;
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->security = $security;
     }
 
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $this->userItem = $userManager->getItem($options['itemId']);
-
-        $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
-        $authSourceItem = $authSourceManager->getItem($this->userItem->getAuthSource());
-
-        if($authSourceItem->allowChangeUserID()) {
-            $disabled = false;
-        } else {
-            $disabled = true;
-        }
+        /** @var Account $user */
+        $user = $this->security->getUser();
+        $changeUsername = $user !== null ? $user->getAuthSource()->isChangeUsername() : false;
 
         $emailConstraints = [];
         if (isset($options['portalUser'])) {
@@ -61,80 +52,78 @@ class ProfilePersonalInformationType extends AbstractType
         }
 
         $builder
-            ->add('userId', TextType::class, array(
-                'constraints' => array(
+            ->add('userId', TextType::class, [
+                'constraints' => [
                     new NotBlank(),
-                ),
+                ],
                 'label' => 'userId',
                 'required' => true,
-                'disabled' => $disabled,
-            ))
-            ->add('firstname', TextType::class, array(
+                'disabled' => !$changeUsername,
+            ])
+            ->add('firstname', TextType::class, [
                 'label' => 'firstname',
                 'required' => false,
-            ))
-            ->add('lastname', TextType::class, array(
+            ])
+            ->add('lastname', TextType::class, [
                 'label' => 'lastname',
                 'required' => false,
-            ))
-            ->add('emailAccount', EmailType::class, array(
+            ])
+            ->add('emailAccount', EmailType::class, [
                 'label' => 'email',
                 'required' => true,
                 'constraints' => $emailConstraints,
-            ))
-            ->add('dateOfBirth', DateType::class, array(
-                'label'    => 'dateOfBirth',
+            ])
+            ->add('dateOfBirth', DateType::class, [
+                'label' => 'dateOfBirth',
                 'required' => false,
                 'format' => 'dd.MM.yyyy',
-                'attr' => array(
+                'attr' => [
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
-                ),
+                ],
                 'widget' => 'single_text',
-            ))
-            ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, array(
-                // 'label'    => 'changeInAllContexts',
-                'label'    => false,
+            ])
+            ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, [
+                'label' => false,
                 'required' => false,
-                'label_attr' => array(
+                'label_attr' => [
                     'class' => 'uk-form-label',
-                ),
+                ],
                 'data' => true,
-                'attr' => array(
+                'attr' => [
                     'style' => 'display: none'
-                ),
-            ))
-            ->add('save', SubmitType::class, array(
+                ],
+            ])
+            ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
-                'attr' => array(
+                'attr' => [
                     'class' => 'uk-button-primary',
-                )
-            ));
+                ]
+            ]);
     }
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId', 'portalUser'])
-            ->setDefaults(array('translation_domain' => 'profile'))
-        ;
+            ->setRequired(['portalUser'])
+            ->setDefaults(['translation_domain' => 'profile']);
     }
 
     /**
      * Returns the prefix of the template block name for this type.
      * The block prefix defaults to the underscored short class name with the "Type" suffix removed
      * (e.g. "UserProfileType" => "user_profile").
-     * 
+     *
      * @return string The prefix of the template block name
      */
     public function getBlockPrefix()
     {
         return 'personal_information';
     }
-    
+
 }

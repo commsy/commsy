@@ -3,26 +3,26 @@
 namespace App\Utils;
 
 use App\Entity\Account;
+use App\Entity\Portal;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\FormInterface;
+use Twig\Environment;
 
-use Symfony\Component\Translation\TranslatorInterface;
-
-use \Twig_Environment;
 
 class MailAssistant
 {
     private $legacyEnvironment;
-    private $translator;
     private $twig;
     private $from;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator, Twig_Environment $twig, $from)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        Environment $twig,
+        $from
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->translator = $translator;
         $this->twig = $twig;
         $this->from = $from;
     }
@@ -108,10 +108,10 @@ class MailAssistant
     public function getSwiftMessageContactForm(
         FormInterface $form,
         $item,
-        $forceBCCMail = false
-    ,
+        $forceBCCMail = false,
         $moderatorIds = null,
-        UserService $userService): \Swift_Message
+        UserService $userService
+    ): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -268,48 +268,19 @@ class MailAssistant
         return $message;
     }
 
-    public function getSwitftMailForPasswordForgottenMail(
+    public function getSwiftMessageFromPortalToAccount(
         string $subject,
         string $body,
+        Portal $portal,
         Account $account
     ): \Swift_Message
     {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-
-        $recipients = [
-            'to' => [],
-            'bcc' => [],
-        ];
-
-        $recipients['to'][$account->getEmail()] = $account->getFirstname() . ' ' . $account->getLastname();
-
-        $to = $recipients['to'];
-
-        $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        $currentUserName = $currentUser->getFullName();
-        if ($currentUser->isEmailVisible()) {
-            $replyTo[$currentUserEmail] = $currentUserName;
-        }
-
-        $portalTitle = "A title";
-        if ($portalItem) {
-            $portalTitle = $portalItem->getTitle();
-        }
-
-        $from = 'noreply@commsy.net';
-        $commsyTeam = 'CommSy Team';
-        $replyTo['noreply@commsy.net'] = 'CommSy Team';
         $message = (new \Swift_Message())
             ->setSubject($subject)
             ->setBody($body, 'text/html')
-            ->setReplyTo([$from => $commsyTeam])
-            ->setFrom([$from => $portalTitle]);
+            ->setFrom([$this->from => $portal->getTitle()]);
 
-        if (!empty($to)) {
-            $message->setTo($to);
-        }
+        $message->setTo([$account->getEmail() => $account->getFirstname() . ' ' . $account->getLastname()]);
 
         return $message;
     }
