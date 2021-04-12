@@ -9,10 +9,9 @@ class LegacyEnvironment
     private $environment;
 
     /**
-     * Path to the legacy application "commsy_legacy.php front controller"
      * @var String
      */
-    private $legacyAppPath;
+    private $projectDir;
 
     /**
      * Symfony service container
@@ -20,18 +19,19 @@ class LegacyEnvironment
     private $serviceContainer;
 
     /**
-     * @param String             $legacyAppPath
+     * @param $projectDir
+     * @param Container $container
      */
-    public function __construct($legacyAppPath, Container $container)
+    public function __construct($projectDir, Container $container)
     {
-        $this->legacyAppPath = $legacyAppPath;
+        $this->projectDir = $projectDir;
         $this->serviceContainer = $container;
     }
 
     public function getEnvironment()
     {
         if ($this->environment === null) {
-            $legacyDir = dirname($this->legacyAppPath) . '/../legacy';
+            $legacyDir = $this->projectDir . '/legacy';
             set_include_path(get_include_path() . PATH_SEPARATOR . $legacyDir);
 
             global $cs_color;

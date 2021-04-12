@@ -16,7 +16,7 @@ export class WorkflowAction extends XHRAction {
     }
 
     public preExecute(actionActor: JQuery): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             this.successMessage = actionActor.data('cs-action').successMessage;
             this.read = actionActor.data('cs-action').read;
 
@@ -27,7 +27,7 @@ export class WorkflowAction extends XHRAction {
     }
 
     public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             UIkit.notify(this.successMessage, "success");
 
             $('.cs-workflow-action').toggleClass('uk-hidden');

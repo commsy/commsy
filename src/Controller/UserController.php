@@ -51,13 +51,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class UserController extends BaseController
 {
-    private $roomService;
     private $userService;
 
     public function __construct(RoomService $roomService, UserService $userService)
     {
         parent::__construct($roomService);
-        $this->roomService = $roomService;
         $this->userService = $userService;
     }
 

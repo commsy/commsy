@@ -5,20 +5,18 @@ namespace App\Controller;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Entity\Room;
-use App\Model\API\Room as RoomAPI;
 use App\Entity\User;
+use App\Model\API\Room as RoomAPI;
 use App\Services\LegacyEnvironment;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\View;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Swagger\Annotations as SWG;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -382,7 +380,7 @@ class RESTController extends AbstractFOSRestController
                 $newLegacyUser->setGroupByID($group->getItemID());
             }
 
-            $newLegacyUser->setAGBAcceptance();
+            $newLegacyUser->setAGBAcceptanceDate(new DateTimeImmutable());
 
             $newLegacyUser->save();
             $newLegacyUser->setCreatorID2ItemID();
