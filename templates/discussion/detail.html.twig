@@ -341,7 +341,7 @@
                                 <ul class="uk-nav-sub">                      
                                     {% for article in articleList %}
                                         <li>
-                                            <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.title|decodeHtmlEntity|truncate(20) }}</a>
+                                            <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.title|decodeHtmlEntity|u.truncate(20) }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>

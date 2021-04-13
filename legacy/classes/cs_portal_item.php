@@ -1056,16 +1056,18 @@ class cs_portal_item extends cs_guide_item {
    	$cron_array['description'] = 'check if a temporary login is expired';
    	$success = false;
    	$translator = $this->_environment->getTranslationObject();
+
+   	$now = new DateTimeImmutable();
    
    	$user_manager = $this->_environment->getUserManager();
    	$user_list = $user_manager->getUserTempLoginExpired();
    	require_once 'classes/cs_mail.php';
    	if(!empty($user_list)) {
    		foreach ($user_list as $user) {
-   			if($user->getTimestampForLoginAs() <= getCurrentDateTimeInMySQL()) {
+   			if($user->getImpersonateExpiryDate() <= $now) {
    				$success = true;
    				// unset login as timestamp
-   				$user->unsetDaysForLoginAs();
+   				$user->setImpersonateExpiryDate(null);
    				$user->save();
    				// send mail
    				

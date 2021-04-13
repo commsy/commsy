@@ -125,15 +125,6 @@ class cs_link_father_manager extends cs_manager {
       $this->_output_limit = 'XML';
    }
 
-   /** get the data of the manager
-    * this method returns a list of commsy items
-    *
-    * @return object cs_list list of commsy items
-    */
-   function get () {
-      return $this->_data;
-   }
-
    function backupDataFromXMLObject ($xml_object) {
       $major_success = true;
 

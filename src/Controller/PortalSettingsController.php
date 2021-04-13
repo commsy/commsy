@@ -9,6 +9,7 @@ use App\Entity\AccountIndexSendMergeMail;
 use App\Entity\AccountIndexSendPasswordMail;
 use App\Entity\AccountIndexUser;
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceGuest;
 use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceLocal;
 use App\Entity\AuthSourceShibboleth;
@@ -34,6 +35,7 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
+use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
@@ -61,6 +63,7 @@ use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TranslationType;
 use App\Model\TimePulseTemplate;
+use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
@@ -68,6 +71,7 @@ use App\Utils\MailAssistant;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
@@ -79,11 +83,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -309,7 +315,7 @@ class PortalSettingsController extends AbstractController
      * @param RoomCategoriesService $roomCategoriesService
      * @param EventDispatcherInterface $dispatcher
      * @param EntityManagerInterface $entityManager
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return array|RedirectResponse
      */
     public function roomCategories(
         Portal $portal,
@@ -505,6 +511,66 @@ class PortalSettingsController extends AbstractController
         return [
             'form' => $localForm->createView(),
             'portal' => $portal,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/auth/guest")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     */
+    public function authGuest(
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ) {
+        /*
+         * Try to find an existing shibboleth auth source or create an empty one. We assume
+         * that there is only one auth source per type.
+         */
+        $authSources = $portal->getAuthSources();
+
+        /** @var AuthSourceGuest $guestSource */
+        $guestSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceGuest;
+        })->first();
+
+        if ($guestSource === false) {
+            // TODO: This could be moved to a creational pattern
+            $guestSource = new AuthSourceGuest();
+            $guestSource->setPortal($portal);
+        }
+
+        $authGuestForm = $this->createForm(AuthGuestType::class, $guestSource);
+        $authGuestForm->handleRequest($request);
+
+        if ($authGuestForm->isSubmitted() && $authGuestForm->isValid()) {
+            // handle switch to other auth types
+            $clickedButtonName = $authGuestForm->getClickedButton()->getName();
+            if ($clickedButtonName === 'type') {
+                $typeSwitch = $authGuestForm->get('typeChoice')->getData();
+                return $this->generateRedirectForAuthType($typeSwitch, $portal);
+            }
+
+            if ($clickedButtonName === 'save') {
+                if ($guestSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($guestSource, $entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $guestSource->setDefault(true);
+                }
+
+                $entityManager->persist($guestSource);
+                $entityManager->flush();
+            }
+        }
+
+        return [
+            'form' => $authGuestForm->createView(),
         ];
     }
 
@@ -992,7 +1058,7 @@ class PortalSettingsController extends AbstractController
         if ($termsForm->isSubmitted() && $termsForm->isValid()) {
 
             if ($termsForm->getClickedButton()->getName() === 'save') {
-                $portal->setAGBChangeDate(new \DateTime());
+                $portal->setAGBChangeDate(new DateTimeImmutable());
                 $entityManager->persist($portal);
                 $entityManager->flush();
 
@@ -1822,21 +1888,30 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param UserService $userService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param RoomService $roomService
+     * @param Security $security
+     * @return array|RedirectResponse
      */
     public function accountIndexDetail(
         Portal $portal,
         Request $request,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        RoomService $roomService
+        RoomService $roomService,
+        Security $security
     ) {
+        /** @var Account $account */
+        $account = $security->getUser();
+
         $userList = $userService->getListUsers($portal->getId());
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
         $form->handleRequest($request);
+        $portalUser = $userService->getPortalUser($account);
         $user = $userService->getUser($request->get('userId'));
-        $authSource = $user->getAuthSource();
-        $authRepo = $this->getDoctrine()->getRepository(AuthSource::class);
-        $authSourceItem = $authRepo->find($authSource); //TODO: could be useful for authsource settings, but it is not even used in legacy code?
 
         $communityArchivedListNames = [];
         $communityListNames = [];
@@ -1944,6 +2019,7 @@ class PortalSettingsController extends AbstractController
 
         return [
             'user' => $user,
+            'portalUser' => $portalUser,
             'form' => $form->createView(),
             'portal' => $portal,
             'communities' => implode(', ', $communityListNames),
@@ -2098,12 +2174,16 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param UserService $userService
+     * @param TranslatorInterface $translator
+     * @return array|RedirectResponse
      */
     public function accountIndexDetailChangeStatus(
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
         TranslatorInterface $translator
     ) {
         $user = $userService->getUser($request->get('userId'));
@@ -2129,7 +2209,8 @@ class PortalSettingsController extends AbstractController
         $userChangeStatus->setCurrentStatus($trans);
         $userChangeStatus->setNewStatus(strtolower($currentStatus));
         $userChangeStatus->setContact($user->isContact());
-        $userChangeStatus->setLoginIsDeactivated('2');
+        $userChangeStatus->setLoginIsDeactivated(!$user->getCanImpersonateAnotherUser());
+        $userChangeStatus->setImpersonateExpiryDate($user->getImpersonateExpiryDate());
 
         $form = $this->createForm(AccountIndexDetailChangeStatusType::class, $userChangeStatus);
         $form->handleRequest($request);
@@ -2154,13 +2235,9 @@ class PortalSettingsController extends AbstractController
                 $user->makeNoContactPerson();
             }
 
-            $deactivateTakeOver = $data->getLoginIsDeactivated();
-            if ($deactivateTakeOver == '2') {
-                $user->deactivateLoginAsAnotherUser();
-            }
-
-            if (!empty($data->getLoginAsActiveForDays())) {
-                $user->setDaysForLoginAs();
+            if ($this->isGranted(RootVoter::ROOT)) {
+                $user->setCanImpersonateAnotherUser(!$data->getLoginIsDeactivated());
+                $user->setImpersonateExpiryDate($data->getImpersonateExpiryDate());
             }
 
             $user->save();
@@ -2316,82 +2393,20 @@ class PortalSettingsController extends AbstractController
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/takeOver")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @param UserService $userService
+     * @param $portalId
+     * @param $userId
+     * @return RedirectResponse
      */
     public function accountIndexDetailTakeOver(
-        Portal $portal,
-        Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        $portalId,
+        $userId
     ) {
-        $session = $this->get('session');
-        $user = $userService->getUser($request->get('userId'));
-        $user_item = $user;
-        $environment = $legacyEnvironment->getEnvironment();
-
-        $legacyEnvironment = $environment;
-
-        $sessionManager = $legacyEnvironment->getSessionManager();
-        $sessionItem = $legacyEnvironment->getSessionItem();
-
-        if (!is_null($sessionItem)) {
-            $sessionManager->delete($sessionItem->getSessionID());
-            $legacyEnvironment->setSessionItem(null);
-
-            $cookie = $session->get('cookie');
-            $javascript = $session->get('javascript');
-            $https = $session->get('https');
-            $flash = $session->get('flash');
-            $session_id = $session->getSessionID();
-            $session = new \cs_session_item();
-            $session->createSessionID($user_item->getUserID());
-            $session->setValue('auth_source', $user_item->getAuthSource());
-            $session->setValue('root_session_id', $session_id);
-            if ($cookie == '1') {
-                $session->setValue('cookie', 2);
-            } elseif (empty($cookie)) {
-                // do nothing, so CommSy will try to save cookie
-            } else {
-                $session->setValue('cookie', 0);
-            }
-            if ($javascript == '1') {
-                $session->setValue('javascript', 1);
-            } elseif ($javascript == '-1') {
-                $session->setValue('javascript', -1);
-            }
-            if ($https == '1') {
-                $session->setValue('https', 1);
-            } elseif ($https == '-1') {
-                $session->setValue('https', -1);
-            }
-            if ($flash == '1') {
-                $session->setValue('flash', 1);
-            } elseif ($flash == '-1') {
-                $session->setValue('flash', -1);
-            }
-
-            // save portal id in session to be sure, that user didn't
-            // switch between portals
-            if ($environment->inServer()) {
-                $session->setValue('commsy_id', $environment->getServerID());
-            } else {
-                $session->setValue('commsy_id', $environment->getCurrentPortalID());
-            }
-            $environment->setSessionItem($session);
-            redirect($environment->getCurrentContextID(), 'home', 'index', array());
-        }
-
-        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-            'portalId' => $portal->getId(),
-            'userId' => $user->getItemID(),
+        return $this->redirectToRoute('app_helper_portalenter', [
+            'context' => $portalId,
+            '_switch_user' => $userService->getUser($userId)->getUserID(),
         ]);
-
-        $this->addFlash('notYetImplemented', $returnUrl);
-
-        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
-        ]);
-
     }
 
     /**
@@ -2558,7 +2573,7 @@ class PortalSettingsController extends AbstractController
      * @param int $translationId
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return array|RedirectResponse
      */
     public function translations(
         Portal $portal,
@@ -2831,6 +2846,10 @@ class PortalSettingsController extends AbstractController
                 ]);
             case 'shib':
                 return $this->redirectToRoute('app_portalsettings_authshibboleth', [
+                    'portalId' => $portal->getId(),
+                ]);
+            case 'guest':
+                return $this->redirectToRoute('app_portalsettings_authguest', [
                     'portalId' => $portal->getId(),
                 ]);
             default:

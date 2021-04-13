@@ -31,7 +31,7 @@ export class DeleteAction extends XHRAction {
     }
 
     public preExecute(actionActor: JQuery): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             // deletion requires separate confirmation
             UIkit.modal.confirm(this.confirmQuestion, () => {
                 this.setExtraData('recurring', this.recurring);
@@ -48,7 +48,7 @@ export class DeleteAction extends XHRAction {
     }
 
     public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise((resolve) => {
+        return new Promise<ActionResponse>((resolve) => {
             if (backendResponse.redirect) {
                 window.location.href = backendResponse.redirect.route;
             } else {
