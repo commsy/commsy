@@ -7,6 +7,7 @@ namespace App\EventSubscriber;
 use App\Entity\Account;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
+use cs_user_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -70,6 +71,12 @@ class LegacySubscriber implements EventSubscriberInterface
                     }
 
                     $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
+                } else {
+                    // guest
+                    $legacyGuest = new cs_user_item($this->legacyEnvironment);
+                    $legacyGuest->setStatus(0);
+                    $legacyGuest->setUserID('guest');
+                    $this->legacyEnvironment->setCurrentUser($legacyGuest);
                 }
             }
         }

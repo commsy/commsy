@@ -1,20 +1,19 @@
 <?php
-namespace App\Form\Type\Profile;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Validator\Constraints\NotBlank;
-
-use App\Validator\Constraints\UserPasswordConstraint;
-use App\Validator\Constraints\PasswordCriteriaConstraint;
+namespace App\Form\Type\Account;
 
 use App\Services\LegacyEnvironment;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
-class ProfileChangePasswordType extends AbstractType
+class ChangePasswordType extends AbstractType
 {
     private $legacyEnvironment;
 
@@ -28,56 +27,55 @@ class ProfileChangePasswordType extends AbstractType
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('old_password', PasswordType::class, array(
-                'label'    => 'currentPassword',
+            ->add('old_password', PasswordType::class, [
+                'label' => 'currentPassword',
                 'required' => true,
-                'constraints' => array(
-                    new UserPasswordConstraint(),
-                ),
-            ))
-            ->add('new_password', RepeatedType::class, array(
-                'type'            => PasswordType::class,
+                'constraints' => [
+                    new UserPassword(),
+                ],
+            ])
+            ->add('new_password', RepeatedType::class, [
+                'type' => PasswordType::class,
                 'invalid_message' => 'Passwords do not match',
-                'label'           => 'newPassword',
-                'options'         => array(
+                'label' => 'newPassword',
+                'options' => [
                     'required' => true
-                ),
-                'first_options'   => array(
-                    'label'       => 'newPassword',
-                    'constraints' => array(
+                ],
+                'first_options' => [
+                    'label' => 'newPassword',
+                    'constraints' => [
                         new NotBlank(),
-                        new PasswordCriteriaConstraint(),
-                    ),
-                ),
-                'second_options'  => array(
+                        new NotCompromisedPassword(),
+                    ],
+                ],
+                'second_options' => [
                     'label' => 'newPasswordConfirm'
-                ),
-            ))
-            ->add('save', SubmitType::class, array(
+                ],
+            ])
+            ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
-                'attr' => array(
+                'attr' => [
                     'class' => 'uk-button-primary',
-                )
-            ));
+                ],
+            ]);
     }
 
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array('translation_domain' => 'profile'))
-        ;
+            ->setDefaults(['translation_domain' => 'profile']);
     }
 
     /**

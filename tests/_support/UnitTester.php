@@ -1,6 +1,8 @@
 <?php
 namespace App\Tests;
 
+use DateTimeImmutable;
+
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -37,7 +39,7 @@ class UnitTester extends \Codeception\Actor
 
         $portalItem->setTitle($title);
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
 
         $portalItem->setCreatorItem($creator);
         $portalItem->setCreationDate($now->format('Y-m-d H:i:s'));
@@ -103,7 +105,7 @@ class UnitTester extends \Codeception\Actor
 
         /** @var \cs_user_item $portalUser */
         $portalUser = $authentication->getUserItem();
-        $portalUser->setAGBAcceptance();
+        $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
         $portalUser->makeUser();
         $portalUser->save();
         $this->seeInDatabase('commsy.user', ['context_id' => $portal->getItemId(), 'user_id' => $userId]);
@@ -123,7 +125,7 @@ class UnitTester extends \Codeception\Actor
         $projectRoom = $projectRoomManager->getNewItem();
         $this->assertInstanceOf(\cs_project_item::class, $projectRoom);
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
 
         $projectRoom->setTitle($title);
         $projectRoom->setCreatorItem($creator);
@@ -154,7 +156,7 @@ class UnitTester extends \Codeception\Actor
         $communityRoom = $communityRoomManager->getNewItem();
         $this->assertInstanceOf(\cs_community_item::class, $communityRoom);
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
 
         $communityRoom->setTitle($title);
         $communityRoom->setCreatorItem($creator);

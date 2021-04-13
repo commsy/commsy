@@ -41,7 +41,7 @@
                     <div class="uk-container">
                         <div class="uk-flex uk-flex-center">
                             <div>CommSy {{ commsy.version }}</div>
-                            {{ footer.render(commsy.server) }}
+                            {{ footer.render(commsy.server, commsy.portal) }}
                         </div>
 
                         {% block footer %}{% endblock %}

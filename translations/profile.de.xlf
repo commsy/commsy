@@ -218,6 +218,10 @@
                 <source>Sign out</source>
                 <target>Abmelden</target>
             </trans-unit>
+            <trans-unit id="profile_exit_impersonation">
+                <source>profile.exit_impersonation</source>
+                <target>Kennungsübernahme beenden</target>
+            </trans-unit>
             <trans-unit id="account">
                 <source>Account</source>
                 <target>Account</target>

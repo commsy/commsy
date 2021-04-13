@@ -1,0 +1,30 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block top_navigation_left %}
+    <div class="uk-navbar-item uk-text-large">
+        <div class="uk-navbar-item">
+            <a class="uk-text-large" href="{{ path('app_server_show') }}">
+                Portalübersicht
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'login.forget_account'|trans({}, 'login') }}{% endblock %}
+        {% block body %}
+            {{ form_start(form) }}
+            {{ form_row(form.email) }}
+
+            <div class="uk-flex uk-flex-between">
+                {{ form_row(form.submit) }}
+                {{ form_row(form.cancel) }}
+            </div>
+
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

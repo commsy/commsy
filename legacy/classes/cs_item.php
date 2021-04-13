@@ -111,7 +111,7 @@ class cs_item {
                 $item = $item_manager->getItem($this->getContextID());
 
                 if (isset($item) && is_object($item)) {
-                    $manager = $this->_environment->getManager($item->getItemType(), true);
+                    $manager = $this->_environment->getManager($item->getItemType());
                     $this->_context_item = $manager->getItem($this->getContextId());
                     return $this->_context_item;
                 }

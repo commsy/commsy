@@ -2,18 +2,15 @@
 
 namespace App\EventSubscriber;
 
+use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\ItemService;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
-use App\Authentication\LegacyAuthentication;
-use App\Services\LegacyEnvironment;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -27,15 +24,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class KernelSubscriber implements EventSubscriberInterface
 {
-    /**
-     * The legacy kernel
-     * @var HttpKernelInterface
-     */
-    private $legacyKernel;
-
     private $legacyEnvironment;
-
-    private $legacyAuthentication;
 
     private $itemService;
 
@@ -44,23 +33,17 @@ class KernelSubscriber implements EventSubscriberInterface
     private $urlGenerator;
 
     /**
-     * @param HttpKernelInterface $legacyKernel
-     * @param LegacyAuthentication $legacyAuthentication
      * @param ItemService $itemService
      * @param FileService $fileService
      * @param UrlGeneratorInterface $urlGenerator
      * @param LegacyEnvironment $legacyEnvironment
      */
     public function __construct(
-        HttpKernelInterface $legacyKernel,
-        LegacyAuthentication $legacyAuthentication,
         ItemService $itemService,
         FileService $fileService,
         UrlGeneratorInterface $urlGenerator,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $this->legacyKernel = $legacyKernel;
-        $this->legacyAuthentication = $legacyAuthentication;
         $this->itemService = $itemService;
         $this->fileService = $fileService;
         $this->urlGenerator = $urlGenerator;
@@ -109,118 +92,10 @@ class KernelSubscriber implements EventSubscriberInterface
                     $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_room_home', [
                         'roomId' => $cid,
                     ])));
-                } else {
-                    $response = $this->legacyKernel->handle($currentRequest);
-
-                    $event->setResponse($response);
                 }
             }
-        } else {
-            // some services will handle authentication themselves or can bypass, like soap, rss, ...
-            $currentRequest = $event->getRequest();
-            $requestUri = $currentRequest->getRequestUri();
-
-//            // NOTE: since it's so early in the process, we need to resort to regex matching
-//            if (preg_match('/(soap|rss|_profiler|_wdt|room\/\d+\/user\/\d+\/image)/', $requestUri, $matches)) {
-//                $isAuthenticated = true;
-//            } else {
-//                // for file URLs, we need to set the current context explicitly to prevent `cs_authentication->check()`
-//                // from thinking we're in server context, otherwise `FileVoter` won't be able to get the current user item
-//                if (preg_match('/file\/(\d+)/', $requestUri, $fileIdMatch)) {
-//                    $fileId = $fileIdMatch[1];
-//                    $file = $this->fileService->getFile($fileId);
-//                    if ($file) {
-//                        // while file routes ("/file/{fileId}/{disposition}") don't feature a contextId, file items do;
-//                        // but since this currently isn't honored by the legacy environment, we set it explicitly here
-//                        $fileContextId = $file->getContextID();
-//                        $this->legacyEnvironment->setCurrentContextID($fileContextId);
-//                        $this->legacyEnvironment->setCurrentModule("file");
-//                    }
-//                }
-//
-//                $isAuthenticated = $this->legacyAuthentication->authenticate();
-//            }
-
-            // if not authenticated by the legacy code, redirect back to portal
-//            if (!$isAuthenticated) {
-//                // check if we currently have a portal item (not in server context)
-//                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
-//
-//                if ($portalItem) {
-//                    $sessionManager = $this->legacyEnvironment->getSessionManager();
-//                    $portalID = $portalItem->getItemID();
-//
-//                    $userSessionItem = $this->legacyEnvironment->getSessionItem();
-//                    if (!$userSessionItem) {
-//                        // if we have no session yet, create one
-//                        require_once('classes/cs_session_item.php');
-//                        $userSessionItem = new \cs_session_item();
-//                        $userSessionItem->createSessionID('guest');
-//                        $userSessionItem->setValue('commsy_id', $portalID);
-//                    }
-//
-//                    // persist the requested url in session, so we can redirect the user after login
-//                    $userSessionItem->setValue('login_redirect', $requestUri);
-//
-//                    $sessionManager->save($userSessionItem);
-//
-//                    $baseURL = $currentRequest->getSchemeAndHttpHost() . $currentRequest->getBaseUrl();
-//                    $url = $baseURL . '?cid=' . $portalID;
-//
-//                    // if this is a room url (and since the user isn't authenticated), redirect to the room detail view
-//                    $roomID = null;
-//                    if (preg_match('/room\/[0-9]+\/all\/([0-9]+)/', $requestUri, $roomIdMatch) ||
-//                        preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
-//                        $roomID = $roomIdMatch[1];
-//                    }
-//                    if (!empty($roomID)) {
-//                        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-//                        $loggedIn = !empty($currentUser) && $currentUser->getUserID() !== 'guest';
-//                        $userID = $userSessionItem->issetValue('user_id') ? $userSessionItem->getValue('user_id') : null;
-//                        $authSource = $userSessionItem->issetValue('auth_source') ? $userSessionItem->getValue('auth_source') : null;
-//
-//                        // allow guest users to login via the portal first, otherwise directly redirect to the modern room detail view
-//                        if (!$loggedIn || empty($userID) || empty($authSource)) {
-//                            $url .= '&mod=home&fct=index&room_id=' . $roomID;
-//                        } else {
-//                            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-//                            $roomContextID = $privateRoomManager->getItemIDOfRelatedOwnRoomForUser($userID, $authSource, $portalID);
-//
-//                            // for a group room where the logged-in user has no access, display its parent room's (or group's) detail page instead
-//                            $groupID = null;
-//                            $item = $this->itemService->getTypedItem($roomID);
-//                            if ($item instanceof \cs_grouproom_item) {
-//                                $parentRoom = $item->getLinkedProjectItem();
-//                                if ($parentRoom) {
-//                                    $roomID = $parentRoom->getItemID();
-//
-//                                    // if the user has access to the parent room, display the group's (instead of the parent room's) detail page
-//                                    if ($parentRoom->mayEnterByUserID($userID, $authSource)) {
-//                                        $roomContextID = $roomID;
-//                                        $groupID = $item->getLinkedGroupItemID();
-//                                    }
-//                                }
-//                            }
-//
-//                            if ($groupID) {
-//                                $url = $this->urlGenerator->generate('app_group_detail', [
-//                                    'roomId' => $roomContextID,
-//                                    'itemId' => $groupID,
-//                                ]);
-//                            } else {
-//                                $url = $this->urlGenerator->generate('app_room_detail', [
-//                                    'roomId' => $roomContextID,
-//                                    'itemId' => $roomID,
-//                                ]);
-//                            }
-//                        }
-//                    }
-//
-//                    $response = new RedirectResponse($url);
-//                    $event->setResponse($response);
-//                }
-//            }
         }
+
          // set user language
         $currentRequest = $event->getRequest();
         $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
