@@ -1107,7 +1107,6 @@ services:
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.roomcategories_service:
         class: App\Services\RoomCategoriesService
