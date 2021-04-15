@@ -23,7 +23,10 @@ use App\Entity\RoomCategories;
 use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
+use App\Facade\UserCreatorFacade;
 use App\Form\DataTransformer\UserTransformer;
+use App\Form\Model\Csv\Base64CsvFile;
+use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -74,6 +77,7 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
@@ -510,6 +514,74 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $localForm->createView(),
+            'portal' => $portal,
+        ];
+    }
+
+
+    /**
+     * @Route("/portal/{portalId}/settings/csvimport")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template()
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @param Request $request
+     * @param LegacyEnvironment $environment
+     * @return array
+     */
+    public function csvImportAction(
+        Request $request,
+        LegacyEnvironment $environment,
+        UserCreatorFacade $userCreator,
+        int $portalId,
+        TranslatorInterface $translator
+    ) {
+        $portal = null;
+        try {
+            $portal = $this->getDoctrine()->getRepository(Portal::class)
+                ->find($portalId);
+        } catch (NonUniqueResultException $e) {
+        }
+
+        if (!$portal) {
+            throw $this->createNotFoundException();
+        }
+
+        $importForm = $this->createForm(CsvImportType::class, [], [
+            'uploadUrl' => $this->generateUrl('app_upload_base64upload', [
+                'roomId' => $portalId, // parameter is not being used
+            ]),
+            'portal' => $portal,
+            'translator' => $translator,
+        ]);
+
+        $importForm->handleRequest($request);
+        if ($importForm->isSubmitted() && $importForm->isValid()) {
+
+            $data = $importForm->getData();
+            /** @var Base64CsvFile[] $base64CsvFiles */
+            $base64CsvFiles = $data['base64'];
+
+            $userDatasets = [];
+            if ($base64CsvFiles) {
+                foreach ($base64CsvFiles as $base64CsvFile) {
+                    if ($base64CsvFile->getChecked()) {
+                        $rows = $base64CsvFile->getBase64Content();
+                        foreach ($rows as $row) {
+                            $userDatasets[] = $row;
+                        }
+                    }
+                }
+
+                $legacyEnvironment = $environment->getEnvironment();
+                $authSourceManager = $legacyEnvironment->getAuthSourceManager();
+                $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
+
+                $userCreator->createFromCsvDataset($authSourceItem, $userDatasets);
+            }
+        }
+
+        return [
+            'form' => $importForm->createView(),
             'portal' => $portal,
         ];
     }

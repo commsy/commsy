@@ -509,6 +509,15 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
+            // CSV import
+            $menu->addChild('Csvimport', [
+                'label' => 'CSV-Import',
+                'route' => 'app_portalsettings_csvimport',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'move']
+            ])
+                ->setExtra('translation_domain', 'portal');
+
             // mail
             $menu->addChild('Mail', [
                 'label' => 'Mailtexts',
