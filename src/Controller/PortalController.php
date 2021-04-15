@@ -32,6 +32,7 @@ use App\Form\Type\TermType;
 
 use App\Event\CommsyEditEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class PortalController
@@ -39,6 +40,18 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class PortalController extends AbstractController
 {
+
+    private $translator;
+
+    /**
+     * PortalController constructor.
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+
     /**
      * @Route("/portal/goto/{portalId}", name="app_portal_goto")
      */
@@ -374,76 +387,6 @@ class PortalController extends AbstractController
             'sortForm' => $sortForm->createView(),
             'portalId' => $roomId,
             'pageTitle' => $pageTitle,
-        ];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/csvimport")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @return array
-     */
-    public function csvImportAction(
-        Request $request,
-        LegacyEnvironment $environment,
-        \App\Facade\UserCreatorFacade $userCreator,
-        int $roomId
-    ) {
-        $portal = null;
-        try {
-            $portal = $this->getDoctrine()->getRepository(Portal::class)
-                ->findActivePortal($roomId);
-        } catch (NonUniqueResultException $e) {
-        }
-
-        if (!$portal) {
-            throw $this->createNotFoundException();
-        }
-
-        $importForm = $this->createForm(CsvImportType::class, [], [
-            'uploadUrl' => $this->generateUrl('app_upload_base64upload', [
-                'roomId' => $roomId,
-            ]),
-            'portal' => $portal,
-            'translator' => $this->get('translator'),
-        ]);
-
-        $importForm->handleRequest($request);
-        if ($importForm->isSubmitted() && $importForm->isValid()) {
-            if ($importForm->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('app_portal_csvimport', [
-                    'roomId' => $roomId,
-                ]);
-            }
-
-            $data = $importForm->getData();
-            /** @var Base64CsvFile[] $base64CsvFiles */
-            $base64CsvFiles = $data['base64'];
-
-            $userDatasets = [];
-            if ($base64CsvFiles) {
-                foreach ($base64CsvFiles as $base64CsvFile) {
-                    if ($base64CsvFile->getChecked()) {
-                        $rows = $base64CsvFile->getBase64Content();
-                        foreach ($rows as $row) {
-                            $userDatasets[] = $row;
-                        }
-                    }
-                }
-
-                $legacyEnvironment = $environment->getEnvironment();
-                $authSourceManager = $legacyEnvironment->getAuthSourceManager();
-                $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
-
-                $userCreator->createFromCsvDataset($authSourceItem, $userDatasets);
-            }
-        }
-
-        return [
-            'form' => $importForm->createView(),
         ];
     }
 }

@@ -57,11 +57,9 @@ class CsvImportType extends AbstractType
                     $portal = $options['portal'];
 
                     return $er->createQueryBuilder('a')
-                        ->where('a.contextId = :contextId')
-                        ->andWhere('a.deleterId IS NULL')
-                        ->andWhere('a.deletionDate IS NULL')
+                        ->where('a.portal = :portal')
                         ->orderBy('a.title')
-                        ->setParameter('contextId', $portal->getItemId());
+                        ->setParameter('portal', $portal);
                 },
                 'choice_label' => function (AuthSource $authSource) use ($options) {
                     /** @var Portal $portal */
@@ -88,14 +86,6 @@ class CsvImportType extends AbstractType
                 ],
                 'label' => 'save',
                 'translation_domain' => 'form',
-            ])
-            ->add('cancel', SubmitType::class, [
-                'attr' => [
-                    'formnovalidate' => '',
-                ],
-                'label' => 'cancel',
-                'translation_domain' => 'form',
-                'validation_groups' => false,
             ])
         ;
     }
