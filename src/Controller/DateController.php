@@ -13,7 +13,6 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
 use App\Services\CalendarsService;
-use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -124,17 +123,14 @@ class DateController extends BaseController
      * @Template()
      * @param Request $request
      * @param DateService $dateService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
         DateService $dateService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $this->getRoom($roomId);
 
         $filterForm = $this->createFilterForm($roomItem);
@@ -174,12 +170,12 @@ class DateController extends BaseController
         if ($roomItem->isOpenForGuests()) {
             $iCal['show'] = true;
         } else {
-            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+            $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
             if ($currentUserItem->isUser()) {
                 $iCal['show'] = true;
 
-                $hashManager = $legacyEnvironment->getHashManager();
+                $hashManager = $this->legacyEnvironment->getHashManager();
                 $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
 
                 $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
@@ -208,7 +204,7 @@ class DateController extends BaseController
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
         ];
     }
 
@@ -282,17 +278,14 @@ class DateController extends BaseController
      * @Template()
      * @param Request $request
      * @param DateService $dateService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function calendarAction(
         Request $request,
         DateService $dateService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem, false);
 
@@ -327,12 +320,12 @@ class DateController extends BaseController
         if ($roomItem->isOpenForGuests()) {
             $iCal['show'] = true;
         } else {
-            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+            $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
             if ($currentUserItem->isUser()) {
                 $iCal['show'] = true;
 
-                $hashManager = $legacyEnvironment->getHashManager();
+                $hashManager = $this->legacyEnvironment->getHashManager();
                 $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
 
                 $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
@@ -393,7 +386,6 @@ class DateController extends BaseController
      * @param TopicService $topicService
      * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -408,21 +400,19 @@ class DateController extends BaseController
         TopicService $topicService,
         TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $date = $dateService->getDate($itemId);
 
-        $legacyEnvironment = $environment->getEnvironment();
         $item = $date;
-        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
         if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
@@ -434,12 +424,12 @@ class DateController extends BaseController
 
         $itemArray = array($date);
 
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -515,7 +505,7 @@ class DateController extends BaseController
             'amountAnnotations' => sizeof($amountAnnotations),
             'readerList' => $readerList,
             'modifierList' => $modifierList,
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form->createView(),
             'userCount' => $all_user_count,
             'readCount' => $read_count,
@@ -523,12 +513,12 @@ class DateController extends BaseController
             'draft' => $itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
-            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'showAssociations' => $current_context->isAssociationShowExpanded(),
             'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
             'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
-            'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
+            'isParticipating' => $date->isParticipant($this->legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
@@ -696,18 +686,15 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/eventsdashboard")
      * @param ItemService $itemService
      * @param DateService $dateService
-     * @param LegacyEnvironment $environment
      * @return JsonResponse
      * @throws Exception
      */
     public function eventsdashboardAction(
         ItemService $itemService,
-        DateService $dateService,
-        LegacyEnvironment $environment
+        DateService $dateService
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        
-        $user = $legacyEnvironment->getCurrentUserItem();
+
+        $user = $this->legacyEnvironment->getCurrentUserItem();
         $userList = $user->getRelatedUserList()->to_array();
 
         $listDates = array();
@@ -895,10 +882,8 @@ class DateController extends BaseController
         Request $request,
         DateService $dateService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
         int $itemId
     ) {
-        $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $date = $dateService->getDate($itemId);
 
         $requestContent = json_decode($request->getContent());
@@ -946,7 +931,7 @@ class DateController extends BaseController
         }
 
         // update modifier
-        $date->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+        $date->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
         $date->save();
 
@@ -994,7 +979,6 @@ class DateController extends BaseController
      * @param TranslatorInterface $translator
      * @param ItemController $itemController
      * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -1008,14 +992,12 @@ class DateController extends BaseController
         TranslatorInterface $translator,
         ItemController $itemController,
         EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $item = $itemService->getItem($itemId);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $isDraft = $item->isDraft();
 
@@ -1031,9 +1013,9 @@ class DateController extends BaseController
         $formData = $transformer->transform($dateItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
-        $formData['language'] = $legacyEnvironment->getCurrentContextItem()->getLanguage();
+        $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
         $formData['draft'] = $isDraft;
 
         $em = $this->getDoctrine()->getManager();
@@ -1062,7 +1044,7 @@ class DateController extends BaseController
                 'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
@@ -1087,7 +1069,7 @@ class DateController extends BaseController
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
 
                 // update modifier
-                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $dateItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
@@ -1140,17 +1122,17 @@ class DateController extends BaseController
                     $dateItem->setDateTime_recurrence($dateItem->getDateTime_start());
                 }
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
-                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $dateItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
                 $dateItem->save();
             } else if ($saveType == 'saveAllDates') {
                 $datesArray = $dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
-                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $dateItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
                 $dateItem->save();
                 foreach ($datesArray as $tempDate) {
                     $tempDate->setTitle($dateItem->getTitle());
                     $tempDate->setPublic((int)$dateItem->isPublic());
-                    $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $tempDate->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
                     $tempDate->setColor($dateItem->getColor());
                     $tempDate->setCalendarId($dateItem->getCalendarId());
                     $tempDate->setWholeDay($dateItem->isWholeDay());
@@ -1160,10 +1142,10 @@ class DateController extends BaseController
                     $tempDate->save();
                     
                     // mark as read and noticed by creator
-                    $reader_manager = $legacyEnvironment->getReaderManager();
+                    $reader_manager = $this->legacyEnvironment->getReaderManager();
                     $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
 
-                    $noticed_manager = $legacyEnvironment->getNoticedManager();
+                    $noticed_manager = $this->legacyEnvironment->getNoticedManager();
                     $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
                 }
             }
@@ -1176,9 +1158,9 @@ class DateController extends BaseController
             'form' => $form->createView(),
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
-            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'withRecurrence' => $dateItem->getRecurrencePattern() != '',
             'date' => $dateItem,
         );
@@ -1227,7 +1209,6 @@ class DateController extends BaseController
      * @param DateService $dateService
      * @param ReaderService $readerService
      * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -1237,7 +1218,6 @@ class DateController extends BaseController
         DateService $dateService,
         ReaderService $readerService,
         EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
@@ -1249,11 +1229,10 @@ class DateController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $environment->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
         
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -1310,8 +1289,6 @@ class DateController extends BaseController
     
     function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
         /** @var cs_dates_item $dateItem */
 
         if($isNewRecurring) {
@@ -1509,10 +1486,10 @@ class DateController extends BaseController
                 $tempDate->save();
 
                 // mark as read and noticed by creator
-                $reader_manager = $legacyEnvironment->getReaderManager();
+                $reader_manager = $this->legacyEnvironment->getReaderManager();
                 $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
 
-                $noticed_manager = $legacyEnvironment->getNoticedManager();
+                $noticed_manager = $this->legacyEnvironment->getNoticedManager();
                 $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
 
             }
@@ -1521,7 +1498,7 @@ class DateController extends BaseController
             $dateItem->save();
         } else {
             // TODO: remove this else block if (as suspected) it is dead code that doesn't get executed anymore
-            $datesManager = $legacyEnvironment->getDatesManager();
+            $datesManager = $this->legacyEnvironment->getDatesManager();
             $datesManager->resetLimits();
             $datesManager->setRecurrenceLimit($dateItem->getRecurrenceId());
             $datesManager->setWithoutDateModeLimit();
@@ -1549,10 +1526,10 @@ class DateController extends BaseController
                 }
 
                 // mark as read and noticed by creator
-                $reader_manager = $legacyEnvironment->getReaderManager();
+                $reader_manager = $this->legacyEnvironment->getReaderManager();
                 $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
 
-                $noticed_manager = $legacyEnvironment->getNoticedManager();
+                $noticed_manager = $this->legacyEnvironment->getNoticedManager();
                 $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
 
                 //$tempDate->save();
@@ -1568,7 +1545,6 @@ class DateController extends BaseController
      * @param ItemService $itemService
      * @param PrintService $printService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return Response
@@ -1579,20 +1555,18 @@ class DateController extends BaseController
         ItemService $itemService,
         PrintService $printService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $date = $dateService->getDate($itemId);
-        $legacyEnvironment = $environment->getEnvironment();
         $item = $date;
-        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
         if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
@@ -1601,12 +1575,12 @@ class DateController extends BaseController
         
         $itemArray = array($date);
 
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -1665,7 +1639,7 @@ class DateController extends BaseController
             'date' => $dateService->getDate($itemId),
             'readerList' => $readerList,
             'modifierList' => $modifierList,
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form->createView(),
             'userCount' => $all_user_count,
             'readCount' => $read_count,
@@ -1674,7 +1648,7 @@ class DateController extends BaseController
             'showCategories' => $current_context->withTags(),
             'showAssociations' => $current_context->isAssociationShowExpanded(),
             'showHashtags' => $current_context->withBuzzwords(),
-            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
             'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,
@@ -1686,7 +1660,6 @@ class DateController extends BaseController
     /**
      * @Route("/room/{roomId}/date/{itemId}/participate")
      * @param DateService $dateService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return RedirectResponse
@@ -1694,16 +1667,14 @@ class DateController extends BaseController
      */
     public function participateAction(
         DateService $dateService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $date = $dateService->getDate($itemId);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         
-        if (!$date->isParticipant($legacyEnvironment->getCurrentUserItem())) {
+        if (!$date->isParticipant($this->legacyEnvironment->getCurrentUserItem())) {
             $date->addParticipant($currentUser);
         } else {
             $date->removeParticipant($currentUser);
@@ -1718,7 +1689,6 @@ class DateController extends BaseController
      * @param Request $request
      * @param CalendarsService $calendarsService
      * @param TranslatorInterface $translator
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -1726,11 +1696,8 @@ class DateController extends BaseController
         Request $request,
         CalendarsService $calendarsService,
         TranslatorInterface $translator,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
         $formData = [];
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('App:Calendars');
@@ -1784,7 +1751,7 @@ class DateController extends BaseController
                     $calendar->setTitle($calendarTitle);
 
                     $calendar->setContextId($roomId);
-                    $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
+                    $calendar->setCreatorId($this->legacyEnvironment->getCurrentUserId());
 
                     $calendarColor = $formData['calendarcolor'];
                     if ($calendarColor == '') {
