@@ -940,29 +940,34 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
                'end_day="'.encode(AS_DB,$item->getEndingDay()).'", '.
                'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'", '.
                'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'", '.
-               'place="'.encode(AS_DB,$item->getPlace()).'", '.
-               'date_mode="'.encode(AS_DB,$item->getDateMode()).'"';
-      $color = $item->getColor();
+               'place="'.encode(AS_DB,$item->getPlace()).'",'.
+                $this->returnQuerySentenceIfFieldIsValid($item->getDateMode(), 'date_mode');
+
+
+          $color = $item->getColor();
       if ( !empty($color) ) {
-         $query .= ', color="'.encode(AS_DB,$item->getColor()).'"';
+         $query .= 'color="'.encode(AS_DB,$item->getColor()).'", ';
       }
       $color = $item->getCalendarId();
       if ( !empty($color) ) {
-          $query .= ', calendar_id="'.encode(AS_DB,$item->getCalendarId()).'"';
+          $query .= 'calendar_id="'.encode(AS_DB,$item->getCalendarId()).'", ';
       } else {
-          $query .= ', calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'"';
+          $query .= 'calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'", ';
       }
       $rev_id = $item->getRecurrenceId();
       if ( !empty($rev_id) ) {
-         $query .= ', recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'"';
+         $query .= 'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'", ';
       }
       $rev_pattern = $item->getRecurrencePattern();
       if ( !empty($rev_pattern) ) {
-         $query .= ', recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"';
+         $query .= 'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'", ';
       }
-      $query .= ', external="'.encode(AS_DB,$item->isExternal()).'"';
-      $query .= ', uid="'.encode(AS_DB,$item->getUid()).'"';
-      $query .= ', whole_day="'.encode(AS_DB,$item->isWholeDay()).'"';
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isExternal(), 'external');
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid');
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isWholeDay(), 'whole_day');
+
+      $query = rtrim($query, ',');
+
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
