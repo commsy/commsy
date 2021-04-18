@@ -14,6 +14,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use cs_environment;
 use cs_item;
 use cs_room_item;
 use Exception;
@@ -31,7 +32,7 @@ abstract class BaseController extends AbstractController
     protected $itemService;
 
     /**
-     * @var LegacyEnvironment
+     * @var cs_environment
      */
     protected $legacyEnvironment;
 
@@ -65,7 +66,7 @@ abstract class BaseController extends AbstractController
      */
     public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
     {
-        $this->legacyEnvironment = $legacyEnvironment;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
