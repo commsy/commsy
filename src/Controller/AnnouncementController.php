@@ -10,7 +10,6 @@ use App\Filter\AnnouncementFilterType;
 use App\Form\DataTransformer\AnnouncementTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
-use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnouncementService;
@@ -96,7 +95,6 @@ class AnnouncementController extends BaseController
      * @param ReaderService $readerService
      * @param AnnouncementService $announcementService
      * @param AssessmentService $assessmentService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -109,7 +107,6 @@ class AnnouncementController extends BaseController
         ReaderService $readerService,
         AnnouncementService $announcementService,
         AssessmentService $assessmentService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -148,8 +145,7 @@ class AnnouncementController extends BaseController
 
         $this->get('session')->set('sortAnnouncements', $sort);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         $allowedActions = array();
@@ -189,7 +185,6 @@ class AnnouncementController extends BaseController
      * @param AssessmentService $assessmentService
      * @param RoomService $roomService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -202,7 +197,6 @@ class AnnouncementController extends BaseController
         AssessmentService $assessmentService,
         RoomService $roomService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -232,8 +226,7 @@ class AnnouncementController extends BaseController
         /** @var cs_announcement_item[] $announcements */
         $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
 
         $readerList = array();
@@ -265,7 +258,6 @@ class AnnouncementController extends BaseController
      * @param Request $request
      * @param AnnouncementService $announcementService
      * @param RoomService $roomService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
@@ -273,10 +265,8 @@ class AnnouncementController extends BaseController
         Request $request,
         AnnouncementService $announcementService,
         RoomService $roomService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -318,7 +308,7 @@ class AnnouncementController extends BaseController
             'showCategories' => $roomItem->withTags(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -330,7 +320,6 @@ class AnnouncementController extends BaseController
      * @param PrintService $printService
      * @param ReaderService $readerService
      * @param RoomService $roomService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param $sort
      * @return Response
@@ -342,7 +331,6 @@ class AnnouncementController extends BaseController
         PrintService $printService,
         ReaderService $readerService,
         RoomService $roomService,
-        LegacyEnvironment $environment,
         int $roomId,
         $sort
     ) {
@@ -378,8 +366,7 @@ class AnnouncementController extends BaseController
             $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         foreach ($announcements as $item) {
@@ -581,7 +568,6 @@ class AnnouncementController extends BaseController
      * @param CategoryService $categoryService
      * @param ItemService $itemService
      * @param AnnouncementTransformer $transformer
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -593,15 +579,13 @@ class AnnouncementController extends BaseController
         ItemService $itemService,
         ItemController $itemController,
         AnnouncementTransformer $transformer,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         /** @var \cs_item $item */
         $item = $itemService->getItem($itemId);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $announcementItem = NULL;
 
@@ -622,7 +606,7 @@ class AnnouncementController extends BaseController
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
             $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('app_announcement_edit', array(
                     'roomId' => $roomId,
@@ -633,7 +617,7 @@ class AnnouncementController extends BaseController
                     'categories' => $itemController->getCategories($roomId, $categoryService),
                 ],
                 'hashtagMappingOptions' => [
-                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
                     'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
                 ],
@@ -648,7 +632,7 @@ class AnnouncementController extends BaseController
                 $announcementItem = $transformer->applyTransformation($announcementItem, $form->getData());
 
                 // update modifier
-                $announcementItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $announcementItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
@@ -678,7 +662,7 @@ class AnnouncementController extends BaseController
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -903,27 +887,25 @@ class AnnouncementController extends BaseController
 
         $announcement = $this->announcementService->getAnnouncement($itemId);
 
-        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
         $item = $announcement;
-        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
         if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -1048,7 +1030,7 @@ class AnnouncementController extends BaseController
         $infoArray['draft'] = $item->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
-        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
