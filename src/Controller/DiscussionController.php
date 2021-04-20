@@ -12,7 +12,6 @@ use App\Form\DataTransformer\DiscussionTransformer;
 use App\Form\DataTransformer\ItemTransformer;
 use App\Form\Type\DiscussionArticleType;
 use App\Form\Type\DiscussionType;
-use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AssessmentService;
@@ -46,7 +45,6 @@ class DiscussionController extends BaseController
      * @param AssessmentService $assessmentService
      * @param DiscussionService $discussionService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -58,7 +56,6 @@ class DiscussionController extends BaseController
         AssessmentService $assessmentService,
         DiscussionService $discussionService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -95,8 +92,7 @@ class DiscussionController extends BaseController
 
         $this->get('session')->set('sortDiscussions', $sort);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         $allowedActions = array();
@@ -133,17 +129,14 @@ class DiscussionController extends BaseController
      * @Route("/room/{roomId}/discussion")
      * @Template()
      * @param Request $request
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
-        LegacyEnvironment $environment,
         DiscussionService $discussionService,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $this->getRoom($roomId);
 
         if (!$roomItem) {
@@ -186,7 +179,7 @@ class DiscussionController extends BaseController
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
         );
         
     }
@@ -199,7 +192,6 @@ class DiscussionController extends BaseController
      * @param DiscussionService $discussionService
      * @param PrintService $printService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param string $sort
      * @return Response
@@ -210,11 +202,9 @@ class DiscussionController extends BaseController
         DiscussionService $discussionService,
         PrintService $printService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         string $sort
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $this->getRoom($roomId);
 
         if (!$roomItem) {
@@ -243,7 +233,7 @@ class DiscussionController extends BaseController
             $discussions = $discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, 'date');
         }
 
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         foreach ($discussions as $item) {
@@ -299,10 +289,11 @@ class DiscussionController extends BaseController
         Request $request,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
+        DiscussionService $discussionService,
         int $roomId,
         int $itemId
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
@@ -356,15 +347,12 @@ class DiscussionController extends BaseController
         LegacyMarkup $legacyMarkup)
     {
         $infoArray = array();
-        
-        $itemService = $this->get('commsy_legacy.item_service');
 
         $discussion = $discussionService->getDiscussion($itemId);
         $articleList = $discussion->getAllArticles();
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
-        $noticedManager = $legacyEnvironment->getNoticedManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $noticedManager = $this->legacyEnvironment->getNoticedManager();
 
         // mark discussion as read / noticed
         $latestReader = $readerManager->getLatestReader($discussion->getItemID());
@@ -391,20 +379,19 @@ class DiscussionController extends BaseController
                 $noticedManager->markNoticed($article->getItemID(), 0);
             }
 
-            $itemService = $this->get('commsy_legacy.item_service');
-            $legacyMarkup->addFiles($itemService->getItemFileList($article->getItemID()));
+            $legacyMarkup->addFiles($this->itemService->getItemFileList($article->getItemID()));
 
             $article = $articleList->getNext();
         }
 
         $itemArray = array_merge([$discussion], $articleList->to_array());
 
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -432,19 +419,18 @@ class DiscussionController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
+
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
+            $reader = $this->readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                $readerList[$item->getItemId()] = 'changed';
             }
             
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
         
         $discussions = $discussionService->getListDiscussions($roomId);
@@ -501,9 +487,8 @@ class DiscussionController extends BaseController
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $reader_manager = $legacyEnvironment->getReaderManager();
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
 
         $item = $discussion;
         $reader = $reader_manager->getLatestReader($item->getItemID());
@@ -540,9 +525,9 @@ class DiscussionController extends BaseController
         $infoArray['readCount'] = $read_count;
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
-        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
-        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
@@ -668,7 +653,6 @@ class DiscussionController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      * @param Request $request
      * @param DiscussionService $discussionService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -676,12 +660,10 @@ class DiscussionController extends BaseController
     public function createArticleAction(
         Request $request,
         DiscussionService $discussionService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $translator = $this->get('translator');
-        $legacyEnvironment = $environment->getEnvironment();
 
         $transformer = $this->get('commsy_legacy.transformer.discussion');
 
@@ -693,7 +675,7 @@ class DiscussionController extends BaseController
         if ($request->query->has('answerTo')) {
             // get parent position
             $parentId = $request->query->get('answerTo');
-            $daManager = $legacyEnvironment->getDiscussionArticlesManager();
+            $daManager = $this->legacyEnvironment->getDiscussionArticlesManager();
             $parentArticle = $daManager->getItem($parentId);
             $parentPosition = $parentArticle->getPosition();
         } else {
@@ -771,7 +753,7 @@ class DiscussionController extends BaseController
             'userCount' => 0,
             'readCount' => 0,
             'readSinceModificationCount' => 0,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'parentId' => $parentId,
         ];
     }
@@ -809,7 +791,6 @@ class DiscussionController extends BaseController
      * @param ItemService $itemService
      * @param DiscussionTransformer $discussionTransformer
      * @param DiscussionarticleTransformer $discussionarticleTransformer
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -822,15 +803,12 @@ class DiscussionController extends BaseController
         ItemService $itemService,
         DiscussionTransformer $discussionTransformer,
         DiscussionarticleTransformer $discussionarticleTransformer,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $item = $itemService->getItem($itemId);
-        $translator = $this->get('translator');
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
         $discussionItem = NULL;
@@ -861,20 +839,20 @@ class DiscussionController extends BaseController
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
             $formData['draft'] = $isDraft;
             $form = $this->createForm(DiscussionType::class, $formData, array(
                 'action' => $this->generateUrl('app_discussion_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
-                'placeholderText' => '['.$translator->trans('insert title').']',
+                'placeholderText' => '['.$this->translator->trans('insert title').']',
                 'categoryMappingOptions' => [
                     'categories' => $itemController->getCategories($roomId, $categoryService)
                 ],
                 'hashtagMappingOptions' => [
-                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                    'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
 
@@ -889,7 +867,7 @@ class DiscussionController extends BaseController
             $form = $this->createForm(DiscussionArticleType::class, $formData, array(
                 'placeholderText' => '['.$translator->trans('insert title').']',
                 'categories' => $itemController->getCategories($roomId, $categoryService),
-                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
                 'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             ));
@@ -901,7 +879,7 @@ class DiscussionController extends BaseController
                 if ($item->getItemType() == 'discussion') {
                     $discussionItem = $transformer->applyTransformation($discussionItem, $form->getData());
                     // update modifier
-                    $discussionItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $discussionItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                     // set linked hashtags and categories
                     $formData = $form->getData();
@@ -916,7 +894,7 @@ class DiscussionController extends BaseController
                 } else if ($item->getItemType() == 'discarticle') {
                     $discussionArticleItem = $transformer->applyTransformation($discussionArticleItem, $form->getData());
                     // update modifier
-                    $discussionArticleItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $discussionArticleItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
                     $discussionArticleItem->save();
                 }
                 
@@ -936,11 +914,13 @@ class DiscussionController extends BaseController
         }
 
         if ($item->getItemType() == 'discussion') {
-            $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::EDIT);
         } else {
             $discussionItem = $discussionService->getDiscussion($discussionArticleItem->getDiscussionID());
-            $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::EDIT);
         }
+
+
         return array(
             'form' => $form->createView(),
             'discussion' => $discussionItem,
@@ -948,7 +928,7 @@ class DiscussionController extends BaseController
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -959,7 +939,6 @@ class DiscussionController extends BaseController
      * @param DiscussionService $discussionService
      * @param ItemService $itemService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -968,7 +947,6 @@ class DiscussionController extends BaseController
         DiscussionService $discussionService,
         ItemService $itemService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
@@ -986,11 +964,10 @@ class DiscussionController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $environment->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
         
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -1033,10 +1010,10 @@ class DiscussionController extends BaseController
         }
 
         if ($item->getItemType() == 'discussion') {
-            $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($typedItem));
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
         } else {
             $discussionItem = $discussionService->getDiscussion($typedItem->getDiscussionID());
-            $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($discussionItem));
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::SAVE);
         }
 
         return array(
@@ -1094,7 +1071,6 @@ class DiscussionController extends BaseController
      * @param DiscussionService $discussionService
      * @param ItemService $itemService
      * @param DiscussionTransformer $transformer
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return RedirectResponse
@@ -1104,11 +1080,9 @@ class DiscussionController extends BaseController
         DiscussionService $discussionService,
         ItemService $itemService,
         DiscussionTransformer $transformer,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $item = $itemService->getItem($itemId);
         $translator = $this->get('translator');
         $article = $discussionService->getArticle($itemId);
@@ -1137,7 +1111,7 @@ class DiscussionController extends BaseController
                 }
 
                 // update modifier
-                $article->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $article->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $article->save();
                 
