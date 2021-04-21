@@ -621,7 +621,7 @@ class PortalSettingsController extends AbstractController
             $tmpCsvDataset->setEmail($csvInput[$mailIndex]);
             $tmpCsvDataset->setIdentifier($csvInput[$IdIndex]);
             $tmpCsvDataset->setPassword($csvInput[$passwordIndex]);
-            $tmpCsvDataset->setRooms(implode(", ", array_slice($csvInput, $roomListStartIndex)));
+            $tmpCsvDataset->setRooms(implode(" ", array_slice($csvInput, $roomListStartIndex)));
             $dataSetArray[] = $tmpCsvDataset;
 
         }

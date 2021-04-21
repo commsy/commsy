@@ -47,5 +47,7 @@ class AccountCreatorFacade
         $portalUser->setLanguage($account->getLanguage());
         $portalUser->makeUser();
         $portalUser->save();
+
+        return $portalUser;
     }
 }
