@@ -2,35 +2,29 @@
 
 namespace App\Controller;
 
-use App\Entity\Portal;
-use App\Form\Model\Csv\Base64CsvFile;
+use App\Entity\License;
+use App\Entity\RoomCategories;
+use App\Entity\Terms;
+use App\Event\CommsyEditEvent;
 use App\Form\Model\CsvImport;
-use App\Form\Type\CsvImportType;
+use App\Form\Type\AnnouncementsType;
+use App\Form\Type\LicenseNewEditType;
 use App\Form\Type\LicenseSortType;
+use App\Form\Type\PortalTermsType;
+use App\Form\Type\RoomCategoriesEditType;
+use App\Form\Type\RoomCategoriesLinkType;
+use App\Form\Type\TermType;
+use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\User\UserCreatorFacade;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\NonUniqueResultException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use App\Form\Type\AnnouncementsType;
-use App\Form\Type\PortalTermsType;
-use App\Form\Type\RoomCategoriesEditType;
-use App\Form\Type\RoomCategoriesLinkType;
-use App\Form\Type\TranslationType;
-use App\Entity\RoomCategories;
-use App\Entity\License;
-use App\Form\Type\LicenseNewEditType;
-use App\Entity\Terms;
-use App\Form\Type\TermType;
-
-use App\Event\CommsyEditEvent;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -40,18 +34,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class PortalController extends AbstractController
 {
-
-    private $translator;
-
-    /**
-     * PortalController constructor.
-     */
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
-
     /**
      * @Route("/portal/goto/{portalId}", name="app_portal_goto")
      */
@@ -121,17 +103,17 @@ class PortalController extends AbstractController
         $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
 
         // mandatory links form
-        $linkForm = $this->createForm(RoomCategoriesLinkType::class, ['mandatory' => $portalItem->isTagMandatory()], []);
+        $linkForm = $this->createForm(RoomCategoriesLinkType::class, ['mandatory' => $portalItem->isTagMandatory()],
+            []);
 
         $linkForm->handleRequest($request);
 
         if ($linkForm->isSubmitted() && $linkForm->isValid() && $linkForm->getClickedButton()->getName() == 'save') {
             $formData = $linkForm->getData();
 
-            if($formData['mandatory']) {
+            if ($formData['mandatory']) {
                 $portalItem->setTagMandatory();
-            }
-            else {
+            } else {
                 $portalItem->unsetTagMandatory();
             }
             $portalItem->save();
@@ -224,7 +206,7 @@ class PortalController extends AbstractController
     public function legacysettingsAction(
         int $roomId
     ) {
-        return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
+        return $this->redirect('/?cid=' . $roomId . '&mod=configuration&fct=index');
     }
 
     /**
@@ -312,7 +294,7 @@ class PortalController extends AbstractController
         $pageTitle = '';
         if ($newEditForm->has('new')) {
             $pageTitle = 'Create new license';
-        } elseif($newEditForm->has('update')) {
+        } elseif ($newEditForm->has('update')) {
             $pageTitle = 'Edit license';
         }
 
