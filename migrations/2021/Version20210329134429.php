@@ -25,7 +25,7 @@ final class Version20210329134429 extends AbstractMigration
         $this->addSql('
             UPDATE
                 accounts AS a
-            LEFT JOIN
+            INNER JOIN
                 user AS u
             ON
                 a.context_id = u.context_id AND
@@ -34,7 +34,9 @@ final class Version20210329134429 extends AbstractMigration
             SET
                 a.locked = 1
             WHERE
-                u.status = 0
+                u.status = 0 AND
+                u.deleter_id IS NULL AND
+                u.deletion_date IS NULL
         ');
     }
 
