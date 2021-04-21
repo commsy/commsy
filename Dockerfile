@@ -3,47 +3,76 @@
 # https://docs.docker.com/compose/compose-file/#target
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=7.3-fpm-stretch
+ARG PHP_VERSION=7.4
 ARG NGINX_VERSION=1.19
 
-FROM php:${PHP_VERSION} AS commsy_php
+FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php
 
-# install additinal packages and PHP extensions
-RUN apt-get update && apt-get install -y \
-        acl \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev \
-        libzip-dev \
-        libicu-dev \
-        libc-client-dev \
-        libkrb5-dev \
-        libxml2-dev \
-        libldap2-dev \
-        g++ \
-        git \
-        zip \
-        sudo \
-        apt-transport-https \
-        mariadb-client \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) intl \
-    && docker-php-ext-install -j$(nproc) pdo_mysql \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-install -j$(nproc) imap \
-    && docker-php-ext-install -j$(nproc) soap \
-    && docker-php-ext-configure zip --with-libzip \
-    && docker-php-ext-install -j$(nproc) zip \
-    && docker-php-ext-configure opcache --enable-opcache \
-    && docker-php-ext-install -j$(nproc) opcache \
-    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-    && docker-php-ext-install -j$(nproc) ldap
+# persistent / runtime deps
+RUN apk add --no-cache \
+		acl \
+		autoconf \
+		fcgi \
+		file \
+		gettext \
+		git \
+		gnu-libiconv \
+		nodejs \
+		yarn \
+		wkhtmltopdf \
+	;
 
-# Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get install -y nodejs
+# install gnu-libiconv and set LD_PRELOAD env to make iconv work fully on Alpine image.
+# see https://github.com/docker-library/php/issues/240#issuecomment-763112749
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
+
+ARG APCU_VERSION=5.1.19
+RUN set -eux; \
+	apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+		icu-dev \
+		libzip-dev \
+		zlib-dev \
+		libxml2-dev \
+		openldap-dev \
+		imap-dev \
+		libpng-dev \
+		jpeg-dev \
+		freetype-dev \
+	; \
+	\
+	docker-php-ext-configure zip; \
+	docker-php-ext-configure imap --with-imap-ssl; \
+	docker-php-ext-configure gd --with-freetype --with-jpeg; \
+	docker-php-ext-install -j$(nproc) \
+		intl \
+		pdo_mysql \
+		zip \
+		soap \
+		ldap \
+		imap \
+		gd \
+	; \
+	pecl install \
+		apcu-${APCU_VERSION} \
+		xdebug \
+	; \
+	pecl clear-cache; \
+	docker-php-ext-enable \
+		apcu \
+		opcache \
+		xdebug \
+	; \
+	\
+	runDeps="$( \
+		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+			| tr ',' '\n' \
+			| sort -u \
+			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+	)"; \
+	apk add --no-cache --virtual .api-phpexts-rundeps $runDeps; \
+	\
+	apk del .build-deps
 
 # Composer
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
@@ -55,51 +84,20 @@ COPY docker/php/conf.d/commsy.pool.conf /usr/local/etc/php-fpm.d/
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
-# install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
-RUN set -eux; \
-	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
-	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
-
-# yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn
-
-# xdebug
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
-
-# wkhtmltopdf
-RUN apt-get update && apt-get install -y \
-        xfonts-base \
-        xfonts-75dpi \
-        fontconfig \
-        libxrender1 \
-        xvfb
-
-RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.stretch_amd64.deb \
-        && dpkg -i /usr/src/wkhtmltopdf.deb
 
 WORKDIR /var/www/html
 
 # build for production
 ARG APP_ENV=prod
 
-COPY .env ./
-
 # prevent the reinstallation of vendors at every changes in the source code
 COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest; \
+	composer install --prefer-dist --no-dev --no-scripts --no-progress; \
 	composer clear-cache
 
-# do not use .env files in production
-COPY .env ./
-RUN composer dump-env prod; \
-	rm .env
-
-# prevent the reinstallation of node modules at every changes in the source code
+# prevent the reinstallation of node_modules at every changes in the source code
 COPY webpack.config.js tsconfig.json package.json yarn.lock ./
 COPY assets assets/
 RUN set -eux; \
@@ -109,6 +107,7 @@ RUN set -eux; \
 	rm tsconfig.json
 
 # copy only specifically what we need
+COPY .env ./
 COPY bin bin/
 COPY config config/
 COPY legacy legacy/
@@ -121,10 +120,16 @@ COPY translations translations/
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
+	composer dump-env prod; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
 
 VOLUME /var/www/html/var
+
+COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
+RUN chmod +x /usr/local/bin/docker-healthcheck
+
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
