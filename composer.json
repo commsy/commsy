@@ -1,9 +1,10 @@
 {
     "name": "commsy/commsy",
+    "description": "A web-based community system",
     "license": "GPLv2",
     "type": "project",
     "require": {
-        "php": "^7.3.0",
+        "php": "^7.4.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ci/restclientbundle": "^2.0",
