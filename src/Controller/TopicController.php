@@ -9,14 +9,11 @@ use App\Form\DataTransformer\TopicTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
-use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
-use App\Utils\ItemService;
-use App\Utils\ReaderService;
 use App\Utils\TopicService;
 use cs_room_item;
 use cs_topic_item;
@@ -29,8 +26,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class TopicController
@@ -40,21 +35,47 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TopicController extends BaseController
 {
     /**
+     * @var TopicService
+     */
+    private $topicService;
+
+    /**
+     * @var AnnotationService
+     */
+    private $annotationService;
+
+
+    /**
+     * @required
+     * @param mixed $topicService
+     */
+    public function setTopicService(TopicService $topicService): void
+    {
+        $this->topicService = $topicService;
+    }
+
+    /**
+     * @required
+     * @param mixed $annotationService
+     */
+    public function setAnnotationService(AnnotationService $annotationService): void
+    {
+        $this->annotationService = $annotationService;
+    }
+
+
+
+    /**
      * @Route("/room/{roomId}/topic")
      * @Template()
      * @param Request $request
-     * @param TopicService $topicService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
-        TopicService $topicService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -64,14 +85,14 @@ class TopicController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in topic manager
-            $topicService->setFilterConditions($filterForm);
+            $this->topicService->setFilterConditions($filterForm);
         }
         else {
-            $topicService->hideDeactivatedEntries();
+            $this->topicService->hideDeactivatedEntries();
         }
 
         // get topic list from manager service 
-        $itemsCountArray = $topicService->getCountArray($roomId);
+        $itemsCountArray = $this->topicService->getCountArray($roomId);
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('topic') != '') {
@@ -90,10 +111,10 @@ class TopicController extends BaseController
             'showCategories' => false,
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -101,8 +122,6 @@ class TopicController extends BaseController
      * @Route("/room/{roomId}/topic/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
-     * @param ReaderService $readerService
-     * @param TopicService $topicService
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -111,8 +130,6 @@ class TopicController extends BaseController
      */
     public function feedAction(
         Request $request,
-        ReaderService $readerService,
-        TopicService $topicService,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -135,19 +152,19 @@ class TopicController extends BaseController
             // manually bind values from the request
             $filterForm->submit($topicFilter);
             // set filter conditions in topic manager
-            $topicService->setFilterConditions($filterForm);
+            $this->topicService->setFilterConditions($filterForm);
         }
         else {
-            $topicService->hideDeactivatedEntries();
+            $this->topicService->hideDeactivatedEntries();
         }
 
         // get topic list from manager service 
-        $topics = $topicService->getListTopics($roomId, $max, $start);
+        $topics = $this->topicService->getListTopics($roomId, $max, $start);
 
         $readerList = array();
         $allowedActions = array();
         foreach ($topics as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
             } else {
@@ -171,35 +188,22 @@ class TopicController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      * @param Request $request
-     * @param AnnotationService $annotationService
      * @param CategoryService $categoryService
-     * @param ItemService $itemService
-     * @param ReaderService $readerService
-     * @param TopicService $topicService
-     * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function detailAction(
         Request $request,
-        AnnotationService $annotationService,
         CategoryService $categoryService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        TopicService $topicService,
-        TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        $topic = $topicService->getTopic($itemId);
-        $infoArray = $this->getDetailInfo($annotationService, $itemService, $readerService, $topicService, $environment, $roomId, $itemId);
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $topic = $this->topicService->getTopic($itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -214,12 +218,12 @@ class TopicController extends BaseController
         $alert = null;
         if ($infoArray['topic']->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
         }
 
         $pathTopicItem = null;
         if ($request->query->get('path')) {
-            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+            $pathTopicItem = $this->topicService->getTopic($request->query->get('path'));
         }
 
         $isLinkedToItems = false;
@@ -227,7 +231,7 @@ class TopicController extends BaseController
             $isLinkedToItems = true;
         }
 
-        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,
@@ -263,35 +267,29 @@ class TopicController extends BaseController
     }
 
     private function getDetailInfo (
-        AnnotationService $annotationService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        TopicService $topicService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $infoArray = array();
-        $topic = $topicService->getTopic($itemId);
+        $topic = $this->topicService->getTopic($itemId);
 
-        $legacyEnvironment = $environment->getEnvironment();
         $item = $topic;
-        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
         if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -322,16 +320,16 @@ class TopicController extends BaseController
         }
         $readerList = array();
         $modifierList = array();
-        $reader = $readerService->getLatestReader($topic->getItemId());
+        $reader = $this->readerService->getLatestReader($topic->getItemId());
         if ( empty($reader) ) {
            $readerList[$item->getItemId()] = 'new';
         } elseif ( $reader['read_date'] < $topic->getModificationDate() ) {
            $readerList[$topic->getItemId()] = 'changed';
         }
         
-        $modifierList[$topic->getItemId()] = $itemService->getAdditionalEditorsForItem($topic);
+        $modifierList[$topic->getItemId()] = $this->itemService->getAdditionalEditorsForItem($topic);
         
-        $topics = $topicService->getListTopics($roomId);
+        $topics = $this->topicService->getListTopics($roomId);
         $topicList = array();
         $counterBefore = 0;
         $counterAfter = 0;
@@ -378,7 +376,7 @@ class TopicController extends BaseController
         }
         // mark annotations as readed
         $annotationList = $topic->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
         
         
         $infoArray['topic'] = $topic;
@@ -394,11 +392,11 @@ class TopicController extends BaseController
         $infoArray['readCount'] = $read_count;
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
-        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
-        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
-        $infoArray['language'] = $legacyEnvironment->getCurrentContextItem()->getLanguage();
+        $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
+        $infoArray['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
         $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
@@ -412,17 +410,15 @@ class TopicController extends BaseController
 
     /**
      * @Route("/room/{roomId}/topic/create")
-     * @param TopicService $topicService
      * @param int $roomId
      * @return RedirectResponse
      * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function createAction(
-        TopicService $topicService,
         int $roomId
     ) {
         // create new topic item
-        $topicItem = $topicService->getNewtopic();
+        $topicItem = $this->topicService->getNewtopic();
         $topicItem->setDraftStatus(1);
         $topicItem->save();
 
@@ -450,13 +446,8 @@ class TopicController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      * @param Request $request
      * @param CategoryService $categoryService
-     * @param ItemService $itemService
-     * @param TopicService $topicService
      * @param TopicTransformer $transformer
-     * @param TranslatorInterface $translator
      * @param ItemController $itemController
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -464,19 +455,13 @@ class TopicController extends BaseController
     public function editAction(
         Request $request,
         CategoryService $categoryService,
-        ItemService $itemService,
-        TopicService $topicService,
         TopicTransformer $transformer,
-        TranslatorInterface $translator,
         ItemController $itemController,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $item = $this->itemService->getItem($itemId);
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $isDraft = $item->isDraft();
 
@@ -484,7 +469,7 @@ class TopicController extends BaseController
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         // get date from DateService
-        $topicItem = $topicService->getTopic($itemId);
+        $topicItem = $this->topicService->getTopic($itemId);
         if (!$topicItem) {
             throw $this->createNotFoundException('No topic found for id ' . $itemId);
         }
@@ -492,21 +477,21 @@ class TopicController extends BaseController
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
-        $formData['language'] = $legacyEnvironment->getCurrentContextItem()->getLanguage();
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+        $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['draft'] = $isDraft;
         $form = $this->createForm(TopicType::class, $formData, array(
             'action' => $this->generateUrl('app_date_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
@@ -517,7 +502,7 @@ class TopicController extends BaseController
                 $topicItem = $transformer->applyTransformation($topicItem, $form->getData());
 
                 // update modifier
-                $topicItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $topicItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
@@ -540,16 +525,16 @@ class TopicController extends BaseController
             return $this->redirectToRoute('app_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($topicItem), 'commsy.edit');
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($topicItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
             'topic' => $topicItem,
             'isDraft' => $isDraft,  
             'showHashtags' => $hashtagsMandatory,
-            'language' => $legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -557,37 +542,26 @@ class TopicController extends BaseController
      * @Route("/room/{roomId}/topic/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
-     * @param ItemService $itemService
-     * @param ReaderService $readerService
-     * @param TopicService $topicService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function saveAction(
-        ItemService $itemService,
-        ReaderService $readerService,
-        TopicService $topicService,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $topic = $topicService->getTopic($itemId);
+        $topic = $this->topicService->getTopic($itemId);
         
         $itemArray = array($topic);
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $environment->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
         
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -618,17 +592,17 @@ class TopicController extends BaseController
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
+            $reader = $this->readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                $readerList[$item->getItemId()] = 'changed';
             }
             
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($topic), 'commsy.save');
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($topic), CommsyEditEvent::SAVE);
 
         return array(
             'roomId' => $roomId,
@@ -642,27 +616,17 @@ class TopicController extends BaseController
 
     /**
      * @Route("/room/{roomId}/topic/{itemId}/print")
-     * @param AnnotationService $annotationService
-     * @param ItemService $itemService
      * @param PrintService $printService
-     * @param ReaderService $readerService
-     * @param TopicService $topicService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return Response
      */
     public function printAction(
-        AnnotationService $annotationService,
-        ItemService $itemService,
         PrintService $printService,
-        ReaderService $readerService,
-        TopicService $topicService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $infoArray = $this->getDetailInfo($annotationService, $itemService, $readerService, $topicService, $environment, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -701,9 +665,6 @@ class TopicController extends BaseController
      * @param Request $request
      * @param AssessmentService $assessmentService
      * @param PrintService $printService
-     * @param ReaderService $readerService
-     * @param TopicService $topicService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return Response
      */
@@ -711,9 +672,6 @@ class TopicController extends BaseController
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
-        ReaderService $readerService,
-        TopicService $topicService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
         $roomItem = $this->getRoom($roomId);
@@ -725,16 +683,15 @@ class TopicController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
-            $topicService->setFilterConditions($filterForm);
+            $this->topicService->setFilterConditions($filterForm);
         }
         // get announcement list from manager service 
-        $topics = $topicService->getListTopics($roomId);
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $topics = $this->topicService->getListTopics($roomId);
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         foreach ($topics as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
         $ratingList = array();
@@ -747,7 +704,7 @@ class TopicController extends BaseController
         }
 
         // get announcement list from manager service 
-        $itemsCountArray = $topicService->getCountArray($roomId);
+        $itemsCountArray = $this->topicService->getCountArray($roomId);
 
         $html = $this->renderView('topic/list_print.html.twig', [
             'roomId' => $roomId,
@@ -771,31 +728,24 @@ class TopicController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      * @param Request $request
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function editPathAction(
         Request $request,
-        ItemService $itemService,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         /** @var cs_topic_item $item */
-        $item = $itemService->getTypedItem($itemId);
-        $legacyEnvironment = $environment->getEnvironment();
+        $item = $this->itemService->getTypedItem($itemId);
 
         $formData = array();
 
         $pathElements = [];
         $pathElementsAttr = [];
 
-        $itemManager = $legacyEnvironment->getItemManager();
+        $itemManager = $this->legacyEnvironment->getItemManager();
         $itemManager->reset();
         $itemManager->setContextLimit($roomId);
 
@@ -819,7 +769,7 @@ class TopicController extends BaseController
         }
 
         foreach ($linkedItemArray as $linkedItem) {
-            $typedLinkedItem = $itemService->getTypedItem($linkedItem->getItemId());
+            $typedLinkedItem = $this->itemService->getTypedItem($linkedItem->getItemId());
             $pathElements[$typedLinkedItem->getTitle()] = $typedLinkedItem->getItemId();
             $pathElementsAttr[$typedLinkedItem->getTitle()] = ['title' => $typedLinkedItem->getTitle(), 'type' => $typedLinkedItem->getItemType()];
         }
@@ -836,7 +786,7 @@ class TopicController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $linkManager = $legacyEnvironment->getLinkItemManager();
+                $linkManager = $this->legacyEnvironment->getLinkItemManager();
 
                 $formData = $form->getData();
 
@@ -868,7 +818,7 @@ class TopicController extends BaseController
                     foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
                         if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
                             if (!in_array($orderItemId, $formDataPath)) {
-                                $linkManager->cleanSortingPlaces($itemService->getTypedItem($orderItemId));
+                                $linkManager->cleanSortingPlaces($this->itemService->getTypedItem($orderItemId));
                             }
                         }
                     }
@@ -880,7 +830,7 @@ class TopicController extends BaseController
             return $this->redirectToRoute('app_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($item), 'commsy.edit');
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
@@ -891,24 +841,20 @@ class TopicController extends BaseController
      * @Route("/room/{roomId}/topic/{itemId}/savepath")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
      * @param int $itemId
      * @return array
      */
     public function savePathAction(
-        ItemService $itemService,
-        EventDispatcherInterface $eventDispatcher,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
-        $eventDispatcher->dispatch(new CommsyEditEvent($item), 'commsy.save');
+        $item = $this->itemService->getItem($itemId);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
         $isLinkedToItems = false;
         if (!empty($item->getAllLinkedItemIDArray())) {
             $isLinkedToItems = true;
         }
         return [
-            'topic' => $itemService->getTypedItem($itemId),
+            'topic' => $this->itemService->getTypedItem($itemId),
             'isLinkedToItems' => $isLinkedToItems,
         ];
     }
@@ -986,7 +932,6 @@ class TopicController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-        $topicService = $this->get('commsy_legacy.topic_service');
 
         if ($selectAll) {
             if ($request->query->has('topic_filter')) {
@@ -997,14 +942,14 @@ class TopicController extends BaseController
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $topicService->setFilterConditions($filterForm);
+                $this->topicService->setFilterConditions($filterForm);
             } else {
-                $topicService->hideDeactivatedEntries();
+                $this->topicService->hideDeactivatedEntries();
             }
 
-            return $topicService->getListTopics($roomItem->getItemID());
+            return $this->topicService->getListTopics($roomItem->getItemID());
         } else {
-            return $topicService->getTopicsById($roomItem->getItemID(), $itemIds);
+            return $this->topicService->getTopicsById($roomItem->getItemID(), $itemIds);
         }
     }
 
