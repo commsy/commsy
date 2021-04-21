@@ -9,7 +9,6 @@ use App\Export\WordpressExporter;
 use App\Form\DataTransformer\MaterialTransformer;
 use App\Http\JsonRedirectResponse;
 use App\Entity\License;
-use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AssessmentService;
@@ -38,7 +37,6 @@ use App\Form\Type\SectionType;
 use App\Form\Type\MaterialSectionType;
 
 use App\Event\CommsyEditEvent;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -57,16 +55,21 @@ class MaterialController extends BaseController
      * @var AnnotationService
      */
     private $annotationService;
-    /**
-     * @var LegacyEnvironment
-     */
-    protected $legacyEnvironment;
 
     /**
      * @var CategoryService
      */
     private $categoryService;
 
+    /**
+     * @var MaterialTransformer
+     */
+    private $materialTransformer;
+
+    /**
+     * @var AssessmentService
+     */
+    private  $assessmentService;
     /**
      * @required
      * @param CategoryService $categoryService
@@ -93,15 +96,29 @@ class MaterialController extends BaseController
         $this->annotationService = $annotationService;
     }
 
+    /**
+     * @required
+     * @param MaterialTransformer $materialTransformer
+     */
+    public function setMaterialTransformer(MaterialTransformer $materialTransformer){
+        $this->materialTransformer = $materialTransformer;
+    }
+
+    /**
+     * @required
+     * @param AssessmentService $assessmentService
+     */
+    public function setAssessmentService(AssessmentService $assessmentService): void
+    {
+        $this->assessmentService = $assessmentService;
+    }
+
 
     /**
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
-     * @param AssessmentService $assessmentService
-     * @param MaterialService $materialService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -110,10 +127,7 @@ class MaterialController extends BaseController
      */
     public function feedAction(
         Request $request,
-        AssessmentService $assessmentService,
-        MaterialService $materialService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -139,18 +153,17 @@ class MaterialController extends BaseController
             $filterForm->submit($materialFilter);
 
             // set filter conditions in material manager
-            $materialService->setFilterConditions($filterForm);
+            $this->materialService->setFilterConditions($filterForm);
         } else {
-            $materialService->hideDeactivatedEntries();
+            $this->materialService->hideDeactivatedEntries();
         }
 
         // get material list from manager service 
-        $materials = $materialService->getListMaterials($roomId, $max, $start, $sort);
+        $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
 
         $this->get('session')->set('sortMaterials', $sort);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         $allowedActions = array();
@@ -169,7 +182,7 @@ class MaterialController extends BaseController
             foreach ($materials as $material) {
                 $itemIds[] = $material->getItemId();
             }
-            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+            $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
         return array(
@@ -193,18 +206,13 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material")
      * @Template()
      * @param Request $request
-     * @param MaterialService $materialService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
-        MaterialService $materialService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
 
         $roomItem = $this->getRoom($roomId);
 
@@ -218,13 +226,13 @@ class MaterialController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in material manager
-            $materialService->setFilterConditions($filterForm);
+            $this->materialService->setFilterConditions($filterForm);
         } else {
-            $materialService->hideDeactivatedEntries();
+            $this->materialService->hideDeactivatedEntries();
         }
 
         // get material list from manager service 
-        $itemsCountArray = $materialService->getCountArray($roomId);
+        $itemsCountArray = $this->materialService->getCountArray($roomId);
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('material') != '') {
@@ -247,7 +255,7 @@ class MaterialController extends BaseController
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
         );
     }
@@ -255,22 +263,16 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/print/{sort}", defaults={"sort" = "none"})
      * @param Request $request
-     * @param AssessmentService $assessmentService
-     * @param MaterialService $materialService
      * @param PrintService $printService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $sort
      * @return Response
      */
     public function printlistAction(
         Request $request,
-        AssessmentService $assessmentService,
-        MaterialService $materialService,
         PrintService $printService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $sort
     ) {
@@ -282,28 +284,27 @@ class MaterialController extends BaseController
 
         $filterForm = $this->createFilterForm($roomItem);
 
-        $numAllMaterials = $materialService->getCountArray($roomId)['countAll'];
+        $numAllMaterials = $this->materialService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in material manager
-            $materialService->setFilterConditions($filterForm);
+            $this->materialService->setFilterConditions($filterForm);
         }
 
         // get material list from manager service 
         if ($sort != "none") {
-            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
+            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
         }
         elseif ($this->get('session')->get('sortMaterials')) {
-            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->get('session')->get('sortMaterials'));
+            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->get('session')->get('sortMaterials'));
         }
         else {
-            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
+            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         foreach ($materials as $item) {
@@ -316,11 +317,11 @@ class MaterialController extends BaseController
             foreach ($materials as $material) {
                 $itemIds[] = $material->getItemId();
             }
-            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+            $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
         // get material list from manager service 
-        $itemsCountArray = $materialService->getCountArray($roomId);
+        $itemsCountArray = $this->materialService->getCountArray($roomId);
 
         $html = $this->renderView('material/list_print.html.twig', [
             'roomId' => $roomId,
@@ -345,8 +346,6 @@ class MaterialController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'material')")
      * @param Request $request
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
      * @param TopicService $topicService
      * @param WordpressExporter $wordpressExporter
      * @param LegacyMarkup $legacyMarkup
@@ -357,21 +356,18 @@ class MaterialController extends BaseController
      */
     public function detailAction(
         Request $request,
-        ItemService $itemService,
-        MaterialService $materialService,
         TopicService $topicService,
         WordpressExporter $wordpressExporter,
         LegacyMarkup $legacyMarkup,
-        AnnotationService $annotationService,
         int $roomId,
         int $itemId,
         int $versionId = null
     ) {
         $roomItem = $this->getRoom($roomId);
         if ($versionId === null) {
-            $material = $materialService->getMaterial($itemId);
+            $material = $this->materialService->getMaterial($itemId);
         } else {
-            $material = $materialService->getMaterialByVersion($itemId, $versionId);
+            $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
         }
 
         $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
@@ -399,9 +395,9 @@ class MaterialController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
-        $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(), null, null);
+        $amountAnnotations = $this->annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
@@ -460,7 +456,6 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/{itemId}/workflow", condition="request.isXmlHttpRequest()")
      * @param Request $request
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return JsonRedirectResponse
@@ -468,7 +463,6 @@ class MaterialController extends BaseController
      */
     public function workflowAction(
         Request $request,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
@@ -478,11 +472,9 @@ class MaterialController extends BaseController
             if (isset($payload['read']) && $payload['read']) {
                 $read = $payload['read'];
 
-                $legacyEnvironment = $environment->getEnvironment();
-
-                $itemManager = $legacyEnvironment->getItemManager();
-                $currentContextItem = $legacyEnvironment->getCurrentContextItem();
-                $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+                $itemManager = $this->legacyEnvironment->getItemManager();
+                $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+                $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
                 if ($currentContextItem->withWorkflow()) {
                     if ($read == 'true') {
@@ -505,29 +497,25 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/{itemId}/rating/{vote}")
      * @Template()
-     * @param AssessmentService $assessmentService
-     * @param MaterialService $materialService
      * @param int $roomId
      * @param int $itemId
      * @param string $vote
      * @return array
      */
     public function ratingAction(
-        AssessmentService $assessmentService,
-        MaterialService $materialService,
         int $roomId,
         int $itemId,
         string $vote
     ) {
-        $material = $materialService->getMaterial($itemId);
+        $material = $this->materialService->getMaterial($itemId);
         if ($vote != 'remove') {
-            $assessmentService->rateItem($material, $vote);
+            $this->assessmentService->rateItem($material, $vote);
         } else {
-            $assessmentService->removeRating($material);
+            $this->assessmentService->removeRating($material);
         }
-        $ratingDetail = $assessmentService->getRatingDetail($material);
-        $ratingAverageDetail = $assessmentService->getAverageRatingDetail($material);
-        $ratingOwnDetail = $assessmentService->getOwnRatingDetail($material);
+        $ratingDetail = $this->assessmentService->getRatingDetail($material);
+        $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($material);
+        $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($material);
         
         return array(
             'roomId' => $roomId,
@@ -752,10 +740,9 @@ class MaterialController extends BaseController
 
         $ratingDetail = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->get('commsy_legacy.assessment_service');
-            $ratingDetail = $assessmentService->getRatingDetail($material);
-            $ratingAverageDetail = $assessmentService->getAverageRatingDetail($material);
-            $ratingOwnDetail = $assessmentService->getOwnRatingDetail($material);
+            $ratingDetail = $this->assessmentService->getRatingDetail($material);
+            $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($material);
+            $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($material);
         }
 
         $reader_manager = $this->legacyEnvironment->getReaderManager();
@@ -949,31 +936,27 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material/{itemId}/saveworkflow")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function saveWorkflowAction(
-        ItemService $itemService,
-        MaterialService $materialService,
         int $roomId,
         int $itemId
     ) {
         $roomItem = $this->getRoom($roomId);
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
         $tempItem = NULL;
         
         if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
+            $tempItem = $this->materialService->getMaterial($itemId);
         }
 
         $itemArray = array($tempItem);
     
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -1016,12 +999,7 @@ class MaterialController extends BaseController
      * @param Request $request
      * @param ItemController $itemController
      * @param CategoryService $categoryService
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
-     * @param MaterialTransformer $transformer
-     * @param LegacyEnvironment $environment
      * @param TranslatorInterface $translator
-     * @param EventDispatcherInterface $eventDispatcher
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -1030,21 +1008,15 @@ class MaterialController extends BaseController
         Request $request,
         ItemController $itemController,
         CategoryService $categoryService,
-        ItemService $itemService,
-        MaterialService $materialService,
-        MaterialTransformer $transformer,
-        LegacyEnvironment $environment,
         TranslatorInterface $translator,
-        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ) {
         // NOTE: this method currently gets used for both, material & section items
         // TODO: move handling of sections into a dedicated `editSectionAction()`
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $typedItem = null;
         $isMaterial = false;
@@ -1064,21 +1036,21 @@ class MaterialController extends BaseController
             }
 
             // get material from MaterialService
-            $materialItem = $materialService->getMaterial($itemId);
+            $materialItem = $this->materialService->getMaterial($itemId);
             $typedItem = $materialItem;
             $materialItem->setDraftStatus($item->isDraft());
             if (!$materialItem) {
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
 
-            $formData = $transformer->transform($materialItem);
+            $formData = $this->materialTransformer->transform($materialItem);
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
-            $availableLicenses = $licensesRepository->findByContextOrderByPosition($legacyEnvironment->getCurrentPortalId());
+            $availableLicenses = $licensesRepository->findByContextOrderByPosition($this->legacyEnvironment->getCurrentPortalId());
             foreach ($availableLicenses as $availableLicense) {
                 $licenses[$availableLicense->getTitle()] = $availableLicense->getId();
                 $licensesContent[$availableLicense->getId()] = $availableLicense->getContent();
@@ -1094,37 +1066,37 @@ class MaterialController extends BaseController
                     'categories' => $itemController->getCategories($roomId, $categoryService)
                 ],
                 'hashtagMappingOptions' => [
-                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
                     'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
                 'licenses' => $licenses,
             ));
 
-            $eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
 
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
-            $section = $materialService->getSection($itemId);
+            $section = $this->materialService->getSection($itemId);
             $typedItem = $section;
             if (!$section) {
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
-            $formData = $transformer->transform($section);
+            $formData = $this->materialTransformer->transform($section);
             $form = $this->createForm(SectionType::class, $formData, array(
                 'placeholderText' => '['.$translator->trans('insert title').']',
             ));
 
-            $eventDispatcher->dispatch(new CommsyEditEvent($materialService->getMaterial($section->getlinkedItemID())), CommsyEditEvent::EDIT);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($section->getlinkedItemID())), CommsyEditEvent::EDIT);
         }
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $typedItem = $transformer->applyTransformation($typedItem, $form->getData());
+                $typedItem = $this->materialTransformer->applyTransformation($typedItem, $form->getData());
 
                 // update modifier
-                $typedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $typedItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
@@ -1142,12 +1114,12 @@ class MaterialController extends BaseController
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
                         $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
 
-                        $labelManager = $legacyEnvironment->getLabelManager();
+                        $labelManager = $this->legacyEnvironment->getLabelManager();
                         $buzzwordItem = $labelManager->getNewItem();
 
                         $buzzwordItem->setLabelType('buzzword');
                         $buzzwordItem->setContextID($roomId);
-                        $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
+                        $buzzwordItem->setCreatorItem($this->legacyEnvironment->getCurrentUserItem());
                         $buzzwordItem->setName($newHashtagTitle);
 
                         $buzzwordItem->save();
@@ -1165,7 +1137,7 @@ class MaterialController extends BaseController
                 }
 
                 if ($typedItem->getItemType() == CS_SECTION_TYPE) {
-                    $linkedMaterialItem = $materialService->getMaterial($typedItem->getlinkedItemID());
+                    $linkedMaterialItem = $this->materialService->getMaterial($typedItem->getlinkedItemID());
                     $linkedMaterialItem->save();
                 }
 
@@ -1180,7 +1152,7 @@ class MaterialController extends BaseController
             'form' => $form->createView(),
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'material' => $typedItem,
             'licenses' => $licenses,
             'licensesContent' => $licensesContent,
@@ -1191,38 +1163,32 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
-     * @param EventDispatcherInterface $dispatcher
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function saveAction(
-        ItemService $itemService,
-        MaterialService $materialService,
-        EventDispatcherInterface $dispatcher,
         int $roomId,
         int $itemId
     ) {
         $roomItem = $this->getRoom($roomId);
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
         $tempItem = NULL;
         
         if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
+            $tempItem = $this->materialService->getMaterial($itemId);
 
-            $dispatcher->dispatch(new CommsyEditEvent($tempItem), CommsyEditEvent::SAVE);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($tempItem), CommsyEditEvent::SAVE);
         } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId);
+            $tempItem = $this->materialService->getSection($itemId);
 
-            $dispatcher->dispatch(new CommsyEditEvent($materialService->getMaterial($tempItem->getLinkedItemID())), CommsyEditEvent::SAVE);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($tempItem->getLinkedItemID())), CommsyEditEvent::SAVE);
         }
         
         $itemArray = array($tempItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -1301,19 +1267,17 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/create")
      * @Template()
-     * @param MaterialService $materialService
      * @param int $roomId
      * @return RedirectResponse
      * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'material')")
      */
     public function createAction(
-        MaterialService $materialService,
         int $roomId
     ) {
         $roomItem = $this->getRoom($roomId);
 
         // create new material item
-        $materialItem = $materialService->getNewMaterial();
+        $materialItem = $this->materialService->getNewMaterial();
         $materialItem->setBibKind('none');
         $materialItem->setDraftStatus(1);
         $materialItem->setPrivateEditing('1');
@@ -1329,31 +1293,27 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material/{itemId}/createsection")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param MaterialService $materialService
-     * @param MaterialTransformer $transformer
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function createSectionAction(
-        MaterialService $materialService,
-        MaterialTransformer $transformer,
         int $roomId,
         int $itemId
     ) {
         $translator = $this->get('translator');
-        $material = $materialService->getMaterial($itemId);
+        $material = $this->materialService->getMaterial($itemId);
         $sectionList = $material->getSectionList();
         $countSections = $sectionList->getCount();
 
-        $section = $materialService->getNewSection();
+        $section = $this->materialService->getNewSection();
         $section->setDraftStatus(1);
         $section->setLinkedItemId($itemId);
         $section->setVersionId($material->getVersionId());
         $section->setNumber($countSections+1);
         $section->save();
 
-        $formData = $transformer->transform($section);
+        $formData = $this->materialTransformer->transform($section);
         $form = $this->createForm(SectionType::class, $formData, array(
             'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
             'placeholderText' => '['.$translator->trans('insert title').']',
@@ -1375,31 +1335,22 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material/{itemId}/savesection")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      * @param Request $request
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
-     * @param MaterialTransformer $transformer
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return RedirectResponse
      */
     public function saveSectionAction(
         Request $request,
-        ItemService $itemService,
-        MaterialService $materialService,
-        MaterialTransformer $transformer,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
         $translator = $this->get('translator');
 
         // get section
-        $section = $materialService->getSection($itemId);
+        $section = $this->materialService->getSection($itemId);
 
-        $formData = $transformer->transform($section);
+        $formData = $this->materialTransformer->transform($section);
 
         $form = $this->createForm(SectionType::class, $formData, array(
             'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
@@ -1418,11 +1369,11 @@ class MaterialController extends BaseController
                 }
 
                 // update modifier
-                $section->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $section->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $section->save();
 
-                $section->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $section->getLinkedItem()->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 // this will also update the material item's modification date to indicate that it has changes
                 $section->getLinkedItem()->save();
@@ -1443,24 +1394,22 @@ class MaterialController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      * @param Request $request
-     * @param MaterialService $materialService
      * @param int $itemId
      * @return array
      */
     public function sortSectionsAction(
         Request $request,
-        MaterialService $materialService,
         int $itemId
     ) {
         // get section
-        $material = $materialService->getMaterial($itemId);
+        $material = $this->materialService->getMaterial($itemId);
 
         $json = json_decode($request->getContent());
 
         $i = 1;
         foreach ($json as $key => $value) {
             // set sorting
-            $section = $materialService->getSection($value[0]);
+            $section = $this->materialService->getSection($value[0]);
             $section->setNumber($i);
             $section->save();
             $i++;
@@ -1480,31 +1429,22 @@ class MaterialController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      * @param Request $request
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
-     * @param MaterialTransformer $transformer
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function editSectionsAction(
         Request $request,
-        ItemService $itemService,
-        MaterialService $materialService,
-        MaterialTransformer $transformer,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $material = $materialService->getMaterial($itemId);
-        $item = $itemService->getItem($itemId);
+        $material = $this->materialService->getMaterial($itemId);
+        $item = $this->itemService->getItem($itemId);
 
         if (!$material) {
             throw $this->createNotFoundException('No material found for id ' . $itemId);
         }
-        $formData = $transformer->transform($material);
+        $formData = $this->materialTransformer->transform($material);
 
         $formOptions = array(
             'action' => $this->generateUrl('app_material_editsections', array(
@@ -1524,9 +1464,9 @@ class MaterialController extends BaseController
             if ($saveType == 'save') {
                 $formData = $form->getData();
 
-                $material = $transformer->applyTransformation($material, $formData);
+                $material = $this->materialTransformer->applyTransformation($material, $formData);
 
-                $material->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $material->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $material->save();
 
@@ -1551,20 +1491,16 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material/{itemId}/savesections")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function savesectionsAction(
-        ItemService $itemService,
-        MaterialService $materialService,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
-        $material = $materialService->getMaterial($itemId);
+        $item = $this->itemService->getItem($itemId);
+        $material = $this->materialService->getMaterial($itemId);
         $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
         return [
             'roomId' => $roomId,
@@ -1576,24 +1512,19 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/{itemId}/{versionId}/createversion/")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param MaterialService $materialService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @param int $versionId
      * @return RedirectResponse
      */
     public function createVersionAction(
-        MaterialService $materialService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId,
         int $versionId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+        $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
         
-        $material = $materialService->getMaterialByVersion($itemId, $versionId);
+        $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
 
         $newVersionId = $material->getVersionID()+1;
         $newMaterial = $material->cloneCopy(true);
