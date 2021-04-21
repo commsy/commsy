@@ -36,8 +36,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class GroupController
@@ -51,18 +49,15 @@ class GroupController extends BaseController
      * @Template()
      * @param Request $request
      * @param GroupService $groupService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
         GroupService $groupService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
@@ -100,7 +95,7 @@ class GroupController extends BaseController
             'showAssociations' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -120,12 +115,10 @@ class GroupController extends BaseController
         GroupService $groupService,
         PrintService $printService,
         ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         string $sort
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
@@ -181,7 +174,6 @@ class GroupController extends BaseController
      * @param GroupService $groupService
      * @param ReaderService $readerService
      * @param UserService $userService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -206,9 +198,7 @@ class GroupController extends BaseController
             $groupFilter = $request->query->get('group_filter');
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
@@ -250,14 +240,14 @@ class GroupController extends BaseController
             // group member status
             $membersList = $item->getMemberItemList();
             $members = $membersList->to_array();
-            $groupMemberStatus['groupMember'] = $membersList->inList($legacyEnvironment->getCurrentUserItem());
+            $groupMemberStatus['groupMember'] = $membersList->inList($this->legacyEnvironment->getCurrentUserItem());
 
             // grouproom member status
             if ($item->isGroupRoomActivated()) {
                 if ($item->getGroupRoomItem()) {
                     $groupMemberStatus['groupRoomMember'] = $userService->getMemberStatus(
                         $item->getGroupRoomItem(),
-                        $legacyEnvironment->getCurrentUser()
+                        $this->legacyEnvironment->getCurrentUser()
                     );
                 } else {
                     $groupMemberStatus['groupRoomMember'] = 'deactivated';
@@ -275,7 +265,7 @@ class GroupController extends BaseController
             'showRating' => false,
             'allowedActions' => $allowedActions,
             'memberStatus' => $allGroupsMemberStatus,
-            'isRoot' => $legacyEnvironment->getCurrentUser()->isRoot(),
+            'isRoot' => $this->legacyEnvironment->getCurrentUser()->isRoot(),
         );
     }
 
@@ -294,7 +284,6 @@ class GroupController extends BaseController
      * @param RoomService $roomService
      * @param UserService $userService
      * @param TopicService $topicService
-     * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
      * @param LegacyEnvironment $environment
      * @param int $roomId
@@ -311,7 +300,6 @@ class GroupController extends BaseController
         RoomService $roomService,
         UserService $userService,
         TopicService $topicService,
-        TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $environment,
         int $roomId,
@@ -322,8 +310,7 @@ class GroupController extends BaseController
 
         $memberStatus = '';
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if ($infoArray['group']->isGroupRoomActivated()) {
@@ -331,7 +318,7 @@ class GroupController extends BaseController
             if ($groupRoomItem && !empty($groupRoomItem)) {
                 $memberStatus = $userService->getMemberStatus(
                     $groupRoomItem,
-                    $legacyEnvironment->getCurrentUser()
+                    $this->legacyEnvironment->getCurrentUser()
                 );
             } else {
                 $memberStatus = 'deactivated';
@@ -344,7 +331,7 @@ class GroupController extends BaseController
         $alert = null;
         if ($infoArray['group']->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
         }
 
         $pathTopicItem = null;
@@ -399,7 +386,6 @@ class GroupController extends BaseController
      * @param ItemService $itemService
      * @param PrintService $printService
      * @param ReaderService $readerService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
      * @return Response
@@ -411,13 +397,12 @@ class GroupController extends BaseController
         ItemService $itemService,
         PrintService $printService,
         ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
 
         $infoArray = $this->getDetailInfo($annotationService, $categoryService, $groupService, $itemService,
-            $readerService, $legacyEnvironment->getEnvironment(), $roomId, $itemId);
+            $readerService, $this->legacyEnvironment, $roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -673,7 +658,6 @@ class GroupController extends BaseController
         LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
 
         // create new group item
         $groupItem = $groupService->getNewGroup();
@@ -682,7 +666,7 @@ class GroupController extends BaseController
         $groupItem->save();
 
         // add current user to new group
-        $groupItem->addMember($legacyEnvironment->getCurrentUser());
+        $groupItem->addMember($this->legacyEnvironment->getCurrentUser());
 
         return $this->redirectToRoute('app_group_detail', array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
     }
@@ -728,8 +712,7 @@ class GroupController extends BaseController
         int $itemId
     ) {
         $item = $itemService->getItem($itemId);
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $groupItem = NULL;
 
@@ -747,21 +730,20 @@ class GroupController extends BaseController
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
         $formData['draft'] = $isDraft;
-        $translator = $this->get('translator');
         $form = $this->createForm(GroupType::class, $formData, array(
             'action' => $this->generateUrl('app_group_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
-            'placeholderText' => '[' . $translator->trans('insert title') . ']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
@@ -772,7 +754,7 @@ class GroupController extends BaseController
                 $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
 
                 // update modifier
-                $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $groupItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
@@ -800,7 +782,7 @@ class GroupController extends BaseController
             // $em->flush();
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
+        $this->eventDispatcher->dispatch( new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
@@ -808,7 +790,7 @@ class GroupController extends BaseController
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -841,10 +823,9 @@ class GroupController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -888,7 +869,7 @@ class GroupController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($group));
+        $this->eventDispatcher->dispatch( new CommsyEditEvent($group), CommsyEditEvent::SAVE);
 
         return array(
             'roomId' => $roomId,
@@ -910,7 +891,6 @@ class GroupController extends BaseController
      * @param GroupService $groupService
      * @param RoomService $roomService
      * @param GroupTransformer $transformer
-     * @param EventDispatcherInterface $eventDispatcher
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
@@ -923,13 +903,10 @@ class GroupController extends BaseController
         GroupService $groupService,
         RoomService $roomService,
         GroupTransformer $transformer,
-        EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
         $groupItem = NULL;
 
         // get group from GroupService
@@ -959,7 +936,7 @@ class GroupController extends BaseController
                 $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
 
                 // update modifier
-                $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $groupItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $groupItem->save(true);
 
@@ -968,8 +945,7 @@ class GroupController extends BaseController
                 // only initialize the name of the grouproom the first time it is created!
                 if ($groupRoom && !empty($groupRoom)) {
                     if ($originalGroupName == "") {
-                        $translator = $this->get('translator');
-                        $groupRoom->setTitle($groupItem->getTitle() . " (" . $translator->trans('grouproom', [], 'group') . ")");
+                        $groupRoom->setTitle($groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [], 'group') . ")");
                     } else {
                         $groupRoom->setTitle($originalGroupName);
                     }
@@ -995,7 +971,7 @@ class GroupController extends BaseController
             return $this->redirectToRoute('app_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($groupItem), 'commsy.edit');
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
@@ -1028,13 +1004,12 @@ class GroupController extends BaseController
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
         //$roomItem = $roomManager->getItem($material->getContextId());        
         //$numTotalMember = $roomItem->getAllUsers();
         
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -1103,13 +1078,11 @@ class GroupController extends BaseController
     public function joinAction(
         GroupService $groupService,
         UserService $userService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId,
         bool $joinRoom
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         $groupItem = $groupService->getGroup($itemId);
@@ -1120,7 +1093,7 @@ class GroupController extends BaseController
             throw $this->createNotFoundException('The requested group does not exists');
         }
 
-        $current_user = $legacyEnvironment->getCurrentUser();
+        $current_user = $this->legacyEnvironment->getCurrentUser();
 
         // first, join group
         if ($groupItem->getMemberItemList()->inList($current_user)) {
@@ -1133,7 +1106,7 @@ class GroupController extends BaseController
         if ($joinRoom) {
             $grouproomItem = $groupItem->getGroupRoomItem();
             if ($grouproomItem) {
-                $memberStatus = $userService->getMemberStatus($grouproomItem, $legacyEnvironment->getCurrentUser());
+                $memberStatus = $userService->getMemberStatus($grouproomItem, $this->legacyEnvironment->getCurrentUser());
                 if ($memberStatus == 'join') {
                     return $this->redirectToRoute('app_context_request', [
                         'roomId' => $roomId,
@@ -1164,12 +1137,10 @@ class GroupController extends BaseController
      */
     public function leaveAction(
         GroupService $groupService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         $groupItem = $groupService->getGroup($itemId);
 
@@ -1179,7 +1150,7 @@ class GroupController extends BaseController
             throw $this->createNotFoundException('The requested group does not exists');
         }
 
-        $current_user = $legacyEnvironment->getCurrentUser();
+        $current_user = $this->legacyEnvironment->getCurrentUser();
         $groupItem->removeMember($current_user);
 
         return new JsonDataResponse([
@@ -1232,17 +1203,16 @@ class GroupController extends BaseController
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
         $group = $groupService->getGroup($itemId);
         $membersList = $group->getMemberItemList();
         $memberStatus = $userService->getMemberStatus(
             $group->getGroupRoomItem(),
-            $legacyEnvironment->getCurrentUser()
+            $this->legacyEnvironment->getCurrentUser()
         );
         return [
             'group' => $group,
             'roomId' => $roomId,
-            'userIsMember' => $membersList->inList($legacyEnvironment->getCurrentUserItem()),
+            'userIsMember' => $membersList->inList($this->legacyEnvironment->getCurrentUserItem()),
             'memberStatus' => $memberStatus,
         ];
     }
@@ -1280,8 +1250,7 @@ class GroupController extends BaseController
             $groupIds = $postData['groups'];
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
         $users = $userService->getUsersByGroupIds($roomId, $groupIds, true);
@@ -1291,18 +1260,17 @@ class GroupController extends BaseController
         $defaultBodyMessage = '';
         if ($groupCount) {
             $defaultBodyMessage .= '<br/><br/><br/>' . '--' . '<br/>';
-            $translator = $this->get('translator');
             if ($groupCount == 1) {
                 $group = $groupService->getGroup(reset($groupIds));
                 if ($group) {
-                    $defaultBodyMessage .= $translator->trans(
+                    $defaultBodyMessage .= $this->translator->trans(
                         'This email has been sent to all users of this group',
                         ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $group->getName(), '%room_name%' => $room->getTitle()],
                         'mail'
                     );
                 }
             } elseif ($groupCount > 1) {
-                $defaultBodyMessage .= $translator->trans(
+                $defaultBodyMessage .= $this->translator->trans(
                     'This email has been sent to multiple users of this room',
                     ['%sender_name%' => $currentUser->getFullName(), '%user_count%' => count($users), '%room_name%' => $room->getTitle()],
                     'mail'
@@ -1329,7 +1297,7 @@ class GroupController extends BaseController
             if ($saveType == 'save') {
                 $formData = $form->getData();
 
-                $portalItem = $legacyEnvironment->getCurrentPortalItem();
+                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 $from = $this->getParameter('commsy.email.from');
 
@@ -1468,7 +1436,6 @@ class GroupController extends BaseController
      * @param Request $request
      * @param ItemService $itemService
      * @param UserService $userService
-     * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
@@ -1478,7 +1445,6 @@ class GroupController extends BaseController
         Request $request,
         ItemService $itemService,
         UserService $userService,
-        TranslatorInterface $translator,
         LegacyEnvironment $environment,
         MailAssistant $mailAssistant,
         int $roomId,
@@ -1490,11 +1456,10 @@ class GroupController extends BaseController
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $room = $this->getRoom($roomId);
 
-        $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+        $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $this->translator->trans(
                 'This email has been sent to all users of this group',
                 ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $item->getName(), '%room_name%' => $room->getTitle()],
                 'mail'
@@ -1518,7 +1483,7 @@ class GroupController extends BaseController
             if ($saveType == 'save') {
                 $formData = $form->getData();
 
-                $portalItem = $legacyEnvironment->getCurrentPortalItem();
+                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 $from = $this->getParameter('commsy.email.from');
 
@@ -1696,6 +1661,12 @@ class GroupController extends BaseController
         return $action->execute($room, $items);
     }
 
+    /**
+     * @param $masterRoom
+     * @param $targetRoom
+     * @return mixed
+     * @throws Exception
+     */
     private function copySettings($masterRoom, $targetRoom)
     {
         $old_room = $masterRoom;
@@ -1745,23 +1716,25 @@ class GroupController extends BaseController
         return $targetRoom;
     }
 
+    /**
+     * @return array
+     */
     private function getAvailableTemplates()
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $templates = [];
 
-        $currentPortal = $legacyEnvironment->getCurrentPortalItem();
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomManager->setContextLimit($currentPortal->getItemID());
         $roomManager->setOnlyGrouproom();
         $roomManager->setTemplateLimit();
         $roomManager->select();
         $roomList = $roomManager->get();
 
-        $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        $defaultId = $this->legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
         if ($roomList->isNotEmpty() or $defaultId != '-1') {
-            $currentUser = $legacyEnvironment->getCurrentUser();
+            $currentUser = $this->legacyEnvironment->getCurrentUser();
             if ($defaultId != '-1') {
                 $defaultItem = $roomManager->getItem($defaultId);
                 if (isset($defaultItem)) {
@@ -1776,7 +1749,7 @@ class GroupController extends BaseController
                 $templateAvailability = $item->getTemplateAvailability();
 
                 if (($templateAvailability == '0') OR
-                    ($legacyEnvironment->inCommunityRoom() and $templateAvailability == '3') OR
+                    ($this->legacyEnvironment->inCommunityRoom() and $templateAvailability == '3') OR
                     ($templateAvailability == '1' and $item->mayEnter($currentUser)) OR
                     ($templateAvailability == '2' and $item->mayEnter($currentUser) and ($item->isModeratorByUserID($currentUser->getUserID(), $currentUser->getAuthSource())))
                 ) {
@@ -1793,6 +1766,10 @@ class GroupController extends BaseController
         return $templates;
     }
 
+    /**
+     * @param $groupRoom
+     * @return bool
+     */
     private function userIsLastGrouproomModerator($groupRoom)
     {
 
@@ -1802,8 +1779,7 @@ class GroupController extends BaseController
             return false;
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $relatedUsers = $legacyEnvironment->getCurrentUser()->getRelatedUserList();
+        $relatedUsers = $this->legacyEnvironment->getCurrentUser()->getRelatedUserList();
 
         $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
         $relatedUsersItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $relatedUsers->to_array());
