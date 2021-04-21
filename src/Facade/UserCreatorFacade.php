@@ -14,6 +14,7 @@ use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Services\LegacyEnvironment;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
@@ -29,14 +30,18 @@ class UserCreatorFacade
 
     private $accountFacade;
 
+    private $entityManager;
+
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         UserPasswordEncoderInterface $passwordEncoder,
-        AccountCreatorFacade $accountFacade
+        AccountCreatorFacade $accountFacade,
+        EntityManagerInterface $entityManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->accountFacade = $accountFacade;
         $this->passwordEncoder = $passwordEncoder;
+        $this->entityManager = $entityManager;
 
     }
 
@@ -50,7 +55,7 @@ class UserCreatorFacade
     ) {
         foreach ($csvUserDatasets as $csvUserDataset) {
             /** CsvUserDataset $csvUserDataset */
-            // $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSourceItem);
+            $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSourceItem);
             $userPassword = $csvUserDataset->getPassword() ?? $this->generatePassword();
 
             $newUser = $this->createUser(
@@ -90,11 +95,11 @@ class UserCreatorFacade
      */
     private function findFreeIdentifier(string $identifier, AuthSource $authSourceItem): string
     {
-        $authentication = $this->legacyEnvironment->getAuthenticationObject();
+        $em = $this->entityManager->getRepository(Account::class);
         $lookup = $identifier;
         $suffix = null;
 
-        while (!$authentication->is_free($lookup, $authSourceItem->getItemID())) {
+        while (!$em->findOneByCredentials($identifier, $this->legacyEnvironment->getCurrentPortalID(), $authSourceItem)) {
             if ($suffix === null) {
                 $suffix = 0;
             }
