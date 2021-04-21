@@ -57,11 +57,6 @@ class AnnouncementController extends BaseController
     protected $translator;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
      * @required
      * @param AnnotationService $annotationService
      */
@@ -77,14 +72,6 @@ class AnnouncementController extends BaseController
     public function setAnnouncementService( AnnouncementService$announcementService): void
     {
         $this->announcementService = $announcementService;
-    }
-
-    /**
-     * @required
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher){
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
