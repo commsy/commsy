@@ -26,6 +26,7 @@ use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Model\Csv\Base64CsvFile;
+use App\Form\Model\Csv\CsvUserDataset;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
@@ -530,7 +531,6 @@ class PortalSettingsController extends AbstractController
      */
     public function csvImportAction(
         Request $request,
-        LegacyEnvironment $environment,
         UserCreatorFacade $userCreator,
         int $portalId,
         TranslatorInterface $translator
@@ -560,8 +560,8 @@ class PortalSettingsController extends AbstractController
             $data = $importForm->getData();
             /** @var Base64CsvFile[] $base64CsvFiles */
             $base64CsvFiles = $data['base64'];
+            $csvFiles = $data['upload'];
 
-            $userDatasets = [];
             if ($base64CsvFiles) {
                 foreach ($base64CsvFiles as $base64CsvFile) {
                     if ($base64CsvFile->getChecked()) {
@@ -571,12 +571,20 @@ class PortalSettingsController extends AbstractController
                         }
                     }
                 }
+            }
 
-                $legacyEnvironment = $environment->getEnvironment();
-                $authSourceManager = $legacyEnvironment->getAuthSourceManager();
-                $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
+            $userDatasets = [];
+            if ($csvFiles) {
+                foreach ($csvFiles as $csvFile) {
 
-                $userCreator->createFromCsvDataset($authSourceItem, $userDatasets);
+                    if (($fp = fopen($csvFile, "r")) !== false) {
+                        while (($row = fgetcsv($fp, 999999, ",")) !== false) {
+                            $userDatasets[] = $row;
+                        }
+                    }
+                }
+
+                $userCreator->createFromCsvDataset($data['auth_sources'], $this->parseCsvDatasets($userDatasets));
             }
         }
 
@@ -584,6 +592,40 @@ class PortalSettingsController extends AbstractController
             'form' => $importForm->createView(),
             'portal' => $portal,
         ];
+    }
+
+    private function parseCsvDatasets(array $rawCsvArray)
+    {
+        $dataSetArray = [];
+        $isHead = true;
+        $lastNameIndex = 0;
+        $firstNameIndex = 0;
+        $mailIndex = 0;
+        $IdIndex = 0;
+        $passwordIndex = 0;
+        $roomListStartIndex = 0;
+        foreach ($rawCsvArray as $csvInput) {
+            if ($isHead) {
+                $isHead = false;
+                $lastNameIndex = array_search("Nachname", $rawCsvArray[0]);
+                $firstNameIndex = array_search("Vorname", $rawCsvArray[0]);
+                $mailIndex = array_search("E-Mail", $rawCsvArray[0]);
+                $IdIndex = array_search("Kennung", $rawCsvArray[0]);
+                $passwordIndex = array_search("Passwort", $rawCsvArray[0]);
+                $roomListStartIndex = array_search("Raum-Liste", $rawCsvArray[0]);
+                continue;
+            }
+            $tmpCsvDataset = new CsvUserDataset();
+            $tmpCsvDataset->setLastname($csvInput[$lastNameIndex]);
+            $tmpCsvDataset->setFirstname($csvInput[$firstNameIndex]);
+            $tmpCsvDataset->setEmail($csvInput[$mailIndex]);
+            $tmpCsvDataset->setIdentifier($csvInput[$IdIndex]);
+            $tmpCsvDataset->setPassword($csvInput[$passwordIndex]);
+            $tmpCsvDataset->setRooms(implode(", ", array_slice($csvInput, $roomListStartIndex)));
+            $dataSetArray[] = $tmpCsvDataset;
+
+        }
+        return $dataSetArray;
     }
 
     /**
