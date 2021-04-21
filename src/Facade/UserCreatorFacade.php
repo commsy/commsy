@@ -9,6 +9,7 @@
 namespace App\Facade;
 
 
+use App\Entity\AuthSource;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Services\LegacyEnvironment;
 
@@ -26,8 +27,9 @@ class UserCreatorFacade
 
     /**
      * @param CsvUserDataset[] $csvUserDatasets
+     * @param AuthSource $authSourceItem
      */
-    public function createFromCsvDataset(\cs_auth_source_item $authSourceItem, array $csvUserDatasets)
+    public function createFromCsvDataset(AuthSource $authSourceItem, array $csvUserDatasets)
     {
         foreach ($csvUserDatasets as $csvUserDataset) {
             /** CsvUserDataset $csvUserDataset */
@@ -55,10 +57,10 @@ class UserCreatorFacade
      * suffix until a free account ist found.
      *
      * @param string $identifier
-     * @param \cs_auth_source_item $authSourceItem
+     * @param AuthSource $authSourceItem
      * @return string The free user identifier
      */
-    private function findFreeIdentifier(string $identifier, \cs_auth_source_item $authSourceItem): string
+    private function findFreeIdentifier(string $identifier, AuthSource $authSourceItem): string
     {
         $authentication = $this->legacyEnvironment->getAuthenticationObject();
         $lookup = $identifier;
