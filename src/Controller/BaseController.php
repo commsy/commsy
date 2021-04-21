@@ -19,6 +19,7 @@ use cs_item;
 use cs_room_item;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -50,6 +51,11 @@ abstract class BaseController extends AbstractController
      * @var TranslatorInterface
      */
     protected $translator;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
 
     /**
      * @required
@@ -85,6 +91,14 @@ abstract class BaseController extends AbstractController
     public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
+    }
+
+    /**
+     * @required
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher){
+        $this->eventDispatcher = $eventDispatcher;
     }
 
 
