@@ -25,15 +25,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class CopyController extends BaseController
 {
-    protected $roomService;
+    /**
+     * @var CopyService
+     */
+    private $copyService;
+
+    /**
+     * @param mixed $copyService
+     */
+    public function setCopyService(CopyService $copyService): void
+    {
+        $this->copyService = $copyService;
+    }
 
 
     /**
      * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
-     * @param CopyService $copyService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -42,8 +51,6 @@ class CopyController extends BaseController
      */
     public function feedAction(
         Request $request,
-        CopyService $copyService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -79,11 +86,11 @@ class CopyController extends BaseController
             $filterForm->submit($copyFilter);
 
             // apply filter
-            $copyService->setFilterConditions($filterForm);
+            $this->copyService->setFilterConditions($filterForm);
         }
 
         // get announcement list from manager service 
-        $entries = $copyService->getListEntries($roomId, $max, $start, $sort);
+        $entries = $this->copyService->getListEntries($roomId, $max, $start, $sort);
 
         $stackRubrics = ['date', 'material', 'discussion', 'todo'];
 
@@ -109,13 +116,11 @@ class CopyController extends BaseController
      * @Route("/room/{roomId}/copy")
      * @Template()
      * @param Request $request
-     * @param CopyService $copyService
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
-        CopyService $copyService,
         int $roomId
     ) {
         $roomItem = $this->loadRoom($roomId);
@@ -125,11 +130,11 @@ class CopyController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions
-            $copyService->setFilterConditions($filterForm);
+            $this->copyService->setFilterConditions($filterForm);
         }
 
         // get number of items
-        $itemsCountArray = $copyService->getCountArray($roomId);
+        $itemsCountArray = $this->copyService->getCountArray($roomId);
 
         return [
             'roomId' => $roomId,
@@ -194,7 +199,6 @@ class CopyController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-        $copyService = $this->get('commsy.copy_service');
 
         if ($selectAll) {
             if ($request->query->has('copy_filter')) {
@@ -205,12 +209,12 @@ class CopyController extends BaseController
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $copyService->setFilterConditions($filterForm);
+                $this->copyService->setFilterConditions($filterForm);
             }
 
-            return $copyService->getListEntries($roomItem->getItemID());
+            return $this->copyService->getListEntries($roomItem->getItemID());
         } else {
-            return $copyService->getCopiesById($roomItem->getItemID(), $itemIds);
+            return $this->copyService->getCopiesById($roomItem->getItemID(), $itemIds);
         }
     }
 
