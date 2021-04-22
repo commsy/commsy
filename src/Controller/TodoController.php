@@ -50,7 +50,7 @@ class TodoController extends BaseController
     /**
      * @var TodoService
      */
-    private $todoService;
+    private TodoService $todoService;
 
     /**
      * @required
@@ -235,9 +235,7 @@ class TodoController extends BaseController
      * @param AnnotationService $annotationService
      * @param AssessmentService $assessmentService
      * @param CategoryService $categoryService
-     * @param ItemService $itemService
      * @param TopicService $topicService
-     * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
      * @param int $roomId
      * @param int $itemId
@@ -248,16 +246,12 @@ class TodoController extends BaseController
         AnnotationService $annotationService,
         AssessmentService $assessmentService,
         CategoryService $categoryService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        TodoService $todoService,
         TopicService $topicService,
-        TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId
     ) {
-        $todo = $todoService->getTodo($itemId);
+        $todo = $this->todoService->getTodo($itemId);
         /** @var cs_step_item[] $steps */
         $steps = $todo->getStepItemList()->to_array();
 
@@ -340,7 +334,7 @@ class TodoController extends BaseController
                $readerList[$item->getItemId()] = 'changed';
             }
             
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         // annotation form
@@ -368,7 +362,7 @@ class TodoController extends BaseController
         $alert = null;
         if ($this->todoService->getTodo($itemId)->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
         }
 
         $pathTopicItem = null;
@@ -376,7 +370,7 @@ class TodoController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
         $amountAnnotations = $annotationService->getListAnnotations($roomId, $this->todoService->getTodo($itemId)->getItemId(), null, null);
 
         return array(
@@ -392,7 +386,7 @@ class TodoController extends BaseController
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
-            'draft' => $itemService->getItem($itemId)->isDraft(),
+            'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
@@ -416,14 +410,12 @@ class TodoController extends BaseController
      * @Template("todo/edit_step.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId) or is_granted('ITEM_PARTICIPATE', itemId)")
      * @param TodoTransformer $transformer
-     * @param TranslatorInterface $translator
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function createStepAction(
         TodoTransformer $transformer,
-        TranslatorInterface $translator,
         int $roomId,
         int $itemId
     ) {
@@ -438,7 +430,7 @@ class TodoController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ));
 
         return [
@@ -453,25 +445,19 @@ class TodoController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      * @param Request $request
-     * @param ItemService $itemService
      * @param TodoTransformer $transformer
-     * @param TranslatorInterface $translator
-     * @param EventDispatcherInterface $eventDispatcher
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function editStepAction(
         Request $request,
-        ItemService $itemService,
         TodoTransformer $transformer,
-        TranslatorInterface $translator,
-        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ) {
 
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
 
         // get step
         $step = $this->todoService->getStep($itemId);
@@ -483,10 +469,10 @@ class TodoController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ]);
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
@@ -516,7 +502,7 @@ class TodoController extends BaseController
                     // this will also update the todo item's modification date to indicate that it has changes
                     $step->getLinkedItem()->save();
 
-                    $eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::SAVE);
+                    $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::SAVE);
 
                     return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,
@@ -550,11 +536,8 @@ class TodoController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      * @param Request $request
      * @param CategoryService $categoryService
-     * @param ItemService $itemService
      * @param TodoTransformer $transformer
-     * @param TranslatorInterface $translator
      * @param ItemController $itemController
-     * @param EventDispatcherInterface $eventDispatcher
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -562,16 +545,13 @@ class TodoController extends BaseController
     public function editAction(
         Request $request,
         CategoryService $categoryService,
-        ItemService $itemService,
         TodoTransformer $transformer,
-        TranslatorInterface $translator,
         ItemController $itemController,
-        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ) {
         /** @var cs_item $item */
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
         $roomItem = $this->roomService->getRoomItem($roomId);
@@ -584,9 +564,9 @@ class TodoController extends BaseController
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         $statusChoices = array(
-            $translator->trans('pending', [], 'todo') => '1',
-            $translator->trans('in progress', [], 'todo') => '2',
-            $translator->trans('done', [], 'todo') => '3',
+            $this->translator->trans('pending', [], 'todo') => '1',
+            $this->translator->trans('in progress', [], 'todo') => '2',
+            $this->translator->trans('done', [], 'todo') => '3',
         );
 
         foreach ($roomItem->getExtraToDoStatusArray() as $key => $value) {
@@ -599,13 +579,13 @@ class TodoController extends BaseController
                 'itemId' => $itemId,
             )),
             'statusChoices' => $statusChoices,
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
-                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         );
@@ -654,7 +634,7 @@ class TodoController extends BaseController
             return $this->redirectToRoute('app_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
@@ -670,31 +650,27 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function saveAction(
-        ItemService $itemService,
-        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
         if ($item->getItemType() == 'todo') {
             $typedItem = $this->todoService->getTodo($itemId);
-            $eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
         } else if ($item->getItemType() == 'step') {
             $typedItem = $this->todoService->getStep($itemId);
-            $eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()), CommsyEditEvent::SAVE);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()), CommsyEditEvent::SAVE);
         }
         
         $itemArray = array($typedItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
         
         $readerManager = $this->legacyEnvironment->getReaderManager();
@@ -741,7 +717,7 @@ class TodoController extends BaseController
                $readerList[$item->getItemId()] = 'changed';
             }
             
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         return array(
@@ -793,7 +769,6 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo/{itemId}/print")
      * @param AssessmentService $assessmentService
-     * @param ItemService $itemService
      * @param CategoryService $categoryService
      * @param PrintService $printService
      * @param int $roomId
@@ -802,13 +777,12 @@ class TodoController extends BaseController
      */
     public function printAction(
         AssessmentService $assessmentService,
-        ItemService $itemService,
         CategoryService $categoryService,
         PrintService $printService,
         int $roomId,
         int $itemId
     ) {
-        $infoArray = $this->getDetailInfo($assessmentService, $categoryService, $itemService, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($assessmentService, $categoryService, $roomId, $itemId);
         // annotation form
         $form = $this->createForm(AnnotationType::class);
         $html = $this->renderView('todo/detail_print.html.twig', [
@@ -1166,7 +1140,6 @@ class TodoController extends BaseController
     private function getDetailInfo (
         AssessmentService $assessmentService,
         CategoryService $categoryService,
-        ItemService $itemService,
         int $roomId,
         int $itemId
     ) {
@@ -1233,7 +1206,7 @@ class TodoController extends BaseController
                 $readerList[$item->getItemId()] = 'changed';
             }
 
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         // annotation form
@@ -1311,7 +1284,7 @@ class TodoController extends BaseController
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
-            'draft' => $itemService->getItem($itemId)->isDraft(),
+            'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
