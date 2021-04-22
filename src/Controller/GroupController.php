@@ -45,16 +45,28 @@ use Symfony\Component\Routing\Annotation\Route;
 class GroupController extends BaseController
 {
     /**
+     * @var GroupService
+     */
+    private GroupService $groupService;
+
+    /**
+     * @required
+     * @param GroupService $groupService
+     */
+    public function setGroupService(GroupService $groupService): void
+    {
+        $this->groupService = $groupService;
+    }
+
+    /**
      * @Route("/room/{roomId}/group")
      * @Template()
      * @param Request $request
-     * @param GroupService $groupService
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
-        GroupService $groupService,
         int $roomId
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -70,13 +82,13 @@ class GroupController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in group manager
-            $groupService->setFilterConditions($filterForm);
+            $this->groupService->setFilterConditions($filterForm);
         } else {
-            $groupService->hideDeactivatedEntries();
+            $this->groupService->hideDeactivatedEntries();
         }
 
         // get group list from manager service 
-        $itemsCountArray = $groupService->getCountArray($roomId);
+        $itemsCountArray = $this->groupService->getCountArray($roomId);
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('group') != '') {
@@ -102,19 +114,14 @@ class GroupController extends BaseController
     /**
      * @Route("/room/{roomId}/group/print/{sort}", defaults={"sort" = "none"})
      * @param Request $request
-     * @param GroupService $groupService
      * @param PrintService $printService
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param string $sort
      * @return Response
      */
     public function printlistAction(
         Request $request,
-        GroupService $groupService,
         PrintService $printService,
-        ReaderService $readerService,
         int $roomId,
         string $sort
     ) {
@@ -125,33 +132,33 @@ class GroupController extends BaseController
             throw $this->createNotFoundException('The requested room does not exist');
         }
         $filterForm = $this->createFilterForm($roomItem);
-        $numAllGroups = $groupService->getCountArray($roomId)['countAll'];
+        $numAllGroups = $this->groupService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in group manager
-            $groupService->setFilterConditions($filterForm);
+            $this->groupService->setFilterConditions($filterForm);
         } else {
-            $groupService->hideDeactivatedEntries();
+            $this->groupService->hideDeactivatedEntries();
         }
 
         // get group list from manager service 
         if ($sort != "none") {
-            $groups = $groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
+            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
         } elseif ($this->get('session')->get('sortGroups')) {
-            $groups = $groupService->getListGroups($roomId, $numAllGroups, 0, $this->get('session')->get('sortGroups'));
+            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $this->get('session')->get('sortGroups'));
         } else {
-            $groups = $groupService->getListGroups($roomId, $numAllGroups, 0, 'date');
+            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, 'date');
         }
 
         $readerList = array();
         foreach ($groups as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
         // get group list from manager service 
-        $itemsCountArray = $groupService->getCountArray($roomId);
+        $itemsCountArray = $this->groupService->getCountArray($roomId);
 
         $html = $this->renderView('group/list_print.html.twig', [
             'roomId' => $roomId,
@@ -171,8 +178,6 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
-     * @param GroupService $groupService
-     * @param ReaderService $readerService
      * @param UserService $userService
      * @param int $roomId
      * @param int $max
@@ -182,10 +187,7 @@ class GroupController extends BaseController
      */
     public function feedAction(
         Request $request,
-        GroupService $groupService,
-        ReaderService $readerService,
         UserService $userService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -211,13 +213,13 @@ class GroupController extends BaseController
             // manually bind values from the request
             $filterForm->submit($groupFilter);
 
-            $groupService->setFilterConditions($filterForm);
+            $this->groupService->setFilterConditions($filterForm);
         } else {
-            $groupService->hideDeactivatedEntries();
+            $this->groupService->hideDeactivatedEntries();
         }
 
         // get group list from manager service 
-        $groups = $groupService->getListGroups($roomId, $max, $start, $sort);
+        $groups = $this->groupService->getListGroups($roomId, $max, $start, $sort);
 
         $this->get('session')->set('sortGroups', $sort);
 
@@ -227,7 +229,7 @@ class GroupController extends BaseController
         $readerList = array();
         $allowedActions = array();
         foreach ($groups as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
                 $allowedActions[$item->getItemID()] = array('markread', 'sendmail', 'delete');
             } else {
@@ -278,14 +280,9 @@ class GroupController extends BaseController
      * @param Request $request
      * @param AnnotationService $annotationService
      * @param CategoryService $categoryService
-     * @param GroupService $groupService
-     * @param ItemService $itemService
-     * @param ReaderService $readerService
-     * @param RoomService $roomService
      * @param UserService $userService
      * @param TopicService $topicService
      * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -294,19 +291,13 @@ class GroupController extends BaseController
         Request $request,
         AnnotationService $annotationService,
         CategoryService $categoryService,
-        GroupService $groupService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        RoomService $roomService,
         UserService $userService,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $groupService, $itemService,
-            $readerService, $environment->getEnvironment(), $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $roomId, $itemId);
 
         $memberStatus = '';
 
@@ -339,7 +330,7 @@ class GroupController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,
@@ -374,7 +365,7 @@ class GroupController extends BaseController
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
             'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
-            'userRubricVisible' => in_array("user", $roomService->getRubricInformation($roomId)),
+            'userRubricVisible' => in_array("user", $this->roomService->getRubricInformation($roomId)),
         );
     }
 
@@ -382,10 +373,7 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/{itemId}/print")
      * @param AnnotationService $annotationService
      * @param CategoryService $categoryService
-     * @param GroupService $groupService
-     * @param ItemService $itemService
      * @param PrintService $printService
-     * @param ReaderService $readerService
      * @param int $roomId
      * @param int $itemId
      * @return Response
@@ -393,16 +381,12 @@ class GroupController extends BaseController
     public function printAction(
         AnnotationService $annotationService,
         CategoryService $categoryService,
-        GroupService $groupService,
-        ItemService $itemService,
         PrintService $printService,
-        ReaderService $readerService,
         int $roomId,
         int $itemId
     ) {
 
-        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $groupService, $itemService,
-            $readerService, $this->legacyEnvironment, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -441,41 +425,37 @@ class GroupController extends BaseController
     private function getDetailInfo(
         AnnotationService $annotationService,
         CategoryService $categoryService,
-        GroupService $groupService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        \cs_environment $environment,
         int $roomId,
         int $itemId
     ) {
         $infoArray = array();
 
-        $group = $groupService->getGroup($itemId);
+        $group = $this->groupService->getGroup($itemId);
 
         $item = $group;
-        $reader_manager = $environment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
         // when group is newly created, "modificationDate" is equal to "reader['read_date']", so operator "<=" instead of "<" should be used here
         if (empty($reader) || $reader['read_date'] <= $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $environment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
         // when group is newly created, "modificationDate" is equal to "noticed['read_date']", so operator "<=" instead of "<" should be used here
         if (empty($noticed) || $noticed['read_date'] <= $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        $current_context = $environment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $roomManager = $environment->getRoomManager();
-        $readerManager = $environment->getReaderManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
         $roomItem = $roomManager->getItem($group->getContextId());
         $numTotalMember = $roomItem->getAllUsers();
 
-        $userManager = $environment->getUserManager();
-        $userManager->setContextLimit($environment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -508,16 +488,16 @@ class GroupController extends BaseController
 
         $readerList = array();
         $modifierList = array();
-        $reader = $readerService->getLatestReader($group->getItemId());
+        $reader = $this->readerService->getLatestReader($group->getItemId());
         if (empty($reader)) {
             $readerList[$item->getItemId()] = 'new';
         } elseif ($reader['read_date'] < $group->getModificationDate()) {
             $readerList[$group->getItemId()] = 'changed';
         }
 
-        $modifierList[$group->getItemId()] = $itemService->getAdditionalEditorsForItem($group);
+        $modifierList[$group->getItemId()] = $this->itemService->getAdditionalEditorsForItem($group);
 
-        $groups = $groupService->getListGroups($roomId);
+        $groups = $this->groupService->getListGroups($roomId);
         $groupList = array();
         $counterBefore = 0;
         $counterAfter = 0;
@@ -590,10 +570,10 @@ class GroupController extends BaseController
         $infoArray['readCount'] = $read_count;
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
-        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
-        $infoArray['user'] = $environment->getCurrentUserItem();
+        $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
@@ -647,20 +627,16 @@ class GroupController extends BaseController
     /**
      * @Route("/room/{roomId}/group/create")
      * @Template()
-     * @param GroupService $groupService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return RedirectResponse
      * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'group')")
      */
     public function createAction(
-        GroupService $groupService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
 
         // create new group item
-        $groupItem = $groupService->getNewGroup();
+        $groupItem = $this->groupService->getNewGroup();
         $groupItem->setDraftStatus(1);
         $groupItem->setPrivateEditing(1);
         $groupItem->save();
@@ -692,10 +668,7 @@ class GroupController extends BaseController
      * @param Request $request
      * @param ItemController $itemController
      * @param CategoryService $categoryService
-     * @param GroupService $groupService
-     * @param ItemService $itemService
      * @param GroupTransformer $transformer
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -704,14 +677,11 @@ class GroupController extends BaseController
         Request $request,
         ItemController $itemController,
         CategoryService $categoryService,
-        GroupService $groupService,
-        ItemService $itemService,
         GroupTransformer $transformer,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $groupItem = NULL;
@@ -722,7 +692,7 @@ class GroupController extends BaseController
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         // get date from DateService
-        $groupItem = $groupService->getGroup($itemId);
+        $groupItem = $this->groupService->getGroup($itemId);
         if (!$groupItem) {
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
@@ -798,29 +768,21 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     * @param GroupService $groupService
-     * @param ItemService $itemService
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function saveAction(
-        GroupService $groupService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
-        $group = $groupService->getGroup($itemId);
+        $item = $this->itemService->getItem($itemId);
+        $group = $this->groupService->getGroup($itemId);
 
         $itemArray = array($group);
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $readerManager = $this->legacyEnvironment->getReaderManager();
@@ -859,14 +821,14 @@ class GroupController extends BaseController
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
+            $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
                 $readerList[$item->getItemId()] = 'new';
             } elseif ($reader['read_date'] < $item->getModificationDate()) {
                 $readerList[$item->getItemId()] = 'changed';
             }
 
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $this->eventDispatcher->dispatch( new CommsyEditEvent($group), CommsyEditEvent::SAVE);
@@ -888,10 +850,7 @@ class GroupController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      * @param Request $request
      * @param CalendarsService $calendarsService
-     * @param GroupService $groupService
-     * @param RoomService $roomService
      * @param GroupTransformer $transformer
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -900,17 +859,14 @@ class GroupController extends BaseController
     public function editgrouproomAction(
         Request $request,
         CalendarsService $calendarsService,
-        GroupService $groupService,
-        RoomService $roomService,
         GroupTransformer $transformer,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         $groupItem = NULL;
 
         // get group from GroupService
-        $groupItem = $groupService->getGroup($itemId);
+        $groupItem = $this->groupService->getGroup($itemId);
         if (!$groupItem) {
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
@@ -957,7 +913,7 @@ class GroupController extends BaseController
                     if ($form->has('master_template')) {
                         $masterTemplate = $form->get('master_template')->getData();
 
-                        $masterRoom = $roomService->getRoomItem($masterTemplate);
+                        $masterRoom = $this->roomService->getRoomItem($masterTemplate);
                         if ($masterRoom) {
                             $groupRoom = $this->copySettings($masterRoom, $groupRoom);
                         }
@@ -982,21 +938,17 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/date/{itemId}/savegrouproom")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     * @param GroupService $groupService
-     * @param ItemService $itemService
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function savegrouproomAction(
-        GroupService $groupService,
-        ItemService $itemService,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
 
-        $group = $groupService->getGroup($itemId);
+        $group = $this->groupService->getGroup($itemId);
 
         /* $itemArray = array($grouproom);
         $modifierList = array();
@@ -1066,9 +1018,7 @@ class GroupController extends BaseController
 
     /**
      * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
-     * @param GroupService $groupService
      * @param UserService $userService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @param bool $joinRoom
@@ -1076,7 +1026,6 @@ class GroupController extends BaseController
      * @throws Exception
      */
     public function joinAction(
-        GroupService $groupService,
         UserService $userService,
         int $roomId,
         int $itemId,
@@ -1085,7 +1034,7 @@ class GroupController extends BaseController
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        $groupItem = $groupService->getGroup($itemId);
+        $groupItem = $this->groupService->getGroup($itemId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -1129,20 +1078,17 @@ class GroupController extends BaseController
 
     /**
      * @Route("/room/{roomId}/group/{itemId}/leave")
-     * @param GroupService $groupService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return JsonDataResponse
      */
     public function leaveAction(
-        GroupService $groupService,
         int $roomId,
         int $itemId
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
-        $groupItem = $groupService->getGroup($itemId);
+        $groupItem = $this->groupService->getGroup($itemId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -1166,15 +1112,13 @@ class GroupController extends BaseController
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     * @param GroupService $groupService
      * @param int $itemId
      * @return array
      */
     public function membersAction(
-        GroupService $groupService,
         int $itemId
     ) {
-        $group = $groupService->getGroup($itemId);
+        $group = $this->groupService->getGroup($itemId);
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
         return [
@@ -1189,21 +1133,17 @@ class GroupController extends BaseController
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     * @param GroupService $groupService
      * @param UserService $userService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function groupRoomAction(
-        GroupService $groupService,
         UserService $userService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $group = $groupService->getGroup($itemId);
+        $group = $this->groupService->getGroup($itemId);
         $membersList = $group->getMemberItemList();
         $memberStatus = $userService->getMemberStatus(
             $group->getGroupRoomItem(),
@@ -1221,18 +1161,14 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/sendMultiple")
      * @Template()
      * @param Request $request
-     * @param GroupService $groupService
      * @param UserService $userService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
      */
     public function sendMultipleAction(
         Request $request,
-        GroupService $groupService,
         UserService $userService,
-        LegacyEnvironment $environment,
         MailAssistant $mailAssistant,
         int $roomId
     ) {
@@ -1261,7 +1197,7 @@ class GroupController extends BaseController
         if ($groupCount) {
             $defaultBodyMessage .= '<br/><br/><br/>' . '--' . '<br/>';
             if ($groupCount == 1) {
-                $group = $groupService->getGroup(reset($groupIds));
+                $group = $this->groupService->getGroup(reset($groupIds));
                 if ($group) {
                     $defaultBodyMessage .= $this->translator->trans(
                         'This email has been sent to all users of this group',
@@ -1434,23 +1370,19 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/{itemId}/send")
      * @Template()
      * @param Request $request
-     * @param ItemService $itemService
      * @param UserService $userService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function sendAction(
         Request $request,
-        ItemService $itemService,
         UserService $userService,
-        LegacyEnvironment $environment,
         MailAssistant $mailAssistant,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getTypedItem($itemId);
+        $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
             throw $this->createNotFoundException('no item found for id ' . $itemId);
@@ -1674,10 +1606,8 @@ class GroupController extends BaseController
 
         $old_room_id = $old_room->getItemID();
 
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-
         /**/
-        $user_manager = $environment->getUserManager();
+        $user_manager = $this->legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($new_room->getCreatorID());
         if ($creator_item->getContextID() == $new_room->getItemID()) {
             $creator_id = $creator_item->getItemID();
@@ -1817,8 +1747,6 @@ class GroupController extends BaseController
     public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {
         // get the user service
-        $groupService = $this->get('commsy_legacy.group_service');
-
         if ($selectAll) {
             if ($request->query->has('group_filter')) {
                 $currentFilter = $request->query->get('group_filter');
@@ -1828,14 +1756,14 @@ class GroupController extends BaseController
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $groupService->setFilterConditions($filterForm);
+                $this->groupService->setFilterConditions($filterForm);
             } else {
-                $groupService->hideDeactivatedEntries();
+                $this->groupService->hideDeactivatedEntries();
             }
 
-            return $groupService->getListGroups($roomItem->getItemID());
+            return $this->groupService->getListGroups($roomItem->getItemID());
         } else {
-            return $groupService->getGroupsById($roomItem->getItemID(), $itemIds);
+            return $this->groupService->getGroupsById($roomItem->getItemID(), $itemIds);
         }
     }
 }
