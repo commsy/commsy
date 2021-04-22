@@ -24,6 +24,8 @@ use App\Utils\TopicService;
 use cs_discussion_item;
 use cs_room_item;
 use Exception;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,6 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DiscussionController
@@ -300,9 +303,11 @@ class DiscussionController extends BaseController
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
-        int $itemId
+        int $itemId,
+        DiscussionService $discussionService,
+        ReaderService $readerService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
@@ -353,16 +358,17 @@ class DiscussionController extends BaseController
         $roomId,
         $itemId,
         DiscussionService $discussionService,
-        LegacyMarkup $legacyMarkup)
-    {
+        LegacyMarkup $legacyMarkup,
+        ReaderService $readerService
+    ) {
         $infoArray = array();
         
-        $itemService = $this->get('commsy_legacy.item_service');
+        $itemService = $this->itemService;
 
         $discussion = $discussionService->getDiscussion($itemId);
         $articleList = $discussion->getAllArticles();
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
         $noticedManager = $legacyEnvironment->getNoticedManager();
 
@@ -432,7 +438,7 @@ class DiscussionController extends BaseController
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->get('commsy_legacy.reader_service');
+        $readerService = $this->readerService;
         
         $readerList = array();
         $modifierList = array();
@@ -501,7 +507,7 @@ class DiscussionController extends BaseController
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
         $reader_manager = $legacyEnvironment->getReaderManager();
         $noticed_manager = $legacyEnvironment->getNoticedManager();
 
@@ -627,9 +633,11 @@ class DiscussionController extends BaseController
         PrintService $printService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
-        int $itemId
+        int $itemId,
+        DiscussionService $discussionService,
+        ReaderService $readerService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
 
         $html = $this->renderView('discussion/detail_print.html.twig', [
             'roomId' => $roomId,
@@ -824,10 +832,12 @@ class DiscussionController extends BaseController
         DiscussionarticleTransformer $discussionarticleTransformer,
         LegacyEnvironment $environment,
         int $roomId,
-        int $itemId
+        int $itemId,
+        TranslatorInterface $translator,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $item = $itemService->getItem($itemId);
-        $translator = $this->get('translator');
+        $translator = $this->translator;
 
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -936,7 +946,7 @@ class DiscussionController extends BaseController
         }
 
         if ($item->getItemType() == 'discussion') {
-            $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+            $eventDispatcher->dispatch(new CommsyEditEvent($discussionItem));
         } else {
             $discussionItem = $discussionService->getDiscussion($discussionArticleItem->getDiscussionID());
             $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
