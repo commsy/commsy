@@ -11,43 +11,47 @@ namespace App\Form\Type;
 
 use App\Entity\AuthSource;
 use App\Entity\Portal;
+use App\Form\DataTransformer\FileToUserImportTransformer;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CsvImportType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
+
+    /**
+     * @var FileToUserImportTransformer
+     */
+    private FileToUserImportTransformer $transformer;
+
+    public function __construct(TranslatorInterface $translator, FileToUserImportTransformer $transformer)
+    {
+        $this->translator = $translator;
+        $this->transformer = $transformer;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var TranslatorInterface $translator */
-        $translator = $options['translator'];
-
-        $uploadErrorMessage = $translator->trans('upload error', [], 'error');
-        $noFileIdsMessage = $translator->trans('upload error', [], 'error');
 
         $builder
-            ->add('upload', FileType::class, [
+            ->add('csv', FileType::class, [
                 'attr' => [
-                    'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
                     'accept' => 'text/csv',
                 ],
                 'required' => true,
-                'multiple' => true,
                 'label' => 'Files'
-            ])
-            ->add('base64', CollectionType::class, [
-                'allow_add' => true,
-                'entry_type' => CheckedBase64CsvUserImportFileType::class,
-                'label' => false,
             ])
             ->add('auth_sources', EntityType::class, [
                 'class' => AuthSource::class,
@@ -62,19 +66,9 @@ class CsvImportType extends AbstractType
                         ->setParameter('portal', $portal);
                 },
                 'choice_label' => function (AuthSource $authSource) use ($options) {
-                    /** @var Portal $portal */
-                    $portal = $options['portal'];
-                    $extras = $portal->getExtras();
-
-                    /** @var TranslatorInterface $translator */
-                    $translator = $options['translator'];
-
-                    if (isset($extras['DEFAULT_AUTH'])) {
-                        $defaultAuthSource = $extras['DEFAULT_AUTH'];
-
-                        if ($authSource->getItemId() === (int) $defaultAuthSource) {
-                            return $authSource->getTitle() . ' (' . $translator->trans('Default Source', [], 'portal') . ')';
-                        }
+                    if ($authSource->isDefault()) {
+                        return $authSource->getTitle() . ' (' . $this->translator->trans('Default Source', [],
+                                'portal') . ')';
                     }
 
                     return $authSource->getTitle();
@@ -86,8 +80,10 @@ class CsvImportType extends AbstractType
                 ],
                 'label' => 'save',
                 'translation_domain' => 'form',
-            ])
-        ;
+            ]);
+
+        $builder->get('csv')
+            ->addModelTransformer($this->transformer);
     }
 
     /**
@@ -96,11 +92,10 @@ class CsvImportType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['uploadUrl', 'portal', 'translator'])
+            ->setRequired(['portal'])
             ->setDefaults([
                 'translation_domain' => 'portal'
-            ])
-        ;
+            ]);
     }
 
     /**
