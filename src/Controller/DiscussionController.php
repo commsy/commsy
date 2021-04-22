@@ -397,7 +397,7 @@ class DiscussionController extends BaseController
                 $noticedManager->markNoticed($article->getItemID(), 0);
             }
 
-            $itemService = $this->get('commsy_legacy.item_service');
+            $itemService = $this->itemService;
             $legacyMarkup->addFiles($itemService->getItemFileList($article->getItemID()));
 
             $article = $articleList->getNext();
@@ -686,12 +686,13 @@ class DiscussionController extends BaseController
         DiscussionService $discussionService,
         LegacyEnvironment $environment,
         int $roomId,
-        int $itemId
+        int $itemId,
+        TranslatorInterface $translator,
+        DiscussionTransformer $discussionTransformer
     ) {
-        $translator = $this->get('translator');
         $legacyEnvironment = $environment->getEnvironment();
 
-        $transformer = $this->get('commsy_legacy.transformer.discussion');
+        $transformer = $discussionTransformer;
 
         $discussion = $discussionService->getDiscussion($itemId);
 
@@ -759,6 +760,7 @@ class DiscussionController extends BaseController
         $article->setDraftStatus(1);
         $article->setDiscussionID($itemId);
         $article->setPosition($newPosition);
+        $article->setPrivateEditing(false);
         $article->save();
 
         $formData = $transformer->transform($article);
@@ -1116,11 +1118,11 @@ class DiscussionController extends BaseController
         DiscussionTransformer $transformer,
         LegacyEnvironment $environment,
         int $roomId,
-        int $itemId
+        int $itemId,
+        TranslatorInterface $translator
     ) {
         $legacyEnvironment = $environment->getEnvironment();
         $item = $itemService->getItem($itemId);
-        $translator = $this->get('translator');
         $article = $discussionService->getArticle($itemId);
         $formData = $transformer->transform($article);
 
