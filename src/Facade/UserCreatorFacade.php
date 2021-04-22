@@ -11,71 +11,62 @@ namespace App\Facade;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
-use App\Entity\Portal;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Exception;
 
 class UserCreatorFacade
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private $passwordEncoder;
+    /**
+     * @var AccountCreatorFacade
+     */
+    private AccountCreatorFacade $accountFacade;
 
-    private $accountFacade;
-
-    private $entityManager;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        UserPasswordEncoderInterface $passwordEncoder,
         AccountCreatorFacade $accountFacade,
         EntityManagerInterface $entityManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->accountFacade = $accountFacade;
-        $this->passwordEncoder = $passwordEncoder;
         $this->entityManager = $entityManager;
 
     }
 
     /**
      * @param CsvUserDataset[] $csvUserDatasets
-     * @param AuthSource $authSourceItem
+     * @param AuthSource $authSource
+     * @throws Exception
      */
     public function createFromCsvDataset(
-        AuthSource $authSourceItem,
+        AuthSource $authSource,
         array $csvUserDatasets
     ) {
         foreach ($csvUserDatasets as $csvUserDataset) {
             /** CsvUserDataset $csvUserDataset */
-            $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSourceItem);
+            $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSource);
             $userPassword = $csvUserDataset->getPassword() ?? $this->generatePassword();
 
-            $newUser = $this->createUser(
-                $csvUserDataset->getIdentifier(),
+            $newUser = $this->createAccountAndUser(
+                $userIdentifier,
                 $userPassword,
                 $csvUserDataset->getFirstname(),
                 $csvUserDataset->getLastname(),
                 $csvUserDataset->getEmail(),
-                $this->legacyEnvironment->getCurrentPortalID(),
-                $authSourceItem
-            );
-
-            $newUser = $this->createUser(
-                $csvUserDataset->getIdentifier(),
-                $userPassword,
-                $csvUserDataset->getFirstname(),
-                $csvUserDataset->getLastname(),
-                $csvUserDataset->getEmail(),
-                $this->legacyEnvironment->getCurrentPortalID(),
-                $authSourceItem
+                $authSource
             );
 
             if ($csvUserDataset->getRooms()) {
@@ -90,33 +81,29 @@ class UserCreatorFacade
      * suffix until a free account ist found.
      *
      * @param string $identifier
-     * @param AuthSource $authSourceItem
+     * @param AuthSource $authSource
      * @return string The free user identifier
      */
-    private function findFreeIdentifier(string $identifier, AuthSource $authSourceItem): string
+    private function findFreeIdentifier(string $identifier, AuthSource $authSource): string
     {
-        $em = $this->entityManager->getRepository(Account::class);
+        $portalId = $authSource->getPortal()->getId();
+        $accountRepository = $this->entityManager->getRepository(Account::class);
         $lookup = $identifier;
-        $suffix = null;
+        $suffix = 0;
 
-        while (!$em->findOneByCredentials($identifier, $this->legacyEnvironment->getCurrentPortalID(), $authSourceItem)) {
-            if ($suffix === null) {
-                $suffix = 0;
-            }
-
+        while ($accountRepository->findOneByCredentials($lookup, $portalId, $authSource)) {
             $suffix++;
-            $lookup = $identifier . (string)$suffix;
+            $lookup = $identifier . $suffix;
         }
 
         return $lookup;
     }
 
     /**
-     * @param int $length
      * @return bool|string The password or false on error
-     * @throws \Exception
+     * @throws Exception
      */
-    private function generatePassword(int $length = 12): string
+    private function generatePassword(): string
     {
         return substr(sha1(random_bytes(10)), 0, 10);
     }
@@ -130,77 +117,34 @@ class UserCreatorFacade
      * @param string $firstname
      * @param string $lastname
      * @param string $email
-     * @param int $portalId
-     * @param int $authSourceId
-     * @return \cs_user_item
+     * @param AuthSource $authSource
+     * @return cs_user_item
      */
-    private function createAuthAndUser(
+    private function createAccountAndUser(
         string $identifier,
         string $password,
         string $firstname,
         string $lastname,
         string $email,
-        int $portalId,
-        int $authSourceId
-    ): \cs_user_item {
-        $authentication = $this->legacyEnvironment->getAuthenticationObject();
-
-        $newAccount = $authentication->getNewItem();
-        $newAccount->setUserID($identifier);
-        $newAccount->setPassword($password);
-        $newAccount->setFirstname($firstname);
-        $newAccount->setLastname($lastname);
-        $newAccount->setEmail($email);
-        $newAccount->setPortalID($portalId);
-        $newAccount->setAuthSourceID($authSourceId);
-
-        $authentication->save($newAccount);
-
-        $newUser = $authentication->getUserItem();
-        $newUser->makeUser();
-        $newUser->save();
-
-        return $newUser;
-    }
-
-
-    /**
-     * @param string $identifier
-     * @param string $password
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $email
-     * @param int $portalId
-     * @param AuthSource $authSourceItem
-     * @return \cs_user_item
-     */
-    public function createUser(
-        string $identifier,
-        string $password,
-        string $firstname,
-        string $lastname,
-        string $email,
-        int $portalId,
-        AuthSource $authSourceItem
-    ): \cs_user_item {
-
+        AuthSource $authSource
+    ): cs_user_item {
         $account = new Account();
-        $account->setAuthSource($authSourceItem);
-        $account->setContextId($portalId);
-
-        $account->setLanguage('de');
-        $password = $this->passwordEncoder->encodePassword($account, $password);
+        $account->setUsername($identifier);
         $account->setPassword($password);
-
         $account->setFirstname($firstname);
         $account->setLastname($lastname);
         $account->setEmail($email);
-        $account->setUsername($identifier);
+        $account->setContextId($authSource->getPortal()->getId());
+        $account->setAuthSource($authSource);
 
         return $this->accountFacade->persistNewAccount($account);
     }
 
-    private function addUserToRooms(\cs_user_item $user, string $rooms)
+    /**
+     * @param cs_user_item $user
+     * @param string $rooms
+     */
+    private function addUserToRooms(cs_user_item $user, string $rooms): void
     {
         $roomIds = explode(' ', trim($rooms));
 
@@ -211,10 +155,10 @@ class UserCreatorFacade
             $room = $roomManager->getItem($roomId);
 
             if ($room) {
-                $userAlreadyExists = $user->getRelatedUserItemInContext($roomId) ? true : false;
-                if (!$userAlreadyExists) {
+                $relatedUserInContext = $user->getRelatedUserItemInContext($roomId);
+                if (!$relatedUserInContext) {
                     // determine the source user to clone from
-                    $sourceUser = $privateRoomUser ? $privateRoomUser : $user;
+                    $sourceUser = $privateRoomUser ?: $user;
 
                     $newUserItem = $sourceUser->cloneData();
                     $newUserItem->setContextID($roomId);
