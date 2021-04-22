@@ -40,17 +40,17 @@ class AnnouncementController extends BaseController
     /**
      * @var AnnouncementService
      */
-    protected $announcementService;
+    protected AnnouncementService $announcementService;
 
     /**
      * @var AnnotationService
      */
-    protected $annotationService;
+    protected AnnotationService $annotationService;
 
     /**
      * @var AssessmentService
      */
-    protected $assessmentService;
+    protected AssessmentService $assessmentService;
 
     /**
      * @required
@@ -71,6 +71,7 @@ class AnnouncementController extends BaseController
     }
 
     /**
+     * @required
      * @param mixed $assessmentService
      */
     public function setAssessmentService(AssessmentService $assessmentService): void
