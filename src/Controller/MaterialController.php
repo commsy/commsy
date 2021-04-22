@@ -118,7 +118,6 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
-     * @param ReaderService $readerService
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -127,7 +126,6 @@ class MaterialController extends BaseController
      */
     public function feedAction(
         Request $request,
-        ReaderService $readerService,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -168,7 +166,7 @@ class MaterialController extends BaseController
         $readerList = array();
         $allowedActions = array();
         foreach ($materials as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
             } else {
@@ -264,7 +262,6 @@ class MaterialController extends BaseController
      * @Route("/room/{roomId}/material/print/{sort}", defaults={"sort" = "none"})
      * @param Request $request
      * @param PrintService $printService
-     * @param ReaderService $readerService
      * @param int $roomId
      * @param int $sort
      * @return Response
@@ -272,7 +269,6 @@ class MaterialController extends BaseController
     public function printlistAction(
         Request $request,
         PrintService $printService,
-        ReaderService $readerService,
         int $roomId,
         int $sort
     ) {
@@ -308,7 +304,7 @@ class MaterialController extends BaseController
 
         $readerList = array();
         foreach ($materials as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
         $ratingList = array();
@@ -347,7 +343,6 @@ class MaterialController extends BaseController
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'material')")
      * @param Request $request
      * @param TopicService $topicService
-     * @param WordpressExporter $wordpressExporter
      * @param LegacyMarkup $legacyMarkup
      * @param int $roomId
      * @param int $itemId
@@ -357,7 +352,6 @@ class MaterialController extends BaseController
     public function detailAction(
         Request $request,
         TopicService $topicService,
-        WordpressExporter $wordpressExporter,
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId,
@@ -384,10 +378,8 @@ class MaterialController extends BaseController
 
         $alert = null;
         if ($material->isLocked()) {
-            $translator = $this->get('translator');
-
             $alert['type'] = 'warning';
-            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
         }
 
         $pathTopicItem = null;
@@ -999,7 +991,6 @@ class MaterialController extends BaseController
      * @param Request $request
      * @param ItemController $itemController
      * @param CategoryService $categoryService
-     * @param TranslatorInterface $translator
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -1008,7 +999,6 @@ class MaterialController extends BaseController
         Request $request,
         ItemController $itemController,
         CategoryService $categoryService,
-        TranslatorInterface $translator,
         int $roomId,
         int $itemId
     ) {
@@ -1061,13 +1051,13 @@ class MaterialController extends BaseController
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
-                'placeholderText' => '['.$translator->trans('insert title').']',
+                'placeholderText' => '['.$this->translator->trans('insert title').']',
                 'categoryMappingOptions' => [
                     'categories' => $itemController->getCategories($roomId, $categoryService)
                 ],
                 'hashtagMappingOptions' => [
                     'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
-                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
                 'licenses' => $licenses,
@@ -1084,7 +1074,7 @@ class MaterialController extends BaseController
             }
             $formData = $this->materialTransformer->transform($section);
             $form = $this->createForm(SectionType::class, $formData, array(
-                'placeholderText' => '['.$translator->trans('insert title').']',
+                'placeholderText' => '['.$this->translator->trans('insert title').']',
             ));
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($section->getlinkedItemID())), CommsyEditEvent::EDIT);
@@ -1301,7 +1291,6 @@ class MaterialController extends BaseController
         int $roomId,
         int $itemId
     ) {
-        $translator = $this->get('translator');
         $material = $this->materialService->getMaterial($itemId);
         $sectionList = $material->getSectionList();
         $countSections = $sectionList->getCount();
@@ -1316,7 +1305,7 @@ class MaterialController extends BaseController
         $formData = $this->materialTransformer->transform($section);
         $form = $this->createForm(SectionType::class, $formData, array(
             'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ));
 
         return array(
@@ -1345,7 +1334,6 @@ class MaterialController extends BaseController
         int $itemId
     ) {
         $item = $this->itemService->getItem($itemId);
-        $translator = $this->get('translator');
 
         // get section
         $section = $this->materialService->getSection($itemId);
@@ -1354,7 +1342,7 @@ class MaterialController extends BaseController
 
         $form = $this->createForm(SectionType::class, $formData, array(
             'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ));
 
         $form->handleRequest($request);
