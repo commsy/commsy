@@ -28,16 +28,16 @@ class CopyController extends BaseController
     /**
      * @var CopyService
      */
-    private $copyService;
+    private CopyService $copyService;
 
     /**
-     * @param mixed $copyService
+     * @required
+     * @param CopyService $copyService
      */
     public function setCopyService(CopyService $copyService): void
     {
         $this->copyService = $copyService;
     }
-
 
     /**
      * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
@@ -172,7 +172,7 @@ class CopyController extends BaseController
      * @Route("/room/{roomId}/copy/xhr/remove", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
-     * @return
+     * @return mixed
      * @throws Exception
      */
     public function xhrRemoveAction(
