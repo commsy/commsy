@@ -824,38 +824,39 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
                'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'",'.
                'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'",'.
                'place="'.encode(AS_DB,$item->getPlace()).'",'.
-               'date_mode="'.encode(AS_DB,$item->getDateMode()).'"';
+               'date_mode="'.encode(AS_DB,$item->getDateMode()).'",';
       $color = $item->getColor();
       if ( !empty($color) ) {
-         $query .= ', color="'.encode(AS_DB,$item->getColor()).'"';
+         $query .= 'color="'.encode(AS_DB,$item->getColor()).'", ';
       } else {
-         $query .= ', color=NULL';
+         $query .= 'color=NULL , ';
       }
       $color = $item->getCalendarId();
       if ( !empty($color) ) {
-         $query .= ', calendar_id="'.encode(AS_DB,$item->getCalendarId()).'"';
+         $query .= 'calendar_id="'.encode(AS_DB,$item->getCalendarId()).'", ';
       } else {
-         $query .= ', calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'"';
+         $query .= 'calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'", ';
       }
       $rev_id = $item->getRecurrenceId();
       if ( !empty($rev_id) ) {
-         $query .= ', recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'"';
+         $query .= 'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'", ';
       } else {
-         $query .= ', recurrence_id=NULL';
+         $query .= 'recurrence_id=NULL, ';
       }
       $rev_pattern = $item->getRecurrencePattern();
       if ( !empty($rev_pattern) ) {
-         $query .= ', recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"';
+         $query .= 'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'", ';
       } else {
-         $query .= ', recurrence_pattern=NULL';
+         $query .= 'recurrence_pattern=NULL, ';
       }
-      $query .= ', external="'.encode(AS_DB,$item->isExternal()).'"';
-      $query .= ', uid="'.encode(AS_DB,$item->getUid()).'"';
-      $query .= ', whole_day="'.encode(AS_DB,$item->isWholeDay()).'"';
-      if ($item->getDateTime_recurrence()) {
-          $query .= ', datetime_recurrence="' . encode(AS_DB, $item->getDateTime_recurrence()) . '"';
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isExternal(), 'external');
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid');
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isWholeDay(), 'whole_day');
+
+       if ($item->getDateTime_recurrence()) {
+          $query .= 'datetime_recurrence="' . encode(AS_DB, $item->getDateTime_recurrence()) . '"';
       } else {
-          $query .= ', datetime_recurrence=NULL';
+          $query .= 'datetime_recurrence=NULL';
       }
       $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
