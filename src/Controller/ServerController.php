@@ -60,7 +60,7 @@ class ServerController extends AbstractController
      * Creates a new portal
      *
      * @Route("/portal/create")
-     * @IsGranted("ROOT")
+     * @IsGranted("ROLE_ROOT")
      * @Template()
      * @param PortalCreatorFacade $portalCreator
      * @param Request $request
