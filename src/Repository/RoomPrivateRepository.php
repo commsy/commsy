@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\RoomPrivat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,7 +20,7 @@ class RoomPrivateRepository extends ServiceEntityRepository
      * @param int $contextId
      * @param string $username
      * @return RoomPrivat|null
-     * @throws NonUniqueResultException
+     * @throws NoResultException|NonUniqueResultException
      */
     public function findByContextIdAndUsername(int $contextId, string $username):? RoomPrivat
     {
@@ -38,6 +39,6 @@ class RoomPrivateRepository extends ServiceEntityRepository
             ])
             ->getQuery()
             ->setMaxResults(1)
-            ->getOneOrNullResult();
+            ->getSingleResult();
     }
 }
