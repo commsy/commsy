@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\RoomPrivat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,12 @@ class RoomPrivateRepository extends ServiceEntityRepository
         parent::__construct($registry, RoomPrivat::class);
     }
 
+    /**
+     * @param int $contextId
+     * @param string $username
+     * @return RoomPrivat|null
+     * @throws NonUniqueResultException
+     */
     public function findByContextIdAndUsername(int $contextId, string $username):? RoomPrivat
     {
         return $this->createQueryBuilder('rp')
