@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\TopicFilterType;
@@ -909,13 +910,12 @@ class TopicController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
+        DeleteAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        // TODO: find a way to load this service via new Symfony Dependency Injection!
-        $action = $this->get('commsy.action.delete.generic');
         return $action->execute($room, $items);
     }
 

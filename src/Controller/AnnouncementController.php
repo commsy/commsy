@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
+use App\Action\Delete\DeleteGeneric;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\ItemMarkRead;
 use App\Event\CommsyEditEvent;

@@ -1032,7 +1032,7 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
      * @throws \Exception
      */
-    public function xhrStatusFromDetailAction ($roomId, $itemId, Request $request)
+    public function xhrStatusFromDetailAction ($roomId, $itemId, Request $request, TodoStatusAction $action)
     {
         $room = $this->roomService->getRoomItem($roomId);
         $items = [$this->todoService->getTodo($itemId)];
@@ -1042,7 +1042,6 @@ class TodoController extends BaseController
         }
         $newStatus = $payload['status'];
 
-        $action = $this->get(TodoStatusAction::class);
         $action->setNewStatus($newStatus);
         return $action->execute($room, $items);
     }
