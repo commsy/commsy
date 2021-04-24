@@ -1177,38 +1177,28 @@ services:
         autowire: true
     App\Action\Delete\DeleteDate:
         autowire: true
-        arguments:
-            $calendarsService: '@commsy.calendars_service'
+
 
     commsy.action.delete.generic:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteGeneric'
+
 
     commsy.action.delete.step:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteStep'
 
     commsy.action.delete.section:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteSection'
 
     commsy.action.delete.discussion_article:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteDiscussionArticle'
 
     commsy.action.delete.date:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteDate'
 
     App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 

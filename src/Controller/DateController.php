@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
 use App\Entity\Calendars;
@@ -1839,6 +1840,8 @@ class DateController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
+        DeleteAction $action,
+        DeleteDate $deleteDate,
         int $roomId)
     {
         $room = $this->getRoom($roomId);
@@ -1851,14 +1854,13 @@ class DateController extends BaseController
             $recurring = isset($payload['recurring']) ?? false;
         }
 
-        $action = $this->get('commsy.action.delete.date');
         $strategy = $action->getStrategy();
 
         if ($strategy instanceof DeleteDate) {
             $strategy->setRecurring($recurring);
             $strategy->setDateMode($room->getDatesPresentationStatus());
         }
-
+        $action->setDeleteStrategy($deleteDate);
         return $action->execute($room, $items);
     }
 
