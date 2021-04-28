@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Portal;
 use App\Form\DataTransformer\PortfolioTransformer;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
@@ -65,9 +66,11 @@ class PortfolioController extends AbstractController
         PortfolioService $portfolioService,
         UserService $userService,
         int $roomId,
-        int $portfolioId = null
+        int $portfolioId = null,
+        LegacyEnvironment $environment
     ) {
         $portfolio = $portfolioService->getPortfolio($portfolioId);
+        $legacyEnvironment = $environment->getEnvironment();
 
         $linkItemIds = [];
         foreach ($portfolio['links'] as $linkArray) {
@@ -117,7 +120,7 @@ class PortfolioController extends AbstractController
         }
 
         /** @var cs_user_item $user */
-        $user = $userService->getPortalUserFromSessionId();
+        $user = $legacyEnvironment->getCurrentUser()->getRelatedPortalUserItem();
 
         $external = false;
         if ($user->getRelatedPrivateRoomUserItem()->getItemId() != $portfolio['creatorId']) {
@@ -261,7 +264,7 @@ class PortfolioController extends AbstractController
     ) {
 
         // when creating a new item, return a redirect to the edit form (portfolio draft)
-        if ($portfolioId === 'new') {
+        if ($portfolioId === -1) { // -1 represents 'new'
             $portfolioItem = $portfolioService->getNewItem();
             $portfolioItem->save();
             return $this->redirectToRoute('app_portfolio_edit', [
