@@ -346,6 +346,8 @@ $message["COMMON_DELETED_ENTRY_DESC"]["en"] = "Title: %1,
 Rubric: %4,
 Deleter: %3,
 Workspace: %2";
+$message["COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC"]["en"] = "<p>This article was deleted and replaced with a placeholder (to maintain article hierarchy).</p>";
+$message["COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_TITLE"]["en"] = "Deleted article";
 $message["COMMON_DELETED_USER"]["en"] = "deleted account";
 $message["COMMON_DELETE_BOX_DESCRIPTION"]["en"] = "You are about to delete an item from the workspace. Please note that deleted items cannot be undeleted afterwards, so be cautious. Do you really want to delete this item irrecoverably?";
 $message["COMMON_DELETE_BOX_DESCRIPTION_DISCUSSION"]["en"] = "You are about to delete an item from the workspace. Please note that deleted items cannot be undeleted afterwards, so be cautious. Do you really want to delete this item irrecoverably?<br/><br/>In threaded view, notice that deleting an entry to the discussion, will also delete all answers according to this entry!";

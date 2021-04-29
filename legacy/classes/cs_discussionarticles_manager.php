@@ -334,6 +334,37 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
       }
    }
 
+    /**
+     * Returns all child article(s) (aka "answers") for the given discussion article.
+     * @param \cs_discussionarticle_item $item The discussion article whose children shall be returned
+     * @return \cs_list List of child article(s) for the given discussion article, or an empty list if there aren't any
+     */
+    public function getChildrenForDiscArticle(\cs_discussionarticle_item $item): \cs_list
+    {
+        $childrenList = new cs_list();
+        $dbPrefix = $this->addDatabasePrefix($this->_db_table);
+        $dbPrefixItems = $this->addDatabasePrefix('items');
+
+        $query = "SELECT * FROM " . $dbPrefix;
+        $query .= " INNER JOIN " . $dbPrefixItems . ' ON ' . $dbPrefixItems . '.item_id = ' . $dbPrefix . '.item_id AND ' . $dbPrefixItems . '.draft != "1"';
+        $query .= ' WHERE discussion_id="' . encode(AS_DB, $item->getDiscussionID()) . '"';
+        $query .= ' AND position LIKE "' . encode(AS_DB, $item->getPosition()) . '.%"';
+        $query .= ' AND ' . $dbPrefix . '.deleter_id IS NULL';
+        $query .= ' AND ' . $dbPrefix . '.deletion_date IS NULL';
+
+        $result = $this->_db_connector->performQuery($query);
+        if (!$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting children of discarticle with ID ' . $item->getItemID() . '.', E_USER_WARNING);
+        } else {
+            foreach ($result as $rs) {
+                $childrenList->add($this->_buildItem($rs));
+            }
+        }
+
+        return $childrenList;
+    }
+
   /** update a discussion - internal, do not use -> use method save
     * this method updates a discussion
     *
@@ -436,6 +467,29 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      }
      unset($current_user);
   }
+
+    /**
+     * Flags the discussion article with the given ID as having its content overwritten.
+     * When an individual discussion article which has child article(s) (aka "answers") is to be deleted, we instead use
+     * this method to indicate that its content should get overwritten instead. I.e., the article is kept in the discussion
+     * hierarchy (which thus will not be altered by the deletion) but its content will be replaced with some placeholder text.
+     * @param int $itemId The ID of the discussion article whose content shall be overwritten
+     */
+    public function overwriteContent(int $itemId): void
+    {
+        $currentDatetime = getCurrentDateTimeInMySQL();
+
+        $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('discussionarticles') . ' SET';
+        $updateQuery .= ' public = "-2",';
+        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+        $updateQuery .= ' WHERE item_id="' . encode(AS_DB, $itemId) . '"';
+
+        $result = $this->_db_connector->performQuery($updateQuery);
+        if (!$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems flagging discarticle for content overwrite.', E_USER_WARNING);
+        }
+    }
 
    ########################################################
    # statistic functions

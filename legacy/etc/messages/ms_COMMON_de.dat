@@ -352,6 +352,8 @@ $message["COMMON_DELETED_ENTRY_DESC"]["de"] = "Titel: %1,
 Rubrik: %4,
 Bearbeiter: %3,
 Raum: %2";
+$message["COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC"]["de"] = "<p>Dieser Beitrag wurde gelöscht und durch einen Platzhalter ersetzt, um den Zusammenhang zu anderen Beiträgen zu wahren.</p>";
+$message["COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_TITLE"]["de"] = "Gelöschter Beitrag";
 $message["COMMON_DELETED_USER"]["de"] = "gelöschte Kennung";
 $message["COMMON_DELETE_BOX_DESCRIPTION"]["de"] = "Ein gelöschter Eintrag kann nicht wieder rekonstruiert werden. Möchten Sie diesen Beitrag endgültig löschen?";
 $message["COMMON_DELETE_BOX_DESCRIPTION_DISCUSSION"]["de"] = "Ein gelöschter Eintrag kann nicht wieder rekonstruiert werden.  Möchten Sie diesen Beitrag endgültig löschen?<br/><br/>In der verzweigter Ansicht ist zu beachten, dass beim Löschen eines Beitrages zu einer Diskussion auch alle Antworten auf diesen Beitrag gelöscht werden!";
