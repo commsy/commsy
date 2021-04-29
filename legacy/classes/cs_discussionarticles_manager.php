@@ -335,6 +335,43 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
    }
 
     /**
+     * Returns the parent article for the given discussion article, i.e. the article to which the given article is an answer.
+     * @param \cs_discussionarticle_item $item The discussion article whose parent article shall be returned
+     * @return \cs_discussionarticle_item|null Parent discussion article for the given article, or null if it has no parent
+     */
+    public function getParentForDiscArticle(\cs_discussionarticle_item $item): ?\cs_discussionarticle_item
+    {
+        // to get the parent's position, remove the trailing position element from the given item's position
+        $itemPosition = $item->getPosition();
+        $parentPosition = implode('.', explode('.', $itemPosition, -1));
+        if (empty($parentPosition)) {
+            return null;
+        }
+
+        /** @var \cs_discussionarticle_item $parentArticle */
+        $parentArticle = null;
+        $dbPrefix = $this->addDatabasePrefix($this->_db_table);
+        $dbPrefixItems = $this->addDatabasePrefix('items');
+
+        $query = "SELECT * FROM " . $dbPrefix;
+        $query .= " INNER JOIN " . $dbPrefixItems . ' ON ' . $dbPrefixItems . '.item_id = ' . $dbPrefix . '.item_id AND ' . $dbPrefixItems . '.draft != "1"';
+        $query .= ' WHERE discussion_id="' . encode(AS_DB, $item->getDiscussionID()) . '"';
+        $query .= ' AND position="' . encode(AS_DB, $parentPosition) . '"';
+        $query .= ' AND ' . $dbPrefix . '.deleter_id IS NULL';
+        $query .= ' AND ' . $dbPrefix . '.deletion_date IS NULL';
+
+        $result = $this->_db_connector->performQuery($query);
+        if (!$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting parent of discarticle with ID ' . $item->getItemID() . '.', E_USER_WARNING);
+        } else {
+            $parentArticle = $this->_buildItem($result[0]);
+        }
+
+        return $parentArticle;
+    }
+
+    /**
      * Returns all child article(s) (aka "answers") for the given discussion article.
      * @param \cs_discussionarticle_item $item The discussion article whose children shall be returned
      * @return \cs_list List of child article(s) for the given discussion article, or an empty list if there aren't any

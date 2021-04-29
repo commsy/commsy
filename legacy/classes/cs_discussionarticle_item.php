@@ -257,6 +257,17 @@ class cs_discussionarticle_item extends cs_item {
 
         $this->_delete($discussionManager);
 
+        // if this article has a parent article with `public = -2` that has no children (anymore), delete the parent as well
+        $parentArticle = $discussionManager->getParentForDiscArticle($this);
+        if ($parentArticle) {
+            $hasOverwrittenContent = $parentArticle->getPublic() == '-2';
+            if ($hasOverwrittenContent) {
+                $parentArticleChildren = $discussionManager->getChildrenForDiscArticle($parentArticle);
+                if ($parentArticleChildren->isEmpty()) {
+                    $parentArticle->delete();
+                }
+            }
+        }
     }
 
    function cloneCopy() {
