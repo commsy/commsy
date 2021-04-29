@@ -270,5 +270,22 @@ class cs_discussionarticle_item extends cs_item {
       $this->_save($manager);
       $this->_changes = array();
    }
+
+    /**
+     * Returns whether the given user may edit this discussion article or not, but will always prevent editing if
+     * the article has its content set to be overwritten (as indicated by getPublic() returning a value of '-2').
+     * @param \cs_user_item $userItem The user for whom edit rights shall be checked
+     * @return bool Whether the given user is allowed to edit this article (true), or not (false)
+     */
+    public function mayEdit(\cs_user_item $userItem): bool
+    {
+        if ($this->getPublic() == '-2') {
+            return false;
+        }
+
+        $mayEditItem = parent::mayEdit($userItem);
+
+        return $mayEditItem;
+    }
 }
 ?>
