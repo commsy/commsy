@@ -50,21 +50,21 @@ class cs_discussionarticle_item extends cs_item {
       $this->_data = $data_array;
    }
 
-   /** get subject of a discussionarticle
-    * this method gets the subejct of the discussionarticle
-    *
-    * @return string value subject of the discussionarticle
-    *
-    * @author CommSy Development Group
-    */
-   function getSubject () {
-   	  if ($this->getPublic()=='-1'){
-		 $translator = $this->_environment->getTranslationObject();
-   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
-   	  }else{
-         return $this->_getValue('subject');
-   	  }
-   }
+    /**
+     * Returns the subject of the discussion article.
+     * @return string subject of the discussion article
+     */
+    public function getSubject(): string
+    {
+        $public = $this->getPublic();
+        if ($public == '-1' || $public == '-2') {
+            $translator = $this->_environment->getTranslationObject();
+            $message = ($public == '-1') ? 'COMMON_AUTOMATIC_DELETE_TITLE' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_TITLE';
+            return $translator->getMessage($message);
+        }
+
+        return $this->_getValue('subject');
+    }
 
    function getTitle () {
       return $this->getSubject();
@@ -100,22 +100,21 @@ class cs_discussionarticle_item extends cs_item {
       $this->setSubject($value);
    }
 
+    /**
+     * Returns the description of this discussion article.
+     * @return string|null description of the discussion article
+     */
+    public function getDescription(): ?string
+    {
+        $public = $this->getPublic();
+        if ($public == '-1' || $public == '-2') {
+            $translator = $this->_environment->getTranslationObject();
+            $message = ($public == '-1') ? 'COMMON_AUTOMATIC_DELETE_DESCRIPTION' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC';
+            return $translator->getMessage($message);
+        }
 
-   /** get description of a discussionarticle
-    * this method gets the description of the discussionarticle
-    *
-    * @return string value description of the discussionarticle
-    *
-    * @author CommSy Development Group
-    */
-   function getDescription () {
-   	  if ($this->getPublic()=='-1'){
-		 $translator = $this->_environment->getTranslationObject();
-   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
-   	  }else{
-         return $this->_getValue('description');
-   	  }
-   }
+        return $this->_getValue('description');
+    }
 
    /** set description of a discussionarticle
     * this method sets the description of the discussionarticle
@@ -240,13 +239,25 @@ class cs_discussionarticle_item extends cs_item {
       unset($noticed_manager);
    }
 
-   /** delete discussion article
-   * this methode delete the discussion article
-   */
-   function delete() {
-      $discussion_manager = $this->_environment->getDiscussionArticlesManager();
-      $this->_delete($discussion_manager);
-   }
+    /**
+     * Deletes the discussion article (or overwrites its content if the article has children).
+     * When a discussion article has child article(s) we won't delete it but instead only indicate (by setting
+     * `public = -2`) that its content should get overwritten. This will keep the discussion hierarchy intact.
+     */
+    public function delete(): void
+    {
+        $discussionManager = $this->_environment->getDiscussionArticlesManager();
+        $children = $discussionManager->getChildrenForDiscArticle($this);
+
+        if ($children->isNotEmpty()) {
+            $discussionManager->overwriteContent($this->getItemID());
+
+            return;
+        }
+
+        $this->_delete($discussionManager);
+
+    }
 
    function cloneCopy() {
       $clone_item = clone $this; // "clone" needed for php5
