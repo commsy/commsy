@@ -30,7 +30,9 @@
                         {% endif %}
                     {% else %}
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                            <h1 class="uk-article-title">
+                                <span class="{% if item.public == -2 %}uk-text-muted{% endif %}">{{ item.title|decodeHtmlEntity }}</span>
+                            </h1>
                         </div>
                     {% endif %}
                     </div>
@@ -49,7 +51,7 @@
         <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
                 <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
-                    <div class="uk-width-9-10 uk-padding-remove">
+                    <div class="uk-width-9-10 uk-padding-remove{% if item.public == -2 %} uk-text-muted{% endif %}">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
                                 <div class="uk-grid">

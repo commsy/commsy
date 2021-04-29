@@ -397,7 +397,7 @@
 
                 {# preview #}
                 <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-full">
-                    {{ content|commsyMarkup(item)|raw }}
+                    <span class="{% if item.public == -2 %}uk-text-muted{% endif %}">{{ content|commsyMarkup(item)|raw }}</span>
                 </div>
 
             </div>
