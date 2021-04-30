@@ -14,13 +14,16 @@ use App\Form\Type\PortfolioType;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_user_item;
+use FeedIo\Rule\Title;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CalendarController
@@ -344,7 +347,8 @@ class PortfolioController extends AbstractController
         int $portfolioId,
         string $position,
         string $categoryTerm,
-        PortfolioService $portfolioService
+        PortfolioService $portfolioService,
+        TranslatorInterface $translator
     ) {
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
@@ -369,6 +373,28 @@ class PortfolioController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
+
+            if ($form->get('addCategory')->isClicked()) {
+                $data = $form->getData();
+
+                if (empty($data['title'])){
+                    $form->addError(new FormError($translator->trans('Title may not be empty',[],'portfolio')));
+                    return [
+                        'form' => $form->createView(),
+                        'categoryTerm' => $categoryTerm,
+                    ];
+                }
+
+                // persist new category
+                $categoryService->addTag($data['title'], $roomId);
+
+                return $this->redirectToRoute('app_portfolio_editcategory', array(
+                    'roomId' => $roomId,
+                    'portfolioId' => $portfolioId,
+                    'position' => $position,
+                    'categoryTerm' => $categoryTerm
+                ));
+            }
 
             if ($form->get('save')->isClicked()) {
 
