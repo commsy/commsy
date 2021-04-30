@@ -1,6 +1,7 @@
 <?php
 namespace App\Validator\Constraints;
 
+use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -8,11 +9,16 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniqueUserIdValidator extends ConstraintValidator
 {
+    /** @var EntityManagerInterface $entityManager */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /** @var UserService $userService */
+    private $userService;
+
+    public function __construct(EntityManagerInterface $entityManager, UserService $userService)
     {
         $this->entityManager = $entityManager;
+        $this->userService = $userService;
     }
 
     /**
@@ -35,6 +41,12 @@ class UniqueUserIdValidator extends ConstraintValidator
 
         if (!is_string($userId)) {
             throw new UnexpectedTypeException($userId, 'string');
+        }
+
+        $currentUser = $this->userService->getCurrentUserItem();
+        if ($userId === $currentUser->getUserID()) {
+            // user ID hasn't changed
+            return;
         }
 
         $repository = $this->entityManager->getRepository('App:Auth');
