@@ -327,14 +327,14 @@ class PortfolioController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryId}/")
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryTerm}/")
      * @Template()
      * @param Request $request
      * @param CategoryService $categoryService
      * @param int $roomId
      * @param int $portfolioId
      * @param string $position
-     * @param int $categoryId
+     * @param string $categoryTerm
      * @return array|RedirectResponse
      */
     public function editcategoryAction(
@@ -343,17 +343,17 @@ class PortfolioController extends AbstractController
         int $roomId,
         int $portfolioId,
         string $position,
-        int $categoryId
+        string $categoryTerm,
+        PortfolioService $portfolioService
     ) {
-        $portfolioService = $this->get(PortfolioService::class);
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $formData = [
-            'delete-category' => $categoryId,
+            'delete-category' => $categoryTerm,
         ];
 
-        if (is_numeric($categoryId)) {
-            $formData['categories'] = [$categoryId];
+        if (is_numeric($categoryTerm)) {
+            $formData['categories'] = [$categoryTerm];
         }
 
         $roomTags = $categoryService->getTags($roomId);
@@ -361,7 +361,7 @@ class PortfolioController extends AbstractController
 
         $form = $this->createForm(PortfolioEditCategoryType::class, $formData, array(
             'categories' => $roomTags,
-            'categoryId' => $categoryId,
+            'categoryId' => $categoryTerm,
             'portfolioId' => $portfolioId,
 //            'disabledCategories' => $disabledCategories,
         ));
@@ -374,7 +374,7 @@ class PortfolioController extends AbstractController
 
                 $tagId = $formData['categories'][0];
 
-                if ($categoryId == 'add') {
+                if ($categoryTerm == 'add') {
                     // add new row or column
 
                     $index = 1;
@@ -394,11 +394,11 @@ class PortfolioController extends AbstractController
 
                 } else {
                     // edit row or column
-                    $portfolioService->replaceTagForPortfolio($portfolioId, $tagId, $categoryId, $formData['description']);
+                    $portfolioService->replaceTagForPortfolio($portfolioId, $tagId, $categoryTerm, $formData['description']);
                 }
 
             } else if ($form->has('delete') && $form->get('delete')->isClicked()) {
-                $tagId = $categoryId;
+                $tagId = $categoryTerm;
 
                 $portfolioTags = $portfolioService->getPortfolioTags($portfolioId);
 
@@ -437,7 +437,7 @@ class PortfolioController extends AbstractController
 
         return [
             'form' => $form->createView(),
-            'categoryId' => $categoryId,
+            'categoryTerm' => $categoryTerm,
         ];
     }
 
