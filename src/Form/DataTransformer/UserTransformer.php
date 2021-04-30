@@ -187,6 +187,9 @@ class UserTransformer implements DataTransformerInterface
                     if ($authItem) {
                         $authItem->setAuthSourceID($authSourceId);
                         $authItem->setEmail($portalUser->getEmail());
+                        $authItem->setFirstname($portalUser->getFirstname());
+                        $authItem->setLastname($portalUser->getLastname());
+                        $authItem->setLanguage($portalUser->getLanguage());
 
                         $authentication->save($authItem);
                     }
