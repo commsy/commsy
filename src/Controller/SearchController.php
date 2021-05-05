@@ -24,7 +24,6 @@ use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
 use App\Search\QueryConditions\TitleQueryCondition;
 use App\Search\SearchManager;
-use App\Services\LegacyEnvironment;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,8 +57,6 @@ class SearchController extends BaseController
     /**
      * SearchController constructor.
      * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param TranslatorInterface $translator
      * @param UrlGeneratorInterface $router
      */
     public function __construct(RoomService $roomService, UrlGeneratorInterface $router)
@@ -204,7 +201,6 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/results")
      * @Template
      * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
      * @param RoomService $roomService
      * @param SearchManager $searchManager
      * @param MultipleContextFilterCondition $multipleContextFilterCondition
@@ -213,7 +209,6 @@ class SearchController extends BaseController
      */
     public function resultsAction(
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
@@ -225,7 +220,7 @@ class SearchController extends BaseController
     )
     {
         $roomItem = $roomService->getRoomItem($roomId);
-        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -435,7 +430,6 @@ class SearchController extends BaseController
      */
     public function moreResultsAction(
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         ReadStatusFilterCondition $readStatusFilterCondition,
@@ -448,7 +442,7 @@ class SearchController extends BaseController
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
-        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
