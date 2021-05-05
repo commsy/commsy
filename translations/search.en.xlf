@@ -10,6 +10,10 @@
                 <source>Search in room...</source>
                 <target>Search in workspace...</target>
             </trans-unit>
+            <trans-unit id="search-form-placeholder-all-rooms">
+                <source>All my workspaces...</source>
+                <target>All my workspaces...</target>
+            </trans-unit>
             <trans-unit id="search-no-results-room">
                 <source>no rooms found</source>
                 <target>No workspaces found</target>
