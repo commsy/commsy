@@ -21,6 +21,11 @@ final class Version20210329134429 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE accounts ADD locked TINYINT(1) NOT NULL');
+        $this->addSql('DROP INDEX IF EXISTS auth_source ON user;');
+        $this->addSql('DROP INDEX IF EXISTS context_id ON user;');
+        $this->addSql('DROP INDEX IF EXISTS user_id ON user;');
+        $this->addSql('CREATE INDEX IF NOT EXISTS user_context_id_user_id_auth_source_index ON user (context_id, user_id, auth_source);');
+
 
         $this->addSql('
             UPDATE
@@ -43,6 +48,11 @@ final class Version20210329134429 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('DROP INDEX IF EXISTS user_context_id_user_id_auth_source_index ON user;');
+        $this->addSql('CREATE INDEX IF NOT EXISTS user_id ON user (user_id);');
+        $this->addSql('CREATE INDEX IF NOT EXISTS context_id ON user (context_id);');
+        $this->addSql('CREATE INDEX IF NOT EXISTS auth_source ON user (auth_source);');
+
         $this->addSql('ALTER TABLE accounts DROP locked');
     }
 }
