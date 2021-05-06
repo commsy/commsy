@@ -791,7 +791,7 @@ class cs_file_item extends cs_item {
       }
 
       foreach ($itemCollection as $item) {
-         if ($item->maySee($userItem)) {
+         if (!$item->getHasOverwrittenContent() && $item->maySee($userItem)) {
             return true;
          }
       }

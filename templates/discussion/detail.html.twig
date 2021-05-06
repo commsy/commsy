@@ -241,6 +241,8 @@
                                         <div class="uk-width-3-5 uk-text-right">
 
                                             {# section actions #}
+                                            {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
+                                            {% if not article.hasOverwrittenContent -%}
                                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                                 <button class="uk-button uk-button-mini">
                                                     {{ 'selected entries'|trans({}, 'rubric') }}
@@ -290,6 +292,7 @@
                                                     </ul>
                                                 </div>
                                             </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -306,9 +309,11 @@
                                     </div>
 
                                     {# files #}
-                                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
-                                        {{ macrosItem.files(article) }}
-                                    </div>
+                                    {% if not article.hasOverwrittenContent -%}
+                                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
+                                            {{ macrosItem.files(article) }}
+                                        </div>
+                                    {%- endif %}
                                 </article>
                             </div>
                     {% endfor %}
