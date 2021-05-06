@@ -8,7 +8,7 @@
             <div >
                 {% for type,rubric in linkedItemsByRubric %}
                     <div class="">
-                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|trans({},"rubric")|capitalize }} ({{ rubric|length }})
+                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|trans({'%count%':1},"rubric")|capitalize }} ({{ rubric|length }})
                     </div>
                     <div>
                         <ul class="uk-list uk-margin-bottom-remove">
