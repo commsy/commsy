@@ -241,8 +241,8 @@
                                         <div class="uk-width-3-5 uk-text-right">
 
                                             {# section actions #}
-                                            {# NOTE: `public = -2` gets used for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
-                                            {% if article.public != -2 -%}
+                                            {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
+                                            {% if not article.hasOverwrittenContent -%}
                                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                                 <button class="uk-button uk-button-mini">
                                                     {{ 'selected entries'|trans({}, 'rubric') }}
@@ -309,7 +309,7 @@
                                     </div>
 
                                     {# files #}
-                                    {% if article.public != -2 -%}
+                                    {% if not article.hasOverwrittenContent -%}
                                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
                                             {{ macrosItem.files(article) }}
                                         </div>
