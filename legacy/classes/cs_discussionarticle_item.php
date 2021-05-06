@@ -51,6 +51,19 @@ class cs_discussionarticle_item extends cs_item {
    }
 
     /**
+     * Returns whether this item's content should get overwritten with some placeholder text.
+     * @return bool Whether this item's content should get overwritten (true), or not (false)
+     */
+    public function getHasOverwrittenContent(): bool
+    {
+        // NOTE: `public = -2` gets used for articles with answers which were "deleted" but should
+        // instead have their content overwritten to keep the discussion hierarchy intact
+        $hasOverwrittenContent = $this->getPublic() == '-2';
+
+        return $hasOverwrittenContent;
+    }
+
+    /**
      * Returns the subject of the discussion article.
      * @return string subject of the discussion article
      */
@@ -259,13 +272,10 @@ class cs_discussionarticle_item extends cs_item {
 
         // if this article has a parent article with `public = -2` that has no children (anymore), delete the parent as well
         $parentArticle = $discussionManager->getParentForDiscArticle($this);
-        if ($parentArticle) {
-            $hasOverwrittenContent = $parentArticle->getPublic() == '-2';
-            if ($hasOverwrittenContent) {
-                $parentArticleChildren = $discussionManager->getChildrenForDiscArticle($parentArticle);
-                if ($parentArticleChildren->isEmpty()) {
-                    $parentArticle->delete();
-                }
+        if ($parentArticle && $parentArticle->getHasOverwrittenContent()) {
+            $parentArticleChildren = $discussionManager->getChildrenForDiscArticle($parentArticle);
+            if ($parentArticleChildren->isEmpty()) {
+                $parentArticle->delete();
             }
         }
     }
@@ -290,7 +300,7 @@ class cs_discussionarticle_item extends cs_item {
      */
     public function mayEdit(\cs_user_item $userItem): bool
     {
-        if ($this->getPublic() == '-2') {
+        if ($this->getHasOverwrittenContent()) {
             return false;
         }
 

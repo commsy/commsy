@@ -1404,7 +1404,16 @@ class cs_item {
       $link_manager->undeleteLinks($this);
    }
 
-   function isPublic () {
+    /**
+     * Returns whether this item's content should get overwritten with some placeholder text.
+     * @return bool Whether this item's content should get overwritten (true), or not (false)
+     */
+    public function getHasOverwrittenContent(): bool
+    {
+        return false;
+    }
+
+    function isPublic () {
       return false;
    }
 
