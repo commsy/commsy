@@ -39,12 +39,14 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
+use App\Form\Type\Portal\ArchiveRoomsType;
 use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\DataPrivacyType;
+use App\Form\Type\Portal\DeleteArchiveRoomsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\ImpressumType;
 use App\Form\Type\Portal\InactiveType;
@@ -936,21 +938,61 @@ class PortalSettingsController extends AbstractController
      */
     public function inactive(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(InactiveType::class, $portal);
+        $inactiveForm = $this->createForm(InactiveType::class, $portal);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $inactiveForm->handleRequest($request);
+        if ($inactiveForm->isSubmitted() && $inactiveForm->isValid()) {
 
-            if ($form->getClickedButton()->getName() === 'save') {
+            if ($inactiveForm->getClickedButton()->getName() === 'save') {
                 $entityManager->persist($portal);
                 $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_inactive', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'inactive',
+                ]);
             }
 
             // TODO: inform the user how many inactive accounts would be locked/deleted due to the currently entered day values (see `configuration_inactive.php`)
         }
 
+        // archiving rooms form
+        $archiveRoomsForm = $this->createForm(ArchiveRoomsType::class, $portal, []);
+        $archiveRoomsForm->handleRequest($request);
+        if ($archiveRoomsForm->isSubmitted() && $archiveRoomsForm->isValid()) {
+
+            if ($archiveRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_inactive', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'archiveRooms',
+                ]);
+            }
+        }
+
+        // deleting archived rooms form
+        $deleteArchiveRoomsForm = $this->createForm(DeleteArchiveRoomsType::class, $portal, []);
+        $deleteArchiveRoomsForm->handleRequest($request);
+        if ($deleteArchiveRoomsForm->isSubmitted() && $deleteArchiveRoomsForm->isValid()) {
+
+            if ($deleteArchiveRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_inactive', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'deleteRooms',
+                ]);
+            }
+        }
+
         return [
-            'form' => $form->createView(),
+            'inactiveForm' => $inactiveForm->createView(),
+            'archiveRoomsForm' => $archiveRoomsForm->createView(),
+            'deleteArchiveRoomsForm' => $deleteArchiveRoomsForm->createView(),
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'inactive',
         ];
     }
 
