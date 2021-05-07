@@ -20,7 +20,6 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
@@ -33,16 +32,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
     private $entityManager;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var CsrfTokenManagerInterface
-     */
-    private $csrfTokenManager;
-
-    /**
      * @var AccountCreatorFacade
      */
     private $accountCreator;
@@ -50,12 +39,11 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        CsrfTokenManagerInterface $csrfTokenManager,
         AccountCreatorFacade $accountCreator
     ) {
+        parent::__construct($urlGenerator);
+
         $this->entityManager = $entityManager;
-        $this->urlGenerator = $urlGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
         $this->accountCreator = $accountCreator;
     }
 
@@ -251,7 +239,7 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
             $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'shib');
         }
 
-        $url = $this->getLoginUrl($request);
+        $url = $this->getLoginUrl($request->attributes->get('context'));
 
         return new RedirectResponse($url);
     }
@@ -311,13 +299,5 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
-    }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        // TODO
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
     }
 }

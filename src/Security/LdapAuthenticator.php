@@ -5,21 +5,18 @@ namespace App\Security;
 
 
 use App\Entity\Account;
-use App\Entity\AuthSource;
 use App\Entity\AuthSourceLdap;
 use App\Facade\AccountCreatorFacade;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
 use Symfony\Component\Ldap\Security\LdapUserProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -37,11 +34,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     private $entityManager;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
      * @var CsrfTokenManagerInterface
      */
     private $csrfTokenManager;
@@ -57,8 +49,9 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         CsrfTokenManagerInterface $csrfTokenManager,
         AccountCreatorFacade $accountCreator
     ) {
+        parent::__construct($urlGenerator);
+
         $this->entityManager = $entityManager;
-        $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->accountCreator = $accountCreator;
     }
@@ -106,7 +99,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|null
-     * @throws AuthenticationException
      *
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
@@ -210,7 +202,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $ldap = Ldap::create('ext_ldap', [
                 'connection_string' => $ldapSource->getServerUrl(),
             ]);
-            $dn = str_replace('{username}', $user->getUsername(), $ldapSource->getAuthDn());
+            $dn = str_replace('{username}', $account->getUsername(), $ldapSource->getAuthDn());
             $ldap->bind($dn, $credentials['password']);
 
             return true;
@@ -241,7 +233,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'ldap');
         }
 
-        $url = $this->getLoginUrl($request);
+        $url = $this->getLoginUrl($request->attributes->get('context'));
 
         return new RedirectResponse($url);
     }
@@ -301,76 +293,5 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
-    }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        // TODO
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
-    }
-
-    private function performLdapLookup(string $username, string $password, AuthSource $authSource)
-    {
-        if (empty($username) || empty($password)) {
-            return false;
-        }
-
-        $extras = $authSource->getExtras();
-        $ldapConnectionString = $extras['DATA']['HOST'] ?? '';
-        $ldapConnectionUser = $extras['DATA']['USER'] ?? '';
-        $ldapConnectionPassword = $extras['DATA']['PASSWORD'] ?? '';
-        $ldapFieldUserId = $extras['DATA']['DBSEARCHUSERID'] ?? '';
-        $ldapBaseDn = $extras['DATA']['BASE'] ?? '';
-        $ldapEncryption = $extras['DATA']['ENCRYPTION'] ?? 'none';
-
-        $ldap = Ldap::create('ext_ldap', [
-            'connection_string' => $ldapConnectionString,
-        ]);
-
-        try {
-            $ldap->bind($ldapConnectionUser, $this->encryptPassword($ldapConnectionPassword, $ldapEncryption));
-
-            // search for user
-            $userEntry = false;
-            $searchFilter = "($ldapFieldUserId=$username)";
-            foreach (explode(';', $ldapBaseDn) as $searchBase) {
-                $query = $ldap->query($searchBase, $searchFilter);
-                $results = $query->execute()->toArray();
-
-                if (count($results) === 1) {
-                    $userEntry = $results[0];
-                    $this->userData[$username] = $userEntry;
-                    $access = $userEntry->getDn();
-                }
-            }
-
-            if (!$userEntry) {
-//                $this->_error_array[] = $this->translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD', $username);
-                return false;
-            }
-
-            try {
-                $ldap->bind($userEntry->getDn(), $this->encryptPassword($password, $ldapEncryption));
-                return true;
-            } catch (ConnectionException $exception) {
-//                $this->_error_array[] = $this->translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD', $username);
-            }
-        } catch (ConnectionException $exception) {
-//            include_once('functions/error_functions.php');
-//            trigger_error('could not connect to server ' . $ldapConnectionString, E_USER_WARNING);
-        }
-
-        return false;
-    }
-
-    private function encryptPassword(string $password, string $encryption)
-    {
-        if ($encryption === 'md5') {
-            return md5($password);
-        }
-
-        return $password;
     }
 }

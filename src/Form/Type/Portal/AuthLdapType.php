@@ -30,6 +30,7 @@ class AuthLdapType extends AbstractType
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
                     'Shibboleth' => 'shib',
+                    'Guest' => 'guest',
                 ],
                 'required' => true,
                 'label' => 'Source',

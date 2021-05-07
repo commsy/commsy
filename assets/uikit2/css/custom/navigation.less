@@ -17,10 +17,18 @@
 @media (max-width: 1300px) {
     #commsy_navigation {
         width: 40px;
+
+        div#nav_footer {
+            display: none;
+        }
     }
 
     #commsy_navigation:hover {
         width: 200px;
+
+        div#nav_footer {
+            display: block;
+        }
     }
 }
 
@@ -57,12 +65,15 @@
         background: #FF404B url(../../img/commsy_logo_120.png) 30px 5px no-repeat;
         transition: ease-in-out 0.3s;
     }
+
+    > div {
+        overflow: hidden;
+    }
 }
 
 ul#commsy_fields {
     border-top: 1px solid #34394A;
     list-style-type: none;
-    overflow: hidden;
 }
 
 ul#commsy_fields li {

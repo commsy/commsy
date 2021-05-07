@@ -10,29 +10,29 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
-use App\Repository\RoomRepository;
-use App\Repository\ZzzRoomRepository;
+use App\Repository\UserRepository;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
+use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_user_item;
+use DateTimeImmutable;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Repository\UserRepository;
-use App\Services\LegacyMarkup;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -489,6 +489,7 @@ class RoomController extends AbstractController
      * @param RoomService $roomService
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
+     * @param UserRepository $userRepository
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -738,6 +739,7 @@ class RoomController extends AbstractController
      * @Route("/room/{roomId}/all/{itemId}/request", requirements={
      *     "itemId": "\d+"
      * }))
+     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
      * @Template()
      * @param Request $request
      * @param LegacyEnvironment $environment
@@ -818,7 +820,7 @@ class RoomController extends AbstractController
                 }
 
                 if ($roomItem->getAGBStatus()) {
-                    $newUser->setAGBAcceptance();
+                    $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 }
 
                 // check if user id already exists
@@ -1283,7 +1285,7 @@ class RoomController extends AbstractController
             } else {
                 // in case of the guest user, $roomUser is null
                 if ($currentUser->isReallyGuest()) {
-                    $mayEnter = $item->mayEnter($currentUser);
+                        $mayEnter = $item->mayEnter($currentUser);
                 }
             }
 

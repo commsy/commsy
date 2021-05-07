@@ -28,9 +28,19 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
-    private $urlGenerator;
+
+    /**
+     * @var CsrfTokenManagerInterface
+     */
     private $csrfTokenManager;
+
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $passwordEncoder;
 
     public function __construct(
@@ -39,8 +49,9 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         CsrfTokenManagerInterface $csrfTokenManager,
         UserPasswordEncoderInterface $passwordEncoder
     ) {
+        parent::__construct($urlGenerator);
+
         $this->entityManager = $entityManager;
-        $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
     }
@@ -76,6 +87,20 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         return false;
     }
 
+    /**
+     * Return a UserInterface object based on the credentials.
+     *
+     * The *credentials* are the return value from getCredentials()
+     *
+     * You may throw an AuthenticationException if you wish. If you return
+     * null, then a UsernameNotFoundException is thrown for you.
+     *
+     * @param mixed $credentials
+     * @param UserProviderInterface $userProvider
+     *
+     * @return UserInterface|null
+     *
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
@@ -103,11 +128,6 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             }
         } catch (NonUniqueResultException $e) {
             throw new CustomUserMessageAuthenticationException('A problem with your account occurred.');
-        }
-
-        if (!$user) {
-            // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
         }
 
         return $user;
@@ -153,7 +173,7 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'local');
         }
 
-        $url = $this->getLoginUrl($request);
+        $url = $this->getLoginUrl($request->attributes->get('context'));
 
         return new RedirectResponse($url);
     }
@@ -161,12 +181,5 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
     public function supportsRememberMe()
     {
         return true;
-    }
-
-    protected function getLoginUrl(Request $request): string
-    {
-        return $this->urlGenerator->generate('app_login', [
-            'context' => $request->attributes->get('context'),
-        ]);
     }
 }
