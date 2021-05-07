@@ -76,9 +76,11 @@
                                 </div>
 
                                 {# files #}
-                                <div>
-                                    {{ macros.files(section) }}
-                                </div>
+                                {% if not section.hasOverwrittenContent -%}
+                                    <div>
+                                        {{ macros.files(section) }}
+                                    </div>
+                                {%- endif %}
                                 <hr>
                             </article>
                         
