@@ -18,12 +18,12 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
     /**
      * @var Security
      */
-    private $security;
+    private Security $security;
 
     /**
      * @var UrlGeneratorInterface
      */
-    private $urlGenerator;
+    private UrlGeneratorInterface $urlGenerator;
 
     /**
      * LogoutSuccessHandler constructor.
@@ -56,7 +56,7 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
 
             if ($authSource instanceof AuthSourceShibboleth) {
                 $logoutUrl = $authSource->getLogoutUrl();
-                if ($logoutUrl !== '') {
+                if ($logoutUrl) {
                     return new RedirectResponse($logoutUrl);
                 }
             } else {

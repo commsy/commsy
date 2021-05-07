@@ -2171,6 +2171,9 @@ class cs_manager {
     protected function returnQuerySentenceIfFieldIsValid($value, $databaseField, $isString=false): string {
         if(!is_null($value) && $value !== ""){
             $doubleQuotes = $isString ? '"' : '';
+            if(is_bool($value)){
+                $value = $value ? 'true': 'false';
+            }
             return sprintf("%s=%s%s%s,", $databaseField, $doubleQuotes, $value, $doubleQuotes);
         }
         return '';
