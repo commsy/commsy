@@ -23,7 +23,6 @@ use App\Form\Type\Account\PersonalInformationType;
 use App\Form\Type\Account\PrivacyType;
 use App\Form\Type\SignUpFormType;
 use App\Privacy\PersonalDataCollector;
-use App\Repository\PortalRepository;
 use App\Security\AbstractCommsyGuardAuthenticator;
 use App\Security\LdapAuthenticator;
 use App\Security\LoginFormAuthenticator;
@@ -48,7 +47,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Security as CoreSecurity;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -64,6 +62,7 @@ class AccountController extends AbstractController
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param AccountCreatorFacade $accountFacade
      * @param LegacyEnvironment $legacyEnvironment
+     * @param InvitationsService $invitationsService
      * @return array|Response
      */
     public function signUp(
@@ -72,7 +71,7 @@ class AccountController extends AbstractController
         UserPasswordEncoderInterface $passwordEncoder,
         AccountCreatorFacade $accountFacade,
         LegacyEnvironment $legacyEnvironment,
-        ValidatorInterface $validator
+        InvitationsService $invitationsService
     ) {
         $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
@@ -81,8 +80,18 @@ class AccountController extends AbstractController
             return $authSource->getType() === 'local';
         })->first();
 
-        if ($localAuthSource->isAddAccount() === AuthSource::ADD_ACCOUNT_NO) {
-            throw $this->createAccessDeniedException('Self-Registration is disabled!');
+        // deny access if self registration is disabled
+        if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_NO) {
+            throw $this->createAccessDeniedException('Self-Registration is disabled.');
+        }
+
+        // deny access if self registration is only available by invitation and the
+        // provided token is invalid
+        $token = $request->query->get('token', '');
+        if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
+            if (!$invitationsService->confirmInvitationCode($localAuthSource, $token)) {
+                throw $this->createAccessDeniedException('Self-Registration token is invalid.');
+            }
         }
 
         $account = new Account();
@@ -105,78 +114,9 @@ class AccountController extends AbstractController
 
             $accountFacade->persistNewAccount($account);
 
-            return $this->redirectToRoute('app_login', [
-                'context' => $portal->getId(),
-            ]);
-        }
-
-        return [
-            'portal' => $portal,
-            'form' => $form->createView(),
-        ];
-    }
-
-    /**
-     * @Route("{portalId}/register/{roomId}/invitation/{token}")
-     * @Template("account/sign_up.html.twig")
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param AccountCreatorFacade $accountFacade
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param String $token
-     * @return array|Response
-     */
-    public function invitationSignUp(
-        Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
-        AccountCreatorFacade $accountFacade,
-        LegacyEnvironment $legacyEnvironment,
-        PortalRepository $portalRepository,
-        InvitationsService $invitationsService,
-        $portalId,
-        $token
-    ) {
-        $portal = $portalRepository->find($portalId);
-        $legacyEnvironment->getEnvironment()->setCurrentPortalID($portalId);
-
-        /** @var AuthSource $localAuthSource */
-        $localAuthSource = $portal->getAuthSources()->filter(function (AuthSource $authSource) {
-            return $authSource->getType() === 'local';
-        })->first();
-
-        // this should not be accessed if the invite option is switched off
-        if ($localAuthSource->isAddAccount() != AuthSource::ADD_ACCOUNT_INVITE) {
-            throw $this->createAccessDeniedException('Self-Registration is disabled!');
-        }
-
-        if ($invitationsService->confirmInvitationCode($localAuthSource, $token) === false) {
-            $this->addFlash('performedSuccessfully', 'The token is invalid');
-            return $this->redirectToRoute('app_login', [
-                'context' => $portal->getId(),
-            ]);
-        }
-
-        $account = new Account();
-        $account->setAuthSource($localAuthSource);
-        $account->setContextId($portal->getId());
-
-        $form = $this->createForm(SignUpFormType::class, $account);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('app_login', [
-                    'context' => $portal->getId(),
-                ]);
+            if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
+                $invitationsService->redeemInvitation($localAuthSource, $token);
             }
-            $account->setLanguage('de');
-
-            $password = $passwordEncoder->encodePassword($account, $account->getPlainPassword());
-            $account->setPassword($password);
-
-            $accountFacade->persistNewAccount($account);
-
-            $invitationsService->redeemInvitation($localAuthSource, $token);
 
             return $this->redirectToRoute('app_login', [
                 'context' => $portal->getId(),

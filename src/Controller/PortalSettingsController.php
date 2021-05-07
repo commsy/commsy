@@ -477,7 +477,7 @@ class PortalSettingsController extends AbstractController
          */
         $authSources = $portal->getAuthSources();
 
-        /** @var AuthSourceShibboleth $localSource */
+        /** @var AuthSourceLocal $localSource */
         $localSource = $authSources->filter(function (AuthSource $authSource) {
             return $authSource instanceof AuthSourceLocal;
         })->first();

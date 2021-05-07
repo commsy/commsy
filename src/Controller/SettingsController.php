@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
@@ -29,13 +30,12 @@ use cs_room_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -46,16 +46,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SettingsController extends AbstractController
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(RouterInterface $router)
-    {
-        $this->router = $router;
-    }
-
     /**
      * @var ParameterBagInterface
      */
@@ -594,8 +584,7 @@ class SettingsController extends AbstractController
         PortalRepository $portalRepository,
         \Swift_Mailer $mailer,
         int $roomId
-    )
-    {
+    ) {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -609,18 +598,15 @@ class SettingsController extends AbstractController
 
         $authSources = $portal->getAuthSources();
 
-        $authSourceItem = null;
-        foreach ($authSources as $authSource) {
-            if ($authSource->isDefault() && $authSource->isAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
-                $authSourceItem = $authSource;
-                break;
-            }
-        }
+        /** @var AuthSourceLocal $localSource */
+        $localAuthSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceLocal;
+        })->first();
 
         $user = $legacyEnvironment->getCurrentUserItem();
 
         $invitees = array();
-        foreach ($invitationsService->getInvitedEmailAdressesByContextId($authSourceItem, $roomId) as $tempInvitee) {
+        foreach ($invitationsService->getInvitedEmailAdressesByContextId($localAuthSource, $roomId) as $tempInvitee) {
             $invitees[$tempInvitee] = $tempInvitee;
         }
 
@@ -633,7 +619,7 @@ class SettingsController extends AbstractController
 
         $data = $form->getData();
         if (isset($data['email'])) {
-            if ($invitationsService->existsInvitationForEmailAddress($authSourceItem, $data['email'])) {
+            if ($invitationsService->existsInvitationForEmailAddress($localAuthSource, $data['email'])) {
                 $form->get('email')->addError(new FormError($translator->trans('An invitation for this email-address already exists in this portal', array())));
             }
         }
@@ -644,19 +630,11 @@ class SettingsController extends AbstractController
             if ($clickedButton === 'send') {
                 // send invitation email
                 if (isset($data['email'])) {
-                    $invitationCode = $invitationsService->generateInvitationCode($authSourceItem, $roomId, $data['email']);
-
-                    $invitationLink = $request->getSchemeAndHttpHost();
-                    $invitationLink .= '?cid=' . $portal->getId() . '&mod=home&fct=index&cs_modus=portalmember';
-                    $invitationLink .= '&invitation_auth_source=' . $authSourceItem->getId();
-                    $invitationLink .= '&invitation_auth_code=' . $invitationCode;
-
-                    $invitationLink = $request->getSchemeAndHttpHost();
-                    $invitationLink .= $this->router->generate('app_account_invitationsignup', [
-                        'portalId' => $portal->getId(),
-                        'roomId' => $roomItem->getItemID(),
+                    $invitationCode = $invitationsService->generateInvitationCode($localAuthSource, $roomId, $data['email']);
+                    $invitationLink = $this->generateUrl('app_account_signup', [
+                        'id' => $portal->getId(),
                         'token' => $invitationCode,
-                    ]);
+                    ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                     $fromAddress = $this->getParameter('commsy.email.from');
                     $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
@@ -683,7 +661,7 @@ class SettingsController extends AbstractController
                 }
             } else if ($clickedButton === 'delete') {
                 foreach ($data['remove_invitees'] as $removeInvitee) {
-                    $invitationsService->removeInvitedEmailAdresses($authSourceItem, $removeInvitee);
+                    $invitationsService->removeInvitedEmailAdresses($localAuthSource, $removeInvitee);
                 }
             }
 
