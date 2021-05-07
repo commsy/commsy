@@ -1977,7 +1977,7 @@ class cs_item {
    */
    function getFileList() {
       $file_list = new cs_list;
-   	  if ($this->getPublic()=='-1'){
+   	  if ($this->getPublic()=='-1' || $this->getHasOverwrittenContent()) {
 		 $translator = $this->_environment->getTranslationObject();
    	  	 return $file_list;
    	  }else{
