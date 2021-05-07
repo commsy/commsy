@@ -62,7 +62,7 @@
                                     {% for rubric in form.rubrics %}
                                         <div class="uk-form-row">
                                             <label class="uk-form-label" style="cursor: move;">
-                                                <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-right"></i>{{ rubric.vars.name|capitalize|trans({}, 'rubric') }}
+                                                <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-right"></i>{{ rubric.vars.name|capitalize|trans({'%count%':1}, 'rubric') }}
                                             </label>
                                             {{ form_widget(rubric) }}
                                         </div>

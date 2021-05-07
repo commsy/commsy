@@ -273,7 +273,7 @@ class SearchFilterType extends AbstractType
 
         $choices = [];
         foreach ($rubrics as $name => $count) {
-            $translatedTitle = $this->translator->trans(ucfirst($name), [], 'rubric');
+            $translatedTitle = $this->translator->trans(ucfirst($name), ['%count%' => 1], 'rubric');
             if ($name === "label") {
                 $translatedTitle = $this->translator->trans("Groups, Topics and Institutions", [], 'search');
             }
