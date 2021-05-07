@@ -437,12 +437,12 @@
                                     {% endfor %}
                                 </td>
                                 <td class="uk-padding-top-remove uk-padding-bottom-remove uk-text-right">
-                                    {% set ratingDisplay = 'rating'|trans({}, 'material') %}
+                                    {% set ratingDisplay = 'rating'|trans({'%count%':1}, 'material') %}
                                     <span class="uk-text-bold uk-margin-left">
                                     {% if ratingArray.ratingDetail[ratingValue] is defined %}
                                         {{ ratingArray.ratingDetail[ratingValue] }}
                                         {% if ratingArray.ratingDetail[ratingValue] == 1 %}
-                                            {% set ratingDisplay = 'rating'|trans({}, 'material') %}
+                                            {% set ratingDisplay = 'rating'|trans({'%count%':0}, 'material') %}
                                         {% endif %}
                                     {% else %}
                                         0

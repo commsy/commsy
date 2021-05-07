@@ -19,21 +19,21 @@
 
 {# content #}
 {% if item.type == 'material' or item.type == 'materials' %}
-    {{ 'material'|trans({}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+    {{ 'material'|trans({'%count%':0}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
 {% elseif item.type == 'announcement' or item.type == 'announcements' %}
-    {{ 'announcement'|trans({}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+    {{ 'announcement'|trans({'%count%':0}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
 {% elseif item.type == 'label' or item.type == 'labels' %}
     {% set labelType = item.labelType %}
 
     {% if labelType == 'group' or labelType == 'groups' %}
-        {{ 'group'|trans({}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+        {{ 'group'|trans({'%count%':0}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
     {% elseif labelType == 'institution' or labelType == 'institutions' %}
-        {{ 'institution'|trans({}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+        {{ 'institution'|trans({'%count%':1}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
     {% elseif labelType == 'topic' or labelType == 'topics' %}
-        {{ 'topic'|trans({}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+        {{ 'topic'|trans({'%count%':1}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
     {% endif %}
 {% elseif item.type == 'discussion' or item.type == 'discussions' %}
-    {{ 'discussion'|trans({}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
+    {{ 'discussion'|trans({'%count%':0}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
     {{ 'Number of entries'|trans({}, 'discussion') }}: {{ item.allArticlesCount }}
     {{ 'Last entry'|trans({}, 'discussion') }}: {{ item.latestArticleModificationDate|craue_date }}
 {% elseif item.type == 'date' %}
