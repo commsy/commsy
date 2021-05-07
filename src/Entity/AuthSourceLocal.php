@@ -10,18 +10,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AuthSourceLocal extends AuthSource
 {
-
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=100, nullable=false)
      * @Assert\Length(max=100)
      */
-    private $mailRegex;
+    private ?string $mailRegex;
 
     public function __construct()
     {
-        $this->addAccount = true;
+        $this->addAccount = self::ADD_ACCOUNT_YES;
         $this->changeUsername = true;
         $this->deleteAccount = true;
         $this->changeUserdata = true;

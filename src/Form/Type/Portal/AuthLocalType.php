@@ -62,9 +62,9 @@ class AuthLocalType extends AbstractType
                 'label' => 'Add account',
                 'expanded' => true,
                 'choices' => [
-                    'Yes' => 1,
-                    'No' => 2,
-                    'Invitation' => 3
+                    'Yes' => 'yes',
+                    'No' => 'no',
+                    'Invitation' => 'invitation',
                 ],
                 'choice_translation_domain' => 'portal',
             ])
