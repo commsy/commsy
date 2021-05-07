@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Form\DataTransformer\PortfolioTransformer;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
@@ -20,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security as CoreSecurity;
 
 /**
  * Class CalendarController
@@ -43,6 +45,8 @@ class PortfolioController extends AbstractController
 
     private \cs_environment $legacyEnvironment;
 
+    private CoreSecurity $security;
+
     /**
      * PortfolioController constructor.
      * @param PortfolioService $portfolioService
@@ -59,7 +63,8 @@ class PortfolioController extends AbstractController
                                 ItemService $itemService,
                                 UserService $userService,
                                 CategoryService $categoryService,
-                                LegacyEnvironment $legacyEnvironment)
+                                LegacyEnvironment $legacyEnvironment,
+                                CoreSecurity $coreSecurity)
     {
         $this->portfolioService = $portfolioService;
         $this->transformer = $transformer;
@@ -68,6 +73,7 @@ class PortfolioController extends AbstractController
         $this->userService = $userService;
         $this->categoryService = $categoryService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->security = $coreSecurity;
     }
 
 
@@ -155,8 +161,9 @@ class PortfolioController extends AbstractController
             }
         }
 
-        /** @var cs_user_item $user */
-        $user = $this->userService->getPortalUserFromSessionId();
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        $user = $this->userService->getPortalUser($account);
 
         $external = false;
         if ($user->getRelatedPrivateRoomUserItem()->getItemId() != $portfolio['creatorId']) {
@@ -234,8 +241,9 @@ class PortfolioController extends AbstractController
             }
         }
 
-        /** @var cs_user_item $user */
-        $user = $this->userService->getPortalUserFromSessionId();
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        $user = $this->userService->getPortalUser($account);
 
         $readerList = array();
         foreach ($items as $item) {
