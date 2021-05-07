@@ -24,6 +24,8 @@ use App\Utils\TopicService;
 use cs_discussion_item;
 use cs_room_item;
 use Exception;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,6 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DiscussionController
@@ -298,9 +301,11 @@ class DiscussionController extends BaseController
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
-        int $itemId
+        int $itemId,
+        DiscussionService $discussionService,
+        ReaderService $readerService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
@@ -614,9 +619,11 @@ class DiscussionController extends BaseController
         PrintService $printService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
-        int $itemId
+        int $itemId,
+        DiscussionService $discussionService,
+        ReaderService $readerService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
 
         $html = $this->renderView('discussion/detail_print.html.twig', [
             'roomId' => $roomId,
@@ -662,7 +669,9 @@ class DiscussionController extends BaseController
         Request $request,
         DiscussionTransformer $transformer,
         int $roomId,
-        int $itemId
+        int $itemId,
+        TranslatorInterface $translator,
+        DiscussionTransformer $discussionTransformer
     ) {
         $discussion = $this->discussionService->getDiscussion($itemId);
         $articleList = $discussion->getAllArticles();
@@ -729,6 +738,7 @@ class DiscussionController extends BaseController
         $article->setDraftStatus(1);
         $article->setDiscussionID($itemId);
         $article->setPosition($newPosition);
+        $article->setPrivateEditing(false);
         $article->save();
 
         $formData = $transformer->transform($article);
@@ -794,7 +804,9 @@ class DiscussionController extends BaseController
         DiscussionTransformer $discussionTransformer,
         DiscussionarticleTransformer $discussionarticleTransformer,
         int $roomId,
-        int $itemId
+        int $itemId,
+        TranslatorInterface $translator,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $item = $this->itemService->getItem($itemId);
 
@@ -1059,7 +1071,8 @@ class DiscussionController extends BaseController
         Request $request,
         DiscussionTransformer $transformer,
         int $roomId,
-        int $itemId
+        int $itemId,
+        TranslatorInterface $translator
     ) {
         $item = $this->itemService->getItem($itemId);
         $article = $this->discussionService->getArticle($itemId);
