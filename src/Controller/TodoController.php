@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
-use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\TodoStatus\TodoStatusAction;
 use App\Form\DataTransformer\TodoTransformer;
-use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -48,25 +46,32 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class TodoController extends BaseController
 {
+
+    /**
+     * @var TodoService
+     */
+    private TodoService $todoService;
+
+    /**
+     * @required
+     * @param TodoService $todoService
+     */
+    public function setTodoService(TodoService $todoService): void
+    {
+        $this->todoService = $todoService;
+    }
     /**
      * @Route("/room/{roomId}/todo")
      * @Template()
      * @param Request $request
-     * @param RoomService $roomService
-     * @param TodoService $todoService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @return array
      */
     public function listAction(
         Request $request,
-        RoomService $roomService,
-        TodoService $todoService,
-        LegacyEnvironment $environment,
         int $roomId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomItem = $roomService->getRoomItem($roomId);
+        $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -78,14 +83,14 @@ class TodoController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in todo manager
-            $todoService->setFilterConditions($filterForm);
+            $this->todoService->setFilterConditions($filterForm);
         } else {
-            $todoService->hideDeactivatedEntries();
-            $todoService->hideCompletedEntries();
+            $this->todoService->hideDeactivatedEntries();
+            $this->todoService->hideCompletedEntries();
         }
 
         // get todo list from manager service 
-        $itemsCountArray = $todoService->getCountArray($roomId);
+        $itemsCountArray = $this->todoService->getCountArray($roomId);
  
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('todo') != '') {
@@ -106,23 +111,21 @@ class TodoController extends BaseController
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'isArchived' => $roomItem->isArchived(),
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
     /**
      * @Route("/room/{roomId}/todo/create")
-     * @param TodoService $todoService
      * @param int $roomId
      * @return RedirectResponse
      * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createAction(
-        TodoService $todoService,
         int $roomId
     ) {
         // create new todo item
-        $todoItem = $todoService->getNewTodo();
+        $todoItem = $this->todoService->getNewTodo();
         $todoItem->setDraftStatus(1);
         $todoItem->setPrivateEditing('1');
         $todoItem->save();
@@ -135,10 +138,6 @@ class TodoController extends BaseController
      * @Template()
      * @param Request $request
      * @param AssessmentService $assessmentService
-     * @param ReaderService $readerService
-     * @param RoomService $roomService
-     * @param TodoService $todoService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -148,10 +147,6 @@ class TodoController extends BaseController
     public function feedAction(
         Request $request,
         AssessmentService $assessmentService,
-        ReaderService $readerService,
-        RoomService $roomService,
-        TodoService $todoService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -164,7 +159,7 @@ class TodoController extends BaseController
             $todoFilter = $request->query->get('todo_filter');
         }
 
-        $roomItem = $roomService->getRoomItem($roomId);
+        $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -177,25 +172,24 @@ class TodoController extends BaseController
             $filterForm->submit($todoFilter);
     
             // apply filter
-            $todoService->setFilterConditions($filterForm);
+            $this->todoService->setFilterConditions($filterForm);
         } else {
-            $todoService->hideDeactivatedEntries();
-            $todoService->hideCompletedEntries();
+            $this->todoService->hideDeactivatedEntries();
+            $this->todoService->hideCompletedEntries();
         }
 
         // get todo list from manager service
         /** @var cs_todo_item[] $todos */
-        $todos = $todoService->getListTodos($roomId, $max, $start, $sort);
+        $todos = $this->todoService->getListTodos($roomId, $max, $start, $sort);
 
         $this->get('session')->set('sortTodos', $sort);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         $allowedActions = array();
         foreach ($todos as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
 
             if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
                 ($this->isGranted('ITEM_ENTER',$roomId)) and $roomItem->getType() == 'userroom'
@@ -241,13 +235,8 @@ class TodoController extends BaseController
      * @param AnnotationService $annotationService
      * @param AssessmentService $assessmentService
      * @param CategoryService $categoryService
-     * @param ItemService $itemService
-     * @param ReaderService $readerService
-     * @param TodoService $todoService
      * @param TopicService $topicService
-     * @param TranslatorInterface $translator
      * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
@@ -257,29 +246,22 @@ class TodoController extends BaseController
         AnnotationService $annotationService,
         AssessmentService $assessmentService,
         CategoryService $categoryService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        TodoService $todoService,
         TopicService $topicService,
-        TranslatorInterface $translator,
         LegacyMarkup $legacyMarkup,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $todo = $todoService->getTodo($itemId);
+        $todo = $this->todoService->getTodo($itemId);
         /** @var cs_step_item[] $steps */
         $steps = $todo->getStepItemList()->to_array();
 
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($todo->getItemID());
         if(empty($reader) || $reader['read_date'] < $todo->getModificationDate()) {
             $reader_manager->markRead($todo->getItemID(), $todo->getVersionID());
         }
 
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($todo->getItemID());
         if(empty($noticed) || $noticed['read_date'] < $todo->getModificationDate()) {
             $noticed_manager->markNoticed($todo->getItemID(), $todo->getVersionID());
@@ -308,12 +290,12 @@ class TodoController extends BaseController
 
         $itemArray = array($todo);
 
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -345,14 +327,14 @@ class TodoController extends BaseController
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
+            $reader = $this->readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                $readerList[$item->getItemId()] = 'changed';
             }
             
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         // annotation form
@@ -378,9 +360,9 @@ class TodoController extends BaseController
         }
 
         $alert = null;
-        if ($todoService->getTodo($itemId)->isLocked()) {
+        if ($this->todoService->getTodo($itemId)->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
         }
 
         $pathTopicItem = null;
@@ -388,23 +370,23 @@ class TodoController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
-        $amountAnnotations = $annotationService->getListAnnotations($roomId, $todoService->getTodo($itemId)->getItemId(), null, null);
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $this->todoService->getTodo($itemId)->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
-            'todo' => $todoService->getTodo($itemId),
+            'todo' => $this->todoService->getTodo($itemId),
             'amountAnnotations' => sizeof($amountAnnotations),
             'stepList' => $steps,
             'timeSpendSum' => $timeSpendSum,
             'readerList' => $readerList,
             'modifierList' => $modifierList,
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form->createView(),
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
-            'draft' => $itemService->getItem($itemId)->isDraft(),
+            'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
@@ -417,7 +399,7 @@ class TodoController extends BaseController
                 'ratingAverageDetail' => $ratingAverageDetail,
                 'ratingOwnDetail' => $ratingOwnDetail,
             ] : [],
-            'isParticipating' => $todo->isProcessor($legacyEnvironment->getCurrentUserItem()),
+            'isParticipating' => $todo->isProcessor($this->legacyEnvironment->getCurrentUserItem()),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
         );
@@ -427,21 +409,17 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template("todo/edit_step.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId) or is_granted('ITEM_PARTICIPATE', itemId)")
-     * @param TodoService $todoService
      * @param TodoTransformer $transformer
-     * @param TranslatorInterface $translator
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function createStepAction(
-        TodoService $todoService,
         TodoTransformer $transformer,
-        TranslatorInterface $translator,
         int $roomId,
         int $itemId
     ) {
-        $step = $todoService->getNewStep();
+        $step = $this->todoService->getNewStep();
         $step->setDraftStatus(1);
         $step->setTodoID($itemId);
         $step->save();
@@ -452,7 +430,7 @@ class TodoController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ));
 
         return [
@@ -467,33 +445,22 @@ class TodoController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      * @param Request $request
-     * @param ItemService $itemService
-     * @param TodoService $todoService
      * @param TodoTransformer $transformer
-     * @param TranslatorInterface $translator
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function editStepAction(
         Request $request,
-        ItemService $itemService,
-        TodoService $todoService,
         TodoTransformer $transformer,
-        TranslatorInterface $translator,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
 
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
 
         // get step
-        $step = $todoService->getStep($itemId);
+        $step = $this->todoService->getStep($itemId);
 
         $formData = $transformer->transform($step);
 
@@ -502,10 +469,10 @@ class TodoController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ]);
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
@@ -526,16 +493,16 @@ class TodoController extends BaseController
                     }
 
                     // update modifier
-                    $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $step->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                     $step->save();
 
-                    $step->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $step->getLinkedItem()->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                     // this will also update the todo item's modification date to indicate that it has changes
                     $step->getLinkedItem()->save();
 
-                    $eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::SAVE);
+                    $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::SAVE);
 
                     return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,
@@ -569,14 +536,8 @@ class TodoController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      * @param Request $request
      * @param CategoryService $categoryService
-     * @param ItemService $itemService
-     * @param RoomService $roomService
-     * @param TodoService $todoService
      * @param TodoTransformer $transformer
-     * @param TranslatorInterface $translator
      * @param ItemController $itemController
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -584,23 +545,16 @@ class TodoController extends BaseController
     public function editAction(
         Request $request,
         CategoryService $categoryService,
-        ItemService $itemService,
-        RoomService $roomService,
-        TodoService $todoService,
         TodoTransformer $transformer,
-        TranslatorInterface $translator,
         ItemController $itemController,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
         /** @var cs_item $item */
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        $roomItem = $roomService->getRoomItem($roomId);
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $roomItem = $this->roomService->getRoomItem($roomId);
 
         $todoItem = NULL;
 
@@ -610,9 +564,9 @@ class TodoController extends BaseController
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         $statusChoices = array(
-            $translator->trans('pending', [], 'todo') => '1',
-            $translator->trans('in progress', [], 'todo') => '2',
-            $translator->trans('done', [], 'todo') => '3',
+            $this->translator->trans('pending', [], 'todo') => '1',
+            $this->translator->trans('in progress', [], 'todo') => '2',
+            $this->translator->trans('done', [], 'todo') => '3',
         );
 
         foreach ($roomItem->getExtraToDoStatusArray() as $key => $value) {
@@ -625,18 +579,18 @@ class TodoController extends BaseController
                 'itemId' => $itemId,
             )),
             'statusChoices' => $statusChoices,
-            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         );
 
-        $todoItem = $todoService->getTodo($itemId);
+        $todoItem = $this->todoService->getTodo($itemId);
         if (!$todoItem) {
             throw $this->createNotFoundException('No todo found for id ' . $itemId);
         }
@@ -647,7 +601,7 @@ class TodoController extends BaseController
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
         $formData['draft'] = $isDraft;
 
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
@@ -658,7 +612,7 @@ class TodoController extends BaseController
                 $todoItem = $transformer->applyTransformation($todoItem, $form->getData());
 
                 // update modifier
-                $todoItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $todoItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
@@ -680,7 +634,7 @@ class TodoController extends BaseController
             return $this->redirectToRoute('app_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
@@ -688,7 +642,7 @@ class TodoController extends BaseController
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -696,44 +650,33 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
-     * @param ItemService $itemService
-     * @param TodoService $todoService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function saveAction(
-        ItemService $itemService,
-        TodoService $todoService,
-        EventDispatcherInterface $eventDispatcher,
-        ReaderService $readerService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
         if ($item->getItemType() == 'todo') {
-            $typedItem = $todoService->getTodo($itemId);
-            $eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
+            $typedItem = $this->todoService->getTodo($itemId);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
         } else if ($item->getItemType() == 'step') {
-            $typedItem = $todoService->getStep($itemId);
-            $eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()), CommsyEditEvent::SAVE);
+            $typedItem = $this->todoService->getStep($itemId);
+            $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()), CommsyEditEvent::SAVE);
         }
         
         $itemArray = array($typedItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
         
-        $legacyEnvironment = $environment->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
         
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -767,14 +710,14 @@ class TodoController extends BaseController
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
+            $reader = $this->readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                $readerList[$item->getItemId()] = 'changed';
             }
             
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         return array(
@@ -791,7 +734,6 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/{itemId}/rating/{vote}")
      * @Template()
      * @param AssessmentService $assessmentService
-     * @param TodoService $todoService
      * @param int $roomId
      * @param int $itemId
      * @param $vote
@@ -799,12 +741,11 @@ class TodoController extends BaseController
      */
     public function ratingAction(
         AssessmentService $assessmentService,
-        TodoService $todoService,
         int $roomId,
         int $itemId,
         $vote
     ) {
-        $todo = $todoService->getTodo($itemId);
+        $todo = $this->todoService->getTodo($itemId);
         if ($vote != 'remove') {
             $assessmentService->rateItem($todo, $vote);
         } else {
@@ -828,28 +769,20 @@ class TodoController extends BaseController
     /**
      * @Route("/room/{roomId}/todo/{itemId}/print")
      * @param AssessmentService $assessmentService
-     * @param ItemService $itemService
      * @param CategoryService $categoryService
-     * @param ReaderService $readerService
-     * @param TodoService $todoService
      * @param PrintService $printService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
      * @return Response
      */
     public function printAction(
         AssessmentService $assessmentService,
-        ItemService $itemService,
         CategoryService $categoryService,
-        ReaderService $readerService,
-        TodoService $todoService,
         PrintService $printService,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
-        $infoArray = $this->getDetailInfo($assessmentService, $categoryService, $itemService, $readerService, $todoService, $legacyEnvironment, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($assessmentService, $categoryService, $roomId, $itemId);
         // annotation form
         $form = $this->createForm(AnnotationType::class);
         $html = $this->renderView('todo/detail_print.html.twig', [
@@ -887,10 +820,6 @@ class TodoController extends BaseController
      * @param Request $request
      * @param AssessmentService $assessmentService
      * @param PrintService $printService
-     * @param ReaderService $readerService
-     * @param RoomService $roomService
-     * @param TodoService $todoService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param string $sort
      * @return Response
@@ -899,47 +828,42 @@ class TodoController extends BaseController
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
-        ReaderService $readerService,
-        RoomService $roomService,
-        TodoService $todoService,
-        LegacyEnvironment $environment,
         int $roomId,
         string $sort
     ) {
-        $roomItem = $roomService->getRoomItem($roomId);
+        $roomItem = $this->roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
         $filterForm = $this->createFilterForm($roomItem);
-        $numAllTodos = $todoService->getCountArray($roomId)['countAll'];
+        $numAllTodos = $this->todoService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
-            $todoService->setFilterConditions($filterForm);
+            $this->todoService->setFilterConditions($filterForm);
         }
 
         // get todo list from manager service
         if ($sort != "none") {
             /** @var cs_todo_item[] $todos */
-            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
+            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
         }
         elseif ($this->get('session')->get('sortTodos')) {
             /** @var cs_todo_item[] $todos */
-            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $this->get('session')->get('sortTodos'));
+            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $this->get('session')->get('sortTodos'));
         }
         else {
             /** @var cs_todo_item[] $todos */
-            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, 'date');
+            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, 'date');
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         foreach ($todos as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
         $ratingList = array();
@@ -952,7 +876,7 @@ class TodoController extends BaseController
         }
 
         // get announcement list from manager service 
-        $itemsCountArray = $todoService->getCountArray($roomId);
+        $itemsCountArray = $this->todoService->getCountArray($roomId);
 
         $html = $this->renderView('todo/list_print.html.twig', [
             'roomId' => $roomId,
@@ -975,23 +899,18 @@ class TodoController extends BaseController
 
     /**
      * @Route("/room/{roomId}/todo/{itemId}/participate")
-     * @param TodoService $todoService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $itemId
      * @return RedirectResponse
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_PARTICIPATE', itemId)")
      */
     public function participateAction(
-        TodoService $todoService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $todo = $todoService->getTodo($itemId);
-        $legacyEnvironment = $environment->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        if (!$todo->isProcessor($legacyEnvironment->getCurrentUserItem())) {
+        $todo = $this->todoService->getTodo($itemId);
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if (!$todo->isProcessor($this->legacyEnvironment->getCurrentUserItem())) {
             $todo->addProcessor($currentUser);
         } else {
             $todo->removeProcessor($currentUser);
@@ -1113,17 +1032,16 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
      * @throws \Exception
      */
-    public function xhrStatusFromDetailAction ($roomId, $itemId, Request $request, TodoService $todoService, RoomService $roomService)
+    public function xhrStatusFromDetailAction ($roomId, $itemId, Request $request, TodoStatusAction $action)
     {
-        $room = $roomService->getRoomItem($roomId);
-        $items = [$todoService->getTodo($itemId)];
+        $room = $this->roomService->getRoomItem($roomId);
+        $items = [$this->todoService->getTodo($itemId)];
         $payload = $request->request->get('payload');
         if (!isset($payload['status'])) {
             throw new \Exception('new status string not provided');
         }
         $newStatus = $payload['status'];
 
-        $action = $this->get(TodoStatusAction::class);
         $action->setNewStatus($newStatus);
         return $action->execute($room, $items);
     }
@@ -1141,7 +1059,6 @@ class TodoController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-        $todoService = $this->get('commsy_legacy.todo_service');
 
         if ($selectAll) {
             if ($request->query->has('todo_filter')) {
@@ -1152,15 +1069,15 @@ class TodoController extends BaseController
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $todoService->setFilterConditions($filterForm);
+                $this->todoService->setFilterConditions($filterForm);
             } else {
-                $todoService->hideDeactivatedEntries();
-                $todoService->hideCompletedEntries();
+                $this->todoService->hideDeactivatedEntries();
+                $this->todoService->hideCompletedEntries();
             }
 
-            return $todoService->getListTodos($roomItem->getItemID());
+            return $this->todoService->getListTodos($roomItem->getItemID());
         } else {
-            return $todoService->getTodosById($roomItem->getItemID(), $itemIds);
+            return $this->todoService->getTodosById($roomItem->getItemID(), $itemIds);
         }
     }
 
@@ -1222,26 +1139,21 @@ class TodoController extends BaseController
     private function getDetailInfo (
         AssessmentService $assessmentService,
         CategoryService $categoryService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        TodoService $todoService,
-        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
-        $todo = $todoService->getTodo($itemId);
+        $todo = $this->todoService->getTodo($itemId);
 
         $stepList = $todo->getStepItemList()->to_array();
 
-        $legacyEnvironment = $environment->getEnvironment();
         $item = $todo;
-        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
         if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
@@ -1249,12 +1161,12 @@ class TodoController extends BaseController
 
         $itemArray = array($todo);
 
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -1286,14 +1198,14 @@ class TodoController extends BaseController
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
+            $reader = $this->readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                 $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                 $readerList[$item->getItemId()] = 'changed';
             }
 
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         // annotation form
@@ -1314,7 +1226,7 @@ class TodoController extends BaseController
         }
 
         /** @var cs_todo_item[] $todos */
-        $todos = $todoService->getListTodos($roomId);
+        $todos = $this->todoService->getListTodos($roomId);
         $todoList = array();
         $counterBefore = 0;
         $counterAfter = 0;
@@ -1362,16 +1274,16 @@ class TodoController extends BaseController
 
         return [
             'roomId' => $roomId,
-            'todo' => $todoService->getTodo($itemId),
+            'todo' => $this->todoService->getTodo($itemId),
             'stepList' => $stepList,
             'readerList' => $readerList,
             'modifierList' => $modifierList,
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form->createView(),
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
-            'draft' => $itemService->getItem($itemId)->isDraft(),
+            'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),

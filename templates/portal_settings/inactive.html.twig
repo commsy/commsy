@@ -1,6 +1,8 @@
 {% extends 'layout.html.twig' %}
 
-{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme inactiveForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme archiveRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme deleteArchiveRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% embed 'components/context_navigation.html.twig' %}
@@ -10,10 +12,20 @@
 
 {% block main %}
     {% embed 'components/card.html.twig' %}
-        {% block title %}{{ 'Inactive'|trans({}, "portal") }}{% endblock %}
+        {% block title %}{{ 'Deprovisioning'|trans({}, "portal") }}{% endblock %}
 
         {% block body %}
-            {{ form(form) }}
+            <ul uk-tab>
+                <li class="{% if tab is same as 'inactive' %}uk-active{% endif %}"><a href="#">{{ 'Inactive'|trans({}, "portal") }}</a></li>
+                <li class="{% if tab is same as 'archiveRooms' %}uk-active{% endif %}"><a href="#">{{ 'Archive inactive rooms'|trans({}, "portal") }}</a></li>
+                <li class="{% if tab is same as 'deleteRooms' %}uk-active{% endif %}"><a href="#">{{ 'Delete inactive rooms'|trans({}, "portal") }}</a></li>
+            </ul>
+
+            <ul class="uk-switcher uk-margin">
+                <li>{{ form(inactiveForm) }}</li>
+                <li>{{ form(archiveRoomsForm) }}</li>
+                <li>{{ form(deleteArchiveRoomsForm) }}</li>
+            </ul>
         {% endblock %}
     {% endembed %}
 {% endblock %}

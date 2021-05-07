@@ -18,7 +18,7 @@
         {% block body %}
             <ul uk-tab>
                 <li class="{% if tab is same as 'tou' %}uk-active{% endif %}"><a href="#">{{ 'terms'|trans({}, "portal") }}</a></li>
-                {% if is_granted('ROOT') %}
+                {% if is_granted('ROLE_ROOT') %}
                     <li class="{% if tab is same as 'data_privacy' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'data privacy'|trans({}, 'portal') }}</a></li>
                     <li class="{% if tab is same as 'impressum' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'impressum'|trans({}, 'portal') }}</a></li>
                     <li class="{% if tab is same as 'accessibility' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">{{ 'accessibility'|trans({}, 'portal') }}</a></li>
@@ -47,7 +47,7 @@
                     {{ form_end(termsForm) }}
                 </li>
 
-                {% if is_granted('ROOT') %}
+                {% if is_granted('ROLE_ROOT') %}
                     <li>{{ form(dataPrivacyForm) }}</li>
                     <li>{{ form(impressumForm) }}</li>
                     <li>{{ form(accessibilityForm) }}</li>
