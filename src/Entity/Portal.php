@@ -160,7 +160,7 @@ class Portal implements \Serializable
      */
     var $_data = array();
     private $_environment;
-    var $_room_list_continuous = NULL;
+    var $_room_list_continuous = null;
 
     public function __construct()
     {
@@ -334,7 +334,7 @@ class Portal implements \Serializable
      *
      * @return array
      */
-    public function getExtras():? array
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
@@ -459,7 +459,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getSupportPageLink():? string
+    public function getSupportPageLink(): ?string
     {
         return $this->extras['SUPPORTPAGELINK'] ?? '';
     }
@@ -470,7 +470,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getSupportPageLinkTooltip():? string
+    public function getSupportPageLinkTooltip(): ?string
     {
         return $this->extras['SUPPORTPAGELINKTOOLTIP'] ?? '';
     }
@@ -492,7 +492,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getSupportEmail():? string
+    public function getSupportEmail(): ?string
     {
         return $this->extras['SERVICEEMAIL'] ?? '';
     }
@@ -503,7 +503,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getSupportFormLink():? string
+    public function getSupportFormLink(): ?string
     {
         return $this->extras['SERVICELINKEXTERNAL'] ?? '';
     }
@@ -514,7 +514,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getAnnouncementText():? string
+    public function getAnnouncementText(): ?string
     {
         return $this->extras['ANNOUNCEMENT_TEXT'] ?? '';
     }
@@ -525,7 +525,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getAnnouncementTitle():? string
+    public function getAnnouncementTitle(): ?string
     {
         return $this->extras['ANNOUNCEMENT_TITLE'] ?? '';
     }
@@ -536,7 +536,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getAnnouncementSeverity():? string
+    public function getAnnouncementSeverity(): ?string
     {
         return $this->extras['ANNOUNCEMENT_SEVERITY'] ?? '';
     }
@@ -782,53 +782,82 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getInactivityLockDays():? int
+    /**
+     * @return int|null
+     */
+    public function getInactivityLockDays(): ?int
     {
         return $this->extras['INACTIVITY_LOCK'] ?? null;
     }
 
-    public function setInactivityLockDays(?int $days): Portal
+    /**
+     * @param int|null $days
+     * @return self
+     */
+    public function setInactivityLockDays(?int $days): self
     {
         $this->extras['INACTIVITY_LOCK'] = $days;
         return $this;
     }
 
-    public function getInactivitySendMailBeforeLockDays():? int
+    /**
+     * @return int|null
+     */
+    public function getInactivitySendMailBeforeLockDays(): ?int
     {
         return $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] ?? null;
     }
 
-    public function setInactivitySendMailBeforeLockDays(?int $days): Portal
+    /**
+     * @param int|null $days
+     * @return self
+     */
+    public function setInactivitySendMailBeforeLockDays(?int $days): self
     {
         $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] = $days;
         return $this;
     }
 
-    public function getInactivityDeleteDays():? int
+    /**
+     * @return int|null
+     */
+    public function getInactivityDeleteDays(): ?int
     {
         return $this->extras['INACTIVITY_DELETE'] ?? null;
     }
 
-    public function setInactivityDeleteDays(?int $days): Portal
+    /**
+     * @param int|null $days
+     * @return self
+     */
+    public function setInactivityDeleteDays(?int $days): self
     {
         $this->extras['INACTIVITY_DELETE'] = $days;
         return $this;
     }
 
-    public function getInactivitySendMailBeforeDeleteDays():? int
+    /**
+     * @return int|null
+     */
+    public function getInactivitySendMailBeforeDeleteDays(): ?int
     {
         return $this->extras['INACTIVITY_MAIL_DELETE'] ?? null;
     }
 
-    public function setInactivitySendMailBeforeDeleteDays(?int $days): Portal
+    /**
+     * @param int|null $days
+     * @return self
+     */
+    public function setInactivitySendMailBeforeDeleteDays(?int $days): self
     {
         $this->extras['INACTIVITY_MAIL_DELETE'] = $days;
         return $this;
     }
+
     /**
      * @return string
      */
-    public function getDescriptionGerman():? string
+    public function getDescriptionGerman(): ?string
     {
         return $this->descriptionGerman;
     }
@@ -846,7 +875,7 @@ class Portal implements \Serializable
     /**
      * @return string
      */
-    public function getDescriptionEnglish():? string
+    public function getDescriptionEnglish(): ?string
     {
         return $this->descriptionEnglish;
     }
@@ -861,7 +890,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getTermsGerman():? string
+    public function getTermsGerman(): ?string
     {
         return $this->termsGerman;
     }
@@ -872,7 +901,7 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getTermsEnglish():? string
+    public function getTermsEnglish(): ?string
     {
         return $this->termsEnglish;
     }
@@ -1036,7 +1065,8 @@ class Portal implements \Serializable
     # email text translation methods
     ###################################################
 
-    function getEmailTextArray () {
+    function getEmailTextArray()
+    {
         $retour = array();
         if ($this->_issetExtra('MAIL_TEXT_ARRAY')) {
             $retour = $this->getExtras()['MAIL_TEXT_ARRAY'];
@@ -1044,7 +1074,8 @@ class Portal implements \Serializable
         return $retour;
     }
 
-    function setEmailText ($message_tag, $array) {
+    function setEmailText($message_tag, $array)
+    {
         $mail_text_array = array();
         if ($this->_issetExtra('MAIL_TEXT_ARRAY')) {
             $mail_text_array = $this->getExtras()['MAIL_TEXT_ARRAY'];
@@ -1054,12 +1085,13 @@ class Portal implements \Serializable
         } elseif (!empty($mail_text_array[$message_tag])) {
             unset($mail_text_array[$message_tag]);
         }
-        $this->_addExtra('MAIL_TEXT_ARRAY',$mail_text_array);
+        $this->_addExtra('MAIL_TEXT_ARRAY', $mail_text_array);
     }
 
-    function setEmailTextArray ($array) {
-        if ( !empty($array) ) {
-            $this->_addExtra('MAIL_TEXT_ARRAY',$array);
+    function setEmailTextArray($array)
+    {
+        if (!empty($array)) {
+            $this->_addExtra('MAIL_TEXT_ARRAY', $array);
         }
     }
 
@@ -1071,10 +1103,11 @@ class Portal implements \Serializable
      * @return boolean true, if value exists
      *                 false, if not
      */
-    function _issetExtra($key) {
+    function _issetExtra($key)
+    {
         $result = false;
         $extras = $this->getExtras();
-        if (isset($extras) and is_array($extras) and array_key_exists($key,$extras) and isset($extras[$key])) {
+        if (isset($extras) and is_array($extras) and array_key_exists($key, $extras) and isset($extras[$key])) {
             $result = true;
         }
         return $result;
@@ -1090,9 +1123,144 @@ class Portal implements \Serializable
     /** save context
      * this method save the context
      */
-    function save() {
+    function save()
+    {
         $manager = $this->_environment->getManager($this->_type);
         $this->_save($manager);
         $this->_changes = array();
+    }
+
+
+    ###################################################
+    # archiving and deleting rooms
+    ###################################################
+
+    function setStatusArchivingUnusedRooms(bool $statusArchivingUnusedRooms)
+    {
+        $this->extras['ARCHIVING_ROOMS_STATUS'] = $statusArchivingUnusedRooms ? 1 : -1;
+        return $this;
+    }
+
+    public function getStatusArchivingUnusedRooms(): bool
+    {
+        $statusArchivingUnusedRooms = $this->extras['ARCHIVING_ROOMS_STATUS'] ?? -1;
+        return $statusArchivingUnusedRooms === 1;
+    }
+
+
+    public function turnOnArchivingUnusedRooms()
+    {
+        $this->extras['ARCHIVING_ROOMS_STATUS'] = 1;
+    }
+
+    public function turnOffArchivingUnusedRooms()
+    {
+        $this->extras['ARCHIVING_ROOMS_STATUS'] = -1;
+    }
+
+    public function getDaysUnusedBeforeArchivingRooms(): int
+    {
+        $retour = 365; //default
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE'];
+        }
+        return $retour;
+    }
+
+    public function setDaysUnusedBeforeArchivingRooms(int $value)
+    {
+        $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE'] = $value;
+    }
+
+    public function isActivatedArchivingUnusedRooms(): bool
+    {
+        $status = $this->getStatusArchivingUnusedRooms();
+        return $status === 1;
+    }
+
+    /** get days send an email before archiving an unused room
+     *
+     * @return int days send email before archiving an unused room
+     */
+    public function getDaysSendMailBeforeArchivingRooms(): int
+    {
+        $retour = 0;
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE'];
+        }
+        return $retour;
+    }
+
+    /** set days sed mail before archiving an unused room
+     *
+     * @param int days send mail before archiving an unused room
+     */
+    public function setDaysSendMailBeforeArchivingRooms(int $value)
+    {
+        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE'] = $value;
+    }
+
+    public function turnOnDeletingUnusedRooms()
+    {
+        $this->setStatusDeletingUnusedRooms(1);
+    }
+
+    public function turnOffDeletingUnusedRooms()
+    {
+        $this->setStatusDeletingUnusedRooms(-1);
+    }
+
+    public function getStatusDeletingUnusedRooms(): bool
+    {
+        return $this->extras['DELETING_ROOMS_STATUS'] ?? 0;
+    }
+
+    public function setStatusDeletingUnusedRooms(bool $value)
+    {
+        $this->extras['DELETING_ROOMS_STATUS'] = $value;
+    }
+
+    /** get days before deleting an unused archived room
+     *
+     * @return int days before deleting an unused archived room
+     */
+    public function getDaysUnusedBeforeDeletingRooms(): int
+    {
+        $retour = 365; //default
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE'];
+        }
+        return $retour;
+    }
+
+    /** set days before deleting an unused archived room
+     *
+     * @param int days before deleting an unused archived room
+     */
+    public function setDaysUnusedBeforeDeletingRooms(int $value)
+    {
+        $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE'] = $value;
+    }
+
+    /** get days send an email before deleting an unused archived room
+     *
+     * @return int days send email before deleting an unused archived room
+     */
+    public function getDaysSendMailBeforeDeletingRooms(): int
+    {
+        $retour = 0;
+        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE')) {
+            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'];
+        }
+        return $retour;
+    }
+
+    /** set days sed mail before deleting an unused archived room
+     *
+     * @param int days send mail before deleting an unused archived room
+     */
+    public function setDaysSendMailBeforeDeletingRooms(int $value)
+    {
+        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'] = $value;
     }
 }
