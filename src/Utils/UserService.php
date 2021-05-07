@@ -300,36 +300,6 @@ class UserService
         return $user;
     }
 
-    public function getPortalUserFromSessionId()
-    {
-        if (isset($_COOKIE['SID'])) {
-            $sid = $_COOKIE['SID'];
-
-            $sessionManager = $this->legacyEnvironment->getSessionManager();
-            $sessionItem = $sessionManager->get($sid);
-
-            if ($sessionItem) {
-                $userManager = $this->legacyEnvironment->getUserManager();
-                $userList = $userManager->getAllUserItemArray($sessionItem->getValue('user_id'));
-                $portalUser = null;
-                if (!empty($userList)) {
-                    //$contextID = $userList[0]->getContextId();
-                    //$portalUser = $userList[0];
-                    foreach ($userList as $user) {
-                        //if ($user->getContextId() < $contextID) {
-                        //    $contextID = $user->getContextId();
-                        //    $portalUser = $user;
-                        //}
-                        if ($user->getAuthSource() == $sessionItem->getValue('auth_source')) {
-                            $portalUser = $user;
-                        }
-                    }
-                }
-                return $portalUser;
-            }
-        }
-    }
-
     /**
      * Returns a array of archived room ids from userId
      * @param $userId
