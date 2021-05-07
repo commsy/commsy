@@ -23,7 +23,11 @@ use App\Entity\RoomCategories;
 use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
+use App\Facade\UserCreatorFacade;
 use App\Form\DataTransformer\UserTransformer;
+use App\Form\Model\Csv\Base64CsvFile;
+use App\Form\Model\Csv\CsvUserDataset;
+use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -76,6 +80,7 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
@@ -474,7 +479,7 @@ class PortalSettingsController extends AbstractController
          */
         $authSources = $portal->getAuthSources();
 
-        /** @var AuthSourceShibboleth $localSource */
+        /** @var AuthSourceLocal $localSource */
         $localSource = $authSources->filter(function (AuthSource $authSource) {
             return $authSource instanceof AuthSourceLocal;
         })->first();
@@ -485,6 +490,7 @@ class PortalSettingsController extends AbstractController
             $localSource->setPortal($portal);
         }
 
+        $localSource->setPortal($portal);
         $localForm = $this->createForm(AuthLocalType::class, $localSource);
         $localForm->handleRequest($request);
 
@@ -498,7 +504,7 @@ class PortalSettingsController extends AbstractController
 
             if ($clickedButtonName === 'save') {
                 if ($localSource->isDefault()) {
-                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager) {
+                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager, $portal) {
                         $authSource->setDefault(false);
                         $entityManager->persist($authSource);
                     });
@@ -512,6 +518,45 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $localForm->createView(),
+            'portal' => $portal,
+        ];
+    }
+
+
+    /**
+     * @Route("/portal/{portalId}/settings/csvimport")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template()
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @param Request $request
+     * @param UserCreatorFacade $userCreator
+     * @param Portal $portal
+     * @return array
+     */
+    public function csvImportAction(
+        Request $request,
+        UserCreatorFacade $userCreator,
+        Portal $portal
+    ) {
+        $importForm = $this->createForm(CsvImportType::class, [], [
+            'portal' => $portal,
+        ]);
+
+        $importForm->handleRequest($request);
+        if ($importForm->isSubmitted() && $importForm->isValid()) {
+            /** @var ArrayCollection $datasets */
+            $datasets = $importForm->get('csv')->getData();
+
+            /** @var AuthSource $authSource */
+            $authSource = $importForm->get('auth_sources')->getData();
+
+            foreach ($datasets as $dataset) {
+                $userCreator->createFromCsvDataset($authSource, $dataset);
+            }
+        }
+
+        return [
+            'form' => $importForm->createView(),
             'portal' => $portal,
         ];
     }

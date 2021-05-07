@@ -45,14 +45,24 @@ class DeleteAction implements ActionInterface
      */
     private $legacyEnvironment;
 
+
+    /**
+     * @param DeleteInterface $deleteStrategy
+     */
+    public function setDeleteStrategy(DeleteInterface $deleteStrategy): void
+    {
+        $this->deleteStrategy = $deleteStrategy;
+    }
+
+
     public function __construct(
-        DeleteInterface $deleteStrategy,
+        DeleteGeneric $deleteGeneric,
         TranslatorInterface $translator,
         ItemService $itemService,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $this->deleteStrategy = $deleteStrategy;
+        $this->deleteStrategy = $deleteGeneric;
         $this->translator = $translator;
         $this->itemService = $itemService;
         $this->userService = $userService;
@@ -131,4 +141,5 @@ class DeleteAction implements ActionInterface
 
         return !empty($moderatorIds);
     }
+
 }

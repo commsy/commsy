@@ -242,7 +242,8 @@ class DateService
     
     public function hideDeactivatedEntries()
     {
-        $this->dateManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $dateManager = $this->legacyEnvironment->getDateManager();
+        $dateManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     /** Retrieves the first date item matching the given VCALENDAR UID from a calendar & room with the given IDs
