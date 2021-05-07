@@ -388,7 +388,7 @@ class ContextController extends AbstractController
                         $message->setReplyTo([$modEmail => $modFullName]);
                     }
 
-                    $this->get('mailer')->send($message);
+                    $this->mailer->send($message);
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }

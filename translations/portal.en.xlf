@@ -999,6 +999,22 @@
                 <source>Default Source</source>
                 <target>Default Source</target>
             </trans-unit>
+            <trans-unit id="helP_text_default">
+                <source>Pre select this authentication in the login box (deselect all others)</source>
+                <target>Pre select this authentication in the login box (deselect all others)</target>
+            </trans-unit>
+            <trans-unit id="default_auth">
+                <source>Default</source>
+                <target>Default</target>
+            </trans-unit>
+            <trans-unit id="add_account">
+                <source>Add account</source>
+                <target>Add account</target>
+            </trans-unit>
+            <trans-unit id="auth_invitation">
+                <source>Invitation</source>
+                <target>With invitation</target>
+            </trans-unit>
 
             <!-- general -->
             <trans-unit id="portal_settings">
