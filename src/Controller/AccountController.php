@@ -564,7 +564,6 @@ class AccountController extends AbstractController
      * @Template
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
-     * @param UserService $userService
      * @param ParameterBagInterface $parameterBag
      * @param TranslatorInterface $translator
      * @param AccountManager $accountManager
@@ -573,7 +572,6 @@ class AccountController extends AbstractController
      */
     public function deleteAccount(
         Request $request,
-        UserService $userService,
         ParameterBagInterface $parameterBag,
         TranslatorInterface $translator,
         AccountManager $accountManager,
@@ -588,16 +586,15 @@ class AccountController extends AbstractController
             'confirm_string' => $translator->trans('delete', [], 'profile'),
         ], [])->getForm();
 
-        $currentUser = $userService->getCurrentUserItem();
-        $portalUser = $currentUser->getRelatedCommSyUserItem();
-
         // Lock account
         if ($request->request->has('lock_form')) {
             $lockForm->handleRequest($request);
             if ($lockForm->isSubmitted() && $lockForm->isValid()) {
                 // lock account
-                $portalUser->reject();
-                $portalUser->save();
+
+                /** @var $account Account */
+                $account = $security->getUser();
+                $accountManager->lock($account);
 
                 return $this->redirectToRoute('app_logout');
             }

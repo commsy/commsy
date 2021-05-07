@@ -14,7 +14,6 @@ use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
 use App\Action\TodoStatus\TodoStatusAction;
-use App\Utils\ItemService;
 use App\Utils\TodoService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +47,7 @@ class StepController extends BaseController
      * @Route("/room/{roomId}/step/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
      * @throws \Exception
      */
-    public function xhrChangeStatusAction($roomId, $itemId, Request $request, ItemService $itemService, TodoService $todoService)
+    public function xhrChangeStatusAction($roomId, $itemId, Request $request, TodoService $todoService)
     {
         $room = $this->getRoom($roomId);
         $roomToDoItems = $todoService->getTodosById($roomId, []);

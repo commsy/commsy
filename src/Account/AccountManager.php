@@ -82,4 +82,19 @@ class AccountManager
 
         $portalUser->delete();
     }
+
+    /**
+     * @param Account $account
+     */
+    public function lock(Account $account)
+    {
+        $portalUser = $this->userService->getPortalUser($account);
+
+        $portalUser->reject();
+        $portalUser->save();
+
+        $account->setLocked(true);
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+    }
 }

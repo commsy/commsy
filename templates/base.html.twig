@@ -23,17 +23,17 @@
             </a>
 
             <div class="uk-flex uk-flex-wrap uk-flex-wrap-space-between uk-height-1-1">
-                <div>
+                <div class="uk-flex-item-1">
                     {# Context Navigation #}
                     {% block side_navigation %}
                     {% endblock %}
                 </div>
 
-                <div class="uk-margin-large-bottom uk-flex-item-1">
+                <div id="nav_footer" class="uk-margin-large-bottom uk-flex-item-1">
                     <div class="uk-accordion" data-uk-accordion="{showfirst: false}">
                         <div class="uk-accordion-title"><span class="uk-text-small">CommSy {{ commsy.version }}</span></div>
                         <div class="uk-accordion-content">
-                            {{ footer.render(commsy.server) }}
+                            {{ footer.render(commsy.server, commsy.portal) }}
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,18 @@
         {# Off-canvase context navigation for small devices #}
         <div id="commsy_offnavigation" class="uk-offcanvas">
             <div class="uk-offcanvas-bar" mode="slide">
-                {{ block('side_navigation') }}
+                <div>
+                    {{ block('side_navigation') }}
+                </div>
+
+                <div class="uk-margin-large-bottom">
+                    <div class="uk-accordion" data-uk-accordion="{showfirst: false}">
+                        <div class="uk-accordion-title"><span class="uk-text-small">CommSy {{ commsy.version }}</span></div>
+                        <div class="uk-accordion-content">
+                            {{ footer.render(commsy.server, commsy.portal) }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

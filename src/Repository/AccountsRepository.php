@@ -50,4 +50,17 @@ class AccountsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findByEmailAndPortalId(string $email, int $portalId)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.email = :email')
+            ->andWhere('a.contextId = :contextId')
+            ->setParameters([
+                'email' => $email,
+                'contextId' => $portalId,
+            ])
+            ->getQuery()
+            ->getResult();
+    }
 }

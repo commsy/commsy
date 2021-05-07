@@ -6,7 +6,6 @@
 parameters:
     locale: '%env(LOCALE)%'
 
-    legacy.site_index: "%kernel.project_dir%/public/commsy_legacy.php"
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
@@ -179,24 +178,8 @@ services:
 ###############################
 ## Commsy\LegacyBundle
 ###############################
-    # Legacy kernel
-    commsy_legacy.kernel:
-        alias: App\Kernel\LegacyKernel
-
-    App\Kernel\LegacyKernel:
-        arguments:
-            $legacyAppPath: '%legacy.site_index%'
-
-    # Legacy authentication
-    commsy_legacy.legacy_authentication:
-        class: App\Authentication\LegacyAuthentication
-        arguments: ['@commsy_legacy.environment']
-
     # Event subscriber
     App\EventSubscriber\KernelSubscriber:
-        arguments:
-            $legacyKernel: '@commsy_legacy.kernel'
-            $legacyAuthentication: '@commsy_legacy.legacy_authentication'
         tags:
             - { name: kernel.event_subscriber }
 
@@ -207,7 +190,7 @@ services:
     App\Services\LegacyEnvironment:
         public: true
         autowire: true
-        arguments: ['%legacy.site_index%', '@service_container']
+        arguments: ['%kernel.project_dir%', '@service_container']
 
     commsy_legacy.category_service:
         alias: App\Utils\CategoryService
@@ -1124,7 +1107,6 @@ services:
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.roomcategories_service:
         class: App\Services\RoomCategoriesService
@@ -1195,38 +1177,28 @@ services:
         autowire: true
     App\Action\Delete\DeleteDate:
         autowire: true
-        arguments:
-            $calendarsService: '@commsy.calendars_service'
+
 
     commsy.action.delete.generic:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteGeneric'
+
 
     commsy.action.delete.step:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteStep'
 
     commsy.action.delete.section:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteSection'
 
     commsy.action.delete.discussion_article:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteDiscussionArticle'
 
     commsy.action.delete.date:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteDate'
 
     App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 
@@ -1275,12 +1247,7 @@ services:
     App\Http\JsonRedirectResponse:
         autowire: false
 
-    # Twig
-    twig.extension.text:
-        class: Twig_Extensions_Extension_Text
-        tags:
-            - { name: twig.extension }
-
+    # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }

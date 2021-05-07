@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Services\LegacyEnvironment;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +11,6 @@ use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
-
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -133,13 +133,6 @@ class Portal implements \Serializable
      * @ORM\Column(name="activity", type="integer", nullable=false)
      */
     private $activity = '0';
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_open_for_guests", type="boolean", nullable=false)
-     */
-    private $isOpenForGuests = '1';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuthSource", mappedBy="portal")
@@ -395,30 +388,6 @@ class Portal implements \Serializable
     }
 
     /**
-     * Set isOpenForGuests
-     *
-     * @param boolean $isOpenForGuests
-     *
-     * @return Portal
-     */
-    public function setIsOpenForGuests($isOpenForGuests)
-    {
-        $this->isOpenForGuests = $isOpenForGuests;
-
-        return $this;
-    }
-
-    /**
-     * Get isOpenForGuests
-     *
-     * @return boolean
-     */
-    public function getIsOpenForGuests()
-    {
-        return $this->isOpenForGuests;
-    }
-
-    /**
      * @return Collection
      */
     public function getAuthSources(): Collection
@@ -467,7 +436,7 @@ class Portal implements \Serializable
         if ($logoFile !== null) {
             // VichUploaderBundle NOTE: it is required that at least one field changes if you are
             // using Doctrine otherwise the event listeners won't be called and the file is lost
-            $this->modificationDate = new \DateTimeImmutable();
+            $this->modificationDate = new DateTimeImmutable();
         }
         return $this;
     }
@@ -600,14 +569,22 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getAGBChangeDate(): ?\DateTime
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getAGBChangeDate(): ?DateTimeImmutable
     {
         $agbChangeDateString = $this->extras['AGB_CHANGE_DATE'] ?? '';
-        $agbChangeDate = !empty($agbChangeDateString) ? \DateTime::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) : null;
-        return $agbChangeDate;
+        return !empty($agbChangeDateString) ?
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) :
+            null;
     }
 
-    public function setAGBChangeDate(?\DateTime $agbChangeDate): Portal
+    /**
+     * @param DateTimeImmutable|null $agbChangeDate
+     * @return $this
+     */
+    public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): Portal
     {
         $agbChangeDateString = $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : '';
         $this->extras['AGB_CHANGE_DATE'] = $agbChangeDateString;
@@ -622,7 +599,7 @@ class Portal implements \Serializable
          */
         $agbStatus = $this->extras['AGBSTATUS'] ?? 2;
 
-        return $agbStatus === 1 ? true : false;
+        return $agbStatus === 1;
     }
 
     public function setAGBEnabled(bool $enabled): Portal

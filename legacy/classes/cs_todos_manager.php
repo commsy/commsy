@@ -531,7 +531,7 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
       if ( !empty($date) ) {
          $query .= 'date="'.encode(AS_DB,$item->getDate()).'",';
       }
-      $query .= 'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
+      $query .=$this->returnQuerySentenceIfFieldIsValid($item->getInternalStatus(), 'status').
                'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
                'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
                'public="'.encode(AS_DB,$public).'",'.

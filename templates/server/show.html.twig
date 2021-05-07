@@ -89,7 +89,7 @@
 
             {% endfor %}
 
-            {% if is_granted('ROOT') %}
+            {% if is_granted('ROLE_ROOT') %}
                 <div class="uk-width-medium">
                     <div class="uk-card uk-card-default uk-card-small uk-card-body uk-text-center">
                         <a class="uk-text-large uk-link-text" href="{{ path('app_server_createportal') }}">{{ 'portal.create'|trans({}, 'portal') }}</a>

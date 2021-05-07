@@ -7,6 +7,8 @@ use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ProjectService;
+use DateTimeImmutable;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Utils\UserService;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,8 +27,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class ContextController extends AbstractController
 {
-
-
     /**
      *
      * @var \Swift_Mailer
@@ -37,7 +37,8 @@ class ContextController extends AbstractController
      * @required
      * @param \Swift_Mailer $mailer
      */
-    public function setMailer(\Swift_Mailer $mailer){
+    public function setMailer(\Swift_Mailer $mailer)
+    {
         $this->mailer = $mailer;
     }
 
@@ -83,11 +84,14 @@ class ContextController extends AbstractController
      * @Route("/room/{roomId}/context/{itemId}/request", requirements={
      *     "itemId": "\d+"
      * }))
+     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
      * @Template()
      *
      * @param Request $request
      * @param LegacyEnvironment $environment
-     * @param $roomId
+     * @param UserService $userService
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param int $roomId
      * @param int $itemId
      * @return array|Response
      */
@@ -105,7 +109,7 @@ class ContextController extends AbstractController
         if ($currentUserItem->isReallyGuest()) {
             throw new AccessDeniedException();
         }
-                
+
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
 
@@ -118,7 +122,7 @@ class ContextController extends AbstractController
         if ($roomItem->checkNewMembersWithCode()) {
             $formOptions['checkNewMembersWithCode'] = $roomItem->getCheckNewMemberCode();
         }
-        
+
         $agbText = '';
         if ($roomItem->getAGBStatus() != 2) {
             $formOptions['withAGB'] = true;
@@ -126,9 +130,9 @@ class ContextController extends AbstractController
             // get agb text in users language
             $agbText = $roomItem->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
         }
-        
+
         $form = $this->createForm(ContextRequestType::class, null, $formOptions);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -176,7 +180,7 @@ class ContextController extends AbstractController
                 }
 
                 if ($roomItem->getAGBStatus()) {
-                    $newUser->setAGBAcceptance();
+                    $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 }
 
                 if ($legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
@@ -245,9 +249,11 @@ class ContextController extends AbstractController
                         $savedLanguage = $translator->getSelectedLanguage();
                         $translator->setSelectedLanguage($language);
 
-                        $message->setSubject($translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT', $newUser->getFullname(), $roomItem->getTitle()));
+                        $message->setSubject($translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',
+                            $newUser->getFullname(), $roomItem->getTitle()));
 
-                        $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")), $translator->getTimeInLang(date("Y-m-d H:i:s")));
+                        $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")),
+                            $translator->getTimeInLang(date("Y-m-d H:i:s")));
                         $body .= "\n\n";
 
                         if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
@@ -256,11 +262,16 @@ class ContextController extends AbstractController
                             $userId = $newUser->getUserID();
                         }
                         if ($roomItem->isGroupRoom()) {
-                            $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
-                        } else if ($roomItem->isCommunityRoom()) {
-                            $body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                            $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY',
+                                $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
                         } else {
-                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                            if ($roomItem->isCommunityRoom()) {
+                                $body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY',
+                                    $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                            } else {
+                                $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(),
+                                    $userId, $newUser->getEmail(), $roomItem->getTitle());
+                            }
                         }
                         $body .= "\n\n";
 
@@ -272,7 +283,8 @@ class ContextController extends AbstractController
                         $body .= "\n\n";
 
                         if ($form->has('description') && $formData['description']) {
-                            $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(), $formData['description']);
+                            $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(),
+                                $formData['description']);
                             $body .= "\n\n";
                         }
 
@@ -340,16 +352,24 @@ class ContextController extends AbstractController
 
                     $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER', $roomItem->getTitle());
 
-                    $body  = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")), $translator->getTimeInLang(date("Y-m-d H:i:s")));
+                    $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")),
+                        $translator->getTimeInLang(date("Y-m-d H:i:s")));
                     $body .= "\n\n";
                     $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $newUser->getFullname());
                     $body .= "\n\n";
                     if ($roomItem->isCommunityRoom()) {
-                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GR', $userId, $roomItem->getTitle());
-                    } else if ($roomItem->isProjectRoom()) {
-                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_PR', $userId, $roomItem->getTitle());
-                    } else if ($roomItem->isGroupRoom()) {
-                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GP', $userId, $roomItem->getTitle());
+                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GR', $userId,
+                            $roomItem->getTitle());
+                    } else {
+                        if ($roomItem->isProjectRoom()) {
+                            $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_PR', $userId,
+                                $roomItem->getTitle());
+                        } else {
+                            if ($roomItem->isGroupRoom()) {
+                                $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GP', $userId,
+                                    $roomItem->getTitle());
+                            }
+                        }
                     }
                     $body .= "\n\n";
                     $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $modFullName, $roomItem->getTitle());
@@ -368,7 +388,7 @@ class ContextController extends AbstractController
                         $message->setReplyTo([$modEmail => $modFullName]);
                     }
 
-                    $this->get('mailer')->send($message);
+                    $this->mailer->send($message);
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }
@@ -383,8 +403,7 @@ class ContextController extends AbstractController
                     'roomId' => $roomId,
                     'itemId' => $roomItem->getLinkedGroupItemID(),
                 ]);
-            }
-            else {
+            } else {
                 if ($roomManager->getItem($roomId)) {
                     // in community-context -> redirect to detail view in project rubric.
                     $route = $this->redirectToRoute('app_project_detail', [
@@ -401,12 +420,12 @@ class ContextController extends AbstractController
             }
             return $route;
         }
-        
+
         return [
             'form' => $form->createView(),
             'agbText' => $agbText,
             'title' => html_entity_decode($roomItem->getTitle()),
         ];
     }
-    
+
 }

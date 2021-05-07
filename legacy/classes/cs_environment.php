@@ -1981,33 +1981,37 @@ class cs_environment {
       return $this->_available_languages;
    }
 
-  /**
-   * Taken from http://www.shredzone.de/articles/php/snippets/acceptlang/?SID=uf4h8rf736v35afbi90844qsc0
-   *
-   * Parse the Accept-Language HTTP header sent by the browser. It
-   * will return an array with the languages the user accepts, sorted
-   * from most preferred to least preferred.
-   *
-   *
-   * @return  Array: key is the importance, value is the language code.
-   */
-  function parseAcceptLanguage() {
-    $ayLang = array();
-    $aySeen = array();
-    if(getenv('HTTP_ACCEPT_LANGUAGE') != '') {
-      foreach(explode(',',getenv('HTTP_ACCEPT_LANGUAGE')) as $llang) {
-        preg_match("~^(.*?)([-_].*?)?(\;q\=(.*))?$~iu", $llang, $ayM);
-        $q = isset($ayM[4]) ? $ayM[4] : '1.0';
-        $lang = mb_strtolower(trim($ayM[1]));
-        if(!in_array($lang, $aySeen)) {
-          $ayLang[$q] = $lang;
-          $aySeen[] = $lang;
+    /**
+     * Taken from http://www.shredzone.de/articles/php/snippets/acceptlang/?SID=uf4h8rf736v35afbi90844qsc0
+     *
+     * Parse the Accept-Language HTTP header sent by the browser. It
+     * will return an array with the languages the user accepts, sorted
+     * from most preferred to least preferred.
+     *
+     *
+     * @return  Array: key is the importance, value is the language code.
+     */
+    private function parseAcceptLanguage()
+    {
+        $ayLang = array();
+        $aySeen = array();
+        if (getenv('HTTP_ACCEPT_LANGUAGE') != '') {
+            foreach (explode(',', getenv('HTTP_ACCEPT_LANGUAGE')) as $llang) {
+                preg_match("~^(.*?)([-_].*?)?(\;q\=(.*))?$~iu", $llang, $ayM);
+                $q = $ayM[4] ?? '1.0';
+                $lang = mb_strtolower(trim($ayM[1]));
+                if (!in_array($lang, $aySeen)) {
+                    $ayLang[$q] = $lang;
+                    $aySeen[] = $lang;
+                }
+            }
+
+            uksort($ayLang, function($a, $b) {
+                return ($a > $b) ? -1 : 1;
+            });
         }
-      }
-      uksort($ayLang, create_function('$a,$b','return ($a>$b) ? -1 : 1;'));
+        return $ayLang;
     }
-    return $ayLang;
-  }
 
    function getCurrentBrowser () {
       $retour = '';

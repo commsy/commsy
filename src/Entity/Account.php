@@ -102,6 +102,13 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     private $authSource;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="locked", type="boolean")
+     */
+    private $locked = false;
+
+    /**
      * Returns the roles granted to the user.
      *
      *     public function getRoles()
@@ -337,6 +344,23 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isLocked(): bool
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     * @return Account
+     */
+    public function setLocked(bool $locked): self
+    {
+        $this->locked = $locked;
+        return $this;
+    }
 
     // Serializable
 

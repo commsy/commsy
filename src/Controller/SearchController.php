@@ -24,13 +24,11 @@ use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
 use App\Search\QueryConditions\TitleQueryCondition;
 use App\Search\SearchManager;
-use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use Doctrine\ORM\EntityManagerInterface;
 use cs_item;
 use cs_room_item;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -50,14 +48,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SearchController extends BaseController
 {
-    /**
-     * @var ItemService
-     */
-    private $itemService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+
     /**
      * @var UrlGeneratorInterface
      */
@@ -66,15 +57,11 @@ class SearchController extends BaseController
     /**
      * SearchController constructor.
      * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param TranslatorInterface $translator
      * @param UrlGeneratorInterface $router
      */
-    public function __construct(RoomService $roomService, ItemService $itemService, TranslatorInterface $translator, UrlGeneratorInterface $router)
+    public function __construct(RoomService $roomService, UrlGeneratorInterface $router)
     {
         parent::__construct($roomService);
-        $this->itemService = $itemService;
-        $this->translator = $translator;
         $this->router = $router;
     }
 
@@ -92,8 +79,7 @@ class SearchController extends BaseController
     public function searchFormAction(
         int $roomId,
         $requestData
-    )
-    {
+    ) {
         $searchData = new SearchData();
         $searchData->setPhrase($requestData['phrase'] ?? null);
 
@@ -120,8 +106,7 @@ class SearchController extends BaseController
      */
     public function itemSearchFormAction(
         int $roomId
-    )
-    {
+    ) {
         $form = $this->createForm(SearchItemType::class, [], [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId
@@ -146,8 +131,7 @@ class SearchController extends BaseController
         SearchManager $searchManager,
         ReaderService $readerService,
         int $roomId
-    )
-    {
+    ) {
         $query = $request->get('search', '');
 
         // query conditions
@@ -163,7 +147,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
-        $results = $this->prepareResults($searchResults,  $readerService, $roomId, 0, true);
+        $results = $this->prepareResults($searchResults, $readerService,  $roomId, 0, true);
 
         $response = new JsonResponse();
 
@@ -184,8 +168,7 @@ class SearchController extends BaseController
         SearchManager $searchManager,
         ReaderService $readerService,
         int $roomId
-    )
-    {
+    ) {
         $query = $request->get('search', '');
 
         // query conditions
@@ -218,7 +201,6 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/results")
      * @Template
      * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
      * @param RoomService $roomService
      * @param SearchManager $searchManager
      * @param MultipleContextFilterCondition $multipleContextFilterCondition
@@ -227,7 +209,6 @@ class SearchController extends BaseController
      */
     public function resultsAction(
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
@@ -239,7 +220,7 @@ class SearchController extends BaseController
     )
     {
         $roomItem = $roomService->getRoomItem($roomId);
-        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -422,7 +403,7 @@ class SearchController extends BaseController
         }
 
         $totalHits = $searchResults->getTotalHits();
-        $results = $this->prepareResults($searchResults, $roomId, $readerService);
+        $results = $this->prepareResults($searchResults, $readerService, $roomId );
 
         return [
             'filterForm' => $filterForm->createView(),
@@ -449,7 +430,6 @@ class SearchController extends BaseController
      */
     public function moreResultsAction(
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         ReadStatusFilterCondition $readStatusFilterCondition,
@@ -462,7 +442,7 @@ class SearchController extends BaseController
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
-        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
@@ -523,7 +503,7 @@ class SearchController extends BaseController
         ]);
         $filterForm->handleRequest($request);
 
-        $results = $this->prepareResults($searchResults, $roomId, $readerService, $start);
+        $results = $this->prepareResults($searchResults, $readerService,  $roomId, $start);
 
         return [
             'roomId' => $roomId,
@@ -1016,7 +996,7 @@ class SearchController extends BaseController
                     $status = $searchResult->getStatus();
                 }
                 if (method_exists($searchResult, 'getItemId')) {
-                    $item = $itemService->getItem($searchResult->getItemId());
+                    $item = $this->itemService->getItem($searchResult->getItemId());
                     $readStatus = $readerService->cachedReadStatusForItem($item);
                 }
                 $results[] = [
