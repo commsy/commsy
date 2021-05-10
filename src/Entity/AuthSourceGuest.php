@@ -18,7 +18,7 @@ class AuthSourceGuest extends AuthSource
      */
     public function __construct()
     {
-        $this->addAccount = false;
+        $this->addAccount = self::ADD_ACCOUNT_NO;
         $this->changeUsername = false;
         $this->deleteAccount = false;
         $this->changeUserdata = false;

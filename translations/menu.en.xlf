@@ -87,6 +87,10 @@
                 <source>delete</source>
                 <target>Delete</target>
             </trans-unit>
+            <trans-unit id="invitations_settings">
+                <source>invitations</source>
+                <target>Invitations</target>
+            </trans-unit>
 
             <trans-unit id="menu_back_to_room">
                 <source>Back to room</source>

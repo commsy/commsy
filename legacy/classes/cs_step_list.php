@@ -38,14 +38,14 @@ class cs_step_list extends cs_list
     public function append($step): void
     {
         $step_id = $step->getItemID();
-        $this->_data[$step_id] = $step;
-        ksort($this->_data);
+        $this->data[$step_id] = $step;
+        ksort($this->data);
     }
 
     public function set($step): void
     {
         $step_id = $step->getItemID();
-        $this->_data[$step_id] = $step;
-        ksort($this->_data);
+        $this->data[$step_id] = $step;
+        ksort($this->data);
     }
 }

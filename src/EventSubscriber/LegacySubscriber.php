@@ -71,6 +71,10 @@ class LegacySubscriber implements EventSubscriberInterface
                     }
 
                     $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
+
+                    //TODO: MAKE A PROPER FIX FOR THIS
+                    //  This fix was implemented as a workaround to get the right _current_user in the extension of cs_manager
+                    $this->legacyEnvironment->unsetAllInstancesExceptTranslator();
                 } else {
                     // guest
                     $legacyGuest = new cs_user_item($this->legacyEnvironment);

@@ -11,6 +11,7 @@ namespace App\Action\Delete;
 
 use App\Services\LegacyEnvironment;
 use App\Services\CalendarsService;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteDate extends DeleteGeneric
@@ -35,9 +36,9 @@ class DeleteDate extends DeleteGeneric
      */
     private $calendarsService;
 
-    public function __construct(RouterInterface $router, LegacyEnvironment $legacyEnvironment, CalendarsService $calendarsService)
+    public function __construct(RouterInterface $router, LegacyEnvironment $legacyEnvironment, CalendarsService $calendarsService, SessionInterface $session)
     {
-        parent::__construct($legacyEnvironment);
+        parent::__construct($legacyEnvironment, $session);
 
         $this->router = $router;
         $this->calendarsService = $calendarsService;

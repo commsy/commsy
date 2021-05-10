@@ -23,7 +23,7 @@
                 <div class="uk-text-large">
                     {% if not module is empty %}
 
-                        {{module|trans({}, "rubric")|capitalize }}
+                        {{module|trans({'%count%':1}, "rubric")|capitalize }}
                     {% else %}
                         Missing rubric title
                     {% endif %}
