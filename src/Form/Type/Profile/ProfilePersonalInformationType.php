@@ -1,6 +1,7 @@
 <?php
 namespace App\Form\Type\Profile;
 
+use App\Validator\Constraints\UniqueUserId;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -51,19 +52,20 @@ class ProfilePersonalInformationType extends AbstractType
         }
 
         $emailConstraints = [];
-        if (isset($options['portalUser'])) {
-            /** @var \cs_user_item $portalUser */
-            $portalUser = $options['portalUser'];
+        /** @var \cs_user_item $portalUser */
+        $portalUser = $options['portalUser'];
 
-            if ($portalUser->hasToChangeEmail()) {
-                $emailConstraints[] = new NotEqualTo(['value' => $portalUser->getEmail()]);
-            }
+        if ($portalUser->hasToChangeEmail()) {
+            $emailConstraints[] = new NotEqualTo(['value' => $portalUser->getEmail()]);
         }
 
         $builder
             ->add('userId', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
+                    new UniqueUserId([
+                        'portalId' => $portalUser->getContextID(),
+                    ]),
                 ),
                 'label' => 'userId',
                 'required' => true,
