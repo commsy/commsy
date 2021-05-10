@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -19,6 +20,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 abstract class AuthSource
 {
+    public const ADD_ACCOUNT_YES = 'yes';
+    public const ADD_ACCOUNT_NO = 'no';
+    public const ADD_ACCOUNT_INVITE = 'invitation';
+
     /**
      * @var integer
      *
@@ -29,7 +34,7 @@ abstract class AuthSource
      * @Groups({"api"})
      * @SWG\Property(description="The unique identifier.")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var array
@@ -39,24 +44,24 @@ abstract class AuthSource
     private $extras;
 
     /**
-     * @var string
+     * @var ?string
      *
      * @ORM\Column(type="string", length=255, nullable=false)
      *
      * @Groups({"api"})
      * @SWG\Property(type="string", maxLength=255)
      */
-    private $title;
+    private ?string $title;
 
     /**
-     * @var string
+     * @var ?string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Groups({"api"})
      * @SWG\Property(type="string", maxLength=255)
      */
-    private $description;
+    private ?string $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
@@ -65,61 +70,61 @@ abstract class AuthSource
      * @Groups({"api"})
      * @SWG\Property(description="The portal.")
      */
-    private $portal;
+    private ?Portal $portal;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    private $enabled;
+    private ?bool $enabled;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="`default`", type="boolean")
      */
-    private $default;
+    private ?bool $default;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=10, nullable=false, columnDefinition="ENUM('yes', 'no', 'invitation')")
+     */
+    protected string $addAccount;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    protected $addAccount;
+    protected bool $changeUsername;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    protected $changeUsername;
+    protected bool $deleteAccount;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    protected $deleteAccount;
+    protected bool $changeUserdata;
 
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean")
      */
-    protected $changeUserdata;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean")
-     */
-    protected $changePassword;
+    protected bool $changePassword;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $createRoom;
+    protected bool $createRoom;
 
     abstract public function getType(): string;
 
@@ -168,7 +173,7 @@ abstract class AuthSource
     }
 
     /**
-     * @param string $description
+     * @param ?string $description
      * @return self
      */
     public function setDescription(?string $description): self
@@ -186,25 +191,6 @@ abstract class AuthSource
     {
         $this->portal = $portal;
 
-        return $this;
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getExtras()
-    {
-        return $this->extras;
-    }
-
-    /**
-     * @param array $extras
-     * @return self
-     */
-    public function setExtras(array $extras): self
-    {
-        $this->extras = $extras;
         return $this;
     }
 
@@ -257,19 +243,23 @@ abstract class AuthSource
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isAddAccount(): bool
+    public function getAddAccount(): string
     {
         return $this->addAccount;
     }
 
     /**
-     * @param bool $addAccount
+     * @param string $addAccount
      * @return self
      */
-    public function setAddAccount(bool $addAccount): self
+    public function setAddAccount(string $addAccount): self
     {
+        if (!in_array($addAccount, [self::ADD_ACCOUNT_YES, self::ADD_ACCOUNT_NO, self::ADD_ACCOUNT_INVITE])) {
+            throw new InvalidArgumentException('invalid value for add_account');
+        }
+
         $this->addAccount = $addAccount;
         return $this;
     }

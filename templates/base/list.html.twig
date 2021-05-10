@@ -68,7 +68,7 @@
                             <div class="uk-text-large">
                                 {% block listTitle %}
                                     {% if module is defined and module is not empty %}
-                                        {{ module|capitalize|trans({}, "rubric") }}
+                                        {{ module|capitalize|trans({'%count%': 1}, "rubric") }}
                                     {% else %}
                                         Missing rubric title
                                     {% endif %}

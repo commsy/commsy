@@ -508,7 +508,7 @@ class MenuBuilder
 
             // inactive
             $menu->addChild('Inactive', [
-                'label' => 'Inactive',
+                'label' => 'Deprovisioning',
                 'route' => 'app_portalsettings_inactive',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'minus-circle']
