@@ -92,6 +92,9 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $newUser = $event->getNewAccount();
 
         $portalUser = $newUser->getRelatedPortalUserItem();
+        if (!$portalUser) {
+            return;
+        }
 
         /**
          * @var \cs_user_item[] $relatedUsers
