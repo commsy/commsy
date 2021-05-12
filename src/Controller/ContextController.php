@@ -117,6 +117,7 @@ class ContextController extends AbstractController
         $formOptions = [
             'checkNewMembersWithCode' => false,
             'withAGB' => false,
+            'CheckNewMembersNever' => false,
         ];
 
         if ($roomItem->checkNewMembersWithCode()) {
@@ -131,15 +132,17 @@ class ContextController extends AbstractController
             $agbText = $roomItem->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
         }
 
+        if ($roomItem->checkNewMembersNever()) {
+            $formOptions['CheckNewMembersNever']  = true;
+        }
+
         $form = $this->createForm(ContextRequestType::class, null, $formOptions);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() ||
-            $roomItem->_getCheckNewMembers() === -1) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             if (($form->has('request') && $form->get('request')->isClicked()) ||
-                ($form->has('coderequest') && $form->get('coderequest')->isClicked() ||
-                    $roomItem->_getCheckNewMembers() === -1)
+                ($form->has('coderequest') && $form->get('coderequest')->isClicked())
             ) {
                 $formData = $form->getData();
 
@@ -166,7 +169,7 @@ class ContextController extends AbstractController
 
                 $userService->cloneUserPicture($sourceUser, $newUser);
 
-                if ($roomItem->_getCheckNewMembers() != -1 && $form->has('description') && $formData['description']) {
+                if ($form->has('description') && $formData['description']) {
                     $newUser->setUserComment($formData['description']);
                 }
 
@@ -284,7 +287,7 @@ class ContextController extends AbstractController
                         }
                         $body .= "\n\n";
 
-                        if ($roomItem->_getCheckNewMembers() != -1 && $form->has('description') && $formData['description']) {
+                        if ($form->has('description') && $formData['description']) {
                             $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(),
                                 $formData['description']);
                             $body .= "\n\n";
