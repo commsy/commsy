@@ -301,11 +301,9 @@ class DiscussionController extends BaseController
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
-        int $itemId,
-        DiscussionService $discussionService,
-        ReaderService $readerService
+        int $itemId
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
