@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Action\MarkRead\MarkReadAction;
 use App\Entity\Portal;
 use App\Action\Copy\InsertUserroomAction;
 use App\Entity\User;
@@ -1724,13 +1725,13 @@ class UserController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
     }
 
     // NOTE: to allow for email notifications on delete, the 'user-delete' action is used instead of the 'delete' action

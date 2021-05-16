@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
+use App\Action\MarkRead\MarkReadAction;
 use App\Export\WordpressExporter;
 use App\Form\DataTransformer\MaterialTransformer;
 use App\Http\JsonRedirectResponse;
@@ -1441,7 +1442,7 @@ class MaterialController extends BaseController
             )),
         );
 
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($material));
+        $this->eventDispatcher->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($material));
 
         $form = $this->createForm(MaterialSectionType::class, $formData, $formOptions);
 
@@ -1560,13 +1561,13 @@ class MaterialController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
 
     }
 

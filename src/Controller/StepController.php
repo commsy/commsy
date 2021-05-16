@@ -8,6 +8,8 @@
 
 namespace App\Controller;
 
+use App\Action\Delete\DeleteAction;
+use App\Action\Delete\DeleteStep;
 use cs_room_item;
 use cs_step_item;
 use Exception;
@@ -20,6 +22,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class StepController extends BaseController
 {
+    private TodoService $todoService;
+
+    /**
+     * @required
+     * @param TodoService $todoService
+     */
+    public function setTodoService(TodoService $todoService): void
+    {
+        $this->todoService = $todoService;
+    }
+
+
+
     ###################################################################################################
     ## XHR Action requests
     ###################################################################################################
@@ -33,13 +48,15 @@ class StepController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
+        DeleteAction $action,
+        DeleteStep $deleteStep,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         // TODO: find a way to load this service via new Symfony Dependency Injection!
-        $action = $this->get('commsy.action.delete.step');
+        $action->setDeleteStrategy($deleteStep);
         return $action->execute($room, $items);
     }
 
@@ -81,10 +98,8 @@ class StepController extends BaseController
      */
     protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {
-        $todoService = $this->get('commsy_legacy.todo_service');
-
         if (count($itemIds) == 1) {
-            return [$todoService->getStep($itemIds[0])];
+            return [$this->todoService->getStep($itemIds[0])];
         }
 
         return [];

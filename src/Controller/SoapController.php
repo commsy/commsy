@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Services\SoapService;
 use Laminas\Soap\AutoDiscover;
 use Laminas\Soap\Server;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +35,7 @@ class SoapController extends AbstractController
 
         // auto discover
         $autoDiscover = new AutoDiscover();
-        $autoDiscover->setClass($this->get('commsy.api.soap'));
+        $autoDiscover->setClass(SoapService::class);
         $autoDiscover->setUri($uri);
 
         $wsdl = $autoDiscover->generate();
@@ -59,7 +60,7 @@ class SoapController extends AbstractController
             'location' => $uri,
             'uri' => $uri,
         ]);
-        $soapServer->setClass($this->get('commsy.api.soap'));
+        $soapServer->setClass(SoapService::class);
 
         // response
         $response = new Response();
