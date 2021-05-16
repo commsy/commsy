@@ -7,6 +7,7 @@ use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteGeneric;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\ItemMarkRead;
+use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\AnnouncementFilterType;
 use App\Form\DataTransformer\AnnouncementTransformer;
@@ -54,6 +55,12 @@ class AnnouncementController extends BaseController
     protected AssessmentService $assessmentService;
 
     /**
+     * @var CategoryService
+     */
+    protected CategoryService $categoryService;
+
+
+    /**
      * @required
      * @param AnnotationService $annotationService
      */
@@ -80,7 +87,14 @@ class AnnouncementController extends BaseController
         $this->assessmentService = $assessmentService;
     }
 
-
+    /**
+     * @required
+     * @param CategoryService $categoryService
+     */
+    public function setCategoryService(CategoryService $categoryService): void
+    {
+        $this->categoryService = $categoryService;
+    }
 
     /**
      * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
@@ -399,10 +413,9 @@ class AnnouncementController extends BaseController
 
         $alert = null;
         if ($infoArray['announcement']->isLocked()) {
-            $translator = $this->get('translator');
 
             $alert['type'] = 'warning';
-            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
         }
 
         $pathTopicItem = null;
@@ -527,7 +540,6 @@ class AnnouncementController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      * @param Request $request
-     * @param CategoryService $categoryService
      * @param AnnouncementTransformer $transformer
      * @param int $roomId
      * @param int $itemId
@@ -535,7 +547,6 @@ class AnnouncementController extends BaseController
      */
     public function editAction(
         Request $request,
-        CategoryService $categoryService,
         ItemController $itemController,
         AnnouncementTransformer $transformer,
         int $roomId,
@@ -573,7 +584,7 @@ class AnnouncementController extends BaseController
                 )),
                 'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
                 'categoryMappingOptions' => [
-                    'categories' => $itemController->getCategories($roomId, $categoryService),
+                    'categories' => $itemController->getCategories($roomId, $this->categoryService),
                 ],
                 'hashtagMappingOptions' => [
                     'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
@@ -725,13 +736,12 @@ class AnnouncementController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
-
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
     }
 
     /**
@@ -944,7 +954,7 @@ class AnnouncementController extends BaseController
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $this->categoryService->getTags($roomId);
             $announcementCategories = $announcement->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $announcementCategories);
         }
