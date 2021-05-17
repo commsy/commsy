@@ -2537,8 +2537,7 @@
                 {
                     "name": "Gabriel Bondaz",
                     "email": "gabriel.bondaz@idci-consulting.fr",
-                    "homepage": "http://www.idci-consulting.fr",
-                    "role": "Developer"
+                    "homepage": "http://www.idci-consulting.fr"
                 }
             ],
             "description": "Symfony ColorSchemeBundle",
@@ -2916,16 +2915,16 @@
         },
         {
             "name": "lcobucci/jwt",
-            "version": "3.3.2",
+            "version": "3.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "56f10808089e38623345e28af2f2d5e4eb579455"
+                "reference": "511629a54465e89a31d3d7e4cf0935feab8b14c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/56f10808089e38623345e28af2f2d5e4eb579455",
-                "reference": "56f10808089e38623345e28af2f2d5e4eb579455",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/511629a54465e89a31d3d7e4cf0935feab8b14c1",
+                "reference": "511629a54465e89a31d3d7e4cf0935feab8b14c1",
                 "shasum": ""
             },
             "require": {
@@ -2940,6 +2939,9 @@
                 "phpunit/phpunit": "^5.7 || ^7.3",
                 "squizlabs/php_codesniffer": "~2.3"
             },
+            "suggest": {
+                "lcobucci/clock": "*"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2949,7 +2951,12 @@
             "autoload": {
                 "psr-4": {
                     "Lcobucci\\JWT\\": "src"
-                }
+                },
+                "files": [
+                    "compat/class-aliases.php",
+                    "compat/json-exception-polyfill.php",
+                    "compat/lcobucci-clock-polyfill.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2977,7 +2984,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2020-05-22T08:21:12+00:00"
+            "time": "2021-02-16T09:40:01+00:00"
         },
         {
             "name": "lexik/form-filter-bundle",
@@ -3044,23 +3051,23 @@
         },
         {
             "name": "lexik/jwt-authentication-bundle",
-            "version": "v2.7.0",
+            "version": "v2.10.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
-                "reference": "1a110dbb8649e3029140a29f02f812d168008e8e"
+                "reference": "79ba5af396c4f4e64fe9c8b9af65f8441fdb44cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/1a110dbb8649e3029140a29f02f812d168008e8e",
-                "reference": "1a110dbb8649e3029140a29f02f812d168008e8e",
+                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/79ba5af396c4f4e64fe9c8b9af65f8441fdb44cf",
+                "reference": "79ba5af396c4f4e64fe9c8b9af65f8441fdb44cf",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
-                "lcobucci/jwt": "^3.2",
+                "lcobucci/jwt": "^3.2|^4.0",
                 "namshi/jose": "^7.2",
-                "php": "^5.5|^7.0",
+                "php": ">=5.6",
                 "symfony/framework-bundle": "^3.4|^4.0|^5.0",
                 "symfony/security-bundle": "^3.4|^4.0|^5.0"
             },
@@ -3140,9 +3147,13 @@
                 {
                     "url": "https://github.com/chalasr",
                     "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/lexik/jwt-authentication-bundle",
+                    "type": "tidelift"
                 }
             ],
-            "time": "2020-05-28T23:36:57+00:00"
+            "time": "2021-05-12T09:32:35+00:00"
         },
         {
             "name": "liip/imagine-bundle",
@@ -3927,6 +3938,12 @@
                 "pagination",
                 "paginator",
                 "paging"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/mbabker",
+                    "type": "github"
+                }
             ],
             "time": "2018-05-01T10:49:10+00:00"
         },
@@ -9701,12 +9718,12 @@
             "version": "1.8.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
                 "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
                 "shasum": ""
             },
