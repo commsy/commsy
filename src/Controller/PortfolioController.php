@@ -15,6 +15,7 @@ use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_user_item;
 use FeedIo\Rule\Title;
+use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -62,6 +63,7 @@ class PortfolioController extends AbstractController
      * @param PortfolioService $portfolioService
      * @param UserService $userService
      * @param int $roomId
+     * @param CoreSecurity $security
      * @param int|null $portfolioId
      * @return array
      */
@@ -70,11 +72,9 @@ class PortfolioController extends AbstractController
         UserService $userService,
         int $roomId,
         int $portfolioId = null,
-        LegacyEnvironment $environment
+        CoreSecurity $security
     ) {
         $portfolio = $portfolioService->getPortfolio($portfolioId);
-        $legacyEnvironment = $environment->getEnvironment();
-
         $linkItemIds = [];
         foreach ($portfolio['links'] as $linkArray) {
             foreach ($linkArray as $link) {
@@ -122,11 +122,12 @@ class PortfolioController extends AbstractController
             }
         }
 
-        /** @var cs_user_item $user */
-        $user = $legacyEnvironment->getCurrentUser()->getRelatedPortalUserItem();
+        /** @var Account $account */
+        $account = $security->getUser();
+        $portalUser = $userService->getPortalUser($account);
 
         $external = false;
-        if ($user->getRelatedPrivateRoomUserItem()->getItemId() != $portfolio['creatorId']) {
+        if ($portalUser->getRelatedPrivateRoomUserItem()->getItemId() != $portfolio['creatorId']) {
             $external = true;
         }
 
@@ -378,6 +379,7 @@ class PortfolioController extends AbstractController
                 $data = $form->getData();
 
                 if (empty($data['title'])){
+                    // the additional error has to be added here (instead of a formtype constraint) to prevent unnamed new categories.
                     $form->addError(new FormError($translator->trans('Title may not be empty',[],'portfolio')));
                     return [
                         'form' => $form->createView(),
