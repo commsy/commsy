@@ -27,7 +27,7 @@
                             </div>
                             <h3 class="uk-panel-title uk-text-right">
                                 {% if not external %}
-                                    <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'column', 'categoryId': firstTag.t_id}) }}" data-uk-tooltip title="{{ 'Edit category'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                                    <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'column', 'categoryTerm': firstTag.t_id}) }}" data-uk-tooltip title="{{ 'Edit category'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
                                 {% endif %}
                             </h3>
                             <div class="portfolio-content">
@@ -41,7 +41,7 @@
             {% endfor %}
             <th id="portfolio-add-column" class="uk-text-top">
                 {% if not external %}
-                    <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'column', 'categoryId': 'add'}) }}" data-uk-tooltip title="{{ 'Add column'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                    <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'column', 'categoryTerm': 'add'}) }}" data-uk-tooltip title="{{ 'Add column'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
                 {% endif %}
             </th>
         </tr>
@@ -58,7 +58,7 @@
                                 </div>
                                 <h3 class="uk-panel-title uk-text-right">
                                     {% if not external %}
-                                        <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'row', 'categoryId': firstTag.t_id}) }}" data-uk-tooltip title="{{ 'Edit category'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                                        <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'row', 'categoryTerm': firstTag.t_id}) }}" data-uk-tooltip title="{{ 'Edit category'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
                                     {% endif %}
                                 </h3>
                                 <div class="portfolio-content">
@@ -140,7 +140,7 @@
         <tr>
             <td id="portfolio-add-row">
                 {% if not external %}
-                    <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'row', 'categoryId': 'add'}) }}" data-uk-tooltip title="{{ 'Add row'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                    <a href="{{ path('app_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'row', 'categoryTerm': 'add'}) }}" data-uk-tooltip title="{{ 'Add row'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
                 {% endif %}
             </td>
             {% if portfolio.tags is empty %}
