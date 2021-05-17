@@ -67,10 +67,10 @@ class PortfolioEditCategoryType extends AbstractType
             ->add('title', TextType::class, array(
                 'label' => false,
                 'required' => false,
-                'attr' => array(
+                'attr' => [
                     'placeholder' => 'New Category',
                     'class' => 'uk-form-width-medium',
-                ),
+                ],
                 'translation_domain' => 'category',
             ))
             ->add('description', TextareaType::class, [
