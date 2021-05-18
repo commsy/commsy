@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
 use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -15,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\Type\CalendarEditType;
 use App\Entity\Calendars;
 use App\Event\CommsyEditEvent;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CalendarController
@@ -23,30 +26,70 @@ use App\Event\CommsyEditEvent;
  */
 class CalendarController extends AbstractController
 {
+
+    /**
+     * @var cs_environment
+     */
+    protected $legacyEnvironment;
+
+    /**
+     * @var CalendarsService
+     */
+    protected CalendarsService $calendarsService;
+
+    /**
+     * @var TranslatorInterface
+     */
+    protected  TranslatorInterface $translator;
+
+    /**
+     * @var RoomService
+     */
+    protected RoomService $roomService;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected EventDispatcherInterface $eventDispatcher;
+
+    /**
+     * CalendarController constructor.
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param CalendarsService $calendarsService
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(LegacyEnvironment $legacyEnvironment,
+                                CalendarsService $calendarsService,
+                                TranslatorInterface $translator,
+                                RoomService $roomService,
+                                EventDispatcherInterface $eventDispatcher)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->calendarsService = $calendarsService;
+        $this->translator = $translator;
+        $this->roomService = $roomService;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+
     /**
      * @Route("/room/{roomId}/calendar/edit/{calendarId}")
      * @Template()
      * @Security("is_granted('CALENDARS_EDIT') and is_granted('RUBRIC_SEE', 'date')")
      * @param Request $request
-     * @param CalendarsService $calendarsService
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $calendarId
      * @return array|RedirectResponse
      */
     public function editAction(
         Request $request,
-        CalendarsService $calendarsService,
-        LegacyEnvironment $environment,
-        RoomService $roomService,
         int $roomId,
         int $calendarId = null
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         if (!$roomItem) {
-            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
+            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $roomItem = $privateRoomManager->getItem($roomId);
         }
 
@@ -58,17 +101,16 @@ class CalendarController extends AbstractController
         } else {
             $calendar = new Calendars();
             $calendar->setContextId($roomId);
-            $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
+            $calendar->setCreatorId($this->legacyEnvironment->getCurrentUserId());
             $calendar->setSynctoken(0);
         }
 
-        $translator = $this->get('translator');
 
         $editForm = $this->createForm(CalendarEditType::class, $calendar, [
-            'editExternalUrl' => ($roomItem->usersCanSetExternalCalendarsUrl() || $legacyEnvironment->getCurrentUser()->isModerator()),
-            'confirm-delete' => $translator->trans('confirm-delete', array(), 'calendar'),
-            'confirm-delete-cancel' => $translator->trans('confirm-delete-cancel', array(), 'calendar'),
-            'confirm-delete-confirm' => $translator->trans('confirm-delete-confirm', array(), 'calendar'),
+            'editExternalUrl' => ($roomItem->usersCanSetExternalCalendarsUrl() || $this->legacyEnvironment->getCurrentUser()->isModerator()),
+            'confirm-delete' => $this->translator->trans('confirm-delete', array(), 'calendar'),
+            'confirm-delete-cancel' => $this->translator->trans('confirm-delete-cancel', array(), 'calendar'),
+            'confirm-delete-confirm' => $this->translator->trans('confirm-delete-confirm', array(), 'calendar'),
         ]);
 
 
@@ -81,7 +123,7 @@ class CalendarController extends AbstractController
             }
 
             if ($editForm->getClickedButton()->getName() == 'delete') {
-                $calendarsService->removeCalendar($roomService, $calendar);
+                $this->calendarsService->removeCalendar($this->roomService, $calendar);
             } else {
                 $em->persist($calendar);
             }
@@ -96,8 +138,7 @@ class CalendarController extends AbstractController
 
         $calendars = $repository->findBy(array('context_id' => $roomId));
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($calendar), CommsyEditEvent::EDIT );
 
         return [
             'editForm' => $editForm->createView(),

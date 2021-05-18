@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
 use Eluceo\iCal\Component\Timezone;
@@ -10,15 +11,49 @@ use Eluceo\iCal\Component\TimezoneRule;
 use Eluceo\iCal\Property\Event\Organizer;
 use Eluceo\iCal\Property\Event\RecurrenceRule;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ICalController extends AbstractController
 {
+
+    /**
+     * @var cs_environment
+     */
+    protected cs_environment $legacyEnvironment;
+
+    /**
+     * @var TranslatorInterface
+     */
+    protected TranslatorInterface $translator;
+
+    /**
+     * @required
+     * @param LegacyEnvironment $legacyEnvironment
+     */
+    public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
+    /**
+     * @param TranslatorInterface $translator
+     */
+    public function setTranslator(TranslatorInterface $translator): void
+    {
+        $this->translator = $translator;
+    }
+
+
+
+
+
     /**
      * @Route("/ical/{contextId}")
      * @param Request $request
@@ -96,9 +131,6 @@ class ICalController extends AbstractController
         $export,
         $calendarId
     ) {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $translator = $legacyEnvironment->getTranslationObject();
-
         // setup calendar
         $calendar = new Calendar('www.commsy.net');
 
@@ -116,7 +148,7 @@ class ICalController extends AbstractController
         }
 
         // get a list of all related users
-        $linkItemManager = $legacyEnvironment->getLinkItemManager();
+        $linkItemManager = $this->legacyEnvironment->getLinkItemManager();
         $linkItemManager->setTypeLimit('user');
         $linkItemManager->setIDArrayLimit($itemIdArray);
         $linkItemManager->setRoomLimit($currentContextItem->getItemID());
@@ -151,8 +183,8 @@ class ICalController extends AbstractController
         }
 
         // query user manager
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setIDArrayLimit($userIdArray);
         $userManager->select();
         $userList = $userManager->get();
@@ -196,7 +228,7 @@ class ICalController extends AbstractController
             // title
             $summary = html_entity_decode($item->getTitle());
             if ($item->issetPrivatDate()) {
-                $summary .= ' [' . $translator->getMessage('DATE_PRIVATE_ENTRY') . ']';
+                $summary .= ' [' . $this->translator->getMessage('DATE_PRIVATE_ENTRY') . ']';
             }
             $event->setSummary($summary);
 
@@ -291,12 +323,11 @@ class ICalController extends AbstractController
         $export,
         $calendarId
     ) {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $datesManager = $legacyEnvironment->getDatesManager();
+        $datesManager = $this->legacyEnvironment->getDatesManager();
 
         $datesManager->setWithoutDateModeLimit();
 
-        if (!$legacyEnvironment->inPrivateRoom()) {
+        if (!$this->legacyEnvironment->inPrivateRoom()) {
             $datesManager->setContextLimit($currentContextItem->getItemID());
 
             $datesManager->setCalendarArrayLimit([$calendarId]);
@@ -308,7 +339,7 @@ class ICalController extends AbstractController
 
             $dateSelAssignment = $currentContextItem->getRubrikSelection('date', 'assignment');
             if (!empty($dateSelAssignment) && $dateSelAssignment != '2') {
-                $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+                $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
                 $userList = $currentUserItem->getRelatedUserList();
 
                 $userIdArray = [];
@@ -354,13 +385,13 @@ class ICalController extends AbstractController
         $datesManager->select();
         $dateList = $datesManager->get();
 
-        if ($legacyEnvironment->inPrivateRoom()) {
+        if ($this->legacyEnvironment->inPrivateRoom()) {
             $myEntries = $currentContextItem->getMyCalendarDisplayConfig();
 
             if (in_array('mycalendar_dates_assigned_to_me', $myEntries)) {
                 $tempList = new \cs_list();
 
-                $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+                $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
                 $currentUserList = $currentUserItem->getRelatedUserList();
 
                 $tempElement = $dateList->getFirst();
