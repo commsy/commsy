@@ -1135,17 +1135,6 @@ services:
         arguments:
             $markReadStrategy: '@App\Action\MarkRead\MarkReadGeneric'
 
-    commsy.action.mark_read.material:
-        class: App\Action\MarkRead\MarkReadAction
-        autowire: true
-        arguments:
-            $markReadStrategy: '@App\Action\MarkRead\MarkReadMaterial'
-
-    commsy.action.mark_read.todo:
-        class: App\Action\MarkRead\MarkReadAction
-        autowire: true
-        arguments:
-            $markReadStrategy: '@App\Action\MarkRead\MarkReadTodo'
 
     App\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
 

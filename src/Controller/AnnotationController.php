@@ -44,6 +44,7 @@ class AnnotationController extends AbstractController
         AnnotationService $annotationService,
         ItemService $itemService,
         ReaderService $readerService,
+        PortfolioService $portfolioService,
         int $roomId,
         int $linkedItemId,
         int $max = 10,
@@ -55,7 +56,6 @@ class AnnotationController extends AbstractController
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
         if ($firstTagId && $secondTagId) {
-            $portfolioService = $this->get(PortfolioService::class);
             $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($linkedItemId, $firstTagId, $secondTagId);
             if (!empty($cellCoordinates)) {
                 $annotationIds = $portfolioService->getAnnotationIdsForPortfolioCell($linkedItemId, $cellCoordinates[0], $cellCoordinates[1]);
@@ -203,6 +203,7 @@ class AnnotationController extends AbstractController
         ItemService $itemService,
         AnnotationService $annotationService,
         Request $request,
+        PortfolioService $portfolioService,
         int $roomId,
         int $itemId,
         int $firstTagId = null,
@@ -229,7 +230,6 @@ class AnnotationController extends AbstractController
                     $routeArray['firstTagId'] = $firstTagId;
                     $routeArray['secondTagId'] = $secondTagId;
 
-                    $portfolioService = $this->get(PortfolioService::class);
                     $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($itemId, $firstTagId, $secondTagId);
                     if (!empty($cellCoordinates)) {
                         $portfolioService->setPortfolioAnnotation($itemId, $annotationId, $cellCoordinates[0], $cellCoordinates[1]);

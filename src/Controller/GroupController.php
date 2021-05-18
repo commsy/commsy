@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteGeneric;
 use App\Action\Download\DownloadAction;
+use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\GroupFilterType;
 use App\Form\DataTransformer\GroupTransformer;
@@ -1568,13 +1569,12 @@ class GroupController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
-
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
     }
 
     /**
