@@ -17,8 +17,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * Portal
  *
  * @ORM\Table(name="portal", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"}),
- *     @ORM\Index(name="creator_id", columns={"creator_id"})
  * })
  * @ORM\Entity(repositoryClass="App\Repository\PortalRepository")
  * @ORM\HasLifecycleCallbacks()

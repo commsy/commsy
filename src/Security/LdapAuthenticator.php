@@ -203,7 +203,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             ]);
 
             $authQuery = $ldapSource->getAuthQuery();
-            if ($authQuery) {
+            if (!$authQuery) {
                 $dn = str_replace('{username}', $account->getUsername(), $ldapSource->getAuthDn());
             } else {
                 // bind with searchDn
