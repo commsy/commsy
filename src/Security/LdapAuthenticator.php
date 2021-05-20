@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Ldap\Ldap;
+use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUserProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -189,12 +190,10 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         /** @var Account $account */
         $account = $user;
 
-        $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
-
         /** @var AuthSourceLdap $ldapSource */
         $ldapSource = $this->entityManager->getRepository(AuthSourceLdap::class)
             ->findOneBy([
-                'portal' => $context,
+                'portal' => $account->getContextId(),
                 'enabled' => 1,
             ]);
 
@@ -202,7 +201,24 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $ldap = Ldap::create('ext_ldap', [
                 'connection_string' => $ldapSource->getServerUrl(),
             ]);
-            $dn = str_replace('{username}', $account->getUsername(), $ldapSource->getAuthDn());
+
+            $authQuery = $ldapSource->getAuthQuery();
+            if ($authQuery) {
+                $dn = str_replace('{username}', $account->getUsername(), $ldapSource->getAuthDn());
+            } else {
+                // bind with searchDn
+                $ldap->bind($ldapSource->getSearchDn(), $ldapSource->getSearchPassword());
+
+                $username = $ldap->escape($account->getUsername(), '', LdapInterface::ESCAPE_FILTER);
+                $query = str_replace('{username}', $username, $authQuery);
+                $result = $ldap->query($ldapSource->getAuthDn(), $query)->execute();
+                if (1 !== $result->count()) {
+                    return false;
+                }
+
+                $dn = $result[0]->getDn();
+            }
+
             $ldap->bind($dn, $credentials['password']);
 
             return true;
