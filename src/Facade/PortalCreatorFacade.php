@@ -25,7 +25,7 @@ class PortalCreatorFacade
         $authSource->setTitle('Lokal');
         $authSource->setEnabled(true);
         $authSource->setDefault(true);
-        $authSource->setAddAccount(true);
+        $authSource->setAddAccount(AuthSource::ADD_ACCOUNT_YES);
         $authSource->setChangeUsername(true);
         $authSource->setDeleteAccount(true);
         $authSource->setChangeUserdata(true);
