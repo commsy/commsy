@@ -385,7 +385,8 @@ class ProfileController extends AbstractController
     public function menu(
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        int $roomId
+        int $roomId,
+        bool $uikit3 = false
     ) {
         $environment = $legacyEnvironment->getEnvironment();
         return [
@@ -394,6 +395,7 @@ class ProfileController extends AbstractController
             'roomId' => $roomId,
             'inPrivateRoom' => $environment->inPrivateRoom(),
             'inPortal' => $environment->inPortal(),
+            'uikit3' => $uikit3,
         ];
     }
 
