@@ -135,7 +135,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $ldapSource->getUidKey(),
             null,
             null,
-            ['email', 'givenName', 'sn']
+            ['mail', 'givenName', 'sn']
         );
 
         $ldapUser = $ldapProvider->loadUserByUsername($credentials['email']);
@@ -153,14 +153,14 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $account->setUsername($ldapUser->getUsername());
             $account->setFirstname($extraFields['givenName']);
             $account->setLastname($extraFields['sn']);
-            $account->setEmail($extraFields['email']);
+            $account->setEmail($extraFields['mail']);
             $this->accountCreator->persistNewAccount($account);
         }
 
         // update user object with credentials extracted from request
         $account->setFirstname($extraFields['givenName']);
         $account->setLastname($extraFields['sn']);
-        $account->setEmail($extraFields['email']);
+        $account->setEmail($extraFields['mail']);
 
         $this->entityManager->persist($account);
         $this->entityManager->flush();
