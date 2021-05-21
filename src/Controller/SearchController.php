@@ -976,7 +976,7 @@ class SearchController extends BaseController
 
                 $results[] = [
                     'title' => $title,
-                    'text' => $this->translator->trans(ucfirst($type), ['count' => 0], 'rubric'),
+                    'text' => $this->translator->trans(ucfirst($type), ['%count%' => 0], 'rubric'),
                     'url' => $url,
                     'value' => $searchResult->getItemId(),
                 ];
