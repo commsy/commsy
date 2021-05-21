@@ -7,7 +7,11 @@ namespace App\EventSubscriber;
 use App\Entity\Account;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
+use cs_environment;
+use cs_list;
 use cs_user_item;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -16,25 +20,31 @@ use Symfony\Component\Security\Core\Security;
 
 class LegacySubscriber implements EventSubscriberInterface
 {
-    private $legacyEnvironment;
-    private $security;
+    private cs_environment $legacyEnvironment;
+    private Security $security;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Security $security)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        Security $security,
+        UserService $userService
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->security = $security;
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             KernelEvents::CONTROLLER => [
                 'onKernelController',
                 10,
             ],
-        );
+        ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function onKernelController(ControllerEvent $event)
     {
         if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
@@ -44,8 +54,8 @@ class LegacySubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $contextId = null;
-        $contextId = $contextId ?? $request->attributes->get('roomId', null);
-        $contextId = $contextId ?? $request->attributes->get('portalId', null);
+        $contextId = $contextId ?? $request->attributes->get('roomId');
+        $contextId = $contextId ?? $request->attributes->get('portalId');
 
         if ($contextId) {
             $this->legacyEnvironment->setCurrentContextID($contextId);
@@ -55,19 +65,20 @@ class LegacySubscriber implements EventSubscriberInterface
             if ($this->security->isGranted(RootVoter::ROOT)) {
                 $this->legacyEnvironment->setCurrentUser($userManager->getRootUser());
             } else {
-                /** @var Account $user */
-                $user = $this->security->getUser();
-                if ($user !== null) {
+                /** @var Account $account */
+                $account = $this->security->getUser();
+                if ($account !== null) {
                     $userManager->resetLimits();
                     $userManager->setContextLimit($contextId);
-                    $userManager->setUserIDLimit($user->getUsername());
+                    $userManager->setUserIDLimit($account->getUsername());
+                    $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
                     $userManager->select();
 
-                    /** @var \cs_list $contextUserList */
+                    /** @var cs_list $contextUserList */
                     $contextUserList = $userManager->get();
 
                     if ($contextUserList->getCount() != 1) {
-                        throw new \Exception();
+                        throw new Exception("Mandatory unique user item not found!");
                     }
 
                     $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
