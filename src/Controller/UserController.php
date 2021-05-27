@@ -1286,7 +1286,8 @@ class UserController extends BaseController
      * @return array
      */
     public function allRoomsNavbarAction(
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        bool $uikit3 = false
     ) {
         $currentUserItem = $this->userService->getCurrentUserItem();
 
@@ -1300,6 +1301,7 @@ class UserController extends BaseController
 
         return [
             'itemId' => $itemId,
+            'uikit3' => $uikit3,
         ];
     }
 
