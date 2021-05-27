@@ -1,14 +1,14 @@
 ARG PHP_VERSION=7.1
 ARG NGINX_VERSION=1.19
 
-FROM php:7.1-fpm-jessie AS commsy_php
+FROM php:7.1-fpm-stretch AS commsy_php
 
 # install additinal packages and PHP extensions
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
-        libpng12-dev \
+        libpng-dev \
         zlib1g-dev \
         libicu-dev \
         libc-client-dev \
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
         zip \
         sudo \
         apt-transport-https \
-        mariadb-client-10.0 \
+        mariadb-client \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-configure intl \
@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) ldap
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 
 # Composer
@@ -77,7 +77,7 @@ RUN apt-get update && apt-get install -y \
         libxrender1 \
         xvfb
 
-RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.2.1/wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
+RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.stretch_amd64.deb \
         && dpkg -i /usr/src/wkhtmltopdf.deb
 
 # copy configurations
