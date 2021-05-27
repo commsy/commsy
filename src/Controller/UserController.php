@@ -1228,13 +1228,14 @@ class UserController extends BaseController
      *
      * @Template()
      *
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param $contextId
      * @param SessionInterface $session
+     * @param EntityManagerInterface $entityManager
+     * @param bool $uikit3
      * @return array
      */
     public function globalNavbarAction(
         $contextId,
-        LegacyEnvironment $legacyEnvironment,
         SessionInterface $session,
         EntityManagerInterface $entityManager,
         bool $uikit3 = false
