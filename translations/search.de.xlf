@@ -22,9 +22,17 @@
                 <source>best matches</source>
                 <target>Beste Treffer</target>
             </trans-unit>
-            <trans-unit id="search-more-results">
+            <trans-unit id="search-more-results-header">
                 <source>more results</source>
                 <target>Mehr Ergebnisse</target>
+            </trans-unit>
+            <trans-unit id="search-more-results-all-rooms">
+                <source>Search in all my rooms</source>
+                <target>Suche in allen meinen Räumen</target>
+            </trans-unit>
+            <trans-unit id="search-more-results-current-room">
+                <source>Search in this room</source>
+                <target>Suche in:</target>
             </trans-unit>
             <trans-unit id="search-no-results">
                 <source>No results found</source>

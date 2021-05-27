@@ -1,0 +1,28 @@
+{% set searchAllRooms = 'Search in all my rooms'|trans({}, 'search') %}
+{% set searchCurrentRoom = 'Search in this room'|trans({}, 'search') ~ ' ' ~ roomTitle %}
+{%- verbatim -%}
+<ul class="uk-nav uk-nav-search uk-autocomplete-results">\
+    {{#msgResultsHeader}}<li class="uk-nav-header uk-skip">{{msgResultsHeader}}</li>{{/msgResultsHeader}}\
+    {{#items && items.length}}\
+        {{~items}}\
+        <li data-url="{{!$item.url}}">\
+            <a href="{{!$item.url}}">\
+                {{{$item.title}}}\
+                <div>\
+                    {{#$item.text}}{{{$item.text}}}{{/$item.text}}\
+                    {{#$item.roomTitle}} &#8211; {{{$item.roomTitle}}}{{/$item.roomTitle}}\
+                </div>\
+            </a>\
+        </li>\
+        {{/items}}\
+        {{#msgMoreResults}}\
+            <li class="uk-nav-header uk-skip">{{msgMoreResults}}</li>\
+            <li class="uk-search-moreresults" data-moreresults="true"><a href="#" onclick="jQuery(this).closest(\'form\').submit()">{%- endverbatim -%}{{ searchAllRooms }}{%- verbatim -%}</a></li>\
+            <li class="uk-search-moreresults"><a href="#" onclick="document.getElementById(\'search_current_context\').click()">{%- endverbatim -%}{{ searchCurrentRoom }}{%- verbatim -%}</a></li>\
+        {{/msgMoreResults}}\
+    {{/end}}\
+    {{^items.length}}\
+      {{#msgNoResults}}<li class="uk-skip"><a>{{msgNoResults}}</a></li>{{/msgNoResults}}\
+    {{/end}}\
+</ul>
+{%- endverbatim -%}

@@ -27,6 +27,7 @@ use App\Search\SearchManager;
 use App\Services\LegacyEnvironment;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -53,10 +54,28 @@ class SearchController extends BaseController
      *
      * @Template
      */
-    public function searchFormAction($roomId, $requestData)
+    public function searchFormAction(
+        $roomId,
+        $requestData,
+        LegacyEnvironment $legacyEnvironment,
+        RoomService $roomService)
     {
         $searchData = new SearchData();
         $searchData->setPhrase($requestData['phrase'] ?? null);
+
+        // NOTE: the current context set here will only be used if the user clicks on 'Search in this room' in the
+        // instant results dropdown; this will cause the form's hidden `current_context` button to get clicked via
+        // Javascript code in instant_results.html.twig
+        $roomItem = $roomService->getRoomItem($roomId);
+        $searchData->setSelectedContext($roomItem ? $roomItem->getTitle() : 'all');
+
+        // by default, we perform a global search across all of the user's rooms, so we redirect to the dashboard
+        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $privateRoomItem = $currentUser->getOwnRoom();
+        $privateRoomID = ($privateRoomItem) ? $privateRoomItem->getItemID() : null;
+        if ($privateRoomID) {
+            $roomId = $privateRoomID;
+        }
 
         $form = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
@@ -64,14 +83,10 @@ class SearchController extends BaseController
             ])
         ]);
 
-//        // manually submit the form
-//        if (isset($postData)) {
-//            $form->submit($postData);
-//        }
-
         return [
             'form' => $form->createView(),
             'roomId' => $roomId,
+            'roomTitle' => $roomItem ? $roomItem->getTitle() : '',
         ];
     }
 
@@ -134,6 +149,7 @@ class SearchController extends BaseController
     public function instantResultsAction($roomId,
                                          Request $request,
                                          SearchManager $searchManager,
+                                         MultipleContextFilterCondition $multipleContextFilterCondition,
                                          ReaderService $readerService)
     {
         $query = $request->get('search', '');
@@ -146,9 +162,8 @@ class SearchController extends BaseController
         }
 
         // filter conditions
-        $singleFilterCondition = new SingleContextFilterCondition();
-        $singleFilterCondition->setContextId($roomId);
-        $searchManager->addFilterCondition($singleFilterCondition);
+        // NOTE: instant results will always perform a global search, i.e. show best matches from all of the user's rooms
+        $searchManager->addFilterCondition($multipleContextFilterCondition);
 
         $searchResults = $searchManager->getResults();
         $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
@@ -197,6 +212,17 @@ class SearchController extends BaseController
             ])
         ]);
         $topForm->handleRequest($request);
+
+        if ($topForm->isSubmitted() && $topForm->isValid()) {
+            // if 'Search in this room' was clicked in the instant results dropdown, restrict the search to the
+            // context set in SearchData->getSelectedContext() (which has already been set in searchFormAction()),
+            // otherwise search across all of the user's rooms
+            $clickedButton = $topForm->getClickedButton();
+            $buttonName = $clickedButton ? $clickedButton->getName() : '';
+            if ($buttonName !== 'current_context') {
+                $searchData->setSelectedContext('all');
+            }
+        }
 
         // honor any sort arguments from the query URL
         $sortBy = $searchData->getSortBy();
@@ -879,11 +905,16 @@ class SearchController extends BaseController
                 // construct target url
                 $url = '#';
 
+                $roomTitle = '';
                 if ($type == 'room') {
                     $roomId = $currentRoomId;
                     $type = 'project';
                 } else {
                     $roomId = $searchResult->getContextId();
+                    $roomItem = $this->getRoom($roomId);
+                    if ($roomItem) {
+                        $roomTitle = $roomItem->getTitle();
+                    }
                 }
 
                 $routeName = 'app_' . $type . '_detail';
@@ -906,6 +937,7 @@ class SearchController extends BaseController
 
                 $results[] = [
                     'title' => $title,
+                    'roomTitle' => $roomTitle,
                     'text' => $translator->transChoice(ucfirst($type), 0, [], 'rubric'),
                     'url' => $url,
                     'value' => $searchResult->getItemId(),

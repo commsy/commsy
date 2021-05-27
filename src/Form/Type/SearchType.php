@@ -26,11 +26,23 @@ class SearchType extends AbstractType
                 ],
                 'required' => false,
             ])
+            ->add('selectedContext', Types\HiddenType::class, [
+                'label' => false,
+            ])
             ->add('submit', Types\SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button-primary',
                 ],
                 'label' => 'Search',
+            ])
+            // the hidden `current_context` button will be clicked automatically (via instant_results.html.twig)
+            // when the corresponding 'Search in this room' entry gets selected from the instant results dropdown
+            ->add('current_context', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-hidden',
+                ],
+                'label' => 'Search in this room',
+                'validation_groups' => 'false',
             ])
         ;
     }
