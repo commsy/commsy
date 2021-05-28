@@ -63,11 +63,8 @@ class SearchController extends BaseController
         $searchData = new SearchData();
         $searchData->setPhrase($requestData['phrase'] ?? null);
 
-        // NOTE: the current context set here will only be used if the user clicks on 'Search in this room' in the
-        // instant results dropdown; this will cause the form's hidden `current_context` button to get clicked via
-        // Javascript code in instant_results.html.twig
-        $roomItem = $roomService->getRoomItem($roomId);
-        $searchData->setSelectedContext($roomItem ? $roomItem->getTitle() : 'all');
+        $originalRoomId = $roomId;
+        $originalRoomItem = $roomService->getRoomItem($roomId);
 
         // by default, we perform a global search across all of the user's rooms, so we redirect to the dashboard
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
@@ -86,7 +83,8 @@ class SearchController extends BaseController
         return [
             'form' => $form->createView(),
             'roomId' => $roomId,
-            'roomTitle' => $roomItem ? $roomItem->getTitle() : '',
+            'originalRoomId' => $originalRoomId,
+            'originalRoomTitle' => $originalRoomItem ? $originalRoomItem->getTitle() : '',
         ];
     }
 
@@ -166,7 +164,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($multipleContextFilterCondition);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true);
+        $results = $this->prepareResults($searchResults, $roomId, $readerService, 0, true, $query);
 
         $response = new JsonResponse();
 
@@ -205,6 +203,15 @@ class SearchController extends BaseController
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
 
+        // the `originalContext` query parameter exists if the user clicked the 'Search in this room' entry in the
+        // instant results dropdown; the param contains the roomId of the original room that was active before the
+        // search caused a redirect to the dashboard
+        $originalRoomId = $request->get('originalContext');
+        $originalRoomItem = ($originalRoomId) ? $roomService->getRoomItem($originalRoomId) : null;
+        if ($originalRoomItem) {
+            $searchData->setSelectedContext($originalRoomItem->getTitle());
+        }
+
         // if the top form submits a request it will call setPhrase() on SearchData
         $topForm = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
@@ -212,17 +219,6 @@ class SearchController extends BaseController
             ])
         ]);
         $topForm->handleRequest($request);
-
-        if ($topForm->isSubmitted() && $topForm->isValid()) {
-            // if 'Search in this room' was clicked in the instant results dropdown, restrict the search to the
-            // context set in SearchData->getSelectedContext() (which has already been set in searchFormAction()),
-            // otherwise search across all of the user's rooms
-            $clickedButton = $topForm->getClickedButton();
-            $buttonName = $clickedButton ? $clickedButton->getName() : '';
-            if ($buttonName !== 'current_context') {
-                $searchData->setSelectedContext('all');
-            }
-        }
 
         // honor any sort arguments from the query URL
         $sortBy = $searchData->getSortBy();
@@ -884,7 +880,7 @@ class SearchController extends BaseController
         }
     }
 
-    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, ReaderService $readerService, $offset = 0, $json = false)
+    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, ReaderService $readerService, $offset = 0, $json = false, $searchPhrase = null)
     {
         $itemService = $this->get('commsy_legacy.item_service');
 
@@ -941,6 +937,7 @@ class SearchController extends BaseController
                     'text' => $translator->transChoice(ucfirst($type), 0, [], 'rubric'),
                     'url' => $url,
                     'value' => $searchResult->getItemId(),
+                    'searchPhrase' => $searchPhrase ?? '',
                 ];
             } else {
                 $allowedActions = ['copy'];
