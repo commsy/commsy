@@ -11,6 +11,7 @@ use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
 use App\Repository\UserRepository;
+use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
@@ -1040,6 +1041,7 @@ class RoomController extends AbstractController
         LegacyEnvironment $environment,
         EventDispatcherInterface $eventDispatcher,
         CalendarsService $calendarsService,
+        LegacyCopy $legacyCopy,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -1219,7 +1221,7 @@ class RoomController extends AbstractController
                 if (isset($context['type_sub']['master_template'])) {
                     $masterRoom = $roomService->getRoomItem($context['type_sub']['master_template']);
                     if ($masterRoom) {
-                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyEnvironment);
+                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyEnvironment, $legacyCopy);
                     }
                 }
 
@@ -1330,19 +1332,15 @@ class RoomController extends AbstractController
         return $status;
     }
 
-    private function copySettings($masterRoom, $targetRoom, \cs_environment $legacyEnvironment)
+    private function copySettings($masterRoom, $targetRoom, \cs_environment $legacyEnvironment, LegacyCopy $legacyCopy)
     {
         $old_room = $masterRoom;
         $new_room = $targetRoom;
 
-        $old_room_id = $old_room->getItemID();
-
         /**/
         $user_manager = $legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($new_room->getCreatorID());
-        if ($creator_item->getContextID() == $new_room->getItemID()) {
-            $creator_id = $creator_item->getItemID();
-        } else {
+        if ($creator_item->getContextID() != $new_room->getItemID()) {
             $user_manager->resetLimits();
             $user_manager->setContextLimit($new_room->getItemID());
             $user_manager->setUserIDLimit($creator_item->getUserID());
@@ -1352,7 +1350,6 @@ class RoomController extends AbstractController
             $user_list = $user_manager->get();
             if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
                 $creator_item = $user_list->getFirst();
-                $creator_id = $creator_item->getItemID();
             } else {
                 throw new Exception('can not get creator of new room');
             }
@@ -1363,17 +1360,16 @@ class RoomController extends AbstractController
         $creator_item->save();
 
         // copy room settings
-        require_once('include/inc_room_copy_config.php');
+        $legacyCopy->copySettings($old_room, $new_room);
 
         // save new room
         $new_room->save();
 
         // copy data
-        require_once('include/inc_room_copy_data.php');
+        $legacyCopy->copyData($old_room, $new_room, $creator_item);
+
         /**/
 
-        $targetRoom = $new_room;
-
-        return $targetRoom;
+        return $new_room;
     }
 }
