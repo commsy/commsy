@@ -14,12 +14,13 @@ RUN apk add --no-cache \
 		autoconf \
 		fcgi \
 		file \
+		fontconfig \
 		gettext \
 		git \
 		gnu-libiconv \
+		libxrender \
 		nodejs \
 		yarn \
-		wkhtmltopdf \
 	;
 
 # install gnu-libiconv and set LD_PRELOAD env to make iconv work fully on Alpine image.
@@ -76,6 +77,9 @@ RUN set -eux; \
 
 # Composer
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+
+# wkhtmltopdf
+COPY --from=surnet/alpine-wkhtmltopdf:3.13.5-0.12.6-full /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 # Set up php configuration
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
