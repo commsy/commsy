@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Account;
 use App\Entity\RoomPrivat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -17,25 +18,28 @@ class RoomPrivateRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $contextId
-     * @param string $username
+     * @param int $portalId
+     * @param Account $account
      * @return RoomPrivat|null
-     * @throws NoResultException|NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
-    public function findByContextIdAndUsername(int $contextId, string $username):? RoomPrivat
+    public function findOneByPortalIdAndAccount(int $portalId, Account $account): ?RoomPrivat
     {
         return $this->createQueryBuilder('rp')
             ->select('rp')
             ->innerJoin('App:User', 'u', Expr\Join::WITH, 'u.contextId = rp.itemId')
             ->innerJoin('App:Account', 'a', Expr\Join::WITH, 'a.username = u.userId')
-            ->where('rp.contextId = :contextId')
+            ->where('rp.contextId = :portalId')
             ->andWhere('rp.deleterId IS NULL')
             ->andWhere('rp.deletionDate IS NULL')
             ->andWhere('u.userId = :username')
-            ->andWhere('a.contextId = :contextId')
+            ->andWhere('a.authSource = :authSource')
+            ->andWhere('a.contextId = :portalId')
             ->setParameters([
-                'contextId' => $contextId,
-                'username' => $username,
+                'portalId' => $portalId,
+                'username' => $account->getUsername(),
+                'authSource' => $account->getAuthSource()
             ])
             ->getQuery()
             ->setMaxResults(1)
