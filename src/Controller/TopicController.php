@@ -633,7 +633,7 @@ class TopicController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('todo/detail_print.html.twig', [
+        $html = $this->renderView('topic/detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['topic'],
             'readerList' => $infoArray['readerList'],
