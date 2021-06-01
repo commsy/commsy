@@ -930,10 +930,6 @@ services:
             $twig: '@twig'
             $from: '%commsy.email.from%'
 
-    commsy.utils.mail_account:
-        class: App\Utils\AccountMail
-        arguments: ['@commsy_legacy.environment', '@router']
-
     # Commands
     App\Command\CronCommand:
         autowire: true
