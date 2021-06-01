@@ -306,14 +306,14 @@ class AnnouncementController extends BaseController
      * @param Request $request
      * @param PrintService $printService
      * @param int $roomId
-     * @param $sort
+     * @param string $sort
      * @return Response
      */
     public function printlistAction(
         Request $request,
         PrintService $printService,
         int $roomId,
-        $sort
+        string $sort
     ) {
         $roomItem = $this->roomService->getRoomItem($roomId);
 

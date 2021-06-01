@@ -264,14 +264,14 @@ class MaterialController extends BaseController
      * @param Request $request
      * @param PrintService $printService
      * @param int $roomId
-     * @param int $sort
+     * @param string $sort
      * @return Response
      */
     public function printlistAction(
         Request $request,
         PrintService $printService,
         int $roomId,
-        int $sort
+        string $sort
     ) {
         $roomItem = $this->getRoom($roomId);
 

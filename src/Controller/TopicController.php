@@ -663,7 +663,7 @@ class TopicController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/topic/print")
+     * @Route("/room/{roomId}/topic/print/{sort}", defaults={"sort" = "none"})
      * @param Request $request
      * @param AssessmentService $assessmentService
      * @param PrintService $printService
