@@ -48,7 +48,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ItemController extends AbstractController
 {
-    private $transformerManager;
+    /**
+     * @var TransformerManager
+     */
+    private TransformerManager $transformerManager;
 
     /**
      * @required
@@ -58,7 +61,6 @@ class ItemController extends AbstractController
     {
         $this->transformerManager = $transformerManager;
     }
-
 
     /**
      * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
@@ -1145,31 +1147,6 @@ class ItemController extends AbstractController
             'prevItemId' => $prevItemId,
             'nextItemId' => $nextItemId,
             'lastItemId' => $lastItemId,
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/print")
-     * @param ItemService $itemService
-     * @param int $itemId
-     * @return Response
-     */
-    public function printAction(
-        ItemService $itemService,
-        int $itemId
-    ) {
-        $baseItem = $itemService->getItem($itemId);
-        
-        $html = $this->renderView('App:'.ucfirst($baseItem->getItemType()).':detailPrint.html.twig', [
-        ]);
-
-        return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="print.pdf"'
-            ]
         );
     }
 
