@@ -29,6 +29,7 @@ use cs_tag_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -711,17 +712,19 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/{itemId}/send")
      * @Template()
+     * @param Request $request
      * @param ItemService $itemService
      * @param MailAssistant $mailAssistant
-     * @param Request $request
+     * @param Swift_Mailer $mailer
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function sendAction(
+        Request $request,
         ItemService $itemService,
         MailAssistant $mailAssistant,
-        Request $request,
+        Swift_Mailer $mailer,
         int $roomId,
         int $itemId
     ) {
@@ -780,7 +783,7 @@ class ItemController extends AbstractController
 
             // send mail
             $message = $mailAssistant->getSwiftMessage($form, $item, true);
-            $this->get('mailer')->send($message);
+            $mailer->send($message);
 
             $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
             $this->addFlash('recipientCount', $recipientCount);
@@ -935,19 +938,21 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/sendlist", condition="request.isXmlHttpRequest()")
      * @Template()
+     * @param Request $request
      * @param RoomService $roomService
      * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
-     * @param Request $request
+     * @param Swift_Mailer $mailer
      * @param int $roomId
      * @return array|JsonResponse
      * @throws Exception
      */
     public function sendlistAction(
+        Request $request,
         RoomService $roomService,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        Request $request,
+        Swift_Mailer $mailer,
         int $roomId
     ) {
         // extract item id from request data
@@ -1002,7 +1007,7 @@ class ItemController extends AbstractController
                 $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
             }
             
-            $this->get('mailer')->send($message);
+            $mailer->send($message);
 
             return new JsonResponse([
                 'message' => 'send ...',
