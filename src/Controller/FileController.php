@@ -4,16 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Portal;
 use App\Entity\Server;
+use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Services\LegacyEnvironment;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
 class FileController extends AbstractController
@@ -31,11 +32,12 @@ class FileController extends AbstractController
         FileService $fileService,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
+        ParameterBagInterface $params,
         int $fileId,
         string $disposition = 'attachment'
     ) {
         $file = $fileService->getFile($fileId);
-        $rootDir = $this->get('kernel')->getRootDir().'/';
+        $rootDir = $params->get('kernel.root_dir') . '/';
 
         // fix for archived rooms
         if (!$file->getPortalID()) {
@@ -47,15 +49,15 @@ class FileController extends AbstractController
         }
         // ~fix for archived rooms
 
-        if (file_exists($rootDir.$file->getDiskFileName())) {
-            $content = file_get_contents($rootDir.$file->getDiskFileName());
+        if (file_exists($rootDir . $file->getDiskFileName())) {
+            $content = file_get_contents($rootDir . $file->getDiskFileName());
         } else {
             // fix for userrooms
-            if($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom'){
+            if ($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom') {
                 $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
             }
-            $content = file_get_contents($rootDir.$file->getDiskFileName());
-            if (!file_exists($rootDir.$file->getDiskFileName())) {
+            $content = file_get_contents($rootDir . $file->getDiskFileName());
+            if (!file_exists($rootDir . $file->getDiskFileName())) {
                 throw $this->createNotFoundException('The requested file does not exist');
             }
         }
@@ -67,15 +69,17 @@ class FileController extends AbstractController
         // (for legacy user agents that do not support the "filename*" form); the fallback filename must be ASCII-only and must not
         // contain any percent characters or path separators, thus we strip these characters here
         $fallbackFileName = str_replace(array('%', '/', '\\'), '', $fileName);
-        $fallbackFileName = mb_convert_encoding ($fallbackFileName, 'US-ASCII', 'UTF-8');
+        $fallbackFileName = mb_convert_encoding($fallbackFileName, 'US-ASCII', 'UTF-8');
 
         if ($disposition == 'inline') {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName, $fallbackFileName);
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName,
+                $fallbackFileName);
         } else {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $fileName, $fallbackFileName);
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $fileName, $fallbackFileName);
         }
         $response->headers->set('Content-Disposition', $contentDisposition);
-        
+
         return $response;
     }
 
@@ -95,8 +99,8 @@ class FileController extends AbstractController
         $fileName = $roomItem->getLogoFilename();
         $filePath = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId) . "/" . $fileName;
 
-        if(file_exists($filePath)) {
-            if(!$fileName){
+        if (file_exists($filePath)) {
+            if (!$fileName) {
                 $fileName = "customBgPlaceholder.png";
                 $filePath = $this->getParameter("themes_directory") . "/" . $fileName;
             }
@@ -106,9 +110,9 @@ class FileController extends AbstractController
             $mimeType = finfo_file($finfo, $filePath);
 
             $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
-            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$fileName));
-        }
-        else {
+            $response->headers->set('Content-Disposition',
+                $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName));
+        } else {
             $response = new Response("Logo image not found!", Response::HTTP_NOT_FOUND);
         }
 
@@ -165,7 +169,8 @@ class FileController extends AbstractController
             $mimeType = finfo_file($finfo, $completePath);
 
             $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
-            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $filename));
+            $response->headers->set('Content-Disposition',
+                $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $filename));
         } else {
             $response = new Response("Background image not found!", Response::HTTP_NOT_FOUND);
         }
@@ -184,15 +189,15 @@ class FileController extends AbstractController
         $themesDir = $this->getParameter("themes_directory");
         $filePath = $themesDir . "/" . $theme . "/bg.jpg";
 
-        if(file_exists($filePath)) {
+        if (file_exists($filePath)) {
             $content = file_get_contents($filePath);
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($finfo, $filePath);
 
             $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
-            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,"bg.jpg"));
-        }
-        else {
+            $response->headers->set('Content-Disposition',
+                $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, "bg.jpg"));
+        } else {
             $response = new Response("Could not find background image for selected theme!", Response::HTTP_NOT_FOUND);
         }
         return $response;
