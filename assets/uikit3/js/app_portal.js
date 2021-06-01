@@ -27,3 +27,6 @@ Upload.bootstrap();
 
 import {DatePicker} from "./commsy/DatePicker";
 DatePicker.bootstrap();
+
+import {LicenseEdit} from "./commsy/LicenseEdit";
+LicenseEdit.bootstrap();

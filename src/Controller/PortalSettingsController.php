@@ -791,17 +791,14 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param int|null $licenseId
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @param RoomService $roomService
      * @param EventDispatcherInterface $dispatcher
      * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
     public function licenses(
         Portal $portal,
-        $licenseId,
+        ?int $licenseId,
         Request $request,
-        EntityManagerInterface $entityManager,
-        RoomService $roomService,
         EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment
     ) {
