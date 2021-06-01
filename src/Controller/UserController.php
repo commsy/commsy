@@ -291,8 +291,8 @@ class UserController extends BaseController
     public function printlistAction(
         Request $request,
         PrintService $printService,
-        string $sort,
-        int $roomId
+        int $roomId,
+        string $sort
     ) {
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
