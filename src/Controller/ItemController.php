@@ -785,7 +785,7 @@ class ItemController extends AbstractController
             $message = $mailAssistant->getSwiftMessage($form, $item, true);
             $mailer->send($message);
 
-            $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+            $recipientCount = count($message->getTo() ?? []) + count($message->getCc() ?? []) + count($message->getBcc() ?? []);
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
