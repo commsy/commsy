@@ -3,6 +3,8 @@ version: "3.4"
 services:
   etherpad:
     build: ./docker/etherpad
+    ports:
+      - "82:9010"
 
   php:
     depends_on:
