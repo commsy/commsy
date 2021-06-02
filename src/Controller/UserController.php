@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Action\Copy\InsertUserroomAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Entity\Portal;
-use App\Action\Copy\InsertUserroomAction;
 use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
@@ -30,10 +30,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
+use Liip\ImagineBundle\Imagine\Data\DataManager;
+use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Swift_Mailer;
 use Swift_Message;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,8 +45,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class UserController
@@ -1148,14 +1151,16 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")
      * @param AvatarService $avatarService
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param ParameterBagInterface $params
      * @param int $roomId
      * @param int $itemId
      * @return Response
      */
     public function imageAction(
         AvatarService $avatarService,
-        LegacyEnvironment $legacyEnvironment,
+        ParameterBagInterface $params,
+        DataManager $dataManager,
+        FilterManager $filterManager,
         int $roomId,
         int $itemId
     ) {
@@ -1164,7 +1169,7 @@ class UserController extends BaseController
         $foundUserImage = true;
 
         if ($file != '') {
-            $rootDir = $this->get('kernel')->getRootDir() . '/';
+            $rootDir = $params->get('kernel.root_dir') . '/';
 
             $disc_manager = $this->legacyEnvironment->getDiscManager();
             $disc_manager->setContextID($roomId);
@@ -1185,9 +1190,9 @@ class UserController extends BaseController
             $filePath = $disc_manager->getFilePath() . $file;
 
             if (file_exists($rootDir . $filePath)) {
-                $processedImage = $this->container->get('liip_imagine.data.manager')->find('commsy_user_image',
+                $processedImage = $dataManager->find('commsy_user_image',
                     str_ireplace('../files', './', $filePath));
-                $content = $newimage_string = $this->container->get('liip_imagine.filter.manager')->applyFilter($processedImage,
+                $content = $filterManager->applyFilter($processedImage,
                     'commsy_user_image')->getContent();
 
                 if (!$content) {
