@@ -9,6 +9,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
+use App\Utils\PortalGuessService;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -36,15 +37,22 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     private $accountCreator;
 
+    /**
+     * @var PortalGuessService
+     */
+    private $portalGuessService;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        AccountCreatorFacade $accountCreator
+        AccountCreatorFacade $accountCreator,
+        PortalGuessService $portalGuessService
     ) {
-        parent::__construct($urlGenerator);
+        parent::__construct($urlGenerator, $portalGuessService);
 
         $this->entityManager = $entityManager;
         $this->accountCreator = $accountCreator;
+        $this->portalGuessService = $portalGuessService;
     }
 
     /**

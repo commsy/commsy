@@ -7,6 +7,7 @@ namespace App\Security;
 use App\Entity\Account;
 use App\Entity\AuthSourceLdap;
 use App\Facade\AccountCreatorFacade;
+use App\Utils\PortalGuessService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,17 +44,24 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     private $accountCreator;
 
+    /**
+     * @var PortalGuessService
+     */
+    private $portalGuessService;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
-        AccountCreatorFacade $accountCreator
+        AccountCreatorFacade $accountCreator,
+        PortalGuessService $portalGuessService
     ) {
-        parent::__construct($urlGenerator);
+        parent::__construct($urlGenerator, $portalGuessService);
 
         $this->entityManager = $entityManager;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->accountCreator = $accountCreator;
+        $this->portalGuessService = $portalGuessService;
     }
 
     protected function getPostParameterName(): string

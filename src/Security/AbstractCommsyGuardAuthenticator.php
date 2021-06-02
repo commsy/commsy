@@ -4,6 +4,7 @@
 namespace App\Security;
 
 
+use App\Utils\PortalGuessService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,8 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     protected $urlGenerator;
 
+    private $portalGuessService;
+
     /**
      * When app_login is submitted, this post parameter will be checked in order to decide
      * which authenticator should be used.
@@ -37,9 +40,10 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     abstract protected function isSupportedByPortalConfiguration(Request $request): bool;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, PortalGuessService $portalGuessService)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->portalGuessService = $portalGuessService;
     }
 
     public function getLoginUrl($context): string
@@ -125,8 +129,7 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $url = $this->getLoginUrl($request->attributes->get('context'));
-
+        $url = $this->getLoginUrl($this->portalGuessService->fetchContextId($request));
         return new RedirectResponse($url);
     }
 }
