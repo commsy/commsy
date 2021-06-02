@@ -53,16 +53,18 @@
 
 {% block javascripts %}
     <script>
-        var regExp = /\[([^\]]+)\]$/;
-        function setPathOrder(){
-            var $path = $("#topic_path").find("input").map(function(){
-                return $(this).val();
-            }).get();
-            $("#topic_pathOrder").val($path);
-        }
-        window.onload = function() {
-            setPathOrder();
-        };
-        $("#topic_path").on('change.uk.sortable', setPathOrder);
+        document.addEventListener("DOMContentLoaded", function() {
+            var regExp = /\[([^\]]+)\]$/;
+            function setPathOrder(){
+                var $path = $("#topic_path").find("input").map(function(){
+                    return $(this).val();
+                }).get();
+                $("#topic_pathOrder").val($path);
+            }
+            window.onload = function() {
+                setPathOrder();
+            };
+            $("#topic_path").on('change.uk.sortable', setPathOrder);
+        });
     </script>
 {% endblock %}
