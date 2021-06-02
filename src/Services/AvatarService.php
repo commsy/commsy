@@ -58,13 +58,13 @@ class AvatarService
             return $this->generateInitialsAvatar();
         }
         
-        return file_get_contents($this->kernelProjectDir . '/assets/img/user_unknown.gif');
+        return file_get_contents($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
     }
     
     function generateInitialsAvatar() {
         if ($this->type == 1) {
-            $image = @imagecreatefromgif($this->kernelProjectDir . '/assets/img/user_unknown.gif');
-            $imageSize = getimagesize($this->kernelProjectDir . '/assets/img/user_unknown.gif');
+            $image = @imagecreatefromgif($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
+            $imageSize = getimagesize($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
             $this->imageWidth = $imageSize[0];
             $this->imageHeight = $imageSize[1];
             $fontSize = 50;
@@ -165,6 +165,6 @@ class AvatarService
     }
 
     function getUnknownUserImage() {
-        return file_get_contents($this->kernelProjectDir . '/assets/img/user_unknown.gif');
+        return file_get_contents($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
     }
 }
