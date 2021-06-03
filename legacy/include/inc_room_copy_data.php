@@ -289,17 +289,22 @@ if ( $copy_array['informationbox'] ) {
 
 $new_room->save();
 
-// save all newly created items which also causes Elastic to index them
+// update the the Elastic search index with all newly created items
 global $symfonyContainer;
 $itemService = $symfonyContainer->get(\App\Utils\ItemService::class);
 $itemManager = $environment->getItemManager();
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+$eventDispatcer = $symfonyContainer->get('event_dispatcher');
+
 /** @var \cs_list $itemList list of cs_items */
 $itemList = $itemManager->getItemList($new_id_array);
+
 foreach ($itemList as $item) {
     $itemId = $item->getItemID();
     if ($itemId != $new_room->getItemID()) {
         $typedItem = $itemService->getTypedItem($itemId);
-        $typedItem->save();
+        $itemReindexEvent = new \App\Event\ItemReindexEvent($typedItem);
+        $eventDispatcer->dispatch($itemReindexEvent, \App\Event\ItemReindexEvent::class);
     }
 }
 
