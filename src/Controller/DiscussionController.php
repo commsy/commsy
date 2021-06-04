@@ -303,10 +303,10 @@ class DiscussionController extends BaseController
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId,
-        DiscussionService $discussionService,
-        ReaderService $readerService
+        AssessmentService $assessmentService,
+        CategoryService $categoryService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup, $assessmentService, $categoryService);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
@@ -623,10 +623,10 @@ class DiscussionController extends BaseController
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId,
-        DiscussionService $discussionService,
-        ReaderService $readerService
+        AssessmentService $assessmentService,
+        CategoryService $categoryService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup, $assessmentService, $categoryService);
 
         $html = $this->renderView('discussion/detail_print.html.twig', [
             'roomId' => $roomId,
