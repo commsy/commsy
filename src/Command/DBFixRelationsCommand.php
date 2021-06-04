@@ -97,23 +97,25 @@ class DBFixRelationsCommand extends Command
         foreach ($tablesWithContext as $tableWithContext) {
             $this->runQuery($io, $conn, "
                 DELETE t FROM $tableWithContext AS t
-                LEFT JOIN room AS c1 ON t.context_id = c1.item_id AND c1.deleter_id IS NULL AND c1.deletion_date IS NULL
-                LEFT JOIN room_privat AS c2 ON t.context_id = c2.item_id AND c2.deleter_id IS NULL AND c2.deletion_date IS NULL
-                LEFT JOIN portal AS c3 ON t.context_id = c3.item_id AND c3.deleter_id IS NULL AND c3.deletion_date IS NULL
-                LEFT JOIN server AS c4 ON t.context_id = c4.item_id AND c4.deleter_id IS NULL AND c4.deletion_date IS NULL
+                LEFT JOIN room AS c1 ON t.context_id = c1.item_id
+                LEFT JOIN zzz_room AS c2 ON t.context_id = c2.item_id
+                LEFT JOIN room_privat AS c3 ON t.context_id = c3.item_id
+                LEFT JOIN portal AS c4 ON t.context_id = c4.item_id
+                LEFT JOIN server AS c5 ON t.context_id = c5.item_id
                 WHERE t.context_id IS NOT NULL
-                AND c1.item_id IS NULL AND c2.item_id IS NULL AND c3.item_id IS NULL AND c4.item_id IS NULL;
+                AND c1.item_id IS NULL AND c2.item_id IS NULL AND c3.item_id IS NULL AND c4.item_id IS NULL AND c5.item_id IS NULL;
             ");
         }
 
         $this->runQuery($io, $conn, "
             DELETE t FROM items AS t
-            LEFT JOIN room AS c1 ON t.context_id = c1.item_id AND c1.deleter_id IS NULL AND c1.deletion_date IS NULL
-            LEFT JOIN room_privat AS c2 ON t.context_id = c2.item_id AND c2.deleter_id IS NULL AND c2.deletion_date IS NULL
-            LEFT JOIN portal AS c3 ON t.context_id = c3.item_id AND c3.deleter_id IS NULL AND c3.deletion_date IS NULL
-            LEFT JOIN server AS c4 ON t.context_id = c4.item_id AND c4.deleter_id IS NULL AND c4.deletion_date IS NULL
+            LEFT JOIN room AS c1 ON t.context_id = c1.item_id
+            LEFT JOIN zzz_room AS c2 ON t.context_id = c2.item_id
+            LEFT JOIN room_privat AS c3 ON t.context_id = c3.item_id
+            LEFT JOIN portal AS c4 ON t.context_id = c4.item_id
+            LEFT JOIN server AS c5 ON t.context_id = c5.item_id
             WHERE t.context_id IS NOT NULL AND t.type != 'server'
-            AND c1.item_id IS NULL AND c2.item_id IS NULL AND c3.item_id IS NULL AND c4.item_id IS NULL;
+            AND c1.item_id IS NULL AND c2.item_id IS NULL AND c3.item_id IS NULL AND c4.item_id IS NULL AND c5.item_id IS NULL;
         ");
     }
 }
