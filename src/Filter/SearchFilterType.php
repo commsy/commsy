@@ -203,6 +203,7 @@ class SearchFilterType extends AbstractType
                     $this->translator->trans('any', [], 'form') => 'all',
                     'New' => ReaderService::READ_STATUS_NEW,
                     'Modified' => ReaderService::READ_STATUS_CHANGED,
+                    'Unread' => ReaderService::READ_STATUS_UNREAD,
                     'Read' => ReaderService::READ_STATUS_SEEN,
                 ],
                 'label' => 'Read status',

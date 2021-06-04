@@ -130,6 +130,10 @@
                 <source>Modified</source>
                 <target>Geändert</target>
             </trans-unit>
+            <trans-unit id="search-filter-read-status-unread">
+                <source>Unread</source>
+                <target>Neu oder geändert</target>
+            </trans-unit>
             <trans-unit id="search-filter-read-status-read">
                 <source>Read</source>
                 <target>Gelesen</target>
