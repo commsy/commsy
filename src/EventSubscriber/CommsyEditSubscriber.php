@@ -47,13 +47,7 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
                 }
             }
 
-            if (method_exists($item, 'updateElastic')) {
-                $item->updateElastic();
-
-                // NOTE: read status cache items also get invalidated via the ReadStatusPreChangeEvent
-                // which will be triggered when items get marked as read
-                $this->readerService->invalidateCachedReadStatusForItem($item);
-            }
+            $this->updateSearchIndex($item);
         }
     }
 
@@ -71,5 +65,19 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
             CommsyEditEvent::SAVE => array('onCommsySave', 0),
             CommsyEditEvent::CANCEL => array('onCommsyCancel', 0)
         );
+    }
+
+    /**
+     * Updates the Elastic search index for the given item, and invalidates its cached read status.
+     * @param \cs_item $item The item whose search index entry shall be updated.
+     */
+    private function updateSearchIndex(\cs_item $item) {
+        if (method_exists($item, 'updateElastic')) {
+            $item->updateElastic();
+
+            // NOTE: read status cache items also get invalidated via the ReadStatusPreChangeEvent
+            // which will be triggered when items get marked as read
+            $this->readerService->invalidateCachedReadStatusForItem($item);
+        }
     }
 }
