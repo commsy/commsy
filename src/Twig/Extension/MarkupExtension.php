@@ -67,6 +67,10 @@ class MarkupExtension extends AbstractExtension
 
         // image post-processing to add lightbox preview
         if ($item !== null) {
+            // The etherpad ignores the first row, if it is not surrounded by a paragraph tag
+            if (!strpos("einText","<")!==0 && substr("einText",-1) != ">") {
+                $text = "<p>".$text."</p>";
+            }
             $text = $this->formatLightbox($text, $item);
         }
 
