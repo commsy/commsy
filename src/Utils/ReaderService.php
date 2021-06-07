@@ -20,6 +20,13 @@ class ReaderService
      */
     public const READ_STATUS_CHANGED = 'changed';
 
+    /**
+     * Read status constant that identifies an "unread" item, i.e. an item that either hasn't been
+     * seen before (`READ_STATUS_NEW`) -OR- which has unread changes (`READ_STATUS_CHANGED`).
+     * @var string
+     */
+    public const READ_STATUS_UNREAD = 'unread';
+
     // TODO: most CommSy code currently uses an empty string ('') instead of READ_STATUS_SEEN/'seen'
     /**
      * Read status constant that identifies a "seen" item, i.e. an item that has been read before.
@@ -204,12 +211,17 @@ class ReaderService
                 // we cache the user's read status for a given item which greatly speeds up the look-up process
                 $cachedReadStatus = $this->cachedReadStatusForItem($item, $user);
 
-                // NOTE: instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('');
-                // also, we treat READ_STATUS_NEW_ANNOTATION and READ_STATUS_CHANGED_ANNOTATION like READ_STATUS_CHANGED
+                // NOTES:
+                // - instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('')
+                // - READ_STATUS_UNREAD comprises all items matching either READ_STATUS_NEW or READ_STATUS_CHANGED
+                // - we treat READ_STATUS_NEW_ANNOTATION and READ_STATUS_CHANGED_ANNOTATION like READ_STATUS_CHANGED
+                if ($cachedReadStatus === self::READ_STATUS_NEW_ANNOTATION || $cachedReadStatus === self::READ_STATUS_CHANGED_ANNOTATION) {
+                    $cachedReadStatus = self::READ_STATUS_CHANGED;
+                }
                 if ($cachedReadStatus === $readStatus
                     || $cachedReadStatus === '' && $readStatus === self::READ_STATUS_SEEN
-                    || $cachedReadStatus === self::READ_STATUS_NEW_ANNOTATION && $readStatus === self::READ_STATUS_CHANGED
-                    || $cachedReadStatus === self::READ_STATUS_CHANGED_ANNOTATION && $readStatus === self::READ_STATUS_CHANGED) {
+                    || $cachedReadStatus === self::READ_STATUS_NEW && $readStatus === self::READ_STATUS_UNREAD
+                    || $cachedReadStatus === self::READ_STATUS_CHANGED && $readStatus === self::READ_STATUS_UNREAD) {
                     $itemId = $item->getItemId();
                     $itemIds[] = $itemId;
                 }
