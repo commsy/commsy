@@ -1275,6 +1275,9 @@ services:
     App\Event\CommsyEditEvent:
         autowire: false
 
+    App\Event\ItemReindexEvent:
+        autowire: false
+
     App\Event\ItemDeletedEvent:
         autowire: false
 
