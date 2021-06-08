@@ -7,7 +7,7 @@ namespace App\EventSubscriber;
 use App\Entity\Account;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
-use App\Utils\UserService;
+use App\Utils\FileService;
 use cs_environment;
 use cs_list;
 use cs_user_item;
@@ -20,16 +20,29 @@ use Symfony\Component\Security\Core\Security;
 
 class LegacySubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var cs_environment
+     */
     private cs_environment $legacyEnvironment;
+
+    /**
+     * @var Security
+     */
     private Security $security;
+
+    /**
+     * @var FileService
+     */
+    private FileService $fileService;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         Security $security,
-        UserService $userService
+        FileService $fileService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->security = $security;
+        $this->fileService = $fileService;
     }
 
     public static function getSubscribedEvents()
@@ -56,6 +69,11 @@ class LegacySubscriber implements EventSubscriberInterface
         $contextId = null;
         $contextId = $contextId ?? $request->attributes->get('roomId');
         $contextId = $contextId ?? $request->attributes->get('portalId');
+
+        if ($request->attributes->has('fileId')) {
+            $file = $this->fileService->getFile($request->attributes->get('fileId'));
+            $contextId = $file->getContextID();
+        }
 
         if ($contextId) {
             $this->legacyEnvironment->setCurrentContextID($contextId);
