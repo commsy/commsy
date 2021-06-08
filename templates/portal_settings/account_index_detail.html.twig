@@ -71,6 +71,10 @@
                         <td>{{ user.userid }}</td>
                     </tr>
                     <tr>
+                        <td> {{'authSource'|trans({}, 'portal') }}: </td>
+                        <td>{{ authSource.title }}</td>
+                    </tr>
+                    <tr>
                         <td> {{'Status'|trans({},'portal') }}: </td>
                         {% if(user.getStatus() == 1) %}
                             <td>{{'Applying'|trans({},'portal') }}</td>
