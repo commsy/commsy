@@ -20,6 +20,7 @@ RUN apk add --no-cache \
 		gnu-libiconv \
 		libxrender \
 		nodejs \
+		ttf-freefont \
 		yarn \
 	;
 
