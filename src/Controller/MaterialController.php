@@ -6,39 +6,33 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
-use App\Export\WordpressExporter;
-use App\Form\DataTransformer\MaterialTransformer;
-use App\Http\JsonRedirectResponse;
 use App\Entity\License;
+use App\Event\CommsyEditEvent;
+use App\Filter\MaterialFilterType;
+use App\Form\DataTransformer\MaterialTransformer;
+use App\Form\Type\AnnotationType;
+use App\Form\Type\MaterialSectionType;
+use App\Form\Type\MaterialType;
+use App\Form\Type\SectionType;
+use App\Http\JsonRedirectResponse;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
-use App\Utils\ItemService;
 use App\Utils\MaterialService;
-use App\Utils\ReaderService;
 use App\Utils\TopicService;
 use cs_material_item;
 use cs_room_item;
 use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use App\Utils\AnnotationService;
-use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-
-use App\Filter\MaterialFilterType;
-use App\Form\Type\AnnotationType;
-use App\Form\Type\MaterialType;
-use App\Form\Type\SectionType;
-use App\Form\Type\MaterialSectionType;
-
-use App\Event\CommsyEditEvent;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class MaterialController
@@ -70,12 +64,14 @@ class MaterialController extends BaseController
     /**
      * @var AssessmentService
      */
-    private  $assessmentService;
+    private $assessmentService;
+
     /**
      * @required
      * @param CategoryService $categoryService
      */
-    public function setCategoryService(CategoryService $categoryService){
+    public function setCategoryService(CategoryService $categoryService)
+    {
         $this->categoryService = $categoryService;
     }
 
@@ -101,7 +97,8 @@ class MaterialController extends BaseController
      * @required
      * @param MaterialTransformer $materialTransformer
      */
-    public function setMaterialTransformer(MaterialTransformer $materialTransformer){
+    public function setMaterialTransformer(MaterialTransformer $materialTransformer)
+    {
         $this->materialTransformer = $materialTransformer;
     }
 
@@ -293,11 +290,10 @@ class MaterialController extends BaseController
         // get material list from manager service 
         if ($sort != "none") {
             $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
-        }
-        elseif ($this->get('session')->get('sortMaterials')) {
-            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->get('session')->get('sortMaterials'));
-        }
-        else {
+        } elseif ($this->get('session')->get('sortMaterials')) {
+            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0,
+                $this->get('session')->get('sortMaterials'));
+        } else {
             $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
         }
 
@@ -329,7 +325,7 @@ class MaterialController extends BaseController
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
             'ratingList' => $ratingList,
-            
+
         ]);
 
         return $printService->buildPdfResponse($html);
@@ -390,7 +386,8 @@ class MaterialController extends BaseController
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
-        $amountAnnotations = $this->annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(), null, null);
+        $amountAnnotations = $this->annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(),
+            null, null);
 
         return array(
             'roomId' => $roomId,
@@ -409,8 +406,8 @@ class MaterialController extends BaseController
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
-            'workflowGroupArray'=> $infoArray['workflowGroupArray'],
-            'workflowUserArray'=> $infoArray['workflowUserArray'],
+            'workflowGroupArray' => $infoArray['workflowGroupArray'],
+            'workflowUserArray' => $infoArray['workflowUserArray'],
             'workflowText' => $infoArray['workflowText'],
             'workflowValidityDate' => $infoArray['workflowValidityDate'],
             'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
@@ -443,7 +440,7 @@ class MaterialController extends BaseController
             ],
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
-       );
+        );
     }
 
     /**
@@ -509,11 +506,11 @@ class MaterialController extends BaseController
         $ratingDetail = $this->assessmentService->getRatingDetail($material);
         $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($material);
         $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($material);
-        
+
         return array(
             'roomId' => $roomId,
             'material' => $material,
-            'ratingArray' =>  array(
+            'ratingArray' => array(
                 'ratingDetail' => $ratingDetail,
                 'ratingAverageDetail' => $ratingAverageDetail,
                 'ratingOwnDetail' => $ratingOwnDetail,
@@ -535,14 +532,14 @@ class MaterialController extends BaseController
         } else {
             $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
         }
-        
-        if($material == null) {
+
+        if ($material == null) {
             $section = $this->materialService->getSection($itemId);
             $material = $this->materialService->getMaterial($section->getLinkedItemID());
         }
-        
+
         $sectionList = $material->getSectionList()->to_array();
-        
+
         $itemArray = array($material);
         $itemArray = array_merge($itemArray, $sectionList);
 
@@ -561,38 +558,39 @@ class MaterialController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$material->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $material->getModificationDate() ) {
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array, $material->getItemID());
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $material->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
 
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $materials = $this->materialService->getListMaterials($roomId);
         $materialList = array();
         $counterBefore = 0;
@@ -635,7 +633,7 @@ class MaterialController extends BaseController
                 $firstItemId = $materials[0]->getItemId();
             }
             if ($nextItemId) {
-                $lastItemId = $materials[sizeof($materials)-1]->getItemId();
+                $lastItemId = $materials[sizeof($materials) - 1]->getItemId();
             }
         }
 
@@ -649,29 +647,29 @@ class MaterialController extends BaseController
             $itemManager = $this->legacyEnvironment->getItemManager();
             $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($material->getItemID());
             $persons_array = array();
-            foreach($users_read_array as $user_read){
+            foreach ($users_read_array as $user_read) {
                 $persons_array[] = $userManager->getItem($user_read['user_id']);
             }
 
-            if($current_context->getWorkflowReaderGroup() == '1'){
+            if ($current_context->getWorkflowReaderGroup() == '1') {
                 $group_manager = $this->legacyEnvironment->getGroupManager();
                 $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
                 $group_manager->setTypeLimit('group');
                 $group_manager->select();
                 $group_list = $group_manager->get();
                 $group_item = $group_list->getFirst();
-                while($group_item){
+                while ($group_item) {
                     $link_user_list = $group_item->getLinkItemList('user');
                     $user_count_complete = $link_user_list->getCount();
                     $user_count = 0;
-                    foreach($persons_array as $person) {
+                    foreach ($persons_array as $person) {
                         if (!empty($persons_array[0])) {
                             $temp_link_list = $person->getLinkItemList('group');
                             $temp_link_item = $temp_link_list->getFirst();
 
                             while ($temp_link_item) {
                                 $temp_group_item = $temp_link_item->getLinkedItem($person);
-                                if($group_item->getItemID() == $temp_group_item->getItemID()) {
+                                if ($group_item->getItemID() == $temp_group_item->getItemID()) {
                                     $user_count++;
                                 }
                                 $temp_link_item = $temp_link_list->getNext();
@@ -680,20 +678,20 @@ class MaterialController extends BaseController
                     }
                     $tmpArray = array();
                     $tmpArray['iid'] = $group_item->getItemID();
-                    $tmpArray['title']=  $group_item->getTitle();
-                    $tmpArray['userCount']=  $user_count;
-                    $tmpArray['userCountComplete']=  $user_count_complete;
+                    $tmpArray['title'] = $group_item->getTitle();
+                    $tmpArray['userCount'] = $user_count;
+                    $tmpArray['userCountComplete'] = $user_count_complete;
                     $workflowGroupArray[] = $tmpArray;
                     $group_item = $group_list->getNext();
                 }
             }
 
-            if ($current_context->getWorkflowReaderPerson() == '1'){
+            if ($current_context->getWorkflowReaderPerson() == '1') {
                 foreach ($persons_array as $person) {
-                    if (!empty($persons_array[0])){
+                    if (!empty($persons_array[0])) {
                         $tmpArray = array();
                         $tmpArray['iid'] = $person->getItemID();
-                        $tmpArray['name']=  $person->getFullname();
+                        $tmpArray['name'] = $person->getFullname();
                         $workflowUserArray[] = $tmpArray;
                     }
                 }
@@ -701,12 +699,12 @@ class MaterialController extends BaseController
 
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
             $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
-            
+
             if ($currentContextItem->withWorkflow()) {
                 if (!$currentUserItem->isRoot()) {
                     if (!$currentUserItem->isGuest() && $material->isReadByUser($currentUserItem)) {
                         $workflowUnread = true;
-                    } else  {
+                    } else {
                         $workflowRead = true;
                     }
                 }
@@ -743,12 +741,12 @@ class MaterialController extends BaseController
 
         $item = $material;
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
@@ -759,14 +757,14 @@ class MaterialController extends BaseController
         $readsectionList = $material->getSectionList();
 
         $section = $readsectionList->getFirst();
-        while($section) {
+        while ($section) {
             $reader = $reader_manager->getLatestReader($section->getItemID());
-            if(empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
+            if (empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
                 $reader_manager->markRead($section->getItemID(), 0);
             }
 
             $noticed = $noticed_manager->getLatestNoticed($section->getItemID());
-            if(empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
+            if (empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
                 $noticed_manager->markNoticed($section->getItemID(), 0);
             }
 
@@ -804,7 +802,11 @@ class MaterialController extends BaseController
                         $first = false;
                     }
                 }
-                $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:i', $tempTimeStamp), 'current' => $current);
+                $versions[$tempTimeStamp] = array(
+                    'item' => $versionItem,
+                    'date' => date('d.m.Y H:i', $tempTimeStamp),
+                    'current' => $current
+                );
                 if ($tempTimeStamp > $maxTimestamp) {
                     $maxTimestamp = $tempTimeStamp;
                 }
@@ -813,12 +815,12 @@ class MaterialController extends BaseController
                 }
             }
             asort($versions);
-            
+
             $timeDiff = $maxTimestamp - $minTimestamp;
             $minPercentDiff = ($timeDiff / 100) * sizeof($versions);
             $lastPercent = 0;
             $first = true;
-            $toFollow = sizeof($versions)-1;
+            $toFollow = sizeof($versions) - 1;
             foreach ($versions as $timestamp => $versionId) {
                 $tempTimeDiff = $timestamp - $minTimestamp;
                 $tempPercent = 0;
@@ -834,7 +836,7 @@ class MaterialController extends BaseController
                 } else {
                     $first = false;
                 }
-                
+
                 if ($tempPercent >= 95) {
                     if ($toFollow != 0) {
                         $tempPercent = $tempPercent - ($toFollow * 2);
@@ -884,11 +886,11 @@ class MaterialController extends BaseController
         ] : [];
         $infoArray['roomCategories'] = $categories;
         $infoArray['versions'] = $versions;
-        
+
         return $infoArray;
     }
 
-    private function getTagDetailArray (
+    private function getTagDetailArray(
         $baseCategories,
         $itemCategories
     ) {
@@ -907,7 +909,11 @@ class MaterialController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                        $result[] = array(
+                            'title' => $baseCategory['title'],
+                            'item_id' => $baseCategory['item_id'],
+                            'children' => $tempResult
+                        );
                     } else {
                         $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
                     }
@@ -916,7 +922,11 @@ class MaterialController extends BaseController
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    $result[] = array(
+                        'title' => $baseCategory['title'],
+                        'item_id' => $baseCategory['item_id'],
+                        'children' => $tempResult
+                    );
                 }
             }
             $tempResult = array();
@@ -939,21 +949,21 @@ class MaterialController extends BaseController
     ) {
         $roomItem = $this->getRoom($roomId);
         $item = $this->itemService->getItem($itemId);
-        $tempItem = NULL;
-        
+        $tempItem = null;
+
         if ($item->getItemType() == 'material') {
             $tempItem = $this->materialService->getMaterial($itemId);
         }
 
         $itemArray = array($tempItem);
-    
+
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
-        
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,
@@ -1013,7 +1023,7 @@ class MaterialController extends BaseController
         $isMaterial = false;
         $isDraft = false;
         $isSaved = false;
-        
+
         $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
@@ -1038,7 +1048,8 @@ class MaterialController extends BaseController
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+                $this->legacyEnvironment);
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
             $availableLicenses = $licensesRepository->findByContextOrderByPosition($this->legacyEnvironment->getCurrentPortalId());
@@ -1052,7 +1063,7 @@ class MaterialController extends BaseController
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
-                'placeholderText' => '['.$this->translator->trans('insert title').']',
+                'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
                 'categoryMappingOptions' => [
                     'categories' => $itemController->getCategories($roomId, $categoryService)
                 ],
@@ -1066,19 +1077,22 @@ class MaterialController extends BaseController
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
 
-        } else if ($item->getItemType() == 'section') {
-            // get section from MaterialService
-            $section = $this->materialService->getSection($itemId);
-            $typedItem = $section;
-            if (!$section) {
-                throw $this->createNotFoundException('No section found for id ' . $roomId);
-            }
-            $formData = $this->materialTransformer->transform($section);
-            $form = $this->createForm(SectionType::class, $formData, array(
-                'placeholderText' => '['.$this->translator->trans('insert title').']',
-            ));
+        } else {
+            if ($item->getItemType() == 'section') {
+                // get section from MaterialService
+                $section = $this->materialService->getSection($itemId);
+                $typedItem = $section;
+                if (!$section) {
+                    throw $this->createNotFoundException('No section found for id ' . $roomId);
+                }
+                $formData = $this->materialTransformer->transform($section);
+                $form = $this->createForm(SectionType::class, $formData, array(
+                    'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
+                ));
 
-            $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($section->getlinkedItemID())), CommsyEditEvent::EDIT);
+                $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($section->getlinkedItemID())),
+                    CommsyEditEvent::EDIT);
+            }
         }
 
         $form->handleRequest($request);
@@ -1121,7 +1135,7 @@ class MaterialController extends BaseController
                 }
 
                 $typedItem->save();
-                
+
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
@@ -1164,24 +1178,27 @@ class MaterialController extends BaseController
     ) {
         $roomItem = $this->getRoom($roomId);
         $item = $this->itemService->getItem($itemId);
-        $tempItem = NULL;
-        
+        $tempItem = null;
+
         if ($item->getItemType() == 'material') {
             $tempItem = $this->materialService->getMaterial($itemId);
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($tempItem), CommsyEditEvent::SAVE);
-        } else if ($item->getItemType() == 'section') {
-            $tempItem = $this->materialService->getSection($itemId);
+        } else {
+            if ($item->getItemType() == 'section') {
+                $tempItem = $this->materialService->getSection($itemId);
 
-            $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($tempItem->getLinkedItemID())), CommsyEditEvent::SAVE);
+                $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($tempItem->getLinkedItemID())),
+                    CommsyEditEvent::SAVE);
+            }
         }
-        
+
         $itemArray = array($tempItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         return array(
@@ -1232,8 +1249,8 @@ class MaterialController extends BaseController
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
-            'workflowGroupArray'=> $infoArray['workflowGroupArray'],
-            'workflowUserArray'=> $infoArray['workflowUserArray'],
+            'workflowGroupArray' => $infoArray['workflowGroupArray'],
+            'workflowUserArray' => $infoArray['workflowUserArray'],
             'workflowText' => $infoArray['workflowText'],
             'workflowValidityDate' => $infoArray['workflowValidityDate'],
             'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
@@ -1277,7 +1294,8 @@ class MaterialController extends BaseController
         }
         $materialItem->save();
 
-        return $this->redirectToRoute('app_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
+        return $this->redirectToRoute('app_material_detail',
+            array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
     }
 
     /**
@@ -1300,13 +1318,14 @@ class MaterialController extends BaseController
         $section->setDraftStatus(1);
         $section->setLinkedItemId($itemId);
         $section->setVersionId($material->getVersionId());
-        $section->setNumber($countSections+1);
+        $section->setNumber($countSections + 1);
         $section->save();
 
         $formData = $this->materialTransformer->transform($section);
         $form = $this->createForm(SectionType::class, $formData, array(
-            'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'action' => $this->generateUrl('app_material_savesection',
+                array('roomId' => $roomId, 'itemId' => $section->getItemID())),
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ));
 
         return array(
@@ -1342,8 +1361,9 @@ class MaterialController extends BaseController
         $formData = $this->materialTransformer->transform($section);
 
         $form = $this->createForm(SectionType::class, $formData, array(
-            'action' => $this->generateUrl('app_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'action' => $this->generateUrl('app_material_savesection',
+                array('roomId' => $roomId, 'itemId' => $section->getItemID())),
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ));
 
         $form->handleRequest($request);
@@ -1366,16 +1386,19 @@ class MaterialController extends BaseController
 
                 // this will also update the material item's modification date to indicate that it has changes
                 $section->getLinkedItem()->save();
-                
-            } else if ($form->get('cancel')->isClicked()) {
-                // remove not saved item
-                $section->delete();
 
-                $section->save();
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    // remove not saved item
+                    $section->delete();
+
+                    $section->save();
+                }
             }
         }
 
-        return $this->redirectToRoute('app_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+        return $this->redirectToRoute('app_material_detail',
+            array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
     }
 
     /**
@@ -1463,8 +1486,11 @@ class MaterialController extends BaseController
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('app_material_detail', array('roomId' => $roomId, 'itemId' => $itemId));
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    return $this->redirectToRoute('app_material_detail',
+                        array('roomId' => $roomId, 'itemId' => $itemId));
+                }
             }
             return $this->redirectToRoute('app_material_savesections', array('roomId' => $roomId, 'itemId' => $itemId));
         }
@@ -1512,15 +1538,15 @@ class MaterialController extends BaseController
         int $versionId
     ) {
         $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
-        
+
         $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
 
-        $newVersionId = $material->getVersionID()+1;
+        $newVersionId = $material->getVersionID() + 1;
         $newMaterial = $material->cloneCopy(true);
         $newMaterial->setVersionID($newVersionId);
-        
+
         $newMaterial->setModificatorItem($currentUserItem);
-        
+
         $newMaterial->save();
 
         return $this->redirectToRoute('app_material_detail', [
@@ -1533,18 +1559,19 @@ class MaterialController extends BaseController
     /**
      * @Route("/room/{roomId}/material/download")
      * @param Request $request
+     * @param DownloadAction $action
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function downloadAction(
         Request $request,
+        DownloadAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
     }
 

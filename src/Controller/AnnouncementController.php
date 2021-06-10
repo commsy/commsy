@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
-use App\Action\Delete\DeleteGeneric;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\ItemMarkRead;
 use App\Action\MarkRead\MarkReadAction;
@@ -15,21 +14,21 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
-use App\Utils\AnnouncementService;
 use App\Utils\AnnotationService;
+use App\Utils\AnnouncementService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\TopicService;
 use cs_announcement_item;
 use cs_room_item;
 use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class AnnouncementController
@@ -73,7 +72,7 @@ class AnnouncementController extends BaseController
      * @required
      * @param AnnouncementService $announcementService
      */
-    public function setAnnouncementService( AnnouncementService$announcementService): void
+    public function setAnnouncementService(AnnouncementService $announcementService): void
     {
         $this->announcementService = $announcementService;
     }
@@ -193,7 +192,7 @@ class AnnouncementController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        $sort = NULL
+        $sort = null
     ) {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
@@ -341,7 +340,8 @@ class AnnouncementController extends BaseController
             $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
         } elseif ($this->get('session')->get('sortAnnouncements')) {
             /** @var cs_announcement_item[] $announcements */
-            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $this->get('session')->get('sortAnnouncements'));
+            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0,
+                $this->get('session')->get('sortAnnouncements'));
         } else {
             /** @var cs_announcement_item[] $announcements */
             $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
@@ -424,7 +424,8 @@ class AnnouncementController extends BaseController
         }
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
-        $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['announcement']->getItemId(), null, null);
+        $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['announcement']->getItemId(),
+            null, null);
 
         return array(
             'roomId' => $roomId,
@@ -532,7 +533,8 @@ class AnnouncementController extends BaseController
         $announcementItem->setPrivateEditing(1);
         $announcementItem->save();
 
-        return $this->redirectToRoute('app_announcement_detail', array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
+        return $this->redirectToRoute('app_announcement_detail',
+            array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
     }
 
     /**
@@ -557,7 +559,7 @@ class AnnouncementController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $announcementItem = NULL;
+        $announcementItem = null;
 
         $isDraft = $item->isDraft();
 
@@ -576,7 +578,8 @@ class AnnouncementController extends BaseController
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+                $this->legacyEnvironment);
             $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('app_announcement_edit', array(
                     'roomId' => $roomId,
@@ -708,18 +711,19 @@ class AnnouncementController extends BaseController
     /**
      * @Route("/room/{roomId}/announcement/download")
      * @param Request $request
+     * @param DownloadAction $action
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function downloadAction(
         Request $request,
-        int $roomId)
-    {
+        DownloadAction $action,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
     }
 
@@ -879,7 +883,8 @@ class AnnouncementController extends BaseController
         $readerManager->getLatestReaderByUserIDArray($id_array, $announcement->getItemID());
         $current_user = $user_list->getFirst();
         while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($announcement->getItemID(), $current_user->getItemID());
+            $current_reader = $readerManager->getLatestReaderForUserByID($announcement->getItemID(),
+                $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $announcement->getModificationDate()) {
                     $read_count++;
@@ -1017,7 +1022,11 @@ class AnnouncementController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                        $result[] = array(
+                            'title' => $baseCategory['title'],
+                            'item_id' => $baseCategory['item_id'],
+                            'children' => $tempResult
+                        );
                     } else {
                         $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
                     }
@@ -1026,7 +1035,11 @@ class AnnouncementController extends BaseController
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    $result[] = array(
+                        'title' => $baseCategory['title'],
+                        'item_id' => $baseCategory['item_id'],
+                        'children' => $tempResult
+                    );
                 }
             }
             $tempResult = array();
