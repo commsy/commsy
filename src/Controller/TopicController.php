@@ -66,7 +66,6 @@ class TopicController extends BaseController
     }
 
 
-
     /**
      * @Route("/room/{roomId}/topic")
      * @Template()
@@ -88,8 +87,7 @@ class TopicController extends BaseController
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in topic manager
             $this->topicService->setFilterConditions($filterForm);
-        }
-        else {
+        } else {
             $this->topicService->hideDeactivatedEntries();
         }
 
@@ -155,8 +153,7 @@ class TopicController extends BaseController
             $filterForm->submit($topicFilter);
             // set filter conditions in topic manager
             $this->topicService->setFilterConditions($filterForm);
-        }
-        else {
+        } else {
             $this->topicService->hideDeactivatedEntries();
         }
 
@@ -180,7 +177,7 @@ class TopicController extends BaseController
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
-       );
+        );
     }
 
     /**
@@ -265,10 +262,10 @@ class TopicController extends BaseController
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isLinkedToItems' => $isLinkedToItems,
-       );
+        );
     }
 
-    private function getDetailInfo (
+    private function getDetailInfo(
         int $roomId,
         int $itemId
     ) {
@@ -278,13 +275,13 @@ class TopicController extends BaseController
         $item = $topic;
         $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -302,16 +299,17 @@ class TopicController extends BaseController
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-           $id_array[] = $current_user->getItemID();
-           $current_user = $user_list->getNext();
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
         }
-        $readerManager->getLatestReaderByUserIDArray($id_array,$topic->getItemID());
+        $readerManager->getLatestReaderByUserIDArray($id_array, $topic->getItemID());
         $current_user = $user_list->getFirst();
-        while ( $current_user ) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($topic->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $topic->getModificationDate() ) {
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($topic->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $topic->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
@@ -323,14 +321,14 @@ class TopicController extends BaseController
         $readerList = array();
         $modifierList = array();
         $reader = $this->readerService->getLatestReader($topic->getItemId());
-        if ( empty($reader) ) {
-           $readerList[$item->getItemId()] = 'new';
-        } elseif ( $reader['read_date'] < $topic->getModificationDate() ) {
-           $readerList[$topic->getItemId()] = 'changed';
+        if (empty($reader)) {
+            $readerList[$item->getItemId()] = 'new';
+        } elseif ($reader['read_date'] < $topic->getModificationDate()) {
+            $readerList[$topic->getItemId()] = 'changed';
         }
-        
+
         $modifierList[$topic->getItemId()] = $this->itemService->getAdditionalEditorsForItem($topic);
-        
+
         $topics = $this->topicService->getListTopics($roomId);
         $topicList = array();
         $counterBefore = 0;
@@ -373,14 +371,14 @@ class TopicController extends BaseController
                 $firstItemId = $topics[0]->getItemId();
             }
             if ($nextItemId) {
-                $lastItemId = $topics[sizeof($topics)-1]->getItemId();
+                $lastItemId = $topics[sizeof($topics) - 1]->getItemId();
             }
         }
         // mark annotations as readed
         $annotationList = $topic->getAnnotationList();
         $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-        
-        
+
+
         $infoArray['topic'] = $topic;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -424,7 +422,8 @@ class TopicController extends BaseController
         $topicItem->setDraftStatus(1);
         $topicItem->save();
 
-        return $this->redirectToRoute('app_topic_detail', array('roomId' => $roomId, 'itemId' => $topicItem->getItemId()));
+        return $this->redirectToRoute('app_topic_detail',
+            array('roomId' => $roomId, 'itemId' => $topicItem->getItemId()));
     }
 
 
@@ -479,7 +478,8 @@ class TopicController extends BaseController
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+            $this->legacyEnvironment);
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['draft'] = $isDraft;
         $form = $this->createForm(TopicType::class, $formData, array(
@@ -487,7 +487,7 @@ class TopicController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
@@ -497,7 +497,7 @@ class TopicController extends BaseController
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -516,13 +516,15 @@ class TopicController extends BaseController
                 }
 
                 $topicItem->save();
-                
+
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    // ToDo ...
+                }
             }
             return $this->redirectToRoute('app_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
@@ -532,7 +534,7 @@ class TopicController extends BaseController
         return array(
             'form' => $form->createView(),
             'topic' => $topicItem,
-            'isDraft' => $isDraft,  
+            'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'showCategories' => $categoriesMandatory,
@@ -553,15 +555,15 @@ class TopicController extends BaseController
         int $itemId
     ) {
         $topic = $this->topicService->getTopic($itemId);
-        
+
         $itemArray = array($topic);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        
+
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
@@ -573,34 +575,35 @@ class TopicController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$topic->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($topic->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $topic->getModificationDate() ) {
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array, $topic->getItemID());
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($topic->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $topic->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -773,7 +776,10 @@ class TopicController extends BaseController
         foreach ($linkedItemArray as $linkedItem) {
             $typedLinkedItem = $this->itemService->getTypedItem($linkedItem->getItemId());
             $pathElements[$typedLinkedItem->getTitle()] = $typedLinkedItem->getItemId();
-            $pathElementsAttr[$typedLinkedItem->getTitle()] = ['title' => $typedLinkedItem->getTitle(), 'type' => $typedLinkedItem->getItemType()];
+            $pathElementsAttr[$typedLinkedItem->getTitle()] = [
+                'title' => $typedLinkedItem->getTitle(),
+                'type' => $typedLinkedItem->getItemType()
+            ];
         }
 
         $form = $this->createForm(TopicPathType::class, $formData, array(
@@ -800,7 +806,8 @@ class TopicController extends BaseController
                     $sortingPlace = 1;
                     if (isset($formData['pathOrder'])) {
                         foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
-                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId, true)) {
+                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId,
+                                true)) {
                                 if (in_array($orderItemId, $formDataPath)) {
                                     $linkItem->setSortingPlace($sortingPlace);
                                     $linkItem->save();
@@ -826,8 +833,10 @@ class TopicController extends BaseController
                     }
                 }
 
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    // ToDo ...
+                }
             }
             return $this->redirectToRoute('app_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
         }
@@ -870,12 +879,12 @@ class TopicController extends BaseController
      */
     public function downloadAction(
         Request $request,
+        DownloadAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
     }
 
@@ -974,7 +983,7 @@ class TopicController extends BaseController
         ]);
     }
 
-    private function getTagDetailArray (
+    private function getTagDetailArray(
         $baseCategories,
         $itemCategories
     ) {
@@ -992,7 +1001,11 @@ class TopicController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                        $result[] = array(
+                            'title' => $baseCategory['title'],
+                            'item_id' => $baseCategory['item_id'],
+                            'children' => $tempResult
+                        );
                     } else {
                         $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
                     }
@@ -1001,7 +1014,11 @@ class TopicController extends BaseController
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    $result[] = array(
+                        'title' => $baseCategory['title'],
+                        'item_id' => $baseCategory['item_id'],
+                        'children' => $tempResult
+                    );
                 }
             }
             $tempResult = array();
