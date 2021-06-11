@@ -375,10 +375,12 @@ class cs_disc_manager {
       return $retour;
    }
 
-   public function getTempFolder () {
-      $retour = $this->_file_path_basic.$this->_folder_temp;
-      return $retour;
-   }
+    public function getTempFolder()
+    {
+        $retour = $this->getFilePathBasic() . $this->_folder_temp;
+
+        return $retour;
+    }
 
    function _makeTempFolder () {
       $first_folder_string = $this->getTempFolder();
