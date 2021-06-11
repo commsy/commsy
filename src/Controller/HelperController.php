@@ -54,9 +54,11 @@ class HelperController extends AbstractController
                 ->findOneByPortalIdAndAccount($context, $account);
 
             // The default redirect to the dashboard.
-            return $this->redirectToRoute('app_dashboard_overview', [
-                'roomId' => $privateRoom->getItemId(),
-            ]);
+            if ($privateRoom) {
+                return $this->redirectToRoute('app_dashboard_overview', [
+                    'roomId' => $privateRoom->getItemId(),
+                ]);
+            }
         }
 
         // If we don't get a valid user, redirect to the list of all portals
