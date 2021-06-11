@@ -236,7 +236,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                     if (!$file->isDeleted()) {
                         $fileSize = $file->getFileSize();
 
-                        if (round($fileSize / 1024) < 25) {
+                        if ($fileSize > 0 && round($fileSize / 1024) < 25) {
                             $content = $file->getContentBase64();
                             if (!empty($content)) {
                                 $fileContents[] = $content;
