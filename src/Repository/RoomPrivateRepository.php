@@ -21,21 +21,20 @@ class RoomPrivateRepository extends ServiceEntityRepository
      * @param int $portalId
      * @param Account $account
      * @return RoomPrivat|null
-     * @throws NoResultException
      * @throws NonUniqueResultException
      */
     public function findOneByPortalIdAndAccount(int $portalId, Account $account): ?RoomPrivat
     {
         return $this->createQueryBuilder('rp')
             ->select('rp')
-            ->innerJoin('App:User', 'u', Expr\Join::WITH, 'u.contextId = rp.itemId')
-            ->innerJoin('App:Account', 'a', Expr\Join::WITH, 'a.username = u.userId')
+            ->innerJoin('App:User', 'u', Expr\Join::WITH, 'u.contextId = rp.itemId AND u.deleterId IS NULL AND u.deletionDate IS NULL')
+            ->innerJoin('App:Account', 'a', Expr\Join::WITH, 'a.username = u.userId AND a.authSource = u.authSource')
             ->where('rp.contextId = :portalId')
             ->andWhere('rp.deleterId IS NULL')
             ->andWhere('rp.deletionDate IS NULL')
-            ->andWhere('u.userId = :username')
             ->andWhere('a.authSource = :authSource')
             ->andWhere('a.contextId = :portalId')
+            ->andWhere('a.username = :username')
             ->setParameters([
                 'portalId' => $portalId,
                 'username' => $account->getUsername(),
@@ -43,6 +42,6 @@ class RoomPrivateRepository extends ServiceEntityRepository
             ])
             ->getQuery()
             ->setMaxResults(1)
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 }
