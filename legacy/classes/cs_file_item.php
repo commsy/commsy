@@ -246,33 +246,27 @@ class cs_file_item extends cs_item {
 
    }
 
-    public function isOnDisk(string $filePath = '')
-    {
-        if (empty($filePath)) {
-            $disc_manager = $this->_environment->getDiscManager();
-            $disc_manager->setContextID($this->getContextID());
-            $portal_id = $this->getPortalID();
-            if (isset($portal_id) and !empty($portal_id)) {
-                $disc_manager->setPortalID($portal_id);
-            } else {
-                $context_item = $this->getContextItem();
-                if (isset($context_item)) {
-                    $portal_item = $context_item->getContextItem();
-                    if (isset($portal_item)) {
-                        $disc_manager->setPortalID($portal_item->getItemID());
-                        unset($portal_item);
-                    }
-                    unset($context_item);
-                }
+    public function isOnDisk() {
+      $disc_manager = $this->_environment->getDiscManager();
+      $disc_manager->setContextID($this->getContextID());
+      $portal_id = $this->getPortalID();
+      if ( isset($portal_id) and !empty($portal_id) ) {
+         $disc_manager->setPortalID($portal_id);
+      } else {
+         $context_item = $this->getContextItem();
+         if ( isset($context_item) ) {
+            $portal_item = $context_item->getContextItem();
+            if ( isset($portal_item) ) {
+               $disc_manager->setPortalID($portal_item->getItemID());
+               unset($portal_item);
             }
-            $retour = $disc_manager->existsFile($this->getDiskFilenameWithoutFolder());
-            $disc_manager->setContextID($this->_environment->getCurrentContextID());
-            return $retour;
-        } else {
-            $fileSystem = new \Symfony\Component\Filesystem\Filesystem();
-            return $fileSystem->exists($filePath);
-        }
-    }
+            unset($context_item);
+         }
+      }
+      $retour = $disc_manager->existsFile($this->getDiskFilenameWithoutFolder());
+      $disc_manager->setContextID($this->_environment->getCurrentContextID());
+      return $retour;
+   }
 
    /* There was a bug in CommSy so context ID of an item were not
       saved correctly. This method is a workaround for file item db entries
@@ -379,16 +373,17 @@ class cs_file_item extends cs_item {
 
     public function getFileSize()
     {
-        if ($this->isOnDisk($this->getDiskFileName())) {
-            if ($this->_getValue('size') > 0) {
-                return round((($this->_getValue('size') + 1023) / 1024), 0);
-            } else {
-                $this->_data['size'] = filesize($this->getDiskFileName());
-                return round((($this->_getValue('size') + 1023) / 1024), 0);
-            }
+        if (!$this->isOnDisk()) {
+            return 0;
         }
 
-        return 0;
+        if ($this->_getValue('size') == 0) {
+            $diskFileName = $this->getDiskFileName();
+            $filesize = filesize($diskFileName);
+            $this->_data['size'] = $filesize ?: 0 ;
+        }
+
+        return round((($this->_getValue('size') + 1023) / 1024), 0);
     }
 
    function getFileIcon($title_of_image = '' ) {
