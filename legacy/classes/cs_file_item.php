@@ -371,18 +371,20 @@ class cs_file_item extends cs_item {
       return curl($this->getContextID(),'material', 'getfile', $params,'',$this->_data['filename'],$c_single_entry_point);
    }
 
-   function getFileSize() {
-      if ( $this->isOnDisk($this->getDiskFileName()) ) {
-          if ($this->_getValue('size') > 0) {
-         return round((($this->_getValue('size')+1023)/1024), 0);
-          } else {
-       $this->_data['size'] = filesize($this->getDiskFileName());
-             return round((($this->_getValue('size')+1023)/1024), 0);
-          }
-      } else {
-         return 0;
-      }
-   }
+    public function getFileSize()
+    {
+        if (!$this->isOnDisk()) {
+            return 0;
+        }
+
+        if ($this->_getValue('size') == 0) {
+            $diskFileName = $this->getDiskFileName();
+            $filesize = filesize($diskFileName);
+            $this->_data['size'] = $filesize ?: 0 ;
+        }
+
+        return round((($this->_getValue('size') + 1023) / 1024), 0);
+    }
 
    function getFileIcon($title_of_image = '' ) {
       $ext = cs_strtolower(mb_substr(strrchr($this->getFileName(),'.'),1));
