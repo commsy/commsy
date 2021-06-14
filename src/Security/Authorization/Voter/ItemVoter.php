@@ -177,10 +177,6 @@ class ItemVoter extends Voter
             return true;
         }
 
-        if ($item->_getExtra('etherpad_id')) {
-            return true;
-        }
-
         return false;
     }
 
