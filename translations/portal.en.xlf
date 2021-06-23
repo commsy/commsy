@@ -86,6 +86,10 @@
                 <source>Show?</source>
                 <target>Show?</target>
             </trans-unit>
+            <trans-unit id="show_anouncements?">
+                <source>Show announcements?</source>
+                <target>Show announcements?</target>
+            </trans-unit>
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
