@@ -215,21 +215,30 @@ class UserController extends BaseController
         }
 
         // setup filter form
-        $filterForm = $this->createFilterForm($roomItem, $view);
+        $userStatus = $this->resolveUserStatus('user');
+        $filterForm = $this->createFilterForm($roomItem, $view, $userStatus);
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+
+            // reset manager
+            $this->userService->resetLimits();
+
             // set filter conditions in user manager
             $this->userService->setFilterConditions($filterForm);
+
+            // get filtered and total number of results
+            $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
         } else {
             $this->userService->hideDeactivatedEntries();
-            $this->userService->showUserStatus(8);
+            $this->userService->showUserStatus($userStatus);
+
+            // no filters should be active - get total number of users
+            $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
+            $itemsCountArray['count'] = $itemsCountArray['countAll'];
         }
 
-        // get filtered and total number of results
-        $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
-        $itemsCountArray['countAll'] = $itemsCountArray['count'];
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('user') != '') {
@@ -254,6 +263,37 @@ class UserController extends BaseController
             'userTasks' => $userTasks,
             'isModerator' => $currentUser->isModerator(),
         ];
+    }
+
+    /**
+     * @param String $userStatus
+     * @return string
+     */
+    private function resolveUserStatus(string $userStatus): string
+    {
+
+        switch ($userStatus) {
+            case 'is blocked':
+                return '0';
+                break;
+            case 'is applying':
+                return '1';
+                break;
+            case 'user':
+                return '8';
+                break;
+            case 'moderator':
+                return '3';
+                break;
+            case 'is contact':
+                return 'is contact';
+                break;
+            case 'reading user':
+                return '4';
+                break;
+        }
+
+        return '8';
     }
 
     /**
@@ -1439,6 +1479,8 @@ class UserController extends BaseController
             $userFilter = $request->query->get('user_filter');
         }
 
+        // $this->userManager->get()->to_array()
+
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -1466,7 +1508,7 @@ class UserController extends BaseController
         }
 
         // get user list from manager service
-        $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort);
+        $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
 
         $this->get('session')->set('sortUsers', $sort);
 
@@ -1791,12 +1833,13 @@ class UserController extends BaseController
      */
     private function createFilterForm(
         $room,
-        $view = null
+        $view = null,
+        $user_status = 8
     ) {
         // setup filter form default values
         $defaultFilterValues = [
             'activated' => true,
-            'user_status' => 8,
+            'user_status' => $user_status,
         ];
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
