@@ -16,14 +16,12 @@
         {% block body %}
             <ul uk-tab>
                 <li class="{% if tab is same as 'portal' %}uk-active{% endif %}"><a href="#">Portal</a></li>
-                {# TODO: 'ROLE_USER' only for testing purposes - turn back to 'ROLE_ROOT' #}
-                {% if is_granted('ROLE_USER') %}<li class="{% if tab is same as 'server' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">Server</a></li>{% endif %}
+                {% if is_granted('ROLE_ROOT') %}<li class="{% if tab is same as 'server' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">Server</a></li>{% endif %}
             </ul>
 
             <ul class="uk-switcher uk-margin">
                 <li>{{ form(portalForm) }}</li>
-                {# TODO: 'ROLE_USER' only for testing purposes - turn back to 'ROLE_ROOT' #}
-                {% if is_granted('ROLE_USER') %}<li>{{ form(serverForm) }}</li>{% endif %}
+                {% if is_granted('ROLE_ROOT') %}<li>{{ form(serverForm) }}</li>{% endif %}
             </ul>
         {% endblock %}
     {% endembed %}
