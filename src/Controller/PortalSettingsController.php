@@ -1104,7 +1104,7 @@ class PortalSettingsController extends AbstractController
 
         $server = $entityManager->getRepository(Server::class)->getServer();
         $serverForm = $this->createForm(ServerAnnouncementsType::class, $server);
-        if ($this->isGranted('ROLE_ROOT')) {
+        if ($this->isGranted(RootVoter::ROOT)) {
             $serverForm->handleRequest($request);
             if ($serverForm->isSubmitted() && $serverForm->isValid()) {
                 $entityManager->persist($server);
