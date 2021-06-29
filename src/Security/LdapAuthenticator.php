@@ -4,6 +4,7 @@
 namespace App\Security;
 
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceLdap;
 use App\Facade\AccountCreatorFacade;
@@ -32,29 +33,36 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var CsrfTokenManagerInterface
      */
-    private $csrfTokenManager;
+    private CsrfTokenManagerInterface $csrfTokenManager;
 
     /**
      * @var AccountCreatorFacade
      */
-    private $accountCreator;
+    private AccountCreatorFacade $accountCreator;
+
+    /**
+     * @var AccountManager
+     */
+    private AccountManager $accountManager;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
-        AccountCreatorFacade $accountCreator
+        AccountCreatorFacade $accountCreator,
+        AccountManager $accountManager
     ) {
         parent::__construct($urlGenerator);
 
         $this->entityManager = $entityManager;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->accountCreator = $accountCreator;
+        $this->accountManager = $accountManager;
     }
 
     protected function getPostParameterName(): string
@@ -165,6 +173,8 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
 
         $this->entityManager->persist($account);
         $this->entityManager->flush();
+
+        $this->accountManager->propgateAccountDataToProfiles($account);
 
         return $account;
     }
