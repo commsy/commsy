@@ -17,17 +17,17 @@ class AccountManager
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var UserService
      */
-    private $userService;
+    private UserService $userService;
 
     /**
      * AccountManager constructor.
@@ -60,6 +60,32 @@ class AccountManager
         /** @var cs_user_manager $userManager */
         $userManager = $this->legacyEnvironment->getUserManager();
         return $userManager->changeUserID($username, $user);
+    }
+
+    /**
+     * @param Account $account
+     */
+    public function propgateAccountDataToProfiles(Account $account): void
+    {
+        /*
+         * This is a real gotcha. When the legacy code persists a new user, it will only create a private room
+         * if the legacy environment portal id matches the user context id. We force this behaviour by setting
+         * it here explicitly.
+         */
+        $this->legacyEnvironment->setCurrentPortalID($account->getContextId());
+
+        $portalUser = $this->userService->getPortalUser($account);
+        $relatedUsers = $portalUser->getRelatedUserList();
+        $relatedUsers->add($portalUser);
+
+        foreach ($relatedUsers as $relatedUser) {
+            /** @var cs_user_item $relatedUser */
+            $relatedUser->setFirstname($account->getFirstname());
+            $relatedUser->setLastname($account->getLastname());
+            $relatedUser->setEmail($account->getEmail());
+
+            $relatedUser->save();
+        }
     }
 
     /**
