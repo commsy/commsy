@@ -99,9 +99,12 @@ class RoomFeedGenerator
         foreach ($contextIds as $contextId) {
             $roomRubrics = $this->getRoomRubrics($contextId);
             foreach ($roomRubrics as $roomRubric) {
-                if ($roomRubric != 'user') { // exclude new users as it clutters the feed with unimportant entries
-                    $contextIdsByRubric[$roomRubric][] = $contextId;
+                // exclude users as it clutters the feed with unimportant entries
+                if ($roomRubric === 'user') {
+                    continue;
                 }
+
+                $contextIdsByRubric[$roomRubric][] = $contextId;
             }
         }
 
