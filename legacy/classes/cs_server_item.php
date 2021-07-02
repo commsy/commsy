@@ -195,6 +195,9 @@ class cs_server_item extends cs_guide_item
         /** @var EntityManagerInterface $em */
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
 
+        /** @var AccountManager $accountManager */
+        $accountManager = $symfonyContainer->get(AccountManager::class);
+
         $portalRepository = $em->getRepository(Portal::class);
         $portals = $portalRepository->findActivePortals();
 
@@ -395,6 +398,8 @@ class cs_server_item extends cs_guide_item
                                 // lock user and set lock date till deletion date
                                 $user->setLock($portal->getInactivityDeleteDays() + 365); // days till delete
                                 $user->reject();
+                                $account = $accountManager->getAccount($user, $portal->getId());
+                                $accountManager->lock($account);
                                 $user->save();
                                 // lock user if not locked already
                                 $mail = $this->sendMailForUserInactivity("locked", $user, $portal, $days);
