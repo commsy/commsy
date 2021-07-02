@@ -5,6 +5,7 @@ namespace App\Account;
 
 
 use App\Entity\Account;
+use App\Entity\AuthSource;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
@@ -89,6 +90,18 @@ class AccountManager
     }
 
     /**
+     * @param cs_user_item $user
+     * @param int $portalId
+     * @return Account
+     */
+    public function getAccount(cs_user_item $user, int $portalId): Account
+    {
+        $accountRepository = $this->entityManager->getRepository(Account::class);
+        $authSource = $this->entityManager->getRepository(AuthSource::class)->find($user->getAuthSource());
+        return $accountRepository->findOneByCredentials($user->getUserID(), $portalId, $authSource);
+    }
+
+    /**
      * @param Account $account
      */
     public function delete(Account $account)
@@ -120,6 +133,13 @@ class AccountManager
         $portalUser->save();
 
         $account->setLocked(true);
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+    }
+
+    public function unlock(Account $account)
+    {
+        $account->setLocked(false);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
     }
