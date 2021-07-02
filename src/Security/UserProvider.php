@@ -16,8 +16,15 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    private $requestStack;
-    private $entityManager;
+    /**
+     * @var RequestStack
+     */
+    private RequestStack $requestStack;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
 
     public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
@@ -42,13 +49,19 @@ class UserProvider implements UserProviderInterface
         // The $username argument may not actually be a username:
         // it is whatever value is being returned by the getUsername()
         // method in your User class.
-        $contextId = null;
-        $authSourceId = null;
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if ($currentRequest) {
-            $contextId = $currentRequest->getSession()->get('context');
-            $authSourceId = $currentRequest->getSession()->get('authSourceId');
+        if (!$currentRequest) {
+            throw new UsernameNotFoundException();
         }
+
+        $session = $currentRequest->getSession();
+        $contextId = $session->get('context');
+        $authSourceId = $session->get('authSourceId');
+
+        $contextId = $session->get('takeover_context', $contextId);
+        $authSourceId = $session->get('takeover_authSourceId', $authSourceId);
+        $session->remove('takeover_context');
+        $session->remove('takeover_authSourceId');
 
         if (!$contextId || !$authSourceId) {
             throw new UsernameNotFoundException();
@@ -89,17 +102,19 @@ class UserProvider implements UserProviderInterface
 
         // Return a User object after making sure its data is "fresh".
         // Or throw a UsernameNotFoundException if the user no longer exists.
-        $contextId = null;
-        $authSourceId = null;
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if ($currentRequest) {
-            $contextId = $currentRequest->getSession()->get('context');
-            $authSourceId = $currentRequest->getSession()->get('authSourceId');
-        }
-
-        if (!$contextId || !$authSourceId) {
+        if (!$currentRequest) {
             throw new UsernameNotFoundException();
         }
+
+        $session = $currentRequest->getSession();
+        $contextId = $session->get('context');
+        $authSourceId = $session->get('authSourceId');
+
+        $contextId = $session->get('takeover_context', $contextId);
+        $authSourceId = $session->get('takeover_authSourceId', $authSourceId);
+        $session->remove('takeover_context');
+        $session->remove('takeover_authSourceId');
 
         try {
             $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
