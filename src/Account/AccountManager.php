@@ -11,38 +11,47 @@ use cs_environment;
 use cs_user_item;
 use cs_user_manager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class AccountManager
 {
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var UserService
      */
-    private $userService;
+    private UserService $userService;
+
+    /**
+     * @var SessionInterface
+     */
+    private SessionInterface $session;
 
     /**
      * AccountManager constructor.
      * @param EntityManagerInterface $entityManager
      * @param LegacyEnvironment $legacyEnvironment
      * @param UserService $userService
+     * @param SessionInterface $session
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        UserService $userService
+        UserService $userService,
+        SessionInterface $session
     ) {
         $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->userService = $userService;
+        $this->session = $session;
     }
 
     /**
@@ -96,5 +105,20 @@ class AccountManager
         $account->setLocked(true);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param Account $account
+     * @param string $locale
+     */
+    public function updateUserLocale(Account $account, string $locale): void
+    {
+        $account->setLanguage($locale);
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+
+        // Update the user's session here too (normally done on login)
+        // This will affect the translation language in cs_environment::getSelectedLanguage.
+        $this->session->set('_locale', $account->getLanguage());
     }
 }

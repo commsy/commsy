@@ -26,7 +26,7 @@
  */
 
 use App\Entity\Portal;
-use App\Language\LanguageDecisionStrategy;
+use App\Helper\SessionHelper;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -1910,10 +1910,27 @@ class cs_environment {
     public function getSelectedLanguage()
     {
         if (empty($this->_selected_language)) {
-            global $symfonyContainer;
-            /** @var LanguageDecisionStrategy $languageDecisionStrategy */
-            $languageDecisionStrategy = $symfonyContainer->get(LanguageDecisionStrategy::class);
-            $this->_selected_language = $languageDecisionStrategy->decide($this->getCurrentContextItem(), $this);
+            $contextItem = $this->getCurrentContextItem();
+
+            if (get_class($contextItem) == PortalProxy::class) {
+                // If in portal context we have to use the session value to set the current language.
+                // See https://symfony.com/doc/4.4/session/locale_sticky_session.html
+                global $symfonyContainer;
+
+                $sessionHelper = $symfonyContainer->get(SessionHelper::class);
+                $session = $sessionHelper->getSession();
+                $this->_selected_language = $session->get('_locale', 'de');
+            } else {
+                // If in room context (and the room will fall back to the user's choice), we'll
+                // get the language from cs_environment::getUserLanguage. This method returns the
+                // language extra from the user table. All user table entries + session value get updated
+                // when the user changes the account language.
+                // TODO: Only rely on account + session value and get rid of the profile languages.
+                $this->_selected_language = $contextItem->getLanguage();
+                if ($this->_selected_language === 'user') {
+                    $this->_selected_language = $this->getUserLanguage();
+                }
+            }
         }
         return $this->_selected_language;
     }

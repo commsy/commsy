@@ -155,8 +155,6 @@ class AccountController extends AbstractController
 
         $userData = $userTransformer->transform($portalUser);
 
-        $request->setLocale($portalUser->getLanguage());
-
         $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -345,8 +343,6 @@ class AccountController extends AbstractController
 
         $userData = $userTransformer->transform($portalUser);
 
-        $request->setLocale($portalUser->getLanguage());
-
         $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -464,8 +460,6 @@ class AccountController extends AbstractController
         $portalUser = $userService->getPortalUser($account);
 
         $userData = $userTransformer->transform($portalUser);
-
-        $request->setLocale($portalUser->getLanguage());
 
         $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
