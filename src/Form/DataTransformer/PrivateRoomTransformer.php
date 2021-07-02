@@ -103,6 +103,18 @@ class PrivateRoomTransformer extends AbstractTransformer
                 $privateRoomObject->setCSBarShowOldRoomSwitcher('-1');
             }
 
+            //TODO: Set language in portal / portalProxy
+            if (isset($privateRoomData['language'])) {
+                $privateRoomObject->setLanguage($privateRoomData['language']);
+                $privateRoomObject->_environment->current_context = $privateRoomObject;
+
+//                $this->legacyEnvironment->getCurrentContextItem()->setLanguage($privateRoomData['language']);
+//                $portalManager = $this->legacyEnvironment->getPortalManager();
+//                $portalManager->saveItem($this->legacyEnvironment->getCurrentContextItem());
+//                $this->legacyEnvironment->getCurrentContextItem()->save();
+//                $privateRoomObject->getContextItem()->setLanguage($privateRoomData['language']);
+            }
+
             $set_to = 'none';
             if (isset($privateRoomData['newsletterStatus']) && !empty($privateRoomData['newsletterStatus'])) {
                 if ($privateRoomData['newsletterStatus'] == '2') $set_to = 'weekly';
