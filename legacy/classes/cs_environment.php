@@ -26,6 +26,7 @@
  */
 
 use App\Entity\Portal;
+use App\Language\LanguageDecisionStrategy;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -1901,23 +1902,21 @@ class cs_environment {
       return $this->instance['translation_object'];
    }
 
-   /** getSelectedLanguage
-    * get selected language, form user, room or browser
-    *
-    * @return string selected language
-    */
-   function getSelectedLanguage () {
-      if ( empty($this->_selected_language) ) {
-         $context_item = $this->getCurrentContextItem();
-         if ( isset($context_item) ) {
-            $this->_selected_language = $context_item->getLanguage();
-         }
-         if ($this->_selected_language == 'user') {
-            $this->_selected_language = $this->getUserLanguage();
-         }
-      }
-      return $this->_selected_language;
-   }
+    /** getSelectedLanguage
+     * get selected language, form user, room or browser
+     *
+     * @return string selected language
+     */
+    public function getSelectedLanguage()
+    {
+        if (empty($this->_selected_language)) {
+            global $symfonyContainer;
+            /** @var LanguageDecisionStrategy $languageDecisionStrategy */
+            $languageDecisionStrategy = $symfonyContainer->get(LanguageDecisionStrategy::class);
+            $this->_selected_language = $languageDecisionStrategy->decide($this->getCurrentContextItem(), $this);
+        }
+        return $this->_selected_language;
+    }
 
    public function unsetSelectedLanguage () {
       $this->_selected_language = NULL;
