@@ -224,7 +224,14 @@ class PortalProxy
 
     public function getLanguage(): string
     {
-        return 'de';
+        return $this->portal->getExtras()['LANGUAGE'] ?? 'de';
+    }
+
+    public function setLanguage($language): PortalProxy {
+        $extras = $this->portal->getExtras();
+        $extras['LANGUAGE'] = $language;
+        $this->portal->setExtras($extras);
+        return $this;
     }
 
     public function isProjectRoom(): bool
