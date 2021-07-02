@@ -2486,19 +2486,27 @@ class PortalSettingsController extends AbstractController
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/takeOver")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @param Portal $portal
      * @param UserService $userService
-     * @param $portalId
+     * @param Request $request
      * @param $userId
      * @return RedirectResponse
      */
     public function accountIndexDetailTakeOver(
+        Portal $portal,
         UserService $userService,
-        $portalId,
+        Request $request,
         $userId
     ) {
+        $portalUser = $userService->getUser($userId);
+
+        $session = $request->getSession();
+        $session->set('takeover_context', $portal->getId());
+        $session->set('takeover_authSourceId', (int) $portalUser->getAuthSource());
+
         return $this->redirectToRoute('app_helper_portalenter', [
-            'context' => $portalId,
-            '_switch_user' => $userService->getUser($userId)->getUserID(),
+            'context' => $portal->getId(),
+            '_switch_user' => $portalUser->getUserID(),
         ]);
     }
 
