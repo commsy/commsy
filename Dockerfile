@@ -6,7 +6,7 @@
 ARG PHP_VERSION=7.4
 ARG NGINX_VERSION=1.19
 
-FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php
+FROM php:${PHP_VERSION}-fpm-alpine3.13 AS commsy_php
 
 # persistent / runtime deps
 RUN apk add --no-cache \
