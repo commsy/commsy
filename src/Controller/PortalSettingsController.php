@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexSendMail;
@@ -1277,7 +1278,8 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $environment,
         \Swift_Mailer $mailer,
         PaginatorInterface $paginator,
-        AuthSourceRepository $authSourceRepository
+        AuthSourceRepository $authSourceRepository,
+        AccountManager $accountManager
     ) {
         $user = $userService->getCurrentUserItem();
         $portalUsers = $userService->getListUsers($portal->getId());
@@ -1402,8 +1404,10 @@ class PortalSettingsController extends AbstractController
                             if ($checked) {
                                 $IdsMailRecipients[] = $id;
                                 $user = $userService->getUser($id);
-                                $user->lock();
-                                $user->save();
+                                $user->reject();
+
+                                $account = $accountManager->getAccount($user, $portal->getId());
+                                $accountManager->lock($account);
                             }
                         }
                         $this->sendUserInfoMail($IdsMailRecipients, 'user-block', $user, $mailer, $userService,
@@ -2104,7 +2108,7 @@ class PortalSettingsController extends AbstractController
         return [
             'user' => $user,
             'portalUser' => $portalUser,
-            'authSource' => $authSourceRepository->findOneBy(['id' => $portalUser->getAuthSource()]),
+            'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
             'form' => $form->createView(),
             'portal' => $portal,
             'communities' => implode(', ', $communityListNames),
@@ -2269,7 +2273,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        AccountManager $accountManager
     ) {
         $user = $userService->getUser($request->get('userId'));
         $userChangeStatus = new PortalUserChangeStatus();
@@ -2279,10 +2284,8 @@ class PortalSettingsController extends AbstractController
 
         $userStatus = $user->getStatus();
         $currentStatus = 'Moderator';
-        if ($userStatus == 1) {
+        if ($userStatus == 0) {
             $currentStatus = 'Close';
-        } elseif ($userStatus == 0) {
-            $currentStatus = 'In acceptance';
         } elseif ($userStatus == 2) {
             $currentStatus = 'User';
         } elseif ($userStatus == 3) {
@@ -2303,15 +2306,20 @@ class PortalSettingsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userService->getUser($request->get('userId'));
 
+            $account = $accountManager->getAccount($user, $portal->getId());
+
             /** @var PortalUserChangeStatus $data */
             $data = $form->getData();
             $newStatus = $data->getNewStatus();
             if (strcmp($newStatus, 'user') == 0) {
                 $user->makeUser();
+                $accountManager->unlock($account);
             } elseif (strcmp($newStatus, 'moderator') == 0) {
                 $user->makeModerator();
+                $accountManager->unlock($account);
             } elseif (strcmp($newStatus, 'close') == 0) {
                 $user->reject();
+                $accountManager->lock($account);
             }
 
             if ($data->isContact()) {
