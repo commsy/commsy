@@ -1061,7 +1061,7 @@ class Portal implements \Serializable
      * @param cs_environment $environment
      * @return cs_list
      */
-    public function getContactModeratorList(cs_environment $environment): cs_list
+    public function getContactModeratorList($environment)
     {
         $user_manager = $environment->getUserManager();
         $user_manager->setContextLimit($this->getId());
@@ -1091,7 +1091,7 @@ class Portal implements \Serializable
      * @param cs_environment $environment
      * @return cs_list
      */
-    public function getModeratorList(cs_environment $environment): cs_list
+    public function getModeratorList($environment)
     {
         $userManager = $environment->getUserManager();
         $userManager->resetLimits();
