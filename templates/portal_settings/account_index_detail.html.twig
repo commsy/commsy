@@ -76,7 +76,9 @@
                     </tr>
                     <tr>
                         <td> {{'Status'|trans({},'portal') }}: </td>
-                        {% if(user.getStatus() == 1) %}
+                        {% if(user.getStatus() == 0) %}
+                            <td>{{'Locked'|trans({},'portal') }}</td>
+                        {% elseif(user.getStatus() == 1) %}
                             <td>{{'Applying'|trans({},'portal') }}</td>
                         {% elseif(user.getStatus() == 2) %}
                             <td>{{'User'|trans({},'portal') }}</td>
