@@ -28,6 +28,7 @@
 use App\Entity\Portal;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
@@ -2403,5 +2404,13 @@ class cs_environment {
    public function unsetPortalItem () {
        $this->_current_portal = NULL;
    }
+
+    /**
+     * @return ContainerInterface
+     */
+   public function getSymfonyContainer(): ContainerInterface
+   {
+       global $symfonyContainer;
+       return $symfonyContainer;
+   }
 }
-?>
