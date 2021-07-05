@@ -812,23 +812,20 @@ class cs_manager {
      *
      * @param integer item_id the item id of the commsy item
      */
-    function delete($item_id)
+    public function delete($itemId)
     {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID();
+        $currentDatetime = getCurrentDateTimeInMySQL();
+        $currentUser = $this->_environment->getCurrentUserItem();
+        $deleterId = ($currentUser->getItemID() !== '') ? $currentUser->getItemID() : 0;
         $query = 'UPDATE ' . $this->addDatabasePrefix('items') . ' SET ' .
-            'deletion_date="' . $current_datetime . '",' .
-            'deleter_id="' . encode(AS_DB, $user_id) . '"' .
-            ' WHERE item_id="' . $item_id . '"';
+            'deletion_date="' . $currentDatetime . '",' .
+            'deleter_id="' . encode(AS_DB, $deleterId) . '"' .
+            ' WHERE item_id="' . $itemId . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) || !$result) {
             include_once('functions/error_functions.php');
             trigger_error('Problems deleting item in table items.', E_USER_WARNING);
-        } else {
-            unset($result);
         }
-        unset($query);
     }
 
   function undeleteItemByItemID ($item_id) {

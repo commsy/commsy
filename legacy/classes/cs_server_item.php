@@ -228,6 +228,8 @@ class cs_server_item extends cs_guide_item
                 $user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do, $portal->getId(), 0);
                 if (!empty($user_array)) {
                     foreach ($user_array as $user) {
+                        /** @var cs_user_item $user */
+
                         // check if user is last moderator of a room
                         $roomList = new \cs_list();
 
@@ -322,7 +324,7 @@ class cs_server_item extends cs_guide_item
                             // mail locked send or locked configuration is not set
                             if (($user->getMailSendLocked() || (empty($inactivitySendMailLockDays) && empty($inactivityLockDays)))) {
                                 $mail = $this->sendMailForUserInactivity("deleted", $user, $portal, $days);
-                                if ($mail->send()) {
+                                if ($mail && $mail->send()) {
                                     // handle deletion
                                     $user->deleteUserCausedByInactivity();
 
@@ -345,7 +347,7 @@ class cs_server_item extends cs_guide_item
                                 // send mail next day delete
 
                                 $mail = $this->sendMailForUserInactivity("deleteNext", $user, $portal, $days);
-                                if ($mail->send()) {
+                                if ($mail && $mail->send()) {
                                     $user->setMailSendNextDelete();
                                     $user->setMailSendBeforeDelete();
                                     $user->save();
@@ -371,7 +373,7 @@ class cs_server_item extends cs_guide_item
                                     if (!$user->getNotifyDeleteDate()) {
 
                                         $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal, $daysTillLock);
-                                        if ($mail->send()) {
+                                        if ($mail && $mail->send()) {
                                             $user->setNotifyDeleteDate();
                                             $user->save();
 
@@ -399,7 +401,7 @@ class cs_server_item extends cs_guide_item
                                 // lock user if not locked already
                                 $mail = $this->sendMailForUserInactivity("locked", $user, $portal, $days);
 
-                                if ($mail->send()) {
+                                if ($mail && $mail->send()) {
                                     $user->setMailSendLocked();
                                     $user->setLockSendMailDate();
                                     $user->save();
@@ -413,7 +415,7 @@ class cs_server_item extends cs_guide_item
                             } else if (!$user->getMailSendBeforeLock()) {
                                 // send mail to user that the user will be locked in one day
                                 $mail = $this->sendMailForUserInactivity("lockNext", $user, $portal, $days);
-                                if ($mail->send()) {
+                                if ($mail && $mail->send()) {
                                     $user->setMailSendBeforeLock();
                                     $user->save();
 
@@ -435,7 +437,7 @@ class cs_server_item extends cs_guide_item
                             if (!$user->getMailSendBeforeLock() && !$user->getNotifyLockDate()) {
                                 if (($portal->getInactivityLockDays() - $days) <= $portal->getInactivitySendMailBeforeLockDays()) {
                                     $mail = $this->sendMailForUserInactivity("lockNotify", $user, $portal, $inactivitySendMailLockDays);
-                                    if ($mail->send()) {
+                                    if ($mail && $mail->send()) {
                                         $user->setNotifyLockDate();
                                         $user->save();
 
@@ -502,6 +504,10 @@ class cs_server_item extends cs_guide_item
         /** @var AccountManager $accountManager */
         $accountManager = $symfonyContainer->get(AccountManager::class);
         $account = $accountManager->getAccount($user, $portal->getId());
+        if (!$account) {
+            return false;
+        }
+
         $authSource = $account->getAuthSource();
 
         if ($mod_user_first) {

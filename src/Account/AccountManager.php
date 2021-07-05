@@ -92,9 +92,9 @@ class AccountManager
     /**
      * @param cs_user_item $user
      * @param int $portalId
-     * @return Account
+     * @return Account|null
      */
-    public function getAccount(cs_user_item $user, int $portalId): Account
+    public function getAccount(cs_user_item $user, int $portalId): ?Account
     {
         $accountRepository = $this->entityManager->getRepository(Account::class);
         $authSource = $this->entityManager->getRepository(AuthSource::class)->find($user->getAuthSource());
