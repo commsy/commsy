@@ -188,10 +188,20 @@ class UserService
      * @param string $sort
      * @return cs_user_item[]
      */
-    public function getListUsers($roomId, $max = null, $start = null, $moderation = false, $sort = null): array
-    {
-        $this->userManager->reset();
-        $this->userManager->resetLimits();
+    public function getListUsers(
+        $roomId,
+        $max = null,
+        $start = null,
+        $moderation = false,
+        $sort = null,
+        $resetLimits = true
+    ): array {
+
+        if ($resetLimits) {
+            $this->userManager->reset();
+            $this->userManager->resetLimits();
+        }
+
         $this->userManager->setContextLimit($roomId);
         if ($max !== null && $start !== null) {
             $this->userManager->setIntervalLimit($start, $max);
