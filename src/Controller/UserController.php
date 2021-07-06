@@ -218,12 +218,12 @@ class UserController extends BaseController
         $userStatus = $this->resolveUserStatus('user');
         $filterForm = $this->createFilterForm($roomItem, $view, $userStatus);
 
+        // reset manager
+        $this->userService->resetLimits();
+
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-
-            // reset manager
-            $this->userService->resetLimits();
 
             // set filter conditions in user manager
             $this->userService->setFilterConditions($filterForm);
@@ -231,14 +231,13 @@ class UserController extends BaseController
             // get filtered and total number of results
             $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
         } else {
+
             $this->userService->hideDeactivatedEntries();
             $this->userService->showUserStatus($userStatus);
 
             // no filters should be active - get total number of users
             $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
-            $itemsCountArray['count'] = $itemsCountArray['countAll'];
         }
-
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('user') != '') {
