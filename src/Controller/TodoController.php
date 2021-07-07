@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\MarkRead\MarkReadTodo;
 use App\Action\TodoStatus\TodoStatusAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\TodoFilterType;
@@ -964,11 +965,12 @@ class TodoController extends BaseController
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
+        MarkReadTodo $markReadTodo,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
-
+        $markReadAction->setMarkReadStrategy($markReadTodo);
         return $markReadAction->execute($room, $items);
 
     }

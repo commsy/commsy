@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\MarkRead\MarkReadMaterial;
 use App\Entity\License;
 use App\Event\CommsyEditEvent;
 use App\Filter\MaterialFilterType;
@@ -1589,13 +1590,13 @@ class MaterialController extends BaseController
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
+        MarkReadMaterial $markReadMaterial,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
-
+        $markReadAction->setMarkReadStrategy($markReadMaterial);
         return $markReadAction->execute($room, $items);
-
     }
 
     /**

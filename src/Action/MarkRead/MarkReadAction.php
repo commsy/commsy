@@ -49,4 +49,14 @@ class MarkReadAction implements ActionInterface
                 ]),
         ]);
     }
+
+    /**
+     * @param MarkReadInterface $markReadStrategy
+     */
+    public function setMarkReadStrategy($markReadStrategy): void
+    {
+        $this->markReadStrategy = $markReadStrategy;
+    }
+
+
 }
