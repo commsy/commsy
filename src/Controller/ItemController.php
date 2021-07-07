@@ -98,15 +98,18 @@ class ItemController extends AbstractController
         // won't allow any media upload; this is done since user & group detail views currently have no means to manage
         // (e.g. delete again) any attached files
         $configName = ($itemType === 'user' || $itemType === 'group') ? 'cs_item_nomedia_config' : 'cs_item_config' ;
-        
+
+        $url = $this->generateUrl('app_upload_ckupload', array(
+            'roomId' => $roomId,
+            'itemId' => $itemId
+        ));
+        $url .= '?CKEditorFuncNum=1';
+
         $formData = $transformer->transform($item);
         $formOptions = array(
             'itemId' => $itemId,
             'configName' => $configName,
-            'uploadUrl' => $this->generateUrl('app_upload_ckupload', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId
-            )),
+            'uploadUrl' => $url,
             'filelistUrl' => $this->generateUrl('app_item_filelist', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
