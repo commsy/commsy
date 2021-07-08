@@ -10,6 +10,7 @@ use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\LabelService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -418,7 +419,7 @@ class TopicController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
-    public function editAction($roomId, $itemId, Request $request)
+    public function editAction($roomId, $itemId, Request $request, LabelService $labelService)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
@@ -478,7 +479,15 @@ class TopicController extends BaseController
                     $topicItem->setTagListByID($formData['category_mapping']['categories']);
                 }
                 if ($hashtagsMandatory) {
-                    $topicItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
+                        $hashtagIds[] = $newHashtag->getItemID();
+                    }
+
+                    $topicItem->setBuzzwordListByID($hashtagIds);
                 }
 
                 $topicItem->save();

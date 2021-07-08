@@ -9,6 +9,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
+use App\Utils\LabelService;
 use DateTime;
 
 use Symfony\Component\Routing\Annotation\Route;
@@ -911,7 +912,7 @@ class DateController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
      */
-    public function editAction($roomId, $itemId, Request $request)
+    public function editAction($roomId, $itemId, Request $request, LabelService $labelService)
     {
         $translator = $this->get('translator');
 
@@ -1003,7 +1004,15 @@ class DateController extends BaseController
                     $dateItem->setTagListByID($formData['category_mapping']['categories']);
                 }
                 if ($hashtagsMandatory) {
-                    $dateItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
+                        $hashtagIds[] = $newHashtag->getItemID();
+                    }
+
+                    $dateItem->setBuzzwordListByID($hashtagIds);
                 }
 
                 $valuesToChange = array();

@@ -11,6 +11,7 @@ use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\ItemService;
+use App\Utils\LabelService;
 use App\Utils\RoomService;
 use App\Utils\TodoService;
 use Symfony\Component\Routing\Annotation\Route;
@@ -501,7 +502,7 @@ class TodoController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
-    public function editAction($roomId, $itemId, Request $request)
+    public function editAction($roomId, $itemId, Request $request, LabelService $labelService)
     {
         $itemService = $this->get('commsy_legacy.item_service');
 
@@ -585,7 +586,15 @@ class TodoController extends BaseController
                     $todoItem->setTagListByID($formData['category_mapping']['categories']);
                 }
                 if ($hashtagsMandatory) {
-                    $todoItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
+                        $hashtagIds[] = $newHashtag->getItemID();
+                    }
+
+                    $todoItem->setBuzzwordListByID($hashtagIds);
                 }
 
                 $todoItem->save();
