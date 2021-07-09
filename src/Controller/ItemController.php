@@ -103,7 +103,7 @@ class ItemController extends AbstractController
             'roomId' => $roomId,
             'itemId' => $itemId
         ));
-        $url .= '?CKEditorFuncNum=1';
+        $url .= '?CKEditorFuncNum=42&command=QuickUpload&type=Images';
 
         $formData = $transformer->transform($item);
         $formOptions = array(
