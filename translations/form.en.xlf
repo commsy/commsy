@@ -394,6 +394,10 @@
                 <source>Type</source>
                 <target>Type</target>
             </trans-unit>
+            <trans-unit id="addNewCategory">
+                <source>addNewCategory</source>
+                <target>add category</target>
+            </trans-unit>
             <trans-unit id="addNewHashtag">
                 <source>addNewHashtag</source>
                 <target>add hashtag</target>

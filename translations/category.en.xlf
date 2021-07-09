@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="category-new">
                 <source>New Category</source>
-                <target>New Category</target>
+                <target>New category</target>
             </trans-unit>
             <trans-unit id="category-none">
                 <source>No Categories</source>

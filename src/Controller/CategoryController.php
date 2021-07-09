@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -59,6 +60,38 @@ class CategoryController extends Controller
         );
     }
 
+    /**
+     * @Route("/room/{roomId}/category/add")
+     * @Security("is_granted('CATEGORY_EDIT')")
+     */
+    public function add(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        CategoryService $categoryService
+    ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem->withTags()) {
+            throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
+        }
+
+        if ($request->request->get('title')) {
+            $categoryTitle = $request->request->get('title');
+            $categoryItem = $categoryService->addTag($categoryTitle, $roomId);
+            $categoryId = $categoryItem->getItemID();
+
+            return $this->json([
+                'categoryId' => $categoryId,
+                'categoryTitle' => $categoryItem->getTitle(),
+            ]);
+        } else {
+            throw $this->createAccessDeniedException('Title is empty');
+        }
+    }
 
     /**
      * @Route("/room/{roomId}/category/new")
