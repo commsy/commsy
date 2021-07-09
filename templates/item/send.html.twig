@@ -93,23 +93,25 @@
     {{ parent() }}
 
     <script>
-        $('#cs-form-send-add-recipient').on('click', function(event) {
-            event.preventDefault();
+        document.addEventListener("DOMContentLoaded", function() {
+            $('#cs-form-send-add-recipient').on('click', function(event) {
+                event.preventDefault();
 
-            var emailContainer = $('#send_additional_recipients');
+                var emailContainer = $('#send_additional_recipients');
 
-            // grab the prototype template
-            var newWidget = emailContainer.data('prototype');
+                // grab the prototype template
+                var newWidget = emailContainer.data('prototype');
 
-            // get the number of current used email fields
-            var currentEmailCount = $('input[name^="send[additional_recipients]"]').length;
+                // get the number of current used email fields
+                var currentEmailCount = $('input[name^="send[additional_recipients]"]').length;
 
-            // replace the "__name__" used in the id and name of the prototype
-            // with a number that's unique to the other fields
-            newWidget = newWidget.replace(/__name__/g, currentEmailCount);
+                // replace the "__name__" used in the id and name of the prototype
+                // with a number that's unique to the other fields
+                newWidget = newWidget.replace(/__name__/g, currentEmailCount);
 
-            // add the new element
-            $(newWidget).appendTo(emailContainer);
+                // add the new element
+                $(newWidget).appendTo(emailContainer);
+            });
         });
     </script>
 {% endblock %}

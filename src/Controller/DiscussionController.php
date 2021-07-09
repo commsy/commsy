@@ -5,12 +5,11 @@ namespace App\Controller;
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
-use App\Action\MarkRead\MarkReadGeneric;
+use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\DiscussionFilterType;
 use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
-use App\Form\DataTransformer\ItemTransformer;
 use App\Form\Type\DiscussionArticleType;
 use App\Form\Type\DiscussionType;
 use App\Services\LegacyMarkup;
@@ -18,21 +17,18 @@ use App\Services\PrintService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
-use App\Utils\ItemService;
-use App\Utils\ReaderService;
 use App\Utils\TopicService;
 use cs_discussion_item;
 use cs_room_item;
 use Exception;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -55,7 +51,6 @@ class DiscussionController extends BaseController
     {
         $this->discussionService = $discussionService;
     }
-
 
 
     /**
@@ -83,7 +78,7 @@ class DiscussionController extends BaseController
         if (!$discussionFilter) {
             $discussionFilter = $request->query->get('discussion_filter');
         }
-        
+
         $roomItem = $this->getRoom($roomId);
 
         if (!$roomItem) {
@@ -92,14 +87,13 @@ class DiscussionController extends BaseController
 
         if ($discussionFilter) {
             $filterForm = $this->createFilterForm($roomItem);
-            
+
             // manually bind values from the request
             $filterForm->submit($discussionFilter);
-            
+
             // set filter conditions in discussion manager
             $this->discussionService->setFilterConditions($filterForm);
-        }
-        else {
+        } else {
             $this->discussionService->hideDeactivatedEntries();
         }
 
@@ -166,8 +160,7 @@ class DiscussionController extends BaseController
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in discussion manager
             $this->discussionService->setFilterConditions($filterForm);
-        }
-        else {
+        } else {
             $this->discussionService->hideDeactivatedEntries();
         }
 
@@ -196,7 +189,7 @@ class DiscussionController extends BaseController
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
         );
-        
+
     }
 
     /**
@@ -221,7 +214,7 @@ class DiscussionController extends BaseController
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-        
+
         $filterForm = $this->createFilterForm($roomItem);
 
         $numAllDiscussions = $this->discussionService->getCountArray($roomId)['countAll'];
@@ -236,11 +229,10 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         if ($sort != "none") {
             $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
-        }
-        elseif ($this->get('session')->get('sortDates')) {
-            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $this->get('session')->get('sortDiscussions'));
-        }
-        else {
+        } elseif ($this->get('session')->get('sortDates')) {
+            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0,
+                $this->get('session')->get('sortDiscussions'));
+        } else {
             $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, 'date');
         }
 
@@ -301,9 +293,11 @@ class DiscussionController extends BaseController
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
-        int $itemId
+        int $itemId,
+        AssessmentService $assessmentService,
+        CategoryService $categoryService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup, $assessmentService, $categoryService);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
@@ -347,12 +341,14 @@ class DiscussionController extends BaseController
             'pathTopicItem' => $pathTopicItem,
         ];
     }
-    
-    private function getDetailInfo (
+
+    private function getDetailInfo(
         $roomId,
         $itemId,
-        LegacyMarkup $legacyMarkup)
-    {
+        LegacyMarkup $legacyMarkup,
+        AssessmentService $assessmentService,
+        CategoryService $categoryService
+    ) {
         $infoArray = array();
 
         $discussion = $this->discussionService->getDiscussion($itemId);
@@ -408,38 +404,39 @@ class DiscussionController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array, $discussion->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($discussion->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $discussion->getModificationDate() ) {
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array, $discussion->getItemID());
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($discussion->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $discussion->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
 
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $discussions = $this->discussionService->getListDiscussions($roomId);
         $discussionList = array();
         $counterBefore = 0;
@@ -482,13 +479,12 @@ class DiscussionController extends BaseController
                 $firstItemId = $discussions[0]->getItemId();
             }
             if ($nextItemId) {
-                $lastItemId = $discussions[sizeof($discussions)-1]->getItemId();
+                $lastItemId = $discussions[sizeof($discussions) - 1]->getItemId();
             }
         }
 
         $ratingDetail = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->get('commsy_legacy.assessment_service');
             $ratingDetail = $assessmentService->getRatingDetail($discussion);
             $ratingAverageDetail = $assessmentService->getAverageRatingDetail($discussion);
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
@@ -499,18 +495,18 @@ class DiscussionController extends BaseController
 
         $item = $discussion;
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $roomCategories = $categoryService->getTags($roomId);
             $discussionCategories = $discussion->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $discussionCategories);
         }
@@ -546,11 +542,12 @@ class DiscussionController extends BaseController
             'ratingOwnDetail' => $ratingOwnDetail,
         ] : [];
         $infoArray['roomCategories'] = $categories;
-        
+
         return $infoArray;
     }
-    
-    private function getTagDetailArray ($baseCategories, $itemCategories) {
+
+    private function getTagDetailArray($baseCategories, $itemCategories)
+    {
         $result = array();
         $tempResult = array();
         $addCategory = false;
@@ -566,7 +563,11 @@ class DiscussionController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                        $result[] = array(
+                            'title' => $baseCategory['title'],
+                            'item_id' => $baseCategory['item_id'],
+                            'children' => $tempResult
+                        );
                     } else {
                         $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
                     }
@@ -575,7 +576,11 @@ class DiscussionController extends BaseController
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    $result[] = array(
+                        'title' => $baseCategory['title'],
+                        'item_id' => $baseCategory['item_id'],
+                        'children' => $tempResult
+                    );
                 }
             }
             $tempResult = array();
@@ -591,8 +596,8 @@ class DiscussionController extends BaseController
      * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function createAction(
-        int $roomId)
-    {
+        int $roomId
+    ) {
         // create a new discussion
         $discussionItem = $this->discussionService->getNewDiscussion();
         $discussionItem->setDraftStatus(1);
@@ -618,10 +623,10 @@ class DiscussionController extends BaseController
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId,
-        DiscussionService $discussionService,
-        ReaderService $readerService
+        AssessmentService $assessmentService,
+        CategoryService $categoryService
     ) {
-        $infoArray = $this->getDetailInfo($roomId, $itemId, $discussionService, $legacyMarkup, $readerService);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup, $assessmentService, $categoryService);
 
         $html = $this->renderView('discussion/detail_print.html.twig', [
             'roomId' => $roomId,
@@ -710,7 +715,8 @@ class DiscussionController extends BaseController
             } else {
                 // if the parent position is one level above the child ones and
                 // the position string is start of the child position
-                if ($numDots == $numParentDots + 1 && substr($position, 0, strlen($parentPosition)) == $parentPosition) {
+                if ($numDots == $numParentDots + 1 && substr($position, 0,
+                        strlen($parentPosition)) == $parentPosition) {
                     // extract the last position part
                     $positionExp = explode('.', $position);
                     $lastPositionPart = $positionExp[sizeof($positionExp) - 1];
@@ -730,7 +736,7 @@ class DiscussionController extends BaseController
         if ($parentPosition != 0) {
             $newPosition .= $parentPosition . '.';
         }
-        $newPosition .=  sprintf('%1$04d', $newRelativeNumericPosition);
+        $newPosition .= sprintf('%1$04d', $newRelativeNumericPosition);
 
         $article = $this->discussionService->getNewArticle();
         $article->setDraftStatus(1);
@@ -745,7 +751,7 @@ class DiscussionController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $article->getItemID()
             ]),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ]);
 
         return [
@@ -770,8 +776,8 @@ class DiscussionController extends BaseController
      * @return array
      */
     public function editArticlesAction(
-        int $itemId)
-    {
+        int $itemId
+    ) {
         $discussion = $this->discussionService->getDiscussion($itemId);
 
         $articlesList = $discussion->getAllArticles()->to_array();
@@ -809,22 +815,24 @@ class DiscussionController extends BaseController
         $item = $this->itemService->getItem($itemId);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
-        
+
         $formData = array();
-        $discussionItem = NULL;
-        $discussionArticleItem = NULL;
+        $discussionItem = null;
+        $discussionArticleItem = null;
 
         $isDraft = $item->isDraft();
 
         $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
-        $transformer = NULL;
+        $transformer = null;
 
         if ($item->getItemType() == 'discussion') {
             $transformer = $discussionTransformer;
-        } else if ($item->getItemType() == 'discarticle') {
-            $transformer = $discussionarticleTransformer;
+        } else {
+            if ($item->getItemType() == 'discarticle') {
+                $transformer = $discussionarticleTransformer;
+            }
         }
 
         if ($item->getItemType() == 'discussion') {
@@ -839,14 +847,15 @@ class DiscussionController extends BaseController
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+                $this->legacyEnvironment);
             $formData['draft'] = $isDraft;
             $form = $this->createForm(DiscussionType::class, $formData, array(
                 'action' => $this->generateUrl('app_discussion_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
-                'placeholderText' => '['.$this->translator->trans('insert title').']',
+                'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
                 'categoryMappingOptions' => [
                     'categories' => $itemController->getCategories($roomId, $categoryService)
                 ],
@@ -857,22 +866,24 @@ class DiscussionController extends BaseController
                 ],
 
             ));
-        } else if ($item->getItemType() == 'discarticle') {
-            // get section from DiscussionService
-            $discussionArticleItem = $this->discussionService->getArticle($itemId);
-            if (!$discussionArticleItem) {
-                throw $this->createNotFoundException('No discussion article found for id ' . $itemId);
+        } else {
+            if ($item->getItemType() == 'discarticle') {
+                // get section from DiscussionService
+                $discussionArticleItem = $this->discussionService->getArticle($itemId);
+                if (!$discussionArticleItem) {
+                    throw $this->createNotFoundException('No discussion article found for id ' . $itemId);
+                }
+                $formData = $transformer->transform($discussionArticleItem);
+                $form = $this->createForm(DiscussionArticleType::class, $formData, array(
+                    'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
+                    'categories' => $itemController->getCategories($roomId, $categoryService),
+                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                    'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+                ));
             }
-            $formData = $transformer->transform($discussionArticleItem);
-            $form = $this->createForm(DiscussionArticleType::class, $formData, array(
-                'placeholderText' => '['.$this->translator->trans('insert title').']',
-                'categories' => $itemController->getCategories($roomId, $categoryService),
-                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
-                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-            ));
         }
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -888,25 +899,30 @@ class DiscussionController extends BaseController
                     }
                     if ($hashtagsMandatory) {
                         $discussionItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    }
+
+                    $discussionItem->save();
+                } else {
+                    if ($item->getItemType() == 'discarticle') {
+                        $discussionArticleItem = $transformer->applyTransformation($discussionArticleItem,
+                            $form->getData());
+                        // update modifier
+                        $discussionArticleItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
+                        $discussionArticleItem->save();
+                    }
                 }
 
-                    $discussionItem->save();                
-                } else if ($item->getItemType() == 'discarticle') {
-                    $discussionArticleItem = $transformer->applyTransformation($discussionArticleItem, $form->getData());
-                    // update modifier
-                    $discussionArticleItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-                    $discussionArticleItem->save();
-                }
-                
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    // ToDo ...
+                }
             }
             return $this->redirectToRoute('app_discussion_save', array('roomId' => $roomId, 'itemId' => $itemId));
-            
+
             // persist
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
@@ -948,18 +964,20 @@ class DiscussionController extends BaseController
 
         if ($item->getItemType() == 'discussion') {
             $typedItem = $this->discussionService->getDiscussion($itemId);
-        } else if ($item->getItemType() == 'discarticle') {
-            $typedItem = $this->discussionService->getArticle($itemId);
+        } else {
+            if ($item->getItemType() == 'discarticle') {
+                $typedItem = $this->discussionService->getArticle($itemId);
+            }
         }
-        
+
         $itemArray = array($typedItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        
+
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
@@ -971,35 +989,36 @@ class DiscussionController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$typedItem->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $typedItem->getModificationDate() ) {
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array, $typedItem->getItemID());
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $typedItem->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
-        
+            $current_user = $user_list->getNext();
+        }
+
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -1044,11 +1063,11 @@ class DiscussionController extends BaseController
         $ratingDetail = $assessmentService->getRatingDetail($discussion);
         $ratingAverageDetail = $assessmentService->getAverageRatingDetail($discussion);
         $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
-        
+
         return array(
             'roomId' => $roomId,
             'discussion' => $discussion,
-            'ratingArray' =>  array(
+            'ratingArray' => array(
                 'ratingDetail' => $ratingDetail,
                 'ratingAverageDetail' => $ratingAverageDetail,
                 'ratingOwnDetail' => $ratingOwnDetail,
@@ -1077,8 +1096,9 @@ class DiscussionController extends BaseController
         $formData = $transformer->transform($article);
 
         $form = $this->createForm(DiscussionArticleType::class, $formData, array(
-            'action' => $this->generateUrl('app_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID())),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'action' => $this->generateUrl('app_discussion_savearticle',
+                array('roomId' => $roomId, 'itemId' => $article->getItemID())),
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ));
 
         $form->handleRequest($request);
@@ -1102,32 +1122,36 @@ class DiscussionController extends BaseController
                 $article->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $article->save();
-                
-            } else if ($form->get('cancel')->isClicked()) {
-                // remove not saved item
-                $article->delete();
 
-                $article->save();
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    // remove not saved item
+                    $article->delete();
+
+                    $article->save();
+                }
             }
-            return $this->redirectToRoute('app_discussion_detail', array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
+            return $this->redirectToRoute('app_discussion_detail',
+                array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
         }
     }
 
     /**
      * @Route("/room/{roomId}/discussion/download")
      * @param Request $request
+     * @param DownloadAction $action
      * @param int $roomId
-     * @return
+     * @return Response
      * @throws Exception
      */
     public function downloadAction(
         Request $request,
+        DownloadAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
     }
 
@@ -1144,13 +1168,13 @@ class DiscussionController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
     }
 
     /**

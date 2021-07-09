@@ -10,6 +10,7 @@ namespace App\Controller;
 
 
 use App\Action\Delete\DeleteAction;
+use App\Utils\DiscussionService;
 use cs_discussionarticle_item;
 use cs_room_item;
 use Exception;
@@ -19,6 +20,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DiscussionArticleController extends BaseController
 {
+
+    protected DiscussionService $discussionService;
+
+    /**
+     * @required
+     * @param DiscussionService $discussionService
+     */
+    public function setDiscussionService(DiscussionService $discussionService): void
+    {
+        $this->discussionService = $discussionService;
+    }
+
+
     ###################################################################################################
     ## XHR Action requests
     ###################################################################################################
@@ -54,10 +68,9 @@ class DiscussionArticleController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-        $discussionService = $this->get('commsy_legacy.discussion_service');
 
         if (count($itemIds) == 1) {
-            return [$discussionService->getArticle($itemIds[0])];
+            return [$this->discussionService->getArticle($itemIds[0])];
         }
 
         return [];

@@ -1,56 +1,97 @@
-<div class="uk-navbar-content">
-    <ul class="uk-navbar-nav">
-        {% if showPortalConfigurationLink %}
-            <li>
-                <a href="{{ path('app_portalsettings_general', { 'portalId': portal.id }) }}" title="{{ 'Portal configuration'|trans({}, 'portal') }}">
-                    <i class="uk-icon-justify uk-icon-wrench"></i>
-                </a>
-            </li>
-        {% endif %}
-
-        {% if supportLink is not empty and tooltip is not empty %}
-            <li>
-                {% if not uikit3 %}
-                    <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank"><i class="uk-icon-question-circle"></i></a>
-                {% else %}
-                    <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank" uk-icon="icon: question"></a>
-                {% endif %}
-            </li>
-        {% endif %}
-
-        {% if privateRoomItem %}
-            <li>
-                <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
-                    <i class="uk-icon-copy"></i>
-                    <small id="cs-nav-copy-indicator">
-                        {% if count > 0 %}
-                            {{ count }}
-                        {% endif %}
-                    </small>
-                </a>
-            </li>
-
-            {% if privateRoomItem.portfolioEnabled %}
+{% if not uikit3 %}
+    <div class="uk-navbar-content">
+        <ul class="uk-navbar-nav">
+            {% if showPortalConfigurationLink %}
                 <li>
-                    <a href="{{ path('app_portfolio_index', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'Portfolios'|trans({}, "portfolio") }}">
-                        <i class="uk-icon-table"></i>
+                    <a href="{{ path('app_portalsettings_general', { 'portalId': portal.id }) }}" title="{{ 'Portal configuration'|trans({}, 'portal') }}">
+                        <i class="uk-icon-justify uk-icon-wrench"></i>
                     </a>
                 </li>
             {% endif %}
 
-            <li>
-                <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}">
-                    <i class="uk-icon-folder-open-o"></i>
-                </a>
-            </li>
+            {% if supportLink is not empty and tooltip is not empty %}
+                <li>
+                    <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank"><i class="uk-icon-question-circle"></i></a>
+                </li>
+            {% endif %}
 
             {% if privateRoomItem %}
                 <li>
-                    <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}">
-                        <i class="uk-icon-qrcode"></i>
+                    <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+                        <i class="uk-icon-copy"></i>
+                        <small id="cs-nav-copy-indicator">
+                            {% if count > 0 %}
+                                {{ count }}
+                            {% endif %}
+                        </small>
                     </a>
                 </li>
+
+                {% if privateRoomItem.portfolioEnabled %}
+                    <li>
+                        <a href="{{ path('app_portfolio_index', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'Portfolios'|trans({}, "portfolio") }}">
+                            <i class="uk-icon-table"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li>
+                    <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}">
+                        <i class="uk-icon-folder-open-o"></i>
+                    </a>
+                </li>
+
+                {% if privateRoomItem %}
+                    <li>
+                        <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}">
+                            <i class="uk-icon-qrcode"></i>
+                        </a>
+                    </li>
+                {% endif %}
             {% endif %}
+        </ul>
+    </div>
+{% else %}
+    {% if showPortalConfigurationLink %}
+        <li>
+            <a href="{{ path('app_portalsettings_general', { 'portalId': portal.id }) }}" title="{{ 'Portal configuration'|trans({}, 'portal') }}">
+                <i class="uk-icon-justify uk-icon-wrench"></i>
+            </a>
+        </li>
+    {% endif %}
+
+    {% if supportLink is not empty and tooltip is not empty %}
+        <li>
+            <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank" uk-icon="icon: question"></a>
+        </li>
+    {% endif %}
+
+    {% if privateRoomItem %}
+        <li>
+            <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+                <span uk-icon="copy"></span>
+                <small id="cs-nav-copy-indicator">
+                    {% if count > 0 %}
+                        {{ count }}
+                    {% endif %}
+                </small>
+            </a>
+        </li>
+
+        {% if privateRoomItem.portfolioEnabled %}
+            <li>
+                <a href="{{ path('app_portfolio_index', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'Portfolios'|trans({}, "portfolio") }}" uk-icon="table"></a>
+            </li>
         {% endif %}
-    </ul>
-</div>
+
+        <li>
+            <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}" uk-icon="folder"></a>
+        </li>
+
+        {% if privateRoomItem %}
+            <li>
+                <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}" uk-icon="world"></a>
+            </li>
+        {% endif %}
+    {% endif %}
+{% endif %}

@@ -3,7 +3,8 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
-
+use cs_environment;
+use cs_user_item;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -13,8 +14,15 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class AccountMail
 {
-    private $legacyEnvironment;
-    private $router;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
+
+    /**
+     * @var RouterInterface
+     */
+    private RouterInterface $router;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RouterInterface $router)
     {
@@ -22,7 +30,11 @@ class AccountMail
         $this->router = $router;
     }
 
-    public function generateSubject($action)
+    /**
+     * @param string $action
+     * @return string
+     */
+    public function generateSubject(string $action): string
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
@@ -72,7 +84,12 @@ class AccountMail
         return $subject;
     }
 
-    public function generateBody($user, $action)
+    /**
+     * @param cs_user_item $user
+     * @param string $action
+     * @return string
+     */
+    public function generateBody(cs_user_item $user, string $action): string
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
@@ -88,42 +105,50 @@ class AccountMail
 
         switch ($action) {
             case 'user-delete':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
 
             case 'user-block':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
 
             case 'user-confirm':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
 
             case 'user-status-user':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
 
             case 'user-status-moderator':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
 
             case 'user-status-reading-user':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
 
             case 'user-contact':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
 
             case 'user-contact-remove':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $user->getUserID(),
+                    $room->getTitle());
 
                 break;
         }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_list;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,8 +19,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * Portal
  *
  * @ORM\Table(name="portal", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"}),
- *     @ORM\Index(name="creator_id", columns={"creator_id"})
  * })
  * @ORM\Entity(repositoryClass="App\Repository\PortalRepository")
  * @ORM\HasLifecycleCallbacks()
@@ -456,6 +456,24 @@ class Portal implements \Serializable
     public function setLogoFilename(?string $logoFilename): Portal
     {
         $this->logoFilename = $logoFilename;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRoomActivityPoints(): int
+    {
+        return $this->extras['MAX_ROOM_ACTIVITY'] ?? 0;
+    }
+
+    /**
+     * @param int $points
+     * @return $this
+     */
+    public function setMaxRoomActivityPoints(int $points): Portal
+    {
+        $this->extras['MAX_ROOM_ACTIVITY'] = $points;
         return $this;
     }
 
@@ -1039,6 +1057,62 @@ class Portal implements \Serializable
         return $this->_room_list_continuous;
     }
 
+    /**
+     * @param cs_environment $environment
+     * @return cs_list
+     */
+    public function getContactModeratorList($environment)
+    {
+        $user_manager = $environment->getUserManager();
+        $user_manager->setContextLimit($this->getId());
+        $user_manager->setContactModeratorLimit();
+        $user_manager->select();
+        $contactModeratorList = $user_manager->get();
+
+        if ($contactModeratorList->isEmpty()) {
+            if ($this->status == 2 && !$environment->isArchiveMode()) {
+                $user_manager = $environment->getZzzUserManager();
+                $user_manager->setContextLimit($this->getId());
+                $user_manager->setContactModeratorLimit();
+                $user_manager->select();
+                $contactModeratorList = $user_manager->get();
+                if ($contactModeratorList->isEmpty()) {
+                    $contactModeratorList = $this->getModeratorList($environment);
+                }
+            } else {
+                $contactModeratorList = $this->getModeratorList($environment);
+            }
+        }
+
+        return $contactModeratorList;
+    }
+
+    /**
+     * @param cs_environment $environment
+     * @return cs_list
+     */
+    public function getModeratorList($environment)
+    {
+        $userManager = $environment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextLimit($this->getId());
+        $userManager->setModeratorLimit();
+        $userManager->select();
+        $moderatorList = $userManager->get();
+
+        if ($moderatorList->isEmpty()) {
+            if ($this->status == 2 && !$environment->isArchiveMode()) {
+                $userManager = $environment->getZzzUserManager();
+                $userManager->resetLimits();
+                $userManager->setContextLimit($this->getId());
+                $userManager->setModeratorLimit();
+                $userManager->select();
+                $moderatorList = $userManager->get();
+            }
+        }
+
+        return $moderatorList;
+    }
 
     // Serializable
 

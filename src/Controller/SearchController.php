@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Action\Delete\DeleteAction;
 use App\Entity\SavedSearch;
 use App\Filter\SearchFilterType;
 use App\Form\Type\SearchItemType;
@@ -869,14 +870,14 @@ class SearchController extends BaseController
      */
     public function xhrCopyAction(
         Request $request,
+        CopyAction $copyAction,
         int $roomId
     )
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(CopyAction::class);
-        return $action->execute($room, $items);
+        return $copyAction->execute($room, $items);
     }
 
     /**
@@ -888,15 +889,14 @@ class SearchController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
+        DeleteAction $deleteAction,
         int $roomId
     )
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        // TODO: find a way to load this service via new Symfony Dependency Injection!
-        $action = $this->get('commsy.action.delete.generic');
-        return $action->execute($room, $items);
+        return $deleteAction->execute($room, $items);
     }
 
     /**
@@ -918,13 +918,10 @@ class SearchController extends BaseController
             return [];
         } else {
             // TODO: This should be optimized
-            $itemService = $this->get('commsy_legacy.item_service');
-
             $items = [];
             foreach ($itemIds as $itemId) {
-                $items[] = $itemService->getTypedItem($itemId);
+                $items[] = $this->itemService->getTypedItem($itemId);
             }
-
             return $items;
         }
     }
@@ -979,7 +976,7 @@ class SearchController extends BaseController
 
                 $results[] = [
                     'title' => $title,
-                    'text' => $this->translator->trans(ucfirst($type), ['count' => 0], 'rubric'),
+                    'text' => $this->translator->trans(ucfirst($type), ['%count%' => 0], 'rubric'),
                     'url' => $url,
                     'value' => $searchResult->getItemId(),
                 ];

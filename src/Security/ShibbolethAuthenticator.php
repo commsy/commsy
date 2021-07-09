@@ -4,6 +4,7 @@
 namespace App\Security;
 
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
@@ -29,22 +30,29 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var AccountCreatorFacade
      */
-    private $accountCreator;
+    private AccountCreatorFacade $accountCreator;
+
+    /**
+     * @var AccountManager
+     */
+    private AccountManager $accountManager;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        AccountCreatorFacade $accountCreator
+        AccountCreatorFacade $accountCreator,
+        AccountManager $accountManager
     ) {
         parent::__construct($urlGenerator);
 
         $this->entityManager = $entityManager;
         $this->accountCreator = $accountCreator;
+        $this->accountManager = $accountManager;
     }
 
     /**
@@ -192,6 +200,8 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 
         $this->entityManager->persist($account);
         $this->entityManager->flush();
+
+        $this->accountManager->propgateAccountDataToProfiles($account);
 
         return $account;
     }

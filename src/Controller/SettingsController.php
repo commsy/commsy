@@ -80,8 +80,7 @@ class SettingsController extends AbstractController
         LegacyEnvironment $environment,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    )
-    {
+    ) {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room from RoomService

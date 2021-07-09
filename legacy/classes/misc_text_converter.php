@@ -918,247 +918,252 @@ class misc_text_converter {
         return $text;
    }
 
-   #private function _newFormating ( $text ) {
-   public function _newFormating ( $text ) {
-      $file_array = $this->_getFileArray();
-      #$temp = $this->_environment->getCurrentContextItem();
-      #pr($temp);
-      //////////////////////////////////////////////////////////////
-      // this is for preventing parsing of (: and :)
-      //////////////////////////////////////////////////////////////
-      // decode tags used in alt and text attributes
-      #$attr = array('alt', 'text');
-      #$text = $this->_encode_attr($attr, $text);
+    #private function _newFormating ( $text ) {
+    public function _newFormating($text)
+    {
+        $file_array = $this->_getFileArray();
+        #$temp = $this->_environment->getCurrentContextItem();
+        #pr($temp);
+        //////////////////////////////////////////////////////////////
+        // this is for preventing parsing of (: and :)
+        //////////////////////////////////////////////////////////////
+        // decode tags used in alt and text attributes
+        #$attr = array('alt', 'text');
+        #$text = $this->_encode_attr($attr, $text);
 
-      // decode file names
-      #$text = $this->_encode_file_names($text);
-      //////////////////////////////////////////////////////////////
-      //////////////////////////////////////////////////////////////
-      //////////////////////////////////////////////////////////////
+        // decode file names
+        #$text = $this->_encode_file_names($text);
+        //////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////
 
-      $reg_exp_father_array = array();
-      $reg_exp_father_array[]       = '~\\(:(.*?):\\)~eu';
-      $reg_exp_father_array[]       = '~\[(.*?)\]~eu';
+        $reg_exp_father_array = array();
+        $reg_exp_father_array[] = '~\\(:(.*?):\\)~eu';
+        $reg_exp_father_array[] = '~\[(.*?)\]~eu';
 
-      $reg_exp_array = array();
-      
-      // reference
-      #$reg_exp_array['[']         = '~\\[[0-9]+\|[\w]+\]~eu';
-      $reg_exp_array['(:flash']       = '~\\(:flash\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:quicktime']   = '~\\(:quicktime\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:image']       = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:item']        = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:link']        = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:file']        = '~\\(:file\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:zip']         = '~\\(:zip\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:youtube']     = '~\\(:youtube\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:podcampus']   = '~\\(:podcampus\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:vimeo']       = '~\\(:vimeo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:mp3']         = '~\\(:mp3\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:lecture2go']  = '~\\(:lecture2go\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:slideshare']  = '~\\(:slideshare\\s(.*?):\\)~eu';
-      $reg_exp_array['[slideshare']   = '~\[slideshare\\s(.*?)\]~eu';
-      $reg_exp_array['(:flickr']      = '~\\(:flickr\\s(.*?):\\)~eu';
-      $reg_exp_array['(:scorm']       = '~\\(:scorm\\s(.*?):\\)~eu';
-      $reg_exp_array['(:mdo']         = '~\\(:mdo\\s(.*?):\\)~eu';
-      $reg_exp_array['(:geogebra']    = '~\\(:geogebra\\s(.*?):\\)~eu';
-      
-      
-      // Test auf erforderliche Software; Windows-Server?
-      //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
+        $reg_exp_array = array();
 
-      // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
-      $reg_exp_image['<img']       = '~\\<img(.*?)\\>~eu'; // \<img.*?\>
-      #$reg_exp_image['link']      = '~<a(.*?)><img(.*?)></a>~eu'; // \<img.*?\>
-      
-      // plugins
-      $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp',null,'ARRAY');
-      if ( !empty($plugin_reg_exp_array) ) {
-         $reg_exp_array = array_merge($reg_exp_array,$plugin_reg_exp_array);
-      }
+        // reference
+        #$reg_exp_array['[']         = '~\\[[0-9]+\|[\w]+\]~eu';
+        $reg_exp_array['(:flash'] = '~\\(:flash\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:quicktime'] = '~\\(:quicktime\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:wmplayer'] = '~\\(:wmplayer\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:image'] = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:item'] = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:link'] = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:file'] = '~\\(:file\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:zip'] = '~\\(:zip\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:youtube'] = '~\\(:youtube\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:podcampus'] = '~\\(:podcampus\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:vimeo'] = '~\\(:vimeo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:mp3'] = '~\\(:mp3\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:lecture2go'] = '~\\(:lecture2go\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:slideshare'] = '~\\(:slideshare\\s(.*?):\\)~eu';
+        $reg_exp_array['[slideshare'] = '~\[slideshare\\s(.*?)\]~eu';
+        $reg_exp_array['(:flickr'] = '~\\(:flickr\\s(.*?):\\)~eu';
+        $reg_exp_array['(:scorm'] = '~\\(:scorm\\s(.*?):\\)~eu';
+        $reg_exp_array['(:mdo'] = '~\\(:mdo\\s(.*?):\\)~eu';
+        $reg_exp_array['(:geogebra'] = '~\\(:geogebra\\s(.*?):\\)~eu';
 
-      // jsMath for latex math fonts
-      // see http://www.math.union.edu/~dpvc/jsMath/
-      global $c_jsmath_enable;
-      if ( isset($c_jsmath_enable)
-           and $c_jsmath_enable
-         ) {
-         $reg_exp_father_array[]   = '~\\{\\$[\\$]{0,1}(.*?)\\$[\\$]{0,1}\\}~eu';
-         $reg_exp_array['{$$']     = '~\\{\\$\\$(.*?)\\$\$\\}~eu'; // must be before next one
-         $reg_exp_array['{$']      = '~\\{\\$(.*?)\\$\\}~eu';
-      }
 
-      // is there wiki syntax ?
-      if ( !empty($reg_exp_array) ) {
-         $reg_exp_keys = array_keys($reg_exp_array);
-         $clean_text = false;
-         foreach ($reg_exp_keys as $key) {
-            if ( mb_stristr($text,$key) ) {
-               $clean_text = true;
-               break;
+        // Test auf erforderliche Software; Windows-Server?
+        //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
+
+        // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
+        $reg_exp_image['<img'] = '~\\<img(.*?)\\>~u'; // \<img.*?\>
+        #$reg_exp_image['link']      = '~<a(.*?)><img(.*?)></a>~eu'; // \<img.*?\>
+
+        // plugins
+        $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp', null, 'ARRAY');
+        if (!empty($plugin_reg_exp_array)) {
+            $reg_exp_array = array_merge($reg_exp_array, $plugin_reg_exp_array);
+        }
+
+        // jsMath for latex math fonts
+        // see http://www.math.union.edu/~dpvc/jsMath/
+        global $c_jsmath_enable;
+        if (isset($c_jsmath_enable)
+            and $c_jsmath_enable
+        ) {
+            $reg_exp_father_array[] = '~\\{\\$[\\$]{0,1}(.*?)\\$[\\$]{0,1}\\}~eu';
+            $reg_exp_array['{$$'] = '~\\{\\$\\$(.*?)\\$\$\\}~eu'; // must be before next one
+            $reg_exp_array['{$'] = '~\\{\\$(.*?)\\$\\}~eu';
+        }
+
+        // is there wiki syntax ?
+        if (!empty($reg_exp_array)) {
+            $reg_exp_keys = array_keys($reg_exp_array);
+            $clean_text = false;
+            foreach ($reg_exp_keys as $key) {
+                if (mb_stristr($text, $key)) {
+                    $clean_text = true;
+                    break;
+                }
             }
-         }
-      }
-      ############ lightbox images ckEditor ###############
-      $matchesImages = array();
-      $found_link = preg_match_all('~<a.*?>(<img.*?>)</a>~eu',$text,$matchesLink);
-         foreach ($reg_exp_image as $key => $exp) {
-            $found = preg_match_all($exp,$text,$matchesImages);
-            if($found > 0) {
-               foreach ($matchesImages[0] as $value) {
-                  // found an <a> tag dont use lightbox
-                  if(!in_array($value, $matchesLink[1])){
-                     // found an image tag
-                     $args_array = $this->_getArgs($value, $exp);
-                     // search for src attribute
-                     $src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
-                     $value_new = $value;
-                     if ( $key == '<img' and mb_stristr($value_new,'<img') ) {
-                        $params = $this->_environment->getCurrentParameterArray();
-                        $tempArray[0] = $args_array[0];
-                        $tempArray[2] = $src[1];
-                        $tempArray[3] = $args_array[1];
-                        
-                        $value_new = $this->_formatImageLightboxCkEditor($text,$args_array[0],$src[1],$params['iid']);
-                        $text = str_replace($value,$value_new,$text);
-                        unset($value_new);
-                     }
-                  }
-               }
-            }
-         }
-      
-      ############ lightbox images ckEditor ###############
-      
-      // clean wikistyle text from HTML-Code (via fckeditor)
-      // and replace wikisyntax
-      if ($clean_text) {
-         $matches = array();
-         foreach ($reg_exp_father_array as $exp) {
-            $found = preg_match_all($exp,$text,$matches);
-            if ( $found > 0 ) {
-               $matches[0] = array_unique($matches[0]); // doppelte einsparen 
-               foreach ($matches[0] as $value) {
-                  # delete HTML-tags and string conversion #########
-                  $value_new = strip_tags($value);
-                  $value_new = str_replace('&nbsp;',' ',$value_new);
-                  ##################################################
+        }
+        ############ lightbox images ckEditor ###############
+        $matchesImages = array();
+        preg_match_all('~<a.*?>(<img.*?>)</a>~u',$text,$matchesLink);
+        foreach ($reg_exp_image as $key => $exp) {
+            $found = preg_match_all($exp, $text, $matchesImages);
+            if ($found > 0) {
+                foreach ($matchesImages[0] as $value) {
+                    // found an <a> tag dont use lightbox
+                    if (!in_array($value, $matchesLink[1])) {
+                        // found an image tag
+                        $args_array = $this->_getArgs($value, $exp);
+                        // search for src attribute
+                        $src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
+                        $value_new = $value;
+                        if ($key == '<img' and mb_stristr($value_new, '<img')) {
+                            $params = $this->_environment->getCurrentParameterArray();
+                            $tempArray[0] = $args_array[0];
+                            $tempArray[2] = $src[1];
+                            $tempArray[3] = $args_array[1];
 
-                  foreach ($reg_exp_array as $key => $reg_exp) {
-                     $check = false;
-                     $args_array = $this->_getArgs($value_new,$reg_exp);
-                     foreach ( $args_array as $arg_value ) {
-                        if ( strstr($arg_value,"'")
-                             and (substr_count($arg_value,"'") % 2) == 1
-                           ) {
-                           $check = true;
-                           break;
+                            $value_new = $this->_formatImageLightboxCkEditor($text, $args_array[0], $src[1],
+                                $params['iid']);
+                            $text = str_replace($value, $value_new, $text);
+                            unset($value_new);
                         }
-                     }
-                     if ($check) {
-                        $value = $this->_getSubText($text,$value);
+                    }
+                }
+            }
+        }
+
+        ############ lightbox images ckEditor ###############
+
+        // clean wikistyle text from HTML-Code (via fckeditor)
+        // and replace wikisyntax
+        if ($clean_text) {
+            $matches = array();
+            foreach ($reg_exp_father_array as $exp) {
+                $found = preg_match_all($exp, $text, $matches);
+                if ($found > 0) {
+                    $matches[0] = array_unique($matches[0]); // doppelte einsparen
+                    foreach ($matches[0] as $value) {
                         # delete HTML-tags and string conversion #########
                         $value_new = strip_tags($value);
-                        $value_new = str_replace('&nbsp;',' ',$value_new);
+                        $value_new = str_replace('&nbsp;', ' ', $value_new);
                         ##################################################
-                        $args_array = $this->_getArgs2($value_new,$reg_exp);
-                     }
 
-                     // decode file names
-                     #$value_new = $this->_decode_file_names($value_new);
+                        foreach ($reg_exp_array as $key => $reg_exp) {
+                            $check = false;
+                            $args_array = $this->_getArgs($value_new, $reg_exp);
+                            foreach ($args_array as $arg_value) {
+                                if (strstr($arg_value, "'")
+                                    and (substr_count($arg_value, "'") % 2) == 1
+                                ) {
+                                    $check = true;
+                                    break;
+                                }
+                            }
+                            if ($check) {
+                                $value = $this->_getSubText($text, $value);
+                                # delete HTML-tags and string conversion #########
+                                $value_new = strip_tags($value);
+                                $value_new = str_replace('&nbsp;', ' ', $value_new);
+                                ##################################################
+                                $args_array = $this->_getArgs2($value_new, $reg_exp);
+                            }
 
-                     /*if ( $key == '[' and mb_stristr($value_new,'[') ){#pr($args_array);
-                        $value_new = $this->_formatRef($value_new,$args_array); // Referenzen Testen
-                     } else*/
-                     if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
-                        $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:wmplayer' and mb_stristr($value_new,'(:wmplayer') ) {
-                        $value_new = $this->_formatWmplayer($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:quicktime' and mb_stristr($value_new,'(:quicktime') ) {
-                        $value_new = $this->_formatQuicktime($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:image' and mb_stristr($value_new,'(:image') ) {
-                        $value_new = $this->_formatImage($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:item' and mb_stristr($value_new,'(:item') ) {
-                        $value_new = $this->_formatItem($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:link' and mb_stristr($value_new,'(:link') ) {
-                        $value_new = $this->_formatLink($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:file' and mb_stristr($value_new,'(:file') ) {
-                        $value_new = $this->_formatFile($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:zip' and mb_stristr($value_new,'(:zip') ) {
-                        $value_new = $this->_formatZip($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:youtube' and mb_stristr($value_new,'(:youtube') ) {
-                        $value_new = $this->_formatYoutube($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:podcampus' and mb_stristr($value_new,'(:podcampus') ) {
-                        $value_new = $this->_formatPodcampus($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:googlevideo' and mb_stristr($value_new,'(:googlevideo') ) {
-                        $value_new = $this->_formatGooglevideo($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:vimeo' and mb_stristr($value_new,'(:vimeo') ) {
-                        $value_new = $this->_formatVimeo($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:mp3' and mb_stristr($value_new,'(:mp3') ) {
-                        $value_new = $this->_formatMP3($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:lecture2go' and mb_stristr($value_new,'(:lecture2go') ) {
-                        $value_new = $this->_formatLecture2go($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:slideshare' and mb_stristr($value_new,'(:slideshare') ) {
-                        $value_new = $this->_formatSlideshare($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '[slideshare' and mb_stristr($value_new,'[slideshare') ) {
-                        $value_new = $this->_formatSlideshare($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '{$' and mb_stristr($value_new,'{$') ) {
-                        $value_new = $this->_formatMath($value_new,$args_array, 'span');
-                        break;
-                     } elseif ( $key == '{$$' and mb_stristr($value_new,'{$$') ) {
-                        $value_new = $this->_formatMath($value_new,$args_array, 'div');
-                        break;
-                     } elseif ( $key == '(:flickr' and mb_stristr($value_new,'(:flickr') ) {
-                        $value_new = $this->_formatFlickr($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:scorm' and mb_stristr($value_new,'(:scorm') ) {
-                        $value_new = $this->_formatScorm($value_new,$args_array,$file_array);
-                        break;
-                     } elseif ( $key == '(:mdo' and mb_stristr($value_new,'(:mdo') ) {
-                        $value_new = $this->_formatMDO($value_new,$args_array);
-                        break;
-                     } elseif ( $key == '(:geogebra' and mb_stristr($value_new,'(:geogebra') ) {
-                        $value_new = $this->_formatGeogebra($value_new,$args_array,$file_array);
-                        break;
-                     }
+                            // decode file names
+                            #$value_new = $this->_decode_file_names($value_new);
 
-                     // plugins
-                     else {
-                        $value_new_plugin = plugin_hook_output_all('formatMedia',array('key' => $key, 'value_new' => $value_new, 'args_array' => $args_array, 'file_array' => $file_array),'ONE');
-                        if ( !empty($value_new_plugin) ) {
-                           $value_new = $value_new_plugin;
+                            /*if ( $key == '[' and mb_stristr($value_new,'[') ){#pr($args_array);
+                               $value_new = $this->_formatRef($value_new,$args_array); // Referenzen Testen
+                            } else*/
+                            if ($key == '(:flash' and mb_stristr($value_new, '(:flash')) {
+                                $value_new = $this->_formatFlash($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:wmplayer' and mb_stristr($value_new, '(:wmplayer')) {
+                                $value_new = $this->_formatWmplayer($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:quicktime' and mb_stristr($value_new, '(:quicktime')) {
+                                $value_new = $this->_formatQuicktime($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:image' and mb_stristr($value_new, '(:image')) {
+                                $value_new = $this->_formatImage($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:item' and mb_stristr($value_new, '(:item')) {
+                                $value_new = $this->_formatItem($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:link' and mb_stristr($value_new, '(:link')) {
+                                $value_new = $this->_formatLink($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:file' and mb_stristr($value_new, '(:file')) {
+                                $value_new = $this->_formatFile($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:zip' and mb_stristr($value_new, '(:zip')) {
+                                $value_new = $this->_formatZip($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:youtube' and mb_stristr($value_new, '(:youtube')) {
+                                $value_new = $this->_formatYoutube($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:podcampus' and mb_stristr($value_new, '(:podcampus')) {
+                                $value_new = $this->_formatPodcampus($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:googlevideo' and mb_stristr($value_new, '(:googlevideo')) {
+                                $value_new = $this->_formatGooglevideo($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:vimeo' and mb_stristr($value_new, '(:vimeo')) {
+                                $value_new = $this->_formatVimeo($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:mp3' and mb_stristr($value_new, '(:mp3')) {
+                                $value_new = $this->_formatMP3($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:lecture2go' and mb_stristr($value_new, '(:lecture2go')) {
+                                $value_new = $this->_formatLecture2go($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:slideshare' and mb_stristr($value_new, '(:slideshare')) {
+                                $value_new = $this->_formatSlideshare($value_new, $args_array);
+                                break;
+                            } elseif ($key == '[slideshare' and mb_stristr($value_new, '[slideshare')) {
+                                $value_new = $this->_formatSlideshare($value_new, $args_array);
+                                break;
+                            } elseif ($key == '{$' and mb_stristr($value_new, '{$')) {
+                                $value_new = $this->_formatMath($value_new, $args_array, 'span');
+                                break;
+                            } elseif ($key == '{$$' and mb_stristr($value_new, '{$$')) {
+                                $value_new = $this->_formatMath($value_new, $args_array, 'div');
+                                break;
+                            } elseif ($key == '(:flickr' and mb_stristr($value_new, '(:flickr')) {
+                                $value_new = $this->_formatFlickr($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:scorm' and mb_stristr($value_new, '(:scorm')) {
+                                $value_new = $this->_formatScorm($value_new, $args_array, $file_array);
+                                break;
+                            } elseif ($key == '(:mdo' and mb_stristr($value_new, '(:mdo')) {
+                                $value_new = $this->_formatMDO($value_new, $args_array);
+                                break;
+                            } elseif ($key == '(:geogebra' and mb_stristr($value_new, '(:geogebra')) {
+                                $value_new = $this->_formatGeogebra($value_new, $args_array, $file_array);
+                                break;
+                            } // plugins
+                            else {
+                                $value_new_plugin = plugin_hook_output_all('formatMedia', array(
+                                    'key' => $key,
+                                    'value_new' => $value_new,
+                                    'args_array' => $args_array,
+                                    'file_array' => $file_array
+                                ), 'ONE');
+                                if (!empty($value_new_plugin)) {
+                                    $value_new = $value_new_plugin;
+                                }
+                            }
                         }
-                     }
-                  }
 
-                  $text = str_replace($value,$value_new,$text);
-               }
+                        $text = str_replace($value, $value_new, $text);
+                    }
+                }
             }
-         }
-         if ($this->_processMath) {
-            $text .= '<script type="text/javascript">jsMath.Process();</script>'.LF;
-         }
-      }
-      return $text;
-   }
+            if ($this->_processMath) {
+                $text .= '<script type="text/javascript">jsMath.Process();</script>' . LF;
+            }
+        }
+        return $text;
+    }
    
 //    private function _formatRef ($text, $array) {
 //        $retour = '';

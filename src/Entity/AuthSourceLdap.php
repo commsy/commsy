@@ -14,7 +14,7 @@ class AuthSourceLdap extends AuthSource
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
      * @Assert\Length(max=255)
      */
     private ?string $serverUrl;
@@ -22,7 +22,7 @@ class AuthSourceLdap extends AuthSource
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
     private ?string $uidKey;
@@ -30,7 +30,7 @@ class AuthSourceLdap extends AuthSource
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
     private ?string $baseDn;
@@ -38,7 +38,7 @@ class AuthSourceLdap extends AuthSource
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
     private ?string $searchDn;
@@ -46,7 +46,7 @@ class AuthSourceLdap extends AuthSource
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
     private ?string $searchPassword;
@@ -54,10 +54,18 @@ class AuthSourceLdap extends AuthSource
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
     private ?string $authDn;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(max=50)
+     */
+    private ?string $authQuery;
 
     public function __construct()
     {
@@ -178,6 +186,24 @@ class AuthSourceLdap extends AuthSource
     public function setAuthDn(string $authDn): self
     {
         $this->authDn = $authDn;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthQuery(): ?string
+    {
+        return $this->authQuery;
+    }
+
+    /**
+     * @param string $authQuery
+     * @return self
+     */
+    public function setAuthQuery(string $authQuery): self
+    {
+        $this->authQuery = $authQuery;
         return $this;
     }
 }

@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Account;
 use App\Entity\RoomPrivat;
 use App\Security\Authorization\Voter\RootVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,8 +35,9 @@ class HelperController extends AbstractController
         EntityManagerInterface $entityManager,
         string $context = 'server'
     ) {
-        $user = $this->getUser();
-        if ($user === null) {
+        /** @var Account $account */
+        $account = $this->getUser();
+        if ($account === null) {
             throw new LogicException('There must be a valid user at this point');
         }
 
@@ -49,12 +51,14 @@ class HelperController extends AbstractController
         // If $context is a number or string representing a number
         if (is_numeric($context)) {
             $privateRoom = $entityManager->getRepository(RoomPrivat::class)
-                ->findByContextIdAndUsername($context, $user->getUsername());
+                ->findOneByPortalIdAndAccount($context, $account);
 
             // The default redirect to the dashboard.
-            return $this->redirectToRoute('app_dashboard_overview', [
-                'roomId' => $privateRoom->getItemId(),
-            ]);
+            if ($privateRoom) {
+                return $this->redirectToRoute('app_dashboard_overview', [
+                    'roomId' => $privateRoom->getItemId(),
+                ]);
+            }
         }
 
         // If we don't get a valid user, redirect to the list of all portals

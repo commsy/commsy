@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use cs_environment;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\LegacyEnvironment;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Class PrintService
@@ -12,17 +14,42 @@ use App\Services\LegacyEnvironment;
  * @package App\Services
  */
 class PrintService
-{    
-    private $legacyEnvironment;
-    private $pdf;
+{
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $proxyIp;
-    private $proxyPort;
+    /**
+     * @var Pdf
+     */
+    private Pdf $pdf;
+
+    /**
+     * @var SessionInterface
+     */
+    private SessionInterface $session;
+
+    /**
+     * @var string
+     */
+    private string $proxyIp;
+
+    /**
+     * @var string
+     */
+    private string $proxyPort;
     
-    public function __construct(LegacyEnvironment $legacyEnvironment, Pdf $pdf, $proxyIp, $proxyPort)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        Pdf $pdf,
+        SessionInterface $session,
+        string $proxyIp,
+        string $proxyPort
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->pdf = $pdf;
+        $this->session = $session;
         $this->proxyIp = $proxyIp;
         $this->proxyPort = $proxyPort;
     }
@@ -93,6 +120,7 @@ class PrintService
             'images' => true,
             'load-media-error-handling' => 'ignore',
             'load-error-handling' => 'ignore',
+            'disable-javascript' => true,
         ]);
 
         // proxy support
@@ -101,10 +129,10 @@ class PrintService
 
             $this->pdf->setOption('proxy', $proxy);
         }
-        
+
         // set cookie for authentication - needed to request images
         $this->pdf->setOption('cookie', [
-            'SID' => $this->legacyEnvironment->getSessionID(),
+            'PHPSESSID' => $this->session->getId()
         ]);
     }
 }
