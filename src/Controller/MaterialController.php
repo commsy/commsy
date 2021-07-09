@@ -968,12 +968,12 @@ class MaterialController extends BaseController
                 'placeholderText' => '['.$translator->trans('insert title').']',
                 'categoryMappingOptions' => [
                     'categories' => $itemController->getCategories($roomId, $categoryService),
-                    'categoryPlaceholderText' => $translator->trans('New Category', [], 'category'),
+                    'categoryPlaceholderText' => $translator->trans('New category', [], 'category'),
                     'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
                 ],
                 'hashtagMappingOptions' => [
                     'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashTagPlaceholderText' => $translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
                 'licenses' => $licenses,
