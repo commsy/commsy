@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Portal;
+use App\Entity\Account;
 use App\Form\DataTransformer\PortfolioTransformer;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
@@ -48,6 +48,8 @@ class PortfolioController extends AbstractController
 
     private \cs_environment $legacyEnvironment;
 
+    private CoreSecurity $security;
+
     /**
      * PortfolioController constructor.
      * @param PortfolioService $portfolioService
@@ -64,7 +66,8 @@ class PortfolioController extends AbstractController
                                 ItemService $itemService,
                                 UserService $userService,
                                 CategoryService $categoryService,
-                                LegacyEnvironment $legacyEnvironment)
+                                LegacyEnvironment $legacyEnvironment,
+                                CoreSecurity $coreSecurity)
     {
         $this->portfolioService = $portfolioService;
         $this->transformer = $transformer;
@@ -73,6 +76,7 @@ class PortfolioController extends AbstractController
         $this->userService = $userService;
         $this->categoryService = $categoryService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->security = $coreSecurity;
     }
 
 
@@ -241,8 +245,9 @@ class PortfolioController extends AbstractController
             }
         }
 
-        /** @var cs_user_item $user */
-        $user = $this->userService->getPortalUserFromSessionId();
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        $user = $this->userService->getPortalUser($account);
 
         $readerList = array();
         foreach ($items as $item) {
