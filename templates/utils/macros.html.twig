@@ -628,7 +628,17 @@
             <ul id="mandatoryLinksForm" class="uk-switcher uk-margin">
                 {% if showCategories and form.category_mapping.categories is defined %}
                     <li>
-                        {{ form_widget(form.category_mapping.categories) }}
+                        <div class="category-form">
+                            {{ form_widget(form.category_mapping.categories) }}
+                        </div>
+                        <div class="uk-margin-top uk-flex">
+                            <div class="uk-margin-small-left">
+                                {{ form_widget(form.category_mapping.newCategory) }}
+                            </div>
+                            <div class="uk-margin-small-left">
+                                {{ form_widget(form.category_mapping.newCategoryAdd) }}
+                            </div>
+                        </div>
                     </li>
                 {% endif %}
                 {% if showHashtags and form.hashtag_mapping.hashtags is defined %}

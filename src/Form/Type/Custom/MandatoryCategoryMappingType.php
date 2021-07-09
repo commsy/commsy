@@ -2,6 +2,8 @@
 namespace App\Form\Type\Custom;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use App\Form\Type\TreeChoiceType;
@@ -29,6 +31,20 @@ class MandatoryCategoryMappingType extends AbstractType
                 'constraints' => array(
                     new Count(array('min' => 1, 'minMessage' => "Please select at least one category")),
                 ),
+            ))
+            ->add('newCategory', TextType::class, array(
+                'attr' => array(
+                    'placeholder' => $options['categoryPlaceholderText'],
+                ),
+                'label' => 'newCategory',
+                'required' => false
+            ))
+            ->add('newCategoryAdd', ButtonType::class, array(
+                'attr' => array(
+                    'id' => 'addNewCategory',
+                    'data-cs-add-category' => $options['categoryEditUrl'],
+                ),
+                'label' => 'addNewCategory',
             ));
     }
 
@@ -40,7 +56,7 @@ class MandatoryCategoryMappingType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['categories'])
+            ->setRequired(['categoryPlaceholderText', 'categories', 'categoryEditUrl'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
