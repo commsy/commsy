@@ -757,12 +757,12 @@ class AnnouncementController extends BaseController
      */
     public function xhrCopyAction(
         Request $request,
+        CopyAction $action,
         $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(CopyAction::class);
         return $action->execute($room, $items);
     }
 

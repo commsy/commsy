@@ -159,12 +159,12 @@ class CopyController extends BaseController
      */
     public function xhrInsertAction(
         Request $request,
+        InsertAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(InsertAction::class);
         return $action->execute($room, $items);
     }
 

@@ -1608,12 +1608,12 @@ class MaterialController extends BaseController
      */
     public function xhrCopyAction(
         Request $request,
+        CopyAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(CopyAction::class);
         return $action->execute($room, $items);
     }
 

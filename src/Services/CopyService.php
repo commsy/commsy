@@ -1,51 +1,48 @@
 <?php
+
 namespace App\Services;
 
-use Symfony\Component\Form\Form;
-
-use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
 use App\Utils\ItemService;
+use App\Utils\RoomService;
+use cs_environment;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CopyService
 {
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private $roomService;
+    private ItemService $itemService;
 
-    private $itemService;
+    private SessionInterface $session;
 
-    private $sessionItem;
-    
     private $type;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService)
+    /**
+     * CopyService constructor.
+     * @param \App\Services\LegacyEnvironment $legacyEnvironment
+     * @param RoomService $roomService
+     * @param ItemService $itemService
+     * @param SessionInterface $session
+     */
+    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, SessionInterface $session)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-
-        $this->roomService = $roomService;
-        
         $this->itemService = $itemService;
-        
-        $this->sessionItem = $this->legacyEnvironment->getSessionItem();
-        
+        $this->session = $session;
         $this->type = false;
     }
 
     public function getCountArray($roomId)
     {
-        $currentClipboardIds = array();
-        if ($this->sessionItem && $this->sessionItem->issetValue('clipboard_ids')) {
-            $currentClipboardIds = $this->sessionItem->getValue('clipboard_ids');
-        }
+        $currentClipboardIds = $this->session->get('clipboard_ids', []);
 
         if ($this->type) {
             $itemsCountArray['count'] = sizeof($this->getListEntries($roomId));
         } else {
             $itemsCountArray['count'] = sizeof($currentClipboardIds);
         }
-        
+
         $itemsCountArray['countAll'] = sizeof($currentClipboardIds);
 
         return $itemsCountArray;
@@ -59,11 +56,8 @@ class CopyService
      */
     public function getListEntries($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
-        $currentClipboardIds = array();
-        if ($this->sessionItem && $this->sessionItem->issetValue('clipboard_ids')) {
-            $currentClipboardIds = $this->sessionItem->getValue('clipboard_ids');
-        }
-        
+        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+
         $entries = [];
         $counter = 0;
         foreach ($currentClipboardIds as $currentClipboardId) {
@@ -116,22 +110,20 @@ class CopyService
             $this->type = $formData['type'];
         }
     }
-    
-    public function removeEntries ($roomId, $entries) {
-        $currentClipboardIds = array();
-        if ($this->sessionItem && $this->sessionItem->issetValue('clipboard_ids')) {
-            $currentClipboardIds = $this->sessionItem->getValue('clipboard_ids');
-        }
-        
+
+    public function removeEntries($roomId, $entries)
+    {
+        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+
         $clipboardIds = [];
         foreach ($currentClipboardIds as $currentClipboardId) {
             if (!in_array($currentClipboardId, $entries)) {
                 $clipboardIds[] = $currentClipboardId;
             }
         }
-        
-        $this->sessionItem->setValue('clipboard_ids', $clipboardIds);
-        
+
+        $this->session->set('clipboard_ids', $clipboardIds);
+
         return $this->getCountArray($roomId);
     }
 }
