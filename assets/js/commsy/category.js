@@ -54,13 +54,7 @@
                 }
             })
             .done(function(result, statusText, xhrObject) {
-                // TODO: add new category to form
-                var countElements = $('#linksForm .category-form').children().length;
-                $('#linksForm .category-form').append(
-                    '<div>' +
-                    '<input type="checkbox" id="itemLinks_categories_' + countElements + '" name="itemLinks[categories][]" value="' + result.categoryId + '">' +
-                    '<label class="uk-form-label" for="itemLinks_categories_' + countElements + '">' + result.categoryTitle + '</label></div>'
-                );
+                // TODO: add new category to form: 1. add hidden checkbox field, 2. update jsTree object (via create_node()?)
 
                 // clear user input
                 $('#itemLinks_newCategory').val('');
