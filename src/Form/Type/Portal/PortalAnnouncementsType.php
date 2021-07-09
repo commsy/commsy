@@ -22,7 +22,7 @@ class PortalAnnouncementsType extends AbstractType
     {
         $builder
             ->add('announcementEnabled', Types\ChoiceType::class, [
-                'label' => 'Show?',
+                'label' => 'Show announcements?',
                 'expanded' => true,
                 'choices' => [
                     'Yes' => true,

@@ -239,64 +239,66 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-    $("#room_image").on('load', function(){
-        var cover_width = $("#cover").width();
-        var cover_height = $("#cover").height();
+        document.addEventListener("DOMContentLoaded", function() {
+            $("#room_image").on('load', function(){
+                var cover_width = $("#cover").width();
+                var cover_height = $("#cover").height();
 
-        var img_width = $("#room_image").width();
-        var img_height = $("#room_image").height();
+                var img_width = $("#room_image").width();
+                var img_height = $("#room_image").height();
 
-        // determines image height as imgHeight = coverHeight * heightFactor;
-        var heightFactor = 1.2;
+                // determines image height as imgHeight = coverHeight * heightFactor;
+                var heightFactor = 1.2;
 
-        // 1 => set 'margin-bottom' => parallax * 1
-        // -1 => set 'margin-top' => parallax * -1,
-        // default: 1 (nicely fakes stereoscopic effect on panorama images! ;)
-        // TODO: pass via parameter (perhaps let user choose direction?)
-        var transDir = 1;
-        var marginSelect = 'margin-top';
-        if(transDir < 0) marginSelect = 'margin-bottom';
+                // 1 => set 'margin-bottom' => parallax * 1
+                // -1 => set 'margin-top' => parallax * -1,
+                // default: 1 (nicely fakes stereoscopic effect on panorama images! ;)
+                // TODO: pass via parameter (perhaps let user choose direction?)
+                var transDir = 1;
+                var marginSelect = 'margin-top';
+                if(transDir < 0) marginSelect = 'margin-bottom';
 
-        if(img_width < cover_width){
-            // scale image width to cover width
-            img_width  *= (cover_width / img_width);
-            img_height *= (cover_width / img_width);
-        }
-        if(img_height < cover_height*heightFactor){
-            // scale image height to heightFactor * cover height
-            img_width  *= ( (cover_height*heightFactor) / img_height );
-            img_height *= ( (cover_height*heightFactor) / img_height );
-        }
+                if(img_width < cover_width){
+                    // scale image width to cover width
+                    img_width  *= (cover_width / img_width);
+                    img_height *= (cover_width / img_width);
+                }
+                if(img_height < cover_height*heightFactor){
+                    // scale image height to heightFactor * cover height
+                    img_width  *= ( (cover_height*heightFactor) / img_height );
+                    img_height *= ( (cover_height*heightFactor) / img_height );
+                }
 
-        img_width = parseInt(img_width);
-        img_height = parseInt(img_height);
+                img_width = parseInt(img_width);
+                img_height = parseInt(img_height);
 
-        $("#room_image").css({'width' : img_width, 'height' : img_height, 'max-width' : 'none'});
+                $("#room_image").css({'width' : img_width, 'height' : img_height, 'max-width' : 'none'});
 
-        var marginOffset = -1*(Math.abs(img_height - cover_height)/2);
-        $("#room_image").css(marginSelect, marginOffset);
+                var marginOffset = -1*(Math.abs(img_height - cover_height)/2);
+                $("#room_image").css(marginSelect, marginOffset);
 
-        // horizontically center image if its wider than the cover area
-        if(img_width > cover_width){
-            $("#room_image").css('margin-left', -1*(Math.abs(img_width - cover_width)/2));
-        }
+                // horizontically center image if its wider than the cover area
+                if(img_width > cover_width){
+                    $("#room_image").css('margin-left', -1*(Math.abs(img_width - cover_width)/2));
+                }
 
-        // activate parallax scrolling
-        if(window.innerHeight > img_height){
-            $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
-        }
+                // activate parallax scrolling
+                if(window.innerHeight > img_height){
+                    $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
+                }
 
-        window.onresize = function(e){
-            var activated = typeof($("#room_image").attr('data-uk-parallax'));
-            var heightDiff = this.innerHeight - img_height;
-            if(heightDiff < 0 && activated !== 'undefined'){
-                // FIXME: this does not seem to deactive the parallax scrolling effect!
-                $("#room_image").removeAttr("data-uk-parallax");
-            }
-            else if(heightDiff >= 0 && activated === 'undefined'){
-                $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
-            }
-        }
-    });
+                window.onresize = function(e){
+                    var activated = typeof($("#room_image").attr('data-uk-parallax'));
+                    var heightDiff = this.innerHeight - img_height;
+                    if(heightDiff < 0 && activated !== 'undefined'){
+                        // FIXME: this does not seem to deactive the parallax scrolling effect!
+                        $("#room_image").removeAttr("data-uk-parallax");
+                    }
+                    else if(heightDiff >= 0 && activated === 'undefined'){
+                        $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
+                    }
+                }
+            });
+        });
     </script>
 {% endblock %}

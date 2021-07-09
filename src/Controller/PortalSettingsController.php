@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexSendMail;
@@ -25,8 +26,6 @@ use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
 use App\Form\DataTransformer\UserTransformer;
-use App\Form\Model\Csv\Base64CsvFile;
-use App\Form\Model\Csv\CsvUserDataset;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
@@ -69,6 +68,7 @@ use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TranslationType;
 use App\Model\TimePulseTemplate;
+use App\Repository\AuthSourceRepository;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
@@ -80,7 +80,6 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
@@ -791,17 +790,14 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param int|null $licenseId
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @param RoomService $roomService
      * @param EventDispatcherInterface $dispatcher
      * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
     public function licenses(
         Portal $portal,
-        $licenseId,
+        ?int $licenseId,
         Request $request,
-        EntityManagerInterface $entityManager,
-        RoomService $roomService,
         EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment
     ) {
@@ -1109,7 +1105,7 @@ class PortalSettingsController extends AbstractController
 
         $server = $entityManager->getRepository(Server::class)->getServer();
         $serverForm = $this->createForm(ServerAnnouncementsType::class, $server);
-        if ($this->isGranted('ROOT')) {
+        if ($this->isGranted(RootVoter::ROOT)) {
             $serverForm->handleRequest($request);
             if ($serverForm->isSubmitted() && $serverForm->isValid()) {
                 $entityManager->persist($server);
@@ -1281,10 +1277,13 @@ class PortalSettingsController extends AbstractController
         Request $request,
         LegacyEnvironment $environment,
         \Swift_Mailer $mailer,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
+        AuthSourceRepository $authSourceRepository,
+        AccountManager $accountManager
     ) {
         $user = $userService->getCurrentUserItem();
         $portalUsers = $userService->getListUsers($portal->getId());
+        $authSources = $authSourceRepository->findByPortal($portalId);
         $userList = [];
         $alreadyIncludedUserIDs = [];
         foreach ($portalUsers as $portalUser) {
@@ -1405,8 +1404,10 @@ class PortalSettingsController extends AbstractController
                             if ($checked) {
                                 $IdsMailRecipients[] = $id;
                                 $user = $userService->getUser($id);
-                                $user->lock();
-                                $user->save();
+                                $user->reject();
+
+                                $account = $accountManager->getAccount($user, $portal->getId());
+                                $accountManager->lock($account);
                             }
                         }
                         $this->sendUserInfoMail($IdsMailRecipients, 'user-block', $user, $mailer, $userService,
@@ -1604,6 +1605,7 @@ class PortalSettingsController extends AbstractController
             'userList' => $userList,
             'portal' => $portal,
             'pagination' => $pagination,
+            'authSources' => $authSources,
         ];
     }
 
@@ -1978,7 +1980,7 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      * @param UserService $userService
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param AuthSourceRepository $authSourceRepository
      * @param RoomService $roomService
      * @param Security $security
      * @return array|RedirectResponse
@@ -1987,7 +1989,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
+        AuthSourceRepository $authSourceRepository,
         RoomService $roomService,
         Security $security
     ) {
@@ -2095,7 +2097,6 @@ class PortalSettingsController extends AbstractController
                 ]);
             }
 
-
             if ($form->get('back')->isClicked()) {
                 return $this->redirectToRoute('app_portalsettings_accountindex', [
                     'portal' => $portal,
@@ -2107,6 +2108,7 @@ class PortalSettingsController extends AbstractController
         return [
             'user' => $user,
             'portalUser' => $portalUser,
+            'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
             'form' => $form->createView(),
             'portal' => $portal,
             'communities' => implode(', ', $communityListNames),
@@ -2271,7 +2273,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        AccountManager $accountManager
     ) {
         $user = $userService->getUser($request->get('userId'));
         $userChangeStatus = new PortalUserChangeStatus();
@@ -2281,10 +2284,8 @@ class PortalSettingsController extends AbstractController
 
         $userStatus = $user->getStatus();
         $currentStatus = 'Moderator';
-        if ($userStatus == 1) {
+        if ($userStatus == 0) {
             $currentStatus = 'Close';
-        } elseif ($userStatus == 0) {
-            $currentStatus = 'In acceptance';
         } elseif ($userStatus == 2) {
             $currentStatus = 'User';
         } elseif ($userStatus == 3) {
@@ -2305,15 +2306,20 @@ class PortalSettingsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userService->getUser($request->get('userId'));
 
+            $account = $accountManager->getAccount($user, $portal->getId());
+
             /** @var PortalUserChangeStatus $data */
             $data = $form->getData();
             $newStatus = $data->getNewStatus();
             if (strcmp($newStatus, 'user') == 0) {
                 $user->makeUser();
+                $accountManager->unlock($account);
             } elseif (strcmp($newStatus, 'moderator') == 0) {
                 $user->makeModerator();
+                $accountManager->unlock($account);
             } elseif (strcmp($newStatus, 'close') == 0) {
                 $user->reject();
+                $accountManager->lock($account);
             }
 
             if ($data->isContact()) {

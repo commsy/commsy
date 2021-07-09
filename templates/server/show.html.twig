@@ -31,7 +31,9 @@
                         {% endif %}
 
                         <div class="uk-card-body uk-margin-large-bottom">
-                            <h3 class="uk-card-title">{{ activePortal.title }}</h3>
+                            <h3 class="uk-card-title">
+                                <a href="{{ path('app_helper_portalenter', { 'context': activePortal.id }) }}" class="uk-card-title">{{ activePortal.title }}</a>
+                            </h3>
 
                             <div class="uk-grid-small uk-child-width-1-2" uk-grid>
                                 <div>

@@ -1,21 +1,22 @@
 <?php
+
 namespace App\Form\Type\Portal;
 
 use App\Entity\License;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
 
 class LicenseSortType extends AbstractType
 {
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -49,12 +50,19 @@ class LicenseSortType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([
-                'portalId',
-            ])
-            ->setDefaults([
-                'data_class' => License::class,
-                'translation_domain' => 'portal',
-            ]);
+            ->setRequired(['portalId'])
+            ->setDefaults(['translation_domain' => 'portal']);
+    }
+
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     *
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
+    {
+        return 'license_sort';
     }
 }

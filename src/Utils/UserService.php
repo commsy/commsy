@@ -4,18 +4,26 @@ namespace App\Utils;
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_room_manager;
+use cs_user_item;
+use cs_user_manager;
 use DateTimeImmutable;
 use Symfony\Component\Form\FormInterface;
 
 
 class UserService
 {
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private $userManager;
+    private cs_user_manager $userManager;
 
-    private $roomManager;
+    private cs_room_manager $roomManager;
 
+    /**
+     * UserService constructor.
+     * @param LegacyEnvironment $legacyEnvironment
+     */
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -27,14 +35,18 @@ class UserService
         $this->roomManager->reset();
     }
 
-    public function getCountArray($roomId, $moderation = false)
+    /**
+     * @param $roomId
+     * @param bool $moderation
+     * @return array
+     */
+    public function getCountArray($roomId, bool $moderation = false): array
     {
         $this->userManager->setContextLimit($roomId);
         if (!$moderation) {
             $this->userManager->setUserLimit();
         }
         $this->userManager->select();
-        $countUser = array();
         $countUserArray['count'] = sizeof($this->userManager->get()->to_array());
         $this->userManager->resetLimits();
         if (!$moderation) {
@@ -46,7 +58,6 @@ class UserService
         return $countUserArray;
     }
 
-
     public function resetLimits()
     {
         $this->userManager->resetLimits();
@@ -55,19 +66,19 @@ class UserService
     /**
      * Creates a new user in the given room context based on the given source user
      * NOTE: if the room context already contains a user with identical ID, that existing user is returned
-     * @param \cs_user_item $sourceUser the user whose attributes shall be cloned to the new user
+     * @param cs_user_item $sourceUser the user whose attributes shall be cloned to the new user
      * @param int $contextID the ID of the room which contains the created user
      * @param int $userStatus (optional) the user status of the created user; defaults to a regular user
-     * @param \cs_user_item|null (optional) $creator the user who will be specified as the new user's creator; if left
+     * @param cs_user_item|null (optional) $creator the user who will be specified as the new user's creator; if left
      * out, the new user will be also set as his/her own creator
-     * @return \cs_user_item|null the newly created user, or null if an error occurred
+     * @return cs_user_item|null the newly created user, or null if an error occurred
      */
     public function cloneUser(
-        \cs_user_item $sourceUser,
+        cs_user_item $sourceUser,
         int $contextID,
         int $userStatus = 2,
-        \cs_user_item $creator = null
-    ): ?\cs_user_item {
+        cs_user_item $creator = null
+    ): ?cs_user_item {
         // TODO: use a facade/factory to create a new room (also compare with UserCreatorFacade->addUserToRooms())
 
         if (!isset($sourceUser) || empty($contextID)) {
@@ -121,11 +132,11 @@ class UserService
 
     /**
      * Copies the source user's picture to the given target user, and returns the target user
-     * @param \cs_user_item $sourceUser the user whose picture shall be copied to the target user
-     * @param \cs_user_item $targetUser the user whose picture will be set to the picture of the source user
-     * @return \cs_user_item|null the target user whose picture has been set, or null if the source user had no picture
+     * @param cs_user_item $sourceUser the user whose picture shall be copied to the target user
+     * @param cs_user_item $targetUser the user whose picture will be set to the picture of the source user
+     * @return cs_user_item|null the target user whose picture has been set, or null if the source user had no picture
      */
-    public function cloneUserPicture(\cs_user_item $sourceUser, \cs_user_item $targetUser): ?\cs_user_item
+    public function cloneUserPicture(cs_user_item $sourceUser, cs_user_item $targetUser): ?cs_user_item
     {
         $userPicture = $sourceUser->getPicture(); // example userPicture value: "cid123_jdoe_Jon-Doe-01.jpg"
         if (empty($userPicture)) {
@@ -146,11 +157,11 @@ class UserService
 
     /**
      * Links the given user with the given room's system group "All" and returns that group
-     * @param \cs_user_item $user the user who shall be linked to the system group "All"
+     * @param cs_user_item $user the user who shall be linked to the system group "All"
      * @param \cs_room_item $room the room whose system group "All" shall be used
      * @return \cs_label_item|null the system group "All" to which the given user was added, or null if an error occurred
      */
-    public function addUserToSystemGroupAll(\cs_user_item $user, \cs_room_item $room): ?\cs_label_item
+    public function addUserToSystemGroupAll(cs_user_item $user, \cs_room_item $room): ?\cs_label_item
     {
         $groupManager = $this->legacyEnvironment->getLabelManager();
         $groupManager->setExactNameLimit('ALL');
@@ -175,12 +186,22 @@ class UserService
      * @param integer $max
      * @param integer $start
      * @param string $sort
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
-    public function getListUsers($roomId, $max = null, $start = null, $moderation = false, $sort = null)
-    {
-        $this->userManager->reset();
-        $this->userManager->resetLimits();
+    public function getListUsers(
+        $roomId,
+        $max = null,
+        $start = null,
+        $moderation = false,
+        $sort = null,
+        $resetLimits = true
+    ): array {
+
+        if ($resetLimits) {
+            $this->userManager->reset();
+            $this->userManager->resetLimits();
+        }
+
         $this->userManager->setContextLimit($roomId);
         if ($max !== null && $start !== null) {
             $this->userManager->setIntervalLimit($start, $max);
@@ -205,10 +226,11 @@ class UserService
     /**
      * @param integer $roomId
      * @param integer[] $ids
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
     public function getUsersById($roomId, $ids)
     {
+        $this->resetLimits();
         $this->userManager->setContextLimit($roomId);
         $this->userManager->setIDArrayLimit($ids);
 
@@ -218,7 +240,11 @@ class UserService
         return $userList->to_array();
     }
 
-    public function getPortalUser(Account $account): ?\cs_user_item
+    /**
+     * @param Account $account
+     * @return cs_user_item|null
+     */
+    public function getPortalUser(Account $account): ?cs_user_item
     {
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($account->getContextId());
@@ -227,7 +253,7 @@ class UserService
         $this->userManager->select();
         $userList = $this->userManager->get();
 
-        /** @var \cs_user_item $user */
+        /** @var cs_user_item $user */
         $user = null;
 
         if ($userList->getCount() === 1) {
@@ -290,7 +316,7 @@ class UserService
         }
     }
 
-    public function getUser($userId): ?\cs_user_item
+    public function getUser($userId): ?cs_user_item
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings
@@ -305,7 +331,7 @@ class UserService
      * @param $userId
      * @return array
      */
-    public function getArchivedRoomList($userId)
+    public function getArchivedRoomList($userId): array
     {
         $archivedRoomManager = $this->legacyEnvironment->getZzzRoomManager();
         $archivedRoomList = $archivedRoomManager->getRelatedRoomListForUser($userId);
@@ -352,7 +378,7 @@ class UserService
     /**
      * Get the current user item
      *
-     * @return \cs_user_item The current user object
+     * @return cs_user_item The current user object
      */
     public function getCurrentUserItem()
     {
@@ -364,7 +390,7 @@ class UserService
      *
      * @return array of searchable room items
      */
-    public function getSearchableRooms(\cs_user_item $userItem)
+    public function getSearchableRooms(cs_user_item $userItem)
     {
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
@@ -403,9 +429,9 @@ class UserService
 
     /**
      * @param int $contextId
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
-    public function getModeratorsForContext($contextId)
+    public function getModeratorsForContext(int $contextId): array
     {
         $this->userManager->setContextLimit($contextId);
         $this->userManager->setStatusLimit(3);
@@ -426,7 +452,7 @@ class UserService
 
     /**
      * @param \cs_context_item $room
-     * @param \cs_user_item $currentUser
+     * @param cs_user_item $currentUser
      * @return string
      */
     public function getMemberStatus($room, $currentUser)
@@ -480,7 +506,7 @@ class UserService
      * @param int $roomId The ID of the containing context
      * @param mixed $groupIds The ID (or array of IDs) for the group(s) whose users shall be returned
      * @param bool $excludeRejectedAndRegisteredUsers Whether to exclude any rejected and/or registered users
-     * @return \cs_user_item[] An array of users belonging to the group(s) with the given group ID(s)
+     * @return cs_user_item[] An array of users belonging to the group(s) with the given group ID(s)
      */
     public function getUsersByGroupIds($roomId, $groupIds, $excludeRejectedAndRegisteredUsers = false)
     {
@@ -510,7 +536,7 @@ class UserService
     }
 
     /**
-     * @param \cs_user_item $user
+     * @param cs_user_item $user
      * @param int $roomId
      */
     public function updateAllGroupStatus($user, $roomId)

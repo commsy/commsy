@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
+
 class cs_mail
 {
     private $errors = [];
@@ -217,6 +220,10 @@ class cs_mail
 
         // to
         $to = explode(',', $this->cleanRecipients($this->recipients));
+        $to = array_filter($to, function ($email) {
+            $validator = new EmailValidator();
+            return $validator->isValid($email, new RFCValidation());
+        });
         if (!$to) {
             return false;
         }
@@ -258,11 +265,11 @@ class cs_mail
 
     private function filterValidEmails(array $emails)
     {
-        $validator = new \Egulias\EmailValidator\EmailValidator();
+        $validator = new EmailValidator();
 
         $validEmails = [];
         foreach ($emails as $email) {
-            if ($validator->isValid($email, new \Egulias\EmailValidator\Validation\RFCValidation())) {
+            if ($validator->isValid($email, new RFCValidation())) {
                 $validEmails[] = $email;
             }
         }

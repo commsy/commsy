@@ -6,6 +6,7 @@ use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
+use App\Action\MarkRead\MarkReadAction;
 use App\Entity\Calendars;
 use App\Event\CommsyEditEvent;
 use App\Filter\DateFilterType;
@@ -19,8 +20,6 @@ use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
-use App\Utils\ItemService;
-use App\Utils\ReaderService;
 use App\Utils\TopicService;
 use cs_dates_item;
 use cs_room_item;
@@ -36,8 +35,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DateController
@@ -80,7 +77,7 @@ class DateController extends BaseController
         string $sort = 'time'
     ) {
         $roomItem = $this->getRoom($roomId);
-        
+
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $dateFilter = $request->get('dateFilter');
@@ -90,7 +87,7 @@ class DateController extends BaseController
 
         if ($dateFilter) {
             $filterForm = $this->createFilterForm($roomItem);
-    
+
             // manually bind values from the request
             $filterForm->submit($dateFilter);
             // set filter conditions on the date manager
@@ -103,8 +100,10 @@ class DateController extends BaseController
         // Correct sort from "date" to "time". Applies only in date rubric.
         if ($sort == 'date') {
             $sort = 'time';
-        } else if ($sort == 'date_rev') {
-            $sort = 'time_rev';
+        } else {
+            if ($sort == 'date_rev') {
+                $sort = 'time_rev';
+            }
         }
 
         // get material list from manager service
@@ -204,7 +203,7 @@ class DateController extends BaseController
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('App:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', NULL)));
+        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', null)));
 
         return [
             'roomId' => $roomId,
@@ -249,21 +248,20 @@ class DateController extends BaseController
         // get date list from manager service
         if ($sort != "none") {
             $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $sort);
-        }
-        elseif ($this->get('session')->get('sortDates')) {
-            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $this->get('session')->get('sortDates'));
-        }
-        else {
+        } elseif ($this->get('session')->get('sortDates')) {
+            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0,
+                $this->get('session')->get('sortDates'));
+        } else {
             $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, 'date');
         }
 
         $readerList = array();
         foreach ($dates as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
         }
 
@@ -349,7 +347,7 @@ class DateController extends BaseController
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('App:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', NULL)));
+        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', null)));
 
         return [
             'roomId' => $roomId,
@@ -406,13 +404,13 @@ class DateController extends BaseController
         $item = $date;
         $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
@@ -439,34 +437,35 @@ class DateController extends BaseController
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ($current_user) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $date->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
 
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -484,9 +483,11 @@ class DateController extends BaseController
         if ($this->dateService->getDate($itemId)->isLocked()) {
             $alert['type'] = 'warning';
             $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
-        } else if ($date->isExternal()) {
-            $alert['type'] = 'warning';
-            $alert['content'] = $this->translator->trans('date is external', array(), 'date');
+        } else {
+            if ($date->isExternal()) {
+                $alert['type'] = 'warning';
+                $alert['content'] = $this->translator->trans('date is external', array(), 'date');
+            }
         }
 
         $pathTopicItem = null;
@@ -495,7 +496,8 @@ class DateController extends BaseController
         }
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
-        $amountAnnotations = $annotationService->getListAnnotations($roomId, $this->dateService->getDate($itemId)->getItemId(), null, null);
+        $amountAnnotations = $annotationService->getListAnnotations($roomId,
+            $this->dateService->getDate($itemId)->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
@@ -535,7 +537,7 @@ class DateController extends BaseController
         int $roomId
     ) {
         $roomItem = $this->getRoom($roomId);
-        
+
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $dateFilter = $request->get('dateFilter');
@@ -548,7 +550,7 @@ class DateController extends BaseController
 
         if ($dateFilter) {
             $filterForm = $this->createFilterForm($roomItem);
-    
+
             // manually bind values from the request
             $filterForm->submit($dateFilter);
 
@@ -556,10 +558,12 @@ class DateController extends BaseController
             $this->dateService->setFilterConditions($filterForm);
 
             if (isset($dateFilter['date-from']['date']) && !empty($dateFilter['date-from']['date'])) {
-                $startDate = DateTime::createFromFormat('d.m.Y', $dateFilter['date-from']['date'])->format('Y-m-d 00:00:00');
+                $startDate = DateTime::createFromFormat('d.m.Y',
+                    $dateFilter['date-from']['date'])->format('Y-m-d 00:00:00');
             }
             if (isset($dateFilter['date-until']['date']) && !empty($dateFilter['date-until']['date'])) {
-                $endDate = DateTime::createFromFormat('d.m.Y', $dateFilter['date-until']['date'])->format('Y-m-d 23:59:59');
+                $endDate = DateTime::createFromFormat('d.m.Y',
+                    $dateFilter['date-until']['date'])->format('Y-m-d 23:59:59');
             }
         } else {
             $this->dateService->setPastFilter(true);
@@ -582,18 +586,18 @@ class DateController extends BaseController
                     $end .= ' ' . $date->getEndingTime();
                 }
             } else {
-                $start = $date->getStartingDay().' 00:00:00';
-                $endDateTime = new DateTime($date->getEndingDay().' 00:00:00');
+                $start = $date->getStartingDay() . ' 00:00:00';
+                $endDateTime = new DateTime($date->getEndingDay() . ' 00:00:00');
                 $endDateTime->modify('+1 day');
                 $end = $endDateTime->format('Y-m-d H:i:s');
             }
-            
+
             $participantsList = $date->getParticipantsItemList();
             $participantItem = $participantsList->getFirst();
             $participantsNameArray = array();
             while ($participantItem) {
                 $participantsNameArray[] = $participantItem->getFullname();
-                $participantItem = $participantsList->getNext();    
+                $participantItem = $participantsList->getNext();
             }
             $participantsDisplay = '';
             if (!empty($participantsNameArray)) {
@@ -611,50 +615,86 @@ class DateController extends BaseController
             if ($date->getCalendar()->hasLightColor()) {
                 $borderColor = '#888888';
             }
-            
+
             $recurringDescription = '';
             if ($date->getRecurrencePattern() != '') {
-                
+
                 $recurrencePattern = $date->getRecurrencePattern();
-                
+
                 if (isset($recurrencePattern['recurringEndDate'])) {
                     $endDate = new \DateTime($recurrencePattern['recurringEndDate']);
                 }
-                
+
                 if ($recurrencePattern['recurring_select'] == 'RecurringDailyType') {
-                    $recurringDescription = $this->translator->trans('dailyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDay'], '%date%' => $endDate->format('d.m.Y')), 'date');
-                } else if ($recurrencePattern['recurring_select'] == 'RecurringWeeklyType') {
-                    $daysOfWeek = array();
-                    if (isset($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'])) {
-                        foreach ($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
-                            $daysOfWeek[] = $this->translator->trans($day, array(), 'date');
+                    $recurringDescription = $this->translator->trans('dailyDescription', array(
+                        '%day%' => $recurrencePattern['recurring_sub']['recurrenceDay'],
+                        '%date%' => $endDate->format('d.m.Y')
+                    ), 'date');
+                } else {
+                    if ($recurrencePattern['recurring_select'] == 'RecurringWeeklyType') {
+                        $daysOfWeek = array();
+                        if (isset($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'])) {
+                            foreach ($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
+                                $daysOfWeek[] = $this->translator->trans($day, array(), 'date');
+                            }
+                        }
+                        $recurringDescription = $this->translator->trans('weeklyDescription', array(
+                            '%week%' => $recurrencePattern['recurring_sub']['recurrenceWeek'],
+                            '%daysOfWeek%' => implode(', ', $daysOfWeek),
+                            '%date%' => $endDate->format('d.m.Y')
+                        ), 'date');
+                    } else {
+                        if ($recurrencePattern['recurring_select'] == 'RecurringMonthlyType') {
+                            $tempDayOfMonthInterval = $this->translator->trans('first', array(), 'date');
+                            if (isset($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'])) {
+                                if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 2) {
+                                    $tempDayOfMonthInterval = $this->translator->trans('second', array(), 'date');
+                                } else {
+                                    if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 3) {
+                                        $tempDayOfMonthInterval = $this->translator->trans('third', array(), 'date');
+                                    } else {
+                                        if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 4) {
+                                            $tempDayOfMonthInterval = $this->translator->trans('fourth', array(),
+                                                'date');
+                                        } else {
+                                            if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 5) {
+                                                $tempDayOfMonthInterval = $this->translator->trans('fifth', array(),
+                                                    'date');
+                                            } else {
+                                                if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 'last') {
+                                                    $tempDayOfMonthInterval = $this->translator->trans('last', array(),
+                                                        'date');
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (isset($recurrencePattern['recurring_sub']['recurrenceDayOfMonth'])) {
+                                $recurringDescription = $this->translator->trans('monthlyDescription', array(
+                                    '%month%' => $recurrencePattern['recurring_sub']['recurrenceMonth'],
+                                    '%day%' => $tempDayOfMonthInterval,
+                                    '%dayOfWeek%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceDayOfMonth'],
+                                        array(), 'date'),
+                                    '%date%' => $endDate->format('d.m.Y')
+                                ), 'date');
+                            }
+                        } else {
+                            if ($recurrencePattern['recurring_select'] == 'RecurringYearlyType') {
+                                $recurringDescription = $this->translator->trans('yearlyDescription', array(
+                                    '%day%' => $recurrencePattern['recurring_sub']['recurrenceDayOfMonth'],
+                                    '%month%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceMonthOfYear'],
+                                        array(), 'date'),
+                                    '%date%' => $endDate->format('d.m.Y')
+                                ), 'date');
+                            }
                         }
                     }
-                    $recurringDescription = $this->translator->trans('weeklyDescription', array('%week%' => $recurrencePattern['recurring_sub']['recurrenceWeek'], '%daysOfWeek%' => implode(', ', $daysOfWeek), '%date%' => $endDate->format('d.m.Y')), 'date');
-                } else if ($recurrencePattern['recurring_select'] == 'RecurringMonthlyType') {
-                    $tempDayOfMonthInterval = $this->translator->trans('first', array(), 'date');
-                    if (isset($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'])) {
-                        if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 2) {
-                            $tempDayOfMonthInterval = $this->translator->trans('second', array(), 'date');
-                        } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 3) {
-                            $tempDayOfMonthInterval = $this->translator->trans('third', array(), 'date');
-                        } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 4) {
-                            $tempDayOfMonthInterval = $this->translator->trans('fourth', array(), 'date');
-                        } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 5) {
-                            $tempDayOfMonthInterval = $this->translator->trans('fifth', array(), 'date');
-                        } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 'last') {
-                            $tempDayOfMonthInterval = $this->translator->trans('last', array(), 'date');
-                        }
-                    }
-                    if (isset($recurrencePattern['recurring_sub']['recurrenceDayOfMonth'])) {
-                        $recurringDescription = $this->translator->trans('monthlyDescription', array('%month%' => $recurrencePattern['recurring_sub']['recurrenceMonth'], '%day%' => $tempDayOfMonthInterval, '%dayOfWeek%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceDayOfMonth'], array(), 'date'), '%date%' => $endDate->format('d.m.Y')), 'date');
-                    }
-                } else if ($recurrencePattern['recurring_select'] == 'RecurringYearlyType') {
-                    $recurringDescription = $this->translator->trans('yearlyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDayOfMonth'], '%month%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceMonthOfYear'], array(), 'date'), '%date%' => $endDate->format('d.m.Y')), 'date');
                 }
             }
 
-            $events[] = array('itemId' => $date->getItemId(),
+            $events[] = array(
+                'itemId' => $date->getItemId(),
                 'title' => html_entity_decode($date->getTitle()),
                 'start' => $start,
                 'end' => $end,
@@ -681,7 +721,8 @@ class DateController extends BaseController
      * @return JsonResponse
      * @throws Exception
      */
-    public function eventsdashboardAction() {
+    public function eventsdashboardAction()
+    {
 
         $user = $this->legacyEnvironment->getCurrentUserItem();
         $userList = $user->getRelatedUserList()->to_array();
@@ -690,7 +731,8 @@ class DateController extends BaseController
         foreach ($userList as $tempUser) {
             /** @var cs_user_item $tempUser */
             if ($tempUser->getStatus() >= 2) {
-                $listDates = array_merge($listDates, $this->dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
+                $listDates = array_merge($listDates,
+                    $this->dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
             }
         }
 
@@ -710,18 +752,18 @@ class DateController extends BaseController
                     $end .= ' ' . $date->getEndingTime();
                 }
             } else {
-                $start = $date->getStartingDay().' 00:00:00';
-                $endDateTime = new DateTime($date->getEndingDay().' 00:00:00');
+                $start = $date->getStartingDay() . ' 00:00:00';
+                $endDateTime = new DateTime($date->getEndingDay() . ' 00:00:00');
                 $endDateTime->modify('+1 day');
                 $end = $endDateTime->format('Y-m-d H:i:s');
             }
-            
+
             $participantsList = $date->getParticipantsItemList();
             $participantItem = $participantsList->getFirst();
             $participantsNameArray = array();
             while ($participantItem) {
                 $participantsNameArray[] = $participantItem->getFullname();
-                $participantItem = $participantsList->getNext();    
+                $participantItem = $participantsList->getNext();
             }
             $participantsDisplay = '';
             if (!empty($participantsNameArray)) {
@@ -743,57 +785,92 @@ class DateController extends BaseController
             $recurringDescription = '';
             if ($date->getRecurrencePattern() != '') {
                 $recurrencePattern = $date->getRecurrencePattern();
-                
+
                 if (isset($recurrencePattern['recurringEndDate'])) {
                     $endDate = new \DateTime($recurrencePattern['recurringEndDate']);
                 }
-                
+
                 if ($recurrencePattern['recurring_select'] == 'RecurringDailyType') {
-                    $recurringDescription = $this->translator->trans('dailyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDay'], '%date%' => $endDate->format('d.m.Y')), 'date');
-                } else if ($recurrencePattern['recurring_select'] == 'RecurringWeeklyType') {
-                    $daysOfWeek = array();
-                    foreach ($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
-                        $daysOfWeek[] = $this->translator->trans($day, array(), 'date');
+                    $recurringDescription = $this->translator->trans('dailyDescription', array(
+                        '%day%' => $recurrencePattern['recurring_sub']['recurrenceDay'],
+                        '%date%' => $endDate->format('d.m.Y')
+                    ), 'date');
+                } else {
+                    if ($recurrencePattern['recurring_select'] == 'RecurringWeeklyType') {
+                        $daysOfWeek = array();
+                        foreach ($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
+                            $daysOfWeek[] = $this->translator->trans($day, array(), 'date');
+                        }
+                        $recurringDescription = $this->translator->trans('weeklyDescription', array(
+                            '%week%' => $recurrencePattern['recurring_sub']['recurrenceWeek'],
+                            '%daysOfWeek%' => implode(', ', $daysOfWeek),
+                            '%date%' => $endDate->format('d.m.Y')
+                        ), 'date');
+                    } else {
+                        if ($recurrencePattern['recurring_select'] == 'RecurringMonthlyType') {
+                            $tempDayOfMonthInterval = $this->translator->trans('first', array(), 'date');
+                            if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 2) {
+                                $tempDayOfMonthInterval = $this->translator->trans('second', array(), 'date');
+                            } else {
+                                if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 3) {
+                                    $tempDayOfMonthInterval = $this->translator->trans('third', array(), 'date');
+                                } else {
+                                    if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 4) {
+                                        $tempDayOfMonthInterval = $this->translator->trans('fourth', array(), 'date');
+                                    } else {
+                                        if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 5) {
+                                            $tempDayOfMonthInterval = $this->translator->trans('fifth', array(),
+                                                'date');
+                                        } else {
+                                            if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 'last') {
+                                                $tempDayOfMonthInterval = $this->translator->trans('last', array(),
+                                                    'date');
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            $recurringDescription = $this->translator->trans('monthlyDescription', array(
+                                '%month%' => $recurrencePattern['recurring_sub']['recurrenceMonth'],
+                                '%day%' => $tempDayOfMonthInterval,
+                                '%dayOfWeek%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceDayOfMonth'],
+                                    array(), 'date'),
+                                '%date%' => $endDate->format('d.m.Y')
+                            ), 'date');
+                        } else {
+                            if ($recurrencePattern['recurring_select'] == 'RecurringYearlyType') {
+                                $recurringDescription = $this->translator->trans('yearlyDescription', array(
+                                    '%day%' => $recurrencePattern['recurring_sub']['recurrenceDayOfMonth'],
+                                    '%month%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceMonthOfYear'],
+                                        array(), 'date'),
+                                    '%date%' => $endDate->format('d.m.Y')
+                                ), 'date');
+                            }
+                        }
                     }
-                    $recurringDescription = $this->translator->trans('weeklyDescription', array('%week%' => $recurrencePattern['recurring_sub']['recurrenceWeek'], '%daysOfWeek%' => implode(', ', $daysOfWeek), '%date%' => $endDate->format('d.m.Y')), 'date');
-                } else if ($recurrencePattern['recurring_select'] == 'RecurringMonthlyType') {
-                    $tempDayOfMonthInterval = $this->translator->trans('first', array(), 'date');
-                    if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 2) {
-                        $tempDayOfMonthInterval = $this->translator->trans('second', array(), 'date');
-                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 3) {
-                        $tempDayOfMonthInterval = $this->translator->trans('third', array(), 'date');
-                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 4) {
-                        $tempDayOfMonthInterval = $this->translator->trans('fourth', array(), 'date');
-                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 5) {
-                        $tempDayOfMonthInterval = $this->translator->trans('fifth', array(), 'date');
-                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 'last') {
-                        $tempDayOfMonthInterval = $this->translator->trans('last', array(), 'date');
-                    }
-                    $recurringDescription = $this->translator->trans('monthlyDescription', array('%month%' => $recurrencePattern['recurring_sub']['recurrenceMonth'], '%day%' => $tempDayOfMonthInterval, '%dayOfWeek%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceDayOfMonth'], array(), 'date'), '%date%' => $endDate->format('d.m.Y')), 'date');
-                } else if ($recurrencePattern['recurring_select'] == 'RecurringYearlyType') {
-                    $recurringDescription = $this->translator->trans('yearlyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDayOfMonth'], '%month%' => $this->translator->trans($recurrencePattern['recurring_sub']['recurrenceMonthOfYear'], array(), 'date'), '%date%' => $endDate->format('d.m.Y')), 'date');
                 }
             }
-            
+
             $context = $this->itemService->getTypedItem($date->getContextId());
 
-            $events[] = array('itemId' => $date->getItemId(),
-                              'title' => $date->getTitle(),
-                              'start' => $start,
-                              'end' => $end,
-                              'color' => $color,
-                              'calendar' => $date->getCalendar()->getTitle(),
-                              'editable' => $date->isPublic(),
-                              'description' => $date->getDateDescription(),
-                              'place' => $date->getPlace(),
-                              'participants' => $participantsDisplay,
-                              'contextId' => $context->getItemId(),
-                              'contextTitle' => $context->getTitle(),
-                              'recurringDescription' => $recurringDescription,
-                              'textColor' => $textColor,
-                              'borderColor' => $borderColor,
-                              'allDay' => $date->isWholeDay(),
-                             );
+            $events[] = array(
+                'itemId' => $date->getItemId(),
+                'title' => $date->getTitle(),
+                'start' => $start,
+                'end' => $end,
+                'color' => $color,
+                'calendar' => $date->getCalendar()->getTitle(),
+                'editable' => $date->isPublic(),
+                'description' => $date->getDateDescription(),
+                'place' => $date->getPlace(),
+                'participants' => $participantsDisplay,
+                'contextId' => $context->getItemId(),
+                'contextTitle' => $context->getTitle(),
+                'recurringDescription' => $recurringDescription,
+                'textColor' => $textColor,
+                'borderColor' => $borderColor,
+                'allDay' => $date->isWholeDay(),
+            );
         }
 
         return new JsonResponse($events);
@@ -820,38 +897,39 @@ class DateController extends BaseController
         } else {
             $dateDescriptionArray = date_parse(date('Y-m-d H:i:s'));
         }
-        
+
         $year = $dateDescriptionArray['year'];
         $month = $dateDescriptionArray['month'];
         if ($month < 10) {
-            $month = '0'.$month;
+            $month = '0' . $month;
         }
         $day = $dateDescriptionArray['day'];
         if ($day < 10) {
-            $day = '0'.$day;
+            $day = '0' . $day;
         }
         $hour = $dateDescriptionArray['hour'];
         if ($hour < 10) {
-            $hour = '0'.$hour;
+            $hour = '0' . $hour;
         }
         $minute = $dateDescriptionArray['minute'];
         if ($minute < 10) {
-            $minute = '0'.$minute;
+            $minute = '0' . $minute;
         }
         $second = $dateDescriptionArray['second'];
         if ($second < 10) {
-            $second = '0'.$second;
+            $second = '0' . $second;
         }
-        
-        $dateItem->setStartingDay($year.'-'.$month.'-'.$day);
-        $dateItem->setStartingTime($hour.':'.$minute.':'.$second);
-        
-        $dateItem->setDateTime_start($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second);
-        $dateItem->setDateTime_end($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second);
+
+        $dateItem->setStartingDay($year . '-' . $month . '-' . $day);
+        $dateItem->setStartingTime($hour . ':' . $minute . ':' . $second);
+
+        $dateItem->setDateTime_start($year . '-' . $month . '-' . $day . ' ' . $hour . ':' . $minute . ':' . $second);
+        $dateItem->setDateTime_end($year . '-' . $month . '-' . $day . ' ' . $hour . ':' . $minute . ':' . $second);
 
         $dateItem->save();
 
-        return $this->redirectToRoute('app_date_detail', array('roomId' => $roomId, 'itemId' => $dateItem->getItemId()));
+        return $this->redirectToRoute('app_date_detail',
+            array('roomId' => $roomId, 'itemId' => $dateItem->getItemId()));
     }
 
     /**
@@ -916,7 +994,8 @@ class DateController extends BaseController
 
         $date->save();
 
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('date changed', [], 'date');
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('date changed',
+                [], 'date');
 
         $start = $date->getStartingDay();
         if ($date->getStartingTime() != '') {
@@ -988,7 +1067,8 @@ class DateController extends BaseController
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+            $this->legacyEnvironment);
         $formData['draft'] = $isDraft;
 
         $em = $this->getDoctrine()->getManager();
@@ -999,7 +1079,11 @@ class DateController extends BaseController
         foreach ($calendars as $calendar) {
             if (!$calendar->getExternalUrl()) {
                 $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
-                $calendarsOptionsAttr[$calendar->getTitle()] = ['title' => $calendar->getTitle(), 'color' => $calendar->getColor(), 'hasLightColor' => $calendar->hasLightColor()];
+                $calendarsOptionsAttr[$calendar->getTitle()] = [
+                    'title' => $calendar->getTitle(),
+                    'color' => $calendar->getColor(),
+                    'hasLightColor' => $calendar->hasLightColor()
+                ];
             }
         }
         $formData['calendars'] = $calendarsOptions;
@@ -1010,7 +1094,7 @@ class DateController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
             'categoryMappingOptions' => [
@@ -1026,7 +1110,7 @@ class DateController extends BaseController
             $formOptions['attr']['unsetRecurrence'] = true;
         }
         $form = $this->createForm(DateType::class, $formData, $formOptions);
-        
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1054,16 +1138,16 @@ class DateController extends BaseController
                 }
 
                 $valuesToChange = array();
-                if($valuesBeforeChange['startingTime'] != $dateItem->getStartingTime()){
+                if ($valuesBeforeChange['startingTime'] != $dateItem->getStartingTime()) {
                     $valuesToChange[] = 'startingTime';
                 }
-                if($valuesBeforeChange['endingTime'] != $dateItem->getEndingTime()){
+                if ($valuesBeforeChange['endingTime'] != $dateItem->getEndingTime()) {
                     $valuesToChange[] = 'endingTime';
                 }
-                if($valuesBeforeChange['place'] != $dateItem->getPlace()){
+                if ($valuesBeforeChange['place'] != $dateItem->getPlace()) {
                     $valuesToChange[] = 'place';
                 }
-                if($valuesBeforeChange['color'] != $dateItem->getColor()){
+                if ($valuesBeforeChange['color'] != $dateItem->getColor()) {
                     $valuesToChange[] = 'color';
                 }
 
@@ -1085,41 +1169,46 @@ class DateController extends BaseController
                 }
 
                 $dateItem->save();
-                
+
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($saveType == 'saveThisDate') {
-                if (!$dateItem->getDateTime_recurrence()) {
-                    $dateItem->setDateTime_recurrence($dateItem->getDateTime_start());
-                }
-                $dateItem = $transformer->applyTransformation($dateItem, $formData);
-                $dateItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-                $dateItem->save();
-            } else if ($saveType == 'saveAllDates') {
-                $datesArray = $this->dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
-                $dateItem = $transformer->applyTransformation($dateItem, $formData);
-                $dateItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-                $dateItem->save();
-                foreach ($datesArray as $tempDate) {
-                    $tempDate->setTitle($dateItem->getTitle());
-                    $tempDate->setPublic((int)$dateItem->isPublic());
-                    $tempDate->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-                    $tempDate->setColor($dateItem->getColor());
-                    $tempDate->setCalendarId($dateItem->getCalendarId());
-                    $tempDate->setWholeDay($dateItem->isWholeDay());
-                    $tempDate->setStartingTime($dateItem->getStartingTime());
-                    $tempDate->setEndingTime($dateItem->getEndingTime());
-                    $tempDate->setPlace($dateItem->getPlace());
-                    $tempDate->save();
-                    
-                    // mark as read and noticed by creator
-                    $reader_manager = $this->legacyEnvironment->getReaderManager();
-                    $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+            } else {
+                if ($saveType == 'saveThisDate') {
+                    if (!$dateItem->getDateTime_recurrence()) {
+                        $dateItem->setDateTime_recurrence($dateItem->getDateTime_start());
+                    }
+                    $dateItem = $transformer->applyTransformation($dateItem, $formData);
+                    $dateItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
+                    $dateItem->save();
+                } else {
+                    if ($saveType == 'saveAllDates') {
+                        $datesArray = $this->dateService->getRecurringDates($dateItem->getContextId(),
+                            $dateItem->getRecurrenceId());
+                        $dateItem = $transformer->applyTransformation($dateItem, $formData);
+                        $dateItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
+                        $dateItem->save();
+                        foreach ($datesArray as $tempDate) {
+                            $tempDate->setTitle($dateItem->getTitle());
+                            $tempDate->setPublic((int)$dateItem->isPublic());
+                            $tempDate->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
+                            $tempDate->setColor($dateItem->getColor());
+                            $tempDate->setCalendarId($dateItem->getCalendarId());
+                            $tempDate->setWholeDay($dateItem->isWholeDay());
+                            $tempDate->setStartingTime($dateItem->getStartingTime());
+                            $tempDate->setEndingTime($dateItem->getEndingTime());
+                            $tempDate->setPlace($dateItem->getPlace());
+                            $tempDate->save();
 
-                    $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                    $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
+                            // mark as read and noticed by creator
+                            $reader_manager = $this->legacyEnvironment->getReaderManager();
+                            $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+
+                            $noticed_manager = $this->legacyEnvironment->getNoticedManager();
+                            $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
+                        }
+                    }
                 }
             }
             return $this->redirectToRoute('app_date_save', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -1139,7 +1228,8 @@ class DateController extends BaseController
         );
     }
 
-    private function getTagDetailArray ($baseCategories, $itemCategories) {
+    private function getTagDetailArray($baseCategories, $itemCategories)
+    {
         $result = array();
         $tempResult = array();
         $addCategory = false;
@@ -1156,7 +1246,11 @@ class DateController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                        $result[] = array(
+                            'title' => $baseCategory['title'],
+                            'item_id' => $baseCategory['item_id'],
+                            'children' => $tempResult
+                        );
                     } else {
                         $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
                     }
@@ -1165,7 +1259,11 @@ class DateController extends BaseController
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    $result[] = array(
+                        'title' => $baseCategory['title'],
+                        'item_id' => $baseCategory['item_id'],
+                        'children' => $tempResult
+                    );
                 }
             }
             $tempResult = array();
@@ -1187,15 +1285,15 @@ class DateController extends BaseController
         int $itemId
     ) {
         $date = $this->dateService->getDate($itemId);
-        
+
         $itemArray = array($date);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        
+
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
@@ -1207,40 +1305,41 @@ class DateController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
         /** @var cs_user_item $current_user */
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $date->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
 
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $this->eventDispatcher->dispatch(new CommsyEditEvent($date),CommsyEditEvent::SAVE);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($date), CommsyEditEvent::SAVE);
 
         return array(
             'roomId' => $roomId,
@@ -1251,12 +1350,12 @@ class DateController extends BaseController
             'readSinceModificationCount' => $read_since_modification_count,
         );
     }
-    
+
     function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData)
     {
         /** @var cs_dates_item $dateItem */
 
-        if($isNewRecurring) {
+        if ($isNewRecurring) {
             $recurringDateArray = array();
             $recurringPatternArray = array();
 
@@ -1266,12 +1365,12 @@ class DateController extends BaseController
             $recurringPatternArray['recurring_select'] = $formData['recurring_select'];
 
             // daily recurring
-            if($formData['recurring_select'] == 'RecurringDailyType') {
+            if ($formData['recurring_select'] == 'RecurringDailyType') {
                 $dateInterval = new \DateInterval('P' . $formData['recurring_sub']['recurrenceDay'] . 'D');
 
                 $day = clone $startDate;
                 $day->add($dateInterval);
-                while($day <= $endDate) {
+                while ($day <= $endDate) {
                     $recurringDateArray[] = clone $day;
 
                     $day->add($dateInterval);
@@ -1280,127 +1379,135 @@ class DateController extends BaseController
 
                 unset($dateInterval);
 
-            // weekly recurring
-            } else if($formData['recurring_select'] == 'RecurringWeeklyType') {
-                // go back to last monday(if day is not monday)
-                $monday = clone $startDate;
-                if($startDate->format('w') == 0) {
-                    $monday->sub(new \DateInterval('P6D'));
-                } else {
-                    $monday->sub(new \DateInterval('P' . ($startDate->format('w')-1) . 'D'));
-                }
-
-                while($monday <= $endDate) {
-                    foreach($formData['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
-                        if($day == 'monday') {
-                            $addonDays = 0;
-                        } elseif($day == 'tuesday') {
-                            $addonDays = 1;
-                        } elseif($day == 'wednesday') {
-                            $addonDays = 2;
-                        } elseif($day == 'thursday') {
-                            $addonDays = 3;
-                        } elseif($day == 'friday') {
-                            $addonDays = 4;
-                        } elseif($day == 'saturday') {
-                            $addonDays = 5;
-                        } elseif($day == 'sunday') {
-                            $addonDays = 6;
-                        }
-
-                        $temp = clone $monday;
-                        $temp->add(new \DateInterval('P' . $addonDays . 'D'));
-
-                        if($temp > $startDate && $temp <= $endDate) {
-                            $recurringDateArray[] = $temp;
-                        }
-
-                        unset($temp);
-                    }
-
-                    $monday->add(new \DateInterval('P' . $formData['recurring_sub']['recurrenceWeek'] . 'W'));
-                }
-                $recurringPatternArray['recurring_sub']['recurrenceDaysOfWeek'] = $formData['recurring_sub']['recurrenceDaysOfWeek'];
-                $recurringPatternArray['recurring_sub']['recurrenceWeek'] = $formData['recurring_sub']['recurrenceWeek'];
-
-                unset($monday);
-
-            // monthly recurring
-            } else if($formData['recurring_select'] == 'RecurringMonthlyType') {
-                $monthCount = $startDate->format('m');
-                $yearCount = $startDate->format('Y');
-                $monthToAdd = $formData['recurring_sub']['recurrenceMonth'] % 12;
-                $yearsToAdd = ($formData['recurring_sub']['recurrenceMonth'] - $monthToAdd) / 12;
-                $month = new \DateTime($yearCount . '-' . $monthCount . '-01');
-
-                while($month <= $endDate) {
-                    $datesOccurenceArray = array();
-
-                    // loop through every day of this month
-                    for($index = 0; $index < $month->format('t'); $index++) {
-                        $temp = clone $month;
-                        $temp->add(new \DateInterval('P' . $index . 'D'));
-
-                        // if the actual day is a correct week day, add it to possible dates
-                        $weekDay = $temp->format('l'); // 'l' returns the full textual representation of the date's day of week (e.g. "Tuesday")
-
-                        // NOTE: for monthly recurring dates, `recurrenceDayOfMonth` contains the day of week (e.g. "tuesday")
-                        // instead of the numeric day number (like "26") as is the case for yearly recurring dates
-                        if(strtolower($weekDay) === $formData['recurring_sub']['recurrenceDayOfMonth']) {
-                            $datesOccurenceArray[] = $temp;
-                        }
-
-                        unset($temp);
-                    }
-
-                    // add only days, that match the right week
-                    $date = null;
-                    $dayOfMonthInterval = $formData['recurring_sub']['recurrenceDayOfMonthInterval'];
-                    if ($dayOfMonthInterval === 'last') {
-                        $date = end($datesOccurenceArray);
-                    } else if (isset($datesOccurenceArray[$dayOfMonthInterval - 1])) {
-                        $date = $datesOccurenceArray[$dayOfMonthInterval - 1];
-                    }
-                    if (isset($date) && $date >= $startDate && $date <= $endDate) {
-                        $recurringDateArray[] = $date;
-                    }
-
-                    // go to next month
-                    if($monthCount + $monthToAdd > 12) {
-                        $monthCount += $monthToAdd - 12;
-                        $yearCount += $yearsToAdd + 1;
+                // weekly recurring
+            } else {
+                if ($formData['recurring_select'] == 'RecurringWeeklyType') {
+                    // go back to last monday(if day is not monday)
+                    $monday = clone $startDate;
+                    if ($startDate->format('w') == 0) {
+                        $monday->sub(new \DateInterval('P6D'));
                     } else {
-                        $monthCount += $monthToAdd;
+                        $monday->sub(new \DateInterval('P' . ($startDate->format('w') - 1) . 'D'));
                     }
 
-                    unset($month);
-                    $month = new \DateTime($yearCount . '-' . $monthCount . '-01');
-                }
+                    while ($monday <= $endDate) {
+                        foreach ($formData['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
+                            if ($day == 'monday') {
+                                $addonDays = 0;
+                            } elseif ($day == 'tuesday') {
+                                $addonDays = 1;
+                            } elseif ($day == 'wednesday') {
+                                $addonDays = 2;
+                            } elseif ($day == 'thursday') {
+                                $addonDays = 3;
+                            } elseif ($day == 'friday') {
+                                $addonDays = 4;
+                            } elseif ($day == 'saturday') {
+                                $addonDays = 5;
+                            } elseif ($day == 'sunday') {
+                                $addonDays = 6;
+                            }
 
-                $recurringPatternArray['recurring_sub']['recurrenceMonth'] = $formData['recurring_sub']['recurrenceMonth'];
-                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
-                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonthInterval'] = $dayOfMonthInterval;
+                            $temp = clone $monday;
+                            $temp->add(new \DateInterval('P' . $addonDays . 'D'));
 
-                unset($month);
+                            if ($temp > $startDate && $temp <= $endDate) {
+                                $recurringDateArray[] = $temp;
+                            }
 
-            // yearly recurring
-            } else if($formData['recurring_select'] == 'RecurringYearlyType') {
-                $yearCount = $startDate->format('Y');
-                $year = new \DateTime($yearCount . '-01-01');
-                while($year <= $endDate) {
-                    $date = new \DateTime($formData['recurring_sub']['recurrenceDayOfMonth'] . '-' . $formData['recurring_sub']['recurrenceMonthOfYear'] . '-' . $yearCount);
-                    if($date > $startDate && $date <= $endDate) {
-                        $recurringDateArray[] = $date;
+                            unset($temp);
+                        }
+
+                        $monday->add(new \DateInterval('P' . $formData['recurring_sub']['recurrenceWeek'] . 'W'));
                     }
-                    unset($date);
+                    $recurringPatternArray['recurring_sub']['recurrenceDaysOfWeek'] = $formData['recurring_sub']['recurrenceDaysOfWeek'];
+                    $recurringPatternArray['recurring_sub']['recurrenceWeek'] = $formData['recurring_sub']['recurrenceWeek'];
 
-                    unset($year);
-                    $yearCount++;
-                    $year = new \DateTime($yearCount . '-01-01');
+                    unset($monday);
+
+                    // monthly recurring
+                } else {
+                    if ($formData['recurring_select'] == 'RecurringMonthlyType') {
+                        $monthCount = $startDate->format('m');
+                        $yearCount = $startDate->format('Y');
+                        $monthToAdd = $formData['recurring_sub']['recurrenceMonth'] % 12;
+                        $yearsToAdd = ($formData['recurring_sub']['recurrenceMonth'] - $monthToAdd) / 12;
+                        $month = new \DateTime($yearCount . '-' . $monthCount . '-01');
+
+                        while ($month <= $endDate) {
+                            $datesOccurenceArray = array();
+
+                            // loop through every day of this month
+                            for ($index = 0; $index < $month->format('t'); $index++) {
+                                $temp = clone $month;
+                                $temp->add(new \DateInterval('P' . $index . 'D'));
+
+                                // if the actual day is a correct week day, add it to possible dates
+                                $weekDay = $temp->format('l'); // 'l' returns the full textual representation of the date's day of week (e.g. "Tuesday")
+
+                                // NOTE: for monthly recurring dates, `recurrenceDayOfMonth` contains the day of week (e.g. "tuesday")
+                                // instead of the numeric day number (like "26") as is the case for yearly recurring dates
+                                if (strtolower($weekDay) === $formData['recurring_sub']['recurrenceDayOfMonth']) {
+                                    $datesOccurenceArray[] = $temp;
+                                }
+
+                                unset($temp);
+                            }
+
+                            // add only days, that match the right week
+                            $date = null;
+                            $dayOfMonthInterval = $formData['recurring_sub']['recurrenceDayOfMonthInterval'];
+                            if ($dayOfMonthInterval === 'last') {
+                                $date = end($datesOccurenceArray);
+                            } else {
+                                if (isset($datesOccurenceArray[$dayOfMonthInterval - 1])) {
+                                    $date = $datesOccurenceArray[$dayOfMonthInterval - 1];
+                                }
+                            }
+                            if (isset($date) && $date >= $startDate && $date <= $endDate) {
+                                $recurringDateArray[] = $date;
+                            }
+
+                            // go to next month
+                            if ($monthCount + $monthToAdd > 12) {
+                                $monthCount += $monthToAdd - 12;
+                                $yearCount += $yearsToAdd + 1;
+                            } else {
+                                $monthCount += $monthToAdd;
+                            }
+
+                            unset($month);
+                            $month = new \DateTime($yearCount . '-' . $monthCount . '-01');
+                        }
+
+                        $recurringPatternArray['recurring_sub']['recurrenceMonth'] = $formData['recurring_sub']['recurrenceMonth'];
+                        $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
+                        $recurringPatternArray['recurring_sub']['recurrenceDayOfMonthInterval'] = $dayOfMonthInterval;
+
+                        unset($month);
+
+                        // yearly recurring
+                    } else {
+                        if ($formData['recurring_select'] == 'RecurringYearlyType') {
+                            $yearCount = $startDate->format('Y');
+                            $year = new \DateTime($yearCount . '-01-01');
+                            while ($year <= $endDate) {
+                                $date = new \DateTime($formData['recurring_sub']['recurrenceDayOfMonth'] . '-' . $formData['recurring_sub']['recurrenceMonthOfYear'] . '-' . $yearCount);
+                                if ($date > $startDate && $date <= $endDate) {
+                                    $recurringDateArray[] = $date;
+                                }
+                                unset($date);
+
+                                unset($year);
+                                $yearCount++;
+                                $year = new \DateTime($yearCount . '-01-01');
+                            }
+
+                            $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
+                            $recurringPatternArray['recurring_sub']['recurrenceMonthOfYear'] = $formData['recurring_sub']['recurrenceMonthOfYear'];
+                        }
+                    }
                 }
-
-                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
-                $recurringPatternArray['recurring_sub']['recurrenceMonthOfYear'] = $formData['recurring_sub']['recurrenceMonthOfYear'];
             }
 
             unset($startDate);
@@ -1409,7 +1516,7 @@ class DateController extends BaseController
             $recurringPatternArray['recurringStartDate'] = $dateItem->getStartingDay();
             $recurringPatternArray['recurringEndDate'] = $formData['recurring_sub']['untilDate']->format('Y-m-d');
 
-            foreach($recurringDateArray as $date) {
+            foreach ($recurringDateArray as $date) {
                 // prevent duplicate date entry
                 if (date('Y-m-d', $date->getTimestamp()) === $dateItem->getStartingDay()) {
                     continue;
@@ -1419,29 +1526,33 @@ class DateController extends BaseController
                 $tempDate->setItemID('');
                 $tempDate->setStartingDay(date('Y-m-d', $date->getTimestamp()));
 
-                if($dateItem->getStartingTime() != '') {
-                    $tempDate->setDateTime_start(date('Y-m-d', $date->getTimestamp()) . ' ' . $dateItem->getStartingTime());
+                if ($dateItem->getStartingTime() != '') {
+                    $tempDate->setDateTime_start(date('Y-m-d',
+                            $date->getTimestamp()) . ' ' . $dateItem->getStartingTime());
                 } else {
                     $tempDate->setDateTime_start(date('Y-m-d 00:00:00', $date->getTimestamp()));
                 }
 
-                if($dateItem->getEndingDay() != '') {
+                if ($dateItem->getEndingDay() != '') {
                     $tempStartingDay = new \DateTime($dateItem->getStartingDay());
                     $tempEndingDay = new \DateTime($dateItem->getEndingDay());
 
-                    $tempDate->setEndingDay(date('Y-m-d', $date->getTimestamp() + ($tempEndingDay->getTimestamp() - $tempStartingDay->getTimestamp())));
+                    $tempDate->setEndingDay(date('Y-m-d',
+                        $date->getTimestamp() + ($tempEndingDay->getTimestamp() - $tempStartingDay->getTimestamp())));
 
                     unset($tempStartingDay);
                     unset($tempEndingDay);
 
-                    if($dateItem->getEndingTime() != '') {
-                        $tempDate->setDateTime_end(date('Y-m-d', $date->getTimestamp()) . ' ' . $dateItem->getEndingTime());
+                    if ($dateItem->getEndingTime() != '') {
+                        $tempDate->setDateTime_end(date('Y-m-d',
+                                $date->getTimestamp()) . ' ' . $dateItem->getEndingTime());
                     } else {
                         $tempDate->setDateTime_end(date('Y-m-d 00:00:00', $date->getTimestamp()));
                     }
                 } else {
-                    if($dateItem->getEndingTime() != '')  {
-                        $tempDate->setDateTime_end(date('Y-m-d', $date->getTimestamp()) . ' ' . $dateItem->getEndingTime());
+                    if ($dateItem->getEndingTime() != '') {
+                        $tempDate->setDateTime_end(date('Y-m-d',
+                                $date->getTimestamp()) . ' ' . $dateItem->getEndingTime());
                     } else {
                         $tempDate->setDateTime_end(date('Y-m-d 00:00:00', $date->getTimestamp()));
                     }
@@ -1474,19 +1585,21 @@ class DateController extends BaseController
 
             /** @var cs_dates_item $tempDate */
             $tempDate = $datesList->getFirst();
-            while($tempDate) {
-                if(in_array('startingTime',$valuesToChange)){
+            while ($tempDate) {
+                if (in_array('startingTime', $valuesToChange)) {
                     $tempDate->setStartingTime($dateItem->getStartingTime());
-                    $tempDate->setDateTime_start(mb_substr($tempDate->getDateTime_start(),0,10) . ' ' . $dateItem->getStartingTime());
+                    $tempDate->setDateTime_start(mb_substr($tempDate->getDateTime_start(), 0,
+                            10) . ' ' . $dateItem->getStartingTime());
                 }
-                if(in_array('endingTime',$valuesToChange)){
+                if (in_array('endingTime', $valuesToChange)) {
                     $tempDate->setEndingTime($dateItem->getEndingTime());
-                    $tempDate->setDateTime_end(mb_substr($tempDate->getDateTime_end(),0,10) . ' ' . $dateItem->getEndingTime());
+                    $tempDate->setDateTime_end(mb_substr($tempDate->getDateTime_end(), 0,
+                            10) . ' ' . $dateItem->getEndingTime());
                 }
-                if(in_array('place',$valuesToChange)){
+                if (in_array('place', $valuesToChange)) {
                     $tempDate->setPlace($dateItem->getPlace());
                 }
-                if(in_array('color',$valuesToChange)){
+                if (in_array('color', $valuesToChange)) {
                     $tempDate->setColor($dateItem->getColor());
                 }
 
@@ -1521,17 +1634,17 @@ class DateController extends BaseController
         $item = $date;
         $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        
+
         $itemArray = array($date);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -1549,16 +1662,17 @@ class DateController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-           $id_array[] = $current_user->getItemID();
-           $current_user = $user_list->getNext();
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
         }
-        $readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
+        $readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
         $current_user = $user_list->getFirst();
-        while ( $current_user ) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $date->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
@@ -1567,19 +1681,19 @@ class DateController extends BaseController
             }
             $current_user = $user_list->getNext();
         }
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $read_percentage = round(($read_count / $all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count / $all_user_count) * 100);
 
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -1630,7 +1744,7 @@ class DateController extends BaseController
         $date = $this->dateService->getDate($itemId);
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        
+
         if (!$date->isParticipant($this->legacyEnvironment->getCurrentUserItem())) {
             $date->addParticipant($currentUser);
         } else {
@@ -1658,11 +1772,21 @@ class DateController extends BaseController
         $repository = $em->getRepository('App:Calendars');
         $calendars = $repository->findBy(array('context_id' => $roomId));
         $calendarsOptions = [$this->translator->trans('new calendar', [], 'date') => 'new'];
-        $calendarsOptionsAttr = [['title' => $this->translator->trans('new calendar'), 'color' => '#ffffff', 'hasLightColor' => true]];
+        $calendarsOptionsAttr = [
+            [
+                'title' => $this->translator->trans('new calendar'),
+                'color' => '#ffffff',
+                'hasLightColor' => true
+            ]
+        ];
         foreach ($calendars as $calendar) {
             if (!$calendar->getExternalUrl()) {
                 $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
-                $calendarsOptionsAttr[$calendar->getTitle()] = ['title' => $calendar->getTitle(), 'color' => $calendar->getColor(), 'hasLightColor' => $calendar->hasLightColor()];
+                $calendarsOptionsAttr[$calendar->getTitle()] = [
+                    'title' => $calendar->getTitle(),
+                    'color' => $calendar->getColor(),
+                    'hasLightColor' => $calendar->hasLightColor()
+                ];
             }
         }
         $formData['calendars'] = $calendarsOptions;
@@ -1775,18 +1899,19 @@ class DateController extends BaseController
     /**
      * @Route("/room/{roomId}/date/download")
      * @param Request $request
+     * @param DownloadAction $action
      * @param int $roomId
      * @return Response
      * @throws Exception
      */
     public function downloadAction(
         Request $request,
-        int $roomId)
-    {
+        DownloadAction $action,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
     }
 
@@ -1803,13 +1928,13 @@ class DateController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
-        int $roomId)
-    {
+        MarkReadAction $markReadAction,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
 
     }
 
@@ -1822,8 +1947,8 @@ class DateController extends BaseController
      */
     public function xhrCopyAction(
         Request $request,
-        int $roomId)
-    {
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1842,8 +1967,8 @@ class DateController extends BaseController
         Request $request,
         DeleteAction $action,
         DeleteDate $deleteDate,
-        int $roomId)
-    {
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1897,8 +2022,8 @@ class DateController extends BaseController
         Request $request,
         $roomItem,
         $selectAll,
-        $itemIds = [])
-    {
+        $itemIds = []
+    ) {
         if ($selectAll) {
             if ($request->query->has('date_filter')) {
                 $currentFilter = $request->query->get('date_filter');

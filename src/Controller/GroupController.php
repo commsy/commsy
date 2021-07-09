@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
-use App\Action\Delete\DeleteGeneric;
 use App\Action\Download\DownloadAction;
+use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\GroupFilterType;
 use App\Form\DataTransformer\GroupTransformer;
@@ -14,16 +14,12 @@ use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Services\CalendarsService;
-use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\CategoryService;
 use App\Utils\GroupService;
-use App\Utils\ItemService;
 use App\Utils\MailAssistant;
-use App\Utils\ReaderService;
-use App\Utils\RoomService;
 use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_room_item;
@@ -149,7 +145,8 @@ class GroupController extends BaseController
         if ($sort != "none") {
             $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
         } elseif ($this->get('session')->get('sortGroups')) {
-            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $this->get('session')->get('sortGroups'));
+            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0,
+                $this->get('session')->get('sortGroups'));
         } else {
             $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, 'date');
         }
@@ -474,7 +471,8 @@ class GroupController extends BaseController
         $readerManager->getLatestReaderByUserIDArray($id_array, $group->getItemID());
         $current_user = $user_list->getFirst();
         while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(), $current_user->getItemID());
+            $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(),
+                $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $group->getModificationDate()) {
                     $read_count++;
@@ -607,7 +605,11 @@ class GroupController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                        $result[] = array(
+                            'title' => $baseCategory['title'],
+                            'item_id' => $baseCategory['item_id'],
+                            'children' => $tempResult
+                        );
                     } else {
                         $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
                     }
@@ -616,7 +618,11 @@ class GroupController extends BaseController
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    $result[] = array(
+                        'title' => $baseCategory['title'],
+                        'item_id' => $baseCategory['item_id'],
+                        'children' => $tempResult
+                    );
                 }
             }
             $tempResult = array();
@@ -646,7 +652,8 @@ class GroupController extends BaseController
         // add current user to new group
         $groupItem->addMember($this->legacyEnvironment->getCurrentUser());
 
-        return $this->redirectToRoute('app_group_detail', array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
+        return $this->redirectToRoute('app_group_detail',
+            array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
     }
 
 
@@ -686,7 +693,7 @@ class GroupController extends BaseController
         $item = $this->itemService->getItem($itemId);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $groupItem = NULL;
+        $groupItem = null;
 
         $isDraft = $item->isDraft();
 
@@ -702,7 +709,8 @@ class GroupController extends BaseController
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+            $this->legacyEnvironment);
         $formData['draft'] = $isDraft;
         $form = $this->createForm(GroupType::class, $formData, array(
             'action' => $this->generateUrl('app_group_edit', array(
@@ -743,8 +751,10 @@ class GroupController extends BaseController
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    // ToDo ...
+                }
             }
             return $this->redirectToRoute('app_group_save', array('roomId' => $roomId, 'itemId' => $itemId));
 
@@ -754,7 +764,7 @@ class GroupController extends BaseController
             // $em->flush();
         }
 
-        $this->eventDispatcher->dispatch( new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
@@ -806,7 +816,8 @@ class GroupController extends BaseController
         $readerManager->getLatestReaderByUserIDArray($id_array, $group->getItemID());
         $current_user = $user_list->getFirst();
         while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(), $current_user->getItemID());
+            $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(),
+                $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $group->getModificationDate()) {
                     $read_count++;
@@ -833,7 +844,7 @@ class GroupController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $this->eventDispatcher->dispatch( new CommsyEditEvent($group), CommsyEditEvent::SAVE);
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($group), CommsyEditEvent::SAVE);
 
         return array(
             'roomId' => $roomId,
@@ -865,7 +876,7 @@ class GroupController extends BaseController
         int $roomId,
         int $itemId
     ) {
-        $groupItem = NULL;
+        $groupItem = null;
 
         // get group from GroupService
         $groupItem = $this->groupService->getGroup($itemId);
@@ -903,7 +914,8 @@ class GroupController extends BaseController
                 // only initialize the name of the grouproom the first time it is created!
                 if ($groupRoom && !empty($groupRoom)) {
                     if ($originalGroupName == "") {
-                        $groupRoom->setTitle($groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [], 'group') . ")");
+                        $groupRoom->setTitle($groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [],
+                                'group') . ")");
                     } else {
                         $groupRoom->setTitle($originalGroupName);
                     }
@@ -1057,7 +1069,8 @@ class GroupController extends BaseController
         if ($joinRoom) {
             $grouproomItem = $groupItem->getGroupRoomItem();
             if ($grouproomItem) {
-                $memberStatus = $userService->getMemberStatus($grouproomItem, $this->legacyEnvironment->getCurrentUser());
+                $memberStatus = $userService->getMemberStatus($grouproomItem,
+                    $this->legacyEnvironment->getCurrentUser());
                 if ($memberStatus == 'join') {
                     return $this->redirectToRoute('app_context_request', [
                         'roomId' => $roomId,
@@ -1203,14 +1216,22 @@ class GroupController extends BaseController
                 if ($group) {
                     $defaultBodyMessage .= $this->translator->trans(
                         'This email has been sent to all users of this group',
-                        ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $group->getName(), '%room_name%' => $room->getTitle()],
+                        [
+                            '%sender_name%' => $currentUser->getFullName(),
+                            '%group_name%' => $group->getName(),
+                            '%room_name%' => $room->getTitle()
+                        ],
                         'mail'
                     );
                 }
             } elseif ($groupCount > 1) {
                 $defaultBodyMessage .= $this->translator->trans(
                     'This email has been sent to multiple users of this room',
-                    ['%sender_name%' => $currentUser->getFullName(), '%user_count%' => count($users), '%room_name%' => $room->getTitle()],
+                    [
+                        '%sender_name%' => $currentUser->getFullName(),
+                        '%user_count%' => count($users),
+                        '%room_name%' => $room->getTitle()
+                    ],
                     'mail'
                 );
             }
@@ -1395,7 +1416,11 @@ class GroupController extends BaseController
 
         $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $this->translator->trans(
                 'This email has been sent to all users of this group',
-                ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $item->getName(), '%room_name%' => $room->getTitle()],
+                [
+                    '%sender_name%' => $currentUser->getFullName(),
+                    '%group_name%' => $item->getName(),
+                    '%room_name%' => $room->getTitle()
+                ],
                 'mail'
             );
 
@@ -1421,7 +1446,7 @@ class GroupController extends BaseController
 
                 $from = $this->getParameter('commsy.email.from');
 
-		        // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
+                // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
                 $users = $userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
                 // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
@@ -1540,18 +1565,19 @@ class GroupController extends BaseController
     /**
      * @Route("/room/{roomId}/group/download")
      * @param Request $request
+     * @param DownloadAction $action
      * @param int $roomId
      * @return Response
      * @throws Exception
      */
     public function downloadAction(
         Request $request,
-        int $roomId)
-    {
+        DownloadAction $action,
+        int $roomId
+    ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
     }
 
@@ -1568,13 +1594,12 @@ class GroupController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
-
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
     }
 
     /**
@@ -1680,10 +1705,11 @@ class GroupController extends BaseController
             while ($item) {
                 $templateAvailability = $item->getTemplateAvailability();
 
-                if (($templateAvailability == '0') OR
-                    ($this->legacyEnvironment->inCommunityRoom() and $templateAvailability == '3') OR
-                    ($templateAvailability == '1' and $item->mayEnter($currentUser)) OR
-                    ($templateAvailability == '2' and $item->mayEnter($currentUser) and ($item->isModeratorByUserID($currentUser->getUserID(), $currentUser->getAuthSource())))
+                if (($templateAvailability == '0') or
+                    ($this->legacyEnvironment->inCommunityRoom() and $templateAvailability == '3') or
+                    ($templateAvailability == '1' and $item->mayEnter($currentUser)) or
+                    ($templateAvailability == '2' and $item->mayEnter($currentUser) and ($item->isModeratorByUserID($currentUser->getUserID(),
+                            $currentUser->getAuthSource())))
                 ) {
                     if ($item->getItemID() != $defaultId or $item->getTemplateAvailability() != '0') {
                         $templates[$item->getTitle()] = $item->getItemID();
@@ -1713,10 +1739,12 @@ class GroupController extends BaseController
 
         $relatedUsers = $this->legacyEnvironment->getCurrentUser()->getRelatedUserList();
 
-        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
+        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'),
+            $grouproomModerators->to_array());
         $relatedUsersItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $relatedUsers->to_array());
 
-        return count($grouproomModerators) == 1 and count(array_intersect($relatedUsersItemIds, $grouproomModeratorItemIds));
+        return count($grouproomModerators) == 1 and count(array_intersect($relatedUsersItemIds,
+                $grouproomModeratorItemIds));
     }
 
     /**

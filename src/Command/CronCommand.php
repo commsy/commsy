@@ -1,8 +1,12 @@
 <?php
+
 namespace App\Command;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use cs_environment;
+use Swift_Mailer;
+use Swift_Message;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,20 +17,46 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class CronCommand extends Command
 {
-    private $stopwatch;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $legacyEnvironment;
-    private $router;
-    private $itemService;
-    private $mailer;
-    private $projectDir;
-    private $emailFrom;
+    /**
+     * @var RouterInterface
+     */
+    private RouterInterface $router;
+
+    /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
+     * @var Swift_Mailer
+     */
+    private Swift_Mailer $mailer;
+
+    /**
+     * @var string
+     */
+    private string $projectDir;
+
+    /**
+     * @var string
+     */
+    private string $emailFrom;
+
+    /**
+     * @var Stopwatch
+     */
+    private Stopwatch $stopwatch;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         RouterInterface $router,
         ItemService $itemService,
-        \Swift_Mailer $mailer,
+        Swift_Mailer $mailer,
         $projectDir,
         $emailFrom
     ) {
@@ -49,8 +79,7 @@ class CronCommand extends Command
                 'contextId',
                 InputArgument::OPTIONAL,
                 'Context ID (Portal / Server) to be processed in this run'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -81,6 +110,17 @@ class CronCommand extends Command
     private function performCronTasks($contextId, $output)
     {
         $item = $this->itemService->getTypedItem($contextId);
+
+        if ($item === null) {
+            $portalManager = $this->legacyEnvironment->getPortalManager();
+            $item = $portalManager->getItem($contextId);
+
+            // Portal items are no longer present in the "items" table, so we set the needed properties here to avoid
+            // problems with the legacy cron code. The legacy code will try to read them from the "items" table.
+            $item->setItemID($contextId);
+            $item->setType('portal');
+        }
+
         if (!$item || $item->isDeleted()) {
             $output->writeln('<info>Skipping context ' . $contextId . ' - item is deleted</info>');
             return;
@@ -155,8 +195,8 @@ class CronCommand extends Command
             $isActive = false;
 
             if ($room->isCommunityRoom() ||
-                    $room->isProjectRoom() ||
-                    $room->isGroupRoom()) {
+                $room->isProjectRoom() ||
+                $room->isGroupRoom()) {
 
                 if ($room->isOpen()) {
                     $isActive = $room->isActiveDuringLast99Days();
@@ -193,7 +233,9 @@ class CronCommand extends Command
                 $room = $roomManager->getItem($material->getContextId());
 
                 // check if context of room is current portal
-                if ($room->getContextID() != $portalItem->getItemID()) continue;
+                if ($room->getContextID() != $portalItem->getItemID()) {
+                    continue;
+                }
 
                 if ($material->getWorkflowResubmission() && $room->withWorkflowResubmission()) {
                     $emailReceivers = [];
@@ -228,10 +270,12 @@ class CronCommand extends Command
 
                     $link = '<a href="' . $path . '">' . $material->getTitle() . '</a>';
 
-                    $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $room->getTitle(), $material->getTitle(), $link);
+                    $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $room->getTitle(),
+                        $material->getTitle(), $link);
 
-                    $message = (new \Swift_Message())
-                        ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portalItem->getTitle()))
+                    $message = (new Swift_Message())
+                        ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION',
+                            $portalItem->getTitle()))
                         ->setBody($body, 'text/html')
                         ->setFrom([$this->emailFrom => $portalItem->getTitle()])
                         ->setTo($to);
@@ -239,7 +283,8 @@ class CronCommand extends Command
                     $this->mailer->send($message);
 
                     // change material status
-                    $materialManager->setWorkflowStatus($material->getItemID(), $material->getWorkflowResubmissionTrafficLight(), $material->getVersionID());
+                    $materialManager->setWorkflowStatus($material->getItemID(),
+                        $material->getWorkflowResubmissionTrafficLight(), $material->getVersionID());
                 }
             }
         }
@@ -254,7 +299,9 @@ class CronCommand extends Command
                 $room = $roomManager->getItem($material->getContextId());
 
                 // check if context of room is current portal
-                if ($room->getContextID() != $portalItem->getItemID()) continue;
+                if ($room->getContextID() != $portalItem->getItemID()) {
+                    continue;
+                }
 
                 if ($material->getWorkflowValidity() && $material->withWorkflowValidity()) {
                     $emailReceivers = [];
@@ -286,10 +333,12 @@ class CronCommand extends Command
 
                     $link = '<a href="' . $path . '">' . $material->getTitle() . '</a>';
 
-                    $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $room->getTitle(), $material->getTitle(), $link);
+                    $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $room->getTitle(),
+                        $material->getTitle(), $link);
 
-                    $message = (new \Swift_Message())
-                        ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY', $portalItem->getTitle()))
+                    $message = (new Swift_Message())
+                        ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY',
+                            $portalItem->getTitle()))
                         ->setBody($body, 'text/html')
                         ->setFrom([$this->emailFrom => $portalItem->getTitle()])
                         ->setTo($to);
@@ -297,7 +346,8 @@ class CronCommand extends Command
                     $this->mailer->send($message);
 
                     // change material status
-                    $materialManager->setWorkflowStatus($material->getItemID(), $material->getWorkflowValidityTrafficLight(), $material->getVersionID());
+                    $materialManager->setWorkflowStatus($material->getItemID(),
+                        $material->getWorkflowValidityTrafficLight(), $material->getVersionID());
                 }
             }
         }

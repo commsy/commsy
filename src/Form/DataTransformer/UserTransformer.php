@@ -146,6 +146,8 @@ class UserTransformer extends AbstractTransformer
                 }
             }
 
+            $this->accountManager->updateUserLocale($account, $userData['language']);
+
             $userObject->setFirstname($userData['firstname']);
             $userObject->setLastname($userData['lastname']);
             $userObject->setLanguage($userData['language']);

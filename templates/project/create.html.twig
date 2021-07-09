@@ -30,19 +30,21 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        function updateTemplateDescription(){
-            let description = $descriptions[$("#project_master_template option:selected").val()];
-            if (description) {
-                $("#project_template_description").val(description).show();
+        document.addEventListener("DOMContentLoaded", function() {
+            function updateTemplateDescription(){
+                let description = $descriptions[$("#project_master_template option:selected").val()];
+                if (description) {
+                    $("#project_template_description").val(description).show();
+                }
+                else {
+                    $("#project_template_description").val("").hide();
+                }
             }
-            else {
-                $("#project_template_description").val("").hide();
+            window.onload = function() {
+                $descriptions = $("#project_master_template").data('description');
+                updateTemplateDescription();
             }
-        }
-        window.onload = function() {
-            $descriptions = $("#project_master_template").data('description');
-            updateTemplateDescription();
-        }
-        $("#project_master_template").change(updateTemplateDescription);
+            $("#project_master_template").change(updateTemplateDescription);
+        });
     </script>
 {% endblock %}

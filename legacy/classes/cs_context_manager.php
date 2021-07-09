@@ -647,27 +647,28 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       return $retour;
    }
 
-   /** delete a project
-    * this method deletes a project
-    *
-    * @param integer item_id item id of the project
-    */
-   function delete ($item_id) {
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $user_id = $current_user->getItemID();
-      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-               ' deletion_date="'.$current_datetime.'",'.
-               ' deleter_id="'.encode(AS_DB,$user_id).'"'.
-               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems deleting '.$this->_db_table.'.',E_USER_WARNING);
-      } else {
-         parent::delete($item_id);
-      }
-   }
+    /** delete a project
+     * this method deletes a project
+     *
+     * @param integer item_id item id of the project
+     */
+    public function delete($itemId)
+    {
+        $currentDateTime = getCurrentDateTimeInMySQL();
+        $currentUser = $this->_environment->getCurrentUserItem();
+        $deleterId = ($currentUser->getItemID() !== '') ? $currentUser->getItemID() : 0;
+        $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
+            ' deletion_date="' . $currentDateTime . '",' .
+            ' deleter_id="' . encode(AS_DB, $deleterId) . '"' .
+            ' WHERE item_id="' . encode(AS_DB, $itemId) . '"';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting ' . $this->_db_table . '.', E_USER_WARNING);
+        } else {
+            parent::delete($itemId);
+        }
+    }
 
    function undelete ($item_id) {
       $current_datetime = getCurrentDateTimeInMySQL();

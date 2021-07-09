@@ -4,6 +4,7 @@
 namespace App\Security;
 
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceLdap;
 use App\Facade\AccountCreatorFacade;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Ldap\Ldap;
+use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUserProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -31,29 +33,36 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var CsrfTokenManagerInterface
      */
-    private $csrfTokenManager;
+    private CsrfTokenManagerInterface $csrfTokenManager;
 
     /**
      * @var AccountCreatorFacade
      */
-    private $accountCreator;
+    private AccountCreatorFacade $accountCreator;
+
+    /**
+     * @var AccountManager
+     */
+    private AccountManager $accountManager;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
-        AccountCreatorFacade $accountCreator
+        AccountCreatorFacade $accountCreator,
+        AccountManager $accountManager
     ) {
         parent::__construct($urlGenerator);
 
         $this->entityManager = $entityManager;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->accountCreator = $accountCreator;
+        $this->accountManager = $accountManager;
     }
 
     protected function getPostParameterName(): string
@@ -135,7 +144,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $ldapSource->getUidKey(),
             null,
             null,
-            ['email', 'givenName', 'sn']
+            ['mail', 'givenName', 'sn']
         );
 
         $ldapUser = $ldapProvider->loadUserByUsername($credentials['email']);
@@ -153,17 +162,19 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $account->setUsername($ldapUser->getUsername());
             $account->setFirstname($extraFields['givenName']);
             $account->setLastname($extraFields['sn']);
-            $account->setEmail($extraFields['email']);
+            $account->setEmail($extraFields['mail']);
             $this->accountCreator->persistNewAccount($account);
         }
 
         // update user object with credentials extracted from request
         $account->setFirstname($extraFields['givenName']);
         $account->setLastname($extraFields['sn']);
-        $account->setEmail($extraFields['email']);
+        $account->setEmail($extraFields['mail']);
 
         $this->entityManager->persist($account);
         $this->entityManager->flush();
+
+        $this->accountManager->propgateAccountDataToProfiles($account);
 
         return $account;
     }
@@ -189,12 +200,10 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         /** @var Account $account */
         $account = $user;
 
-        $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
-
         /** @var AuthSourceLdap $ldapSource */
         $ldapSource = $this->entityManager->getRepository(AuthSourceLdap::class)
             ->findOneBy([
-                'portal' => $context,
+                'portal' => $account->getContextId(),
                 'enabled' => 1,
             ]);
 
@@ -202,7 +211,24 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $ldap = Ldap::create('ext_ldap', [
                 'connection_string' => $ldapSource->getServerUrl(),
             ]);
-            $dn = str_replace('{username}', $account->getUsername(), $ldapSource->getAuthDn());
+
+            $authQuery = $ldapSource->getAuthQuery();
+            if (!$authQuery) {
+                $dn = str_replace('{username}', $account->getUsername(), $ldapSource->getAuthDn());
+            } else {
+                // bind with searchDn
+                $ldap->bind($ldapSource->getSearchDn(), $ldapSource->getSearchPassword());
+
+                $username = $ldap->escape($account->getUsername(), '', LdapInterface::ESCAPE_FILTER);
+                $query = str_replace('{username}', $username, $authQuery);
+                $result = $ldap->query($ldapSource->getAuthDn(), $query)->execute();
+                if (1 !== $result->count()) {
+                    return false;
+                }
+
+                $dn = $result[0]->getDn();
+            }
+
             $ldap->bind($dn, $credentials['password']);
 
             return true;

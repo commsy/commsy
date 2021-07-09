@@ -3,17 +3,21 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
+use App\Action\MarkRead\MarkReadAction;
 use App\Action\TodoStatus\TodoStatusAction;
+use App\Event\CommsyEditEvent;
+use App\Filter\TodoFilterType;
 use App\Form\DataTransformer\TodoTransformer;
+use App\Form\Type\AnnotationType;
+use App\Form\Type\StepType;
+use App\Form\Type\TodoType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
-use App\Utils\ItemService;
-use App\Utils\ReaderService;
-use App\Utils\RoomService;
 use App\Utils\TodoService;
 use App\Utils\TopicService;
 use cs_item;
@@ -22,22 +26,13 @@ use cs_step_item;
 use cs_todo_item;
 use cs_user_item;
 use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use App\Filter\TodoFilterType;
-use App\Form\Type\TodoType;
-use App\Form\Type\StepType;
-use App\Form\Type\AnnotationType;
-
-use App\Event\CommsyEditEvent;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class TodoController
@@ -60,6 +55,7 @@ class TodoController extends BaseController
     {
         $this->todoService = $todoService;
     }
+
     /**
      * @Route("/room/{roomId}/todo")
      * @Template()
@@ -91,13 +87,13 @@ class TodoController extends BaseController
 
         // get todo list from manager service 
         $itemsCountArray = $this->todoService->getCountArray($roomId);
- 
+
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('todo') != '') {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('todo');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('todo');
         }
- 
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -130,7 +126,8 @@ class TodoController extends BaseController
         $todoItem->setPrivateEditing('1');
         $todoItem->save();
 
-        return $this->redirectToRoute('app_todo_detail', array('roomId' => $roomId, 'itemId' => $todoItem->getItemId()));
+        return $this->redirectToRoute('app_todo_detail',
+            array('roomId' => $roomId, 'itemId' => $todoItem->getItemId()));
     }
 
     /**
@@ -167,10 +164,10 @@ class TodoController extends BaseController
 
         if ($todoFilter) {
             $filterForm = $this->createFilterForm($roomItem);
-    
+
             // manually bind values from the request
             $filterForm->submit($todoFilter);
-    
+
             // apply filter
             $this->todoService->setFilterConditions($filterForm);
         } else {
@@ -192,13 +189,21 @@ class TodoController extends BaseController
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
 
             if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
-                ($this->isGranted('ITEM_ENTER',$roomId)) and $roomItem->getType() == 'userroom'
-            or ($roomItem->getType() == 'project' and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete', 'markpending', 'markinprogress', 'markdone');
-                
+                ($this->isGranted('ITEM_ENTER', $roomId)) and $roomItem->getType() == 'userroom'
+                or ($roomItem->getType() == 'project' and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
+                $allowedActions[$item->getItemID()] = array(
+                    'markread',
+                    'copy',
+                    'save',
+                    'delete',
+                    'markpending',
+                    'markinprogress',
+                    'markdone'
+                );
+
                 $statusArray = $roomItem->getExtraToDoStatusArray();
                 foreach ($statusArray as $tempStatus) {
-                    $allowedActions[$item->getItemID()][] = 'mark'.$tempStatus;
+                    $allowedActions[$item->getItemID()][] = 'mark' . $tempStatus;
                 }
             } else {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
@@ -257,13 +262,13 @@ class TodoController extends BaseController
 
         $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($todo->getItemID());
-        if(empty($reader) || $reader['read_date'] < $todo->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $todo->getModificationDate()) {
             $reader_manager->markRead($todo->getItemID(), $todo->getVersionID());
         }
 
         $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($todo->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $todo->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $todo->getModificationDate()) {
             $noticed_manager->markNoticed($todo->getItemID(), $todo->getVersionID());
         }
 
@@ -274,14 +279,14 @@ class TodoController extends BaseController
         $stepList = $todo->getStepItemList();
 
         $stepItem = $stepList->getFirst();
-        while ( $stepItem ) {
+        while ($stepItem) {
             $reader = $reader_manager->getLatestReader($stepItem->getItemID());
-            if ( empty($reader) || $reader['read_date'] < $stepItem->getModificationDate() ) {
+            if (empty($reader) || $reader['read_date'] < $stepItem->getModificationDate()) {
                 $reader_manager->markRead($stepItem->getItemID(), 0);
             }
 
             $noticed = $noticed_manager->getLatestNoticed($stepItem->getItemID());
-            if ( empty($noticed) || $noticed['read_date'] < $stepItem->getModificationDate() ) {
+            if (empty($noticed) || $noticed['read_date'] < $stepItem->getModificationDate()) {
                 $noticed_manager->markNoticed($stepItem->getItemID(), 0);
             }
 
@@ -306,34 +311,35 @@ class TodoController extends BaseController
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$todo->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $todo->getModificationDate() ) {
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array, $todo->getItemID());
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $todo->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -371,7 +377,8 @@ class TodoController extends BaseController
         }
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
-        $amountAnnotations = $annotationService->getListAnnotations($roomId, $this->todoService->getTodo($itemId)->getItemId(), null, null);
+        $amountAnnotations = $annotationService->getListAnnotations($roomId,
+            $this->todoService->getTodo($itemId)->getItemId(), null, null);
 
         return array(
             'roomId' => $roomId,
@@ -430,7 +437,7 @@ class TodoController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ));
 
         return [
@@ -469,7 +476,7 @@ class TodoController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $step->getItemID()
             ]),
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ]);
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
@@ -502,7 +509,8 @@ class TodoController extends BaseController
                     // this will also update the todo item's modification date to indicate that it has changes
                     $step->getLinkedItem()->save();
 
-                    $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::SAVE);
+                    $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()),
+                        CommsyEditEvent::SAVE);
 
                     return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,
@@ -556,7 +564,7 @@ class TodoController extends BaseController
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
         $roomItem = $this->roomService->getRoomItem($roomId);
 
-        $todoItem = NULL;
+        $todoItem = null;
 
         $isDraft = $item->isDraft();
 
@@ -579,7 +587,7 @@ class TodoController extends BaseController
                 'itemId' => $itemId,
             )),
             'statusChoices' => $statusChoices,
-            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService)
             ],
@@ -596,16 +604,16 @@ class TodoController extends BaseController
         }
 
 
-
         $formData = $transformer->transform($todoItem);
         $formData['categoriesMandatory'] = $categoriesMandatory;
         $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $this->legacyEnvironment);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+            $this->legacyEnvironment);
         $formData['draft'] = $isDraft;
 
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -624,7 +632,7 @@ class TodoController extends BaseController
                 }
 
                 $todoItem->save();
-                
+
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
@@ -662,19 +670,22 @@ class TodoController extends BaseController
         if ($item->getItemType() == 'todo') {
             $typedItem = $this->todoService->getTodo($itemId);
             $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
-        } else if ($item->getItemType() == 'step') {
-            $typedItem = $this->todoService->getStep($itemId);
-            $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()), CommsyEditEvent::SAVE);
+        } else {
+            if ($item->getItemType() == 'step') {
+                $typedItem = $this->todoService->getStep($itemId);
+                $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()),
+                    CommsyEditEvent::SAVE);
+            }
         }
-        
+
         $itemArray = array($typedItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        
+
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
@@ -687,36 +698,37 @@ class TodoController extends BaseController
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
+        while ($current_user) {
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
 
-		$readerManager->getLatestReaderByUserIDArray($id_array,$typedItem->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $typedItem->getModificationDate() ) {
+        $readerManager->getLatestReaderByUserIDArray($id_array, $typedItem->getItemID());
+        $current_user = $user_list->getFirst();
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $typedItem->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
 
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if (empty($reader)) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -754,11 +766,11 @@ class TodoController extends BaseController
         $ratingDetail = $assessmentService->getRatingDetail($todo);
         $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
         $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
-        
+
         return array(
             'roomId' => $roomId,
             'todo' => $todo,
-            'ratingArray' =>  array(
+            'ratingArray' => array(
                 'ratingDetail' => $ratingDetail,
                 'ratingAverageDetail' => $ratingAverageDetail,
                 'ratingOwnDetail' => $ratingOwnDetail,
@@ -849,12 +861,11 @@ class TodoController extends BaseController
         if ($sort != "none") {
             /** @var cs_todo_item[] $todos */
             $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
-        }
-        elseif ($this->get('session')->get('sortTodos')) {
+        } elseif ($this->get('session')->get('sortTodos')) {
             /** @var cs_todo_item[] $todos */
-            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $this->get('session')->get('sortTodos'));
-        }
-        else {
+            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0,
+                $this->get('session')->get('sortTodos'));
+        } else {
             /** @var cs_todo_item[] $todos */
             $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, 'date');
         }
@@ -930,12 +941,12 @@ class TodoController extends BaseController
      */
     public function downloadAction(
         Request $request,
+        DownloadAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
     }
 
@@ -952,13 +963,13 @@ class TodoController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
 
     }
 
@@ -989,12 +1000,12 @@ class TodoController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
+        DeleteAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.delete.generic');
         return $action->execute($room, $items);
     }
 
@@ -1007,6 +1018,7 @@ class TodoController extends BaseController
      */
     public function xhrStatusAction(
         Request $request,
+        TodoStatusAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
@@ -1023,7 +1035,6 @@ class TodoController extends BaseController
 
         $newStatus = $payload['status'];
 
-        $action = $this->get(TodoStatusAction::class);
         $action->setNewStatus($newStatus);
         return $action->execute($room, $items);
     }
@@ -1032,7 +1043,7 @@ class TodoController extends BaseController
      * @Route("/room/{roomId}/todo/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
      * @throws \Exception
      */
-    public function xhrStatusFromDetailAction ($roomId, $itemId, Request $request, TodoStatusAction $action)
+    public function xhrStatusFromDetailAction($roomId, $itemId, Request $request, TodoStatusAction $action)
     {
         $room = $this->roomService->getRoomItem($roomId);
         $items = [$this->todoService->getTodo($itemId)];
@@ -1102,7 +1113,8 @@ class TodoController extends BaseController
         ]);
     }
 
-    private function getTagDetailArray ($baseCategories, $itemCategories) {
+    private function getTagDetailArray($baseCategories, $itemCategories)
+    {
         $result = array();
         $tempResult = array();
         $addCategory = false;
@@ -1118,7 +1130,11 @@ class TodoController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                        $result[] = array(
+                            'title' => $baseCategory['title'],
+                            'item_id' => $baseCategory['item_id'],
+                            'children' => $tempResult
+                        );
                     } else {
                         $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
                     }
@@ -1127,7 +1143,11 @@ class TodoController extends BaseController
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    $result[] = array(
+                        'title' => $baseCategory['title'],
+                        'item_id' => $baseCategory['item_id'],
+                        'children' => $tempResult
+                    );
                 }
             }
             $tempResult = array();
@@ -1136,7 +1156,7 @@ class TodoController extends BaseController
         return $result;
     }
 
-    private function getDetailInfo (
+    private function getDetailInfo(
         AssessmentService $assessmentService,
         CategoryService $categoryService,
         int $roomId,
@@ -1149,13 +1169,13 @@ class TodoController extends BaseController
         $item = $todo;
         $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
@@ -1177,16 +1197,17 @@ class TodoController extends BaseController
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
+        while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
         }
-        $readerManager->getLatestReaderByUserIDArray($id_array,$todo->getItemID());
+        $readerManager->getLatestReaderByUserIDArray($id_array, $todo->getItemID());
         $current_user = $user_list->getFirst();
-        while ( $current_user ) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $todo->getModificationDate() ) {
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $todo->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
@@ -1199,9 +1220,9 @@ class TodoController extends BaseController
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
+            if (empty($reader)) {
                 $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
                 $readerList[$item->getItemId()] = 'changed';
             }
 
@@ -1268,7 +1289,7 @@ class TodoController extends BaseController
                 $firstItemId = $todos[0]->getItemId();
             }
             if ($nextItemId) {
-                $lastItemId = $todos[sizeof($todos)-1]->getItemId();
+                $lastItemId = $todos[sizeof($todos) - 1]->getItemId();
             }
         }
 

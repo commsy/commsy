@@ -278,7 +278,6 @@ class cs_assessments_manager extends cs_manager {
 	 		item_id = "' . encode(AS_DB, $assessments_item->getItemID()) . '",
 	 		context_id = "' . encode(AS_DB, $assessments_item->getContextID()) . '",
 	 		creator_id = "' . encode(AS_DB, $assessments_item->getCreatorID()) . '",
-	 		deleter_id = "' . encode(AS_DB, $assessments_item->getDeleterID()) . '",
 	 		creation_date = "' . $current_datetime . '",
 	 		item_link_id = "' . encode(AS_DB, $assessments_item->getItemLinkID()) . '",
 	 		assessment = "' . encode(AS_DB, $assessments_item->getAssessment()) . '"

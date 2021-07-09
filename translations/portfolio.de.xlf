@@ -82,6 +82,14 @@
                 <source>Comments</source>
                 <target>Kommentare</target>
             </trans-unit>
+            <trans-unit id="title_empty">
+                <source>Title may not be empty</source>
+                <target>Die Kategorie-Bezeichnung darf nicht leer sein</target>
+            </trans-unit>
+            <trans-unit id="add_category">
+                <source>Add category</source>
+                <target>Kategorie hinzufügen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
