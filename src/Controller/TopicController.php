@@ -10,6 +10,8 @@ use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\CategoryService;
+use App\Utils\LabelService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -418,7 +420,7 @@ class TopicController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
-    public function editAction($roomId, $itemId, Request $request)
+    public function editAction($roomId, $itemId, Request $request, LabelService $labelService, CategoryService $categoryService)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
@@ -455,11 +457,13 @@ class TopicController extends BaseController
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categoryPlaceholderText' => $translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashTagPlaceholderText' => $translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
@@ -475,10 +479,26 @@ class TopicController extends BaseController
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
-                    $topicItem->setTagListByID($formData['category_mapping']['categories']);
+                    $categoryIds = $formData['category_mapping']['categories'] ?? [];
+
+                    if (isset($formData['category_mapping']['newCategory'])) {
+                        $newCategoryTitle = $formData['category_mapping']['newCategory'];
+                        $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
+                        $categoryIds[] = $newCategory->getItemID();
+                    }
+
+                    $topicItem->setTagListByID($categoryIds);
                 }
                 if ($hashtagsMandatory) {
-                    $topicItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
+                        $hashtagIds[] = $newHashtag->getItemID();
+                    }
+
+                    $topicItem->setBuzzwordListByID($hashtagIds);
                 }
 
                 $topicItem->save();

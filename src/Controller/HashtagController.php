@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\Model\MergeHashtags;
 use App\Services\LegacyEnvironment;
+use App\Utils\LabelService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -27,34 +28,21 @@ class HashtagController extends Controller
     public function addAction(
         $roomId,
         Request $request,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        LabelService $labelService
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        $labelManager = $legacyEnvironment->getLabelManager();
-
         if (!$roomItem->withBuzzwords()) {
             throw $this->createAccessDeniedException('The requested room does not have hashtags enabled.');
         }
 
-        $buzzwordId = null;
-        $buzzwordItem = null;
-
         if ($request->request->get('title')) {
             $hashtagTitle = $request->request->get('title');
-
-            $buzzwordItem = $labelManager->getNewItem();
-
-            $buzzwordItem->setLabelType('buzzword');
-            $buzzwordItem->setContextID($roomId);
-            $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
-            $buzzwordItem->setName($hashtagTitle);
-
-            $buzzwordItem->save();
-
+            $buzzwordItem = $labelService->getNewHashtag($hashtagTitle, $roomId);
             $buzzwordId = $buzzwordItem->getItemID();
 
             return $this->json([
@@ -76,7 +64,8 @@ class HashtagController extends Controller
         $labelId = null,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        LabelService $labelService
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -112,21 +101,12 @@ class HashtagController extends Controller
             }
 
             if ($editForm->has('new') && $editForm->get('new')->isClicked()) {
-                $buzzwordItem = $labelManager->getNewItem();
-
-                $buzzwordItem->setLabelType('buzzword');
-                $buzzwordItem->setContextID($hashtag->getContextId());
-                $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
-                $buzzwordItem->setName($hashtag->getName());
-
-                $buzzwordItem->save();
+                $labelService->getNewHashtag($hashtag->getName(), $hashtag->getContextId());
             }
 
             if ($editForm->has('update') && $editForm->get('update')->isClicked()) {
                 $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
-
                 $buzzwordItem->setName($hashtag->getName());
-
                 $buzzwordItem->save();
             }
 
