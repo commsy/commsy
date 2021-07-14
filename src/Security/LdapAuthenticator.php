@@ -44,10 +44,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     private $accountCreator;
 
-    /**
-     * @var PortalGuessService
-     */
-    protected $portalGuessService;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -61,7 +57,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         $this->entityManager = $entityManager;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->accountCreator = $accountCreator;
-        $this->portalGuessService = $portalGuessService;
     }
 
     protected function getPostParameterName(): string
