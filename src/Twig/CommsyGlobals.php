@@ -7,6 +7,7 @@ namespace App\Twig;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\Server;
+use App\Utils\PortalGuessService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -28,14 +29,21 @@ class CommsyGlobals
      */
     private RequestStack $requestStack;
 
+    /**
+     * @var PortalGuessService
+     */
+    private $portalGuessService;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         ParameterBagInterface $parameterBag,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        PortalGuessService $portalGuessService
     ) {
         $this->entityManager = $entityManager;
         $this->parameterBag = $parameterBag;
         $this->requestStack = $requestStack;
+        $this->portalGuessService = $portalGuessService;
     }
 
     /**
@@ -55,25 +63,7 @@ class CommsyGlobals
      */
     public function portal(): ?Portal
     {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request !== null) {
-            $portalId = $request->attributes->get('portalId')
-                ?? $request->attributes->get('context');
-            if ($portalId !== null) {
-                return $this->entityManager->getRepository(Portal::class)->find($portalId);
-            }
-
-            $roomId = $request->attributes->get('roomId');
-            if ($roomId !== null) {
-                /** @var Room $room */
-                $room = $this->entityManager->getRepository(Room::class)->find($roomId);
-                if ($room !== null) {
-                    return $this->entityManager->getRepository(Portal::class)->find($room->getContextId());
-                }
-            }
-        }
-
-        return null;
+        return $this->portalGuessService->fetchPortal($this->requestStack->getCurrentRequest());
     }
 
     /**
