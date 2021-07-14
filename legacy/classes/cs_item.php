@@ -1441,6 +1441,7 @@ class cs_item {
           // check locking
           global $symfonyContainer;
           $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+          $checkLocking &= !$this->_issetExtra('etherpad_id'); // don't check locking for etherpads
           
           if ($checkLocking && !$user_item->isRoot() && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
               $lockingUserId = $this->getLockingUserId();

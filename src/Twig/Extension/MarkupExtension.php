@@ -65,6 +65,11 @@ class MarkupExtension extends AbstractExtension
         // links
         $text = $this->interpreteLinks($text);
 
+        // The etherpad ignores the first row, if it is not surrounded by a paragraph tag
+        if (!strpos($text, "<p>") !== 0 && substr($text, -4) != "</p>") {
+            $text = "<p>" . $text . "</p>";
+        }
+
         // image post-processing to add lightbox preview
         if ($item !== null) {
             $text = $this->formatLightbox($text, $item);
