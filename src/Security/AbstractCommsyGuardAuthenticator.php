@@ -22,7 +22,7 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     protected $urlGenerator;
 
-    private $portalGuessService;
+    protected $portalGuessService;
 
     /**
      * When app_login is submitted, this post parameter will be checked in order to decide

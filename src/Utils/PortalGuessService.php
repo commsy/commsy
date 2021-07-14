@@ -83,7 +83,7 @@ class PortalGuessService
         if ($request !== null) {
             $contextId = $request->attributes->get('context');
             if ($contextId !== null) {
-                return $contextId;
+                return (int)$contextId;
             }
 
             $roomId = $request->attributes->get('roomId');
