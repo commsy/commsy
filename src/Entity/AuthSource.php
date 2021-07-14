@@ -37,13 +37,6 @@ abstract class AuthSource
     private int $id;
 
     /**
-     * @var array
-     *
-     * @ORM\Column(name="extras", type="array", nullable=true)
-     */
-    private $extras;
-
-    /**
      * @var ?string
      *
      * @ORM\Column(type="string", length=255, nullable=false)
