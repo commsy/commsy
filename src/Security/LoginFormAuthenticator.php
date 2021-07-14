@@ -44,11 +44,6 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     private $passwordEncoder;
 
-    /**
-     * @var PortalGuessService
-     */
-    protected $portalGuessService;
-
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
@@ -61,7 +56,6 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         $this->entityManager = $entityManager;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
-        $this->portalGuessService = $portalGuessService;
     }
 
     protected function getPostParameterName(): string

@@ -37,11 +37,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     private $accountCreator;
 
-    /**
-     * @var PortalGuessService
-     */
-    protected $portalGuessService;
-
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
@@ -52,7 +47,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 
         $this->entityManager = $entityManager;
         $this->accountCreator = $accountCreator;
-        $this->portalGuessService = $portalGuessService;
     }
 
     /**
