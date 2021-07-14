@@ -47,7 +47,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
     /**
      * @var PortalGuessService
      */
-    private $portalGuessService;
+    protected $portalGuessService;
 
     public function __construct(
         EntityManagerInterface $entityManager,
