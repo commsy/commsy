@@ -177,12 +177,12 @@ class CopyController extends BaseController
      */
     public function xhrRemoveAction(
         Request $request,
+        RemoveAction $action,
         int $roomId)
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(RemoveAction::class);
         return $action->execute($room, $items);
     }
 
