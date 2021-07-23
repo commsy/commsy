@@ -292,7 +292,7 @@ class PortfolioController extends AbstractController
     ) {
 
         // when creating a new item, return a redirect to the edit form (portfolio draft)
-        if ($portfolioId === -1) { // -1 represents 'new'
+        if ($portfolioId == -1) { // -1 represents 'new'
             $portfolioItem = $this->portfolioService->getNewItem();
             $portfolioItem->save();
             return $this->redirectToRoute('app_portfolio_edit', [
