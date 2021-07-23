@@ -17,7 +17,7 @@
 
             {% if privateRoomItem %}
                 <li>
-                    <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+                    <a href="{{ path('app_copy_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
                         <i class="uk-icon-copy"></i>
                         <small id="cs-nav-copy-indicator">
                             {% if count > 0 %}
@@ -68,7 +68,7 @@
 
     {% if privateRoomItem %}
         <li>
-            <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+            <a href="{{ path('app_copy_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
                 <span uk-icon="copy"></span>
                 <small id="cs-nav-copy-indicator">
                     {% if count > 0 %}
