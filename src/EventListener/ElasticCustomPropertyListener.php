@@ -4,25 +4,37 @@ namespace App\EventListener;
 
 use App\Services\File2TextService;
 use App\Services\LegacyEnvironment;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
+use cs_environment;
 use FOS\ElasticaBundle\Event\TransformEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ElasticCustomPropertyListener implements EventSubscriberInterface
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $itemCache = [];
+    /**
+     * @var array
+     */
+    private array $itemCache = [];
     /**
      * @var File2TextService
      */
-    private $file2TextService;
+    private File2TextService $file2TextService;
 
-    private $projectDir;
+    /**
+     * @var string
+     */
+    private string $projectDir;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, File2TextService $file2TextService, KernelInterface $kernel)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        File2TextService $file2TextService,
+        KernelInterface $kernel
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->file2TextService = $file2TextService;
         $this->projectDir = $kernel->getProjectDir();
@@ -226,7 +238,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                     if (!$file->isDeleted()) {
                         $fileName = $this->projectDir . '/' . $file->getFilepath();
                         $contentPlain = $this->file2TextService->convert($fileName);
-                        if(!empty($contentPlain)){
+                        if (!empty($contentPlain)) {
                             $filesPlain[] = $contentPlain;
                         }
                     }
@@ -238,15 +250,16 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     }
 
 
-    public function getPlainContentofAllFiles($files){
+    public function getPlainContentofAllFiles($files)
+    {
         $filesPlain = [];
 
         /** @var \cs_file_item $file */
-        foreach($files as $file){
+        foreach ($files as $file) {
             if (!$file->isDeleted()) {
                 $fileName = $this->projectDir . '/' . $file->getFilepath();
                 $contentPlain = $this->file2TextService->convert($fileName);
-                if(!empty($contentPlain)){
+                if (!empty($contentPlain)) {
                     $filesPlain[] = $contentPlain;
                 }
             }
@@ -275,7 +288,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                         $articleContents[] = [
                             'subject' => $article->getSubject(),
                             'description' => $article->getDescription(),
-                            'filesRaw'=> $filesPlain,
+                            'filesRaw' => $filesPlain,
                         ];
                     }
 
@@ -310,7 +323,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                         $stepContents[] = [
                             'title' => $step->getTitle(),
                             'description' => $step->getDescription(),
-                            'filesRaw'=> $filesPlain,
+                            'filesRaw' => $filesPlain,
                         ];
                     }
 
@@ -342,7 +355,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                         $sectionContents[] = [
                             'title' => $section->getTitle(),
                             'description' => $section->getDescription(),
-                            'filesRaw'=> $filesPlain,
+                            'filesRaw' => $filesPlain,
                         ];
                     }
 
@@ -389,7 +402,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
-            if ($item->getItemType() !== CS_USER_TYPE){
+            if ($item->getItemType() !== CS_USER_TYPE) {
                 return;
             }
 
@@ -417,7 +430,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
-            if ($item->getItemType() !== CS_USER_TYPE){
+            if ($item->getItemType() !== CS_USER_TYPE) {
                 return;
             }
 

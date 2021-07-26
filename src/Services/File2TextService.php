@@ -9,20 +9,14 @@ use App\DocumentConverter\DocumentConverterInterface;
 
 class File2TextService
 {
-
-    private $fileName;
-    private $multibyte = 4; // Use setUnicode(TRUE|FALSE)
-    private $convertQuotes = ENT_QUOTES; // ENT_COMPAT (double-quotes), ENT_QUOTES (Both), ENT_NOQUOTES (None)
-    private $showProgress = false; // TRUE if you have problems with time-out
-    private $decodedText = '';
     /**
      * @var ConverterManager
      */
-    private $converterManager;
+    private ConverterManager $converterManager;
 
     /**
      * File2TextService constructor.
-     * @param $converterManager
+     * @param ConverterManager $converterManager
      */
     public function __construct(ConverterManager $converterManager)
     {
@@ -30,8 +24,9 @@ class File2TextService
     }
 
 
-    public function convert($completeFilePath){
-        if (isset($completeFilePath) && !file_exists($completeFilePath)) {
+    public function convert($completeFilePath)
+    {
+        if (isset($completeFilePath) && !is_file($completeFilePath)) {
             return null;
         }
 
@@ -42,11 +37,10 @@ class File2TextService
         /** @var DocumentConverterInterface $converter */
         $converter = $this->converterManager->getConverter($fileExtension);
 
-        if($converter){
+        if ($converter) {
             return $converter->convertToText($completeFilePath);
         }
 
         return null;
     }
-
 }
