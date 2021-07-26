@@ -432,6 +432,11 @@ class AccountController extends AbstractController
         $fileName = $translator->trans('Self assessment', [], 'profile')
             . ' (' . $portal->getTitle() . ').pdf';
 
+        if (str_contains($html,"localhost:81")) { // local fix for wkhtmltopdf
+            $html = preg_replace("/<img[^>]+\>/i", "(image) ", $html);
+        }
+
+
         // return HTML Response containing a PDF generated from the HTML data
         return $printService->buildPdfResponse($html, false, $fileName);
     }
