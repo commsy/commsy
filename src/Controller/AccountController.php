@@ -404,7 +404,8 @@ class AccountController extends AbstractController
         PrintService $printService,
         RoomService $roomService,
         CoreSecurity $security,
-        UserService $userService
+        UserService $userService,
+        TranslatorInterface $translator
     ) {
         /** @var Account $account */
         $account = $security->getUser();
@@ -428,7 +429,7 @@ class AccountController extends AbstractController
             'serviceEmail' => $serviceEmail,
         ]);
 
-        $fileName = $this->translator->trans('Self assessment', [], 'profile')
+        $fileName = $translator->trans('Self assessment', [], 'profile')
             . ' (' . $portal->getTitle() . ').pdf';
 
         // return HTML Response containing a PDF generated from the HTML data
