@@ -327,6 +327,7 @@
     {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
     {% set pathName = '' %}
+    {% set material = item %}
     {% if item.itemType is same as('material') %}
         {% set pathName = 'app_material_edit' %}
     {% elseif item.itemType is same as('section') %}

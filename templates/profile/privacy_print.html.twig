@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+{% import 'base/printmacro.html.twig' as printmacros %}
+{% import _self as macros %}
+
+<html lang="{{ selectedLanguage() }}">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}CommSy{% endblock %}</title>
+
+        {% block stylesheets %}
+            {{ printmacros.encore_absolute_link_tags('app_default') }}
+        {% endblock %}
+    </head>
+
+    <body>
+
+        {% block content %}
+        <div class="">
+            <div class="uk-panel uk-panel-box-secondary uk-panel-space">
+                <h1 class="uk-article-title">{{ 'Self assessment'|trans({}, 'profile') }} &ndash; {{ 'Person-related data'|trans({},'profile') }}</h1>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-header uk-panel-space">
+                {# content #}
+                {# personal master data #}
+                <div>
+                    {# account data #}
+                    <article class="uk-margin-top">
+                        <header>
+                            <h2 class="uk-panel uk-panel-title" style="font-size:20px">
+                                <i class="uk-icon-user"></i>
+                                {{ 'Account'|trans({},'profile') }} {{ accountData.itemID }}: {{ accountData.userID }}
+                            </h2>
+                        </header>
+                        <div class="uk-grid uk-grid-divider">
+                            <div class="uk-width-1-2">
+                                <div class="uk-grid">
+                                    <div class="uk-width-4-10">{{ 'firstname'|trans({},'profile')|capitalize }}:</div>
+                                    <div class="uk-width-6-10">{% if not accountData.firstName is empty %}{{ accountData.firstName }}{% else %}&nbsp;{% endif %}</div>
+                                    <div class="uk-width-4-10">{{ 'lastname'|trans({},'profile')|capitalize }}:</div>
+                                    <div class="uk-width-6-10">{% if not accountData.lastName is empty %}{{ accountData.lastName }}{% else %}&nbsp;{% endif %}</div>
+                                    <div class="uk-width-4-10">{{ 'dateOfBirth'|trans({},'profile')|capitalize }}:</div>
+                                    <div class="uk-width-6-10">{% if not accountData.birthdate|craue_date is empty %}{{ accountData.birthdate|craue_date }}{% else %}&nbsp;{% endif %}</div>
+                                    <div class="uk-width-4-10">{{ 'email'|trans({},'user') }}:</div>
+                                    <div class="uk-width-6-10">{% if not accountData.email is empty %}{{ accountData.email }}{% else %}&nbsp;{% endif %}</div>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2">
+                                <div class="uk-grid">
+                                    <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.creationDate|craue_datetime }}</div>
+                                    <div class="uk-width-3-10">{{ 'last login'|trans({},'user')|capitalize }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.lastLoginDate|craue_datetime }}</div>
+                                    <div class="uk-width-3-10">{{ 'language'|trans({},'user') }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.language|trans({},'profile') }}</div>
+                                    <div class="uk-width-3-10">{{ 'newsletter'|trans({},'profile') }}:</div>
+                                    <div class="uk-width-7-10">{{ accountData.newsletterStatus|trans({},'profile') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    {# room profile data #}
+                    {% if not communityRoomProfileDataArray is empty %}
+                        {{ macros.roomProfileData(communityRoomProfileDataArray, printProfileImages) }}
+                    {% endif %}
+                    {% if not projectRoomProfileDataArray is empty %}
+                        {{ macros.roomProfileData(projectRoomProfileDataArray, printProfileImages) }}
+                    {% endif %}
+                    {% if not groupRoomProfileDataArray is empty %}
+                        {{ macros.roomProfileData(groupRoomProfileDataArray, printProfileImages) }}
+                    {% endif %}
+                </div>
+            {% if not serviceLink is empty or not serviceEmail is empty %}
+                <div>
+                    {# footer text #}
+                    <article class="uk-margin-large-top">
+                        <header>
+                            <h4 class="uk-panel uk-panel-title" style="font-size:16px; line-height:22px">
+                                <i class="uk-icon-justify uk-icon-envelope-o"></i>
+                                {{ 'Contact service help'|trans({},'profile') }}
+                            </h4>
+                        </header>
+                        <div class="uk-grid uk-grid-divider">
+                            <div class="uk-width-1-1">
+                                {% if serviceEmail in serviceLink %}
+                                    {{ 'contact text with service email'|trans({},'profile')|format(serviceLink, serviceEmail)|raw }}
+                                {% else %}
+                                    {{ 'contact text with service link'|trans({},'profile')|format(serviceLink)|raw }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        {% endblock %}
+
+    </body>
+</html>
+
+{% macro roomProfileData(roomProfileDataArray, printProfileImages = true) %}
+
+    {% for roomProfileData in roomProfileDataArray %}
+        <article class="uk-margin-large-top">
+            <header>
+                <h4 class="uk-panel uk-panel-title" style="font-size:16px; line-height:22px">
+                    <i class="uk-icon-justify uk-icon-th-list"></i>
+                    {{ roomProfileData.roomType|trans({},'room') }} {{ roomProfileData.roomID }}: {{ roomProfileData.roomName|raw }}
+                    {%- if printProfileImages == true -%}
+                        {# NOTE: including profile images significantly increases load times! #}
+                        <span class="uk-float-right"><img class="uk-comment-avatar uk-thumbnail uk-border-circle uk-margin-small-right" style="height:22px; width:22px" src="{{ absolute_url(path('app_user_image', {'roomId': roomProfileData.roomID, 'itemId': roomProfileData.itemID}) )}}"></span>
+                    {%- endif %}
+                </h4>
+            </header>
+            <div class="uk-grid uk-grid-divider">
+                <div class="uk-width-1-2">
+                    <div class="uk-grid">
+                        <div class="uk-width-3-10">{{ 'user status'|trans({},'user') }}:</div>
+                        <div class="uk-width-7-10">{{ ('status_' ~ roomProfileData.status)|trans({},'user') }}{% if roomProfileData.contact == true %}/{{ 'is contact'|trans({},'user') }}{% endif %}</div>
+                        <div class="uk-width-3-10">{{ 'email'|trans({},'user') }}:</div>
+                        <div class="uk-width-7-10">{% if not roomProfileData.email is empty %}{{ roomProfileData.email }}{% if roomProfileData.emailVisible == false %} <i class="uk-icon-eye-slash"></i>{% endif %}{% else %}&nbsp;{% endif %}</div>
+                    </div>
+                    {# NOTE: the PDF layout uses two-column blocks, one block consisting of a left column (e.g. phone & mobile) and a right column (e.g. skype & homepage);
+                             we omit entire blocks if *all* of its fields are empty; but if at least one of the block's fields has content, we print the entire block  #}
+                    {% if not ((roomProfileData.phoneNumber is empty) and (roomProfileData.cellphoneNumber is empty) and (roomProfileData.skypeID is empty) and (roomProfileData.homepage is empty)) %}
+                        <div class="uk-grid uk-margin-top">
+                            <div class="uk-width-3-10">{{ 'phone'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.phoneNumber is empty %}{{ roomProfileData.phoneNumber }}{% else %}&nbsp;{% endif %}</div>
+                            <div class="uk-width-3-10">{{ 'mobile'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.cellphoneNumber is empty %}{{ roomProfileData.cellphoneNumber }}{% else %}&nbsp;{% endif %}</div>
+                        </div>
+                    {% endif %}
+                    {% if not ((roomProfileData.street is empty) and (roomProfileData.zipcode is empty) and (roomProfileData.city is empty) and (roomProfileData.workspace is empty) and (roomProfileData.organisation is empty) and (roomProfileData.position is empty)) %}
+                        <div class="uk-grid uk-margin-top">
+                            <div class="uk-width-3-10">{{ 'street'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.street is empty %}{{ roomProfileData.street }}{% else %}&nbsp;{% endif %}</div>
+                            <div class="uk-width-3-10">{{ 'zipCode'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.zipcode is empty %}{{ roomProfileData.zipcode }}{% else %}&nbsp;{% endif %}</div>
+                            <div class="uk-width-3-10">{{ 'city'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.city is empty %}{{ roomProfileData.city }}{% else %}&nbsp;{% endif %}</div>
+                        </div>
+                    {% endif %}
+                    {% if not ((roomProfileData.title is empty) and (roomProfileData.description is empty)) %}
+                        <div class="uk-grid uk-margin-top">
+                            <div class="uk-width-3-10">{{ 'title'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.title is empty %}{{ roomProfileData.title }}{% else %}&nbsp;{% endif %}</div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="uk-width-1-2">
+                    <div class="uk-grid">
+                        <div class="uk-width-3-10">{{ 'User item ID'|trans({},'user') }}:</div>
+                        <div class="uk-width-7-10">{{ roomProfileData.itemID }}</div>
+                        <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
+                        <div class="uk-width-7-10">{{ roomProfileData.creationDate|craue_datetime }}</div>
+                    </div>
+                    {% if not ((roomProfileData.phoneNumber is empty) and (roomProfileData.cellphoneNumber is empty) and (roomProfileData.skypeID is empty) and (roomProfileData.homepage is empty)) %}
+                        <div class="uk-grid uk-margin-top">
+                            <div class="uk-width-3-10">{{ 'skype'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.skypeID is empty %}{{ roomProfileData.skypeID }}{% else %}&nbsp;{% endif %}</div>
+                            <div class="uk-width-3-10">{{ 'homepage'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.homepage is empty %}{{ roomProfileData.homepage }}{% else %}&nbsp;{% endif %}</div>
+                        </div>
+                    {% endif %}
+                    {% if not ((roomProfileData.street is empty) and (roomProfileData.zipcode is empty) and (roomProfileData.city is empty) and (roomProfileData.workspace is empty) and (roomProfileData.organisation is empty) and (roomProfileData.position is empty)) %}
+                        <div class="uk-grid uk-margin-top">
+                            <div class="uk-width-3-10">{{ 'room'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.workspace is empty %}{{ roomProfileData.workspace }}{% else %}&nbsp;{% endif %}</div>
+                            <div class="uk-width-3-10">{{ 'organisation'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.organisation is empty %}{{ roomProfileData.organisation }}{% else %}&nbsp;{% endif %}</div>
+                            <div class="uk-width-3-10">{{ 'position'|trans({},'user') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.position is empty %}{{ roomProfileData.position }}{% else %}&nbsp;{% endif %}</div>
+                        </div>
+                    {% endif %}
+                    {% if not ((roomProfileData.title is empty) and (roomProfileData.description is empty)) %}
+                        <div class="uk-grid uk-margin-top">
+                            <div class="uk-width-3-10">{{ 'description'|trans({},'profile') }}:</div>
+                            <div class="uk-width-7-10">{% if not roomProfileData.description is empty %}{{ roomProfileData.description }}{% else %}&nbsp;{% endif %}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+
+{% endmacro %}
