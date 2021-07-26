@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-intl": "*",
+        "ext-json": "*",
         "ci/restclientbundle": "^2.0",
         "composer/package-versions-deprecated": "^1.8",
         "craue/twigextensions-bundle": "^2.4",
