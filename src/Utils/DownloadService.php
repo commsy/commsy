@@ -61,6 +61,9 @@ class DownloadService
             // create PDF-file
             $htmlView = $item->getItemType() . '/detail_print.html.twig';
             $htmlOutput = $this->serviceContainer->get('templating')->renderResponse($htmlView, $detailArray);
+            if (str_contains($htmlOutput->getContent(),"localhost:81")) { // local fix for wkhtmltopdf
+                $htmlOutput = preg_replace("/<img[^>]+\>/i", "(image) ", $htmlOutput);
+            }
             file_put_contents($tempDirectory . '/' . $item->getTitle() . '.pdf', $this->printService->getPdfContent($htmlOutput));
 
             // add files
