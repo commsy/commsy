@@ -4,11 +4,21 @@ namespace App\EventListener;
 
 use App\Services\File2TextService;
 use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
 use cs_environment;
+use cs_item;
+use cs_project_item;
 use FOS\ElasticaBundle\Event\TransformEvent;
+use Psr\Cache\InvalidArgumentException;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
+/**
+ * Class ElasticCustomPropertyListener
+ * @package App\EventListener
+ */
 class ElasticCustomPropertyListener implements EventSubscriberInterface
 {
     /**
@@ -17,36 +27,58 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var array
-     */
-    private array $itemCache = [];
-    /**
      * @var File2TextService
      */
     private File2TextService $file2TextService;
+    /**
+     * @var FilesystemAdapter
+     */
+    private FilesystemAdapter $cache;
 
     /**
      * @var string
      */
     private string $projectDir;
 
+    /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
+     * ElasticCustomPropertyListener constructor.
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param File2TextService $file2TextService
+     * @param KernelInterface $kernel
+     * @param ItemService $itemService
+     */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         File2TextService $file2TextService,
-        KernelInterface $kernel
+        KernelInterface $kernel,
+        ItemService $itemService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->file2TextService = $file2TextService;
         $this->projectDir = $kernel->getProjectDir();
+        $this->cache = new FilesystemAdapter();
+        $this->itemService = $itemService;
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return string[]
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             TransformEvent::POST_TRANSFORM => 'addCustomProperty'
         ];
     }
 
+    /**
+     * @param TransformEvent $event
+     * @throws InvalidArgumentException
+     */
     public function addCustomProperty(TransformEvent $event)
     {
         $fields = $event->getFields();
@@ -100,6 +132,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param TransformEvent $event
+     * @throws InvalidArgumentException
+     */
     private function addHashtags(TransformEvent $event)
     {
         $item = $this->getItemCached($event->getObject()->getItemId());
@@ -125,34 +161,43 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param TransformEvent $event
+     * @throws InvalidArgumentException
+     */
     private function addTags(TransformEvent $event)
     {
         $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
             // when building the index from the CLI command, the context ID is not populated, thus we set it here explicitly
-            $this->legacyEnvironment->setCurrentContextID($item->getContextID());
+            $found = $this->setLegacyContext($item->getContextID());
+            if ($found) {
+                $tags = $item->getTagList();
+                if ($tags->isNotEmpty()) {
+                    $objectTags = [];
 
-            $tags = $item->getTagList();
-            if ($tags->isNotEmpty()) {
-                $objectTags = [];
+                    $tag = $tags->getFirst();
+                    while ($tag) {
+                        if (!$tag->isDeleted()) {
+                            $objectTags[] = $tag->getTitle();
+                        }
 
-                $tag = $tags->getFirst();
-                while ($tag) {
-                    if (!$tag->isDeleted()) {
-                        $objectTags[] = $tag->getTitle();
+                        $tag = $tags->getNext();
                     }
 
-                    $tag = $tags->getNext();
-                }
-
-                if (!empty($objectTags)) {
-                    $event->getDocument()->set('tags', $objectTags);
+                    if (!empty($objectTags)) {
+                        $event->getDocument()->set('tags', $objectTags);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * @param TransformEvent $event
+     * @throws InvalidArgumentException
+     */
     private function addContext(TransformEvent $event)
     {
         $item = $this->getItemCached($event->getObject()->getItemId());
@@ -167,6 +212,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param TransformEvent $event
+     * @throws InvalidArgumentException
+     */
     private function addAnnotations(TransformEvent $event)
     {
         $item = $this->getItemCached($event->getObject()->getItemId());
@@ -192,6 +241,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param TransformEvent $event
+     * @throws InvalidArgumentException
+     */
     private function addFilesContent(TransformEvent $event)
     {
         $item = $this->getItemCached($event->getObject()->getItemId());
@@ -206,7 +259,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 while ($file) {
                     if (!$file->isDeleted()) {
                         $fileSize = $file->getFileSize();
-                        if (round($fileSize / 1024) < 25) {
+                        if ($fileSize > 0 && round($fileSize / 1024) < 25) {
                             $content = $file->getContentBase64();
                             if (!empty($content)) {
                                 $fileContents[] = $content;
@@ -269,6 +322,9 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
     }
 
+    /**
+     * @param $event
+     */
     public function addDiscussionArticles($event)
     {
         $discussionManager = $this->legacyEnvironment->getDiscussionManager();
@@ -302,6 +358,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param $event
+     * @throws InvalidArgumentException
+     */
     public function addSteps($event)
     {
         $todoManager = $this->legacyEnvironment->getTodoManager();
@@ -309,34 +369,38 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
         if ($todo) {
             // when building the index from the CLI command, the context ID is not populated, thus we set it here explicitly
-            $this->legacyEnvironment->setCurrentContextID($todo->getContextID());
+            $found = $this->setLegacyContext($todo->getContextID());
+            if ($found) {
+                $steps = $todo->getStepItemList();
+                if ($steps->isNotEmpty()) {
+                    $stepContents = [];
 
-            $steps = $todo->getStepItemList();
-            if ($steps->isNotEmpty()) {
-                $stepContents = [];
+                    $step = $steps->getFirst();
+                    while ($step) {
+                        if (!$step->isDeleted() && !$step->isDraft()) {
+                            $files = $step->getFileList();
+                            $filesPlain = $this->getPlainContentofAllFiles($files);
+                            $stepContents[] = [
+                                'title' => $step->getTitle(),
+                                'description' => $step->getDescription(),
+                                'filesRaw' => $filesPlain,
+                            ];
+                        }
 
-                $step = $steps->getFirst();
-                while ($step) {
-                    if (!$step->isDeleted() && !$step->isDraft()) {
-                        $files = $step->getFileList();
-                        $filesPlain = $this->getPlainContentofAllFiles($files);
-                        $stepContents[] = [
-                            'title' => $step->getTitle(),
-                            'description' => $step->getDescription(),
-                            'filesRaw' => $filesPlain,
-                        ];
+                        $step = $steps->getNext();
                     }
 
-                    $step = $steps->getNext();
-                }
-
-                if (!empty($stepContents)) {
-                    $event->getDocument()->set('steps', $stepContents);
+                    if (!empty($stepContents)) {
+                        $event->getDocument()->set('steps', $stepContents);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * @param $event
+     */
     public function addSections($event)
     {
         $materialManager = $this->legacyEnvironment->getMaterialManager();
@@ -369,13 +433,16 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param $event
+     */
     public function addParentRoomIds($event)
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $room = $roomManager->getItem($event->getObject()->getItemId());
 
         if ($room) {
-            if ($room instanceof \cs_project_item) {
+            if ($room instanceof cs_project_item) {
                 $communityRooms = $room->getCommunityList();
 
                 if ($communityRooms->isNotEmpty()) {
@@ -397,6 +464,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param $event
+     * @throws InvalidArgumentException
+     */
     public function addCreator($event)
     {
         $item = $this->getItemCached($event->getObject()->getItemId());
@@ -425,6 +496,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param $event
+     * @throws InvalidArgumentException
+     */
     public function addModifier($event)
     {
         $item = $this->getItemCached($event->getObject()->getItemId());
@@ -453,27 +528,36 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
-    private function getItemCached($itemId): ?\cs_item
+    /**
+     * @param $itemId
+     * @return cs_item|null
+     * @throws InvalidArgumentException
+     */
+    private function getItemCached($itemId): ?cs_item
     {
-        // cache wiping
-        if (sizeof($this->itemCache) >= 10000) {
-            $this->itemCache = [];
+        return $this->cache->get($itemId, function (ItemInterface $cachedItem) {
+            $cachedItem->expiresAfter(60 * 60);
+
+            return $this->itemService->getTypedItem($cachedItem->getKey());
+        });
+    }
+
+    /**
+     * @param $contextId
+     * @return bool
+     * @throws InvalidArgumentException
+     */
+    private function setLegacyContext($contextId): bool
+    {
+        $contextItem = $this->getItemCached($contextId);
+
+        if ($contextItem) {
+            $this->legacyEnvironment->setCurrentContextID($contextId);
+            $this->legacyEnvironment->setCurrentContextItem($contextItem);
+
+            return true;
         }
 
-        // cache hit
-        if (isset($this->itemCache[$itemId])) {
-            return $this->itemCache[$itemId];
-        }
-
-        // cache miss
-        $itemManager = $this->legacyEnvironment->getItemManager();
-        $item = $itemManager->getItem($itemId);
-
-        if ($item) {
-            $this->itemCache[$itemId] = $item;
-            return $item;
-        }
-
-        return null;
+        return false;
     }
 }

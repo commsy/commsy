@@ -24,6 +24,7 @@ use App\Utils\TopicService;
 use cs_dates_item;
 use cs_room_item;
 use cs_user_item;
+use App\Utils\LabelService;
 use DateTime;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -1044,6 +1045,7 @@ class DateController extends BaseController
         CategoryService $categoryService,
         DateTransformer $transformer,
         ItemController $itemController,
+        LabelService $labelService,
         int $roomId,
         int $itemId
     ) {
@@ -1098,11 +1100,13 @@ class DateController extends BaseController
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService)
+                'categories' => $itemController->getCategories($roomId, $categoryService),
+ 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
-                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
+                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         );
@@ -1131,10 +1135,26 @@ class DateController extends BaseController
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
-                    $dateItem->setTagListByID($formData['category_mapping']['categories']);
+                    $categoryIds = $formData['category_mapping']['categories'] ?? [];
+
+                    if (isset($formData['category_mapping']['newCategory'])) {
+                        $newCategoryTitle = $formData['category_mapping']['newCategory'];
+                        $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
+                        $categoryIds[] = $newCategory->getItemID();
+                    }
+
+                    $dateItem->setTagListByID($categoryIds);
                 }
                 if ($hashtagsMandatory) {
-                    $dateItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
+                        $hashtagIds[] = $newHashtag->getItemID();
+                    }
+
+                    $dateItem->setBuzzwordListByID($hashtagIds);
                 }
 
                 $valuesToChange = array();

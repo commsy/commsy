@@ -10,6 +10,10 @@
                 <source>Search in room...</source>
                 <target>Search in workspace...</target>
             </trans-unit>
+            <trans-unit id="search-form-placeholder-all-rooms">
+                <source>All my workspaces...</source>
+                <target>All my workspaces...</target>
+            </trans-unit>
             <trans-unit id="search-no-results-room">
                 <source>no rooms found</source>
                 <target>No workspaces found</target>
@@ -18,9 +22,17 @@
                 <source>best matches</source>
                 <target>Best matches</target>
             </trans-unit>
-            <trans-unit id="search-more-results">
+            <trans-unit id="search-more-results-header">
                 <source>more results</source>
                 <target>More Results</target>
+            </trans-unit>
+            <trans-unit id="search-more-results-all-rooms">
+                <source>Search in all my rooms</source>
+                <target>Search in all my workspaces</target>
+            </trans-unit>
+            <trans-unit id="search-more-results-current-room">
+                <source>Search in this room</source>
+                <target>Search in:</target>
             </trans-unit>
             <trans-unit id="search-no-results">
                 <source>No results found</source>
@@ -117,6 +129,10 @@
             <trans-unit id="search-filter-read-status-modified">
                 <source>Modified</source>
                 <target>Modified</target>
+            </trans-unit>
+            <trans-unit id="search-filter-read-status-unread">
+                <source>Unread</source>
+                <target>New or modified</target>
             </trans-unit>
             <trans-unit id="search-filter-read-status-read">
                 <source>Read</source>

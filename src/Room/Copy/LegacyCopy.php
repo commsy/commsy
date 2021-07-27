@@ -2,10 +2,13 @@
 
 namespace App\Room\Copy;
 
+use App\Event\ItemReindexEvent;
 use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
 use cs_environment;
 use cs_room_item;
 use cs_user_item;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class LegacyCopy
@@ -22,12 +25,29 @@ class LegacyCopy implements CopyStrategy
     private cs_environment $legacyEnvironment;
 
     /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private EventDispatcherInterface $eventDispatcher;
+
+    /**
      * LegacyCopy constructor.
      * @param LegacyEnvironment $legacyEnvironment
+     * @param ItemService $itemService
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->itemService = $itemService;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -635,6 +655,18 @@ class LegacyCopy implements CopyStrategy
         }
 
         $target->save();
+
+        // update the the Elastic search index with all newly created items
+        $itemManager = $this->legacyEnvironment->getItemManager();
+        $itemList = $itemManager->getItemList($new_id_array);
+
+        foreach ($itemList as $item) {
+            $itemId = $item->getItemID();
+            if ($itemId != $target->getItemID()) {
+                $typedItem = $this->itemService->getTypedItem($itemId);
+                $this->eventDispatcher->dispatch(new ItemReindexEvent($typedItem), ItemReindexEvent::class);
+            }
+        }
 
         ############################################
         # FLAG: group rooms

@@ -585,13 +585,6 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: form.event_subscriber }
-    commsy.listener.elastic.custom_property:
-        class: App\EventListener\ElasticCustomPropertyListener
-        arguments:
-            $legacyEnvironment: '@commsy_legacy.environment'
-            $file2TextService: '@App\Services\File2TextService'
-        tags:
-            - { name: kernel.event_subscriber }
 
     # EventSubscribers
     commsy.subscriber.edit:
@@ -1193,6 +1186,9 @@ services:
 
     # Events
     App\Event\CommsyEditEvent:
+        autowire: false
+
+    App\Event\ItemReindexEvent:
         autowire: false
 
     App\Event\ItemDeletedEvent:

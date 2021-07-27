@@ -227,11 +227,17 @@ class cs_todo_item extends cs_item {
      * @return \cs_list
      */
    function getStepItemList(){
-      $step_manager = $this->_environment->getStepManager();
-      $step_manager->setTodoItemIDLimit($this->getItemID());
-      $step_manager->select();
-      $step_item_list = $step_manager->get();
-      return $step_item_list;
+      $stepManager = $this->_environment->getStepManager();
+
+      $stepManager->reset();
+      $stepManager->setContextLimit($this->getContextID());
+      $stepManager->setTodoItemIDLimit($this->getItemID());
+
+      $stepManager->select();
+      /** @var \cs_list $stepItems */
+      $stepItems = $stepManager->get();
+
+      return $stepItems;
    }
 
    function isProcessor($user) {

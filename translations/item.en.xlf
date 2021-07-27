@@ -74,9 +74,13 @@
                 <source>Export to Wiki</source>
                 <target>Export to Wiki</target>
             </trans-unit>
+            <trans-unit id="newCategory">
+                <source>newCategory</source>
+                <target>New category</target>
+            </trans-unit>
             <trans-unit id="newHashtag">
                 <source>newHashtag</source>
-                <target>New Hashtag</target>
+                <target>New hashtag</target>
             </trans-unit>
             <trans-unit id="newAnnotation">
                 <source>Add new annotation</source>

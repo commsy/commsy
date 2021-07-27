@@ -19,6 +19,9 @@ use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
+use App\Utils\ItemService;
+use App\Utils\LabelService;
+use App\Utils\RoomService;
 use App\Utils\TodoService;
 use App\Utils\TopicService;
 use cs_item;
@@ -554,6 +557,7 @@ class TodoController extends BaseController
     public function editAction(
         Request $request,
         CategoryService $categoryService,
+        LabelService $labelService,
         TodoTransformer $transformer,
         ItemController $itemController,
         int $roomId,
@@ -590,11 +594,13 @@ class TodoController extends BaseController
             'statusChoices' => $statusChoices,
             'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService)
+                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
-                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
+                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         );
@@ -626,10 +632,26 @@ class TodoController extends BaseController
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
-                    $todoItem->setTagListByID($formData['category_mapping']['categories']);
+                    $categoryIds = $formData['category_mapping']['categories'] ?? [];
+
+                    if (isset($formData['category_mapping']['newCategory'])) {
+                        $newCategoryTitle = $formData['category_mapping']['newCategory'];
+                        $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
+                        $categoryIds[] = $newCategory->getItemID();
+                    }
+
+                    $todoItem->setTagListByID($categoryIds);
                 }
                 if ($hashtagsMandatory) {
-                    $todoItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
+                        $hashtagIds[] = $newHashtag->getItemID();
+                    }
+
+                    $todoItem->setBuzzwordListByID($hashtagIds);
                 }
 
                 $todoItem->save();
