@@ -223,6 +223,7 @@ class SettingsController extends AbstractController
 
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, [
             'roomId' => $roomId,
+            'isUserroom' => $roomItem->isUserroom(),
             'newStatus' => $roomData['tasks']['additional_status'],
             'portalTerms' => $portalTerms,
         ]);

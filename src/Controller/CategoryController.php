@@ -2,19 +2,18 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-
-use App\Form\Type as Types;
 use App\Entity\Tag;
+use App\Form\Type as Types;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\RoomService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
@@ -71,6 +70,38 @@ class CategoryController extends AbstractController
         );
     }
 
+    /**
+     * @Route("/room/{roomId}/category/add")
+     * @Security("is_granted('CATEGORY_EDIT')")
+     */
+    public function add(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        CategoryService $categoryService
+    ) {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem->withTags()) {
+            throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
+        }
+
+        if ($request->request->get('title')) {
+            $categoryTitle = $request->request->get('title');
+            $categoryItem = $categoryService->addTag($categoryTitle, $roomId);
+            $categoryId = $categoryItem->getItemID();
+
+            return $this->json([
+                'categoryId' => $categoryId,
+                'categoryTitle' => $categoryItem->getTitle(),
+            ]);
+        } else {
+            throw $this->createAccessDeniedException('Title is empty');
+        }
+    }
 
     /**
      * @Route("/room/{roomId}/category/new")

@@ -13,9 +13,10 @@ use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\CategoryService;
+use App\Utils\LabelService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
-use App\Utils\CategoryService;
 use App\Utils\TopicService;
 use cs_room_item;
 use cs_topic_item;
@@ -456,6 +457,7 @@ class TopicController extends BaseController
     public function editAction(
         Request $request,
         CategoryService $categoryService,
+        LabelService $labelService,
         TopicTransformer $transformer,
         ItemController $itemController,
         int $roomId,
@@ -489,11 +491,13 @@ class TopicController extends BaseController
             )),
             'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService)
+                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
             ],
             'hashtagMappingOptions' => [
                 'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
-                'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
+                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
         ));
@@ -509,10 +513,26 @@ class TopicController extends BaseController
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
-                    $topicItem->setTagListByID($formData['category_mapping']['categories']);
+                    $categoryIds = $formData['category_mapping']['categories'] ?? [];
+
+                    if (isset($formData['category_mapping']['newCategory'])) {
+                        $newCategoryTitle = $formData['category_mapping']['newCategory'];
+                        $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
+                        $categoryIds[] = $newCategory->getItemID();
+                    }
+
+                    $topicItem->setTagListByID($categoryIds);
                 }
                 if ($hashtagsMandatory) {
-                    $topicItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
+
+                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
+                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
+                        $hashtagIds[] = $newHashtag->getItemID();
+                    }
+
+                    $topicItem->setBuzzwordListByID($hashtagIds);
                 }
 
                 $topicItem->save();

@@ -25,6 +25,11 @@ class cs_disc_manager {
    var $_first_id = NULL;
    var $_second_id = NULL;
    var $_file_path_basic = '../files/';
+
+   // NOTE: this path spec will be used instead of `$_file_path_basic` if the current working directory matches the
+   // project directory; this happens in case of CLI command execution (like `bin/console fos:elastica:populate`)
+   var $_file_path_basic_cli = 'files/';
+
    private $_folder_temp = 'temp';
    private $_last_saved_filename = '';
 
@@ -73,7 +78,7 @@ class cs_disc_manager {
 
    function _getFilePath ( $first_id = '', $second_id = '') {
       $retour  = '';
-      $retour .= $this->_file_path_basic;
+      $retour .= $this->getFilePathBasic();
       if (!empty($first_id)) {
          $retour .= $first_id.'/';
       } elseif (!empty($this->_first_id)) {
@@ -106,15 +111,19 @@ class cs_disc_manager {
       return $this->_getFilePath($first_id,$second_id);
    }
 
-   function existsFile ($filename) {
-      $retour = false;
-      if ( !empty($filename)
-           and file_exists($this->_getFilePath().$filename)
-         ) {
-         $retour = true;
-      }
-      return $retour;
-   }
+    function existsFile($filename)
+    {
+        if (empty($filename)) {
+            return false;
+        }
+
+        $filePath = $this->_getFilePath() . $filename;
+        if (!file_exists($filePath)) {
+            return false;
+        }
+
+        return true;
+    }
 
    function existsTempFile ($filename) {
       $retour = false;
@@ -366,10 +375,12 @@ class cs_disc_manager {
       return $retour;
    }
 
-   public function getTempFolder () {
-      $retour = $this->_file_path_basic.$this->_folder_temp;
-      return $retour;
-   }
+    public function getTempFolder()
+    {
+        $retour = $this->getFilePathBasic() . $this->_folder_temp;
+
+        return $retour;
+    }
 
    function _makeTempFolder () {
       $first_folder_string = $this->getTempFolder();
@@ -398,13 +409,20 @@ class cs_disc_manager {
       return $retour;
    }
 
-   public function getFilePathBasic ( $full = false) {
-      $retour = $this->_file_path_basic;
-      if ( $full ) {
-         $retour = getcwd().'/'.$retour;
-      }
-      return $retour;
-   }
+    public function getFilePathBasic($full = false)
+    {
+        $currentWorkingDir = getcwd();
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->get('kernel')->getProjectDir();
+
+        $retour = ($currentWorkingDir === $projectDir) ? $this->_file_path_basic_cli : $this->_file_path_basic;
+
+        if ($full) {
+            $retour = $currentWorkingDir . '/' . $retour;
+        }
+
+        return $retour;
+    }
 
     public function removeRoomDir($first_id, $second_id)
     {

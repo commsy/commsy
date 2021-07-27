@@ -126,20 +126,10 @@ class UserTransformer extends AbstractTransformer
 
             if ($account->getAuthSource()->isChangeUsername()) {
                 // check if userid has changed
-                if ($portalUser->getUserID() != $userData['userId']) {
+                $newUserId = $userData['userId'];
+                if ($portalUser->getUserID() != $newUserId) {
                     if ($this->accountManager->propagateUsernameChange($account, $portalUser, $userData['userId'])) {
-//                        $session_manager = $this->legacyEnvironment->getSessionManager();
-//                        $session = $this->legacyEnvironment->getSessionItem();
-//                        $session_id_old = $session->getSessionID();
-//                        $session_manager->delete($session_id_old, true);
-//                        $session->createSessionID($userData['userId']);
-//                        $cookie = $session->getValue('cookie');
-//                        if ($cookie == 1) $session->setValue('cookie', 2);
-//
-//                        $session_manager->save($session);
-//                        unset($session_manager);
-
-                        $portalUser->setUserId($userData['userId']); // Important, as this object is saved again later!
+                        $portalUser->setUserId($newUserId); // Important, as this object is saved again later!
                     } else {
                         die("ERROR: changing User ID not successful");
                     }
@@ -185,8 +175,9 @@ class UserTransformer extends AbstractTransformer
                 $userObject->setUsePortalEmail(1);
             } else {
                 $userObject->setUsePortalEmail(0);
-                $userObject->setEmail($userData['emailRoom']);
             }
+
+            $userObject->setEmail($userData['emailRoom']);
 
             $privateRoomUserItem = $portalUser->getRelatedPrivateRoomUserItem();
 
@@ -206,6 +197,10 @@ class UserTransformer extends AbstractTransformer
                     $userObject->setEmail($portalUser->getEmail());
 
                     $account->setEmail($portalUser->getEmail());
+                    $account->setFirstname($portalUser->getFirstname());
+                    $account->setLastname($portalUser->getLastname());
+                    $account->setLanguage($portalUser->getLanguage());
+
                     $this->entityManager->persist($account);
                     $this->entityManager->flush();
                 }

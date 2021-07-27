@@ -106,7 +106,9 @@ class ItemVoter extends Voter
         } else {
             if ($itemId == 'NEW') {
                 if ($attribute == self::EDIT) {
-                    if ($currentUser->isReallyGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
+                    // NOTE: by using `isGuest()` (instead of `isReallyGuest()`) we'll also catch logged-in users who
+                //       are currently viewing a community room with guest access which they are no member of
+                if ($currentUser->isGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
                         return false;
                     }
 

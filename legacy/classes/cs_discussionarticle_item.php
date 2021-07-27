@@ -50,21 +50,34 @@ class cs_discussionarticle_item extends cs_item {
       $this->_data = $data_array;
    }
 
-   /** get subject of a discussionarticle
-    * this method gets the subejct of the discussionarticle
-    *
-    * @return string value subject of the discussionarticle
-    *
-    * @author CommSy Development Group
-    */
-   function getSubject () {
-   	  if ($this->getPublic()=='-1'){
-		 $translator = $this->_environment->getTranslationObject();
-   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
-   	  }else{
-         return $this->_getValue('subject');
-   	  }
-   }
+    /**
+     * Returns whether this item's content should get overwritten with some placeholder text.
+     * @return bool Whether this item's content should get overwritten (true), or not (false)
+     */
+    public function getHasOverwrittenContent(): bool
+    {
+        // NOTE: `public = -2` gets used for articles with answers which were "deleted" but should
+        // instead have their content overwritten to keep the discussion hierarchy intact
+        $hasOverwrittenContent = $this->getPublic() == '-2';
+
+        return $hasOverwrittenContent;
+    }
+
+    /**
+     * Returns the subject of the discussion article.
+     * @return string subject of the discussion article
+     */
+    public function getSubject(): string
+    {
+        $public = $this->getPublic();
+        if ($public == '-1' || $public == '-2') {
+            $translator = $this->_environment->getTranslationObject();
+            $message = ($public == '-1') ? 'COMMON_AUTOMATIC_DELETE_TITLE' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_TITLE';
+            return $translator->getMessage($message);
+        }
+
+        return $this->_getValue('subject');
+    }
 
    function getTitle () {
       return $this->getSubject();
@@ -100,22 +113,21 @@ class cs_discussionarticle_item extends cs_item {
       $this->setSubject($value);
    }
 
+    /**
+     * Returns the description of this discussion article.
+     * @return string|null description of the discussion article
+     */
+    public function getDescription(): ?string
+    {
+        $public = $this->getPublic();
+        if ($public == '-1' || $public == '-2') {
+            $translator = $this->_environment->getTranslationObject();
+            $message = ($public == '-1') ? 'COMMON_AUTOMATIC_DELETE_DESCRIPTION' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC';
+            return $translator->getMessage($message);
+        }
 
-   /** get description of a discussionarticle
-    * this method gets the description of the discussionarticle
-    *
-    * @return string value description of the discussionarticle
-    *
-    * @author CommSy Development Group
-    */
-   function getDescription () {
-   	  if ($this->getPublic()=='-1'){
-		 $translator = $this->_environment->getTranslationObject();
-   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
-   	  }else{
-         return $this->_getValue('description');
-   	  }
-   }
+        return $this->_getValue('description');
+    }
 
    /** set description of a discussionarticle
     * this method sets the description of the discussionarticle
@@ -240,13 +252,33 @@ class cs_discussionarticle_item extends cs_item {
       unset($noticed_manager);
    }
 
-   /** delete discussion article
-   * this methode delete the discussion article
-   */
-   function delete() {
-      $discussion_manager = $this->_environment->getDiscussionArticlesManager();
-      $this->_delete($discussion_manager);
-   }
+    /**
+     * Deletes the discussion article (or overwrites its content if the article has children).
+     * When a discussion article has child article(s) we won't delete it but instead only indicate (by setting
+     * `public = -2`) that its content should get overwritten. This will keep the discussion hierarchy intact.
+     */
+    public function delete(): void
+    {
+        $discussionManager = $this->_environment->getDiscussionArticlesManager();
+        $children = $discussionManager->getChildrenForDiscArticle($this);
+
+        if ($children->isNotEmpty()) {
+            $discussionManager->overwriteContent($this->getItemID());
+
+            return;
+        }
+
+        $this->_delete($discussionManager);
+
+        // if this article has a parent article with `public = -2` that has no children (anymore), delete the parent as well
+        $parentArticle = $discussionManager->getParentForDiscArticle($this);
+        if ($parentArticle && $parentArticle->getHasOverwrittenContent()) {
+            $parentArticleChildren = $discussionManager->getChildrenForDiscArticle($parentArticle);
+            if ($parentArticleChildren->isEmpty()) {
+                $parentArticle->delete();
+            }
+        }
+    }
 
    function cloneCopy() {
       $clone_item = clone $this; // "clone" needed for php5
@@ -259,5 +291,22 @@ class cs_discussionarticle_item extends cs_item {
       $this->_save($manager);
       $this->_changes = array();
    }
+
+    /**
+     * Returns whether the given user may edit this discussion article or not, but will always prevent editing if
+     * the article has its content set to be overwritten (as indicated by getPublic() returning a value of '-2').
+     * @param \cs_user_item $userItem The user for whom edit rights shall be checked
+     * @return bool Whether the given user is allowed to edit this article (true), or not (false)
+     */
+    public function mayEdit(\cs_user_item $userItem): bool
+    {
+        if ($this->getHasOverwrittenContent()) {
+            return false;
+        }
+
+        $mayEditItem = parent::mayEdit($userItem);
+
+        return $mayEditItem;
+    }
 }
 ?>
