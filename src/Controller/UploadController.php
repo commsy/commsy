@@ -435,24 +435,33 @@ class UploadController extends AbstractController
                     'fileId' => $fileItem->getFileID()
                 ]);
 
-                // Nach dem Speichern des Eintrags die Items-Tabelle anhand temp=true und der extras->SESSION_ID durchsuchen.
-                // Text im Textfeld nach Dateinamen parsen und passende Dateien aus der files-Tabelle mit dem Item verlinken.
-                // Extras temp und id zurücksetzen.
-                // cron für das regelmäßige löschen von temp-files.
-                $callback_function  = '';
-                $callback_function .= '<script type="text/javascript">'.LF;
-                $callback_function .= '<!--'.LF;
-                $callback_function .= 'var fileTypeFunction = function () {';
-                $callback_function .= 'var dialog = this.getDialog();';
-                $callback_function .= 'if(dialog.getName() == "CommSyVideoDialog"){';
-                $callback_function .= 'var element = dialog.getContentElement( "videoTab", "videoType" );';
-                $callback_function .= 'element.setValue("'.$fileItem->getMime().'")';
-                $callback_function .= '}';
-                $callback_function .= '};';
-                $callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "'.$fileUrl.'", fileTypeFunction);'.LF;
-                $callback_function .= '-->'.LF;
-                $callback_function .= '</script>'.LF;
-                echo $callback_function;
+                if ($request->get('CKEditor') != null) {
+                    // Nach dem Speichern des Eintrags die Items-Tabelle anhand temp=true und der extras->SESSION_ID durchsuchen.
+                    // Text im Textfeld nach Dateinamen parsen und passende Dateien aus der files-Tabelle mit dem Item verlinken.
+                    // Extras temp und id zurücksetzen.
+                    // cron für das regelmäßige löschen von temp-files.
+                    $callback_function = '';
+                    $callback_function .= '<script type="text/javascript">' . LF;
+                    $callback_function .= '<!--' . LF;
+                    $callback_function .= 'var fileTypeFunction = function () {';
+                    $callback_function .= 'var dialog = this.getDialog();';
+                    $callback_function .= 'if(dialog.getName() == "CommSyVideoDialog"){';
+                    $callback_function .= 'var element = dialog.getContentElement( "videoTab", "videoType" );';
+                    $callback_function .= 'element.setValue("' . $fileItem->getMime() . '")';
+                    $callback_function .= '}';
+                    $callback_function .= '};';
+                    $callback_function .= 'window.parent.CKEDITOR.tools.callFunction(' . $_GET['CKEditorFuncNum'] . ', "' . $fileUrl . '", fileTypeFunction);' . LF;
+                    $callback_function .= '-->' . LF;
+                    $callback_function .= '</script>' . LF;
+                    echo $callback_function;
+                } else {
+                    $return_array = array(
+                        'uploaded' => 1,
+                        'filename' => $file->getClientOriginalName(),
+                        'url' => $fileUrl
+                    );
+                    echo json_encode($return_array);
+                }
             }
         }
 
