@@ -21,7 +21,7 @@ final class Version20210329134856 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DELETE user FROM user LEFT JOIN accounts ON user.auth_source = accounts.item_id WHERE accounts.item_id IS NULL');
+        $this->addSql('DELETE user FROM user LEFT JOIN auth_source ON user.auth_source = auth_source.id WHERE auth_source.id IS NULL;');
     }
 
     public function down(Schema $schema) : void
