@@ -90,7 +90,7 @@ class SearchController extends BaseController
         $originalRoomItem = $roomService->getRoomItem($roomId);
 
         // by default, we perform a global search across all of the user's rooms, so we redirect to the dashboard
-        $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $privateRoomItem = $currentUser->getOwnRoom();
         $privateRoomID = ($privateRoomItem) ? $privateRoomItem->getItemID() : null;
         if ($privateRoomID) {
