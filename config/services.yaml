@@ -185,6 +185,10 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    # Environment Variable Processors
+    App\DependencyInjection\UppercasingEnvVarProcessor:
+        tags: ['container.env_var_processor']
+
     # Legacy Environment
     commsy_legacy.environment:
         alias: App\Services\LegacyEnvironment
