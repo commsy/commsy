@@ -92,7 +92,7 @@ parameters:
     # default = false
     # do nothing = true
     # set flag = flag
-    commsy.security.privacy_disable_overwriting: '%env(DATA_PRIVACY_OVERWRITING)%'
+    commsy.security.privacy_disable_overwriting: '%env(uppercase:DATA_PRIVACY_OVERWRITING)%'
     commsy.security.allow_moderator_takeover: true      # allows all moderators to take over another user by default
 
     # Settings
