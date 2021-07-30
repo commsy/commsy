@@ -901,7 +901,7 @@ class cs_material_item extends cs_item {
             while ($section_item) {
                 if ($version == 'current') {
                     $section_item->delete($this->getVersionID());
-                } elseif ($version = CS_ALL) {
+                } elseif ($version == CS_ALL) {
                     $section_item->delete($version); // CS_ALL -> delete all versions of the section
                 } else {
                     $section_item->delete();
