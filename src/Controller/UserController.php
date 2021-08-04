@@ -54,11 +54,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class UserController extends BaseController
 {
-    private $userService;
+    private UserService $userService;
+    private SessionInterface $session;
 
-    public function __construct(RoomService $roomService, UserService $userService)
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
     {
-        parent::__construct($roomService);
+        $this->session = $session;
+    }
+
+    public function __construct(UserService $userService)
+    {
         $this->userService = $userService;
     }
 
@@ -364,9 +373,9 @@ class UserController extends BaseController
         // get user list from manager service
         if ($sort != "none") {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
-        } elseif ($this->get('session')->get('sortUsers')) {
+        } elseif ($this->session->get('sortUsers')) {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0,
-                $this->get('session')->get('sortUsers'));
+                $this->session->get('sortUsers'));
         } else {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, 'date');
         }
@@ -1509,7 +1518,7 @@ class UserController extends BaseController
         // get user list from manager service
         $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
 
-        $this->get('session')->set('sortUsers', $sort);
+        $this->session->set('sortUsers', $sort);
 
         $readerList = [];
         $allowedActions = [];

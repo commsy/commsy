@@ -36,6 +36,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -50,6 +51,7 @@ class TodoController extends BaseController
      * @var TodoService
      */
     private TodoService $todoService;
+    private SessionInterface $session;
 
     /**
      * @required
@@ -59,6 +61,18 @@ class TodoController extends BaseController
     {
         $this->todoService = $todoService;
     }
+
+
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
+    }
+
+
 
     /**
      * @Route("/room/{roomId}/todo")
@@ -183,7 +197,7 @@ class TodoController extends BaseController
         /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId, $max, $start, $sort);
 
-        $this->get('session')->set('sortTodos', $sort);
+        $this->session->set('sortTodos', $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -884,10 +898,10 @@ class TodoController extends BaseController
         if ($sort != "none") {
             /** @var cs_todo_item[] $todos */
             $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
-        } elseif ($this->get('session')->get('sortTodos')) {
+        } elseif ($this->session->get('sortTodos')) {
             /** @var cs_todo_item[] $todos */
             $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0,
-                $this->get('session')->get('sortTodos'));
+                $this->session->get('sortTodos'));
         } else {
             /** @var cs_todo_item[] $todos */
             $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, 'date');

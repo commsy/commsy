@@ -33,6 +33,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -67,6 +68,7 @@ class MaterialController extends BaseController
      * @var AssessmentService
      */
     private $assessmentService;
+    private SessionInterface $session;
 
     /**
      * @required
@@ -112,6 +114,16 @@ class MaterialController extends BaseController
     {
         $this->assessmentService = $assessmentService;
     }
+
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
+    }
+
 
 
     /**
@@ -159,7 +171,7 @@ class MaterialController extends BaseController
         // get material list from manager service 
         $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
 
-        $this->get('session')->set('sortMaterials', $sort);
+        $this->session->set('sortMaterials', $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -292,9 +304,9 @@ class MaterialController extends BaseController
         // get material list from manager service 
         if ($sort != "none") {
             $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
-        } elseif ($this->get('session')->get('sortMaterials')) {
+        } elseif ($this->session->get('sortMaterials')) {
             $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0,
-                $this->get('session')->get('sortMaterials'));
+                $this->session->get('sortMaterials'));
         } else {
             $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
         }
@@ -1519,7 +1531,7 @@ class MaterialController extends BaseController
     ) {
         $item = $this->itemService->getItem($itemId);
         $material = $this->materialService->getMaterial($itemId);
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
         return [
             'roomId' => $roomId,
             'item' => $material,
