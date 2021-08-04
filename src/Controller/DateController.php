@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -49,6 +50,7 @@ class DateController extends BaseController
      * @var DateService
      */
     private DateService $dateService;
+    private SessionInterface $session;
 
     /**
      * @required
@@ -58,6 +60,17 @@ class DateController extends BaseController
     {
         $this->dateService = $dateService;
     }
+
+
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
+    }
+
 
 
     /**
@@ -110,7 +123,7 @@ class DateController extends BaseController
         // get material list from manager service
         $dates = $this->dateService->getListDates($roomId, $max, $start, $sort);
 
-        $this->get('session')->set('sortDates', $sort);
+        $this->session->set('sortDates', $sort);
 
         $readerList = array();
         $allowedActions = array();
@@ -249,9 +262,9 @@ class DateController extends BaseController
         // get date list from manager service
         if ($sort != "none") {
             $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $sort);
-        } elseif ($this->get('session')->get('sortDates')) {
+        } elseif ($this->session->get('sortDates')) {
             $dates = $this->dateService->getListDates($roomId, $numAllDates, 0,
-                $this->get('session')->get('sortDates'));
+                $this->session->get('sortDates'));
         } else {
             $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, 'date');
         }

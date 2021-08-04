@@ -34,6 +34,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -47,6 +48,8 @@ class GroupController extends BaseController
      * @var GroupService
      */
     private GroupService $groupService;
+    private SessionInterface $session;
+    private $mailer;
 
     /**
      * @required
@@ -56,6 +59,27 @@ class GroupController extends BaseController
     {
         $this->groupService = $groupService;
     }
+
+
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
+    }
+
+
+    /**
+     * @required
+     * @param \Swift_Mailer $mailer
+     */
+    public function setMailer(\Swift_Mailer $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
 
     /**
      * @Route("/room/{roomId}/group")
@@ -145,9 +169,9 @@ class GroupController extends BaseController
         // get group list from manager service 
         if ($sort != "none") {
             $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
-        } elseif ($this->get('session')->get('sortGroups')) {
+        } elseif ($this->session->get('sortGroups')) {
             $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0,
-                $this->get('session')->get('sortGroups'));
+                $this->session->get('sortGroups'));
         } else {
             $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, 'date');
         }
@@ -221,7 +245,7 @@ class GroupController extends BaseController
         // get group list from manager service 
         $groups = $this->groupService->getListGroups($roomId, $max, $start, $sort);
 
-        $this->get('session')->set('sortGroups', $sort);
+        $this->session->set('sortGroups', $sort);
 
         // contains member status of current user for each group and grouproom
         $allGroupsMemberStatus = [];
@@ -1360,7 +1384,7 @@ class GroupController extends BaseController
 
                 // send mail
                 $failedRecipients = [];
-                $this->get('mailer')->send($message, $failedRecipients);
+                $this->mailer->send($message, $failedRecipients);
 
                 foreach ($failedUsers as $failedUser) {
                     $this->addFlash('failedRecipients', $failedUser->getUserId());
@@ -1549,7 +1573,7 @@ class GroupController extends BaseController
 
                 // send mail
                 $failedRecipients = [];
-                $this->get('mailer')->send($message, $failedRecipients);
+                $this->mailer->send($message, $failedRecipients);
 
                 foreach ($failedUsers as $failedUser) {
                     $this->addFlash('failedRecipients', $failedUser->getUserId());

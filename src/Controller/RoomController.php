@@ -44,6 +44,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RoomController extends AbstractController
 {
+    private \Swift_Mailer $mailer;
+
+    /**
+     * @required
+     * @param \Swift_Mailer $mailer
+     */
+    public function setMailer(\Swift_Mailer $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
     /**
      * @Route("/room/{roomId}", requirements={
      *     "roomId": "\d+"
@@ -346,7 +357,7 @@ class RoomController extends AbstractController
 
             $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
 
-            $this->get('mailer')->send($message);
+            $this->mailer->send($message);
 
             return new JsonResponse([
                 'message' => $translator->trans('message was send'),
@@ -929,7 +940,7 @@ class RoomController extends AbstractController
 
                         $message->setBody($body, 'text/plain');
 
-                        $this->get('mailer')->send($message);
+                        $this->mailer->send($message);
 
                         $translator->setSelectedLanguage($savedLanguage);
                     }
@@ -989,7 +1000,7 @@ class RoomController extends AbstractController
                         ->setReplyTo([$contactModerator->getEmail() => $contactModerator->getFullName()])
                         ->setTo([$newUser->getEmail()]);
 
-                    $this->get('mailer')->send($message);
+                    $this->mailer->send($message);
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }
