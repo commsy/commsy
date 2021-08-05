@@ -9,6 +9,7 @@ use cs_room_manager;
 use cs_user_item;
 use cs_user_manager;
 use DateTimeImmutable;
+use Doctrine\DBAL\Exception\DriverException;
 use Symfony\Component\Form\FormInterface;
 
 
@@ -173,7 +174,11 @@ class UserService
         $systemGroupAll = $groupList->getFirst();
 
         if ($systemGroupAll) {
-            $systemGroupAll->addMember($user);
+            try {
+                $systemGroupAll->addMember($user);
+            } catch (DriverException $e) {
+                return null;
+            }
 
             return $systemGroupAll;
         }
@@ -320,7 +325,7 @@ class UserService
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings
-        if (!strtotime($user->getBirthday())) {
+        if (!is_null($user) && !strtotime($user->getBirthday())) {
             $user->setBirthday("");
         }
         return $user;

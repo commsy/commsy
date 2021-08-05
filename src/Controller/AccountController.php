@@ -71,7 +71,8 @@ class AccountController extends AbstractController
         UserPasswordEncoderInterface $passwordEncoder,
         AccountCreatorFacade $accountFacade,
         LegacyEnvironment $legacyEnvironment,
-        InvitationsService $invitationsService
+        InvitationsService $invitationsService,
+        UserService $userService
     ) {
         $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
@@ -93,6 +94,8 @@ class AccountController extends AbstractController
                 throw $this->createAccessDeniedException('Self-Registration token is invalid.');
             }
         }
+
+        $roomContextId = $invitationsService->getContextIdByAuthAndCode($localAuthSource, $token);
 
         $account = new Account();
         $account->setAuthSource($localAuthSource);
@@ -116,6 +119,15 @@ class AccountController extends AbstractController
 
             if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
                 $invitationsService->redeemInvitation($localAuthSource, $token);
+            }
+
+            $portalUser = $userService->getPortalUser($account);
+            $newUser = $userService->cloneUser($portalUser, $roomContextId);
+
+            if ($newUser) {
+                return $this->redirectToRoute('app_room_home', [
+                    'roomId' => $roomContextId,
+                ]);
             }
 
             return $this->redirectToRoute('app_login', [

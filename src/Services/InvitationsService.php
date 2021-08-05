@@ -95,6 +95,31 @@ class InvitationsService
      */
     public function confirmInvitationCode(AuthSourceLocal $authSourceLocal, string $invitationCode): bool
     {
+        $invitations = $this->getInvitations($authSourceLocal, $invitationCode);
+
+        if (count($invitations) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param AuthSourceLocal $authSourceLocal
+     * @param string $invitationCode
+     */
+    public function getContextIdByAuthAndCode(AuthSourceLocal $authSourceLocal, string $invitationCode)
+    {
+        $invitations = $this->getInvitations($authSourceLocal, $invitationCode);
+
+        if (count($invitations) > 0) {
+            $invitation = array_pop($invitations);
+            return $invitation->getContextId();
+        }
+    }
+
+    private function getInvitations(AuthSourceLocal $authSourceLocal, string $invitationCode)
+    {
         $repository = $this->entityManager->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->select()
@@ -105,13 +130,7 @@ class InvitationsService
             ->setParameter('invitationCode', $invitationCode)
             ->setParameter('expirationDate', new \DateTime())
             ->getQuery();
-        $invitations = $query->getResult();
-
-        if (count($invitations) > 0) {
-            return true;
-        }
-
-        return false;
+        return $query->getResult();
     }
 
     /**
