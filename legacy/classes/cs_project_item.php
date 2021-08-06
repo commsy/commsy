@@ -23,6 +23,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use \Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 /** upper class of the project item
  */
 include_once('classes/cs_room_item.php');
@@ -1088,16 +1090,9 @@ class cs_project_item extends cs_room_item {
 
              global $symfonyContainer;
 
-             $url = $symfonyContainer->get('router')->generate(
-                 'app_room_home',
-                 array('roomId' => $this->getItemID()),
-                 true
-             );
-             $requestStack = $symfonyContainer->get('request_stack');
-             $currentRequest = $requestStack->getCurrentRequest();
-             if ($currentRequest) {
-                 $url = $currentRequest->getSchemeAndHttpHost() . $url;
-             }
+             $url = $symfonyContainer->get('router')->generate('app_room_home', [
+                 'roomId' => $this->getItemID()
+             ],  UrlGeneratorInterface::ABSOLUTE_URL);
 
              $body .= LF.$url;
          	
