@@ -29,6 +29,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -59,6 +60,11 @@ class AnnouncementController extends BaseController
      */
     protected CategoryService $categoryService;
 
+
+    /**
+     * @var SessionInterface
+     */
+    private SessionInterface $session;
 
     /**
      * @required
@@ -95,6 +101,17 @@ class AnnouncementController extends BaseController
     {
         $this->categoryService = $categoryService;
     }
+
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
+    }
+
+
 
     /**
      * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
@@ -144,8 +161,7 @@ class AnnouncementController extends BaseController
         /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $this->get('session')->set('sortAnnouncements', $sort);
-
+        $this->session->set('sortAnnouncements', $sort);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
@@ -339,10 +355,10 @@ class AnnouncementController extends BaseController
         if ($sort != "none") {
             /** @var cs_announcement_item[] $announcements */
             $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
-        } elseif ($this->get('session')->get('sortAnnouncements')) {
+        } elseif ($this->session->get('sortAnnouncements')) {
             /** @var cs_announcement_item[] $announcements */
             $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0,
-                $this->get('session')->get('sortAnnouncements'));
+                $this->session->get('sortAnnouncements'));
         } else {
             /** @var cs_announcement_item[] $announcements */
             $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
