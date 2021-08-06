@@ -39,11 +39,9 @@ class SectionController extends BaseController
      * @param MaterialService $materialService
      * @param DeleteSection $deleteSection
      * @param DeleteAction $deleteAction
-     * @param RoomService $roomService
      */
-    public function __construct(MaterialService $materialService, DeleteSection $deleteSection, DeleteAction $deleteAction, RoomService $roomService)
+    public function __construct(MaterialService $materialService, DeleteSection $deleteSection, DeleteAction $deleteAction)
     {
-        parent::__construct($roomService);
         $this->materialService = $materialService;
         $this->deleteAction = $deleteAction;
         $this->deleteAction->setDeleteStrategy($deleteSection);
