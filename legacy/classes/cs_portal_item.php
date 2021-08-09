@@ -27,6 +27,8 @@
  */
 include_once('classes/cs_guide_item.php');
 
+use App\Services\InvitationsService;
+
 /** class for a context
  * this class implements a context item
  */
@@ -1001,6 +1003,8 @@ class cs_portal_item extends cs_guide_item {
       if ( $this->isCountRoomRedundancy() ) {
          $cron_array[] = $this->_cronSyncCountRooms();
       }
+
+      $cron_array[] = $this->_cronInvitationCleanUp();
          
       // archiving
       if ( $this->isActivatedArchivingUnusedRooms() ) {
@@ -1017,6 +1021,31 @@ class cs_portal_item extends cs_guide_item {
       $cron_array[] = $this->_cronDraftCleanUp();
       return $cron_array;
    }
+
+    function _cronInvitationCleanUp()
+    {
+        global $symfonyContainer;
+        $time_start = getmicrotime();
+        $cron_array = array();
+        $cron_array['title'] = 'Delete expired invitations';
+        $cron_array['description'] = 'Delete expired invitations';
+
+        $invitationService = $symfonyContainer->get(InvitationsService::class);
+        $expiredInvitations = $invitationService->getExpiredInvitations();
+        $removedInvitations = $invitationService->removeInvitations($expiredInvitations);
+        $removalCount = '0';
+        if ($removedInvitations) {
+            $removalCount = strval(count($removedInvitations));
+        }
+
+        $cron_array['success'] = true;
+        $cron_array['success_text'] = $removalCount . ' expired invitations deleted';
+        $time_end = getmicrotime();
+        $time = round($time_end - $time_start, 0);
+        $cron_array['time'] = $time;
+
+        return $cron_array;
+    }
 
     function _cronDraftCleanUp()
     {

@@ -64,6 +64,31 @@ class InvitationsService
         return false;
     }
 
+    public function removeInvitations(array $invitations)
+    {
+        foreach ($invitations as $invitation) {
+            $this->entityManager->remove($invitation);
+        }
+        $this->entityManager->flush();
+
+        if (count($invitations) > 0) {
+            return $invitations;
+        }
+
+        return null;
+    }
+
+    public function getExpiredInvitations()
+    {
+        $repository = $this->entityManager->getRepository(Invitations::class);
+        $query = $repository->createQueryBuilder('invitations')
+            ->select()
+            ->where('invitations.expirationDate < :expirationDate')
+            ->setParameter('expirationDate', new \DateTime())
+            ->getQuery();
+        return $query->getResult();
+    }
+
     /**
      * @param AuthSourceLocal $authSourceLocal
      * @param int $contextId
