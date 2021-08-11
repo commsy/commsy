@@ -1004,7 +1004,7 @@ class cs_portal_item extends cs_guide_item {
          $cron_array[] = $this->_cronSyncCountRooms();
       }
 
-      $cron_array[] = $this->_cronInvitationCleanUp();
+      $cron_array[] = $this->cronInvitationCleanUp();
          
       // archiving
       if ( $this->isActivatedArchivingUnusedRooms() ) {
@@ -1022,7 +1022,13 @@ class cs_portal_item extends cs_guide_item {
       return $cron_array;
    }
 
-    function _cronInvitationCleanUp()
+
+    /**
+     * Cron task for deleting expired invitations
+     *
+     * @return array
+     */
+    private function cronInvitationCleanUp(): array
     {
         global $symfonyContainer;
         $time_start = getmicrotime();
@@ -1030,18 +1036,14 @@ class cs_portal_item extends cs_guide_item {
         $cron_array['title'] = 'Delete expired invitations';
         $cron_array['description'] = 'Delete expired invitations';
 
+        /** @var InvitationsService $invitationService */
         $invitationService = $symfonyContainer->get(InvitationsService::class);
-        $expiredInvitations = $invitationService->getExpiredInvitations();
-        $removedInvitations = $invitationService->removeInvitations($expiredInvitations);
-        $removalCount = '0';
-        if ($removedInvitations) {
-            $removalCount = strval(count($removedInvitations));
-        }
+        $removalCount = $invitationService->deleteExpiredInvitations();
 
         $cron_array['success'] = true;
         $cron_array['success_text'] = $removalCount . ' expired invitations deleted';
         $time_end = getmicrotime();
-        $time = round($time_end - $time_start, 0);
+        $time = round($time_end - $time_start);
         $cron_array['time'] = $time;
 
         return $cron_array;
