@@ -13,6 +13,8 @@
         {% block title %}{{ 'CSV-Import'|trans({}, "portal") }}{% endblock %}
 
         {% block body %}
+            <a href="{{ asset('files/csv_import_sample.csv') }}">{{ 'Download sample'|trans({}, 'portal') }}</a>
+
             {{ form(form) }}
         {% endblock %}
     {% endembed %}
