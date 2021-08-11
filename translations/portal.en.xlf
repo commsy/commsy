@@ -989,9 +989,13 @@
                 <source>Import users from csv file</source>
                 <target>Import users from csv file</target>
             </trans-unit>
-            <trans-unit id="Files">
+            <trans-unit id="portal_csv_import_files">
                 <source>Files</source>
                 <target>Files</target>
+            </trans-unit>
+            <trans-unit id="portal_csv_import_sample">
+                <source>Download sample</source>
+                <target>Download sample</target>
             </trans-unit>
 
             <!-- auth -->
