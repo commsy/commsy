@@ -134,4 +134,18 @@ class CopyService
         
         return $this->getCountArray($roomId);
     }
+
+    public function removeItemFromClipboard(int $itemId)
+    {
+        $sessionItem = $this->legacyEnvironment->getSessionItem();
+        if ($sessionItem && $sessionItem->issetValue('clipboard_ids')) {
+            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
+            if (in_array($itemId, $currentClipboardIds)) {
+                unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
+                $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+            }
+            $sessionManager = $this->legacyEnvironment->getSessionManager();
+            $sessionManager->save($sessionItem);
+        }
+    }
 }
