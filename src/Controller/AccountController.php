@@ -119,15 +119,15 @@ class AccountController extends AbstractController
 
             if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
                 $invitationsService->redeemInvitation($localAuthSource, $token);
-            }
 
-            $portalUser = $userService->getPortalUser($account);
-            $newUser = $userService->cloneUser($portalUser, $roomContextId);
+                $portalUser = $userService->getPortalUser($account);
+                $newUser = $userService->cloneUser($portalUser, $roomContextId);
 
-            if ($newUser) {
-                return $this->redirectToRoute('app_room_home', [
-                    'roomId' => $roomContextId,
-                ]);
+                if ($newUser) {
+                    return $this->redirectToRoute('app_room_home', [
+                        'roomId' => $roomContextId,
+                    ]);
+                }
             }
 
             return $this->redirectToRoute('app_login', [
