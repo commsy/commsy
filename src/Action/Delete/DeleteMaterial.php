@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 03.07.18
- * Time: 22:17
- */
 
 namespace App\Action\Delete;
 
 
 use App\Services\CopyService;
 
-class DeleteGeneric implements DeleteInterface
+class DeleteMaterial implements DeleteInterface
 {
     /** @var CopyService $copyService */
     protected $copyService;
@@ -26,9 +20,12 @@ class DeleteGeneric implements DeleteInterface
      */
     public function delete(\cs_item $item): void
     {
-        $item->delete();
+        /** \cs_material_item $material */
+        $material = $item;
 
-        $this->copyService->removeItemFromClipboard($item->getItemId());
+        $material->deleteAllVersions();
+
+        $this->copyService->removeItemFromClipboard($material->getItemId());
     }
 
     /**

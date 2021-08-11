@@ -1487,7 +1487,7 @@ class MaterialController extends BaseController
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.delete.generic');
+        $action = $this->get('commsy.action.delete.material');
         return $action->execute($room, $items);
     }
 

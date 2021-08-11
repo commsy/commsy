@@ -914,7 +914,7 @@ class cs_material_item extends cs_item {
         $material_manager = $this->_environment->getMaterialManager();
         if ($version == "current") {
             $material_manager->delete($this->getItemID(), $this->getVersionID());
-        } else {
+        } else { // delete all versions of the material
             $material_manager->delete($this->getItemID());
         }
 
@@ -936,14 +936,15 @@ class cs_material_item extends cs_item {
         $this->deleteElasticItem($objectPersister, $repository);
     }
 
-   /** delete a version of a material
-    * this method deletes a version of a material
+   /** deletes all versions of a material
+    * this method deletes all versions of a material
     *
     * @author CommSy Development Group
     */
-   function deleteAllVersions() {
-      $this->delete("all");
-   }
+    public function deleteAllVersions()
+    {
+        $this->delete(CS_ALL);
+    }
 
 
 
