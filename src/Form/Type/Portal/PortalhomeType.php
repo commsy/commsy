@@ -30,6 +30,14 @@ class PortalhomeType extends AbstractType
                 'label' => 'Show templates in workspace feed',
                 'required' => false,
             ])
+            ->add('sortRoomsBy', Types\ChoiceType::class, [
+                'label' => 'Sort list of all rooms by:',
+                'expanded' => true,
+                'choices'  => [
+                    'Activity' => 'activity',
+                    'Title' => 'title'
+                ],
+            ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
