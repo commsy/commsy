@@ -657,6 +657,19 @@ class Portal implements \Serializable
         return $this;
     }
 
+    public function getSortRoomsBy(){
+        return $this->extras['SORTROOMSONHOME'] ?? 'activity';
+    }
+
+    public function setSortRoomsBy(?string $text): Portal
+    {
+        if ($text !== 'activity' && $text !== 'title') {
+            $text = 'activity';
+        }
+        $this->extras['SORTROOMSONHOME'] = $text;
+        return $this;
+    }
+
     /** Returns the community room creation status.
      *
      * @return string room creation status ("all" = all users (default), "moderator" = only portal moderators)
