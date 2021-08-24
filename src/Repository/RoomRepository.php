@@ -19,6 +19,7 @@ class RoomRepository extends ServiceEntityRepository
      *
      * @param int $portalId portal ID
      * @param array $roomTypes array of room type strings ('project' and/or 'community'), indicating which rooms shall be returned
+     * @param string $sort
      * @return QueryBuilder
      */
     public function getMainRoomQueryBuilder(int $portalId, array $roomTypes = ['project', 'community'], string $sort='activity'): QueryBuilder
