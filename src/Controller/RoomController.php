@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Entity\ZzzRoom;
@@ -10,6 +11,7 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Repository\PortalRepository;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
@@ -26,6 +28,7 @@ use DateTimeImmutable;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -502,16 +505,17 @@ class RoomController extends AbstractController
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
         UserRepository $userRepository,
+        PortalRepository $portalRepository,
         int $roomId,
         string $sort='activity',
         int $max = 10,
         int $start = 0
     ) {
         $legacyEnvironment = $environment->getEnvironment();
+        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
-        $showRooms = $portalItem->getShowRoomsOnHome();
+        $showRooms = $portal->getShowRoomsOnHome();
         switch ($showRooms) {
             case 'onlyprojectrooms':
                 $roomTypes = [CS_PROJECT_TYPE];
@@ -533,7 +537,7 @@ class RoomController extends AbstractController
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository('App:Room');
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes, $sort);
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
 
@@ -541,9 +545,9 @@ class RoomController extends AbstractController
 
         if ($roomFilter) {
             $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
-                'showTime' => $portalItem->showTime(),
+                'showTime' => $portal->getShowTimePulses(),
                 'timePulses' => $roomService->getTimePulses(),
-                'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
+                'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
             ]);
 
             // manually bind values from the request
@@ -558,16 +562,15 @@ class RoomController extends AbstractController
         if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
             $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
-            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes, $sort);
+            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);
 
             if ($roomFilter) {
                 $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
-                    'showTime' => $portalItem->showTime(),
+                    'showTime' => $portal->getShowTimePulses(),
                     'timePulses' => $roomService->getTimePulses(),
-                    'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
-
+                    'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
                 ]);
                 $filterForm->submit($roomFilter);
                 $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
@@ -614,7 +617,7 @@ class RoomController extends AbstractController
         }
         return [
             'roomId' => $roomId,
-            'portal' => $portalItem,
+            'portal' => $portal,
             'rooms' => $rooms,
             'projectsMemberStatus' => $projectsMemberStatus,
         ];

@@ -238,22 +238,6 @@ class cs_portal_item extends cs_guide_item {
       $this->_addExtra('NUMBERROOMSONHOME',$value);
    }
 
-   function setSortRoomsByActivityOnHome(){
-      $this->_addExtra('SORTROOMSONHOME','activity');
-   }
-
-   function setSortRoomsByTitleOnHome(){
-      $this->_addExtra('SORTROOMSONHOME','title');
-   }
-
-   function isSortRoomsByTitleOnHome(){
-      $retour = false;
-      if ($this->_issetExtra('SORTROOMSONHOME') and $this->_getExtra('SORTROOMSONHOME')=='title') {
-         $retour = true;
-      }
-      return $retour;
-   }
-
    public function getCommunityIDArray () {
       $retour = array();
       $archive = 'this->_community_id_array';
