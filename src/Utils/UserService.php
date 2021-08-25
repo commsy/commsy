@@ -556,24 +556,28 @@ class UserService
         }
     }
 
-    public function blockPossibleCommunityAccess($user, $roomId)
+    /**
+     * Locks all group room users corresponding to the given user in group rooms of the user's project room.
+     *
+     * @param \cs_user_item $user The project room user whose corresponding group room users shall be locked
+     */
+    public function lockGrouproomUsersForUser(\cs_user_item $user): void
     {
-        $legacyEnvironment = $this->legacyEnvironment;
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-        $groupRooms = $roomItem->getGroupRoomList();
-        $relatedRooms = $roomManager->getAllRelatedRoomListForUser($user);
+        $roomItem = $user->getContextItem();
+        if (!$roomItem->isProjectRoom()) {
+            return;
+        }
 
-        foreach($relatedRooms as $relatedRoom){
-            if(in_array($relatedRoom->getItemID(), $groupRooms->getIDArray())){
-                $relatedUsers = $user->getRelatedUserList();
-                $roomUserList = $relatedRoom->getUserList();
-                foreach($relatedUsers as $relatedUser){
-                    if(in_array($relatedUser->getItemID(), $roomUserList->getIdArray())){
-                        $relatedUser->reject();
-                        $relatedUser->save();
-                    }
-                }
+        $groupRooms = $roomItem->getGroupRoomList();
+        if ($groupRooms->isEmpty()) {
+            return;
+        }
+
+        foreach ($groupRooms as $groupRoom) {
+            $groupRoomUser = $user->getRelatedUserItemInContext($groupRoom->getItemID());
+            if ($groupRoomUser) {
+                $groupRoomUser->reject();
+                $groupRoomUser->save();
             }
         }
     }
