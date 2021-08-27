@@ -1252,6 +1252,12 @@ services:
         arguments:
             $deleteStrategy: '@App\Action\Delete\DeleteDate'
 
+    commsy.action.delete.material:
+        class: App\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@App\Action\Delete\DeleteMaterial'
+
     App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 
     # DataTransformer
