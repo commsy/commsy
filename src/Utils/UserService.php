@@ -557,11 +557,13 @@ class UserService
     }
 
     /**
-     * Locks all group room users corresponding to the given user in group rooms of the user's project room.
+     * Takes all group room users corresponding to the given project room user and sets their status according
+     * to the project room user's current status.
      *
-     * @param \cs_user_item $user The project room user whose corresponding group room users shall be locked
+     * @param \cs_user_item $user The project room user whose status shall be applied to corresponding group room
+     * users within the user's project room
      */
-    public function lockGrouproomUsersForUser(\cs_user_item $user): void
+    public function propagateStatusToGrouproomUsersForUser(\cs_user_item $user): void
     {
         $roomItem = $user->getContextItem();
         if (!$roomItem->isProjectRoom()) {
@@ -573,11 +575,37 @@ class UserService
             return;
         }
 
+        $userStatus = $user->getStatus();
+
         foreach ($groupRooms as $groupRoom) {
             $groupRoomUser = $user->getRelatedUserItemInContext($groupRoom->getItemID());
             if ($groupRoomUser) {
-                $groupRoomUser->reject();
-                $groupRoomUser->save();
+                switch ($userStatus) {
+                    case 0:
+                        $groupRoomUser->reject();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 1:
+                        $groupRoomUser->request();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 4:
+                        $groupRoomUser->makeReadOnlyUser();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 2:
+                        $groupRoomUser->makeUser();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 3:
+                        $groupRoomUser->makeModerator();
+                        $groupRoomUser->save();
+                        break;
+                }
             }
         }
     }
