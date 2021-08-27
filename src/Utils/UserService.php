@@ -557,23 +557,55 @@ class UserService
         }
     }
 
-    public function blockPossibleCommunityAccess($user, $roomId)
+    /**
+     * Takes all group room users corresponding to the given project room user and sets their status according
+     * to the project room user's current status.
+     *
+     * @param \cs_user_item $user The project room user whose status shall be applied to corresponding group room
+     * users within the user's project room
+     */
+    public function propagateStatusToGrouproomUsersForUser(\cs_user_item $user): void
     {
-        $legacyEnvironment = $this->legacyEnvironment;
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-        $groupRooms = $roomItem->getGroupRoomList();
-        $relatedRooms = $roomManager->getAllRelatedRoomListForUser($user);
+        $roomItem = $user->getContextItem();
+        if (!$roomItem->isProjectRoom()) {
+            return;
+        }
 
-        foreach($relatedRooms as $relatedRoom){
-            if(in_array($relatedRoom->getItemID(), $groupRooms->getIDArray())){
-                $relatedUsers = $user->getRelatedUserList();
-                $roomUserList = $relatedRoom->getUserList();
-                foreach($relatedUsers as $relatedUser){
-                    if(in_array($relatedUser->getItemID(), $roomUserList->getIdArray())){
-                        $relatedUser->reject();
-                        $relatedUser->save();
-                    }
+        $groupRooms = $roomItem->getGroupRoomList();
+        if ($groupRooms->isEmpty()) {
+            return;
+        }
+
+        $userStatus = $user->getStatus();
+
+        foreach ($groupRooms as $groupRoom) {
+            $groupRoomUser = $user->getRelatedUserItemInContext($groupRoom->getItemID());
+            if ($groupRoomUser) {
+                switch ($userStatus) {
+                    case 0:
+                        $groupRoomUser->reject();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 1:
+                        $groupRoomUser->request();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 4:
+                        $groupRoomUser->makeReadOnlyUser();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 2:
+                        $groupRoomUser->makeUser();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 3:
+                        $groupRoomUser->makeModerator();
+                        $groupRoomUser->save();
+                        break;
                 }
             }
         }

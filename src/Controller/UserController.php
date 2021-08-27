@@ -388,37 +388,53 @@ class UserController extends BaseController
 
                         case 'user-block':
                             foreach ($users as $user) {
-                                $user->setStatus(0);
+                                $user->reject(); // status 0
                                 $user->save();
-                                $userService->blockPossibleCommunityAccess($user, $roomId);
+                                $userService->propagateStatusToGrouproomUsersForUser($user);
                             }
                             break;
 
                         case 'user-confirm':
                             foreach ($users as $user) {
-                                $user->setStatus(2);
+                                $previousStatus = $user->getStatus();
+                                $user->makeUser(); // status 2
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
                         case 'user-status-reading-user':
                             foreach ($users as $user) {
-                                $user->setStatus(4);
+                                $previousStatus = $user->getStatus();
+                                $user->makeReadOnlyUser(); // status 4
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
                         case 'user-status-user':
                             foreach ($users as $user) {
-                                $user->setStatus(2);
+                                $previousStatus = $user->getStatus();
+                                $user->makeUser(); // status 2
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
                         case 'user-status-moderator':
                             foreach ($users as $user) {
-                                $user->setStatus(3);
+                                $previousStatus = $user->getStatus();
+                                $user->makeModerator(); // status 3
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
