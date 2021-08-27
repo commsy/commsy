@@ -850,7 +850,7 @@ class ProfileController extends Controller
 
                 $currentUser->reject();
                 $currentUser->save();
-                $userService->lockGrouproomUsersForUser($currentUser);
+                $userService->propagateStatusToGrouproomUsersForUser($currentUser);
                 return $this->redirect($portalUrl);
             }
         }
