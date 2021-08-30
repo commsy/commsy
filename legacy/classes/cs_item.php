@@ -2521,11 +2521,20 @@ function getExternalViewerArray(){
       return $retour;
    }
 
-   function setWorkflowTrafficLight($value) {
-      $this->_setValue('workflow_status', (string)$value);
+    /**
+     * @param $status
+     */
+   public function setWorkflowTrafficLight(string $status)
+   {
+      $this->_setValue('workflow_status', $this->mapWorkflowStatus($status));
    }
-   function getWorkflowTrafficLight() {
-      return $this->_getValue('workflow_status');
+
+    /**
+     * @return string
+     */
+   public function getWorkflowTrafficLight(): string
+   {
+       return $this->mapWorkflowStatus($this->_getValue('workflow_status'));
    }
 
    function isReadByUser($user){
@@ -2533,111 +2542,153 @@ function getExternalViewerArray(){
       return $item_manager->isItemMarkedAsWorkflowRead($this->getItemId(), $user->getItemID());
    }
 
-   function setWorkflowResubmission($value) {
-      $this->_setExtra('WORKFLOWRESUBMISSION', (string)$value);
-   }
-   function getWorkflowResubmission() {
-      $result = false;
-      if($this->_issetExtra('WORKFLOWRESUBMISSION')){
-         $result = $this->_getExtra('WORKFLOWRESUBMISSION');
-      }
-      return $result;
-   }
+    public function setWorkflowResubmission($value)
+    {
+        $this->_setExtra('WORKFLOWRESUBMISSION', (string)$value);
+    }
 
-   function setWorkflowResubmissionDate($value) {
-      $this->_setValue('workflow_resubmission_date', (string)$value);
-   }
-   function getWorkflowResubmissionDate() {
-      return $result = $this->_getValue('workflow_resubmission_date');
-   }
+    public function getWorkflowResubmission()
+    {
+        $result = false;
+        if ($this->_issetExtra('WORKFLOWRESUBMISSION')) {
+            $result = $this->_getExtra('WORKFLOWRESUBMISSION');
+        }
+        return $result;
+    }
 
-   function setWorkflowResubmissionWho($value) {
-      $this->_setExtra('WORKFLOWRESUBMISSIONWHO', (string)$value);
-   }
-   function getWorkflowResubmissionWho() {
-      $result = 'creator';
-      if($this->_issetExtra('WORKFLOWRESUBMISSIONWHO')){
-         $result = $this->_getExtra('WORKFLOWRESUBMISSIONWHO');
-      }
-      return $result;
-   }
+    public function setWorkflowResubmissionDate($value)
+    {
+        $this->_setValue('workflow_resubmission_date', (string)$value);
+    }
 
-   function setWorkflowResubmissionWhoAdditional($value) {
-      $value = str_replace(array("\t", " "), '', $value);
-      $value_array = explode(',', $value);
-      $this->_setExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL', $value_array);
-   }
-   function getWorkflowResubmissionWhoAdditional() {
-      $result = false;
-      if($this->_issetExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL')){
-         $result = implode(', ', $this->_getExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL'));
-      }
-      return $result;
-   }
+    public function getWorkflowResubmissionDate()
+    {
+        return $result = $this->_getValue('workflow_resubmission_date');
+    }
 
-   function setWorkflowResubmissionTrafficLight($value) {
-      $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', (string)$value);
-   }
-   function getWorkflowResubmissionTrafficLight() {
-      $result = '3_none';
-      if($this->_issetExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT')){
-         $result = $this->_getExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT');
-      }
-      return $result;
-   }
+    public function setWorkflowResubmissionWho($value)
+    {
+        $this->_setExtra('WORKFLOWRESUBMISSIONWHO', (string)$value);
+    }
 
-   function setWorkflowValidity($value) {
-      $this->_setExtra('WORKFLOWVALIDITY', (string)$value);
-   }
-   function getWorkflowValidity() {
-      $result = false;
-      if($this->_issetExtra('WORKFLOWVALIDITY')){
-         $result = $this->_getExtra('WORKFLOWVALIDITY');
-      }
-      return $result;
-   }
+    public function getWorkflowResubmissionWho()
+    {
+        $result = 'creator';
+        if ($this->_issetExtra('WORKFLOWRESUBMISSIONWHO')) {
+            $result = $this->_getExtra('WORKFLOWRESUBMISSIONWHO');
+        }
+        return $result;
+    }
 
-   function setWorkflowValidityDate($value) {
-      $this->_setValue('workflow_validity_date', (string)$value);
-   }
-   function getWorkflowValidityDate() {
-      return $result = $this->_getValue('workflow_validity_date');
-   }
+    public function setWorkflowResubmissionWhoAdditional($value)
+    {
+        $value = str_replace(array("\t", " "), '', $value);
+        $value_array = explode(',', $value);
+        $this->_setExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL', $value_array);
+    }
 
-   function setWorkflowValidityWho($value) {
-      $this->_setExtra('WORKFLOWVALIDITYWHO', (string)$value);
-   }
-   function getWorkflowValidityWho() {
-      $result = 'creator';
-      if($this->_issetExtra('WORKFLOWVALIDITYWHO')){
-         $result = $this->_getExtra('WORKFLOWVALIDITYWHO');
-      }
-      return $result;
-   }
+    public function getWorkflowResubmissionWhoAdditional()
+    {
+        $result = false;
+        if ($this->_issetExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL')) {
+            $result = implode(', ', $this->_getExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL'));
+        }
+        return $result;
+    }
 
-   function setWorkflowValidityWhoAdditional($value) {
-      $value = str_replace(array("\t", " "), '', $value);
-      $value_array = explode(',', $value);
-      $this->_setExtra('WORKFLOWVALIDITYWHOADDITIONAL', $value_array);
-   }
-   function getWorkflowValidityWhoAdditional() {
-      $result = false;
-      if($this->_issetExtra('WORKFLOWVALIDITYWHOADDITIONAL')){
-         $result = implode(', ', $this->_getExtra('WORKFLOWVALIDITYWHOADDITIONAL'));
-      }
-      return $result;
-   }
+    /**
+     * @param string $status
+     */
+    public function setWorkflowResubmissionTrafficLight(string $status)
+    {
+        $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', $this->mapWorkflowStatus($status));
+    }
 
-   function setWorkflowValidityTrafficLight($value) {
-      $this->_setExtra('WORKFLOWVALIDITYTRAFFICLIGHT', (string)$value);
-   }
-   function getWorkflowValidityTrafficLight() {
-      $result = '3_none';
-      if($this->_issetExtra('WORKFLOWVALIDITYTRAFFICLIGHT')){
-         $result = $this->_getExtra('WORKFLOWVALIDITYTRAFFICLIGHT');
-      }
-      return $result;
-   }
+    /**
+     * @return string
+     */
+    public function getWorkflowResubmissionTrafficLight(): string
+    {
+        $status = '3_none';
+        if ($this->_issetExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT')) {
+            $status = $this->_getExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT');
+        }
+        return $this->mapWorkflowStatus($status);
+    }
+
+    public function setWorkflowValidity($value)
+    {
+        $this->_setExtra('WORKFLOWVALIDITY', (string)$value);
+    }
+
+    public function getWorkflowValidity()
+    {
+        $result = false;
+        if ($this->_issetExtra('WORKFLOWVALIDITY')) {
+            $result = $this->_getExtra('WORKFLOWVALIDITY');
+        }
+        return $result;
+    }
+
+    public function setWorkflowValidityDate($value)
+    {
+        $this->_setValue('workflow_validity_date', (string)$value);
+    }
+
+    public function getWorkflowValidityDate()
+    {
+        return $result = $this->_getValue('workflow_validity_date');
+    }
+
+    public function setWorkflowValidityWho($value)
+    {
+        $this->_setExtra('WORKFLOWVALIDITYWHO', (string)$value);
+    }
+
+    public function getWorkflowValidityWho()
+    {
+        $result = 'creator';
+        if ($this->_issetExtra('WORKFLOWVALIDITYWHO')) {
+            $result = $this->_getExtra('WORKFLOWVALIDITYWHO');
+        }
+        return $result;
+    }
+
+    public function setWorkflowValidityWhoAdditional($value)
+    {
+        $value = str_replace(array("\t", " "), '', $value);
+        $value_array = explode(',', $value);
+        $this->_setExtra('WORKFLOWVALIDITYWHOADDITIONAL', $value_array);
+    }
+
+    public function getWorkflowValidityWhoAdditional()
+    {
+        $result = false;
+        if ($this->_issetExtra('WORKFLOWVALIDITYWHOADDITIONAL')) {
+            $result = implode(', ', $this->_getExtra('WORKFLOWVALIDITYWHOADDITIONAL'));
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setWorkflowValidityTrafficLight(string $status)
+    {
+        $this->_setExtra('WORKFLOWVALIDITYTRAFFICLIGHT', $this->mapWorkflowStatus($status));
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkflowValidityTrafficLight()
+    {
+        $status = '3_none';
+        if ($this->_issetExtra('WORKFLOWVALIDITYTRAFFICLIGHT')) {
+            $status = $this->_getExtra('WORKFLOWVALIDITYTRAFFICLIGHT');
+        }
+        return $this->mapWorkflowStatus($status);
+    }
 
    /** get draft status
     */
@@ -2821,6 +2872,30 @@ function getExternalViewerArray(){
 
 
         return $result;
+    }
+
+    /**
+     * @param string $status
+     * @return string
+     */
+    private function mapWorkflowStatus(string $status): string
+    {
+        switch ($status) {
+            case '0_green':
+            case 'valid':
+                return 'valid';
+
+            case '1_yellow':
+            case 'draft':
+                return 'draft';
+
+            case '2_red':
+            case 'invalid':
+                return 'invalid';
+
+            default:
+                return 'none';
+        }
     }
 }
 ?>
