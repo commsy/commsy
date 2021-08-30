@@ -20,6 +20,7 @@ use App\Services\AvatarService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\Utils\AccountMail;
 use App\Utils\ItemService;
 use App\Utils\MailAssistant;
 use App\Utils\ReaderService;
@@ -42,6 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -388,7 +390,9 @@ class UserController extends BaseController
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
-        int $roomId
+        int $roomId,
+        \Swift_Mailer $mailer,
+        RouterInterface $router
     ) {
         $room = $this->getRoom($roomId);
 
@@ -519,7 +523,7 @@ class UserController extends BaseController
                     }
 
                     if ($formData['inform_user']) {
-                        $this->sendUserInfoMail($formData['userIds'], $formData['status'], $legacyEnvironment);
+                        $this->sendUserInfoMail($formData['userIds'], $formData['status'], $legacyEnvironment, $mailer, $router);
                     }
                     if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('app_user_detail', [
@@ -1401,10 +1405,15 @@ class UserController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    private function sendUserInfoMail($userIds, $action, LegacyEnvironment $legacyEnvironment)
-    {
-        $accountMail = $this->get('commsy.utils.mail_account');
-        $mailer = $this->get('mailer');
+    private function sendUserInfoMail(
+        $userIds,
+        $action,
+        LegacyEnvironment $legacyEnvironment,
+        \Swift_Mailer $mailer,
+        RouterInterface $router
+    ) {
+
+        $accountMail = new AccountMail($legacyEnvironment, $router);
 
         $fromAddress = $this->getParameter('commsy.email.from');
         $environment = $legacyEnvironment->getEnvironment();

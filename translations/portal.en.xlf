@@ -527,6 +527,14 @@
                 <source>Privateroom workspaces</source>
                 <target>Privaterooms</target>
             </trans-unit>
+            <trans-unit id="delete_account_question">
+                <source>Are you sure you want to delete</source>
+                <target>Are you sure you want to delete</target>
+            </trans-unit>
+            <trans-unit id="delete_success">
+                <source>Delete success</source>
+                <target>User deleted successfully</target>
+            </trans-unit>
 
             <!-- Account Index send Password Mail -->
             <trans-unit id="copy_cc_to_moderator">
