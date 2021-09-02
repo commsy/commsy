@@ -1282,7 +1282,8 @@ class PortalSettingsController extends AbstractController
         AccountManager $accountManager
     ) {
         $user = $userService->getCurrentUserItem();
-        $portalUsers = $userService->getListUsers($portal->getId());
+        // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
+        $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
         $authSources = $authSourceRepository->findByPortal($portalId);
         $userList = [];
         $alreadyIncludedUserIDs = [];
@@ -1318,7 +1319,8 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             if ($form->get('search')->isClicked()) {
 
-                $portalUsers = $userService->getListUsers($portal->getId());
+                // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
+                $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
                 $tempUserList = [];
                 $userList = [];
                 foreach ($portalUsers as $portalUser) {
@@ -1622,13 +1624,13 @@ class PortalSettingsController extends AbstractController
                     $meetsCriteria = true;
                 }
                 break;
-            case 2: // locked
-                if ($userInQuestion->isLocked()) {
+            case 2: // locked // ->isLocked() only exhibits the extra flag 'LOCKED', not the set status
+                if ($userInQuestion->getStatus() == '0') {
                     $meetsCriteria = true;
                 }
                 break;
             case 3: // In activation
-                if ($userInQuestion->getStatus() == '0') {
+                if ($userInQuestion->isRequested()) {
                     $meetsCriteria = true;
                 }
                 break;
