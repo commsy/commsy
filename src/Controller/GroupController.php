@@ -316,6 +316,8 @@ class GroupController extends BaseController
         $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
+        $currentUserIsLastGrouproomModerator = $this->userService->userIsLastModeratorForRoom($infoArray['group']->getGroupRoomItem());
+
         return array(
             'roomId' => $roomId,
             'group' => $infoArray['group'],
@@ -348,7 +350,7 @@ class GroupController extends BaseController
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
-            'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
+            'lastModeratorStanding' => $currentUserIsLastGrouproomModerator,
             'userRubricVisible' => in_array("user", $this->roomService->getRubricInformation($roomId)),
         );
     }
@@ -1641,24 +1643,6 @@ class GroupController extends BaseController
         }
 
         return $templates;
-    }
-
-    private function userIsLastGrouproomModerator($groupRoom)
-    {
-
-        if (!empty($groupRoom)) {
-            $grouproomModerators = $groupRoom->getModeratorList();
-        } else {
-            return false;
-        }
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $relatedUsers = $legacyEnvironment->getCurrentUser()->getRelatedUserList();
-
-        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
-        $relatedUsersItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $relatedUsers->to_array());
-
-        return count($grouproomModerators) == 1 and count(array_intersect($relatedUsersItemIds, $grouproomModeratorItemIds));
     }
 
     /**

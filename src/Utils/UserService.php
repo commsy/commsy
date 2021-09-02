@@ -424,6 +424,48 @@ class UserService
         return $moderatorList->to_array();
     }
 
+    /**
+     * Checks whether the given (or otherwise the current) user is the given room's last moderator.
+     *
+     * @param \cs_room_item $room The room for which this method will check whether the given user is its last moderator
+     * @param \cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the given
+     * room's last moderator (defaults to the current user if not given)
+     * @return bool Whether the given (or current) user is the last moderator in the given room (true), or not (false)
+     */
+    public function userIsLastModeratorForRoom(\cs_room_item $room, \cs_user_item $user = null): bool
+    {
+        if (!$room) {
+            return false;
+        }
+
+        if (!$user) {
+            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+            if ($currentUser) {
+                $user = $currentUser;
+            }
+            if (!$user) {
+                return false;
+            }
+        }
+
+        $roomModerators = $room->getModeratorList()->to_array();
+        $roomModeratorIds = array_map(function (\cs_user_item $user) {
+            return $user->getItemID();
+        }, $roomModerators);
+
+        $users = $user->getRelatedUserList()->to_array();
+        $userIds = array_map(function (\cs_user_item $user) {
+            return $user->getItemID();
+        }, $users);
+
+        // also check the given/current user's own item ID
+        $userIds[] = $user->getItemID();
+
+        $userIsLastModerator = (count($roomModerators) == 1) && (count(array_intersect($userIds, $roomModeratorIds)));
+
+        return $userIsLastModerator;
+    }
+
     public function hideDeactivatedEntries()
     {
         $this->userManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
