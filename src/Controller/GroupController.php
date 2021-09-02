@@ -10,6 +10,8 @@ use App\Services\PrintService;
 use App\Utils\CategoryService;
 use App\Utils\LabelService;
 use App\Utils\MailAssistant;
+use App\Utils\RoomService;
+use App\Utils\UserService;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -39,6 +41,21 @@ use App\Event\CommsyEditEvent;
  */
 class GroupController extends BaseController
 {
+    /** @var RoomService $roomService */
+    private $roomService;
+
+    /** @var UserService $userService */
+    private $userService;
+
+    public function __construct(RoomService $roomService, UserService $userService)
+    {
+        // TODO: uncomment this line for CommSy10
+        // parent::__construct($roomService);
+
+        $this->roomService = $roomService;
+        $this->userService = $userService;
+    }
+
     /**
      * @Route("/room/{roomId}/group")
      * @Template()
@@ -226,9 +243,8 @@ class GroupController extends BaseController
 
             // grouproom member status
             if ($item->isGroupRoomActivated()) {
-                $userService = $this->get('commsy_legacy.user_service');
                 if ($item->getGroupRoomItem()) {
-                    $groupMemberStatus['groupRoomMember'] = $userService->getMemberStatus(
+                    $groupMemberStatus['groupRoomMember'] = $this->userService->getMemberStatus(
                         $item->getGroupRoomItem(),
                         $legacyEnvironment->getCurrentUser()
                     );
@@ -270,10 +286,9 @@ class GroupController extends BaseController
         $roomItem = $roomManager->getItem($roomId);
 
         if ($infoArray['group']->isGroupRoomActivated()) {
-            $userService = $this->get('commsy_legacy.user_service');
             $groupRoomItem = $infoArray['group']->getGroupRoomItem();
             if ($groupRoomItem && !empty($groupRoomItem)) {
-                $memberStatus = $userService->getMemberStatus(
+                $memberStatus = $this->userService->getMemberStatus(
                     $groupRoomItem,
                     $legacyEnvironment->getCurrentUser()
                 );
@@ -301,8 +316,6 @@ class GroupController extends BaseController
 
         $itemService = $this->get('commsy_legacy.item_service');
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
-
-        $roomService = $this->get('commsy_legacy.room_service');
 
         return array(
             'roomId' => $roomId,
@@ -338,7 +351,7 @@ class GroupController extends BaseController
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
             'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
-            'userRubricVisible' => in_array("user", $roomService->getRubricInformation($roomId)),
+            'userRubricVisible' => in_array("user", $this->roomService->getRubricInformation($roomId)),
         );
     }
 
@@ -1025,8 +1038,7 @@ class GroupController extends BaseController
         if ($joinRoom) {
             $grouproomItem = $groupItem->getGroupRoomItem();
             if ($grouproomItem) {
-                $userService = $this->get('commsy_legacy.user_service');
-                $memberStatus = $userService->getMemberStatus($grouproomItem, $legacyEnvironment->getCurrentUser());
+                $memberStatus = $this->userService->getMemberStatus($grouproomItem, $legacyEnvironment->getCurrentUser());
                 if ($memberStatus == 'join') {
                     return $this->redirectToRoute('app_context_request', [
                         'roomId' => $roomId,
@@ -1115,9 +1127,8 @@ class GroupController extends BaseController
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
 
-        $userService = $this->get('commsy_legacy.user_service');
         $memberStatus = '';
-        $memberStatus = $userService->getMemberStatus(
+        $memberStatus = $this->userService->getMemberStatus(
             $group->getGroupRoomItem(),
             $legacyEnvironment->getCurrentUser()
         );
@@ -1153,11 +1164,10 @@ class GroupController extends BaseController
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
-        $userService = $this->get('commsy_legacy.user_service');
         $groupService = $this->get('commsy_legacy.group_service');
 
         // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
-        $users = $userService->getUsersByGroupIds($roomId, $groupIds, true);
+        $users = $this->userService->getUsersByGroupIds($roomId, $groupIds, true);
 
         // include a footer message in the email body
         $groupCount = count($groupIds);
@@ -1362,8 +1372,6 @@ class GroupController extends BaseController
             'copy_to_sender' => false,
         ];
 
-        $userService = $this->get('commsy_legacy.user_service');
-
         $form = $this->createForm(GroupSendType::class, $formData, [
             'uploadUrl' => $this->generateUrl('app_upload_mailattachments', [
                 'roomId' => $roomId,
@@ -1382,7 +1390,7 @@ class GroupController extends BaseController
                 $from = $this->getParameter('commsy.email.from');
 
 		        // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
-                $users = $userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
+                $users = $this->userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
                 // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
