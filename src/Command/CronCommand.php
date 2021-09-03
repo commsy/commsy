@@ -2,9 +2,11 @@
 
 namespace App\Command;
 
+use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
+use Doctrine\ORM\EntityManagerInterface;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\Console\Command\Command;
@@ -38,6 +40,11 @@ class CronCommand extends Command
     private Swift_Mailer $mailer;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
      * @var string
      */
     private string $projectDir;
@@ -57,6 +64,7 @@ class CronCommand extends Command
         RouterInterface $router,
         ItemService $itemService,
         Swift_Mailer $mailer,
+        EntityManagerInterface $entityManager,
         $projectDir,
         $emailFrom
     ) {
@@ -64,6 +72,7 @@ class CronCommand extends Command
         $this->router = $router;
         $this->itemService = $itemService;
         $this->mailer = $mailer;
+        $this->entityManager = $entityManager;
         $this->projectDir = $projectDir;
         $this->emailFrom = $emailFrom;
 
@@ -97,12 +106,13 @@ class CronCommand extends Command
         } else {
             $output->writeln('<info>No explicit Cron context given - running full stack (Portals + Server)</info>');
 
-            $serverItem = $this->legacyEnvironment->getServerItem();
-            $portalIds = $serverItem->getPortalIDArray();
-
-            foreach ($portalIds as $portalId) {
-                $this->performCronTasks($portalId, $output);
+            $portalRepository = $this->entityManager->getRepository(Portal::class);
+            $activePortals = $portalRepository->findActivePortals();
+            foreach ($activePortals as $portal) {
+                /** @var Portal $portal */
+                $this->performCronTasks($portal->getId(), $output);
             }
+
             $this->performCronTasks($this->legacyEnvironment->getServerID(), $output);
         }
     }
