@@ -45,7 +45,7 @@ class AnnotationType extends AbstractType
                 'attr' => array(
                     'formnovalidate' => 'formnovalidate',
                 ),
-                'label' => 'cancel',
+                'label' => 'Back',
                 'validation_groups' => 'false',
             ))
         ;
