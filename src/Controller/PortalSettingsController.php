@@ -165,7 +165,7 @@ class PortalSettingsController extends AbstractController
 
         $server = $entityManager->getRepository(Server::class)->getServer();
         $serverForm = $this->createForm(ServerAppearanceType::class, $server);
-        if ($this->isGranted('ROOT')) {
+        if ($this->isGranted(RootVoter::ROOT)) {
             $serverForm->handleRequest($request);
             if ($serverForm->isSubmitted() && $serverForm->isValid()) {
                 if ($serverForm->getClickedButton()->getName() === 'save') {
@@ -1156,7 +1156,7 @@ class PortalSettingsController extends AbstractController
         $dataPrivacyForm = $this->createForm(DataPrivacyType::class, $server);
         $impressumForm = $this->createForm(ImpressumType::class, $server);
         $accessibilityForm = $this->createForm(AccessibilityType::class, $server);
-        if ($this->isGranted('ROOT')) {
+        if ($this->isGranted(RootVoter::ROOT)) {
             $dataPrivacyForm->handleRequest($request);
             if ($dataPrivacyForm->isSubmitted() && $dataPrivacyForm->isValid()) {
                 if ($dataPrivacyForm->getClickedButton()->getName() === 'save') {
