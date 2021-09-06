@@ -393,6 +393,9 @@
     "phpdocumentor/type-resolver": {
         "version": "1.1.0"
     },
+    "phpoffice/phpword": {
+        "version": "0.18.2"
+    },
     "phpspec/prophecy": {
         "version": "v1.10.3"
     },
@@ -508,6 +511,9 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "smalot/pdfparser": {
+        "version": "v1.1.0"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
