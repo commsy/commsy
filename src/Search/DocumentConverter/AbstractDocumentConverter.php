@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\DocumentConverter;
+namespace App\Search\DocumentConverter;
 
 
 abstract class AbstractDocumentConverter implements DocumentConverterInterface
@@ -9,7 +9,7 @@ abstract class AbstractDocumentConverter implements DocumentConverterInterface
     /**
      * @var array defines the formats supported for this converter
      */
-    protected $formatsAllowed = [];
+    protected array $formatsAllowed = [];
 
     /**
      * Method to check if a format is supported by this converter
