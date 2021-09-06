@@ -1,13 +1,10 @@
 <?php
 
 
-namespace App\Services;
+namespace App\Search\DocumentConverter;
 
 
-use App\DocumentConverter\ConverterManager;
-use App\DocumentConverter\DocumentConverterInterface;
-
-class File2TextService
+class DocumentConverter
 {
     /**
      * @var ConverterManager
@@ -23,8 +20,11 @@ class File2TextService
         $this->converterManager = $converterManager;
     }
 
-
-    public function convert($completeFilePath)
+    /**
+     * @param $completeFilePath
+     * @return string|null
+     */
+    public function convert($completeFilePath): ?string
     {
         if (isset($completeFilePath) && !is_file($completeFilePath)) {
             return null;
