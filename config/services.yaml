@@ -168,7 +168,7 @@ services:
         tags:
             - 'doctrine.fixture.orm'
     _instanceof:
-        App\DocumentConverter\DocumentConverterInterface:
+        App\Search\DocumentConverter\DocumentConverterInterface:
             tags: ['app.document_converter']
         App\Form\DataTransformer\DataTransformerInterface:
             tags: [ 'app.data_transformer' ]
@@ -600,8 +600,8 @@ services:
 
     App\Services\File2TextService: ~
 
-    App\DocumentConverter\ConverterManager:
-        class: App\DocumentConverter\ConverterManager
+    App\Search\DocumentConverter\ConverterManager:
+        class: App\Search\DocumentConverter\ConverterManager
         arguments:
             - !tagged 'app.document_converter'
 
