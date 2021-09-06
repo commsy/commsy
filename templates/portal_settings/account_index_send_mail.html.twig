@@ -19,6 +19,13 @@
             {{ 'Your email has been successfully sent to multiple users'|trans({'%user_count%': recipientCount}, "mail") }}
         </div>
         {% endif %}
+        {% set deleteSuccess = app.flashes('deleteSuccess')|first %}
+        {% if(deleteSuccess) %}
+            <div class="uk-alert uk-alert-success">
+                <i class="uk-icon-check-square-o uk-icon-medium"></i>
+                {{ 'Delete success'|trans({},'portal') }}
+            </div>
+       {% endif %}
         {% set savingSuccessfull = app.flashes('savedSuccess')|first %}
         {% if(savingSuccessfull) %}
             <div class="uk-alert uk-alert-success">

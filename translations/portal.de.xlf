@@ -503,6 +503,14 @@
                 <source>Privateroom workspaces</source>
                 <target>Persönliche Räume</target>
             </trans-unit>
+            <trans-unit id="delete_account_question">
+                <source>Are you sure you want to delete</source>
+                <target>Sind Sie sicher, dass Sie die Kennung löschen möchten von</target>
+            </trans-unit>
+            <trans-unit id="delete_success">
+                <source>Delete success</source>
+                <target>NutzerIn erfolgreich gelöscht</target>
+            </trans-unit>
 
             <!-- Account Index send Password Mail -->
             <trans-unit id="copy_cc_to_moderator">

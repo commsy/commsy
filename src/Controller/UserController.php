@@ -21,7 +21,6 @@ use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AccountMail;
 use App\Utils\MailAssistant;
-use App\Utils\RoomService;
 use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_room_item;
@@ -45,8 +44,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class UserController
@@ -421,7 +421,8 @@ class UserController extends BaseController
         EventDispatcherInterface $eventDispatcher,
         Swift_Mailer $mailer,
         AccountMail $accountMail,
-        int $roomId
+        int $roomId,
+        RouterInterface $router
     ) {
         $room = $this->getRoom($roomId);
 
@@ -552,7 +553,7 @@ class UserController extends BaseController
                     }
 
                     if ($formData['inform_user']) {
-                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status']);
+                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status'], $router);
                     }
                     if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('app_user_detail', [
@@ -1411,8 +1412,16 @@ class UserController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    private function sendUserInfoMail(Swift_Mailer $mailer, AccountMail $accountMail, $userIds, $action)
-    {
+    private function sendUserInfoMail(
+        $userIds,
+        $action,
+        LegacyEnvironment $legacyEnvironment,
+        \Swift_Mailer $mailer,
+        RouterInterface $router
+    ) {
+
+        $accountMail = new AccountMail($legacyEnvironment, $router);
+
         $fromAddress = $this->getParameter('commsy.email.from');
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $fromSender = $this->legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
