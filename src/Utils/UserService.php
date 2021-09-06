@@ -174,12 +174,8 @@ class UserService
         $systemGroupAll = $groupList->getFirst();
 
         if ($systemGroupAll) {
-            try {
-                $systemGroupAll->addMember($user);
-            } catch (DriverException $e) {
-                return null;
-            }
-
+            // if a DriverException occurs, it should be investigated, why a user cannot be added to group all
+            $systemGroupAll->addMember($user);
             return $systemGroupAll;
         }
 
