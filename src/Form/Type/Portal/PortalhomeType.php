@@ -31,12 +31,13 @@ class PortalhomeType extends AbstractType
                 'required' => false,
             ])
             ->add('sortRoomsBy', Types\ChoiceType::class, [
-                'label' => 'Sort list of all rooms by:',
+                'label' => 'Sort list of all rooms by',
                 'expanded' => true,
                 'choices'  => [
                     'Activity' => 'activity',
                     'Title' => 'title'
                 ],
+                'choice_translation_domain' => 'portal',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
