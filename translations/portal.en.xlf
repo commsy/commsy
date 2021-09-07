@@ -271,6 +271,18 @@
                 <source>Workspace display</source>
                 <target>Display workspaces</target>
             </trans-unit>
+            <trans-unit id="portal_menu_home_sortby">
+                <source>Sort list of all rooms by</source>
+                <target>Sort list of all rooms by</target>
+            </trans-unit>
+            <trans-unit id="portal_menu_home_sortby_activity">
+                <source>Activity</source>
+                <target>Activity</target>
+            </trans-unit>
+            <trans-unit id="portal_menu_home_sortby_title">
+                <source>Title</source>
+                <target>Title</target>
+            </trans-unit>
 
             <!-- room creation -->
             <trans-unit id="Rooms">

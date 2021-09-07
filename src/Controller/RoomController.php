@@ -386,20 +386,24 @@ class RoomController extends AbstractController
      * @param RoomService $roomService
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
+     * @param PortalRepository $portalRepository
      * @param int $roomId
      * @return array [type]           [description]
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function listAllAction(
         Request $request,
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
+        PortalRepository $portalRepository,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
-        $showRooms = $portalItem->getShowRoomsOnHome();
+        $showRooms = $portal->getShowRoomsOnHome();
         switch ($showRooms) {
             case 'onlyprojectrooms':
                 $roomTypes = [CS_PROJECT_TYPE];
@@ -413,9 +417,9 @@ class RoomController extends AbstractController
         }
 
         $filterForm = $this->createForm(RoomFilterType::class, null, [
-            'showTime' => $portalItem->showTime(),
+            'showTime' => $portal->getShowTimePulses(),
             'timePulses' => $roomService->getTimePulses(),
-            'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
+            'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
         ]);
 
         $filterForm->handleRequest($request);
@@ -425,7 +429,7 @@ class RoomController extends AbstractController
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository(Room::class);
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -445,7 +449,7 @@ class RoomController extends AbstractController
         // to use the form validation below, instead of manually checking for a
         // specific value
         $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
-        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
+        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
         $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -478,7 +482,7 @@ class RoomController extends AbstractController
             if ($portalUser) {
                 if ($portalUser->isModerator()) {
                     $userMayCreateContext = true;
-                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                } else if ($portal->getCommunityRoomCreationStatus() == 'all' || $portal->getProjectRoomCreationStatus() == 'portal') {
                     $userMayCreateContext = $currentUser->isAllowedToCreateContext();
                 }
             }
@@ -488,6 +492,7 @@ class RoomController extends AbstractController
 
         return [
             'roomId' => $roomId,
+            'portal' => $portal,
             'form' => $filterForm->createView(),
             'itemsCountArray' => [
                 'count' => $count,
@@ -505,7 +510,9 @@ class RoomController extends AbstractController
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
      * @param UserRepository $userRepository
+     * @param PortalRepository $portalRepository
      * @param int $roomId
+     * @param string $sort
      * @param int $max
      * @param int $start
      * @return array
@@ -524,7 +531,6 @@ class RoomController extends AbstractController
     ) {
         $legacyEnvironment = $environment->getEnvironment();
         $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
-
 
         $showRooms = $portal->getShowRoomsOnHome();
         switch ($showRooms) {
