@@ -2,7 +2,7 @@
 
 namespace App\EventListener;
 
-use App\Services\File2TextService;
+use App\Search\DocumentConverter\DocumentConverter;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
@@ -27,9 +27,9 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var File2TextService
+     * @var DocumentConverter
      */
-    private File2TextService $file2TextService;
+    private DocumentConverter $file2TextService;
     /**
      * @var FilesystemAdapter
      */
@@ -48,13 +48,13 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     /**
      * ElasticCustomPropertyListener constructor.
      * @param LegacyEnvironment $legacyEnvironment
-     * @param File2TextService $file2TextService
+     * @param DocumentConverter $file2TextService
      * @param KernelInterface $kernel
      * @param ItemService $itemService
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        File2TextService $file2TextService,
+        DocumentConverter $file2TextService,
         KernelInterface $kernel,
         ItemService $itemService
     ) {
@@ -535,11 +535,13 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      */
     private function getItemCached($itemId): ?cs_item
     {
-        return $this->cache->get($itemId, function (ItemInterface $cachedItem) {
-            $cachedItem->expiresAfter(60 * 60);
+//        return $this->cache->get($itemId, function (ItemInterface $cachedItem) {
+//            $cachedItem->expiresAfter(60 * 60);
+//
+//            return $this->itemService->getTypedItem($cachedItem->getKey());
+//        });
 
-            return $this->itemService->getTypedItem($cachedItem->getKey());
-        });
+        return $this->itemService->getTypedItem($itemId);
     }
 
     /**

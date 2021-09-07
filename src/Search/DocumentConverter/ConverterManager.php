@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\DocumentConverter;
+namespace App\Search\DocumentConverter;
 
 
 class ConverterManager
 {
 
-    private $converters;
+    private iterable $converters;
 
     /**
      * ConverterManager constructor.
