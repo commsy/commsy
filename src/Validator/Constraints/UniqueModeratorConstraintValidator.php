@@ -1,142 +1,65 @@
 <?php
 
-
 namespace App\Validator\Constraints;
 
-
 use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
 use App\Utils\UserService;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraint;
-use Exception;
+use Symfony\Component\Validator\ConstraintValidator;
 
 class UniqueModeratorConstraintValidator extends ConstraintValidator
 {
     private $userService;
-    private $roomService;
     private $legacyEnvironment;
     private $translator;
 
-    public function __construct(UserService $userService, LegacyEnvironment $legacyEnvironment, RoomService $roomService, TranslatorInterface $translator)
+    public function __construct(UserService $userService, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
     {
         $this->userService = $userService;
         $this->legacyEnvironment = $legacyEnvironment;
-        $this->roomService = $roomService;
         $this->translator = $translator;
     }
 
     public function validate($submittedDeleteString, Constraint $constraint)
     {
-        $startedBeginningMessageFlag = False;
         $currentUser = $this->userService->getCurrentUserItem();
+        $currentUserId = $currentUser->getItemID();
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
 
-        $roomId = $legacyEnvironment->current_context_id;
-        try{
-            $roomName = $legacyEnvironment->current_context->_data['title'];
-        } catch (Exception $e){
-            $roomName = $legacyEnvironment->current_context_id;
-        }
-        $roomItem = $this->roomService->getRoomItem($roomId);
+        /** @var \cs_room_item $roomItem */
+        $roomItem = $legacyEnvironment->getCurrentContextItem();
+        $roomId = $roomItem->getItemID();
 
-        $hasModerators = $this->contextHasModerators($roomId, [$currentUser]);
-        $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($roomId);
-        $currentUserIsModerator = $this->isCurrentUserModerator($roomId, [$currentUser]);
-        $isProjectRoom = $roomItem->getType() == 'project';
+        $contextHasModerators = $this->userService->contextHasModerators($roomId, [$currentUserId]);
+        $orphanedGroupRooms = $this->userService->grouproomsWithoutOtherModeratorsInRoom($roomItem, [$currentUser]);
 
-
-        if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator) {
-            if ($isProjectRoom) {
-                $roomName = " - " . $roomName . " (" . $this->translator->trans('project', [], 'room') . ")";
-            }
-            $startedBeginningMessageFlag = True;
+        if (!$contextHasModerators || !empty($orphanedGroupRooms)) {
             $this->context->buildViolation($constraint->messageBeginning)
                 ->addViolation();
+        }
+
+        if (!$contextHasModerators) {
+            $roomName = " - " . $roomItem->getTitle();
+            $isProjectRoom = $roomItem->isProjectRoom();
+            if ($isProjectRoom) {
+                $roomName = $roomName . " (" . $this->translator->trans('project', [], 'room') . ")";
+            }
 
             $this->context->buildViolation($constraint->itemMessage)
                 ->setParameter('{{ criteria }}', $roomName)
                 ->addViolation();
         }
 
-        $violationWasSet = false;
-        if($isProjectRoom){
-            $groupRooms = $roomItem->getGroupRoomList();
-
-            foreach($groupRooms as $groupRoom){
-                $hasModerators = $this->contextHasModerators($groupRoom->getItemId(), [$currentUser]);
-                $hasMoreThanOneModerator = $this->contextModeratorsGreaterOne($groupRoom->getItemId());
-                $currentUserIsModerator = $this->isCurrentUserMember($groupRoom, [$currentUser]);
-                if(!$hasModerators or !$hasMoreThanOneModerator and $currentUserIsModerator){
-                    if(!$startedBeginningMessageFlag){
-                        $startedBeginningMessageFlag = true;
-                        $violationWasSet = true;
-                        $this->context->buildViolation($constraint->messageBeginning)
-                            ->addViolation();
-                    }
-                    $this->context->buildViolation($constraint->itemMessage)
-                        ->setParameter('{{ criteria }}', " - ".$groupRoom->getTitle()." (".$this->translator->trans('grouproom', [], 'room').")")
-                        ->addViolation();
-                    $violationWasSet = true;
-                }
-            }
-        }
-            if($violationWasSet) {
-                $this->context->buildViolation($constraint->messageEnd)
-                    ->addViolation();
-            }
+        foreach ($orphanedGroupRooms as $groupRoom) {
+            $this->context->buildViolation($constraint->itemMessage)
+                ->setParameter('{{ criteria }}', " - " . $groupRoom->getTitle() . " (" . $this->translator->trans('grouproom', [], 'room') . ")")
+                ->addViolation();
         }
 
-    private function isCurrentUserModerator($roomId, $currentUsers){
-        $moderatorIds = $this->accessModeratorIds($roomId);
-        foreach ($currentUsers as $selectedId) {
-            if (in_array($selectedId->getItemID(), $moderatorIds)) {
-                return true;
-            }
+        if (!$contextHasModerators || !empty($orphanedGroupRooms)) {
+            $this->context->buildViolation($constraint->messageEnd)
+                ->addViolation();
         }
-        return false;
-    }
-
-    private function isCurrentUserMember($room, $currentUsers){
-        $moderatorIDs = $this->accessModeratorIds($room->getItemId());
-        foreach ($currentUsers as $selectedId) {
-            $relatedUsers = $selectedId->getRelatedUserList()->to_array();
-            foreach($relatedUsers as $relatedUser){
-                if(($key = array_search($relatedUser->getItemId(), $moderatorIDs)) !== false){
-                    return true;
-                }
-            }
-        }
-       return false;
-    }
-
-    private function contextHasModerators($roomId, $selectedIds) {
-        $moderatorIds = $this->accessModeratorIds($roomId);
-
-        foreach ($selectedIds as $selectedId) {
-            if (in_array($selectedId, $moderatorIds)) {
-                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
-                    unset($moderatorIds[$key]);
-                }
-            }
-        }
-
-        return !empty($moderatorIds);
-    }
-
-    private function contextModeratorsGreaterOne($roomId){
-        $moderatorIds = $this->accessModeratorIds($roomId);
-        return (sizeof($moderatorIds) > 1);
-    }
-
-    private function accessModeratorIds($roomId){
-        $moderators = $this->roomService->getModeratorList($roomId);
-        $moderatorIds = [];
-        foreach ($moderators as $moderator) {
-            $moderatorIds[] = $moderator->getItemId();
-        }
-
-        return $moderatorIds;
     }
 }

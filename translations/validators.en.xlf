@@ -30,13 +30,21 @@
                 <source>Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}</source>
                 <target>Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}.</target>
             </trans-unit>
+            <trans-unit id="validators_no_membership_deletion_rooms_moderated_start">
+                <source>You can not delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</source>
+                <target>You can not delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</target>
+            </trans-unit>
+            <trans-unit id="validators_no_membership_deletion_rooms_moderated_end">
+                <source>Please assign further moderators or delete said workspace(s).</source>
+                <target>Please assign further moderators or delete said workspace(s).</target>
+            </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
                 <source>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</source>
                 <target>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_end">
-                <source>Please assign further moderators or delete said workspace/s.</source>
-                <target>Please assign further moderators or delete said workspace/s.</target>
+                <source>Please assign further moderators or delete said workspace(s).</source>
+                <target>Please assign further moderators or delete said workspace(s).</target>
             </trans-unit>
             <trans-unit id="validators_project_rooms_attached_to_deletion_group_room_start">
                 <source>Caution, the following project rooms are attached to this workspace:</source>
