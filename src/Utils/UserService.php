@@ -411,17 +411,81 @@ class UserService
     }
 
     /**
-     * @param int $contextId
+     * Returns the moderators of the context with the given ID, optionally ignoring all moderators
+     * whose ID is contained in $ignoredUserIds.
+     *
+     * @param int $contextId The ID of the context whose moderators shall be returned
+     * @param int[] $ignoredUserIds (optional) IDs of user items that (if present) shall be omitted
+     * from the returned array of moderators
      * @return \cs_user_item[]
      */
-    public function getModeratorsForContext($contextId)
+    public function getModeratorsForContext(int $contextId, array $ignoredUserIds = []): array
     {
         $this->userManager->reset();
         $this->userManager->setContextLimit($contextId);
         $this->userManager->setStatusLimit(3);
         $this->userManager->select();
         $moderatorList = $this->userManager->get();
-        return $moderatorList->to_array();
+
+        $moderators = $moderatorList->to_array();
+        if (!empty($ignoredUserIds)) {
+            $moderators = array_filter($moderators, function (\cs_user_item $user) use ($ignoredUserIds) {
+                return (!in_array($user->getItemID(), $ignoredUserIds));
+            });
+        }
+
+        return $moderators;
+    }
+
+    /**
+     * Checks whether the context with the given ID has moderators other than the moderators whose IDs
+     * are contained in $ignoredUserIds.
+     *
+     * @param int $contextId The ID of the context whose moderators shall be checked
+     * @param int[] $ignoredUserIds (optional) IDs of user items that shall be ignored
+     * @return bool Whether the context has moderators with IDs other than the ones in $ignoredUserIds (true), or not (false)
+     */
+    public function contextHasModerators(int $contextId, array $ignoredUserIds = []): bool
+    {
+        $remainingModerators = $this->getModeratorsForContext($contextId, $ignoredUserIds);
+
+        return !empty($remainingModerators);
+    }
+
+    /**
+     * Returns all group rooms of the given project room which have no other moderators than the ones identified by
+     * the IDs given in $userIds.
+     *
+     * @param \cs_room_item $room The room whose group rooms shall be checked
+     * @param \cs_user_item[] $users (optional) User items that shall be ignored when checking rooms for additional moderators
+     * @return \cs_grouproom_item[]
+     */
+    public function grouproomsWithoutOtherModeratorsInRoom(\cs_room_item $room, array $users = []): array
+    {
+        if (!$room->isProjectRoom()) {
+            return [];
+        }
+
+        $groupRooms = $room->getGroupRoomList();
+        $orphanedGroupRooms = [];
+        $userIds = [];
+
+        foreach ($groupRooms as $groupRoom) {
+            // for each user, gather item IDs for all corresponding group room users
+            foreach ($users as $user) {
+                $groupRoomUser = $user->getRelatedUserItemInContext($groupRoom->getItemID());
+                if ($groupRoomUser) {
+                    $userIds[] = $groupRoomUser->getItemID();
+                }
+            }
+
+            // find group rooms which don't have any other moderators than those identified by IDs in $userIds
+            if (!$this->contextHasModerators($groupRoom->getItemID(), $userIds)) {
+                $orphanedGroupRooms[] = $groupRoom;
+            }
+        }
+
+        return $orphanedGroupRooms;
     }
 
     /**
