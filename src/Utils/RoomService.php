@@ -215,22 +215,6 @@ class RoomService
         return $contactModeratorList->to_array();
     }
 
-    /**
-     * For the room with the given room ID, returns all users who have the status of a contact person or moderator.
-     * Note that if some contact person(s) have been defined for the room, only these will be returned. Otherwise,
-     * the room moderators will be returned.
-     *
-     * @param int $roomId The ID of the containing context
-     * @return \cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
-     */
-    public function getModeratorList($roomId)
-    {
-        $roomItem = $this->getRoomItem($roomId);
-        $contactModeratorList = $roomItem->getModeratorList();
-
-        return $contactModeratorList->to_array();
-    }
-
     public function getCurrentRoomItem()
     {
         $currentContextId = $this->legacyEnvironment->getCurrentContextId();
