@@ -188,27 +188,27 @@
             </trans-unit>
             <trans-unit id="no moderators left">
                 <source>no moderators left</source>
-                <target>Action would leave no moderators in this workspace. Please change selection of users!</target>
+                <target>This action would leave no moderators in this workspace. Please assign a new moderation.</target>
             </trans-unit>
-            <trans-unit id="no moderators left group rooms first part">
-                <source>no moderators left first part</source>
-                <target>You cannot delete your account from this room or lock it. The following rooms would otherwise be without moderation: </target>
+            <trans-unit id="new user status: no moderators left">
+                <source>new user status: no moderators left</source>
+                <target>This action would leave no moderators in this workspace:</target>
             </trans-unit>
-            <trans-unit id="and project rooms">
-                <source>and project rooms</source>
-                <target>and the following project rooms: </target>
+            <trans-unit id="delete own user id: no moderators left first part">
+                <source>delete own user id: no moderators left first part</source>
+                <target>You cannot delete your account from this workspace or lock it. The following workspaces would otherwise be without moderation:</target>
+            </trans-unit>
+            <trans-unit id="delete other user id: no moderators left first part">
+                <source>delete other user id: no moderators left first part</source>
+                <target>You cannot lock or delete the chosen user(s) from this workspace, as the following workspace(s) would be without moderation:</target>
+            </trans-unit>
+            <trans-unit id="no moderators left second part">
+                <source>no moderators left second part</source>
+                <target>Please assign a new moderation or delete the workspace(s).</target>
             </trans-unit>
             <trans-unit id="no moderators left group rooms second part">
-                <source>no moderators left second part</source>
-                <target>Please assign a new moderation to this room or delete this/these rooms.</target>
-            </trans-unit>
-            <trans-unit id="no moderators left community room first part">
-                <source>no moderators left community first</source>
-                <target>You cannot delete this user from the workspace, as the following group workspace would be without moderation:</target>
-            </trans-unit>
-            <trans-unit id="no moderators left community room second part">
-                <source>no moderators left community second</source>
-                <target>Please delete not needed group workspace by deleting the respective groups. Please address the moderator(s), if you want to assign a new moderation for the group workspace.</target>
+                <source>no moderators left group rooms second part</source>
+                <target>You can delete an unneeded group workspace by deleting its corresponding group. If you want to assign a new moderation to the group workspace please contact the portal moderation.</target>
             </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
