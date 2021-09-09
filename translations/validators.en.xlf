@@ -39,8 +39,8 @@
                 <target>You cannot delete or lock the chosen user(s) from this workspace. The following workspaces would otherwise be without moderators:</target>
             </trans-unit>
             <trans-unit id="validators_no_membership_deletion_rooms_moderated_start">
-                <source>You can not delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</source>
-                <target>You can not delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</target>
+                <source>You cannot delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</source>
+                <target>You cannot delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</target>
             </trans-unit>
             <trans-unit id="validators_no_membership_deletion_rooms_moderated_end">
                 <source>Please assign further moderators or delete said workspace(s).</source>
@@ -51,8 +51,8 @@
                 <target>You can delete an unneeded group workspace by deleting its corresponding group. If you want to assign a new moderation to the group workspace please contact the portal moderation.</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
-                <source>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</source>
-                <target>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</target>
+                <source>You cannot delete or lock your account. The following workspaces would otherwise be without moderators:</source>
+                <target>You cannot delete or lock your account. The following workspaces would otherwise be without moderators:</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_end">
                 <source>Please assign further moderators or delete said workspace(s).</source>
@@ -95,8 +95,8 @@
                 <target>There is not item with this id.</target>
             </trans-unit>
             <trans-unit id="homeNotiveInvalidItemType">
-                <source>An item of this type ({{ type }}) can not be used as home notice.</source>
-                <target>An item of this type ({{ type }}) can not be used as home notice.</target>
+                <source>An item of this type ({{ type }}) cannot be used as home notice.</source>
+                <target>An item of this type ({{ type }}) cannot be used as home notice.</target>
             </trans-unit>
             <trans-unit id="homeNotiveInvalidId">
                 <source>The id is invalid.</source>
