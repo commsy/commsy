@@ -491,12 +491,12 @@ class UserService
     /**
      * Checks whether the given (or otherwise the current) user is the given room's last moderator.
      *
-     * @param \cs_room_item $room The room for which this method will check whether the given user is its last moderator
+     * @param \cs_room_item|null $room The room for which this method will check whether the given user is its last moderator
      * @param \cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the given
      * room's last moderator (defaults to the current user if not given)
      * @return bool Whether the given (or current) user is the last moderator in the given room (true), or not (false)
      */
-    public function userIsLastModeratorForRoom(\cs_room_item $room, \cs_user_item $user = null): bool
+    public function userIsLastModeratorForRoom($room, $user = null): bool
     {
         if (!$room) {
             return false;
