@@ -331,6 +331,7 @@ class UserController extends BaseController
                 $formData['userIds'] = $userIds;
             } else {
                 $postData = $request->request->get('user_status');
+                $formData['status'] = $postData['status'];
                 $formData['userIds'] = $postData['userIds'];
             }
         }
@@ -351,39 +352,6 @@ class UserController extends BaseController
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
-
-                if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    // TODO: use a form validator instead
-                    $translator = $this->get('translator');
-                    $contextHasModerators = $userService->contextHasModerators($roomId, $formData['userIds']);
-                    $orphanedGroupRooms = [];
-                    if (in_array($formData['status'], ['user-delete', 'user-block'])) {
-                        $orphanedGroupRooms = $userService->grouproomsWithoutOtherModeratorsInRoom($room, $users);
-                    }
-
-                    if (!$contextHasModerators || !empty($orphanedGroupRooms)) {
-                        if (in_array($formData['status'], ['user-delete', 'user-block'])) {
-                            $form->addError(new FormError($translator->trans('delete other user id: no moderators left first part', [], 'user')));
-                        } else {
-                            $form->addError(new FormError($translator->trans('new user status: no moderators left', [], 'user')));
-                        }
-                    }
-
-                    if (!$contextHasModerators) {
-                        $form->addError(new FormError("- " . $room->getTitle()));
-                    }
-
-                    foreach ($orphanedGroupRooms as $groupRoom) {
-                        $form->addError(new FormError("- " . $groupRoom->getTitle()));
-                    }
-
-                    if (!$contextHasModerators || !empty($orphanedGroupRooms)) {
-                        $form->addError(new FormError($translator->trans('no moderators left second part', [], 'user')));
-                    }
-                    if (!empty($orphanedGroupRooms)) {
-                        $form->addError(new FormError(' ' . $translator->trans('no moderators left group rooms second part', [], 'user')));
-                    }
-                }
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
