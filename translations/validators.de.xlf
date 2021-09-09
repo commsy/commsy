@@ -39,8 +39,8 @@
                 <target>Sie können diese Kennung(en) nicht sperren oder aus dem Raum löschen. Die folgenden Räume wären ansonsten ohne Moderation:</target>
             </trans-unit>
             <trans-unit id="validators_no_membership_deletion_rooms_moderated_start">
-                <source>You can not delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</source>
-                <target>Sie können Ihre Raummitgliedschaft NICHT löschen oder sperren. Die folgenden Räume wären ansonsten ohne Moderation:</target>
+                <source>You cannot delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</source>
+                <target>Sie können Ihre Raummitgliedschaft nicht löschen oder sperren. Die folgenden Räume wären ansonsten ohne Moderation:</target>
             </trans-unit>
             <trans-unit id="validators_no_membership_deletion_rooms_moderated_end">
                 <source>Please assign further moderators or delete said workspace(s).</source>
@@ -51,7 +51,7 @@
                 <target>Sie können einen nicht mehr benötigten Gruppenraum löschen, indem Sie die dazugehörige Gruppe löschen. Sollten Sie eine neue Moderation für einen Gruppenraum einsetzen wollen, wenden Sie sich bitte an die Portalmoderation.</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
-                <source>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</source>
+                <source>You cannot delete or lock your account. The following workspaces would otherwise be without moderators:</source>
                 <target>Sie können Ihren Account NICHT löschen oder sperren. Die folgenden Räume wären ansonsten ohne Moderation:</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_end">
@@ -95,7 +95,7 @@
                 <target>Es existiert kein Eintrag mit dieser Referenznummer.</target>
             </trans-unit>
             <trans-unit id="homeNotiveInvalidItemType">
-                <source>A item of this type ({{ type }}) can not be used as home notice.</source>
+                <source>A item of this type ({{ type }}) cannot be used as home notice.</source>
                 <target>Ein Eintrag mit diesem Typ ({{ type }}) kann nicht verwendet werden.</target>
             </trans-unit>
             <trans-unit id="homeNotiveInvalidId">

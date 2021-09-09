@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class HomeNoticeConstraint extends Constraint
 {
-    public $message = 'A item of this type ({{ type }}) can not be used as home notice.';
+    public $message = 'A item of this type ({{ type }}) cannot be used as home notice.';
     public $messageNoItem = 'There is not item with this id.';
     public $messageInvalidId = 'The id is invalid.';
 
