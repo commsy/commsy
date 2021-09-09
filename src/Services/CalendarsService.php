@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\Calendars;
 use App\Utils\DateService;
 use App\Utils\RoomService;
+use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Sabre\VObject;
@@ -15,24 +16,27 @@ class CalendarsService
     /**
      * @var EntityManagerInterface $em
      */
-    private $em;
+    private EntityManagerInterface $em;
 
-    private $serviceContainer;
+    /**
+     * @var Container
+     */
+    private Container $serviceContainer;
 
     /**
      * @var DateService
      */
-    private $dateService;
+    private DateService $dateService;
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(
         EntityManagerInterface $entityManager,

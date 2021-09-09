@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Event\CommsyEditEvent;
 use App\Utils\ReaderService;
+use cs_item;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -26,7 +27,7 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
     }
 
     public function onCommsyEdit(CommsyEditEvent $event) {
-        if ($event->getItem()) {
+        if ($event->getItem() instanceof cs_item) {
             if ($event->getItem()->hasLocking()) {
                 $event->getItem()->lock();
             }
@@ -34,8 +35,8 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
     }
 
     public function onCommsySave(CommsyEditEvent $event) {
-        if ($event->getItem()) {
-            /** @var \cs_item $item */
+        if ($event->getItem() instanceof cs_item) {
+            /** @var cs_item $item */
             $item = $event->getItem();
 
             if ($item->hasLocking()) {
@@ -52,7 +53,7 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
     }
 
     public function onCommsyCancel(CommsyEditEvent $event) {
-        if ($event->getItem()) {
+        if ($event->getItem() instanceof cs_item) {
             if ($event->getItem()->hasLocking()) {
                 $event->getItem()->unlock();
             }
@@ -69,9 +70,9 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
 
     /**
      * Updates the Elastic search index for the given item, and invalidates its cached read status.
-     * @param \cs_item $item The item whose search index entry shall be updated.
+     * @param cs_item $item The item whose search index entry shall be updated.
      */
-    private function updateSearchIndex(\cs_item $item) {
+    private function updateSearchIndex(cs_item $item) {
         if (method_exists($item, 'updateElastic')) {
             $item->updateElastic();
 
