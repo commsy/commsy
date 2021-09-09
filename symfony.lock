@@ -452,6 +452,15 @@
     "ruflin/elastica": {
         "version": "6.1.1"
     },
+    "sabre/uri": {
+        "version": "2.2.1"
+    },
+    "sabre/vobject": {
+        "version": "4.3.5"
+    },
+    "sabre/xml": {
+        "version": "2.2.3"
+    },
     "sebastian/cli-parser": {
         "version": "1.0.0"
     },

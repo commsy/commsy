@@ -964,7 +964,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $query .= 'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'", ';
       }
       $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isExternal(), 'external');
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid');
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid', true);
       $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isWholeDay(), 'whole_day');
 
       $query = rtrim($query, ',');
