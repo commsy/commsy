@@ -190,26 +190,6 @@
                 <source>no moderators left</source>
                 <target>Durch diese Aktion gäbe es keine Moderation mehr im Raum. Bitte ernennen Sie ggf. eine neue Moderation.</target>
             </trans-unit>
-            <trans-unit id="new user status: no moderators left">
-                <source>new user status: no moderators left</source>
-                <target>Durch diese Aktion gäbe es keine Moderation mehr im Raum:</target>
-            </trans-unit>
-            <trans-unit id="delete own user id: no moderators left first part">
-                <source>delete own user id: no moderators left first part</source>
-                <target>Sie können Ihre Kennung in diesem Raum nicht löschen oder sperren. Die folgenden Räume wären ansonsten ohne Moderation:</target>
-            </trans-unit>
-            <trans-unit id="delete other user id: no moderators left first part">
-                <source>delete other user id: no moderators left first part</source>
-                <target>Sie können diese Kennung(en) nicht sperren oder aus dem Raum löschen, da folgende Räume ohne Moderation wären:</target>
-            </trans-unit>
-            <trans-unit id="no moderators left second part">
-                <source>no moderators left second part</source>
-                <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
-            </trans-unit>
-            <trans-unit id="no moderators left group rooms second part">
-                <source>no moderators left group rooms second part</source>
-                <target>Sie können einen nicht mehr benötigten Gruppenraum löschen, indem Sie die dazugehörige Gruppe löschen. Sollten Sie eine neue Moderation für einen Gruppenraum einsetzen wollen, wenden Sie sich bitte an die Portalmoderation.</target>
-            </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
                 <target>E-Mail senden</target>

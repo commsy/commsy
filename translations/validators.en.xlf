@@ -30,6 +30,14 @@
                 <source>Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}</source>
                 <target>Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}.</target>
             </trans-unit>
+            <trans-unit id="validators_no_userstatus_change_no_moderators">
+                <source>This action would leave the following workspace(s) without moderation:</source>
+                <target>This action would leave the following workspace(s) without moderation:</target>
+            </trans-unit>
+            <trans-unit id="validators_no_userid_deletion_no_moderators">
+                <source>You cannot delete or lock the chosen user(s) from this workspace. The following workspaces would otherwise be without moderators:</source>
+                <target>You cannot delete or lock the chosen user(s) from this workspace. The following workspaces would otherwise be without moderators:</target>
+            </trans-unit>
             <trans-unit id="validators_no_membership_deletion_rooms_moderated_start">
                 <source>You can not delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</source>
                 <target>You can not delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</target>
@@ -37,6 +45,10 @@
             <trans-unit id="validators_no_membership_deletion_rooms_moderated_end">
                 <source>Please assign further moderators or delete said workspace(s).</source>
                 <target>Please assign further moderators or delete said workspace(s).</target>
+            </trans-unit>
+            <trans-unit id="validators_no_membership_deletion_grouprooms_info">
+                <source>You can delete an unneeded group workspace by deleting its corresponding group. If you want to assign a new moderation to the group workspace please contact the portal moderation.</source>
+                <target>You can delete an unneeded group workspace by deleting its corresponding group. If you want to assign a new moderation to the group workspace please contact the portal moderation.</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
                 <source>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</source>
