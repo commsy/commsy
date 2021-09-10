@@ -2,6 +2,9 @@
 
 namespace App\Utils;
 
+use cs_grouproom_item;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\Form\Form;
 
 use App\Services\LegacyEnvironment;
@@ -417,7 +420,7 @@ class UserService
      * @param int $contextId The ID of the context whose moderators shall be returned
      * @param int[] $ignoredUserIds (optional) IDs of user items that (if present) shall be omitted
      * from the returned array of moderators
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
     public function getModeratorsForContext(int $contextId, array $ignoredUserIds = []): array
     {
@@ -429,7 +432,7 @@ class UserService
 
         $moderators = $moderatorList->to_array();
         if (!empty($ignoredUserIds)) {
-            $moderators = array_filter($moderators, function (\cs_user_item $user) use ($ignoredUserIds) {
+            $moderators = array_filter($moderators, function (cs_user_item $user) use ($ignoredUserIds) {
                 return (!in_array($user->getItemID(), $ignoredUserIds));
             });
         }
@@ -456,11 +459,11 @@ class UserService
      * Returns all group rooms of the given project room which have no other moderators than the ones identified by
      * the IDs given in $userIds.
      *
-     * @param \cs_room_item $room The room whose group rooms shall be checked
-     * @param \cs_user_item[] $users (optional) User items that shall be ignored when checking rooms for additional moderators
-     * @return \cs_grouproom_item[]
+     * @param cs_room_item $room The room whose group rooms shall be checked
+     * @param cs_user_item[] $users (optional) User items that shall be ignored when checking rooms for additional moderators
+     * @return cs_grouproom_item[]
      */
-    public function grouproomsWithoutOtherModeratorsInRoom(\cs_room_item $room, array $users = []): array
+    public function grouproomsWithoutOtherModeratorsInRoom(cs_room_item $room, array $users = []): array
     {
         if (!$room->isProjectRoom()) {
             return [];
@@ -491,12 +494,12 @@ class UserService
     /**
      * Checks whether the given (or otherwise the current) user is the given room's last moderator.
      *
-     * @param \cs_room_item|null $room The room for which this method will check whether the given user is its last moderator
-     * @param \cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the given
+     * @param cs_room_item|null $room The room for which this method will check whether the given user is its last moderator
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the given
      * room's last moderator (defaults to the current user if not given)
      * @return bool Whether the given (or current) user is the last moderator in the given room (true), or not (false)
      */
-    public function userIsLastModeratorForRoom($room, $user = null): bool
+    public function userIsLastModeratorForRoom(?cs_room_item $room, ?cs_user_item $user = null): bool
     {
         if (!$room) {
             return false;
@@ -513,12 +516,12 @@ class UserService
         }
 
         $roomModerators = $room->getModeratorList()->to_array();
-        $roomModeratorIds = array_map(function (\cs_user_item $user) {
+        $roomModeratorIds = array_map(function (cs_user_item $user) {
             return $user->getItemID();
         }, $roomModerators);
 
         $users = $user->getRelatedUserList()->to_array();
-        $userIds = array_map(function (\cs_user_item $user) {
+        $userIds = array_map(function (cs_user_item $user) {
             return $user->getItemID();
         }, $users);
 
