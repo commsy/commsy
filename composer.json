@@ -6,6 +6,7 @@
     "require": {
         "php": "^7.4.0",
         "ext-ctype": "*",
+        "ext-gd": "*",
         "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
@@ -20,7 +21,6 @@
         "friendsofsymfony/ckeditor-bundle": "^2.0",
         "friendsofsymfony/elastica-bundle": "^5.2",
         "friendsofsymfony/rest-bundle": "^3.0",
-        "idci/color-scheme-bundle": "dev-master",
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^5.3",
         "knplabs/knp-snappy-bundle": "^1.7",
@@ -35,6 +35,7 @@
         "nategood/httpful": "^0.3",
         "nelmio/api-doc-bundle": "^3.7",
         "nette/utils": "^3.1",
+        "ozdemirburak/iris": "^2.3",
         "php-imap/php-imap": "^4.1",
         "phpoffice/phpword": "^0.18.2",
         "sabre/vobject": "^4.3",
