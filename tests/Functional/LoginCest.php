@@ -1,4 +1,7 @@
-<?php namespace App\Tests;
+<?php
+
+namespace App\Tests\Functional;
+
 use App\Tests\Step\Functional\Root;
 use App\Tests\Step\Functional\User;
 

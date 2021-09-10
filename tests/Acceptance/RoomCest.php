@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Acceptance;
 
 use App\Tests\AcceptanceTester;
 use App\Tests\Page\Acceptance\GroupFeed;
