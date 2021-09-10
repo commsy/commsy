@@ -14,8 +14,10 @@ use cs_user_item;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 
 class LegacySubscriber implements EventSubscriberInterface
@@ -96,7 +98,7 @@ class LegacySubscriber implements EventSubscriberInterface
                     $contextUserList = $userManager->get();
 
                     if ($contextUserList->getCount() != 1) {
-                        throw new Exception("Mandatory unique user item not found!");
+                        throw new AccessDeniedHttpException("Mandatory unique user item not found!");
                     }
 
                     $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
