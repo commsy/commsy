@@ -31,7 +31,10 @@ class DeleteType extends AbstractType
                         'value' => mb_strtoupper($options['data']['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
-                    new UniqueModeratorConstraint(),
+                    new UniqueModeratorConstraint([
+                        'concernsOwnRoomMembership' => true,
+                        'newUserStatus' => 'user-delete',
+                    ]),
                 ],
                 'required' => true,
             ])

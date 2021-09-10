@@ -188,27 +188,7 @@
             </trans-unit>
             <trans-unit id="no moderators left">
                 <source>no moderators left</source>
-                <target>Durch diese Aktion gäbe es kein/e ModeratorInen mehr im Raum. Bitte ernenenn Sie ggf. eine/n Neue/n.</target>
-            </trans-unit>
-            <trans-unit id="no moderators left group rooms first part">
-                <source>no moderators left first part</source>
-                <target>Sie können Ihren Kennung in diesem Raum NICHT löschen oder sperren. Die folgenden Räumen wären ansonsten ohne Moderation: </target>
-            </trans-unit>
-            <trans-unit id="no moderators left group rooms second part">
-                <source>no moderators left second part</source>
-                <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
-            </trans-unit>
-            <trans-unit id="no moderators left community room first part">
-                <source>no moderators left community first</source>
-                <target>Sie können diese Kennung nicht aus dem Raum löschen, da folgende Gruppenräume ohne Moderation wären:</target>
-            </trans-unit>
-            <trans-unit id="no moderators left community room second part">
-                <source>no moderators left community second</source>
-                <target>Bitte Löschen Sie nicht mehr benötigte Gruppenräume, indem Sie die dazugehörigen Gruppen löschen. Sollten Sie eine neue Moderation für einen Gruppenraum einsetzen wollen, wenden Sie sich bitte an die Portalmoderation.</target>
-            </trans-unit>
-            <trans-unit id="and project rooms">
-                <source>and project rooms</source>
-                <target>und die folgenden Projekträume: </target>
+                <target>Durch diese Aktion gäbe es keine Moderation mehr im Raum. Bitte ernennen Sie ggf. eine neue Moderation.</target>
             </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>

@@ -158,7 +158,6 @@ class UserController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
-            //TODO: check here on last moderators?
             $userService->setFilterConditions($filterForm);
         } else {
             $userService->hideDeactivatedEntries();
@@ -329,6 +328,7 @@ class UserController extends BaseController
                 $formData['userIds'] = $userIds;
             } else {
                 $postData = $request->request->get('user_status');
+                $formData['status'] = $postData['status'];
                 $formData['userIds'] = $postData['userIds'];
             }
         }
@@ -349,33 +349,6 @@ class UserController extends BaseController
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
-
-                if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    if (in_array($formData['status'], ['user-delete', 'user-block'])) {
-
-                        $otherModerators = $this->otherContextModerators($roomId, $formData['userIds']);
-                        if (empty($otherModerators))
-                        {
-                        $translator = $this->get('translator');
-                        $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
-                            $groupRoomsInConflict = $this->underlyingGroupRoomHasModerators($roomId, $formData['userIds']);
-                            if (!empty($groupRoomsInConflict))
-                            {
-                                $translator = $this->get('translator');
-                                $form->addError(new FormError($translator->trans('no moderators left community first', [], 'user')));
-
-                                foreach($groupRoomsInConflict as $grpRoomName){
-                                    $form->addError(new FormError("- ".$grpRoomName));
-                                }
-
-                                $translator = $this->get('translator');
-                                $form->addError(new FormError($translator->trans('no moderators left community second', [], 'user')));
-                            }
-
-                        }
-
-                    }
-                }
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
@@ -510,71 +483,6 @@ class UserController extends BaseController
             'form' => $form->createView(),
             'status' => $formData['status'],
         ];
-    }
-
-    /**
-     * @param $roomId
-     * @param $selectedIds
-     * @return array
-     *
-     * Returns all moderators for the roomId, except the ones associated to the ID given.
-     */
-    private function otherContextModerators($roomId, $selectedIds)
-    {
-        // get every moderator for the context
-        $userService = $this->get('commsy_legacy.user_service');
-        $moderators = $userService->getModeratorsForContext($roomId);
-
-        $moderatorIds = [];
-        foreach ($moderators as $moderator) {
-            $moderatorIds[] = $moderator->getItemId();
-        }
-
-        // get all related users and remove them from moderators 'hypothetically'
-        foreach ($selectedIds as $selectedId) {
-            $user = $userService->getUser($selectedId);
-            $relatedUsers = $user->getRelatedUserList();
-            foreach($relatedUsers as $relatedUser)
-            {
-                if (in_array($relatedUser->getItemID(), $moderatorIds)) {
-                    if(($key = array_search($relatedUser->getItemID(), $moderatorIds)) !== false) {
-                        unset($moderatorIds[$key]);
-                    }
-                }
-            }
-
-            // create an array without each associated user object
-            if (in_array($user->getItemID(), $moderatorIds)) {
-                if(($key = array_search($user->getItemID(), $moderatorIds)) !== false) {
-                    unset($moderatorIds[$key]);
-                }
-            }
-        }
-
-        // the returning array could e.g. be checked on whether at least one moderator is left
-        return $moderatorIds;
-    }
-
-    private function underlyingGroupRoomHasModerators($roomId, $selectedIds)
-    {
-        $roomService = $this->get('commsy_legacy.room_service');
-        $roomItem = $roomService->getRoomItem($roomId);
-        $issueGrpRoomNames = [];
-
-        if($roomItem->isProjectRoom())
-        {
-            $groupRoomList = $roomItem->getGroupRoomList();
-            foreach($groupRoomList as $grpRoom)
-            {
-                $otherModerators = $this->otherContextModerators($grpRoom->getItemID(), $selectedIds);
-                if(empty($otherModerators))
-                {
-                    array_push($issueGrpRoomNames, $grpRoom->_getItemData()['title']);
-                }
-            }
-        }
-
-        return $issueGrpRoomNames;
     }
 
     /**
