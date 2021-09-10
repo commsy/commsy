@@ -94,6 +94,9 @@
         }
     },
     "autoload-dev": {
+        "classmap": [
+            "tests/_build/support"
+        ],
         "psr-4": {
             "App\\Tests\\": "tests/"
         }
