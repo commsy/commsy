@@ -2,66 +2,91 @@
 
 namespace App\Services;
 
-use IDCI\Bundle\ColorSchemeBundle\Model\Color;
-
 use App\Utils\UserService;
+use cs_user_item;
+use OzdemirBurak\Iris\Color\Hex;
+use OzdemirBurak\Iris\Exceptions\InvalidColorException;
 
 class AvatarService
-{    
-    
-    private $userService;
-    
-    private $kernelProjectDir;
-    
-    private $type;
+{
+    /**
+     * @var UserService
+     */
+    private UserService $userService;
 
-    private $colorScheme;
+    /**
+     * @var string
+     */
+    private string $kernelProjectDir;
 
-    private $itemId;
-    
-    private $user;
-    
-    private $imageWidth;
-    
-    private $imageHeight;
+    /**
+     * @var int
+     */
+    private int $type;
+
+    /**
+     * @var int
+     */
+    private int $colorScheme;
+
+    /**
+     * @var cs_user_item|null
+     */
+    private ?cs_user_item $user;
+
+    /**
+     * @var int
+     */
+    private int $imageWidth = 100;
+
+    /**
+     * @var int
+     */
+    private int $imageHeight = 100;
 
     public function __construct(UserService $userService, $kernelProjectDir)
     {
         $this->userService = $userService;
-        
         $this->kernelProjectDir = $kernelProjectDir;
-        
-        $this->imageWidth = 100;
-        
-        $this->imageHeight = 100;
     }
 
     /**
      * Returns a new guest session id
-     * 
-     * @param  int $portalId
-     * 
+     *
+     * @param $itemId
+     * @param int $type
+     * @param int $colorScheme
      * @return string session id
+     * @throws InvalidColorException
      */
-    public function getAvatar($itemId, $type = 0, $colorScheme = 0)
+    public function getAvatar($itemId, int $type = 0, int $colorScheme = 0)
     {
-        $this->itemId = $itemId;
         $this->user = $this->userService->getUser($itemId);
         $this->type = $type;
         $this->colorScheme = $colorScheme;
-        
+
         return $this->generateAvatar();
     }
-    
-    function generateAvatar() {
+
+    /**
+     * @return false|string
+     * @throws InvalidColorException
+     */
+    public function generateAvatar()
+    {
         if ($this->type == 0 || $this->type == 1) {
             return $this->generateInitialsAvatar();
         }
-        
+
         return file_get_contents($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
     }
-    
-    function generateInitialsAvatar() {
+
+    /**
+     * @return false|string
+     * @throws InvalidColorException
+     */
+    public function generateInitialsAvatar()
+    {
         if ($this->type == 1) {
             $image = @imagecreatefromgif($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
             $imageSize = getimagesize($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
@@ -76,95 +101,119 @@ class AvatarService
         $colors = $this->getColors($image);
 
         imagefill($image, 0, 0, $colors['background']);
-        
-        $initialString = strtoupper(mb_substr($this->user->getFirstname(), 0, 1)).strtoupper(mb_substr($this->user->getLastname(), 0, 1));
+
+        $initialString = strtoupper(mb_substr($this->user->getFirstname(), 0,
+                1)) . strtoupper(mb_substr($this->user->getLastname(), 0, 1));
         if (!$initialString) {
             $initialString = strtoupper(substr($this->user->getUserId(), 0, 1));
         }
 
         $font = $this->kernelProjectDir . '/src/Resources/fonts/LiberationSans-Regular.ttf';
         $angle = 0;
-        
-        $textBox = imagettfbbox($fontSize,$angle,$font,$initialString);
+
+        $textBox = imagettfbbox($fontSize, $angle, $font, $initialString);
 
         // Get your Text Width and Height
-        $textWidth = $textBox[2]-$textBox[0];
-        $textHeight = $textBox[7]-$textBox[1];
-        
+        $textWidth = $textBox[2] - $textBox[0];
+        $textHeight = $textBox[7] - $textBox[1];
+
         // Calculate coordinates of the text
-        $x = ($this->imageWidth/2) - ($textWidth/2);
-        $y = ($this->imageHeight/2) - ($textHeight/2);
-        
+        $x = ($this->imageWidth / 2) - ($textWidth / 2);
+        $y = ($this->imageHeight / 2) - ($textHeight / 2);
+
         imagettftext($image, $fontSize, $angle, $x, $y, $colors['text'], $font, $initialString);
-        
+
         ob_start();
         imagepng($image);
         $stringdata = ob_get_contents();
         ob_end_clean();
         return $stringdata;
     }
-    
-    function getColors($image) {
+
+    /**
+     * @param $image
+     * @return array
+     * @throws InvalidColorException
+     */
+    public function getColors($image): array
+    {
         $colors = [];
-        
+
         $colorBaseString = $this->user->getUserId();
-            
-        $hexValue = dechex(crc32($colorBaseString.strrev($colorBaseString)));
+
+        $hexValue = dechex(crc32($colorBaseString . strrev($colorBaseString)));
         $colorCode = substr($hexValue, 0, 6);
-            
-        $color = new Color('#'.$colorCode);
-        
+        $hexColor = new Hex('#' . $colorCode);
+
         if ($this->colorScheme == 0) {
-            $hsl = $color->toHSL();
-            $l = $hsl->getLightness() + 50;
-            $decColor = $hsl->setLightness($l > 90 ? 90 : $l)->toDec();
-            $colors['background'] = ImageColorAllocate ($image, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
-            $colors['text'] = ImageColorAllocate ($image, 120, 120, 120);
-        } else if ($this->colorScheme == 1) {
-            $hsl = $color->toHSL();
-            $l = $hsl->getLightness();
-            $decColor = $hsl->setLightness($l > 90 ? 90 : $l)->toDec();
-            if ($this->type == 1) {
-                $colors['background'] = ImageColorAllocate ($image, 255, 255, 255);
+            $hslColor = $hexColor->toHsl();
+            $l = $hslColor->lightness() + 50;
+            $hslColor->lightness($l > 90 ? 90 : $l);
+            $rgbColor = $hslColor->toRgb();
+            $colors['background'] = ImageColorAllocate($image, $rgbColor->red(), $rgbColor->green(), $rgbColor->blue());
+            $colors['text'] = ImageColorAllocate($image, 120, 120, 120);
+        } else {
+            if ($this->colorScheme == 1) {
+                $hslColor = $hexColor->toHsl();
+                $l = $hslColor->lightness();
+                $hslColor->lightness($l > 90 ? 90 : $l);
+                $rgbColor = $hslColor->toRgb();
+                if ($this->type == 1) {
+                    $colors['background'] = ImageColorAllocate($image, 255, 255, 255);
+                } else {
+                    $colors['background'] = ImageColorAllocate($image, 220, 220, 220);
+                }
+                $colors['text'] = ImageColorAllocate($image, $rgbColor->red(), $rgbColor->green(), $rgbColor->blue());
             } else {
-                $colors['background'] = ImageColorAllocate ($image, 220, 220, 220);
+                if ($this->colorScheme == 2) {
+                    $hexColor = new Hex('#6593B3');
+
+                    if (strlen($colorBaseString) % 2 == 1) {
+                        $percent = strlen($colorBaseString) * -1.5;
+                        $colors['text'] = ImageColorAllocate($image, 240, 240, 240);
+                    } else {
+                        $percent = strlen($colorBaseString) * 1.5;
+                        $colors['text'] = ImageColorAllocate($image, 120, 120, 120);
+                    }
+
+                    $hslColor = $hexColor->toHsl();
+                    $l = $hslColor->lightness() + $percent;
+                    $hslColor->lightness($l > 90 ? 90 : $l);
+                    $rgbColor = $hslColor->toRgb();
+
+                    $colors['background'] = ImageColorAllocate($image, $rgbColor->red(), $rgbColor->green(),
+                        $rgbColor->blue());
+                } else {
+                    if ($this->colorScheme == 3) {
+                        $hexColor = new Hex('#6593B3');
+
+                        if (strlen($colorBaseString) % 2 == 1) {
+                            $percent = strlen($colorBaseString) * -1;
+                        } else {
+                            $percent = strlen($colorBaseString) * 1;
+                        }
+
+                        $hslColor = $hexColor->toHsl();
+                        $l = $hslColor->lightness() + $percent;
+                        $hslColor->lightness($l > 100 ? 100 : $l);
+                        $rgbColor = $hslColor->toRgb();
+
+                        $colors['text'] = ImageColorAllocate($image, $rgbColor->red(), $rgbColor->green(),
+                            $rgbColor->blue());
+                        $colors['background'] = ImageColorAllocate($image, 240, 240, 240);
+                    }
+                }
             }
-            $colors['text'] = ImageColorAllocate ($image, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
-        } else if ($this->colorScheme == 2) {
-            $color = new Color('#6593B3');
-            
-            if (strlen($colorBaseString) % 2 == 1) {
-                $percent = $percent = strlen($colorBaseString) * -1.5;
-                $colors['text'] = ImageColorAllocate ($image, 240, 240, 240);
-            } else {
-                $percent = $percent = strlen($colorBaseString) * 1.5;
-                $colors['text'] = ImageColorAllocate ($image, 120, 120, 120);
-            }
-            
-            $hsl = $color->toHSL();
-            $l = $hsl->getLightness() + $percent;
-            $decColor = $hsl->setLightness($l > 90 ? 90 : $l)->toDec();
-            $colors['background'] = ImageColorAllocate ($image, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
-        } else if ($this->colorScheme == 3) {
-            $color = new Color('#6593B3');
-            
-            if (strlen($colorBaseString) % 2 == 1) {
-                $percent = $percent = strlen($colorBaseString) * -1;
-            } else {
-                $percent = $percent = strlen($colorBaseString) * 1;
-            }
-            
-            $hsl = $color->toHSL();
-            $l = $hsl->getLightness() + $percent;
-            $decColor = $hsl->setLightness($l > 100 ? 100 : $l)->toDec();
-            $colors['text'] = ImageColorAllocate ($image, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
-            $colors['background'] = ImageColorAllocate ($image, 240, 240, 240);
         }
-        
+
         return $colors;
     }
 
-    function getUnknownUserImage() {
+    /**
+     * @return false|string
+     */
+    public function getUnknownUserImage()
+    {
         return file_get_contents($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
     }
 }
