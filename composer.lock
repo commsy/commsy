@@ -7,56 +7,6 @@
     "content-hash": "aeb6e84aaecc1ff1765ddfb630e123cd",
     "packages": [
         {
-            "name": "ci/restclientbundle",
-            "version": "2.0.3",
-            "target-dir": "Circle/RestClientBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/CircleOfNice/CiRestClientBundle.git",
-                "reference": "f1d01e9eaf0f1d48a0f2dad470680a747e13d462"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/CircleOfNice/CiRestClientBundle/zipball/f1d01e9eaf0f1d48a0f2dad470680a747e13d462",
-                "reference": "f1d01e9eaf0f1d48a0f2dad470680a747e13d462",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.4",
-                "symfony/config": ">=2.1",
-                "symfony/dependency-injection": ">=2.1",
-                "symfony/http-kernel": ">=2.1",
-                "symfony/yaml": ">=2.1"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Circle\\RestClientBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL"
-            ],
-            "authors": [
-                {
-                    "name": "Circle.ai",
-                    "email": "info@circle.ai"
-                }
-            ],
-            "description": "Provides REST request methods. Mapper bundle for php internal curl library",
-            "keywords": [
-                "REST client curl POST GET PUT DELETE OPTIONS CONNECT PATCH TRACE HEAD content-type payload library plugin"
-            ],
-            "time": "2019-01-21T09:27:51+00:00"
-        },
-        {
             "name": "composer/package-versions-deprecated",
             "version": "1.11.99.1",
             "source": {
