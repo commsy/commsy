@@ -5,7 +5,6 @@ return [
     Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    Circle\RestClientBundle\CircleRestClientBundle::class => ['all' => true],
     Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle::class => ['all' => true],
     FOS\ElasticaBundle\FOSElasticaBundle::class => ['all' => true],
     IDCI\Bundle\ColorSchemeBundle\IDCIColorSchemeBundle::class => ['all' => true],
