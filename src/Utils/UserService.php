@@ -392,6 +392,14 @@ class UserService
      */
     public function getSearchableRooms(cs_user_item $userItem)
     {
+        // search all workspaces/rooms even if current room is archived
+        $wasArchived = false;
+        if ($this->legacyEnvironment->isArchiveMode()) {
+            $this->legacyEnvironment->toggleArchiveMode();
+            $wasArchived = true;
+        }
+
+
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
 
@@ -423,6 +431,11 @@ class UserService
         // add private room
         $privateRoomItem = $userItem->getOwnRoom();
         $searchableRoomList->add($privateRoomItem);
+
+        // restore archive setting after having collected searchable rooms
+        if($wasArchived) {
+            $this->legacyEnvironment->toggleArchiveMode();
+        }
 
         return $searchableRoomList->to_array();
     }
