@@ -3,16 +3,17 @@
 
 namespace App\Validator\Constraints;
 
+use cs_room_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 
 /**
  * @Annotation
  */
-class DeleteGroupRoomConstraint extends Constraint
+class MandatoryProjectRoomAssignment extends Constraint
 {
     /**
-     * @var \cs_room_item
+     * @var cs_room_item
      */
     public $room;
 
@@ -25,7 +26,8 @@ class DeleteGroupRoomConstraint extends Constraint
         parent::__construct($options);
 
         if ($this->room === null) {
-            throw new MissingOptionsException(sprintf('Option "room" must be given for constraint %s', __CLASS__), ['portfolioId']);
+            throw new MissingOptionsException(sprintf('Option "room" must be given for constraint %s', __CLASS__),
+                ['room']);
         }
     }
 }
