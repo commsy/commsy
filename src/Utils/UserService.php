@@ -2,6 +2,9 @@
 
 namespace App\Utils;
 
+use cs_grouproom_item;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\Form\Form;
 
 use App\Services\LegacyEnvironment;
@@ -411,16 +414,123 @@ class UserService
     }
 
     /**
-     * @param int $contextId
-     * @return \cs_user_item[]
+     * Returns the moderators of the context with the given ID, optionally ignoring all moderators
+     * whose ID is contained in $ignoredUserIds.
+     *
+     * @param int $contextId The ID of the context whose moderators shall be returned
+     * @param int[] $ignoredUserIds (optional) IDs of user items that (if present) shall be omitted
+     * from the returned array of moderators
+     * @return cs_user_item[]
      */
-    public function getModeratorsForContext($contextId)
+    public function getModeratorsForContext(int $contextId, array $ignoredUserIds = []): array
     {
+        $this->userManager->reset();
         $this->userManager->setContextLimit($contextId);
         $this->userManager->setStatusLimit(3);
         $this->userManager->select();
         $moderatorList = $this->userManager->get();
-        return $moderatorList->to_array();
+
+        $moderators = $moderatorList->to_array();
+        if (!empty($ignoredUserIds)) {
+            $moderators = array_filter($moderators, function (cs_user_item $user) use ($ignoredUserIds) {
+                return (!in_array($user->getItemID(), $ignoredUserIds));
+            });
+        }
+
+        return $moderators;
+    }
+
+    /**
+     * Checks whether the context with the given ID has moderators other than the moderators whose IDs
+     * are contained in $ignoredUserIds.
+     *
+     * @param int $contextId The ID of the context whose moderators shall be checked
+     * @param int[] $ignoredUserIds (optional) IDs of user items that shall be ignored
+     * @return bool Whether the context has moderators with IDs other than the ones in $ignoredUserIds (true), or not (false)
+     */
+    public function contextHasModerators(int $contextId, array $ignoredUserIds = []): bool
+    {
+        $remainingModerators = $this->getModeratorsForContext($contextId, $ignoredUserIds);
+
+        return !empty($remainingModerators);
+    }
+
+    /**
+     * Returns all group rooms of the given project room which have no other moderators than the ones identified by
+     * the IDs given in $userIds.
+     *
+     * @param cs_room_item $room The room whose group rooms shall be checked
+     * @param cs_user_item[] $users (optional) User items that shall be ignored when checking rooms for additional moderators
+     * @return cs_grouproom_item[]
+     */
+    public function grouproomsWithoutOtherModeratorsInRoom(cs_room_item $room, array $users = []): array
+    {
+        if (!$room->isProjectRoom()) {
+            return [];
+        }
+
+        $groupRooms = $room->getGroupRoomList();
+        $orphanedGroupRooms = [];
+        $userIds = [];
+
+        foreach ($groupRooms as $groupRoom) {
+            // for each user, gather item IDs for all corresponding group room users
+            foreach ($users as $user) {
+                $groupRoomUser = $user->getRelatedUserItemInContext($groupRoom->getItemID());
+                if ($groupRoomUser) {
+                    $userIds[] = $groupRoomUser->getItemID();
+                }
+            }
+
+            // find group rooms which don't have any other moderators than those identified by IDs in $userIds
+            if (!$this->contextHasModerators($groupRoom->getItemID(), $userIds)) {
+                $orphanedGroupRooms[] = $groupRoom;
+            }
+        }
+
+        return $orphanedGroupRooms;
+    }
+
+    /**
+     * Checks whether the given (or otherwise the current) user is the given room's last moderator.
+     *
+     * @param cs_room_item|null $room The room for which this method will check whether the given user is its last moderator
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the given
+     * room's last moderator (defaults to the current user if not given)
+     * @return bool Whether the given (or current) user is the last moderator in the given room (true), or not (false)
+     */
+    public function userIsLastModeratorForRoom(?cs_room_item $room, ?cs_user_item $user = null): bool
+    {
+        if (!$room) {
+            return false;
+        }
+
+        if (!$user) {
+            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+            if ($currentUser) {
+                $user = $currentUser;
+            }
+            if (!$user) {
+                return false;
+            }
+        }
+
+        $roomModerators = $room->getModeratorList()->to_array();
+        $roomModeratorIds = array_map(function (cs_user_item $user) {
+            return $user->getItemID();
+        }, $roomModerators);
+
+        $users = $user->getRelatedUserList()->to_array();
+        $userIds = array_map(function (cs_user_item $user) {
+            return $user->getItemID();
+        }, $users);
+
+        // also check the given/current user's own item ID
+        $userIds[] = $user->getItemID();
+
+        $userIsLastModerator = (count($roomModerators) == 1) && (count(array_intersect($userIds, $roomModeratorIds)));
+
+        return $userIsLastModerator;
     }
 
     public function hideDeactivatedEntries()
