@@ -331,6 +331,7 @@ class UserController extends BaseController
                 $formData['userIds'] = $userIds;
             } else {
                 $postData = $request->request->get('user_status');
+                $formData['status'] = $postData['status'];
                 $formData['userIds'] = $postData['userIds'];
             }
         }
@@ -348,18 +349,9 @@ class UserController extends BaseController
                 }
             }
         }
-
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
-
-                // manual validation - moderator count check
-                if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
-                        $translator = $this->get('translator');
-                        $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
-                    }
-                }
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
@@ -494,26 +486,6 @@ class UserController extends BaseController
             'form' => $form->createView(),
             'status' => $formData['status'],
         ];
-    }
-
-    private function contextHasModerators($roomId, $selectedIds) {
-        $userService = $this->get('commsy_legacy.user_service');
-        $moderators = $userService->getModeratorsForContext($roomId);
-
-        $moderatorIds = [];
-        foreach ($moderators as $moderator) {
-            $moderatorIds[] = $moderator->getItemId();
-        }
-
-        foreach ($selectedIds as $selectedId) {
-            if (in_array($selectedId, $moderatorIds)) {
-                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
-                    unset($moderatorIds[$key]);
-                }
-            }
-        }
-
-        return !empty($moderatorIds);
     }
 
     /**

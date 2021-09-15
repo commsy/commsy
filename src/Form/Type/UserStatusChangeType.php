@@ -1,6 +1,7 @@
 <?php
 namespace App\Form\Type;
 
+use App\Validator\Constraints\UniqueModeratorConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -21,6 +22,8 @@ class UserStatusChangeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $formData = $builder->getData();
+
         $builder
             ->add('inform_user', ChoiceType::class, [
                 'label' => 'Inform user',
@@ -37,6 +40,13 @@ class UserStatusChangeType extends AbstractType
             ->add('userIds', CollectionType::class, [
                 'entry_type' => HiddenType::class,
                 'label' => false,
+                'constraints' => [
+                    new UniqueModeratorConstraint([
+                        'concernsOwnRoomMembership' => false,
+                        'newUserStatus' => $formData['status'],
+                        'userIds' => $formData['userIds'],
+                    ]),
+                ],
                 'required' => true,
                 'allow_add' => true,
             ])
