@@ -555,4 +555,58 @@ class UserService
             }
         }
     }
+
+    /**
+     * Takes all group room users corresponding to the given project room user and sets their status according
+     * to the project room user's current status.
+     *
+     * @param \cs_user_item $user The project room user whose status shall be applied to corresponding group room
+     * users within the user's project room
+     */
+    public function propagateStatusToGrouproomUsersForUser(\cs_user_item $user): void
+    {
+        $roomItem = $user->getContextItem();
+        if (!$roomItem->isProjectRoom()) {
+            return;
+        }
+
+        $groupRooms = $roomItem->getGroupRoomList();
+        if ($groupRooms->isEmpty()) {
+            return;
+        }
+
+        $userStatus = $user->getStatus();
+
+        foreach ($groupRooms as $groupRoom) {
+            $groupRoomUser = $user->getRelatedUserItemInContext($groupRoom->getItemID());
+            if ($groupRoomUser) {
+                switch ($userStatus) {
+                    case 0:
+                        $groupRoomUser->reject();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 1:
+                        $groupRoomUser->request();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 4:
+                        $groupRoomUser->makeReadOnlyUser();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 2:
+                        $groupRoomUser->makeUser();
+                        $groupRoomUser->save();
+                        break;
+
+                    case 3:
+                        $groupRoomUser->makeModerator();
+                        $groupRoomUser->save();
+                        break;
+                }
+            }
+        }
+    }
 }
