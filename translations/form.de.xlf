@@ -426,6 +426,10 @@
                 <source>create entry</source>
                 <target>Eintrag anlegen</target>
             </trans-unit>
+            <trans-unit id="token invalid">
+                <source>token invalid</source>
+                <target>Der Einladungslink ist nicht (mehr) gültig. Bitte wenden Sie sich an die Moderation.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
