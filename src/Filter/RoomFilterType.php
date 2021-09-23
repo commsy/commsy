@@ -34,7 +34,7 @@ class RoomFilterType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button uk-button-primary',
                 ),
-                'label' => 'Filter',
+                'label' => 'Restrict',
                 'translation_domain' => 'form',
             ))
             ->add('title', Filters\TextFilterType::class, [

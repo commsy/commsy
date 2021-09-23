@@ -26,7 +26,7 @@ class AnnouncementFilterType extends AbstractType
                 'attr' => [
                     'class' => 'uk-button uk-button-primary',
                 ],
-                'label' => 'Filter',
+                'label' => 'Restrict',
                 'translation_domain' => 'form',
             ])
             ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, [

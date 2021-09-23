@@ -26,7 +26,7 @@ class ProjectFilterType extends AbstractType
                     'class' => 'uk-button uk-button-primary',
                 ),
                 'disabled' => true,
-                'label' => 'Filter',
+                'label' => 'Restrict',
                 'translation_domain' => 'form',
             ))
             // ->add('activated', Filters\CheckboxFilterType::class, array(
