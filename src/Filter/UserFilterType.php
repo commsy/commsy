@@ -25,7 +25,7 @@ class UserFilterType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button uk-button-primary',
                 ),
-                'label' => 'Filter',
+                'label' => 'Restrict',
                 'translation_domain' => 'form',
             ))
             ->add('user_search', TextType::class, [

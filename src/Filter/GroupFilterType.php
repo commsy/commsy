@@ -26,7 +26,7 @@ class GroupFilterType extends AbstractType
                 'attr' => [
                     'class' => 'uk-button uk-button-primary',
                 ],
-                'label' => 'Filter',
+                'label' => 'Restrict',
                 'translation_domain' => 'form',
             ])
             ->add('hide-deactivated-entries', Filters\ChoiceFilterType::class, [

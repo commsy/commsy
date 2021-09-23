@@ -224,7 +224,7 @@
 {% endblock %}
 
 {%- block submit_widget -%}
-    {% if label == 'Filter' -%}
+    {% if label == 'Filter' or label == 'Restrict' -%}
         <button type="submit" style="min-width: fit-content" {{ block('button_attributes') }}>{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) }}</button>
     {%- else -%}
         {{ parent() }}
