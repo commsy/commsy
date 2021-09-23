@@ -24,7 +24,7 @@ class DateFilterType extends AbstractType
         $builder
             ->add('submit', SubmitType::class, [
                 'attr' => [
-                    'class' => 'uk-button uk-button-mini',
+                    'class' => 'uk-button uk-button-primary',
                 ],
                 'label' => 'Filter',
                 'translation_domain' => 'form',
