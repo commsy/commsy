@@ -10,6 +10,14 @@
                 <source>Filter</source>
                 <target>Filter</target>
             </trans-unit>
+            <trans-unit id="form-filter-apply">
+                <source>Apply filters</source>
+                <target>Apply filters ⟶</target>
+            </trans-unit>
+            <trans-unit id="form-filter-restrict">
+                <source>Restrict</source>
+                <target>Restrict</target>
+            </trans-unit>
             <trans-unit id="form-filter-hide-deactivated-entries">
                 <source>Hide-deactivated-entries</source>
                 <target>Activated and deactivated entries</target>
