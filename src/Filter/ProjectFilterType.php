@@ -23,7 +23,7 @@ class ProjectFilterType extends AbstractType
         $builder
             ->add('submit', SubmitType::class, array(
                 'attr' => array(
-                    'class' => 'uk-button uk-button-mini',
+                    'class' => 'uk-button uk-button-primary',
                 ),
                 'disabled' => true,
                 'label' => 'Filter',
