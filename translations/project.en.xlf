@@ -38,6 +38,10 @@
                 <source>delete</source>
                 <target>Delete project workspace</target>
             </trans-unit>
+            <trans-unit id="lock">
+                <source>lock</source>
+                <target>Lock project workspace</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

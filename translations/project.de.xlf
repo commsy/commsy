@@ -38,6 +38,10 @@
                 <source>delete</source>
                 <target>Projektraum löschen</target>
             </trans-unit>
+            <trans-unit id="lock">
+                <source>lock</source>
+                <target>Projektraum sperren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -1,5 +1,8 @@
 <?php
+
+
 namespace App\Form\Type\Room;
+
 
 use App\Validator\Constraints\DeleteGroupRoomConstraint;
 use Symfony\Component\Form\AbstractType;
@@ -9,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class DeleteType extends AbstractType
+class SecureDeleteType extends AbstractType
 {
     /**
      * Builds the form.
@@ -29,11 +32,8 @@ class DeleteType extends AbstractType
                         'value' => mb_strtoupper($options['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
-                    new DeleteGroupRoomConstraint([
-                        'room' => $options['data'],
-                    ]),
                 ],
-                'required' => true,
+                'required' => false,
                 'mapped' => false,
             ])
             ->add('delete', SubmitType::class, [
@@ -44,6 +44,12 @@ class DeleteType extends AbstractType
             ])
             ->add('lock', SubmitType::class, [
                 'label' => 'confirm',
+                'attr' => [
+                    'class' => 'uk-button-danger',
+                ],
+            ])
+            ->add('cancel', SubmitType::class, [
+                'label' => 'Cancel secure delete',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],

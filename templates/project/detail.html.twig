@@ -35,14 +35,16 @@
                                 </button>
 
                                 <div class="cs-additional-actions uk-dropdown  uk-padding-remove">
-                                    {% if is_granted('MODERATOR') %}
+                                    {% if (is_granted('MODERATOR') or is_granted('PROJECT_MODERATOR', project.itemId)) %}
                                         <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
-                                            {# delete #}
-                                            {# // FIXME: popup confirm-cancel dialog does not work, yet! #}
-                                            {#{ path('app_user_delete', {'roomId': roomId, 'itemId': user.itemId}) }}" id="delete" data-uk-button data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}#}
                                             <li>
-                                                <a href="{{ path('app_project_delete', {'roomId': roomId, 'itemId': project.itemId}) }}" id="delete">
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'projectId': project.itemId}) }}">
                                                     <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'delete'|trans({},'project') }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'projectId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'lock'|trans({},'project') }}
                                                 </a>
                                             </li>
                                         </ul>

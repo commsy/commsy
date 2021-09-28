@@ -511,6 +511,10 @@
                 <source>Delete account</source>
                 <target>Delete account</target>
             </trans-unit>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Confirm</target>
+            </trans-unit>
             <trans-unit id="email_lock_account">
                 <source>Lock account</source>
                 <target>Lock account</target>
@@ -682,6 +686,10 @@
                 <source>Delete room</source>
                 <target>Delete workspace</target>
             </trans-unit>
+            <trans-unit id="settings_lock_title">
+                <source>Lock room</source>
+                <target>Lock workspace</target>
+            </trans-unit>
             <trans-unit id="settings_delete_userrooms">
                 <source>Delete userrooms</source>
                 <target>Delete personal workspaces</target>
@@ -693,6 +701,10 @@
             <trans-unit id="settings_delete_intro">
                 <source>Delete intro</source>
                 <target>Attention: The entire workspace and all data will be deleted. This action cannot be undone!</target>
+            </trans-unit>
+            <trans-unit id="settings_lock_intro">
+                <source>Lock intro</source>
+                <target>Chose this option to lock this workspace. After this, you will no longer have access to this workspace. Posts will remain. If you wan to delete certain posts, please do this before locking the workspace. The workspace can be un-locked if necessary.</target>
             </trans-unit>
             <trans-unit id="delete_user_rooms_text">
                 <source>Delete user rooms text</source>
@@ -709,6 +721,10 @@
             <trans-unit id="settings_delete_grouprooms">
                 <source>Deletion of grouprooms</source>
                 <target>By deleting this project workspace the following related group workspaces will also be deleted:</target>
+            </trans-unit>
+            <trans-unit id="settings_lock_grouprooms">
+                <source>Locking of grouprooms</source>
+                <target>By locking this project workspace the following related group workspaces will also be locked:</target>
             </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>
@@ -777,6 +793,14 @@
             <trans-unit id="Portal terms">
                 <source>Portal terms</source>
                 <target>Templates</target>
+            </trans-unit>
+            <trans-unit id="Cancel securedelete">
+                <source>Cancel secure delete</source>
+                <target>Return to the project workspace list</target>
+            </trans-unit>
+            <trans-unit id="Delete or lock project">
+                <source>Delete or lock project</source>
+                <target>Delete/lock workspace</target>
             </trans-unit>
         </body>
     </file>

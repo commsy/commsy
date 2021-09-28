@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Event\UserJoinedRoomEvent;
 use App\Form\Type\ProjectType;
+use App\Form\Type\Room\SecureDeleteType;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Utils\RoomService;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\Type\Room\DeleteType;
 use App\Filter\ProjectFilterType;
 use App\Entity\Room;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -334,9 +336,16 @@ class ProjectController extends Controller
      * @Template()
      * @Security("is_granted('MODERATOR', itemId)")
      */
-    public function deleteAction($roomId, $itemId, Request $request)
+    public function deleteAction($roomId, $itemId, Request $request, RoomService $roomService)
     {
-        $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
+        $roomItem = $roomService->getRoomItem($roomId);
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $form = $this->createForm(DeleteType::class, $roomItem, [
+            'confirm_string' => $this->get('translator')->trans('delete', [], 'profile')
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
