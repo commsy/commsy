@@ -552,6 +552,8 @@ class RoomController extends Controller
             }
         }
 
+        $showRoomModerationActions = false; //TODO: why is that 'true' if e.g. Cmty Mod is not Mod of Prjct?
+
         $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 

@@ -681,6 +681,10 @@
                 <source>Delete room</source>
                 <target>Raum löschen</target>
             </trans-unit>
+            <trans-unit id="settings_lock_title">
+                <source>Lock room</source>
+                <target>Raum sperren</target>
+            </trans-unit>
             <trans-unit id="settings_delete_userrooms">
                 <source>Delete userrooms</source>
                 <target>Personenräume löschen</target>
@@ -688,6 +692,10 @@
             <trans-unit id="settings_delete_intro">
                 <source>Delete intro</source>
                 <target>Achtung: Der gesamte Raum und alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!</target>
+            </trans-unit>
+            <trans-unit id="settings_lock_intro">
+                <source>Lock intro</source>
+                <target>Wählen Sie diese Option, um disen Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Der Raum kann bei Bedarf wieder freigeschaltet werden.</target>
             </trans-unit>
             <trans-unit id="delete_user_rooms_text">
                 <source>Delete user rooms text</source>
@@ -709,6 +717,10 @@
                 <source>Deletion of grouprooms</source>
                 <target>Das Löschen dieses Projektraums führt ebenfalls auch zur Löschung der folgenden ihm untergeordneten Gruppenräume</target>
             </trans-unit>
+            <trans-unit id="settings_lock_grouprooms">
+                <source>Locking of grouprooms</source>
+                <target>Das Sperren dieses Projektraums führt ebenfalls auch zur Sperrung der folgenden ihm untergeordneten Gruppenräume</target>
+            </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>
                 <target>Bestätigen</target>
@@ -716,6 +728,10 @@
             <trans-unit id="settings_delete_button">
                 <source>Delete</source>
                 <target>Löschen</target>
+            </trans-unit>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Bestätigen</target>
             </trans-unit>
             <trans-unit id="Invitations">
                 <source>Invitations</source>
@@ -776,6 +792,14 @@
             <trans-unit id="Portal terms">
                 <source>Portal terms</source>
                 <target>Vorlagen</target>
+            </trans-unit>
+            <trans-unit id="Cancel securedelete">
+                <source>Cancel secure delete</source>
+                <target>Zurück zur Projektraumliste</target>
+            </trans-unit>
+            <trans-unit id="Delete or lock project">
+                <source>Delete or lock project</source>
+                <target>Raum sperren/löschen</target>
             </trans-unit>
         </body>
     </file>
