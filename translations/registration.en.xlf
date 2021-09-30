@@ -50,6 +50,10 @@
                 <source>registration.cancel</source>
                 <target>Cancel</target>
             </trans-unit>
+            <trans-unit id="registration.terms_accept">
+                <source>registration.terms_accept</source>
+                <target>I agree to the</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

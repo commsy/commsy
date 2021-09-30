@@ -467,6 +467,10 @@ Gruß ...
                 <source>Select some options</source>
                 <target>Treffen Sie eine Auswahl</target>
             </trans-unit>
+            <trans-unit id="messages_close">
+                <source>Close</source>
+                <target>Schließen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

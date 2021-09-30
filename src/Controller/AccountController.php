@@ -104,7 +104,9 @@ class AccountController extends AbstractController
         $account->setAuthSource($localAuthSource);
         $account->setContextId($portal->getId());
 
-        $form = $this->createForm(SignUpFormType::class, $account);
+        $form = $this->createForm(SignUpFormType::class, $account, [
+            'portal' => $portal,
+        ]);
 
         $form->handleRequest($request);
         if ($isTokenInvalid) {
