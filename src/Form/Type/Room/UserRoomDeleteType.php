@@ -1,7 +1,6 @@
 <?php
 namespace App\Form\Type\Room;
 
-use App\Validator\Constraints\DeleteGroupRoomConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

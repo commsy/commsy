@@ -238,7 +238,15 @@ class AnnotationController extends AbstractController
 
                 return $this->redirectToRoute('app_'.$itemType.'_detail', $routeArray);
             }
+            if ($form->get('cancel')->isClicked()) {
+                if ($itemType == 'portfolio') {
+                    return $this->redirectToRoute('app_portfolio_index', [
+                        'roomId' => $roomId,
+                    ]);
+                }
+            }
         }
+
         return $this->redirectToRoute('app_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
     }
 

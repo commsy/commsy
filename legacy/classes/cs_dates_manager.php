@@ -86,21 +86,16 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
      */
    private $hideRecurringEntriesLimit = false;
 
-   /*
-    * Translation Object
-    */
-   private $_translator = null;
-
-   /** constructor
-    * the only available constructor, initial values for internal variables
-    * NOTE: the constructor must never be called directly, instead the cs_environment must
-    * be used to access this manager
-    */
-   function __construct($environment) {
-      cs_manager::__construct($environment);
-      $this->_db_table = 'dates';
-      $this->_translator = $environment->getTranslationObject();
-   }
+    /** constructor
+     * the only available constructor, initial values for internal variables
+     * NOTE: the constructor must never be called directly, instead the cs_environment must
+     * be used to access this manager
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+        $this->_db_table = 'dates';
+    }
 
     /** reset limits
     * reset limits of this class: age limit, group limit, from limit, interval limit, order limit and all limits from upper class
@@ -964,7 +959,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $query .= 'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'", ';
       }
       $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isExternal(), 'external');
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid');
+      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid', true);
       $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isWholeDay(), 'whole_day');
 
       $query = rtrim($query, ',');
@@ -1053,7 +1048,11 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       return $retour;
    }
 
-    function deleteDatesOfUser($uid) {
+    /**
+     * @param $uid
+     */
+    public function deleteDatesOfUser($uid)
+    {
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
@@ -1069,7 +1068,8 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
             ));
 
             $currentDatetime = getCurrentDateTimeInMySQL();
-            $query  = 'SELECT ' . $this->addDatabasePrefix('dates').'.* FROM ' . $this->addDatabasePrefix('dates').' WHERE ' . $this->addDatabasePrefix('dates') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $query = 'SELECT ' . $this->addDatabasePrefix('dates') . '.* FROM ' . $this->addDatabasePrefix('dates') . ' WHERE ' . $this->addDatabasePrefix('dates') . '.creator_id = "' . encode(AS_DB,
+                    $uid) . '"';
             $result = $this->_db_connector->performQuery($query);
 
             if (!empty($result)) {
@@ -1084,14 +1084,18 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
 
                     /* disabled */
                     if ($disableOverwrite === 'FALSE') {
-                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
-                        $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
+                        $translator = $this->_environment->getTranslationObject();
+
+                        $updateQuery .= ' title = "' . encode(AS_DB,
+                                $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                        $updateQuery .= ' description = "' . encode(AS_DB,
+                                $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
                         $updateQuery .= ' place = " ",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '",';
                         $updateQuery .= ' public = "1"';
                     }
 
-                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB, $rs['item_id']) . '"';
                     $result2 = $this->_db_connector->performQuery($updateQuery);
                     if (!$result2) {
                         include_once('functions/error_functions.php');

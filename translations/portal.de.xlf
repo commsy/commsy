@@ -271,6 +271,18 @@
                 <source>Workspace display</source>
                 <target>Raumanzeige</target>
             </trans-unit>
+            <trans-unit id="portal_menu_home_sortby">
+                <source>Sort list of all rooms by</source>
+                <target>Sortiere "All Räume" nach</target>
+            </trans-unit>
+            <trans-unit id="portal_menu_home_sortby_activity">
+                <source>Activity</source>
+                <target>Aktivität</target>
+            </trans-unit>
+            <trans-unit id="portal_menu_home_sortby_title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
 
             <!-- room creation -->
             <trans-unit id="Rooms">
@@ -502,6 +514,14 @@
             <trans-unit id="privaterooms">
                 <source>Privateroom workspaces</source>
                 <target>Persönliche Räume</target>
+            </trans-unit>
+            <trans-unit id="delete_account_question">
+                <source>Are you sure you want to delete</source>
+                <target>Sind Sie sicher, dass Sie die Kennung löschen möchten von</target>
+            </trans-unit>
+            <trans-unit id="delete_success">
+                <source>Delete success</source>
+                <target>NutzerIn erfolgreich gelöscht</target>
             </trans-unit>
 
             <!-- Account Index send Password Mail -->
@@ -989,9 +1009,13 @@
                 <source>Import users from csv file</source>
                 <target>Benutzer aus CSV-Datei importieren</target>
             </trans-unit>
-            <trans-unit id="Files">
+            <trans-unit id="portal_csv_import_files">
                 <source>Files</source>
                 <target>Dateien</target>
+            </trans-unit>
+            <trans-unit id="portal_csv_import_sample">
+                <source>Download sample</source>
+                <target>Vorlage herunterladen</target>
             </trans-unit>
 
             <!-- auth -->

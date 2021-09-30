@@ -35,7 +35,7 @@ class MailtextsType extends AbstractType
                     'Delete user id(s)' => 'MAIL_BODY_USER_ACCOUNT_DELETE',
                     'Lock user id(s)' => 'MAIL_BODY_USER_ACCOUNT_LOCK',
                     'Activate user id(s)' => 'MAIL_BODY_USER_STATUS_USER',
-                    'Satus moderator' => 'MAIL_BODY_USER_STATUS_MODERATOR',
+                    'Status moderator' => 'MAIL_BODY_USER_STATUS_MODERATOR',
                     'Make contact' => 'MAIL_BODY_USER_MAKE_CONTACT_PERSON',
                     'Remove contact' => 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',
                     'Password expires' => 'EMAIL_BODY_PASSWORD_EXPIRATION_SOON',

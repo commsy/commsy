@@ -626,6 +626,14 @@ class Portal implements \Serializable
         return $this;
     }
 
+    public function getTimePulseName(string $language): string
+    {
+        if(strtoupper($language) === 'EN'){
+            return $this->getTimePulseNameEnglish();
+        }
+        return $this->getTimePulseNameGerman();
+    }
+
     public function getShowRoomsOnHome(): string
     {
         return $this->extras['SHOWROOMSONHOME'] ?? 'normal';
@@ -654,6 +662,19 @@ class Portal implements \Serializable
     public function setShowTemplatesInRoomList(?bool $showTemplates): Portal
     {
         $this->extras['SHOW_TEMPLATE_IN_ROOM_LIST'] = $showTemplates ? 1 : -1;
+        return $this;
+    }
+
+    public function getSortRoomsBy(): string {
+        return $this->extras['SORTROOMSONHOME'] ?? 'activity';
+    }
+
+    public function setSortRoomsBy(?string $text): Portal
+    {
+        if ($text !== 'activity' && $text !== 'title') {
+            $text = 'activity';
+        }
+        $this->extras['SORTROOMSONHOME'] = $text;
         return $this;
     }
 

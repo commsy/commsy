@@ -101,14 +101,15 @@ abstract class BaseController extends AbstractController
         $this->eventDispatcher = $eventDispatcher;
     }
 
-
-    function __construct(
+    /**
+     * @required
+     * @param RoomService $service
+     */
+    public function setRoomService(
         RoomService $service
     ) {
         $this->roomService = $service;
     }
-
-
 
     /**
      * @param cs_room_item $room

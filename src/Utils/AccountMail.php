@@ -105,9 +105,8 @@ class AccountMail
 
         switch ($action) {
             case 'user-delete':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE', $user->getUserID(),
-                    $room->getTitle());
-
+                $mailText = $legacyTranslator->getEmailMessageInLang($this->legacyEnvironment->getUserLanguage(), 'MAIL_BODY_USER_ACCOUNT_DELETE');
+                $body .= $mailText;
                 break;
 
             case 'user-block':

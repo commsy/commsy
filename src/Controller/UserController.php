@@ -21,7 +21,6 @@ use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AccountMail;
 use App\Utils\MailAssistant;
-use App\Utils\RoomService;
 use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_room_item;
@@ -45,8 +44,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class UserController
@@ -54,11 +54,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class UserController extends BaseController
 {
-    private $userService;
+    private UserService $userService;
+    private SessionInterface $session;
 
-    public function __construct(RoomService $roomService, UserService $userService)
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
     {
-        parent::__construct($roomService);
+        $this->session = $session;
+    }
+
+    public function __construct(UserService $userService)
+    {
         $this->userService = $userService;
     }
 
@@ -364,9 +373,9 @@ class UserController extends BaseController
         // get user list from manager service
         if ($sort != "none") {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
-        } elseif ($this->get('session')->get('sortUsers')) {
+        } elseif ($this->session->get('sortUsers')) {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0,
-                $this->get('session')->get('sortUsers'));
+                $this->session->get('sortUsers'));
         } else {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, 'date');
         }
@@ -412,7 +421,8 @@ class UserController extends BaseController
         EventDispatcherInterface $eventDispatcher,
         Swift_Mailer $mailer,
         AccountMail $accountMail,
-        int $roomId
+        int $roomId,
+        RouterInterface $router
     ) {
         $room = $this->getRoom($roomId);
 
@@ -543,7 +553,7 @@ class UserController extends BaseController
                     }
 
                     if ($formData['inform_user']) {
-                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status']);
+                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status'], $router);
                     }
                     if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('app_user_detail', [
@@ -1402,8 +1412,16 @@ class UserController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    private function sendUserInfoMail(Swift_Mailer $mailer, AccountMail $accountMail, $userIds, $action)
-    {
+    private function sendUserInfoMail(
+        $userIds,
+        $action,
+        LegacyEnvironment $legacyEnvironment,
+        \Swift_Mailer $mailer,
+        RouterInterface $router
+    ) {
+
+        $accountMail = new AccountMail($legacyEnvironment, $router);
+
         $fromAddress = $this->getParameter('commsy.email.from');
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $fromSender = $this->legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
@@ -1509,7 +1527,7 @@ class UserController extends BaseController
         // get user list from manager service
         $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
 
-        $this->get('session')->set('sortUsers', $sort);
+        $this->session->set('sortUsers', $sort);
 
         $readerList = [];
         $allowedActions = [];

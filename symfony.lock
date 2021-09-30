@@ -2,9 +2,6 @@
     "behat/gherkin": {
         "version": "v4.6.1"
     },
-    "ci/restclientbundle": {
-        "version": "2.0.3"
-    },
     "codeception/codeception": {
         "version": "2.3",
         "recipe": {
@@ -244,9 +241,6 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
-    "idci/color-scheme-bundle": {
-        "version": "dev-master"
-    },
     "imagine/imagine": {
         "version": "1.2.3"
     },
@@ -363,6 +357,9 @@
     "ocramius/proxy-manager": {
         "version": "2.2.3"
     },
+    "ozdemirburak/iris": {
+        "version": "2.3.1"
+    },
     "pagerfanta/pagerfanta": {
         "version": "v1.1.0"
     },
@@ -392,6 +389,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.1.0"
+    },
+    "phpoffice/phpword": {
+        "version": "0.18.2"
     },
     "phpspec/prophecy": {
         "version": "v1.10.3"
@@ -448,6 +448,15 @@
     },
     "ruflin/elastica": {
         "version": "6.1.1"
+    },
+    "sabre/uri": {
+        "version": "2.2.1"
+    },
+    "sabre/vobject": {
+        "version": "4.3.5"
+    },
+    "sabre/xml": {
+        "version": "2.2.3"
     },
     "sebastian/cli-parser": {
         "version": "1.0.0"
@@ -508,6 +517,9 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "smalot/pdfparser": {
+        "version": "v1.1.0"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
