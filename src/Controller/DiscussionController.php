@@ -29,6 +29,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -43,6 +44,7 @@ class DiscussionController extends BaseController
      * @var DiscussionService
      */
     private DiscussionService $discussionService;
+    private SessionInterface $session;
 
     /**
      * @required
@@ -51,6 +53,16 @@ class DiscussionController extends BaseController
     public function setDiscussionService(DiscussionService $discussionService): void
     {
         $this->discussionService = $discussionService;
+    }
+
+
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
     }
 
 
@@ -101,7 +113,7 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         $discussions = $this->discussionService->getListDiscussions($roomId, $max, $start, $sort);
 
-        $this->get('session')->set('sortDiscussions', $sort);
+        $this->session->set('sortDiscussions', $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -230,9 +242,9 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         if ($sort != "none") {
             $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
-        } elseif ($this->get('session')->get('sortDates')) {
+        } elseif ($this->session->get('sortDates')) {
             $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0,
-                $this->get('session')->get('sortDiscussions'));
+                $this->session->get('sortDiscussions'));
         } else {
             $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, 'date');
         }

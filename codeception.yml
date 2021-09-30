@@ -1,10 +1,10 @@
 namespace: App\Tests
 paths:
     tests: tests
-    output: tests/_output
-    data: tests/_data
-    support: tests/_support
-    envs: tests/_envs
+    support: tests/_build/support
+    data: tests/_build/data
+    envs: tests/_build/envs
+    output: tests/_build/output
 
 actor_suffix: Tester
 

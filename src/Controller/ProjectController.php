@@ -401,20 +401,17 @@ class ProjectController extends AbstractController
         int $roomId,
         int $itemId
     ) {
+        $roomItem = $roomService->getRoomItem($itemId);
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $itemId);
+        }
 
-        $form = $this->createForm(DeleteType::class, [], [
+        $form = $this->createForm(DeleteType::class, $roomItem, [
             'confirm_string' => $this->translator->trans('delete', [], 'profile')
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // get room from RoomService
-            $roomItem = $roomService->getRoomItem($itemId);
-
-            if (!$roomItem) {
-                throw $this->createNotFoundException('No room found for id ' . $itemId);
-            }
-
             $roomItem->delete();
             $roomItem->save();
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Entity\ZzzRoom;
@@ -10,6 +11,7 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Repository\PortalRepository;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
@@ -26,6 +28,7 @@ use DateTimeImmutable;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +47,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RoomController extends AbstractController
 {
+    private \Swift_Mailer $mailer;
+
+    /**
+     * @required
+     * @param \Swift_Mailer $mailer
+     */
+    public function setMailer(\Swift_Mailer $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
     /**
      * @Route("/room/{roomId}", requirements={
      *     "roomId": "\d+"
@@ -346,7 +360,7 @@ class RoomController extends AbstractController
 
             $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
 
-            $this->get('mailer')->send($message);
+            $this->mailer->send($message);
 
             return new JsonResponse([
                 'message' => $translator->trans('message was send'),
@@ -372,20 +386,24 @@ class RoomController extends AbstractController
      * @param RoomService $roomService
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
+     * @param PortalRepository $portalRepository
      * @param int $roomId
      * @return array [type]           [description]
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function listAllAction(
         Request $request,
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
+        PortalRepository $portalRepository,
         int $roomId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
-        $showRooms = $portalItem->getShowRoomsOnHome();
+        $showRooms = $portal->getShowRoomsOnHome();
         switch ($showRooms) {
             case 'onlyprojectrooms':
                 $roomTypes = [CS_PROJECT_TYPE];
@@ -399,9 +417,9 @@ class RoomController extends AbstractController
         }
 
         $filterForm = $this->createForm(RoomFilterType::class, null, [
-            'showTime' => $portalItem->showTime(),
+            'showTime' => $portal->getShowTimePulses(),
             'timePulses' => $roomService->getTimePulses(),
-            'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
+            'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
         ]);
 
         $filterForm->handleRequest($request);
@@ -411,7 +429,7 @@ class RoomController extends AbstractController
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository(Room::class);
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -431,7 +449,7 @@ class RoomController extends AbstractController
         // to use the form validation below, instead of manually checking for a
         // specific value
         $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
-        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
+        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
         $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
         $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
@@ -464,7 +482,7 @@ class RoomController extends AbstractController
             if ($portalUser) {
                 if ($portalUser->isModerator()) {
                     $userMayCreateContext = true;
-                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                } else if ($portal->getCommunityRoomCreationStatus() == 'all' || $portal->getProjectRoomCreationStatus() == 'portal') {
                     $userMayCreateContext = $currentUser->isAllowedToCreateContext();
                 }
             }
@@ -474,6 +492,7 @@ class RoomController extends AbstractController
 
         return [
             'roomId' => $roomId,
+            'portal' => $portal,
             'form' => $filterForm->createView(),
             'itemsCountArray' => [
                 'count' => $count,
@@ -491,7 +510,9 @@ class RoomController extends AbstractController
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
      * @param UserRepository $userRepository
+     * @param PortalRepository $portalRepository
      * @param int $roomId
+     * @param string $sort
      * @param int $max
      * @param int $start
      * @return array
@@ -502,15 +523,16 @@ class RoomController extends AbstractController
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
         UserRepository $userRepository,
+        PortalRepository $portalRepository,
         int $roomId,
+        string $sort='activity',
         int $max = 10,
         int $start = 0
     ) {
         $legacyEnvironment = $environment->getEnvironment();
+        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $showRooms = $portalItem->getShowRoomsOnHome();
+        $showRooms = $portal->getShowRoomsOnHome();
         switch ($showRooms) {
             case 'onlyprojectrooms':
                 $roomTypes = [CS_PROJECT_TYPE];
@@ -532,7 +554,7 @@ class RoomController extends AbstractController
 
         // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository('App:Room');
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
 
@@ -540,9 +562,9 @@ class RoomController extends AbstractController
 
         if ($roomFilter) {
             $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
-                'showTime' => $portalItem->showTime(),
+                'showTime' => $portal->getShowTimePulses(),
                 'timePulses' => $roomService->getTimePulses(),
-                'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
+                'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
             ]);
 
             // manually bind values from the request
@@ -557,16 +579,15 @@ class RoomController extends AbstractController
         if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
             $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
-            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId(), $roomTypes);
+            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);
 
             if ($roomFilter) {
                 $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
-                    'showTime' => $portalItem->showTime(),
+                    'showTime' => $portal->getShowTimePulses(),
                     'timePulses' => $roomService->getTimePulses(),
-                    'timePulsesDisplayName' => ucfirst($portalItem->getCurrentTimeName()),
-
+                    'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
                 ]);
                 $filterForm->submit($roomFilter);
                 $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
@@ -613,7 +634,7 @@ class RoomController extends AbstractController
         }
         return [
             'roomId' => $roomId,
-            'portal' => $portalItem,
+            'portal' => $portal,
             'rooms' => $rooms,
             'projectsMemberStatus' => $projectsMemberStatus,
         ];
@@ -929,7 +950,7 @@ class RoomController extends AbstractController
 
                         $message->setBody($body, 'text/plain');
 
-                        $this->get('mailer')->send($message);
+                        $this->mailer->send($message);
 
                         $translator->setSelectedLanguage($savedLanguage);
                     }
@@ -989,7 +1010,7 @@ class RoomController extends AbstractController
                         ->setReplyTo([$contactModerator->getEmail() => $contactModerator->getFullName()])
                         ->setTo([$newUser->getEmail()]);
 
-                    $this->get('mailer')->send($message);
+                    $this->mailer->send($message);
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }

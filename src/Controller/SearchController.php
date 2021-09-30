@@ -58,12 +58,10 @@ class SearchController extends BaseController
 
     /**
      * SearchController constructor.
-     * @param RoomService $roomService
      * @param UrlGeneratorInterface $router
      */
-    public function __construct(RoomService $roomService, UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $router)
     {
-        parent::__construct($roomService);
         $this->router = $router;
     }
 

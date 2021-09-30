@@ -9,6 +9,7 @@ use cs_room_manager;
 use cs_user_item;
 use cs_user_manager;
 use DateTimeImmutable;
+use Doctrine\DBAL\Exception\DriverException;
 use Symfony\Component\Form\FormInterface;
 
 
@@ -173,8 +174,8 @@ class UserService
         $systemGroupAll = $groupList->getFirst();
 
         if ($systemGroupAll) {
+            // if a DriverException occurs, it should be investigated, why a user cannot be added to group all
             $systemGroupAll->addMember($user);
-
             return $systemGroupAll;
         }
 
@@ -320,7 +321,7 @@ class UserService
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings
-        if (!strtotime($user->getBirthday())) {
+        if (!is_null($user) && !strtotime($user->getBirthday())) {
             $user->setBirthday("");
         }
         return $user;
@@ -392,6 +393,14 @@ class UserService
      */
     public function getSearchableRooms(cs_user_item $userItem)
     {
+        // search all workspaces/rooms even if current room is archived
+        $wasArchived = false;
+        if ($this->legacyEnvironment->isArchiveMode()) {
+            $this->legacyEnvironment->toggleArchiveMode();
+            $wasArchived = true;
+        }
+
+
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
 
@@ -423,6 +432,11 @@ class UserService
         // add private room
         $privateRoomItem = $userItem->getOwnRoom();
         $searchableRoomList->add($privateRoomItem);
+
+        // restore archive setting after having collected searchable rooms
+        if($wasArchived) {
+            $this->legacyEnvironment->toggleArchiveMode();
+        }
 
         return $searchableRoomList->to_array();
     }

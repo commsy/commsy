@@ -44,12 +44,12 @@ class SwitchToUserVoter extends Voter
         /** @var Account $account */
         $account = $token->getUser();
 
-        /** @var \cs_user_item $portalUser */
-        $portalUser = $this->userService->getPortalUser($account);
-
         if (!$account instanceof UserInterface || !$subject instanceof UserInterface) {
             return false;
         }
+
+        /** @var \cs_user_item $portalUser */
+        $portalUser = $this->userService->getPortalUser($account);
 
         // check if the user is allowed to impersonate by flag
         if ($portalUser->getCanImpersonateAnotherUser()) {

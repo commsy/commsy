@@ -96,13 +96,19 @@ class LegacySubscriber implements EventSubscriberInterface
                     $contextUserList = $userManager->get();
 
                     if ($contextUserList->getCount() != 1) {
-                        throw new Exception("Mandatory unique user item not found!");
+                        /**
+                         * TODO: We still cannot throw an exception here, because of the avatar user image url
+                         * (requesting an project room image without membership from inside a community room)
+                         */
+                        //throw new AccessDeniedHttpException("Mandatory unique user item not found!");
+                    } else {
+                        $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
                     }
 
-                    $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
-
-                    //TODO: MAKE A PROPER FIX FOR THIS
-                    //  This fix was implemented as a workaround to get the right _current_user in the extension of cs_manager
+                    /**
+                     * TODO: MAKE A PROPER FIX FOR THIS
+                     * This fix was implemented as a workaround to get the right _current_user in the extension of cs_manager
+                     */
                     $this->legacyEnvironment->unsetAllInstancesExceptTranslator();
                 } else {
                     // guest

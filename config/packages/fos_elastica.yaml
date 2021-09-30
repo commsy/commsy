@@ -15,11 +15,9 @@ fos_elastica:
 
     indexes:
         commsy_announcement:
-            index_name: '%env(ELASTIC_INDEX)%'
+            index_name: '%env(ELASTIC_INDEX)%_announcement'
             client: default
-
             finder: ~
-
             settings:
                 analysis:
                     analyzer:
@@ -159,6 +157,7 @@ fos_elastica:
                         listener: ~
 
         commsy_date:
+            index_name: '%env(ELASTIC_INDEX)%_date'
             client: default
             finder: ~
             settings:
@@ -302,6 +301,7 @@ fos_elastica:
                         listener: ~
 
         commsy_discussion:
+            index_name: '%env(ELASTIC_INDEX)%_discussion'
             client: default
             finder: ~
             settings:
@@ -452,6 +452,7 @@ fos_elastica:
                         listener: ~
 
         commsy_label:
+            index_name: '%env(ELASTIC_INDEX)%_label'
             client: default
             finder: ~
             settings:
@@ -569,6 +570,7 @@ fos_elastica:
                         listener: ~
 
         commsy_room:
+            index_name: '%env(ELASTIC_INDEX)%_room'
             client: default
             finder: ~
             settings:
@@ -687,6 +689,7 @@ fos_elastica:
                         listener: ~
 
         commsy_todo:
+            index_name: '%env(ELASTIC_INDEX)%_todo'
             client: default
             finder: ~
             settings:
@@ -849,6 +852,7 @@ fos_elastica:
                         listener: ~
 
         commsy_user:
+            index_name: '%env(ELASTIC_INDEX)%_user'
             client: default
             finder: ~
             settings:
@@ -978,6 +982,7 @@ fos_elastica:
                         listener: ~
 
         commsy_material:
+            index_name: '%env(ELASTIC_INDEX)%_material'
             client: default
             finder: ~
             settings:

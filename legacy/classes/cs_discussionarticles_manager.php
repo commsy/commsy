@@ -413,15 +413,18 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      }
      $this->_current_article_modification_date = getCurrentDateTimeInMySQL();
      $this->_current_article_id = $discussionarticle_item->getItemID();
-     $query  = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET ';
+      $public = $this->returnQuerySentenceIfFieldIsValid(!$discussionarticle_item->isPrivateEditing(), 'public');
+
+      $query  = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET ';
      if ( $this->_update_with_changing_modification_information ) {
         $query .= 'modification_date="'.$this->_current_article_modification_date.'",';
      }
      $query .= 'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
                'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
                'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
-               'public="'.encode(AS_DB,!$discussionarticle_item->isPrivateEditing()).'"';
-     if ( $this->_update_with_changing_modification_information ) {
+                $public;
+      $query = rtrim($query, ',');
+      if ( $this->_update_with_changing_modification_information ) {
         $query .= ', modifier_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"';
      }
      $query .= ' WHERE item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'"';
@@ -465,6 +468,8 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      $current_datetime = getCurrentDateTimeInMySQL();
      $this->_current_article_modification_date = $current_datetime;
      $modificator = $discussionarticle_item->getModificatorItem();
+
+     $public = $this->returnQuerySentenceIfFieldIsValid(!$discussionarticle_item->isPrivateEditing(), 'public');
      $query = 'INSERT INTO '.$this->addDatabasePrefix('discussionarticles').' SET '.
               'item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$discussionarticle_item->getContextID()).'",'.
@@ -476,8 +481,10 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
               'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
               'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
-              'public="'.encode(AS_DB,!$discussionarticle_item->isPrivateEditing()).'"';
-     $discussionarticle_item->setCreationDate($current_datetime);
+               $public;
+      $query = rtrim($query, ',');
+
+      $discussionarticle_item->setCreationDate($current_datetime);
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');trigger_error('Problems creating discarticle.',E_USER_WARNING);

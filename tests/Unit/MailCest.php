@@ -6,7 +6,7 @@
  * Time: 14:36
  */
 
-namespace App\Tests;
+namespace App\Tests\Unit;
 
 use App\Mail\Messages\ItemDeletedMessage;
 use App\Mail\Recipient;
