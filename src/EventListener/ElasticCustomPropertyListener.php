@@ -6,6 +6,7 @@ use App\Search\DocumentConverter\DocumentConverter;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
+use cs_file_item;
 use cs_item;
 use cs_project_item;
 use FOS\ElasticaBundle\Event\TransformEvent;
@@ -13,7 +14,6 @@ use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class ElasticCustomPropertyListener
@@ -254,7 +254,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
             $files = $item->getFileList();
             if ($files->isNotEmpty()) {
 
-                /** @var \cs_file_item $file */
+                /** @var cs_file_item $file */
                 $file = $files->getFirst();
                 while ($file) {
                     if (!$file->isDeleted()) {
@@ -283,21 +283,20 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         if ($item) {
             $filesPlain = [];
             $files = $item->getFileList();
-            if ($files->isNotEmpty()) {
 
-                /** @var \cs_file_item $file */
-                $file = $files->getFirst();
-                while ($file) {
-                    if (!$file->isDeleted()) {
-                        $fileName = $this->projectDir . '/' . $file->getFilepath();
-                        $contentPlain = $this->file2TextService->convert($fileName);
-                        if (!empty($contentPlain)) {
-                            $filesPlain[] = $contentPlain;
-                        }
+            foreach ($files as $file) {
+                /** @var cs_file_item $file */
+                if (!$file->isDeleted()) {
+                    $fileName = $this->projectDir . '/' . $file->getFilepath();
+                    $contentPlain = $this->file2TextService->convert($fileName);
+                    if (!empty($contentPlain)) {
+                        // Ensure that the content is utf-8 encoded. This seems to be a problen only on production
+                        // server for now and not in the development environment for whatever reason.
+                        $filesPlain[] = mb_convert_encoding($contentPlain, 'UTF-8');
                     }
-                    $file = $files->getNext();
                 }
             }
+
             $event->getDocument()->set('filesRaw', $filesPlain);
         }
     }
@@ -307,7 +306,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     {
         $filesPlain = [];
 
-        /** @var \cs_file_item $file */
+        /** @var cs_file_item $file */
         foreach ($files as $file) {
             if (!$file->isDeleted()) {
                 $fileName = $this->projectDir . '/' . $file->getFilepath();
