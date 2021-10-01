@@ -55,45 +55,42 @@
                             {{ form_row(form.plainPassword.second) }}
                         </div>
 
-                        <div class="uk-margin-1-1">
-                            <label><input class="uk-checkbox" type="checkbox" name="checkbox1"> Ich akzeptiere die <a href="#modal_sign_up_tou" uk-toggle>Nutzungsbedingungen</a></label>
+                        {% if form.touAccept is defined %}
+                            {% do form.touAccept.setRendered %}
+                            <div class="uk-margin-1-1">
+                                {{ form_errors(form.touAccept) }}
+                                <label><input id="{{ form.touAccept.vars.id }}" class="uk-checkbox" type="checkbox" name="{{ form.touAccept.vars.full_name }}" required> {{ 'registration.terms_accept'|trans({}, 'registration') }} <a href="#modal_sign_up_tou" uk-toggle>{{ 'terms'|trans({}, 'portal') }}</a></label>
 
-                            <div id="modal_sign_up_tou" uk-modal>
-                                <div class="uk-modal-dialog">
-                                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                                <div id="modal_sign_up_tou" uk-modal>
+                                    <div class="uk-modal-dialog">
+                                        <button class="uk-modal-close-default" type="button" uk-close></button>
 
-                                    <div class="uk-modal-header">
-                                        <h2 class="uk-modal-title">Nutzungsbedingungen</h2>
-                                    </div>
+                                        <div class="uk-modal-header">
+                                            <h2 class="uk-modal-title">{{ 'terms'|trans({}, 'portal') }}</h2>
+                                        </div>
 
-                                    <div class="uk-modal-body" uk-overflow-auto>
+                                        <div class="uk-modal-body" uk-overflow-auto>
 
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                            <div>{{ 'last changed'|trans()|capitalize }}: {{ portal.aGBChangeDate|craue_datetime }}</div>
 
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                            <blockquote>
+                                                <header class="uk-text-small">{{ 'Translation german'|trans({}, 'translation') }}</header>
+                                                <p>{{ portal.termsGerman|raw }}</p>
+                                            </blockquote>
+                                            <blockquote>
+                                                <header class="uk-text-small">{{ 'Translation english'|trans({}, 'translation') }}</header>
+                                                <p>{{ portal.termsEnglish|raw }}</p>
+                                            </blockquote>
 
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                        </div>
 
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                    </div>
-
-                                    <div class="uk-modal-footer uk-text-right">
-                                        <button class="uk-button uk-button-primary uk-modal-close" type="button">Close</button>
+                                        <div class="uk-modal-footer uk-text-right">
+                                            <button class="uk-button uk-button-primary uk-modal-close" type="button">{{ 'Close'|trans({}, 'messages') }}</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
 
                         <div class="uk-width-1-2">
                             {{ form_row(form.submit) }}

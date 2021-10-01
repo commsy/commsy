@@ -62,6 +62,7 @@ class AccountController extends AbstractController
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param AccountCreatorFacade $accountFacade
      * @param LegacyEnvironment $legacyEnvironment
+     * @param TranslatorInterface $translator
      * @param InvitationsService $invitationsService
      * @return array|Response
      */
@@ -71,6 +72,7 @@ class AccountController extends AbstractController
         UserPasswordEncoderInterface $passwordEncoder,
         AccountCreatorFacade $accountFacade,
         LegacyEnvironment $legacyEnvironment,
+        TranslatorInterface $translator,
         InvitationsService $invitationsService,
         UserService $userService
     ) {
@@ -88,10 +90,11 @@ class AccountController extends AbstractController
 
         // deny access if self registration is only available by invitation and the
         // provided token is invalid
+        $isTokenInvalid = false;
         $token = $request->query->get('token', '');
         if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
             if (!$invitationsService->confirmInvitationCode($localAuthSource, $token)) {
-                throw $this->createAccessDeniedException('Self-Registration token is invalid.');
+                $isTokenInvalid = true;
             }
         }
 
@@ -101,9 +104,15 @@ class AccountController extends AbstractController
         $account->setAuthSource($localAuthSource);
         $account->setContextId($portal->getId());
 
-        $form = $this->createForm(SignUpFormType::class, $account);
+        $form = $this->createForm(SignUpFormType::class, $account, [
+            'portal' => $portal,
+        ]);
 
         $form->handleRequest($request);
+        if ($isTokenInvalid) {
+            $form->addError(new FormError($translator->trans('token invalid', [], 'form')));
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_login', [
