@@ -4,7 +4,7 @@
 namespace App\Search\DocumentConverter;
 
 
-use PhpOffice\PhpWord\Exception\Exception;
+use Exception;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\Writer\HTML;
 
@@ -21,23 +21,23 @@ class WordConverter extends AbstractDocumentConverter
         $word = null;
         $fileArray = pathinfo($completeFilePath);
         $fileExtension = $fileArray['extension'];
-        if ($fileExtension == "doc" || $fileExtension == "docx") {
-            if ($fileExtension == "doc") {
-                $word = IOFactory::load($completeFilePath, 'MsDoc');
-            } else {
-                $word = IOFactory::load($completeFilePath);
-            }
-        }
 
         /** @var HTML $htmlWriter */
         try {
+            if ($fileExtension == "doc" || $fileExtension == "docx") {
+                if ($fileExtension == "doc") {
+                    $word = IOFactory::load($completeFilePath, 'MsDoc');
+                } else {
+                    $word = IOFactory::load($completeFilePath);
+                }
+            }
+
             $htmlWriter = IOFactory::createWriter($word, 'HTML');
             $content = $htmlWriter->getWriterPart('Body')->write();
 
             return strip_tags($content);
         } catch (Exception $e) {
+            return null;
         }
-
-        return null;
     }
 }
