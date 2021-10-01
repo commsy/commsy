@@ -645,6 +645,15 @@ class MenuBuilder
 
             if (!$inPrivateRoom) {
                 if ($currentUser) {
+                    $menu->addChild('', ['uri' => '#']);
+                    $menu->addChild('room_profile', [
+                        'label' => 'Room profile',
+                        'route' => 'app_profile_general',
+                        'routeParameters' => ['roomId' => $roomId, 'itemId' => $currentUser->getItemID()],
+                        'extras' => ['icon' => 'uk-icon-street-view uk-icon-small'],
+                    ])
+                    ->setExtra('translation_domain', 'menu');
+
                     if ($this->authorizationChecker->isGranted('MODERATOR')) {
                         $menu->addChild(' ', ['uri' => '#']);
                         $menu->addChild('room_configuration', array(
