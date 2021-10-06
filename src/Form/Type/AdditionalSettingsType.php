@@ -1,37 +1,22 @@
 <?php
 namespace App\Form\Type;
 
-use Doctrine\ORM\EntityManagerInterface;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
-
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
-
-use App\Services\LegacyEnvironment;
 
 class AdditionalSettingsType extends AbstractType
 {
-    private $em;
-    private $legacyEnvironment;
-
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
-    {
-        $this->em = $em;
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
-
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.

@@ -62,11 +62,6 @@ Icon
 ######################
 # CommSy related     #
 ######################
-etc/cs_config.php
-legacy/etc/cs_config.php
-etc/commsy/*.php
-legacy/etc/commsy/*.php
-
 files/[0-9]*
 files/templates/individual/*
 files/temp/*
@@ -80,10 +75,6 @@ external_pages/[0-9]*
 !.babelrc
 !.env
 !.env.test
-
-wikis/*
-
-mediawiki/*
 
 ###> symfony/framework-bundle ###
 /.env.local
