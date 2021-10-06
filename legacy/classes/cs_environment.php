@@ -965,25 +965,26 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_label_manager');
    }
 
-  /** get instance of cs_topic_manager
-   *
-   * @return cs_topic_manager
-   * @access public
-   */
-   function getTopicManager() {
-      if ( !$this->isArchiveMode() ) {
-         if (!isset($this->instance['topic_manager'])) {
-            $topic_manager = $this->_getInstance('cs_topic_manager');
-            $topic_manager->resetLimits();
-            $this->instance['topic_manager'] = $topic_manager;
-         } else {
-            #$this->instance['topic_manager']->resetLimits();
-         }
-         return $this->instance['topic_manager'];
-      } else {
-         return $this->getZzzTopicManager();
-      }
-   }
+    /** get instance of cs_topic_manager
+     *
+     * @return cs_topic_manager
+     * @access public
+     */
+    public function getTopicManager(): cs_topic_manager
+    {
+        if (!$this->isArchiveMode()) {
+            if (!isset($this->instance['topic_manager'])) {
+                $topic_manager = $this->_getInstance('cs_topic_manager');
+                $topic_manager->resetLimits();
+                $this->instance['topic_manager'] = $topic_manager;
+            } else {
+                #$this->instance['topic_manager']->resetLimits();
+            }
+            return $this->instance['topic_manager'];
+        } else {
+            return $this->getZzzTopicManager();
+        }
+    }
 
   /** get instance of cs_zzz_topic_manager
    *
@@ -1326,18 +1327,19 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_reader_manager');
    }
 
-  /** get instance of cs_noticed_manager
-   *
-   * @return cs_noticed_manager
-   * @access public
-   */
-   function getNoticedManager() {
-      if ( !$this->isArchiveMode() ) {
-         return $this->_getInstance('cs_noticed_manager');
-      } else {
-         return $this->getZzzNoticedManager();
-      }
-   }
+    /** get instance of cs_noticed_manager
+     *
+     * @return cs_noticed_manager
+     * @access public
+     */
+    public function getNoticedManager(): cs_noticed_manager
+    {
+        if (!$this->isArchiveMode()) {
+            return $this->_getInstance('cs_noticed_manager');
+        } else {
+            return $this->getZzzNoticedManager();
+        }
+    }
 
   /** get instance of cs_zzz_noticed_manager
    *

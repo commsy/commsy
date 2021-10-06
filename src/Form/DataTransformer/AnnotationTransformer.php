@@ -1,19 +1,9 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
-
 class AnnotationTransformer extends AbstractTransformer
 {
     protected $entity = 'annotation';
-
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
 
     /**
      * Transforms a cs_material_item object to an array

@@ -1,20 +1,11 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class GroupTransformer extends AbstractTransformer
 {
     protected $entity = 'group';
-
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
 
     /**
      * Transforms a cs_group_item object to an array

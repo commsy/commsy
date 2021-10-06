@@ -4,6 +4,7 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
 use cs_room_item;
 use DateTimeImmutable;
 
@@ -11,12 +12,14 @@ class AdditionalSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'additional_settings';
 
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
+    public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
     }
 
     /**

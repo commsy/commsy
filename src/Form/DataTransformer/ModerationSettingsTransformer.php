@@ -1,19 +1,26 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Utils\RoomService;
-use App\Utils\UserService;
 use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
+use App\Utils\RoomService;
+use cs_environment;
 use cs_room_item;
 
-class ModerationSettingsTransformer  extends AbstractTransformer
+class ModerationSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'moderation_settings';
 
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
+    /**
+     * @var RoomService
+     */
+    private RoomService $roomService;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;

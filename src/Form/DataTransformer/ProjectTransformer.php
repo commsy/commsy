@@ -1,19 +1,9 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
-
 class ProjectTransformer extends AbstractTransformer
 {
     protected $entity = 'project';
-
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
 
     /**
      * Transforms a cs_project_item object to an array

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Unit;
 
+use App\Form\DataTransformer\MaterialTransformer;
 use App\Tests\UnitTester;
 
 
@@ -24,7 +25,7 @@ class TransformerCest
 
         $I->assertInstanceOf(\cs_section_item::class, $section);
 
-        $msTransformer = $I->grabService('commsy_legacy.transformer.material');
+        $msTransformer = $I->grabService(MaterialTransformer::class);
         $dataArray = $msTransformer->transform($section);
 
         $I->assertNotEmpty($dataArray);

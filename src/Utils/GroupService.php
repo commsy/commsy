@@ -2,21 +2,20 @@
 
 namespace App\Utils;
 
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
+use cs_group_manager;
+use Symfony\Component\Form\Form;
 
 class GroupService
 {
-    private $legacyEnvironment;
-
-    private $groupManager;
+    /**
+     * @var cs_group_manager
+     */
+    private cs_group_manager $groupManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
-
-        $this->groupManager = $this->legacyEnvironment->getEnvironment()->getGroupManager();
+        $this->groupManager = $legacyEnvironment->getEnvironment()->getGroupManager();
         $this->groupManager->reset();
     }
 
@@ -25,7 +24,6 @@ class GroupService
     {
         $this->groupManager->setContextLimit($roomId);
         $this->groupManager->select();
-        $countGroup = array();
         $countGroupArray['count'] = sizeof($this->groupManager->get()->to_array());
         $this->groupManager->resetLimits();
         $this->groupManager->select();
@@ -37,8 +35,7 @@ class GroupService
 
     public function getGroup($itemId)
     {
-        $group = $this->groupManager->getItem($itemId);
-        return $group;
+        return $this->groupManager->getItem($itemId);
     }
 
     /**

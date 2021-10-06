@@ -3,6 +3,7 @@
 namespace App\Tests\Unit;
 
 use App\Tests\UnitTester;
+use App\Utils\GroupService;
 
 
 class ActionsCest
@@ -106,8 +107,8 @@ class ActionsCest
         $legacyEnvironment->setCurrentContextID($projectRoom->getItemID());
         $legacyEnvironment->setCurrentUser($roomModerator);
 
-        /** @var \App\Utils\GroupService $groupService */
-        $groupService = $I->grabService('commsy_legacy.group_service');
+        /** @var GroupService $groupService */
+        $groupService = $I->grabService(GroupService::class);
         $group = $groupService->getNewGroup();
         $group->save();
 
