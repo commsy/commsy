@@ -1182,23 +1182,25 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_myroom_manager');
    }
 
-  /** get instance of cs_log_manager
-   *
-   * @return cs_log_manager
-   * @access public
-   */
-   function getLogManager() {
-      return $this->_getInstance('cs_log_manager');
-   }
+    /** get instance of cs_log_manager
+     *
+     * @return cs_log_manager
+     * @access public
+     */
+    public function getLogManager(): cs_log_manager
+    {
+        return $this->_getInstance('cs_log_manager');
+    }
 
-  /** get instance of cs_log_manager
-   *
-   * @return cs_log_manager
-   * @access public
-   */
-   function getLogArchiveManager() {
-      return $this->_getInstance('cs_log_archive_manager');
-   }
+    /** get instance of cs_log_manager
+     *
+     * @return cs_log_archive_manager
+     * @access public
+     */
+    public function getLogArchiveManager(): cs_log_archive_manager
+    {
+        return $this->_getInstance('cs_log_archive_manager');
+    }
 
   /** get instance of cs_log_error_manager
    *

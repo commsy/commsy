@@ -207,7 +207,7 @@ class cs_tag2tag_manager extends cs_manager {
   function delete ($father_id, $child_id = null) {
      include_once('functions/date_functions.php');
      $current_datetime = getCurrentDateTimeInMySQL();
-     $user_id = $this->_current_user->getItemID();
+     $user_id = $this->_current_user->getItemID() ?: 0;
      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
@@ -227,7 +227,7 @@ class cs_tag2tag_manager extends cs_manager {
 
      include_once('functions/date_functions.php');
      $current_datetime = getCurrentDateTimeInMySQL();
-     $user_id = $this->_current_user->getItemID();
+     $user_id = $this->_current_user->getItemID() ?: 0;
      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
@@ -248,7 +248,7 @@ class cs_tag2tag_manager extends cs_manager {
 
       include_once('functions/date_functions.php');
       $current_datetime = getCurrentDateTimeInMySQL();
-      $user_id = $this->_current_user->getItemID();
+      $user_id = $this->_current_user->getItemID() ?: 0;
       $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
@@ -269,7 +269,7 @@ class cs_tag2tag_manager extends cs_manager {
 
       include_once('functions/date_functions.php');
       $current_datetime = getCurrentDateTimeInMySQL();
-      $user_id = $this->_current_user->getItemID();
+      $user_id = $this->_current_user->getItemID() ?: 0;
       $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.

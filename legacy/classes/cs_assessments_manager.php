@@ -48,7 +48,7 @@ class cs_assessments_manager extends cs_manager {
   }
 
   function _buildItem ($data_array) {
-      return parent::_buildItem($db_array);
+      return parent::_buildItem($data_array);
   }
 
    public function setCacheOff () {
@@ -312,7 +312,7 @@ class cs_assessments_manager extends cs_manager {
 
   function delete($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
-     $user_id = $this->_current_user->getItemID();
+     $user_id = $this->_current_user->getItemID() ?: 0;
      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.

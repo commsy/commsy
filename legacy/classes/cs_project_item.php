@@ -298,13 +298,6 @@ class cs_project_item extends cs_room_item {
             $this->_changed_room_link = false;
          }
          $this->generateLayoutImages();
-
-         // sync count room redundancy
-         $current_portal_item = $this->getContextItem();
-         if ( $current_portal_item->isCountRoomRedundancy() ) {
-            $current_portal_item->syncCountProjectRoomRedundancy(true);
-         }
-         unset($current_portal_item);
       }
 
       else {
@@ -409,13 +402,6 @@ class cs_project_item extends cs_room_item {
             unset($id_manager);
         }
 
-        // sync count room redundancy
-        $current_portal_item = $this->getContextItem();
-        if ($current_portal_item->isCountRoomRedundancy()) {
-            $current_portal_item->syncCountProjectRoomRedundancy(true);
-        }
-        unset($current_portal_item);
-
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_room.room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
@@ -451,14 +437,6 @@ class cs_project_item extends cs_room_item {
             $com_item = $com_list->getNext();
          }
       }
-      unset($com_list);
-
-      // sync count room redundancy
-      $current_portal_item = $this->getContextItem();
-      if ( $current_portal_item->isCountRoomRedundancy() ) {
-         $current_portal_item->syncCountProjectRoomRedundancy(true);
-      }
-      unset($current_portal_item);
    }
 
    function setRoomContext ($value) {
@@ -654,42 +632,6 @@ class cs_project_item extends cs_room_item {
       }
       return $access;
    }
-
-   #########################################################
-   # COMMSY CRON JOBS
-   #
-   # this cron jobs only works if a daily cron job is
-   # configured to run cron.php in /htdocs
-   #########################################################
-
-   function _cronDaily () {
-      // you can link daily cron jobs here like this
-      // $cron_array[] = $this->_sendEmailNewsLetter();
-      $cron_array   = array();
-      #$cron_array[] = $this->_cleanLinksToGroupAll();
-
-      $father_cron_array = parent::_cronDaily();
-      $cron_array = array_merge($father_cron_array,$cron_array);
-
-      return $cron_array;
-   }
-
-   /** cron weekly, INTERNAL
-    * here you can link weekly cron jobs
-    *
-    * @return array results of running crons
-    */
-   function _cronWeekly () {
-      // you can link daily cron jobs here like this
-      // $cron_array[] = $this->_CRON_METHOD();
-      $cron_array = array();
-
-      return $cron_array;
-   }
-
-   #########################################################
-   # COMMSY CRON JOBS - END
-   #########################################################
 
    function getUsageInfoTextForRubric($rubric){
       $funct = $this->_environment->getCurrentFunction();

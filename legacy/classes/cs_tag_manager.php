@@ -736,7 +736,7 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
   function delete ($item_id, $deleteTag2TagRecursive = true) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
-     $user_id = $current_user->getItemID();
+     $user_id = $current_user->getItemID() ?: 0;
      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.

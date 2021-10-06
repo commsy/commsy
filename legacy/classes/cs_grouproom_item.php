@@ -146,13 +146,6 @@ class cs_grouproom_item extends cs_room_item {
          // send mail to moderation
          $this->_sendMailRoomOpen();
          $this->generateLayoutImages();
-
-         // sync count room redundancy
-         $current_portal_item = $this->getContextItem();
-         if ( $current_portal_item->isCountRoomRedundancy() ) {
-            $current_portal_item->syncCountGroupRoomRedundancy(true);
-         }
-         unset($current_portal_item);
       }
 
       else {
@@ -214,13 +207,6 @@ class cs_grouproom_item extends cs_room_item {
       $manager = $this->_environment->getProjectManager();
       $this->_delete($manager);
 
-      // sync count room redundancy
-      $current_portal_item = $this->getContextItem();
-      if ( $current_portal_item->isCountRoomRedundancy() ) {
-         $current_portal_item->syncCountGroupRoomRedundancy(true);
-      }
-      unset($current_portal_item);
-
       // detach grouproom from group
       $group = $this->getLinkedGroupItem();
       $group->unsetGroupRoomActive();
@@ -244,13 +230,6 @@ class cs_grouproom_item extends cs_room_item {
 
       // send mail to moderation
       $this->_sendMailRoomUnDelete();
-
-      // sync count room redundancy
-      $current_portal_item = $this->getContextItem();
-      if ( $current_portal_item->isCountRoomRedundancy() ) {
-         $current_portal_item->syncCountGroupRoomRedundancy(true);
-      }
-      unset($current_portal_item);
    }
 
    public function setRoomContext ($value) {

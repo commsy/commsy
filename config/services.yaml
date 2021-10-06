@@ -167,17 +167,15 @@ services:
         autoconfigure: false
         tags:
             - 'doctrine.fixture.orm'
+
     _instanceof:
         App\Search\DocumentConverter\DocumentConverterInterface:
             tags: ['app.document_converter']
         App\Form\DataTransformer\DataTransformerInterface:
             tags: [ 'app.data_transformer' ]
+        App\Cron\Tasks\CronTaskInterface:
+            tags: [ 'app.cron_task' ]
 
-
-
-###############################
-## Commsy\LegacyBundle
-###############################
     # Event subscriber
     App\EventSubscriber\KernelSubscriber:
         tags:
@@ -247,10 +245,6 @@ services:
 
     commsy_legacy.group_service:
         class: App\Utils\GroupService
-        arguments: ['@commsy_legacy.environment']
-
-    commsy_legacy.institution_service:
-        class: App\Utils\InstitutionService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.topic_service:
@@ -398,9 +392,6 @@ services:
         class: App\Form\DataTransformer\PortfolioTransformer
         arguments: ['@commsy_legacy.environment']
 
-###############################
-## CommsyBundle
-###############################
     # Filter types
     commsy.filter.rubric:
         class: App\Filter\RubricFilterType
@@ -609,6 +600,12 @@ services:
         class: App\Form\DataTransformer\TransformerManager
         arguments:
             - !tagged 'app.data_transformer'
+
+    App\Cron\CronManager:
+        class: App\Cron\CronManager
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $cronTasks: !tagged_iterator app.cron_task
 
     App\Search\SearchManager:
         autowire: false
@@ -924,13 +921,6 @@ services:
             $from: '%commsy.email.from%'
 
     # Commands
-    App\Command\CronCommand:
-        autowire: true
-        autoconfigure: true
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-            $emailFrom: '%commsy.email.from%'
-
     App\Command\EmailUploadCommand:
         autowire: true
         autoconfigure: true
@@ -1235,9 +1225,6 @@ services:
             # If you get transaction issues (e.g. after login) uncomment the line below
             - { lock_mode: 1 }
 
-###############################
-## CommsyMediawikiBundle
-###############################
     App\Services\MediawikiService:
         arguments:
             $apiUrl: '%commsy.mediawiki.apiUrl%'
@@ -1246,9 +1233,6 @@ services:
             $accessToken: '%commsy.mediawiki.accessToken%'
             $accessSecret: '%commsy.mediawiki.accessSecret%'
 
-###############################
-## Craue\TwigExtensionsBundle
-###############################
     # FormatDateTimeExtension
     Craue\TwigExtensionsBundle\Twig\Extension\FormatDateTimeExtension:
         alias: twig.extension.craue_formatDateTime
