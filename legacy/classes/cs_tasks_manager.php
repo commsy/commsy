@@ -355,7 +355,7 @@ class cs_tasks_manager extends cs_manager {
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
-     $user_id = $current_user->getItemID();
+     $user_id = $current_user->getItemID() ?: 0;
      unset($current_user);
      $query = 'UPDATE '.$this->addDatabasePrefix('tasks').' SET '.
               'deletion_date="'.$current_datetime.'",'.

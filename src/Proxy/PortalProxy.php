@@ -71,11 +71,6 @@ class PortalProxy
         return $retour;
     }
 
-    public function isCountRoomRedundancy(): bool
-    {
-        return false;
-    }
-
     public function getType(): string
     {
         return 'portal';

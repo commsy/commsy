@@ -1141,7 +1141,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
   function delete ($material_id, $version_id = NULL) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
-     $user_id = $current_user->getItemID();
+     $user_id = $current_user->getItemID() ?: 0;
      if ( !isset($current_user) ) {
         include_once('functions/error_functions.php');
         trigger_error('Problems deleting material: Deleter is not set',E_USER_ERROR);

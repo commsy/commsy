@@ -1202,7 +1202,7 @@ class cs_item_manager extends cs_manager {
      $result1 = array();
      $result1 = $this->_db_connector->performQuery($query1);
      if (!isset($result1)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query1.'"',E_USER_WARNING);
      }
      $query2 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id,'.$this->addDatabasePrefix('noticed').'.read_date,'.$this->addDatabasePrefix('noticed').'.user_id FROM '.$this->addDatabasePrefix('items');
      $query2 .= ' INNER JOIN '.$this->addDatabasePrefix('noticed').' ON '.$this->addDatabasePrefix('noticed').'.item_id = '.$this->addDatabasePrefix('items').'.item_id';
@@ -1214,7 +1214,7 @@ class cs_item_manager extends cs_manager {
      $r2 = array();
      $r2 = $this->_db_connector->performQuery($query2);
      if (!isset($r2)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query2.'"',E_USER_WARNING);
      }
      $result2 = array();
      $read_date_array = array();
@@ -1374,11 +1374,9 @@ class cs_item_manager extends cs_manager {
 
     public function getAllDraftItems()
     {
-        $result = array();
         $query = 'SELECT * FROM '.$this->addDatabasePrefix('items').' WHERE draft = 1 AND deletion_date IS NULL AND deleter_id IS NULL;';
         $result = $this->_db_connector->performQuery($query);
 
         return $result;
     }
 }
-?>

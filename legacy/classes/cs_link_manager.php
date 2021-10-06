@@ -760,7 +760,7 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
-     $user_id = $current_user->getItemID();
+     $user_id = $current_user->getItemID() ?: 0;
      $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
@@ -779,9 +779,11 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
   }
 
   function deleteAllLinkItemsInCommunityRoom($item_id,$context_id){
+      $current_user = $this->_environment->getCurrentUserItem();
+      $user_id = $current_user->getItemID() ?: 0;
      $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
-              'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
+              'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE (first_item_id="'.encode(AS_DB,$item_id).'"';
      $query .= ' OR second_item_id="'.encode(AS_DB,$item_id).'"';
      $query .= ')';
@@ -1144,40 +1146,6 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
      // reset cache
      $this->_resetCache();
   }
-
-   public function deleteUnneededLinkItems ( $context_id ) {
-      $retour = NULL;
-      $id_array = array();
-
-      $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id AS item_id FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.first_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
-      $result = $this->_db_connector->performQuery($sql1);
-      if ( !empty($result) ) {
-         foreach ( $result as $row ) {
-            $id_array[] = $row['item_id'];
-         }
-      }
-
-      $sql2 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.second_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
-      $result = $this->_db_connector->performQuery($sql2);
-      if ( !empty($result) ) {
-         foreach ( $result as $row ) {
-            $id_array[] = $row['item_id'];
-         }
-      }
-
-      $id_array = array_unique($id_array);
-      if ( !empty($id_array) ) {
-         $sql3 = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE item_id IN ('.implode(',',$id_array).');';
-         $result = $this->_db_connector->performQuery($sql3);
-         $sql3 = 'DELETE FROM '.$this->addDatabasePrefix('items').' WHERE item_id IN ('.implode(',',$id_array).');';
-         $result = $this->_db_connector->performQuery($sql3);
-         $retour = count($id_array);
-      } else {
-         $retour = 0;
-      }
-
-      return $retour;
-   }
 
   /** get a link item
     *

@@ -413,7 +413,7 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
     */
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
-     $user_id = $this->_current_user->getItemID();
+     $user_id = $this->_current_user->getItemID() ?: 0;
      $query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.

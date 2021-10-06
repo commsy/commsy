@@ -1089,38 +1089,6 @@ class cs_links_manager extends cs_manager {
       }
    }
 
-   public function deleteUnneededLinks ( $context_id ) {
-      $retour = NULL;
-      $rows = array();
-
-      $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.to_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
-      $result = $this->_db_connector->performQuery($sql1);
-      if ( !empty($result) ) {
-         foreach ( $result as $row ) {
-            $rows[] = $row;
-         }
-      }
-
-      $sql2 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.from_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
-      $result = $this->_db_connector->performQuery($sql2);
-      if ( !empty($result) ) {
-         foreach ( $result as $row ) {
-            $rows[] = $row;
-         }
-      }
-      
-      if ( !empty($rows) ) {
-         foreach ( $rows as $row ) {
-            $sql3 = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE to_item_id="'.$row['to_item_id'].'" AND to_version_id="'.$row['to_version_id'].'" AND from_item_id="'.$row['from_item_id'].'" AND from_version_id="'.$row['from_version_id'].'";';
-            $result = $this->_db_connector->performQuery($sql3);
-         }
-         $retour = count($rows);
-      } else {
-         $retour = 0;
-      }
-      return $retour;
-   }
-
    public function getAsXMLForFlash () {
       $retour = '';
       $array = $this->_performQuery();

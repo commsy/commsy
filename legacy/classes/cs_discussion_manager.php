@@ -591,7 +591,7 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
    function delete ($item_id) {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
-      $user_id = $current_user->getItemID();
+      $user_id = $current_user->getItemID() ?: 0;
       $query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
