@@ -2,34 +2,31 @@
 namespace App\Form\Type;
 
 use App\Form\Type\Custom\Select2ChoiceType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-
-use App\Services\LegacyEnvironment;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class GeneralSettingsType extends AbstractType
 {
-    private $em;
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $roomItem;
-
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -44,7 +41,7 @@ class GeneralSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        $this->roomItem = $roomManager->getItem($options['roomId']);
+        $roomItem = $roomManager->getItem($options['roomId']);
 
         $builder
             ->add('title', TextType::class, array(
@@ -131,12 +128,12 @@ class GeneralSettingsType extends AbstractType
 
         // some form fields depend on the underlying data, so we delegate
         // the creation to an event listener
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event){
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($roomItem) {
             $form = $event->getForm();
 
             // check if the room is a community room and
             // add form fields for this case
-            if ($this->roomItem->isCommunityRoom()) {
+            if ($roomItem->isCommunityRoom()) {
                 $form
                     ->add('open_for_guest', CheckboxType::class, array(
                         'label' => 'Is this room open for guests?',
@@ -157,7 +154,7 @@ class GeneralSettingsType extends AbstractType
             }
 
             // check if the room is a project room
-            if ($this->roomItem->isProjectRoom()) {
+            if ($roomItem->isProjectRoom()) {
                 $choices = $this->getAssignableCommunityRoom();
 
                 if (!empty($choices)) {
@@ -185,7 +182,7 @@ class GeneralSettingsType extends AbstractType
             // check if time intervals are active in portal
             $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
             if ($portalItem->showTime() &&
-                ($this->roomItem->isProjectRoom() || $this->roomItem->isGroupRoom()))
+                ($roomItem->isProjectRoom() || $roomItem->isGroupRoom()))
             {
                 $form
                     ->add('time_pulses', Select2ChoiceType::class, [
@@ -269,38 +266,10 @@ class GeneralSettingsType extends AbstractType
     {
         $results = array();
 
-        // query all community rooms
-        //$repository = $this->em->getRepository('App:room');
-        // $query = $repository->createQueryBuilder('r')
-        //     ->andWhere('r.type = :type')
-        //     ->setParameter('type', 'community')
-        //     ->getQuery();
-        // $communityRooms = $query->getResult();
-        
         $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $communityList = $currentPortal->getCommunityList();
-
-        // iterate all community rooms and check if assignment is only allowed for members
-        // $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        // $userManager = $this->legacyEnvironment->getUserManager();
-        // $results = array();
-        // foreach ($communityRooms as $communityRoom) {
-        //     if ($communityRoom->isAssignmentRestricted()) {
-        //         $isUser = $userManager->isUserInContext(
-        //             $currentUser->getUserID(),
-        //             $communityRoom->getItemId(),
-        //             $currentUser->getAuthSource()
-        //         );
-
-        //         if (!$isUser) {
-        //             continue;
-        //         }
-        //     }
-
-        //     $results[] = $communityRoom;
-        // }
         if ($communityList->isNotEmpty()) {
             $communityItem = $communityList->getFirst();
             while ($communityItem) {

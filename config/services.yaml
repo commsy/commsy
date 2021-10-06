@@ -530,40 +530,9 @@ services:
         autoconfigure: true
 
     # Form types
-    commsy.form.type.general_settings:
-        class: App\Form\Type\GeneralSettingsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.settings.moderation:
-        class: App\Form\Type\ModerationSettingsType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.settings.additional:
-        class: App\Form\Type\AdditionalSettingsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.settings.appearance:
-        class: App\Form\Type\AppearanceSettingsType
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: form.type }
-
     App\Form\Type\ExtensionSettingsType:
         arguments:
             $mediaWikiEnabled: '%commsy.mediawiki.enabled%'
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.settings.invitations:
-        class: App\Form\Type\InvitationsSettingsType
-        arguments:
-            - '@commsy_legacy.environment'
         tags:
             - { name: form.type }
 
@@ -572,153 +541,6 @@ services:
         arguments: ['@commsy.etherpad_form_listener']
         tags:
             - { name: form.type }
-
-    commsy.form.type.announcement:
-        class: App\Form\Type\AnnouncementType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.itemDescription:
-        class: App\Form\Type\ItemDescriptionType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.itemWorkflow:
-        class: App\Form\Type\ItemWorkflowType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.itemLinks:
-        class: App\Form\Type\ItemLinksType
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.section:
-        class: App\Form\Type\SectionType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.upload:
-        class: App\Form\Type\UploadType
-        arguments: ['@translator']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.treechoice:
-        class: App\Form\Type\TreeChoiceType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.hashtag:
-        class: App\Form\Type\HashtagType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.category:
-        class: App\Form\Type\CategoryType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.annotation:
-        class: App\Form\Type\AnnotationType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.send:
-        class: App\Form\Type\SendType
-        arguments: ['@commsy.utils.mail_assistant']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.user_send:
-        class: App\Form\Type\UserSendType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.sendList:
-        class: App\Form\Type\SendListType
-        arguments: ['@commsy.utils.mail_assistant']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.date:
-        class: App\Form\Type\DateType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.datedetails:
-        class: App\Form\Type\DateDetailsType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.dateimport:
-        class: App\Form\Type\DateImportType
-        arguments: ['@translator']
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.group:
-        class: App\Form\Type\GroupType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.topic:
-        class: App\Form\Type\TopicType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.topicpath:
-        class: App\Form\Type\TopicPathType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.discussion:
-        class: App\Form\Type\DiscussionType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.discussionarticle:
-        class: App\Form\Type\DiscussionArticleType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.todo:
-        class: App\Form\Type\TodoType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.step:
-        class: App\Form\Type\StepType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.moderationsupport:
-        class: App\Form\Type\ModerationSupportType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.participant:
-        class: App\Form\Type\ParticipantType
-        tags:
-            - { name: form.type }
-
-    commsy.form.type.calendar:
-        class: App\Form\Type\CalendarType
-        tags:
-            - { name: form.type }
-
-    App\Form\Type\CheckedBase64CsvUserImportFileType:
-        autowire: true
-        autoconfigure: true
-
-    App\Form\Type\PortfolioType:
-        autowire: true
-        autoconfigure: true
-
-    App\Form\Type\PortfolioEditCategoryType:
-        autowire: true
-        autoconfigure: true
 
     # Controller
     commsy.item_controller:
@@ -735,9 +557,6 @@ services:
         autoconfigure: true
 
     # Utils
-    commsy.utils.mail_assistant:
-        alias: App\Utils\MailAssistant
-
     App\Utils\MailAssistant:
         arguments:
             $twig: '@twig'

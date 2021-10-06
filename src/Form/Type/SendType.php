@@ -1,24 +1,21 @@
 <?php
 namespace App\Form\Type;
 
+use App\Utils\MailAssistant;
+use App\Validator\Constraints\SendRecipientsConstraint;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
-
-use App\Utils\MailAssistant;
-
-use App\Validator\Constraints\SendRecipientsConstraint;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SendType extends AbstractType
@@ -26,12 +23,12 @@ class SendType extends AbstractType
     /**
      * @var MailAssistant
      */
-    private $mailAssistant;
+    private MailAssistant $mailAssistant;
 
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(MailAssistant $mailAssistant, TranslatorInterface $translator)
     {

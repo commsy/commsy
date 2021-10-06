@@ -3,13 +3,11 @@ namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-
-use App\Form\Type\CheckedFileType;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UploadType extends AbstractType
 {
@@ -17,7 +15,7 @@ class UploadType extends AbstractType
      * The Symfony translator
      * @var TranslatorInterface $translator
      */
-    private $translator;
+    private TranslatorInterface$translator;
 
     public function __construct(TranslatorInterface $translator)
     {

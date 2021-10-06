@@ -2,38 +2,37 @@
 
 namespace App\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
-
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Translation\TranslatorInterface;
-
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
-
 use App\Services\LegacyEnvironment;
 use App\Validator\Constraints\HomeNoticeConstraint;
+use cs_environment;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ModerationSettingsType extends AbstractType
 {
-    private $em;
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $roomItem;
+    /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
     {
-        $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->translator = $translator;
     }
 
     /**
@@ -47,8 +46,8 @@ class ModerationSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        $this->roomItem = $roomManager->getItem($options['roomId']);
-        $availableRubrics = array_merge(['home'], $this->roomItem->getAvailableRubrics());
+        $roomItem = $roomManager->getItem($options['roomId']);
+        $availableRubrics = array_merge(['home'], $roomItem->getAvailableRubrics());
         $rubricOptions = [];
         foreach ($availableRubrics as $rubric) {
             $translatedTitle = $this->translator->trans(ucfirst($rubric), ['%count%' => 1], 'rubric');

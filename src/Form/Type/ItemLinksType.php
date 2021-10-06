@@ -1,25 +1,36 @@
 <?php
 namespace App\Form\Type;
 
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use App\Utils\RoomService;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-
-use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
-use App\Utils\ItemService;
 
 class ItemLinksType extends AbstractType
 {
-    private $environment;
-    private $roomService;
-    private $itemService;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $environment;
+
+    /**
+     * @var RoomService
+     */
+    private RoomService $roomService;
+
+    /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService)
     {
