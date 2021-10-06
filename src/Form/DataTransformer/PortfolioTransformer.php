@@ -2,20 +2,21 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_portfolio_manager;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class PortfolioTransformer extends AbstractTransformer
 {
     protected $entity = 'portfolio';
 
-    private $legacyEnvironment;
-
-    private $portfolioManager;
+    /**
+     * @var cs_portfolio_manager
+     */
+    private cs_portfolio_manager $portfolioManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->portfolioManager = $this->legacyEnvironment->getPortfolioManager();
+        $this->portfolioManager = $legacyEnvironment->getPortfolioManager();
     }
 
     /**

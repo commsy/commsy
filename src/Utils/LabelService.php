@@ -2,17 +2,17 @@
 
 namespace App\Utils;
 
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_labels_manager;
 
 class LabelService
 {
-    /** @var \cs_environment $legacyEnvironment */
-    private $legacyEnvironment;
+    /** @var cs_environment $legacyEnvironment */
+    private cs_environment $legacyEnvironment;
 
-    /** @var \cs_labels_manager $labelManager */
-    private $labelManager;
+    /** @var cs_labels_manager $labelManager */
+    private cs_labels_manager $labelManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

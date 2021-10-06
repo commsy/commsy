@@ -1,22 +1,11 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Utils\RoomService;
-use App\Utils\UserService;
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
 use cs_room_item;
 
 class AppearanceSettingsTransformer  extends AbstractTransformer
 {
     protected $entity = 'appearance_settings';
-
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
-    }
 
     /**
      * Transforms a cs_room_item object to an array

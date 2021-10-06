@@ -1,20 +1,11 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class TopicTransformer extends AbstractTransformer
 {
     protected $entity = 'topic';
-
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
 
     /**
      * Transforms a cs_topic_item object to an array

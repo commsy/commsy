@@ -4,7 +4,6 @@ namespace App\Form\DataTransformer;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
 use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,22 +16,22 @@ class UserTransformer extends AbstractTransformer
     /**
      * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var Security
      */
-    private $security;
+    private Security $security;
 
     /**
      * @var AccountManager
      */
-    private $accountManager;
+    private AccountManager $accountManager;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,

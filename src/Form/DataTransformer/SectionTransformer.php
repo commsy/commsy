@@ -1,19 +1,11 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
+use cs_section_item;
 
 class SectionTransformer  extends AbstractTransformer
 {
     protected $entity = 'section';
-
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
 
     /**
      * Transforms a cs_material_item object to an array
@@ -38,8 +30,8 @@ class SectionTransformer  extends AbstractTransformer
      * Applies an array of data to an existing object
      *
      * @param object $sectionObject
-     * @param array $materialData
-     * @return cs_material_item|null
+     * @param array $sectionData
+     * @return cs_section_item|null
      * @throws TransformationFailedException if room item is not found.
      */
     public function applyTransformation($sectionObject, $sectionData)

@@ -2,22 +2,20 @@
 
 namespace App\Utils;
 
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
+use cs_topic_manager;
 use Symfony\Component\Form\FormInterface;
 
 class TopicService
 {
-    private $legacyEnvironment;
-
-    private $topicManager;
+    /**
+     * @var cs_topic_manager
+     */
+    private cs_topic_manager $topicManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
-        
-        $this->topicManager = $this->legacyEnvironment->getEnvironment()->getTopicManager();
+        $this->topicManager = $legacyEnvironment->getEnvironment()->getTopicManager();
         $this->topicManager->reset();
     }
 

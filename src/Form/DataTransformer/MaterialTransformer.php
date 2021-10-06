@@ -2,14 +2,16 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
-use App\Services\LegacyMarkup;
+use cs_environment;
 
 class MaterialTransformer extends AbstractTransformer
 {
     protected $entity = 'material';
 
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

@@ -3,18 +3,20 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_item_manager;
 
 class ItemService
 {
     /**
-     * @var LegacyEnvironment $legacyEnvironment
+     * @var cs_environment $legacyEnvironment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
-     * @var \cs_item_manager $itemManager
+     * @var cs_item_manager $itemManager
      */
-    private $itemManager;
+    private cs_item_manager $itemManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

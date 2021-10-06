@@ -1,17 +1,30 @@
 <?php
 namespace App\Form\DataTransformer;
 
+use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
+use cs_environment;
 use cs_room_item;
 
 class GeneralSettingsTransformer  extends AbstractTransformer
 {
     protected $entity = 'general_settings';
 
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
+
+    /**
+     * @var RoomService
+     */
+    private RoomService $roomService;
+
+    /**
+     * @var UserService
+     */
+    private UserService $userService;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
     {

@@ -2,13 +2,16 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
+use cs_environment;
 
 class PrivateRoomTransformer extends AbstractTransformer
 {
     protected $entity = 'privateroom';
 
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

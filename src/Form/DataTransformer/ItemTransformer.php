@@ -1,21 +1,9 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use \DateTime;
-
-use App\Services\LegacyEnvironment;
-use App\Form\DataTransformer\DataTransformerInterface;
-
 class ItemTransformer extends AbstractTransformer
 {
     protected $entity = 'item';
-
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
 
     /**
      * Transforms fields of a cs_item object to an array

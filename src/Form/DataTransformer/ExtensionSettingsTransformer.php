@@ -1,27 +1,33 @@
 <?php
 namespace App\Form\DataTransformer;
 
-use App\Utils\RoomService;
 use App\Services\LegacyEnvironment;
-
 use App\Services\MediawikiService;
+use App\Utils\RoomService;
+use cs_environment;
 use cs_room_item;
 
 class ExtensionSettingsTransformer extends AbstractTransformer
 {
-    private $legacyEnvironment;
-    private $roomService;
-    private $mediaWiki;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $mediaWikiEnabled = false;
+    /**
+     * @var MediawikiService
+     */
+    private MediawikiService $mediaWiki;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, MediawikiService $mediawiki, $mediawikiEnabled)
+    /**
+     * @var bool
+     */
+    private bool $mediaWikiEnabled = false;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, MediawikiService $mediawiki)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
         $this->mediaWiki = $mediawiki;
-
-        $this->mediaWikiEnabled = $mediawikiEnabled;
     }
 
     /**

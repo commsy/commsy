@@ -1,31 +1,74 @@
 <?php
 namespace App\Utils;
 
+use App\Form\Type\AnnotationType;
+use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
+use cs_environment;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
-use App\Services\LegacyEnvironment;
-
-use App\Form\Type\AnnotationType;
-
 class DownloadService
 {
-    private $legacyEnvironment;
-    private $serviceContainer;
-    private $itemService;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
+
+    /**
+     * @var Container
+     */
+    private Container $serviceContainer;
+
+    /**
+     * @var PrintService
+     */
+    private PrintService $printService;
+
+    /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
+     * @var MaterialService
+     */
+    private MaterialService $materialService;
+
+    /**
+     * @var ReaderService
+     */
+    private ReaderService $readerService;
+
+    /**
+     * @var AnnotationService
+     */
+    private AnnotationService $annotationService;
+
+    /**
+     * @var AssessmentService
+     */
+    private AssessmentService $assessmentService;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         Container $container,
         PrintService $printService,
-        ItemService $itemService
+        ItemService $itemService,
+        MaterialService $materialService,
+        ReaderService $readerService,
+        AnnotationService $annotationService,
+        AssessmentService $assessmentService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->serviceContainer = $container;
         $this->printService = $printService;
         $this->itemService = $itemService;
+        $this->materialService = $materialService;
+        $this->readerService = $readerService;
+        $this->annotationService = $annotationService;
+        $this->assessmentService = $assessmentService;
     }
 
     public function zipFile($roomId, $itemIds)
@@ -153,13 +196,12 @@ class DownloadService
             $itemArray = array_merge($itemArray, $sectionList);
         }
 
-        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $legacyEnvironment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -187,12 +229,11 @@ class DownloadService
             }
 		    $current_user = $user_list->getNext();
 		}
-        $readerService = $this->serviceContainer->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $tempItem) {
-            $reader = $readerService->getLatestReader($tempItem->getItemId());
+            $reader = $this->readerService->getLatestReader($tempItem->getItemId());
             if ( empty($reader) ) {
                $readerList[$tempItem->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $tempItem->getModificationDate() ) {
@@ -200,9 +241,8 @@ class DownloadService
             }
             $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
-        
-        $materialService = $this->serviceContainer->get('commsy_legacy.material_service');
-        $materials = $materialService->getListMaterials($roomId);
+
+        $materials = $this->materialService->getListMaterials($roomId);
         $materialList = array();
         $counterBefore = 0;
         $counterAfter = 0;
@@ -255,7 +295,7 @@ class DownloadService
         $workflowUnread = false;
 
         if ($current_context->withWorkflowReader()) {
-            $itemManager = $legacyEnvironment->getItemManager();
+            $itemManager = $this->legacyEnvironment->getItemManager();
             $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($item->getItemID());
             $persons_array = array();
             foreach($users_read_array as $user_read){
@@ -263,8 +303,8 @@ class DownloadService
             }
 
             if($current_context->getWorkflowReaderGroup() == '1'){
-                $group_manager = $legacyEnvironment->getGroupManager();
-                $group_manager->setContextLimit($legacyEnvironment->getCurrentContextID());
+                $group_manager = $this->legacyEnvironment->getGroupManager();
+                $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
                 $group_manager->setTypeLimit('group');
                 $group_manager->select();
                 $group_list = $group_manager->get();
@@ -308,8 +348,8 @@ class DownloadService
                 }
             }
 
-            $currentContextItem = $legacyEnvironment->getCurrentContextItem();
-            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+            $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
             
             if ($currentContextItem->withWorkflow()) {
                 if (!$currentUserItem->isRoot()) {
@@ -342,15 +382,13 @@ class DownloadService
 
         $ratingDetail = array();
         if ($current_context->isAssessmentActive()) {
-            $assessmentService = $this->serviceContainer->get('commsy_legacy.assessment_service');
-            $ratingDetail = $assessmentService->getRatingDetail($item);
-            $ratingAverageDetail = $assessmentService->getAverageRatingDetail($item);
-            $ratingOwnDetail = $assessmentService->getOwnRatingDetail($item);
+            $ratingDetail = $this->assessmentService->getRatingDetail($item);
+            $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($item);
+            $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($item);
         }
 
-        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
-        $reader_manager = $legacyEnvironment->getReaderManager();
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
 
         //$item = $material;
         $reader = $reader_manager->getLatestReader($item->getItemID());
@@ -364,9 +402,8 @@ class DownloadService
         }
 
         // mark annotations as read
-        $annotationService = $this->serviceContainer->get('commsy_legacy.annotation_service');
         $annotationList = $item->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
  
         if ($item->getItemType() == 'material') {
             $readsectionList = $item->getSectionList();
@@ -417,7 +454,7 @@ class DownloadService
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
         $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
-        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
