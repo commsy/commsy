@@ -1410,6 +1410,8 @@ class PortalSettingsController extends AbstractController
 
                                 $account = $accountManager->getAccount($user, $portal->getId());
                                 $accountManager->lock($account);
+
+                                $user->save();
                             }
                         }
                         $this->sendUserInfoMail($IdsMailRecipients, 'user-block', $user, $mailer, $userService,
@@ -2514,7 +2516,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        AccountManager $accountManager
     ) {
         $user = $userService->getUser($request->get('userId'));
         $userAssignWorkspace = new PortalUserAssignWorkspace();
@@ -2548,6 +2551,12 @@ class PortalSettingsController extends AbstractController
                     $newUser->setContextID($newAssignedRoom->getItemID());
                     $newUser->setUserComment($formData->getDescriptionOfParticipation());
                     $newUser->save();
+
+                    $newUser->makeUser();
+                    $newUser->save();
+
+                    $account = $accountManager->getAccount($newUser, $portal->getId());
+                    $accountManager->unlock($account);
 
                     $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                         'portalId' => $portal->getId(),
