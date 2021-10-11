@@ -725,9 +725,12 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
            $second_item_id = $link_item->getSecondLinkedItemID();
            $second_item_type = $link_item->getSecondLinkedItemID();
         }
+
+        if (isset($creator_id)) {
+            $query .= 'creator_id="'.encode(AS_DB,$creator_id).'",';
+        }
         
-        $query .= 'creator_id="'.encode(AS_DB,$creator_id).'",'.
-                  'creation_date="'.$current_datetime.'",'.
+        $query .= 'creation_date="'.$current_datetime.'",'.
                   'modification_date="'.$current_datetime.'",'.
                   'first_item_id="'.encode(AS_DB,$first_item_id).'",'.
                   'second_item_id="'.encode(AS_DB,$second_item_id).'",'.
