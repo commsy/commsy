@@ -32,6 +32,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -78,7 +79,7 @@ class AccountController extends AbstractController
     ) {
         $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
-        /** @var AuthSource $localAuthSource */
+        /** @var AuthSourceLocal $localAuthSource */
         $localAuthSource = $portal->getAuthSources()->filter(function (AuthSource $authSource) {
             return $authSource->getType() === 'local';
         })->first();
@@ -126,10 +127,18 @@ class AccountController extends AbstractController
 
             $accountFacade->persistNewAccount($account);
 
+            $portalUser = $userService->getPortalUser($account);
+
+            // if the portal has terms of usage, we'll accept them here
+            // form validation already checked if they have been accepted
+            if ($portal->hasAGBEnabled()) {
+                $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
+                $portalUser->save();
+            }
+
             if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
                 $invitationsService->redeemInvitation($localAuthSource, $token);
 
-                $portalUser = $userService->getPortalUser($account);
                 $newUser = $userService->cloneUser($portalUser, $roomContextId);
 
                 if ($newUser) {
