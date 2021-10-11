@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Portal;
-use App\Action\Copy\CopyAction;
-use App\Action\Copy\InsertAction;
 use App\Action\Copy\InsertUserroomAction;
+use App\Action\MarkRead\MarkReadAction;
+use App\Entity\Portal;
 use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
@@ -21,9 +20,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AccountMail;
-use App\Utils\ItemService;
 use App\Utils\MailAssistant;
-use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\TopicService;
 use App\Utils\UserService;
@@ -33,8 +30,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
+use Liip\ImagineBundle\Imagine\Data\DataManager;
+use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Swift_Mailer;
+use Swift_Message;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -53,11 +55,20 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class UserController extends BaseController
 {
-    private $userService;
+    private UserService $userService;
+    private SessionInterface $session;
 
-    public function __construct(RoomService $roomService, UserService $userService)
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
     {
-        parent::__construct($roomService);
+        $this->session = $session;
+    }
+
+    public function __construct(UserService $userService)
+    {
         $this->userService = $userService;
     }
 
@@ -66,8 +77,6 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -76,14 +85,12 @@ class UserController extends BaseController
      */
     public function feedAction(
         Request $request,
-        ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = 'name'
     ) {
-        return $this->gatherUsers($roomId, 'feedView', $request, $readerService, $legacyEnvironment, $max, $start, $sort);
+        return $this->gatherUsers($roomId, 'feedView', $request, $max, $start, $sort);
     }
 
     /**
@@ -91,8 +98,6 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $max
      * @param int $start
@@ -101,48 +106,42 @@ class UserController extends BaseController
      */
     public function gridAction(
         Request $request,
-        ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = 'name'
     ) {
-        return $this->gatherUsers($roomId, 'gridView', $request, $readerService, $legacyEnvironment, $max, $start, $sort);
+        return $this->gatherUsers($roomId, 'gridView', $request, $max, $start, $sort);
     }
-/**
+
+    /**
      * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}")
      * @Template
      */
     public function sendMailViaContactForm(
+        Request $request,
+        MailAssistant $mailAssistant,
+        Swift_Mailer $mailer,
+        TranslatorInterface $translator,
         $roomId,
         $itemId,
         $originPath,
-        $moderatorIds = null,
-        Request $request,
-        LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
-        UserTransformer $userTransformer,
-        ItemService $itemService,
-        \Swift_Mailer $mailer
+        $moderatorIds = null
     ) {
-
-        $environment = $legacyEnvironment->getEnvironment();
-
-        $item = $itemService->getTypedItem($itemId);
+        $item = $this->itemService->getTypedItem($itemId);
         $formData = null;
-        if(!is_null($item->getLinkedUserroomItem())){
+        if (!is_null($item->getLinkedUserroomItem())) {
             $recipients = [];
             $recipients[$item->getFullName()] = $item->getFullName();
             foreach ($item->getLinkedUserroomItem()->getModeratorList() as $moderator) {
                 $recipients[$moderator->getFullName()] = $moderator->getFullName();
             }
-            $message = $this->get('translator')->trans('This email has been sent by ... from userroom ...', [
-                '%sender_name%' => $environment->getCurrentUserItem()->getFullName(),
+            $message = $translator->trans('This email has been sent by ... from userroom ...', [
+                '%sender_name%' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
                 '%room_name%' => $item->getLinkedUserroomItem()->getTitle(),
-                '%recipients%' => implode(', ',$recipients),
+                '%recipients%' => implode(', ', $recipients),
             ], 'mail');
-            $message = '<br><br>--<br>'.$message;
+            $message = '<br><br>--<br>' . $message;
             $search = ', ';
             $replace = ' & ';
             $message = strrev(implode(strrev($replace), explode(strrev($search), strrev($message), 2)));
@@ -166,21 +165,21 @@ class UserController extends BaseController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true, $moderatorIds, $this->userService);
+            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true, $moderatorIds,
+                $this->userService);
             $mailer->send($message);
-
 
             $countTo = 0;
             $countCc = 0;
             $countBcc = 0;
 
-            if(!is_null($message->getTo())){
+            if (!is_null($message->getTo())) {
                 $countTo = count($message->getTo());
             }
-            if(!is_null($message->getCc())){
+            if (!is_null($message->getCc())) {
                 $countTo = count($message->getCc());
             }
-            if(!is_null($message->getBcc())){
+            if (!is_null($message->getBcc())) {
                 $countTo = count($message->getBcc());
             }
 
@@ -199,6 +198,7 @@ class UserController extends BaseController
             'form' => $form->createView(),
         ];
     }
+
     /**
      * @Route("/room/{roomId}/user/{view}", defaults={"view": "feedView"}, requirements={
      *       "view": "feedView|gridView"
@@ -206,21 +206,18 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param $view
      * @return array
      */
     public function listAction(
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         $view
     ) {
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        $roomManager = $environment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
@@ -228,21 +225,29 @@ class UserController extends BaseController
         }
 
         // setup filter form
-        $filterForm = $this->createFilterForm($legacyEnvironment, $roomItem, $view);
+        $userStatus = $this->resolveUserStatus('user');
+        $filterForm = $this->createFilterForm($roomItem, $view, $userStatus);
+
+        // reset manager
+        $this->userService->resetLimits();
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+
             // set filter conditions in user manager
             $this->userService->setFilterConditions($filterForm);
-        } else {
-            $this->userService->hideDeactivatedEntries();
-            $this->userService->showUserStatus(8);
-        }
 
-        // get filtered and total number of results
-        $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
-        $itemsCountArray['countAll'] = $itemsCountArray['count'];
+            // get filtered and total number of results
+            $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
+        } else {
+
+            $this->userService->hideDeactivatedEntries();
+            $this->userService->showUserStatus($userStatus);
+
+            // no filters should be active - get total number of users
+            $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
+        }
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('user') != '') {
@@ -267,6 +272,37 @@ class UserController extends BaseController
             'userTasks' => $userTasks,
             'isModerator' => $currentUser->isModerator(),
         ];
+    }
+
+    /**
+     * @param String $userStatus
+     * @return string
+     */
+    private function resolveUserStatus(string $userStatus): string
+    {
+
+        switch ($userStatus) {
+            case 'is blocked':
+                return '0';
+                break;
+            case 'is applying':
+                return '1';
+                break;
+            case 'user':
+                return '8';
+                break;
+            case 'moderator':
+                return '3';
+                break;
+            case 'is contact':
+                return 'is contact';
+                break;
+            case 'reading user':
+                return '4';
+                break;
+        }
+
+        return '8';
     }
 
     /**
@@ -304,8 +340,6 @@ class UserController extends BaseController
      * @Security("is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
      * @param PrintService $printService
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param string $sort
      * @param int $roomId
      * @return Response
@@ -313,21 +347,18 @@ class UserController extends BaseController
     public function printlistAction(
         Request $request,
         PrintService $printService,
-        ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
-        string $sort,
-        int $roomId
+        int $roomId,
+        string $sort
     ) {
-        $environment = $legacyEnvironment->getEnvironment();
 
-        $roomManager = $environment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
         // setup filter form
-        $filterForm = $this->createFilterForm($legacyEnvironment, $roomItem);
+        $filterForm = $this->createFilterForm($roomItem);
         $numAllUsers = $this->userService->getCountArray($roomId)['countAll'];
 
         $this->userService->resetLimits();
@@ -343,16 +374,15 @@ class UserController extends BaseController
         // get user list from manager service
         if ($sort != "none") {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
-        }
-        elseif ($this->get('session')->get('sortUsers')) {
-            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $this->get('session')->get('sortUsers'));
-        }
-        else {
+        } elseif ($this->session->get('sortUsers')) {
+            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0,
+                $this->session->get('sortUsers'));
+        } else {
             $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, 'date');
         }
         $readerList = array();
         foreach ($users as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
         // get user list from manager service 
@@ -379,8 +409,9 @@ class UserController extends BaseController
      * @Security("is_granted('MODERATOR')")
      * @param Request $request
      * @param TranslatorInterface $translator
-     * @param LegacyEnvironment $legacyEnvironment
      * @param EventDispatcherInterface $eventDispatcher
+     * @param Swift_Mailer $mailer
+     * @param AccountMail $accountMail
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
@@ -388,10 +419,10 @@ class UserController extends BaseController
     public function changeStatusAction(
         Request $request,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
+        Swift_Mailer $mailer,
+        AccountMail $accountMail,
         int $roomId,
-        \Swift_Mailer $mailer,
         RouterInterface $router
     ) {
         $room = $this->getRoom($roomId);
@@ -436,7 +467,8 @@ class UserController extends BaseController
                 $formData = $form->getData();
 
                 // manual validation - moderator count check
-                if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
+                if (in_array($formData['status'],
+                    ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
                     if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
                         $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
                     }
@@ -505,9 +537,8 @@ class UserController extends BaseController
                         $this->userService->updateAllGroupStatus($user, $roomId);
                     }
 
-                    $environment = $legacyEnvironment->getEnvironment();
-                    $readerManager = $environment->getReaderManager();
-                    $noticedManager = $environment->getNoticedManager();
+                    $readerManager = $this->legacyEnvironment->getReaderManager();
+                    $noticedManager = $this->legacyEnvironment->getNoticedManager();
                     foreach ($users as $user) {
                         $itemId = $user->getItemID();
                         $versionId = $user->getVersionID();
@@ -523,29 +554,26 @@ class UserController extends BaseController
                     }
 
                     if ($formData['inform_user']) {
-                        $this->sendUserInfoMail($formData['userIds'], $formData['status'], $legacyEnvironment, $mailer, $router);
+                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status']);
                     }
                     if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('app_user_detail', [
                             'roomId' => $roomId,
                             'itemId' => array_values($request->query->get('userIds'))[0],
                         ]);
-                    }
-                    else {
+                    } else {
                         return $this->redirectToRoute('app_user_list', [
                             'roomId' => $roomId,
                         ]);
                     }
                 }
-            }
-            elseif ($form->get('cancel')->isClicked()) {
-                if($request->query->has('userDetail')) {
+            } elseif ($form->get('cancel')->isClicked()) {
+                if ($request->query->has('userDetail')) {
                     return $this->redirectToRoute('app_user_detail', [
                         'roomId' => $roomId,
                         'itemId' => array_values($request->query->get('userIds'))[0],
                     ]);
-                }
-                else {
+                } else {
                     return $this->redirectToRoute('app_user_list', [
                         'roomId' => $roomId,
                     ]);
@@ -572,7 +600,7 @@ class UserController extends BaseController
 
         foreach ($selectedIds as $selectedId) {
             if (in_array($selectedId, $moderatorIds)) {
-                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
+                if (($key = array_search($selectedId, $moderatorIds)) !== false) {
                     unset($moderatorIds[$key]);
                 }
             }
@@ -588,30 +616,25 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
-     * @param ItemService $itemService
      * @param TopicService $topicService
      * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param TranslatorInterface $translator
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function detailAction(
         Request $request,
-        ItemService $itemService,
-        ReaderService $readerService,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
-        LegacyEnvironment $legacyEnvironment,
+        TranslatorInterface $translator,
         int $roomId,
         int $itemId
     ) {
-        $environment = $legacyEnvironment->getEnvironment();
-        $infoArray = $this->getDetailInfo($itemService, $readerService, $legacyEnvironment, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         $alert = null;
         if ($infoArray['user']->isLocked()) {
-            $translator = $this->get('translator');
 
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
@@ -623,11 +646,11 @@ class UserController extends BaseController
         }
 
         $isSelf = false;
-        if ($environment->getCurrentUserItem()->getItemId() == $itemId) {
+        if ($this->legacyEnvironment->getCurrentUserItem()->getItemId() == $itemId) {
             $isSelf = true;
         }
 
-        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
         $roomItem = $this->roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
@@ -681,34 +704,30 @@ class UserController extends BaseController
 
 
     private function getDetailInfo(
-        ItemService $itemService,
-        ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
         $roomId,
         $itemId
     ) {
         $infoArray = array();
         $user = $this->userService->getUser($itemId);
 
-        $environment = $legacyEnvironment->getEnvironment();
         $item = $user;
-        $reader_manager = $environment->getReaderManager();
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $environment->getNoticedManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        $current_context = $environment->getCurrentContextItem();
-        $readerManager = $environment->getReaderManager();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $environment->getUserManager();
-        $userManager->setContextLimit($environment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -718,16 +737,17 @@ class UserController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
+        while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
         }
-        $readerManager->getLatestReaderByUserIDArray($id_array,$user->getItemID());
+        $readerManager->getLatestReaderByUserIDArray($id_array, $user->getItemID());
         $current_user = $user_list->getFirst();
-        while ( $current_user ) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $user->getModificationDate() ) {
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $user->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
@@ -738,14 +758,14 @@ class UserController extends BaseController
         }
         $readerList = array();
         $modifierList = array();
-        $reader = $readerService->getLatestReader($user->getItemId());
-        if ( empty($reader) ) {
+        $reader = $this->readerService->getLatestReader($user->getItemId());
+        if (empty($reader)) {
             $readerList[$item->getItemId()] = 'new';
-        } elseif ( $reader['read_date'] < $user->getModificationDate() ) {
+        } elseif ($reader['read_date'] < $user->getModificationDate()) {
             $readerList[$user->getItemId()] = 'changed';
         }
 
-        $modifierList[$user->getItemId()] = $itemService->getAdditionalEditorsForItem($user);
+        $modifierList[$user->getItemId()] = $this->itemService->getAdditionalEditorsForItem($user);
 
         $users = $this->userService->getListUsers($roomId);
         $userList = array();
@@ -789,7 +809,7 @@ class UserController extends BaseController
                 $firstItemId = $users[0]->getItemId();
             }
             if ($nextItemId) {
-                $lastItemId = $users[sizeof($users)-1]->getItemId();
+                $lastItemId = $users[sizeof($users) - 1]->getItemId();
             }
         }
 
@@ -806,10 +826,10 @@ class UserController extends BaseController
         $infoArray['readCount'] = $read_count;
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
-        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = false;
         $infoArray['showWorkflow'] = false;
-        $infoArray['currentUser'] = $environment->getCurrentUserItem();
+        $infoArray['currentUser'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['linkedGroups'] = $this->userService->getUser($itemId)->getGroupList()->to_array();;
@@ -833,12 +853,13 @@ class UserController extends BaseController
     ) {
         // create new user item
         $userItem = $this->userService->getNewuser();
-        $userItem->setTitle('['.$translator->trans('insert title').']');
+        $userItem->setTitle('[' . $translator->trans('insert title') . ']');
         $userItem->setBibKind('none');
         $userItem->setDraftStatus(1);
         $userItem->save();
 
-        return $this->redirectToRoute('app_user_detail', array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
+        return $this->redirectToRoute('app_user_detail',
+            array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
     }
 
 
@@ -847,25 +868,20 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
-     * @param ItemService $itemService
      * @param UserTransformer $transformer
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function editAction(
         Request $request,
-        ItemService $itemService,
         UserTransformer $transformer,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getItem($itemId);
+        $item = $this->itemService->getItem($itemId);
 
-        $environment = $legacyEnvironment->getEnvironment();
-        $current_context = $environment->getCurrentContextItem();
+        $current_context = $this->legacyEnvironment->getCurrentContextItem();
         $userItem = $this->userService->getuser($itemId);
         if (!$userItem) {
             throw $this->createNotFoundException('No user found for id ' . $itemId);
@@ -889,7 +905,7 @@ class UserController extends BaseController
                 $userItem = $transformer->applyTransformation($userItem, $form->getData());
 
                 // update modifier
-                $userItem->setModificatorItem($environment->getCurrentUserItem());
+                $userItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $userItem->save();
 
@@ -915,17 +931,11 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/{itemId}/save")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param ItemService $itemService
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function saveAction(
-        ItemService $itemService,
-        ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
@@ -934,14 +944,13 @@ class UserController extends BaseController
         $itemArray = array($user);
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $environment = $legacyEnvironment->getEnvironment();
-        $readerManager = $environment->getReaderManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $environment->getUserManager();
-        $userManager->setContextLimit($environment->getCurrentContextID());
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
@@ -951,35 +960,36 @@ class UserController extends BaseController
 
         $current_user = $user_list->getFirst();
         $id_array = array();
-        while ( $current_user ) {
+        while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
         }
-        $readerManager->getLatestReaderByUserIDArray($id_array,$user->getItemID());
+        $readerManager->getLatestReaderByUserIDArray($id_array, $user->getItemID());
         $current_user = $user_list->getFirst();
-        while ( $current_user ) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $user->getModificationDate() ) {
+        while ($current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(),
+                $current_user->getItemID());
+            if (!empty($current_reader)) {
+                if ($current_reader['read_date'] >= $user->getModificationDate()) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
+            $reader = $this->readerService->getLatestReader($item->getItemId());
+            if (empty($reader)) {
                 $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+            } elseif ($reader['read_date'] < $item->getModificationDate()) {
                 $readerList[$item->getItemId()] = 'changed';
             }
 
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         return array(
@@ -997,31 +1007,28 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
-     * @param ItemService $itemService
      * @param TranslatorInterface $translator
-     * @param LegacyEnvironment $legacyEnvironment
      * @param MailAssistant $mailAssistant
+     * @param Swift_Mailer $mailer
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function sendAction(
         Request $request,
-        ItemService $itemService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
+        Swift_Mailer $mailer,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getTypedItem($itemId);
+        $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
 
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
                 'This email has been sent by sender to recipient',
@@ -1047,7 +1054,7 @@ class UserController extends BaseController
             if ($saveType == 'save') {
                 $formData = $form->getData();
 
-                $portalItem = $environment->getCurrentPortalItem();
+                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 $from = $this->getParameter('commsy.email.from');
 
@@ -1056,7 +1063,7 @@ class UserController extends BaseController
                 $recipient = [$item->getEmail() => $item->getFullName()];
 
                 // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $message = (new \Swift_Message())
+                $message = (new Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()]);
@@ -1086,7 +1093,7 @@ class UserController extends BaseController
                 }
 
                 // send mail
-                $this->get('mailer')->send($message);
+                $mailer->send($message);
 
                 // redirect to success page
                 return $this->redirectToRoute('app_user_sendsuccess', [
@@ -1110,17 +1117,15 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/{itemId}/send/success")
      * @Template()
-     * @param ItemService $itemService
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function sendSuccessAction(
-        ItemService $itemService,
         int $roomId,
         int $itemId
     ) {
-        $item = $itemService->getTypedItem($itemId);
+        $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
             throw $this->createNotFoundException('no item found for id ' . $itemId);
@@ -1140,10 +1145,10 @@ class UserController extends BaseController
      * @Route("/room/{roomId}/user/{itemId}/send/success/contact/{originPath}")
      * @Template()
      **/
-    public function sendSuccessContactAction($roomId, $itemId, $originPath, ItemService $itemService)
+    public function sendSuccessContactAction($roomId, $itemId, $originPath)
     {
         // get item
-        $item = $itemService->getTypedItem($itemId);
+        $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
             throw $this->createNotFoundException('no item found for id ' . $itemId);
@@ -1167,8 +1172,10 @@ class UserController extends BaseController
     public function guestimageAction(
         AvatarService $avatarService
     ) {
-        $response = new Response($avatarService->getUnknownUserImage(), Response::HTTP_OK, array('content-type' => 'image'));
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize('user_unknown.gif'));
+        $response = new Response($avatarService->getUnknownUserImage(), Response::HTTP_OK,
+            array('content-type' => 'image'));
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
+            \Nette\Utils\Strings::webalize('user_unknown.gif'));
         $response->headers->set('Content-Disposition', $contentDisposition);
         return $response;
     }
@@ -1183,8 +1190,10 @@ class UserController extends BaseController
         AvatarService $avatarService,
         int $itemId
     ) {
-        $response = new Response($avatarService->getAvatar($itemId), Response::HTTP_OK, array('content-type' => 'image'));
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize('user_unknown.gif'));
+        $response = new Response($avatarService->getAvatar($itemId), Response::HTTP_OK,
+            array('content-type' => 'image'));
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
+            \Nette\Utils\Strings::webalize('user_unknown.gif'));
         $response->headers->set('Content-Disposition', $contentDisposition);
         return $response;
     }
@@ -1192,14 +1201,16 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")
      * @param AvatarService $avatarService
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param ParameterBagInterface $params
      * @param int $roomId
      * @param int $itemId
      * @return Response
      */
     public function imageAction(
         AvatarService $avatarService,
-        LegacyEnvironment $legacyEnvironment,
+        ParameterBagInterface $params,
+        DataManager $dataManager,
+        FilterManager $filterManager,
         int $roomId,
         int $itemId
     ) {
@@ -1208,30 +1219,31 @@ class UserController extends BaseController
         $foundUserImage = true;
 
         if ($file != '') {
-            $rootDir = $this->get('kernel')->getRootDir().'/';
+            $rootDir = $params->get('kernel.root_dir') . '/';
 
-            $environment = $legacyEnvironment->getEnvironment();
-            $disc_manager = $environment->getDiscManager();
+            $disc_manager = $this->legacyEnvironment->getDiscManager();
             $disc_manager->setContextID($roomId);
-            $portal_id = $environment->getCurrentPortalID();
-            if ( isset($portal_id) and !empty($portal_id) ) {
+            $portal_id = $this->legacyEnvironment->getCurrentPortalID();
+            if (isset($portal_id) and !empty($portal_id)) {
                 $disc_manager->setPortalID($portal_id);
             } else {
-                $context_item = $environment->getCurrentContextItem();
-                if ( isset($context_item) ) {
+                $context_item = $this->legacyEnvironment->getCurrentContextItem();
+                if (isset($context_item)) {
                     $portal_item = $context_item->getContextItem();
-                    if ( isset($portal_item) ) {
+                    if (isset($portal_item)) {
                         $disc_manager->setPortalID($portal_item->getItemID());
                         unset($portal_item);
                     }
                     unset($context_item);
                 }
             }
-            $filePath = $disc_manager->getFilePath().$file;
+            $filePath = $disc_manager->getFilePath() . $file;
 
-            if (file_exists($rootDir.$filePath)) {
-                $processedImage = $this->container->get('liip_imagine.data.manager')->find('commsy_user_image', str_ireplace('../files', './', $filePath));
-                $content = $newimage_string = $this->container->get('liip_imagine.filter.manager')->applyFilter($processedImage, 'commsy_user_image')->getContent();
+            if (file_exists($rootDir . $filePath)) {
+                $processedImage = $dataManager->find('commsy_user_image',
+                    str_ireplace('../files', './', $filePath));
+                $content = $filterManager->applyFilter($processedImage,
+                    'commsy_user_image')->getContent();
 
                 if (!$content) {
                     $foundUserImage = false;
@@ -1250,7 +1262,8 @@ class UserController extends BaseController
             $content = $avatarService->getAvatar($itemId);
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize($file));
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
+            \Nette\Utils\Strings::webalize($file));
         $response->headers->set('Content-Disposition', $contentDisposition);
 
         return $response;
@@ -1282,24 +1295,24 @@ class UserController extends BaseController
      *
      * @Template()
      *
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param $contextId
      * @param SessionInterface $session
+     * @param EntityManagerInterface $entityManager
+     * @param bool $uikit3
      * @return array
      */
     public function globalNavbarAction(
         $contextId,
-        LegacyEnvironment $legacyEnvironment,
         SessionInterface $session,
         EntityManagerInterface $entityManager,
         bool $uikit3 = false
     ) {
         $currentUserItem = $this->userService->getCurrentUserItem();
         $privateRoomItem = $currentUserItem->getOwnRoom();
-        $environment = $legacyEnvironment->getEnvironment();
 
         $portalItem = $entityManager->getRepository(Portal::class)->find($contextId);
         if (!$portalItem) {
-            $portalItem = $environment->getCurrentPortalItem();
+            $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         }
 
         $currentClipboardIds = $session->get('clipboard_ids', []);
@@ -1316,13 +1329,13 @@ class UserController extends BaseController
         }
 
         // NOTE: getRelatedPortalUserItem() sets some limits which need to get reset again before feedAction gets called
-        $userManager = $environment->getUserManager();
+        $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->resetLimits();
 
         return [
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
-            'roomId' => $environment->getCurrentContextId(),
+            'roomId' => $this->legacyEnvironment->getCurrentContextId(),
             'supportLink' => $portalItem ? $portalItem->getSupportPageLink() : '',
             'tooltip' => $portalItem ? $portalItem->getSupportPageLinkTooltip() : '',
             'showPortalConfigurationLink' => $showPortalConfigurationLink,
@@ -1340,7 +1353,8 @@ class UserController extends BaseController
      * @return array
      */
     public function allRoomsNavbarAction(
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        bool $uikit3 = false
     ) {
         $currentUserItem = $this->userService->getCurrentUserItem();
 
@@ -1349,35 +1363,29 @@ class UserController extends BaseController
         if ($privateRoomItem) {
             $itemId = $privateRoomItem->getItemId();
         } else {
-            $environment = $legacyEnvironment->getEnvironment();
-            $itemId = $environment->getCurrentContextId();
+            $itemId = $this->legacyEnvironment->getCurrentContextId();
         }
 
         return [
             'itemId' => $itemId,
+            'uikit3' => $uikit3,
         ];
     }
 
     /**
      * @Route("/room/{roomId}/user/{itemId}/print")
-     * @param ItemService $itemService
      * @param PrintService $printService
-     * @param ReaderService $readerService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @param int $itemId
      * @return Response
      */
     public function printAction(
-        ItemService $itemService,
         PrintService $printService,
-        ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
     ) {
 
-        $infoArray = $this->getDetailInfo($itemService, $readerService, $legacyEnvironment, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         $html = $this->renderView('user/detail_print.html.twig', [
             'roomId' => $roomId,
@@ -1405,20 +1413,11 @@ class UserController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    private function sendUserInfoMail(
-        $userIds,
-        $action,
-        LegacyEnvironment $legacyEnvironment,
-        \Swift_Mailer $mailer,
-        RouterInterface $router
-    ) {
-
-        $accountMail = new AccountMail($legacyEnvironment, $router);
-
+    private function sendUserInfoMail(Swift_Mailer $mailer, AccountMail $accountMail, $userIds, $action)
+    {
         $fromAddress = $this->getParameter('commsy.email.from');
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUserItem();
-        $fromSender = $environment->getCurrentContextItem()->getContextItem()->getTitle();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $fromSender = $this->legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
         $validator = new EmailValidator();
         $replyTo = [];
@@ -1440,7 +1439,7 @@ class UserController extends BaseController
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
-                $mailMessage = (new \Swift_Message())
+                $mailMessage = (new Swift_Message())
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
@@ -1465,7 +1464,7 @@ class UserController extends BaseController
         }
 
         foreach ($failedRecipients as $failedRecipient) {
-            $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+            $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
                 return $user->getEmail() == $failedRecipient;
             });
 
@@ -1479,12 +1478,10 @@ class UserController extends BaseController
         $roomId,
         $view,
         Request $request,
-        ReaderService $readerService,
-        LegacyEnvironment $legacyEnvironment,
         $max = 10,
         $start = 0,
-        $sort = 'name')
-    {
+        $sort = 'name'
+    ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $userFilter = $request->get('userFilter');
@@ -1492,10 +1489,11 @@ class UserController extends BaseController
             $userFilter = $request->query->get('user_filter');
         }
 
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUserItem();
+        // $this->userManager->get()->to_array()
 
-        $roomManager = $environment->getRoomManager();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
@@ -1507,7 +1505,7 @@ class UserController extends BaseController
 
         if ($userFilter) {
             // setup filter form
-            $filterForm = $this->createFilterForm($legacyEnvironment, $roomItem, $view);
+            $filterForm = $this->createFilterForm($roomItem, $view);
 
             // manually bind values from the request
             $filterForm->submit($userFilter);
@@ -1520,17 +1518,31 @@ class UserController extends BaseController
         }
 
         // get user list from manager service
-        $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort);
+        $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
 
-        $this->get('session')->set('sortUsers', $sort);
+        $this->session->set('sortUsers', $sort);
 
         $readerList = [];
         $allowedActions = [];
         $linkedUserRooms = [];
         foreach ($users as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = [
+                    'markread',
+                    'sendmail',
+                    'insertuserroom',
+                    'copy',
+                    'save',
+                    'user-delete',
+                    'user-block',
+                    'user-confirm',
+                    'user-status-reading-user',
+                    'user-status-user',
+                    'user-status-moderator',
+                    'user-contact',
+                    'user-contact-remove'
+                ];
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom'];
             }
@@ -1572,7 +1584,8 @@ class UserController extends BaseController
      * @Template()
      * @param Request $request
      * @param TranslatorInterface $translator
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param MailAssistant $mailAssistant
+     * @param Swift_Mailer $mailer
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
@@ -1580,8 +1593,8 @@ class UserController extends BaseController
     public function sendMultipleAction(
         Request $request,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
+        Swift_Mailer $mailer,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
@@ -1598,8 +1611,7 @@ class UserController extends BaseController
             $userIds = $postData['users'];
         }
 
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         // include a footer message in the email body (which may be esp. useful if some emails are sent via BCC mail)
         $userCount = count($userIds);
@@ -1618,7 +1630,11 @@ class UserController extends BaseController
             } elseif ($userCount > 1) {
                 $defaultBodyMessage .= $translator->trans(
                     'This email has been sent to multiple users of this room',
-                    ['%sender_name%' => $currentUser->getFullName(), '%user_count%' => count($userIds), '%room_name%' => $room->getTitle()],
+                    [
+                        '%sender_name%' => $currentUser->getFullName(),
+                        '%user_count%' => count($userIds),
+                        '%room_name%' => $room->getTitle()
+                    ],
                     'mail'
                 );
             }
@@ -1654,7 +1670,7 @@ class UserController extends BaseController
             if ($saveType == 'save') {
                 $formData = $form->getData();
 
-                $portalItem = $environment->getCurrentPortalItem();
+                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 $from = $this->getParameter('commsy.email.from');
 
@@ -1697,7 +1713,7 @@ class UserController extends BaseController
                 }
 
                 // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $message = (new \Swift_Message())
+                $message = (new Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
@@ -1735,14 +1751,14 @@ class UserController extends BaseController
 
                 // send mail
                 $failedRecipients = [];
-                $this->get('mailer')->send($message, $failedRecipients);
+                $mailer->send($message, $failedRecipients);
 
                 foreach ($failedUsers as $failedUser) {
                     $this->addFlash('failedRecipients', $failedUser->getUserId());
                 }
 
                 foreach ($failedRecipients as $failedRecipient) {
-                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                    $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
                         return $user->getEmail() == $failedRecipient;
                     });
 
@@ -1797,13 +1813,13 @@ class UserController extends BaseController
      */
     public function xhrMarkReadAction(
         Request $request,
+        MarkReadAction $markReadAction,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get('commsy.action.mark_read.generic');
-        return $action->execute($room, $items);
+        return $markReadAction->execute($room, $items);
     }
 
     // NOTE: to allow for email notifications on delete, the 'user-delete' action is used instead of the 'delete' action
@@ -1821,24 +1837,22 @@ class UserController extends BaseController
 //    }
 
     /**
-     * @param LegacyEnvironment $legacyEnvironment
      * @param cs_room_item $room
      * @param string $view
      * @return FormInterface
      */
     private function createFilterForm(
-        LegacyEnvironment $legacyEnvironment,
         $room,
-        $view = null
+        $view = null,
+        $user_status = 8
     ) {
         // setup filter form default values
         $defaultFilterValues = [
             'activated' => true,
-            'user_status' => 8,
+            'user_status' => $user_status,
         ];
 
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         return $this->createForm(UserFilterType::class, $defaultFilterValues, [
             'action' => $this->generateUrl('app_user_list', [

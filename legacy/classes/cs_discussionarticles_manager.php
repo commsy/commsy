@@ -334,6 +334,74 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
       }
    }
 
+    /**
+     * Returns the parent article for the given discussion article, i.e. the article to which the given article is an answer.
+     * @param \cs_discussionarticle_item $item The discussion article whose parent article shall be returned
+     * @return \cs_discussionarticle_item|null Parent discussion article for the given article, or null if it has no parent
+     */
+    public function getParentForDiscArticle(\cs_discussionarticle_item $item): ?\cs_discussionarticle_item
+    {
+        // to get the parent's position, remove the trailing position element from the given item's position
+        $itemPosition = $item->getPosition();
+        $parentPosition = implode('.', explode('.', $itemPosition, -1));
+        if (empty($parentPosition)) {
+            return null;
+        }
+
+        /** @var \cs_discussionarticle_item $parentArticle */
+        $parentArticle = null;
+        $dbPrefix = $this->addDatabasePrefix($this->_db_table);
+        $dbPrefixItems = $this->addDatabasePrefix('items');
+
+        $query = "SELECT * FROM " . $dbPrefix;
+        $query .= " INNER JOIN " . $dbPrefixItems . ' ON ' . $dbPrefixItems . '.item_id = ' . $dbPrefix . '.item_id AND ' . $dbPrefixItems . '.draft != "1"';
+        $query .= ' WHERE discussion_id="' . encode(AS_DB, $item->getDiscussionID()) . '"';
+        $query .= ' AND position="' . encode(AS_DB, $parentPosition) . '"';
+        $query .= ' AND ' . $dbPrefix . '.deleter_id IS NULL';
+        $query .= ' AND ' . $dbPrefix . '.deletion_date IS NULL';
+
+        $result = $this->_db_connector->performQuery($query);
+        if (!$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting parent of discarticle with ID ' . $item->getItemID() . '.', E_USER_WARNING);
+        } else {
+            $parentArticle = $this->_buildItem($result[0]);
+        }
+
+        return $parentArticle;
+    }
+
+    /**
+     * Returns all child article(s) (aka "answers") for the given discussion article.
+     * @param \cs_discussionarticle_item $item The discussion article whose children shall be returned
+     * @return \cs_list List of child article(s) for the given discussion article, or an empty list if there aren't any
+     */
+    public function getChildrenForDiscArticle(\cs_discussionarticle_item $item): \cs_list
+    {
+        $childrenList = new cs_list();
+        $dbPrefix = $this->addDatabasePrefix($this->_db_table);
+        $dbPrefixItems = $this->addDatabasePrefix('items');
+
+        $query = "SELECT * FROM " . $dbPrefix;
+        $query .= " INNER JOIN " . $dbPrefixItems . ' ON ' . $dbPrefixItems . '.item_id = ' . $dbPrefix . '.item_id AND ' . $dbPrefixItems . '.draft != "1"';
+        $query .= ' WHERE discussion_id="' . encode(AS_DB, $item->getDiscussionID()) . '"';
+        $query .= ' AND position LIKE "' . encode(AS_DB, $item->getPosition()) . '.%"';
+        $query .= ' AND ' . $dbPrefix . '.deleter_id IS NULL';
+        $query .= ' AND ' . $dbPrefix . '.deletion_date IS NULL';
+
+        $result = $this->_db_connector->performQuery($query);
+        if (!$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting children of discarticle with ID ' . $item->getItemID() . '.', E_USER_WARNING);
+        } else {
+            foreach ($result as $rs) {
+                $childrenList->add($this->_buildItem($rs));
+            }
+        }
+
+        return $childrenList;
+    }
+
   /** update a discussion - internal, do not use -> use method save
     * this method updates a discussion
     *
@@ -345,15 +413,18 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      }
      $this->_current_article_modification_date = getCurrentDateTimeInMySQL();
      $this->_current_article_id = $discussionarticle_item->getItemID();
-     $query  = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET ';
+      $public = $this->returnQuerySentenceIfFieldIsValid(!$discussionarticle_item->isPrivateEditing(), 'public');
+
+      $query  = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET ';
      if ( $this->_update_with_changing_modification_information ) {
         $query .= 'modification_date="'.$this->_current_article_modification_date.'",';
      }
      $query .= 'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
                'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
                'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
-               'public="'.encode(AS_DB,!$discussionarticle_item->isPrivateEditing()).'"';
-     if ( $this->_update_with_changing_modification_information ) {
+                $public;
+      $query = rtrim($query, ',');
+      if ( $this->_update_with_changing_modification_information ) {
         $query .= ', modifier_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"';
      }
      $query .= ' WHERE item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'"';
@@ -397,6 +468,8 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      $current_datetime = getCurrentDateTimeInMySQL();
      $this->_current_article_modification_date = $current_datetime;
      $modificator = $discussionarticle_item->getModificatorItem();
+
+     $public = $this->returnQuerySentenceIfFieldIsValid(!$discussionarticle_item->isPrivateEditing(), 'public');
      $query = 'INSERT INTO '.$this->addDatabasePrefix('discussionarticles').' SET '.
               'item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$discussionarticle_item->getContextID()).'",'.
@@ -408,8 +481,10 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
               'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
               'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
-              'public="'.encode(AS_DB,!$discussionarticle_item->isPrivateEditing()).'"';
-     $discussionarticle_item->setCreationDate($current_datetime);
+               $public;
+      $query = rtrim($query, ',');
+
+      $discussionarticle_item->setCreationDate($current_datetime);
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');trigger_error('Problems creating discarticle.',E_USER_WARNING);
@@ -436,6 +511,29 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      }
      unset($current_user);
   }
+
+    /**
+     * Flags the discussion article with the given ID as having its content overwritten.
+     * When an individual discussion article which has child article(s) (aka "answers") is to be deleted, we instead use
+     * this method to indicate that its content should get overwritten instead. I.e., the article is kept in the discussion
+     * hierarchy (which thus will not be altered by the deletion) but its content will be replaced with some placeholder text.
+     * @param int $itemId The ID of the discussion article whose content shall be overwritten
+     */
+    public function overwriteContent(int $itemId): void
+    {
+        $currentDatetime = getCurrentDateTimeInMySQL();
+
+        $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('discussionarticles') . ' SET';
+        $updateQuery .= ' public = "-2",';
+        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+        $updateQuery .= ' WHERE item_id="' . encode(AS_DB, $itemId) . '"';
+
+        $result = $this->_db_connector->performQuery($updateQuery);
+        if (!$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems flagging discarticle for content overwrite.', E_USER_WARNING);
+        }
+    }
 
    ########################################################
    # statistic functions

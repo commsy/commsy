@@ -146,32 +146,41 @@ class AdditionalSettingsType extends AbstractType
                         ),
                     ))
             )
-            ->add(
-                $builder->create('template', FormType::class, array())
-                ->add('status', CheckboxType::class, array(
-                    'required' => false,
-                    'label_attr' => array('class' => 'uk-form-label'),
-                    'attr' => array(
-                        'style' => 'vertical-align: baseline;',
-                    ),
-                ))
-                ->add('template_availability', ChoiceType::class, array(
-                    'required' => true,
-                    'expanded' => false,
-                    'multiple' => false,
-                    'choices' => array(
-                        'All commsy users' => 0,
-                        'All workspace users' => 1,
-                        'Workspace mods only' => 2,
-                    ),
-                ))
-                ->add('template_description', TextareaType::class, array(
-                    'required' => false,
-                    'attr' => array(
-                        'style' => 'width: 90%',
-                    ),
-                ))
-            )
+        ;
+
+        // user rooms use project room templates, so a user room shouldn't be made available as a template
+        $isUserroom = $options['isUserroom'];
+        if (!$isUserroom) {
+            $builder
+                ->add(
+                    $builder->create('template', FormType::class, array())
+                        ->add('status', CheckboxType::class, array(
+                            'required' => false,
+                            'label_attr' => array('class' => 'uk-form-label'),
+                            'attr' => array(
+                                'style' => 'vertical-align: baseline;',
+                            ),
+                        ))
+                        ->add('template_availability', ChoiceType::class, array(
+                            'required' => true,
+                            'expanded' => false,
+                            'multiple' => false,
+                            'choices' => array(
+                                'All commsy users' => 0,
+                                'All workspace users' => 1,
+                                'Workspace mods only' => 2,
+                            ),
+                        ))
+                        ->add('template_description', TextareaType::class, array(
+                            'required' => false,
+                            'attr' => array(
+                                'style' => 'width: 90%',
+                            ),
+                        ))
+                );
+        }
+
+        $builder
             ->add(
                 $builder->create('archived', FormType::class, [])
                 ->add('active', CheckboxType::class, [
@@ -241,8 +250,7 @@ class AdditionalSettingsType extends AbstractType
     {
         $resolver
             // TODO: add new task status list as required parameter here!
-            ->setRequired(['roomId', 'newStatus', 'portalTerms'])
-            //->setRequired(['roomId'])
+            ->setRequired(['roomId', 'isUserroom', 'newStatus', 'portalTerms'])
             ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }

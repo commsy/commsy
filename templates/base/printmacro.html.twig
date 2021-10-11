@@ -49,12 +49,12 @@
                                     {% endfor %}
                                 </td>
                                 <td class="uk-padding-top-remove uk-padding-bottom-remove uk-text-right">
-                                    {% set ratingDisplay = 'rating'|trans({}, 'material') %}
+                                    {% set ratingDisplay = 'rating'|trans({'%count%':1}, 'material') %}
                                     <span class="uk-text-bold uk-margin-left">
                                     {% if ratingArray.ratingDetail[ratingValue] is defined %}
                                         {{ ratingArray.ratingDetail[ratingValue] }}
                                         {% if ratingArray.ratingDetail[ratingValue] == 1 %}
-                                            {% set ratingDisplay = 'rating'|trans({}, 'material') %}
+                                            {% set ratingDisplay = 'rating'|trans({'%count%':0}, 'material') %}
                                         {% endif %}
                                     {% else %}
                                         0
@@ -308,7 +308,7 @@
 
                 {# preview #}
                 <div>
-                    {{ content|commsyMarkup(item)|raw }}
+                    <span class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">{{ content|commsyMarkup(item)|raw }}</span>
                 </div>
 
             </div>
@@ -327,6 +327,7 @@
     {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
     {% set pathName = '' %}
+    {% set material = item %}
     {% if item.itemType is same as('material') %}
         {% set pathName = 'app_material_edit' %}
     {% elseif item.itemType is same as('section') %}
@@ -338,13 +339,13 @@
     {% endif %}
     
     <div>
-        <div >
+        <div class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">
             <div >
                 <div  >        
                     <div>
                     {% if item.itemType is not same as('section') %}
                         <div>
-                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                            <h1 class="uk-article-title{% if item.hasOverwrittenContent %} uk-text-muted{% endif %}">{{ item.title|decodeHtmlEntity }}</h1>
                             {% if item.itemType is same as('material') or item.itemType is same as('todo') %}
                                 <div top-padding=0>
                                     {% if showRating and ratingArray is not null %}
@@ -380,7 +381,7 @@
         <div >
             <div >    
                 <div >
-                    <div>
+                    <div class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">
                         
                             <div >
 

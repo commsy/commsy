@@ -36,10 +36,10 @@ class CalendarsService
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        Container $container,
         DateService $dateService,
         LegacyEnvironment $legacyEnvironment,
-        TranslatorInterface $translator,
-        Container $container
+        TranslatorInterface $translator
     ) {
         $this->em = $entityManager;
         $this->dateService = $dateService;

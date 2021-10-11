@@ -103,6 +103,11 @@ class AuthLdapType extends AbstractType
                 'label' => 'Auth DN',
                 'help' => 'This key defines the form of the string used to compose the DN of the user, from the username. The {username} string is replaced by the actual username of the person trying to authenticate.',
             ])
+            ->add('authQuery', TextType::class, [
+                'label' => 'Auth Query',
+                'help' => 'When this option is used, it will search in the DN specified by Auth DN and the DN resulted of the Auth Query will be used to authenticate the user with their password.',
+                'required' => false,
+            ])
             ->add('createRoom', CheckboxType::class, [
                 'label' => 'Users may create rooms',
                 'required' => false,

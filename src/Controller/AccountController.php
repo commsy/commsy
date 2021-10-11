@@ -27,6 +27,7 @@ use App\Security\AbstractCommsyGuardAuthenticator;
 use App\Security\LdapAuthenticator;
 use App\Security\LoginFormAuthenticator;
 use App\Security\ShibbolethAuthenticator;
+use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use App\Utils\RoomService;
@@ -46,12 +47,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Security as CoreSecurity;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountController extends AbstractController
 {
+
     /**
      * @Route("/register/{id}")
      * @Template()
@@ -61,6 +62,7 @@ class AccountController extends AbstractController
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param AccountCreatorFacade $accountFacade
      * @param LegacyEnvironment $legacyEnvironment
+     * @param InvitationsService $invitationsService
      * @return array|Response
      */
     public function signUp(
@@ -69,7 +71,7 @@ class AccountController extends AbstractController
         UserPasswordEncoderInterface $passwordEncoder,
         AccountCreatorFacade $accountFacade,
         LegacyEnvironment $legacyEnvironment,
-        ValidatorInterface $validator
+        InvitationsService $invitationsService
     ) {
         $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
@@ -78,8 +80,18 @@ class AccountController extends AbstractController
             return $authSource->getType() === 'local';
         })->first();
 
-        if ($localAuthSource->isAddAccount() === false) {
-            throw $this->createAccessDeniedException('Self-Registration is disabled!');
+        // deny access if self registration is disabled
+        if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_NO) {
+            throw $this->createAccessDeniedException('Self-Registration is disabled.');
+        }
+
+        // deny access if self registration is only available by invitation and the
+        // provided token is invalid
+        $token = $request->query->get('token', '');
+        if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
+            if (!$invitationsService->confirmInvitationCode($localAuthSource, $token)) {
+                throw $this->createAccessDeniedException('Self-Registration token is invalid.');
+            }
         }
 
         $account = new Account();
@@ -101,6 +113,10 @@ class AccountController extends AbstractController
             $account->setPassword($password);
 
             $accountFacade->persistNewAccount($account);
+
+            if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
+                $invitationsService->redeemInvitation($localAuthSource, $token);
+            }
 
             return $this->redirectToRoute('app_login', [
                 'context' => $portal->getId(),
@@ -138,8 +154,6 @@ class AccountController extends AbstractController
         $portalUser = $userService->getPortalUser($account);
 
         $userData = $userTransformer->transform($portalUser);
-
-        $request->setLocale($portalUser->getLanguage());
 
         $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
@@ -329,8 +343,6 @@ class AccountController extends AbstractController
 
         $userData = $userTransformer->transform($portalUser);
 
-        $request->setLocale($portalUser->getLanguage());
-
         $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
 
@@ -392,7 +404,8 @@ class AccountController extends AbstractController
         PrintService $printService,
         RoomService $roomService,
         CoreSecurity $security,
-        UserService $userService
+        UserService $userService,
+        TranslatorInterface $translator
     ) {
         /** @var Account $account */
         $account = $security->getUser();
@@ -416,8 +429,13 @@ class AccountController extends AbstractController
             'serviceEmail' => $serviceEmail,
         ]);
 
-        $fileName = $this->translator->trans('Self assessment', [], 'profile')
+        $fileName = $translator->trans('Self assessment', [], 'profile')
             . ' (' . $portal->getTitle() . ').pdf';
+
+        if (str_contains($html,"localhost:81")) { // local fix for wkhtmltopdf
+            $html = preg_replace("/<img[^>]+\>/i", "(image) ", $html);
+        }
+
 
         // return HTML Response containing a PDF generated from the HTML data
         return $printService->buildPdfResponse($html, false, $fileName);
@@ -448,8 +466,6 @@ class AccountController extends AbstractController
         $portalUser = $userService->getPortalUser($account);
 
         $userData = $userTransformer->transform($portalUser);
-
-        $request->setLocale($portalUser->getLanguage());
 
         $privateRoomItem = $portalUser->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);

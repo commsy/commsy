@@ -27,6 +27,8 @@
  */
 include_once('classes/cs_guide_item.php');
 
+use App\Services\InvitationsService;
+
 /** class for a context
  * this class implements a context item
  */
@@ -1001,6 +1003,8 @@ class cs_portal_item extends cs_guide_item {
       if ( $this->isCountRoomRedundancy() ) {
          $cron_array[] = $this->_cronSyncCountRooms();
       }
+
+      $cron_array[] = $this->cronInvitationCleanUp();
          
       // archiving
       if ( $this->isActivatedArchivingUnusedRooms() ) {
@@ -1017,6 +1021,33 @@ class cs_portal_item extends cs_guide_item {
       $cron_array[] = $this->_cronDraftCleanUp();
       return $cron_array;
    }
+
+
+    /**
+     * Cron task for deleting expired invitations
+     *
+     * @return array
+     */
+    private function cronInvitationCleanUp(): array
+    {
+        global $symfonyContainer;
+        $time_start = getmicrotime();
+        $cron_array = array();
+        $cron_array['title'] = 'Delete expired invitations';
+        $cron_array['description'] = 'Delete expired invitations';
+
+        /** @var InvitationsService $invitationService */
+        $invitationService = $symfonyContainer->get(InvitationsService::class);
+        $removalCount = $invitationService->deleteExpiredInvitations();
+
+        $cron_array['success'] = true;
+        $cron_array['success_text'] = $removalCount . ' expired invitations deleted';
+        $time_end = getmicrotime();
+        $time = round($time_end - $time_start);
+        $cron_array['time'] = $time;
+
+        return $cron_array;
+    }
 
     function _cronDraftCleanUp()
     {
@@ -2654,172 +2685,6 @@ class cs_portal_item extends cs_guide_item {
    public function setShowTemplatesInRoomListOFF () {
    	$this->_setShowTemplateInRoomList(-1);
    }
-    
-   ############################################
-   # archiving - BEGIN
-   ############################################
-   
-   public function isActivatedArchivingUnusedRooms () {
-   	$retour = false;
-   	$status = $this->_getStatusArchivingUnusedRooms();
-   	if ( !empty($status)
-   	     and $status == 1
-   	   ) {
-   		$retour = true;
-   	}
-   	return $retour;
-   }
-    
-   public function turnOnArchivingUnusedRooms () {
-   	$this->_setStatusArchivingUnusedRooms(1);
-   }
-    
-   public function turnOffArchivingUnusedRooms () {
-   	$this->_setStatusArchivingUnusedRooms(-1);
-   }
-    
-   /** get status of archiving unused rooms
-    *
-    * @return int status of archiving unused rooms (1 = on, -1 = off)
-    */
-   private function _getStatusArchivingUnusedRooms () {
-   	$retour = -1;
-   	if ($this->_issetExtra('ARCHIVING_ROOMS_STATUS')) {
-   		$retour = $this->_getExtra('ARCHIVING_ROOMS_STATUS');
-   	}
-   	return $retour;
-   }
-   
-   /** set status archiving unused rooms
-    *
-    * @param int status archiving unused rooms (1 = on, -1 = off)
-    */
-   private function _setStatusArchivingUnusedRooms ($value) {
-   	$this->_addExtra('ARCHIVING_ROOMS_STATUS',(int)$value);
-   }
-    
-   /** get days before archiving an unused room
-    *
-    * @return int days before archiving an unused room
-    */
-   public function getDaysUnusedBeforeArchivingRooms () {
-   	$retour = 365; //default
-   	if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE')) {
-   		$retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE');
-   	}
-   	return $retour;
-   }
-   
-   /** set days before archiving an unused room
-    *
-    * @param int days before archiving an unused room
-    */
-   public function setDaysUnusedBeforeArchivingRooms ($value) {
-   	$this->_addExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE',(int)$value);
-   }
-   
-   /** get days send an email before archiving an unused room
-    *
-    * @return int days send email before archiving an unused room
-    */
-   public function getDaysSendMailBeforeArchivingRooms () {
-   	$retour = 0;
-   	if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE')) {
-   		$retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE');
-   	}
-   	return $retour;
-   }
-   
-   /** set days sed mail before archiving an unused room
-    *
-    * @param int days send mail before archiving an unused room
-    */
-   public function setDaysSendMailBeforeArchivingRooms ($value) {
-   	$this->_addExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE',(int)$value);
-   }
-
-   public function isActivatedDeletingUnusedRooms () {
-   	$retour = false;
-   	$status = $this->_getStatusDeletingUnusedRooms();
-   	if ( !empty($status)
-   			and $status == 1
-   	) {
-   		$retour = true;
-   	}
-   	return $retour;
-   }
-   
-   public function turnOnDeletingUnusedRooms () {
-   	$this->_setStatusDeletingUnusedRooms(1);
-   }
-   
-   public function turnOffDeletingUnusedRooms () {
-   	$this->_setStatusDeletingUnusedRooms(-1);
-   }
-   
-   /** get status of deleting unused rooms
-    *
-    * @return int status of deleting unused rooms (1 = on, -1 = off)
-    */
-   private function _getStatusDeletingUnusedRooms () {
-   	$retour = -1;
-   	if ($this->_issetExtra('DELETING_ROOMS_STATUS')) {
-   		$retour = $this->_getExtra('DELETING_ROOMS_STATUS');
-   	}
-   	return $retour;
-   }
-    
-   /** set status deleting unused rooms
-    *
-    * @param int status deleting unused rooms (1 = on, -1 = off)
-    */
-   private function _setStatusDeletingUnusedRooms ($value) {
-   	$this->_addExtra('DELETING_ROOMS_STATUS',(int)$value);
-   }
-   
-   /** get days before deleting an unused archived room
-    *
-    * @return int days before deleting an unused archived room
-    */
-   public function getDaysUnusedBeforeDeletingRooms () {
-   	$retour = 365; //default
-   	if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE')) {
-   		$retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE');
-   	}
-   	return $retour;
-   }
-    
-   /** set days before deleting an unused archived room
-    *
-    * @param int days before deleting an unused archived room
-    */
-   public function setDaysUnusedBeforeDeletingRooms ($value) {
-   	$this->_addExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE',(int)$value);
-   }
-    
-   /** get days send an email before deleting an unused archived room
-    *
-    * @return int days send email before deleting an unused archived room
-    */
-   public function getDaysSendMailBeforeDeletingRooms () {
-   	$retour = 0;
-   	if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE')) {
-   		$retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE');
-   	}
-   	return $retour;
-   }
-    
-   /** set days sed mail before deleting an unused archived room
-    *
-    * @param int days send mail before deleting an unused archived room
-    */
-   public function setDaysSendMailBeforeDeletingRooms ($value) {
-   	$this->_addExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE',(int)$value);
-   }
-    
-   ############################################
-   # archiving - END
-   ############################################
 
    ############################################
    # count rooms
@@ -3384,54 +3249,6 @@ class cs_portal_item extends cs_guide_item {
    
    public function setPasswordExpiration($value) {
    	$this->_addExtra('PASSWORD_EXPIRATION', $value);
-   }
-   
-   public function setInactivityLockDays($days) {
-   	$this->_addExtra('INACTIVITY_LOCK', $days);
-   }
-   
-   public function getInactivityLockDays() {
-   	$retour = 0;
-   	if ($this->_issetExtra('INACTIVITY_LOCK')) {
-   		$retour = $this->_getExtra('INACTIVITY_LOCK');
-   	}
-   	return $retour;
-   }
-   
-   public function setInactivitySendMailBeforeLockDays($days){
-   	$this->_addExtra('INACTIVITY_MAIL_BEFORE_LOCK', $days);
-   }
-   
-   public function getInactivitySendMailBeforeLockDays(){
-   	$retour = 0;
-   	if ($this->_issetExtra('INACTIVITY_MAIL_BEFORE_LOCK')) {
-   		$retour = $this->_getExtra('INACTIVITY_MAIL_BEFORE_LOCK');
-   	}
-   	return $retour;
-   }
-   
-   public function setInactivityDeleteDays($days){
-   	$this->_addExtra('INACTIVITY_DELETE', $days);
-   }
-   
-   public function getInactivityDeleteDays(){
-   	$retour = 0;
-   	if ($this->_issetExtra('INACTIVITY_DELETE')) {
-   		$retour = $this->_getExtra('INACTIVITY_DELETE');
-   	}
-   	return $retour;
-   }
-   
-   public function setInactivitySendMailBeforeDeleteDays($days){
-   	$this->_addExtra('INACTIVITY_MAIL_DELETE', $days);
-   }
-   
-   public function getInactivitySendMailBeforeDeleteDays(){
-   	$retour = 0;
-   	if ($this->_issetExtra('INACTIVITY_MAIL_DELETE')) {
-   		$retour = $this->_getExtra('INACTIVITY_MAIL_DELETE');
-   	}
-   	return $retour;
    }
 
    public function setInactivityConfigDate()

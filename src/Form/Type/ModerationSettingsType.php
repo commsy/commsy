@@ -51,7 +51,7 @@ class ModerationSettingsType extends AbstractType
         $availableRubrics = array_merge(['home'], $this->roomItem->getAvailableRubrics());
         $rubricOptions = [];
         foreach ($availableRubrics as $rubric) {
-            $translatedTitle = $this->translator->trans(ucfirst($rubric), [], 'rubric');
+            $translatedTitle = $this->translator->trans(ucfirst($rubric), ['%count%' => 1], 'rubric');
             $rubricOptions[$translatedTitle] = $rubric;
         }
 

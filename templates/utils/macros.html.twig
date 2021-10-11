@@ -437,12 +437,12 @@
                                     {% endfor %}
                                 </td>
                                 <td class="uk-padding-top-remove uk-padding-bottom-remove uk-text-right">
-                                    {% set ratingDisplay = 'rating'|trans({}, 'material') %}
+                                    {% set ratingDisplay = 'rating'|trans({'%count%':1}, 'material') %}
                                     <span class="uk-text-bold uk-margin-left">
                                     {% if ratingArray.ratingDetail[ratingValue] is defined %}
                                         {{ ratingArray.ratingDetail[ratingValue] }}
                                         {% if ratingArray.ratingDetail[ratingValue] == 1 %}
-                                            {% set ratingDisplay = 'rating'|trans({}, 'material') %}
+                                            {% set ratingDisplay = 'rating'|trans({'%count%':0}, 'material') %}
                                         {% endif %}
                                     {% else %}
                                         0
@@ -628,7 +628,17 @@
             <ul id="mandatoryLinksForm" class="uk-switcher uk-margin">
                 {% if showCategories and form.category_mapping.categories is defined %}
                     <li>
-                        {{ form_widget(form.category_mapping.categories) }}
+                        <div class="category-form">
+                            {{ form_widget(form.category_mapping.categories) }}
+                        </div>
+                        <div class="uk-margin-top uk-flex">
+                            <div class="uk-margin-small-left">
+                                {{ form_widget(form.category_mapping.newCategory) }}
+                            </div>
+                            <div class="uk-margin-small-left">
+                                {{ form_widget(form.category_mapping.newCategoryAdd) }}
+                            </div>
+                        </div>
                     </li>
                 {% endif %}
                 {% if showHashtags and form.hashtag_mapping.hashtags is defined %}

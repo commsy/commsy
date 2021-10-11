@@ -1419,7 +1419,16 @@ class cs_item {
       $link_manager->undeleteLinks($this);
    }
 
-   function isPublic () {
+    /**
+     * Returns whether this item's content should get overwritten with some placeholder text.
+     * @return bool Whether this item's content should get overwritten (true), or not (false)
+     */
+    public function getHasOverwrittenContent(): bool
+    {
+        return false;
+    }
+
+    function isPublic () {
       return false;
    }
 
@@ -1447,6 +1456,7 @@ class cs_item {
           // check locking
           global $symfonyContainer;
           $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+          $checkLocking &= !$this->_issetExtra('etherpad_id'); // don't check locking for etherpads
           
           if ($checkLocking && !$user_item->isRoot() && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
               $lockingUserId = $this->getLockingUserId();
@@ -1983,7 +1993,7 @@ class cs_item {
    */
    function getFileList() {
       $file_list = new cs_list;
-   	  if ($this->getPublic()=='-1'){
+   	  if ($this->getPublic()=='-1' || $this->getHasOverwrittenContent()) {
 		 $translator = $this->_environment->getTranslationObject();
    	  	 return $file_list;
    	  }else{

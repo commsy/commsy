@@ -80,10 +80,19 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
         $account = $this->security->getUser();
         if ($account) {
             $portalRepository = $this->entityManager->getRepository(Portal::class);
-            /** @var Portal $portal */
-            $portal = $portalRepository->find($account->getContextId());
 
-            if ($portal->hasAGBEnabled()) {
+            /**
+             * TODO: Prior to $portalRepository->findOneById() we used $portalRepository->find(id) which - caused by the
+             * way authentication for root is implemented? returned a proxy class, findOneById does not. What we should
+             * really do is refactor accounts / auth_source to use a portal relation instead of the context_id column
+             * and remove the need for server id 99.
+             */
+
+            /** @var Portal $portal */
+            // $portal = $portalRepository->find($account->getContextId());
+            $portal = $portalRepository->findOneById($account->getContextId());
+
+            if ($portal && $portal->hasAGBEnabled()) {
                 $portalUser = $this->userService->getPortalUser($account);
 
                 if ($portalUser) {

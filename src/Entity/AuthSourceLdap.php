@@ -12,56 +12,64 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AuthSourceLdap extends AuthSource
 {
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
      * @Assert\Length(max=255)
      */
-    private $serverUrl;
+    private ?string $serverUrl;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
-    private $uidKey;
+    private ?string $uidKey;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
-    private $baseDn;
+    private ?string $baseDn;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
-    private $searchDn;
-
-    /**authsourcelda
-     * @var string
-     *
-     * @ORM\Column(type="string", length=50, nullable=false)
-     * @Assert\Length(max=50)
-     */
-    private $searchPassword;
+    private ?string $searchDn;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      * @Assert\Length(max=50)
      */
-    private $authDn;
+    private ?string $searchPassword;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(max=50)
+     */
+    private ?string $authDn;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=50)
+     * @Assert\Length(max=50)
+     */
+    private ?string $authQuery;
 
     public function __construct()
     {
-        $this->addAccount = false;
+        $this->addAccount = self::ADD_ACCOUNT_NO;
         $this->changeUsername = false;
         $this->deleteAccount = false;
         $this->changeUserdata = false;
@@ -178,6 +186,24 @@ class AuthSourceLdap extends AuthSource
     public function setAuthDn(string $authDn): self
     {
         $this->authDn = $authDn;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthQuery(): ?string
+    {
+        return $this->authQuery;
+    }
+
+    /**
+     * @param string $authQuery
+     * @return self
+     */
+    public function setAuthQuery(string $authQuery): self
+    {
+        $this->authQuery = $authQuery;
         return $this;
     }
 }

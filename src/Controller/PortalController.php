@@ -2,35 +2,29 @@
 
 namespace App\Controller;
 
-use App\Entity\Portal;
-use App\Form\Model\Csv\Base64CsvFile;
+use App\Entity\License;
+use App\Entity\RoomCategories;
+use App\Entity\Terms;
+use App\Event\CommsyEditEvent;
 use App\Form\Model\CsvImport;
-use App\Form\Type\CsvImportType;
+use App\Form\Type\AnnouncementsType;
+use App\Form\Type\LicenseNewEditType;
 use App\Form\Type\LicenseSortType;
+use App\Form\Type\PortalTermsType;
+use App\Form\Type\RoomCategoriesEditType;
+use App\Form\Type\RoomCategoriesLinkType;
+use App\Form\Type\TermType;
+use App\Form\Type\TranslationType;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\User\UserCreatorFacade;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\NonUniqueResultException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use App\Form\Type\AnnouncementsType;
-use App\Form\Type\PortalTermsType;
-use App\Form\Type\RoomCategoriesEditType;
-use App\Form\Type\RoomCategoriesLinkType;
-use App\Form\Type\TranslationType;
-use App\Entity\RoomCategories;
-use App\Entity\License;
-use App\Form\Type\LicenseNewEditType;
-use App\Entity\Terms;
-use App\Form\Type\TermType;
-
-use App\Event\CommsyEditEvent;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -108,17 +102,17 @@ class PortalController extends AbstractController
         $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
 
         // mandatory links form
-        $linkForm = $this->createForm(RoomCategoriesLinkType::class, ['mandatory' => $portalItem->isTagMandatory()], []);
+        $linkForm = $this->createForm(RoomCategoriesLinkType::class, ['mandatory' => $portalItem->isTagMandatory()],
+            []);
 
         $linkForm->handleRequest($request);
 
         if ($linkForm->isSubmitted() && $linkForm->isValid() && $linkForm->getClickedButton()->getName() == 'save') {
             $formData = $linkForm->getData();
 
-            if($formData['mandatory']) {
+            if ($formData['mandatory']) {
                 $portalItem->setTagMandatory();
-            }
-            else {
+            } else {
                 $portalItem->unsetTagMandatory();
             }
             $portalItem->save();
@@ -211,7 +205,7 @@ class PortalController extends AbstractController
     public function legacysettingsAction(
         int $roomId
     ) {
-        return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
+        return $this->redirect('/?cid=' . $roomId . '&mod=configuration&fct=index');
     }
 
     /**
@@ -262,188 +256,6 @@ class PortalController extends AbstractController
             'translations' => $translations,
             'translationId' => $translationId,
             'item' => $portalItem,
-        ];
-    }
-
-
-    /**
-     * @Route("/portal/{roomId}/licenses/{licenseId}")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param EventDispatcherInterface $dispatcher
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @param int|null $licenseId
-     * @return array|RedirectResponse
-     */
-    public function licensesAction(
-        Request $request,
-        EventDispatcherInterface $dispatcher,
-        LegacyEnvironment $environment,
-        int $roomId,
-        int $licenseId = null
-    ) {
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(License::class);
-
-        $license = new License();
-        if ($licenseId) {
-            $license = $repository->findOneById($licenseId);
-            $license->setTitle(html_entity_decode($license->getTitle()));
-        }
-
-        $newEditForm = $this->createForm(LicenseNewEditType::class, $license);
-
-        // determine title
-        $pageTitle = '';
-        if ($newEditForm->has('new')) {
-            $pageTitle = 'Create new license';
-        } elseif($newEditForm->has('update')) {
-            $pageTitle = 'Edit license';
-        }
-
-        // handle new/edit form
-        $newEditForm->handleRequest($request);
-        if ($newEditForm->isSubmitted() && $newEditForm->isValid()) {
-            if (!$newEditForm->has('cancel') || !$newEditForm->get('cancel')->isClicked()) {
-                $license->setContextId($roomId);
-
-                if (!$license->getPosition()) {
-                    $position = 0;
-                    $highestPosition = $repository->findHighestPosition($roomId);
-
-                    if ($highestPosition) {
-                        $highestPosition = $highestPosition[0];
-                        $position = $highestPosition['position'] + 1;
-                    }
-
-                    $license->setPosition($position);
-                }
-
-                $em->persist($license);
-                $em->flush();
-
-                $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
-            }
-
-            return $this->redirectToRoute('app_portal_licenses', [
-                'roomId' => $roomId,
-            ]);
-        }
-
-        // sort form
-        $sortForm = $this->createForm(LicenseSortType::class, null, [
-            'portalId' => $roomId,
-        ]);
-        $sortForm->handleRequest($request);
-
-        if ($sortForm->isSubmitted() && $sortForm->isValid()) {
-            $data = $sortForm->getData();
-
-            /** @var ArrayCollection $delete */
-            $delete = $data['license'];
-            if (!$delete->isEmpty()) {
-                $legacyEnvironment = $environment->getEnvironment();
-
-                $materialManager = $legacyEnvironment->getMaterialManager();
-                $materialManager->unsetLicenses($delete->get(0));
-
-                $zzzMaterialManager = $legacyEnvironment->getZzzMaterialManager();
-                $zzzMaterialManager->unsetLicenses($delete->get(0));
-
-                $em->remove($delete->get(0));
-                $em->flush();
-            }
-
-            $structure = $data['structure'];
-            if ($structure) {
-                $structure = json_decode($structure, true);
-
-                // update position
-                $repository->updatePositions($structure, $roomId);
-            }
-
-            return $this->redirectToRoute('app_portal_licenses', [
-                'roomId' => $roomId,
-            ]);
-        }
-
-        return [
-            'newEditForm' => $newEditForm->createView(),
-            'sortForm' => $sortForm->createView(),
-            'portalId' => $roomId,
-            'pageTitle' => $pageTitle,
-        ];
-    }
-
-    /**
-     * @Route("/portal/{roomId}/csvimport")
-     * @Template()
-     * @Security("is_granted('ITEM_MODERATE', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @return array
-     */
-    public function csvImportAction(
-        Request $request,
-        LegacyEnvironment $environment,
-        \App\Facade\UserCreatorFacade $userCreator,
-        int $roomId
-    ) {
-        $portal = null;
-        try {
-            $portal = $this->getDoctrine()->getRepository(Portal::class)
-                ->findActivePortal($roomId);
-        } catch (NonUniqueResultException $e) {
-        }
-
-        if (!$portal) {
-            throw $this->createNotFoundException();
-        }
-
-        $importForm = $this->createForm(CsvImportType::class, [], [
-            'uploadUrl' => $this->generateUrl('app_upload_base64upload', [
-                'roomId' => $roomId,
-            ]),
-            'portal' => $portal,
-            'translator' => $this->get('translator'),
-        ]);
-
-        $importForm->handleRequest($request);
-        if ($importForm->isSubmitted() && $importForm->isValid()) {
-            if ($importForm->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('app_portal_csvimport', [
-                    'roomId' => $roomId,
-                ]);
-            }
-
-            $data = $importForm->getData();
-            /** @var Base64CsvFile[] $base64CsvFiles */
-            $base64CsvFiles = $data['base64'];
-
-            $userDatasets = [];
-            if ($base64CsvFiles) {
-                foreach ($base64CsvFiles as $base64CsvFile) {
-                    if ($base64CsvFile->getChecked()) {
-                        $rows = $base64CsvFile->getBase64Content();
-                        foreach ($rows as $row) {
-                            $userDatasets[] = $row;
-                        }
-                    }
-                }
-
-                $legacyEnvironment = $environment->getEnvironment();
-                $authSourceManager = $legacyEnvironment->getAuthSourceManager();
-                $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
-
-                $userCreator->createFromCsvDataset($authSourceItem, $userDatasets);
-            }
-        }
-
-        return [
-            'form' => $importForm->createView(),
         ];
     }
 }

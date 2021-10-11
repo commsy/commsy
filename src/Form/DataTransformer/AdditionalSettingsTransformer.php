@@ -279,10 +279,11 @@ class AdditionalSettingsTransformer extends AbstractTransformer
          }
          
         if(($agbtext_array != $roomObject->getAGBTextArray()) or ($roomData['terms']['status'] != $roomObject->getAGBStatus())) {
+            $now = new DateTimeImmutable();
             $roomObject->setAGBStatus($roomData['terms']['status']);
             $roomObject->setAGBTextArray($agbtext_array);
-            $roomObject->setAGBChangeDate();
-            $current_user->setAGBAcceptanceDate(new DateTimeImmutable());
+            $roomObject->setAGBChangeDate($now);
+            $current_user->setAGBAcceptanceDate($now);
             $current_user->save();
          }
          

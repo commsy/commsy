@@ -29,6 +29,7 @@ use cs_tag_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -48,7 +49,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ItemController extends AbstractController
 {
-    private $transformerManager;
+    /**
+     * @var TransformerManager
+     */
+    private TransformerManager $transformerManager;
 
     /**
      * @required
@@ -58,7 +62,6 @@ class ItemController extends AbstractController
     {
         $this->transformerManager = $transformerManager;
     }
-
 
     /**
      * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
@@ -95,15 +98,18 @@ class ItemController extends AbstractController
         // won't allow any media upload; this is done since user & group detail views currently have no means to manage
         // (e.g. delete again) any attached files
         $configName = ($itemType === 'user' || $itemType === 'group') ? 'cs_item_nomedia_config' : 'cs_item_config' ;
-        
+
+        $url = $this->generateUrl('app_upload_ckupload', array(
+            'roomId' => $roomId,
+            'itemId' => $itemId
+        ));
+        $url .= '?CKEditorFuncNum=42&command=QuickUpload&type=Images';
+
         $formData = $transformer->transform($item);
         $formOptions = array(
             'itemId' => $itemId,
             'configName' => $configName,
-            'uploadUrl' => $this->generateUrl('app_upload_ckupload', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId
-            )),
+            'uploadUrl' => $url,
             'filelistUrl' => $this->generateUrl('app_item_filelist', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
@@ -709,17 +715,19 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/{itemId}/send")
      * @Template()
+     * @param Request $request
      * @param ItemService $itemService
      * @param MailAssistant $mailAssistant
-     * @param Request $request
+     * @param Swift_Mailer $mailer
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function sendAction(
+        Request $request,
         ItemService $itemService,
         MailAssistant $mailAssistant,
-        Request $request,
+        Swift_Mailer $mailer,
         int $roomId,
         int $itemId
     ) {
@@ -778,9 +786,9 @@ class ItemController extends AbstractController
 
             // send mail
             $message = $mailAssistant->getSwiftMessage($form, $item, true);
-            $this->get('mailer')->send($message);
+            $mailer->send($message);
 
-            $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+            $recipientCount = count($message->getTo() ?? []) + count($message->getCc() ?? []) + count($message->getBcc() ?? []);
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
@@ -933,19 +941,21 @@ class ItemController extends AbstractController
     /**
      * @Route("/room/{roomId}/item/sendlist", condition="request.isXmlHttpRequest()")
      * @Template()
+     * @param Request $request
      * @param RoomService $roomService
      * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
-     * @param Request $request
+     * @param Swift_Mailer $mailer
      * @param int $roomId
      * @return array|JsonResponse
      * @throws Exception
      */
     public function sendlistAction(
+        Request $request,
         RoomService $roomService,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        Request $request,
+        Swift_Mailer $mailer,
         int $roomId
     ) {
         // extract item id from request data
@@ -1000,7 +1010,7 @@ class ItemController extends AbstractController
                 $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
             }
             
-            $this->get('mailer')->send($message);
+            $mailer->send($message);
 
             return new JsonResponse([
                 'message' => 'send ...',
@@ -1145,31 +1155,6 @@ class ItemController extends AbstractController
             'prevItemId' => $prevItemId,
             'nextItemId' => $nextItemId,
             'lastItemId' => $lastItemId,
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/print")
-     * @param ItemService $itemService
-     * @param int $itemId
-     * @return Response
-     */
-    public function printAction(
-        ItemService $itemService,
-        int $itemId
-    ) {
-        $baseItem = $itemService->getItem($itemId);
-        
-        $html = $this->renderView('App:'.ucfirst($baseItem->getItemType()).':detailPrint.html.twig', [
-        ]);
-
-        return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="print.pdf"'
-            ]
         );
     }
 

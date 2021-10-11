@@ -1,11 +1,14 @@
 {
     "name": "commsy/commsy",
+    "description": "A web-based community system",
     "license": "GPLv2",
     "type": "project",
     "require": {
-        "php": "^7.3.0",
+        "php": "^7.4.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
+        "ext-json": "*",
         "ci/restclientbundle": "^2.0",
         "composer/package-versions-deprecated": "^1.8",
         "craue/twigextensions-bundle": "^2.4",

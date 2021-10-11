@@ -4,11 +4,13 @@
 namespace App\Security;
 
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
+use App\Utils\PortalGuessService;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,22 +31,30 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var AccountCreatorFacade
      */
-    private $accountCreator;
+    private AccountCreatorFacade $accountCreator;
+
+    /**
+     * @var AccountManager
+     */
+    private AccountManager $accountManager;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        AccountCreatorFacade $accountCreator
+        AccountCreatorFacade $accountCreator,
+        PortalGuessService $portalGuessService,
+        AccountManager $accountManager
     ) {
-        parent::__construct($urlGenerator);
+        parent::__construct($urlGenerator, $portalGuessService);
 
         $this->entityManager = $entityManager;
         $this->accountCreator = $accountCreator;
+        $this->accountManager = $accountManager;
     }
 
     /**
@@ -193,6 +203,8 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
         $this->entityManager->persist($account);
         $this->entityManager->flush();
 
+        $this->accountManager->propgateAccountDataToProfiles($account);
+
         return $account;
     }
 
@@ -239,7 +251,7 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
             $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'shib');
         }
 
-        $url = $this->getLoginUrl($request);
+        $url = $this->getLoginUrl($request->attributes->get('context'));
 
         return new RedirectResponse($url);
     }

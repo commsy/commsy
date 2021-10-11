@@ -62,7 +62,7 @@
                                     {% for rubric in form.rubrics %}
                                         <div class="uk-form-row">
                                             <label class="uk-form-label" style="cursor: move;">
-                                                <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-right"></i>{{ rubric.vars.name|capitalize|trans({}, 'rubric') }}
+                                                <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-right"></i>{{ rubric.vars.name|capitalize|trans({'%count%':1}, 'rubric') }}
                                             </label>
                                             {{ form_widget(rubric) }}
                                         </div>
@@ -109,29 +109,31 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        var regExp = /\[([^\]]+)\]$/;
-        function setRubricOrder(){
-            var $rubrics = $("#general_settings_rubrics").find("select").map(function(){
-                var rubricsName = regExp.exec($(this).attr("name"));
-                if(rubricsName){
-                    return rubricsName[1];
+        document.addEventListener("DOMContentLoaded", function() {
+            var regExp = /\[([^\]]+)\]$/;
+            function setRubricOrder(){
+                var $rubrics = $("#general_settings_rubrics").find("select").map(function(){
+                    var rubricsName = regExp.exec($(this).attr("name"));
+                    if(rubricsName){
+                        return rubricsName[1];
+                    }
+                }).get();
+                $("#general_settings_rubricOrder").val($rubrics);
+            }
+            function toggleAccessCode() {
+                if($("#general_settings_access_check").val() == "withcode") {
+                    $("#general_settings_access_code").show();
                 }
-            }).get();
-            $("#general_settings_rubricOrder").val($rubrics);
-        }
-        function toggleAccessCode() {
-            if($("#general_settings_access_check").val() == "withcode") {
-                $("#general_settings_access_code").show();
+                else {
+                    $("#general_settings_access_code").hide();
+                }
             }
-            else {
-                $("#general_settings_access_code").hide();
-            }
-        }
-        window.onload = function() {
-            setRubricOrder();
-            toggleAccessCode();
-        };
-        $("#general_settings_rubrics").on('change.uk.sortable', setRubricOrder);
-        $("#general_settings_access_check").change(toggleAccessCode);
+            window.onload = function() {
+                setRubricOrder();
+                toggleAccessCode();
+            };
+            $("#general_settings_rubrics").on('change.uk.sortable', setRubricOrder);
+            $("#general_settings_access_check").change(toggleAccessCode);
+        });
     </script>
 {% endblock %}

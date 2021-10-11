@@ -8,19 +8,33 @@
 
 namespace App\Controller;
 
+use App\Action\Delete\DeleteAction;
+use App\Action\Delete\DeleteStep;
 use cs_room_item;
 use cs_step_item;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
 use App\Action\TodoStatus\TodoStatusAction;
-use App\Utils\ItemService;
 use App\Utils\TodoService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 class StepController extends BaseController
 {
+    private TodoService $todoService;
+
+    /**
+     * @required
+     * @param TodoService $todoService
+     */
+    public function setTodoService(TodoService $todoService): void
+    {
+        $this->todoService = $todoService;
+    }
+
+
+
     ###################################################################################################
     ## XHR Action requests
     ###################################################################################################
@@ -34,13 +48,15 @@ class StepController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
+        DeleteAction $action,
+        DeleteStep $deleteStep,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         // TODO: find a way to load this service via new Symfony Dependency Injection!
-        $action = $this->get('commsy.action.delete.step');
+        $action->setDeleteStrategy($deleteStep);
         return $action->execute($room, $items);
     }
 
@@ -48,7 +64,7 @@ class StepController extends BaseController
      * @Route("/room/{roomId}/step/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
      * @throws \Exception
      */
-    public function xhrChangeStatusAction($roomId, $itemId, Request $request, ItemService $itemService, TodoService $todoService)
+    public function xhrChangeStatusAction($roomId, $itemId, Request $request, TodoService $todoService)
     {
         $room = $this->getRoom($roomId);
         $roomToDoItems = $todoService->getTodosById($roomId, []);
@@ -82,10 +98,8 @@ class StepController extends BaseController
      */
     protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {
-        $todoService = $this->get('commsy_legacy.todo_service');
-
         if (count($itemIds) == 1) {
-            return [$todoService->getStep($itemIds[0])];
+            return [$this->todoService->getStep($itemIds[0])];
         }
 
         return [];

@@ -8,7 +8,7 @@ use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
-use App\Utils\UserService;
+use cs_environment;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -17,35 +17,44 @@ use Symfony\Component\Security\Core\Security;
 class MenuBuilder
 {
     /**
-    * @var FactoryInterface $factory
-    */
-    private $factory;
+     * @var FactoryInterface $factory
+     */
+    private FactoryInterface $factory;
 
-    private $roomService;
+    /**
+     * @var RoomService
+     */
+    private RoomService $roomService;
 
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $userService;
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    private $authorizationChecker;
-
-    private $invitationsService;
+    /**
+     * @var InvitationsService
+     */
+    private InvitationsService $invitationsService;
 
     /**
      * @var PortalRepository
      */
-    private $portalRepository;
+    private PortalRepository $portalRepository;
 
     /**
      * @var Security
      */
-    private $security;
+    private Security $security;
 
     /**
      * @param FactoryInterface $factory
      * @param RoomService $roomService
      * @param LegacyEnvironment $legacyEnvironment
-     * @param UserService $userService
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param InvitationsService $invitationsService
      * @param PortalRepository $portalRepository
@@ -55,7 +64,6 @@ class MenuBuilder
         FactoryInterface $factory,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
-        UserService $userService,
         AuthorizationCheckerInterface $authorizationChecker,
         InvitationsService $invitationsService,
         PortalRepository $portalRepository,
@@ -64,7 +72,6 @@ class MenuBuilder
         $this->factory = $factory;
         $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->userService = $userService;
         $this->authorizationChecker = $authorizationChecker;
         $this->invitationsService = $invitationsService;
         $this->portalRepository = $portalRepository;
@@ -110,7 +117,7 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'profile');
             }
 
-            if(!$currentUser->isRoot()) {
+            if (!$currentUser->isRoot()) {
                 $menu->addChild('mergeAccounts', [
                     'label' => 'combineAccount',
                     'route' => 'app_account_mergeaccounts',
@@ -137,7 +144,7 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            if(!$currentUser->isRoot()) {
+            if (!$currentUser->isRoot()) {
                 $menu->addChild('privacy', [
                     'label' => 'Privacy',
                     'route' => 'app_account_privacy',
@@ -149,7 +156,7 @@ class MenuBuilder
                         'user' => $currentUser,
                     ]
                 ])
-                    ->setExtra('translation_domain', 'profile');
+                ->setExtra('translation_domain', 'profile');
             }
 
             $menu->addChild('additional', [
@@ -185,15 +192,14 @@ class MenuBuilder
 
     /**
      * creates the profile sidebar
-     * @param  RequestStack $requestStack [description]
-     * @return knpMenu                    KnpMenu
+     * @param RequestStack $requestStack [description]
+     * @return KnpMenu                    KnpMenu
      */
     public function createProfileMenu(RequestStack $requestStack)
     {
         // create profile
         $currentStack = $requestStack->getCurrentRequest();
         $currentUser = $this->legacyEnvironment->getCurrentUser();
-        $roomId = $currentStack->attributes->get('roomId');
 
         $menu = $this->factory->createItem('root');
 
@@ -264,10 +270,10 @@ class MenuBuilder
                     'user' => $currentUser,
                 ]
             ])
-            ->setAttributes([
-                'class' => 'uk-button-danger',
-            ])
-            ->setExtra('translation_domain', 'profile');
+                ->setAttributes([
+                    'class' => 'uk-button-danger',
+                ])
+                ->setExtra('translation_domain', 'profile');
         }
 
         return $menu;
@@ -341,7 +347,7 @@ class MenuBuilder
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify'),
                 ))
-                    ->setExtra('translation_domain', 'menu');
+                ->setExtra('translation_domain', 'menu');
             }
 
             // delete
@@ -356,10 +362,10 @@ class MenuBuilder
                         'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
                     ],
                 ])
-                    ->setAttributes([
-                        'class' => 'uk-button-danger',
-                    ])
-                    ->setExtra('translation_domain', 'menu');
+                ->setAttributes([
+                    'class' => 'uk-button-danger',
+                ])
+                ->setExtra('translation_domain', 'menu');
             }
 
             $menu->addChild(' ', ['uri' => '#']);
@@ -502,10 +508,19 @@ class MenuBuilder
 
             // inactive
             $menu->addChild('Inactive', [
-                'label' => 'Inactive',
+                'label' => 'Deprovisioning',
                 'route' => 'app_portalsettings_inactive',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'minus-circle']
+            ])
+            ->setExtra('translation_domain', 'portal');
+
+            // CSV import
+            $menu->addChild('Csvimport', [
+                'label' => 'CSV-Import',
+                'route' => 'app_portalsettings_csvimport',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'move']
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -516,7 +531,7 @@ class MenuBuilder
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'mail']
             ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
 
             // auth source
             $menu->addChild('Auth', [
@@ -525,7 +540,7 @@ class MenuBuilder
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'credit-card']
             ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;
@@ -533,7 +548,7 @@ class MenuBuilder
 
     /**
      * creates rubric menu
-     * @param  RequestStack $requestStack [description]
+     * @param RequestStack $requestStack [description]
      * @return KnpMenu                    KnpMenu
      */
     public function createMainMenu(RequestStack $requestStack)
@@ -577,9 +592,7 @@ class MenuBuilder
                 if (!in_array("user", $rubrics) and $currentUser->isModerator()) {
                     $rubrics[] = "user";
                 }
-            }
-
-            // dashboard menu
+            } // dashboard menu
             else {
                 $rubrics = [
                     "announcement" => "announcement",
@@ -596,9 +609,9 @@ class MenuBuilder
             list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
 
             // NOTE: hide dashboard menu in dashboard overview and room list!
-            if ( (!$inPrivateRoom or ($action != "overview" and $action != "listall") ) and
-                 ($controller != "copy" or $action != "list") and
-                 ($controller != "room" or $action != "detail")) {
+            if ((!$inPrivateRoom or ($action != "overview" and $action != "listall")) and
+                ($controller != "copy" or $action != "list") and
+                ($controller != "room" or $action != "detail")) {
                 // home navigation
                 $menu->addChild('room_home', array(
                     'label' => $label,
@@ -610,7 +623,7 @@ class MenuBuilder
 
                 // loop through rubrics to build the menu
                 foreach ($rubrics as $value) {
-                    $route = 'app_'.$value.'_list';
+                    $route = 'app_' . $value . '_list';
                     if ($value == 'date') {
                         $room = $this->roomService->getRoomItem($roomId);
                         if ($room->getDatesPresentationStatus() != 'normal') {
@@ -640,7 +653,7 @@ class MenuBuilder
                             'routeParameters' => array('roomId' => $roomId),
                             'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
                         ))
-                            ->setExtra('translation_domain', 'menu');
+                        ->setExtra('translation_domain', 'menu');
                     }
                 }
             }
@@ -651,28 +664,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
-                ->setExtra('translation_domain', 'portal');
-
-            $menu->addChild('portal_configuration_licenses', array(
-                'label' => 'Licenses',
-                'route' => 'app_portal_licenses',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-copyright uk-icon-small')
-            ))
-                ->setExtra('translation_domain', 'portal');
-
-            // CSV-Import
-            $menu->addChild('portal_configuration_csv_import', [
-                'label' => 'CSV-Import',
-                'route' => 'app_portal_csvimport',
-                'routeParameters' => [
-                    'roomId' => $roomId,
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-user-plus uk-icon-small',
-                ],
-            ])
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
 
             $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
@@ -681,7 +673,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
             ))
-                ->setExtra('translation_domain', 'portal');
+            ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;
@@ -689,7 +681,7 @@ class MenuBuilder
 
     /**
      * returns the uikit icon classname for a specific rubric
-     * @param  string $rubric rubric name
+     * @param string $rubric rubric name
      * @return string         uikit icon class
      */
     public function getRubricIcon($rubric)

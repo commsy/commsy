@@ -9,6 +9,10 @@
 namespace App\Controller;
 
 
+use App\Action\Delete\DeleteAction;
+use App\Action\Delete\DeleteSection;
+use App\Utils\MaterialService;
+use App\Utils\RoomService;
 use cs_room_item;
 use cs_step_item;
 use Exception;
@@ -20,6 +24,29 @@ class SectionController extends BaseController
     ###################################################################################################
     ## XHR Action requests
     ###################################################################################################
+    /**
+     * @var MaterialService
+     */
+    private MaterialService $materialService;
+
+    /**
+     * @var DeleteAction
+     */
+    private DeleteAction $deleteAction;
+
+    /**
+     * SectionController constructor.
+     * @param MaterialService $materialService
+     * @param DeleteSection $deleteSection
+     * @param DeleteAction $deleteAction
+     */
+    public function __construct(MaterialService $materialService, DeleteSection $deleteSection, DeleteAction $deleteAction)
+    {
+        $this->materialService = $materialService;
+        $this->deleteAction = $deleteAction;
+        $this->deleteAction->setDeleteStrategy($deleteSection);
+    }
+
 
     /**
      * @Route("/room/{roomId}/section/xhr/delete", condition="request.isXmlHttpRequest()")
@@ -36,8 +63,7 @@ class SectionController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         // TODO: find a way to load this service via new Symfony Dependency Injection!
-        $action = $this->get('commsy.action.delete.section');
-        return $action->execute($room, $items);
+        return $this->deleteAction->execute($room, $items);
     }
 
     /**
@@ -53,10 +79,8 @@ class SectionController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-        $materialService = $this->get('commsy_legacy.material_service');
-
         if (count($itemIds) == 1) {
-            return [$materialService->getSection($itemIds[0])];
+            return [$this->materialService->getSection($itemIds[0])];
         }
 
         return [];

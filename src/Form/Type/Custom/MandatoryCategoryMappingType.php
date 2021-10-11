@@ -1,14 +1,14 @@
 <?php
 namespace App\Form\Type\Custom;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
 use App\Form\Type\TreeChoiceType;
-
-use Symfony\Component\Validator\Constraints\Count;
-
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class MandatoryCategoryMappingType extends AbstractType
 {
@@ -26,9 +26,20 @@ class MandatoryCategoryMappingType extends AbstractType
                 'required' => true,
                 'expanded' => true,
                 'multiple' => true,
-                'constraints' => array(
-                    new Count(array('min' => 1, 'minMessage' => "Please select at least one category")),
+            ))
+            ->add('newCategory', TextType::class, array(
+                'attr' => array(
+                    'placeholder' => $options['categoryPlaceholderText'],
                 ),
+                'label' => 'newCategory',
+                'required' => false
+            ))
+            ->add('newCategoryAdd', ButtonType::class, array(
+                'attr' => array(
+                    'id' => 'addNewCategory',
+                    'data-cs-add-category' => $options['categoryEditUrl'],
+                ),
+                'label' => 'addNewCategory',
             ));
     }
 
@@ -40,9 +51,22 @@ class MandatoryCategoryMappingType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['categories'])
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setRequired(['categoryPlaceholderText', 'categories', 'categoryEditUrl'])
+            ->setDefaults([
+                'translation_domain' => 'form',
+                'constraints' => [
+                    new Callback([$this, 'validate']),
+                ]
+            ])
         ;
     }
 
+    public function validate(array $data, ExecutionContextInterface $context): void
+    {
+        if (!$data['categories'] && !$data['newCategory']) {
+            $context->buildViolation('Please select at least one category')
+                ->atPath('categories')
+                ->addViolation();
+        }
+    }
 }

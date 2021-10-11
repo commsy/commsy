@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
+use App\Action\Delete\DeleteAction;
 use App\Entity\SavedSearch;
 use App\Filter\SearchFilterType;
 use App\Form\Type\SearchItemType;
@@ -24,9 +25,9 @@ use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
 use App\Search\QueryConditions\TitleQueryCondition;
 use App\Search\SearchManager;
-use App\Services\LegacyEnvironment;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use App\Utils\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use cs_item;
 use cs_room_item;
@@ -57,14 +58,10 @@ class SearchController extends BaseController
 
     /**
      * SearchController constructor.
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param TranslatorInterface $translator
      * @param UrlGeneratorInterface $router
      */
-    public function __construct(RoomService $roomService, UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $router)
     {
-        parent::__construct($roomService);
         $this->router = $router;
     }
 
@@ -81,10 +78,22 @@ class SearchController extends BaseController
      */
     public function searchFormAction(
         int $roomId,
-        $requestData
+        $requestData,
+        RoomService $roomService
     ) {
         $searchData = new SearchData();
         $searchData->setPhrase($requestData['phrase'] ?? null);
+
+        $originalRoomId = $roomId;
+        $originalRoomItem = $roomService->getRoomItem($roomId);
+
+        // by default, we perform a global search across all of the user's rooms, so we redirect to the dashboard
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $privateRoomItem = $currentUser->getOwnRoom();
+        $privateRoomID = ($privateRoomItem) ? $privateRoomItem->getItemID() : null;
+        if ($privateRoomID) {
+            $roomId = $privateRoomID;
+        }
 
         $form = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
@@ -92,14 +101,11 @@ class SearchController extends BaseController
             ])
         ]);
 
-//        // manually submit the form
-//        if (isset($postData)) {
-//            $form->submit($postData);
-//        }
-
         return [
             'form' => $form->createView(),
             'roomId' => $roomId,
+            'originalRoomId' => $originalRoomId,
+            'originalRoomTitle' => $originalRoomItem ? $originalRoomItem->getTitle() : '',
         ];
     }
 
@@ -169,7 +175,8 @@ class SearchController extends BaseController
     public function instantResultsAction(
         Request $request,
         SearchManager $searchManager,
-        ReaderService $readerService,
+        MultipleContextFilterCondition $multipleContextFilterCondition,
+                                         ReaderService $readerService,
         int $roomId
     ) {
         $query = $request->get('search', '');
@@ -182,12 +189,11 @@ class SearchController extends BaseController
         }
 
         // filter conditions
-        $singleFilterCondition = new SingleContextFilterCondition();
-        $singleFilterCondition->setContextId($roomId);
-        $searchManager->addFilterCondition($singleFilterCondition);
+        // NOTE: instant results will always perform a global search, i.e. show best matches from all of the user's rooms
+        $searchManager->addFilterCondition($multipleContextFilterCondition);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, $readerService, $roomId, 0, true);
+        $results = $this->prepareResults($searchResults, $readerService, $roomId, 0, true, $query);
 
         $response = new JsonResponse();
 
@@ -204,7 +210,6 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/results")
      * @Template
      * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
      * @param RoomService $roomService
      * @param SearchManager $searchManager
      * @param MultipleContextFilterCondition $multipleContextFilterCondition
@@ -213,7 +218,6 @@ class SearchController extends BaseController
      */
     public function resultsAction(
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
@@ -225,7 +229,7 @@ class SearchController extends BaseController
     )
     {
         $roomItem = $roomService->getRoomItem($roomId);
-        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -233,6 +237,15 @@ class SearchController extends BaseController
 
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
+
+        // the `originalContext` query parameter exists if the user clicked the 'Search in this room' entry in the
+        // instant results dropdown; the param contains the roomId of the original room that was active before the
+        // search caused a redirect to the dashboard
+        $originalRoomId = $request->get('originalContext');
+        $originalRoomItem = ($originalRoomId) ? $roomService->getRoomItem($originalRoomId) : null;
+        if ($originalRoomItem) {
+            $searchData->setSelectedContext($originalRoomItem->getTitle());
+        }
 
         // if the top form submits a request it will call setPhrase() on SearchData
         $topForm = $this->createForm(SearchType::class, $searchData, [
@@ -435,7 +448,6 @@ class SearchController extends BaseController
      */
     public function moreResultsAction(
         Request $request,
-        LegacyEnvironment $legacyEnvironment,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         ReadStatusFilterCondition $readStatusFilterCondition,
@@ -448,7 +460,7 @@ class SearchController extends BaseController
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
-        $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
@@ -875,14 +887,14 @@ class SearchController extends BaseController
      */
     public function xhrCopyAction(
         Request $request,
+        CopyAction $copyAction,
         int $roomId
     )
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        $action = $this->get(CopyAction::class);
-        return $action->execute($room, $items);
+        return $copyAction->execute($room, $items);
     }
 
     /**
@@ -894,15 +906,14 @@ class SearchController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
+        DeleteAction $deleteAction,
         int $roomId
     )
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        // TODO: find a way to load this service via new Symfony Dependency Injection!
-        $action = $this->get('commsy.action.delete.generic');
-        return $action->execute($room, $items);
+        return $deleteAction->execute($room, $items);
     }
 
     /**
@@ -924,13 +935,10 @@ class SearchController extends BaseController
             return [];
         } else {
             // TODO: This should be optimized
-            $itemService = $this->get('commsy_legacy.item_service');
-
             $items = [];
             foreach ($itemIds as $itemId) {
-                $items[] = $itemService->getTypedItem($itemId);
+                $items[] = $this->itemService->getTypedItem($itemId);
             }
-
             return $items;
         }
     }
@@ -941,7 +949,7 @@ class SearchController extends BaseController
         int $currentRoomId,
         int $offset = 0,
         bool $json = false
-    )
+    , $searchPhrase = null)
     {
 
         $results = [];
@@ -958,11 +966,16 @@ class SearchController extends BaseController
                 // construct target url
                 $url = '#';
 
+                $roomTitle = '';
                 if ($type == 'room') {
                     $roomId = $currentRoomId;
                     $type = 'project';
                 } else {
                     $roomId = $searchResult->getContextId();
+                    $roomItem = $this->getRoom($roomId);
+                    if ($roomItem) {
+                        $roomTitle = $roomItem->getTitle();
+                    }
                 }
 
                 $routeName = 'app_' . $type . '_detail';
@@ -985,9 +998,11 @@ class SearchController extends BaseController
 
                 $results[] = [
                     'title' => $title,
-                    'text' => $this->translator->trans(ucfirst($type), ['count' => 0], 'rubric'),
+                    'roomTitle' => $roomTitle,
+                    'text' => $this->translator->trans(ucfirst($type), ['%count%' => 0], 'rubric'),
                     'url' => $url,
                     'value' => $searchResult->getItemId(),
+                    'searchPhrase' => $searchPhrase ?? '',
                 ];
             } else {
                 $allowedActions = ['copy'];

@@ -35,7 +35,14 @@ class CategoryService
         return $this->buildTagArray($rootItem);
     }
 
-    public function addTag($title, $roomId, $parentTagId = null)
+    /**
+     * Creates and returns a new category (aka tag) with the given title, context and parent.
+     * @param $title
+     * @param $roomId
+     * @param null $parentTagId
+     * @return \cs_tag_item
+     */
+    public function addTag($title, $roomId, $parentTagId = null): \cs_tag_item
     {
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
@@ -63,6 +70,8 @@ class CategoryService
         $tagItem->setPosition($parentTagId, $parentTagItem->getChildrenList()->getCount() + 1);
 
         $tagItem->save();
+
+        return $tagItem;
     }
 
     public function removeTag($tagId, $roomId)

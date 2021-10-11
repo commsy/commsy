@@ -2,28 +2,26 @@
 
 namespace App\Feed;
 
+use App\Services\LegacyEnvironment;
+use cs_environment;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
-
 use Debril\RssAtomBundle\Provider\FeedProviderInterface;
 use FeedIo\Feed;
 use FeedIo\FeedInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-
-use App\Services\LegacyEnvironment;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CommsyFeedContentProvider implements FeedProviderInterface
 {
-    private $legacyEnvironment;
-    private $translator;
-    private $feedCreatorFactory;
+    private cs_environment $legacyEnvironment;
+    private TranslatorInterface $translator;
+    private FeedCreatorFactory $feedCreatorFactory;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         TranslatorInterface $translator,
-        FeedCreatorFactory $feedCreatorFactory)
-    {
+        FeedCreatorFactory $feedCreatorFactory
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->translator = $translator;
         $this->feedCreatorFactory = $feedCreatorFactory;
@@ -32,13 +30,13 @@ class CommsyFeedContentProvider implements FeedProviderInterface
     /**
      * @param Request $request
      *
+     * @return FeedInterface
      * @throws FeedNotFoundException
      *
-     * @return FeedInterface
      */
     public function getFeed(Request $request): FeedInterface
     {
-        $contextId = $request->query->get('contextId');
+        $contextId = $request->attributes->get('contextId');
         $this->legacyEnvironment->setCurrentContextID($contextId);
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -175,7 +173,8 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         return $types;
     }
 
-    private function getItems($contextItem) {
+    private function getItems($contextItem)
+    {
         $itemManager = $this->legacyEnvironment->getItemManager();
         $itemManager->resetLimits();
 

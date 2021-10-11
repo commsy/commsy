@@ -9,9 +9,13 @@
 namespace App\Controller;
 
 
+use App\Entity\Account;
 use App\Entity\RoomPrivat;
 use App\Security\Authorization\Voter\RootVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use LogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,30 +29,35 @@ class HelperController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param string $context
      * @return RedirectResponse
+     * @throws NoResultException|NonUniqueResultException
      */
     public function portalEnter(
         EntityManagerInterface $entityManager,
         string $context = 'server'
     ) {
-        $user = $this->getUser();
-        if ($user !== null) {
+        /** @var Account $account */
+        $account = $this->getUser();
+        if ($account === null) {
+            throw new LogicException('There must be a valid user at this point');
+        }
 
-            // Root (who does not own a private room) will be redirected to "all rooms"
-            if ($context !== 'server' && $this->isGranted(RootVoter::ROOT)) {
-                return $this->redirectToRoute('app_room_listall', [
-                    'roomId' => $context,
-                ]);
-            }
+        // Root (who does not own a private room) will be redirected to "all rooms"
+        if ($context !== 'server' && $this->isGranted(RootVoter::ROOT)) {
+            return $this->redirectToRoute('app_room_listall', [
+                'roomId' => $context,
+            ]);
+        }
+
+        // If $context is a number or string representing a number
+        if (is_numeric($context)) {
+            $privateRoom = $entityManager->getRepository(RoomPrivat::class)
+                ->findOneByPortalIdAndAccount($context, $account);
 
             // The default redirect to the dashboard.
-            if (is_numeric($context)) {
-                $privateRoom = $entityManager->getRepository(RoomPrivat::class)
-                    ->findByContextIdAndUsername($context, $user->getUsername());
-                if ($privateRoom !== null) {
-                    return $this->redirectToRoute('app_dashboard_overview', [
-                        'roomId' => $privateRoom->getItemId(),
-                    ]);
-                }
+            if ($privateRoom) {
+                return $this->redirectToRoute('app_dashboard_overview', [
+                    'roomId' => $privateRoom->getItemId(),
+                ]);
             }
         }
 

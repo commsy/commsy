@@ -18,17 +18,17 @@ class AccountMerger
     /**
      * @var UserService
      */
-    private $userService;
+    private UserService $userService;
 
     /**
      * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * AccountMerger constructor.
@@ -56,7 +56,7 @@ class AccountMerger
             return;
         }
 
-        // merge non-archived rooms
+        // merge archived rooms
         $this->legacyEnvironment->activateArchiveMode();
         $this->doMerge($from, $into);
 

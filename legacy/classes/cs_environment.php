@@ -26,8 +26,10 @@
  */
 
 use App\Entity\Portal;
+use App\Helper\SessionHelper;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
@@ -1901,23 +1903,38 @@ class cs_environment {
       return $this->instance['translation_object'];
    }
 
-   /** getSelectedLanguage
-    * get selected language, form user, room or browser
-    *
-    * @return string selected language
-    */
-   function getSelectedLanguage () {
-      if ( empty($this->_selected_language) ) {
-         $context_item = $this->getCurrentContextItem();
-         if ( isset($context_item) ) {
-            $this->_selected_language = $context_item->getLanguage();
-         }
-         if ($this->_selected_language == 'user') {
-            $this->_selected_language = $this->getUserLanguage();
-         }
-      }
-      return $this->_selected_language;
-   }
+    /** getSelectedLanguage
+     * get selected language, form user, room or browser
+     *
+     * @return string selected language
+     */
+    public function getSelectedLanguage()
+    {
+        if (empty($this->_selected_language)) {
+            $contextItem = $this->getCurrentContextItem();
+
+            if (get_class($contextItem) == PortalProxy::class) {
+                // If in portal context we have to use the session value to set the current language.
+                // See https://symfony.com/doc/4.4/session/locale_sticky_session.html
+                global $symfonyContainer;
+
+                $sessionHelper = $symfonyContainer->get(SessionHelper::class);
+                $session = $sessionHelper->getSession();
+                $this->_selected_language = $session->get('_locale', 'de');
+            } else {
+                // If in room context (and the room will fall back to the user's choice), we'll
+                // get the language from cs_environment::getUserLanguage. This method returns the
+                // language extra from the user table. All user table entries + session value get updated
+                // when the user changes the account language.
+                // TODO: Only rely on account + session value and get rid of the profile languages.
+                $this->_selected_language = $contextItem->getLanguage();
+                if ($this->_selected_language === 'user') {
+                    $this->_selected_language = $this->getUserLanguage();
+                }
+            }
+        }
+        return $this->_selected_language;
+    }
 
    public function unsetSelectedLanguage () {
       $this->_selected_language = NULL;
@@ -1981,33 +1998,37 @@ class cs_environment {
       return $this->_available_languages;
    }
 
-  /**
-   * Taken from http://www.shredzone.de/articles/php/snippets/acceptlang/?SID=uf4h8rf736v35afbi90844qsc0
-   *
-   * Parse the Accept-Language HTTP header sent by the browser. It
-   * will return an array with the languages the user accepts, sorted
-   * from most preferred to least preferred.
-   *
-   *
-   * @return  Array: key is the importance, value is the language code.
-   */
-  function parseAcceptLanguage() {
-    $ayLang = array();
-    $aySeen = array();
-    if(getenv('HTTP_ACCEPT_LANGUAGE') != '') {
-      foreach(explode(',',getenv('HTTP_ACCEPT_LANGUAGE')) as $llang) {
-        preg_match("~^(.*?)([-_].*?)?(\;q\=(.*))?$~iu", $llang, $ayM);
-        $q = isset($ayM[4]) ? $ayM[4] : '1.0';
-        $lang = mb_strtolower(trim($ayM[1]));
-        if(!in_array($lang, $aySeen)) {
-          $ayLang[$q] = $lang;
-          $aySeen[] = $lang;
+    /**
+     * Taken from http://www.shredzone.de/articles/php/snippets/acceptlang/?SID=uf4h8rf736v35afbi90844qsc0
+     *
+     * Parse the Accept-Language HTTP header sent by the browser. It
+     * will return an array with the languages the user accepts, sorted
+     * from most preferred to least preferred.
+     *
+     *
+     * @return  Array: key is the importance, value is the language code.
+     */
+    private function parseAcceptLanguage()
+    {
+        $ayLang = array();
+        $aySeen = array();
+        if (getenv('HTTP_ACCEPT_LANGUAGE') != '') {
+            foreach (explode(',', getenv('HTTP_ACCEPT_LANGUAGE')) as $llang) {
+                preg_match("~^(.*?)([-_].*?)?(\;q\=(.*))?$~iu", $llang, $ayM);
+                $q = $ayM[4] ?? '1.0';
+                $lang = mb_strtolower(trim($ayM[1]));
+                if (!in_array($lang, $aySeen)) {
+                    $ayLang[$q] = $lang;
+                    $aySeen[] = $lang;
+                }
+            }
+
+            uksort($ayLang, function($a, $b) {
+                return ($a > $b) ? -1 : 1;
+            });
         }
-      }
-      uksort($ayLang, create_function('$a,$b','return ($a>$b) ? -1 : 1;'));
+        return $ayLang;
     }
-    return $ayLang;
-  }
 
    function getCurrentBrowser () {
       $retour = '';
@@ -2399,5 +2420,13 @@ class cs_environment {
    public function unsetPortalItem () {
        $this->_current_portal = NULL;
    }
+
+    /**
+     * @return ContainerInterface
+     */
+   public function getSymfonyContainer(): ContainerInterface
+   {
+       global $symfonyContainer;
+       return $symfonyContainer;
+   }
 }
-?>

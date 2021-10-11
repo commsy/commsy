@@ -7,12 +7,12 @@
                 <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_120.png') }}"/>
             </a>
 
-            <a class="uk-navbar-item uk-logo" href="{{ path('app_server_show') }}">
-                <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_short.png')}}"/>
-            </a>
+{#            <a class="uk-navbar-item uk-logo uk-hidden@s" href="{{ path('app_server_show') }}">#}
+{#                <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_short.png')}}"/>#}
+{#            </a>#}
 
             {% block top_navigation_left %}
-{#                {% include 'room/navigation.html.twig' %}#}
+                {% include 'room/navigation.html.twig' %}
             {% endblock %}
         </div>
 
@@ -76,7 +76,7 @@
                             <div class="uk-navbar-dropdown uk-padding-small">
                                 {{ render(controller(
                                     'App\\Controller\\ProfileController::menu',
-                                    { 'roomId': contextId }
+                                    { 'roomId': contextId, 'uikit3': true  }
                                 ))}}
                             </div>
                         </li>

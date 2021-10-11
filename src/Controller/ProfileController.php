@@ -121,7 +121,7 @@ class ProfileController extends AbstractController
             }
 
             if ($formData['imageChangeInAllContexts']) {
-                $userList = $userItem->getRelatedUserList();
+                $userList = $userItem->getRelatedUserList(true);
                 /** @var cs_user_item $tempUserItem */
                 $tempUserItem = $userList->getFirst();
                 while ($tempUserItem) {
@@ -202,7 +202,7 @@ class ProfileController extends AbstractController
             $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
 
-            $userList = $userItem->getRelatedUserList();
+            $userList = $userItem->getRelatedUserList(true);
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
                 if ($formData['titleChangeInAllContexts']) {
@@ -276,15 +276,18 @@ class ProfileController extends AbstractController
             $formData = $form->getData();
             $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
-            $userList = $userItem->getRelatedUserList();
+            $userList = $userItem->getRelatedUserList(true);
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
                 if ($formData['emailChangeInAllContexts']) {
                     // do not change the account email address (or private room) even if the user
                     // wants to change all related room users
-                    if (!$tempUserItem->getContextItem()->isPortal() && !$tempUserItem->getContextItem()->isPrivateRoom()) {
+                    $contextItem = $tempUserItem->getContextItem();
+                    if ($contextItem && !$contextItem->isPortal() && !$contextItem->isPrivateRoom()) {
                         $tempUserItem->setEmail($formData['emailRoom']);
                     }
+                    $usePortalEmail = ($formData['emailChoice'] === 'account') ? 1 : 0;
+                    $tempUserItem->setUsePortalEmail($usePortalEmail);
                 }
                 if ($formData['hideEmailInAllContexts']) {
                     if ($formData['hideEmailInThisRoom']) {
@@ -385,7 +388,8 @@ class ProfileController extends AbstractController
     public function menu(
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        int $roomId
+        int $roomId,
+        bool $uikit3 = false
     ) {
         $environment = $legacyEnvironment->getEnvironment();
         return [
@@ -394,6 +398,7 @@ class ProfileController extends AbstractController
             'roomId' => $roomId,
             'inPrivateRoom' => $environment->inPrivateRoom(),
             'inPortal' => $environment->inPortal(),
+            'uikit3' => $uikit3,
         ];
     }
 

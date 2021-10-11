@@ -35,6 +35,7 @@
                         <th{% if pagination.isSorted('email') %} class="sorted"{% endif %}>
                             {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'email') }}
                         </th>
+                        <th>{{'authSource'|trans({}, 'portal') }}</th>
                     </tr>
                     {% for user in pagination %}
                         <tr>
@@ -42,6 +43,7 @@
                             <td><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
                             <td>{{ user.lastlogin|craue_date }}</td>
                             <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portalsettings_accountindex'}) }}">{{ user.email }}</a></td>
+                            <td>{{ authSources|filter(source => source.id == user.authSource)|first.title }}</td>
                         </tr>
                     {% endfor %}
                 </table>

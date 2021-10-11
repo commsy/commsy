@@ -14,10 +14,12 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use cs_environment;
 use cs_item;
 use cs_room_item;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -31,7 +33,7 @@ abstract class BaseController extends AbstractController
     protected $itemService;
 
     /**
-     * @var LegacyEnvironment
+     * @var cs_environment
      */
     protected $legacyEnvironment;
 
@@ -51,6 +53,11 @@ abstract class BaseController extends AbstractController
     protected $translator;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * @required
      * @param ItemService $itemService
      */
@@ -65,7 +72,7 @@ abstract class BaseController extends AbstractController
      */
     public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
     {
-        $this->legacyEnvironment = $legacyEnvironment;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
@@ -86,14 +93,23 @@ abstract class BaseController extends AbstractController
         $this->translator = $translator;
     }
 
+    /**
+     * @required
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher){
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
-    function __construct(
+    /**
+     * @required
+     * @param RoomService $service
+     */
+    public function setRoomService(
         RoomService $service
     ) {
         $this->roomService = $service;
     }
-
-
 
     /**
      * @param cs_room_item $room

@@ -3,7 +3,8 @@
     delay: 300,
     msgResultsHeader: '{{ 'best matches'|trans({}, 'search') }}',
     msgMoreResults: '{{ 'more results'|trans({}, 'search') }}',
-    msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
+    msgNoResults: '{{ 'No results found'|trans({}, 'search') }}',
+    template: '{{ include('search/instant_results.html.twig')|e('html_attr') }}'
 }">
     
     {{ form_widget(form.phrase) }}

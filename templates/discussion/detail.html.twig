@@ -78,7 +78,7 @@
                                                 'itemId': discussion.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                 'mode': 'click',
-                                                'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|trans({}, 'item')
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
@@ -241,6 +241,8 @@
                                         <div class="uk-width-3-5 uk-text-right">
 
                                             {# section actions #}
+                                            {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
+                                            {% if not article.hasOverwrittenContent -%}
                                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                                 <button class="uk-button uk-button-mini">
                                                     {{ 'selected entries'|trans({}, 'rubric') }}
@@ -252,7 +254,7 @@
 
                                                         {# answer #}
                                                         <li>
-                                                            {% if is_granted('ITEM_EDIT', article.itemId) %}
+                                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
                                                                 <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
                                                                     <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
                                                                 </a>
@@ -290,6 +292,7 @@
                                                     </ul>
                                                 </div>
                                             </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -306,9 +309,11 @@
                                     </div>
 
                                     {# files #}
-                                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
-                                        {{ macrosItem.files(article) }}
-                                    </div>
+                                    {% if not article.hasOverwrittenContent -%}
+                                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
+                                            {{ macrosItem.files(article) }}
+                                        </div>
+                                    {%- endif %}
                                 </article>
                             </div>
                     {% endfor %}

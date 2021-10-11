@@ -3,45 +3,57 @@
 namespace App\Services;
 
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceLocal;
 use App\Entity\Invitations;
 use App\Entity\Portal;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 class InvitationsService
 {
     /**
-     * @var EntityManagerInterface $em
+     * @var EntityManagerInterface $entityManager
      */
-    private $em;
+    private EntityManagerInterface $entityManager;
 
+    /**
+     * InvitationsService constructor.
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->em = $entityManager;
+        $this->entityManager = $entityManager;
     }
 
+    /**
+     * @param Portal $portal
+     * @return bool
+     */
     public function invitationsEnabled(Portal $portal): bool
     {
         $authSources = $portal->getAuthSources();
 
-        /** @var AuthSource $localAuthSource */
-        $localAuthSource = $authSources->filter(function(AuthSource $authSource) {
-            return $authSource->getType() === 'local';
+        /** @var AuthSourceLocal $localSource */
+        $localAuthSource = $authSources->filter(function (AuthSource $authSource) {
+            return $authSource instanceof AuthSourceLocal;
         })->first();
 
-        $localAuthSourceExtras = $localAuthSource->getExtras();
-        $configValue = ($localAuthSourceExtras['CONFIGURATION']['ADD_ACCOUNT_INVITATION']) ?? 0;
-
-        return $configValue === 1;
+        return $localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE;
     }
 
-    public function existsInvitationForEmailAddress($authSourceItem, $email): bool
+    /**
+     * @param AuthSourceLocal $authSourceLocal
+     * @param string $email
+     * @return bool
+     */
+    public function existsInvitationForEmailAddress(AuthSourceLocal $authSourceLocal, string $email): bool
     {
-        $repository = $this->em->getRepository(Invitations::class);
+        $repository = $this->entityManager->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->select()
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.email = :email')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceLocal->getId())
             ->setParameter('email', $email)
             ->getQuery();
         $invitations = $query->getResult();
@@ -53,35 +65,62 @@ class InvitationsService
         return false;
     }
 
-    public function generateInvitationCode($authSourceItem, $contextId, $email): string
+    /**
+     * Deletes expired invitations
+     *
+     * @return int
+     */
+    public function deleteExpiredInvitations(): int
+    {
+        $repository = $this->entityManager->getRepository(Invitations::class);
+        return $repository->createQueryBuilder('invitations')
+            ->delete()
+            ->where('invitations.expirationDate < :expirationDate')
+            ->setParameter('expirationDate', new DateTime())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param AuthSourceLocal $authSourceLocal
+     * @param int $contextId
+     * @param string $email
+     * @return string
+     */
+    public function generateInvitationCode(AuthSourceLocal $authSourceLocal, int $contextId, string $email): string
     {
         $invitationCode = md5(rand() . time() . rand());
 
         $invitation = new Invitations();
         $invitation->setEmail($email);
-        $invitation->setAuthSourceId($authSourceItem->getItemId());
+        $invitation->setAuthSourceId($authSourceLocal->getId());
         $invitation->setContextId($contextId);
         $invitation->setHash($invitationCode);
-        $invitation->setCreationDate(new \DateTime());
-        $invitation->setExpirationDate(new \DateTime('14 day'));
+        $invitation->setCreationDate(new DateTime());
+        $invitation->setExpirationDate(new DateTime('14 day'));
 
-        $this->em->persist($invitation);
-        $this->em->flush();
+        $this->entityManager->persist($invitation);
+        $this->entityManager->flush();
 
         return $invitationCode;
     }
 
-    public function confirmInvitationCode(AuthSource $authSourceItem, $invitationCode): bool
+    /**
+     * @param AuthSourceLocal $authSourceLocal
+     * @param string $invitationCode
+     * @return bool
+     */
+    public function confirmInvitationCode(AuthSourceLocal $authSourceLocal, string $invitationCode): bool
     {
-        $repository = $this->em->getRepository(Invitations::class);
+        $repository = $this->entityManager->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->select()
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.hash = :invitationCode')
             ->andWhere('invitations.expirationDate >= :expirationDate')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceLocal->getId())
             ->setParameter('invitationCode', $invitationCode)
-            ->setParameter('expirationDate', new \DateTime())
+            ->setParameter('expirationDate', new DateTime())
             ->getQuery();
         $invitations = $query->getResult();
 
@@ -92,29 +131,38 @@ class InvitationsService
         return false;
     }
 
-    public function redeemInvitation(AuthSource $authSourceItem, string $invitationCode): void
+    /**
+     * @param AuthSourceLocal $authSourceLocal
+     * @param string $invitationCode
+     */
+    public function redeemInvitation(AuthSourceLocal $authSourceLocal, string $invitationCode): void
     {
-        $repository = $this->em->getRepository(Invitations::class);
+        $repository = $this->entityManager->getRepository(Invitations::class);
         /** @var Invitations $invitation */
         $invitation = $repository->findOneBy([
-            'authSourceId' => $authSourceItem->getItemId(),
+            'authSourceId' => $authSourceLocal->getId(),
             'hash' => $invitationCode,
         ]);
 
-        $this->em->remove($invitation);
-        $this->em->flush();
+        $this->entityManager->remove($invitation);
+        $this->entityManager->flush();
     }
 
-    public function getInvitedEmailAdressesByContextId($authSourceItem, $contextId): array
+    /**
+     * @param AuthSourceLocal $authSourceLocal
+     * @param $contextId
+     * @return array
+     */
+    public function getInvitedEmailAdressesByContextId(AuthSourceLocal $authSourceLocal, $contextId): array
     {
         $result = array();
 
-        $repository = $this->em->getRepository(Invitations::class);
+        $repository = $this->entityManager->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->select()
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.contextId = :contextId')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceLocal->getId())
             ->setParameter('contextId', $contextId)
             ->orderBy('invitations.email', 'ASC')
             ->getQuery();
@@ -125,17 +173,20 @@ class InvitationsService
         }
 
         return $result;
-
     }
 
-    public function removeInvitedEmailAdresses($authSourceItem, $email): void
+    /**
+     * @param AuthSourceLocal $authSourceLocal
+     * @param $email
+     */
+    public function removeInvitedEmailAdresses(AuthSourceLocal $authSourceLocal, $email): void
     {
-        $repository = $this->em->getRepository(Invitations::class);
+        $repository = $this->entityManager->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
             ->delete()
             ->where('invitations.authSourceId = :authSourceId')
             ->andWhere('invitations.email = :email')
-            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('authSourceId', $authSourceLocal->getId())
             ->setParameter('email', $email)
             ->getQuery();
         $query->getResult();

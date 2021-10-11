@@ -22,7 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use App\Account\AccountManager;
 use App\Entity\Account;
+use Doctrine\ORM\EntityManagerInterface;
 
 include_once('classes/cs_item.php');
 
@@ -32,39 +34,44 @@ include_once('classes/cs_item.php');
 class cs_user_item extends cs_item
 {
     /**
-     * array - is this needed??
+     * @var string
      */
-    var $_temp_picture_array = array();
+    private string $oldStatus = 'new';
 
-    var $_picture_delete = false;
+    /**
+     * @var string|null
+     */
+    private ?string $oldContact = null;
 
-    var $_old_status = NULL;
-    var $_old_contact = NULL;
+    /**
+     * @var array
+     */
+    private array $changedValues = [];
 
-    var $_changed_values = array();
-
-    private $_context_id_array = NULL;
+    /**
+     * @var array|null
+     */
+    private ?array $contextIdArray = null;
 
     /**
      * the user room associated with this user
-     * @var \cs_userroom_item|null
+     * @var cs_userroom_item|null
      */
-    private $_userroomItem = NULL;
+    private ?cs_userroom_item $userroomItem = null;
 
     /**
      * for a user item in a user room, returns the project room user associated with this user
-     * @var \cs_user_item|null
+     * @var cs_user_item|null
      */
-    private $_projectUserItem = NULL;
+    private ?cs_user_item $projectUserItem = null;
 
     /** constructor: cs_user_item
      * the only available constructor, initial values for internal variables
      */
-    function __construct($environment)
+    public function __construct($environment)
     {
-        cs_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = CS_USER_TYPE;
-        $this->_old_status = 'new';
     }
 
     /** Checks and sets the data of the item.
@@ -75,8 +82,8 @@ class cs_user_item extends cs_item
     {
         $this->_data = $data_array;
         if (isset($data_array['status']) and !empty($data_array['status'])) {
-            $this->_old_status = $data_array['status'];
-            $this->_old_contact = $data_array['is_contact'];
+            $this->oldStatus = $data_array['status'];
+            $this->oldContact = $data_array['is_contact'];
         }
     }
 
@@ -98,7 +105,7 @@ class cs_user_item extends cs_item
     function setUserID($value)
     {
         $this->_setValue('user_id', $value);
-        $this->_changed_values[] = 'user_id';
+        $this->changedValues[] = 'user_id';
     }
 
     function getAuthSource()
@@ -210,12 +217,12 @@ class cs_user_item extends cs_item
 
     /**
      * For a user item in a project room, returns any user room associated with this user
-     * @return \cs_userroom_item|null the user room associated with this user
+     * @return cs_userroom_item|null the user room associated with this user
      */
-    public function getLinkedUserroomItem(): ?\cs_userroom_item
+    public function getLinkedUserroomItem(): ?cs_userroom_item
     {
-        if (isset($this->_userroomItem) && !$this->_userroomItem->isDeleted()) {
-            return $this->_userroomItem;
+        if (isset($this->userroomItem) && !$this->userroomItem->isDeleted()) {
+            return $this->userroomItem;
         }
 
         $userroomItemId = $this->getLinkedUserroomItemID();
@@ -223,9 +230,9 @@ class cs_user_item extends cs_item
             $userroomManager = $this->_environment->getUserroomManager();
             $userroomItem = $userroomManager->getItem($userroomItemId);
             if (isset($userroomItem) and !$userroomItem->isDeleted()) {
-                $this->_userroomItem = $userroomItem;
+                $this->userroomItem = $userroomItem;
             }
-            return $this->_userroomItem;
+            return $this->userroomItem;
         }
 
         return null;
@@ -251,12 +258,12 @@ class cs_user_item extends cs_item
 
     /**
      * For a user item in a user room, returns the project room user who corresponds to this user
-     * @return \cs_user_item|null the project room user associated with this user
+     * @return cs_user_item|null the project room user associated with this user
      */
-    public function getLinkedProjectUserItem(): ?\cs_user_item
+    public function getLinkedProjectUserItem(): ?cs_user_item
     {
-        if (isset($this->_projectUserItem)) {
-            return $this->_projectUserItem;
+        if (isset($this->projectUserItem)) {
+            return $this->projectUserItem;
         }
 
         $userItemId = $this->getLinkedProjectUserItemID();
@@ -265,9 +272,9 @@ class cs_user_item extends cs_item
             if ($userManager->existsItem($userItemId)) {
                 $userItem = $userManager->getItem($userItemId);
                 if (isset($userItem) and !$userItem->isDeleted()) {
-                    $this->_projectUserItem = $userItem;
+                    $this->projectUserItem = $userItem;
                 }
-                return $this->_projectUserItem;
+                return $this->projectUserItem;
             }
         }
 
@@ -310,7 +317,7 @@ class cs_user_item extends cs_item
     function setFirstname($value)
     {
         $this->_setValue("firstname", $value);
-        $this->_changed_values[] = 'firstname';
+        $this->changedValues[] = 'firstname';
     }
 
     /** get lastname of the user
@@ -331,7 +338,7 @@ class cs_user_item extends cs_item
     function setLastname($value)
     {
         $this->_setValue("lastname", $value);
-        $this->_changed_values[] = 'lastname';
+        $this->changedValues[] = 'lastname';
     }
 
     function makeContactPerson()
@@ -642,7 +649,6 @@ class cs_user_item extends cs_item
      */
     function setPicture($name)
     {
-        // $this->_temp_picture_array = $value;
         $this->_addExtra('USERPICTURE', $name);
     }
 
@@ -729,7 +735,7 @@ class cs_user_item extends cs_item
     function setEmail($value)
     {
         $this->_setValue('email', (string)$value);
-        $this->_changed_values[] = 'email';
+        $this->changedValues[] = 'email';
     }
 
 
@@ -1302,7 +1308,7 @@ class cs_user_item extends cs_item
 
     public function getContextIDArray()
     {
-        if (!isset($this->_context_id_array)) {
+        if (!isset($this->contextIdArray)) {
             $retour = array();
             $manager = $this->_environment->getRoomManager();
             $manager->setUserIDLimit($this->getUserID());
@@ -1318,9 +1324,9 @@ class cs_user_item extends cs_item
             if (isset($own_room)) {
                 $retour[] = $own_room->getItemID();
             }
-            $this->_context_id_array = $retour;
+            $this->contextIdArray = $retour;
         }
-        return $this->_context_id_array;
+        return $this->contextIdArray;
     }
 
     function _getTaskList()
@@ -1394,10 +1400,10 @@ class cs_user_item extends cs_item
             and !$context_item->isServer()
             and $this->getUserID()
             and mb_strtoupper($this->getUserID()) != 'GUEST'
-            and (!isset($this->_old_status)
-                or !isset($this->_old_contact)
-                or $this->_old_status != $this->getStatus()
-                or $this->_old_contact != $this->getContactStatus()
+            and (!isset($this->oldStatus)
+                or !isset($this->oldContact)
+                or $this->oldStatus != $this->getStatus()
+                or $this->oldContact != $this->getContactStatus()
             )
         ) {
             $context_item->renewContactPersonString();
@@ -1405,8 +1411,8 @@ class cs_user_item extends cs_item
         }
 
         // set old status to current status
-        $this->_old_status = $this->getStatus();
-        $this->_old_contact = $this->getContactStatus();
+        $this->oldStatus = $this->getStatus();
+        $this->oldContact = $this->getContactStatus();
 
         if (($this->getStatus() == 2) or ($this->getStatus() == 3)) {
             // wenn $this->getStatus() einen freigeschalteten Benutzer angibt
@@ -1466,7 +1472,7 @@ class cs_user_item extends cs_item
         }
     }
 
-    function delete()
+    public function delete()
     {
         // delete associated tasks
         $task_list = $this->_getTaskList();
@@ -1501,10 +1507,10 @@ class cs_user_item extends cs_item
         if (isset($context_item)
             and !$context_item->isPortal()
             and !$context_item->isServer()
-            and (!isset($this->_old_status)
-                or !isset($this->_old_contact)
-                or $this->_old_status != $this->getStatus()
-                or $this->_old_contact != $this->getContactStatus()
+            and (!isset($this->oldStatus)
+                or !isset($this->oldContact)
+                or $this->oldStatus != $this->getStatus()
+                or $this->oldContact != $this->getContactStatus()
             )
         ) {
             $context_item->renewContactPersonString();
@@ -1512,8 +1518,8 @@ class cs_user_item extends cs_item
         }
 
         // set old status to current status
-        $this->_old_status = $this->getStatus();
-        $this->_old_contact = $this->getContactStatus();
+        $this->oldStatus = $this->getStatus();
+        $this->oldContact = $this->getContactStatus();
 
         if ($this->_environment->getCurrentPortalID() == $this->getContextID()) {
             $id_manager = $this->_environment->getExternalIdManager();
@@ -1840,80 +1846,71 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return object cs_list list of User-Items connected to this item
+     * Returns all users representing this user in other rooms this user is a member of. By default,
+     * related users from community rooms, project rooms and the user's private room are returned.
+     *
+     * @param bool $includeUserroomUsers whether related users from user rooms shall be returned as well
+     * @return \cs_list list of user items connected to this item
      */
-    function getRelatedUserList(): \cs_list
+    public function getRelatedUserList(bool $includeUserroomUsers = false): \cs_list
     {
+        include_once('classes/cs_list.php');
+        $emptyList = new cs_list();
+        $currentContextId = $this->getContextID();
+        $currentPortalId = $this->_environment->getCurrentPortalID();
 
-        $current_context_id = $this->getContextID();
-
-        $room_id_array = array();
-        if ($this->_environment->getCurrentPortalID() != $current_context_id) {
-            $portalID = $this->_environment->getCurrentPortalID();
-            if (!empty($portalID)) {
-                $room_id_array[] = $this->_environment->getCurrentPortalID();
-            }
+        // current portal
+        if (!empty($currentPortalId) && $currentPortalId != $currentContextId) {
+            $roomIds[] = $currentPortalId;
         }
 
-        $community_manager = $this->_environment->getCommunityManager();
-        $community_list = $community_manager->getRelatedCommunityListForUser($this);
-        if ($community_list->isNotEmpty()) {
-            $community_room = $community_list->getFirst();
-            while ($community_room) {
-                if ($community_room->getItemID() != $current_context_id) {
-                    $room_id_array[] = $community_room->getItemID();
-                }
-                unset($community_room);
-                $community_room = $community_list->getNext();
-            }
-            unset($community_list);
-        }
-        unset($community_manager);
+        // community rooms
+        $communityManager = $this->_environment->getCommunityManager();
+        $communityRooms = $communityManager->getRelatedCommunityListForUser($this);
 
-        $project_manager = $this->_environment->getProjectManager();
-        $project_list = $project_manager->getRelatedProjectListForUser($this, $current_context_id);
-        if ($project_list->isNotEmpty()) {
-            $project_room = $project_list->getFirst();
-            while ($project_room) {
-                if ($project_room->getItemID() != $current_context_id) {
-                    $room_id_array[] = $project_room->getItemID();
-                }
-                unset($project_room);
-                $project_room = $project_list->getNext();
-            }
-            unset($project_list);
-        }
-        unset($project_manager);
+        // project rooms
+        $projectManager = $this->_environment->getProjectManager();
+        $projectRooms = $projectManager->getRelatedProjectListForUser($this, $currentContextId);
 
-        $private_room_manager = $this->_environment->getPrivateRoomManager();
-        $own_room = $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
-        if (isset($own_room) and !empty($own_room)) {
-            $room_id = $own_room->getItemID();
-            if (!empty($room_id)) {
-                $room_id_array[] = $room_id;
-            }
-            unset($own_room);
-        }
-        unset($private_room_manager);
+        // user rooms
+        $userroomManager = $this->_environment->getUserRoomManager();
+        $userRooms = ($includeUserroomUsers) ? $userroomManager->getRelatedUserroomListForUser($this) : $emptyList;
 
-        if (!empty($room_id_array)) {
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->resetLimits();
-            $user_manager->setContextArrayLimit($room_id_array);
-            $user_manager->setUserIDLimit($this->getUserID());
-            $user_manager->setAuthSourceLimit($this->getAuthSource());
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            unset($user_manager);
-        } else {
-            include_once('classes/cs_list.php');
-            $user_list = new cs_list();
+        // gather all room IDs sans the current context ID
+        $roomIds = array_merge($communityRooms->getIDArray(), $projectRooms->getIDArray(), $userRooms->getIDArray());
+        $roomIds = array_filter($roomIds, function (int $roomId) use ($currentContextId) {
+            return ($roomId != $currentContextId);
+        });
+
+        // NOTE: we reindex the $roomIds array (so that its array values start from 0) since cs_user_manager->_performQuery()
+        //       for some reason requires a _context_array_limit array to start with index 0
+        $roomIds = array_values($roomIds);
+
+        // private room
+        $privateRoomManager = $this->_environment->getPrivateRoomManager();
+        $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($this, $currentPortalId);
+        if ($privateRoom) {
+            $roomIds[] = $privateRoom->getItemID();
         }
 
-        return $user_list;
+        if (empty($roomIds)) {
+            return $emptyList;
+        }
+
+        // gather IDs of all related users
+        $userManager = $this->_environment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextArrayLimit($roomIds);
+        $userManager->setUserIDLimit($this->getUserID());
+        $userManager->setAuthSourceLimit($this->getAuthSource());
+        $userManager->select();
+        /** @var \cs_list $relatedUsers */
+        $relatedUsers = $userManager->get();
+
+        return $relatedUsers;
     }
 
-    public function getRelatedUserItemInContext($value):? \cs_user_item
+    public function getRelatedUserItemInContext($value):?cs_user_item
     {
         $retour = NULL;
         $user_manager = $this->_environment->getUserManager();
@@ -1935,7 +1932,7 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return \cs_user_item|null User-Item from the community room
+     * @return cs_user_item|null User-Item from the community room
      */
     function getRelatedCommSyUserItem()
     {
@@ -1994,7 +1991,7 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return \cs_user_item
+     * @return cs_user_item
      */
     public function getRelatedPrivateRoomUserItem()
     {
@@ -2037,7 +2034,7 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function getRelatedPortalUserItem():? \cs_user_item
+    function getRelatedPortalUserItem():?cs_user_item
     {
         $retour = NULL;
 
@@ -2510,7 +2507,7 @@ class cs_user_item extends cs_item
     public function hasChanged($value)
     {
         $result = false;
-        foreach ($this->_changed_values as $changed_value) {
+        foreach ($this->changedValues as $changed_value) {
             if ($changed_value == $value) {
                 $result = true;
                 break;
@@ -3141,7 +3138,7 @@ class cs_user_item extends cs_item
     {
         $userContext = $this->getContextItem();
         if (!$userContext->isPortal()) {
-            throw new \Exception('expecting portal user');
+            throw new Exception('expecting portal user');
         }
 
         $this->delete();
@@ -3151,7 +3148,15 @@ class cs_user_item extends cs_item
             $ownRoom->delete();
         }
 
-        $authentication = $this->_environment->getAuthenticationObject();
-        $authentication->delete($this->getItemID());
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+        /** @var AccountManager $accountManager */
+        $accountManager = $symfonyContainer->get(AccountManager::class);
+        $account = $accountManager->getAccount($this, $userContext->getId());
+
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $entityManager->remove($account);
+        $entityManager->flush();
     }
 }

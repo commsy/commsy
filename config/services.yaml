@@ -585,13 +585,6 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: form.event_subscriber }
-    commsy.listener.elastic.custom_property:
-        class: App\EventListener\ElasticCustomPropertyListener
-        arguments:
-            $legacyEnvironment: '@commsy_legacy.environment'
-            $file2TextService: '@App\Services\File2TextService'
-        tags:
-            - { name: kernel.event_subscriber }
 
     # EventSubscribers
     commsy.subscriber.edit:
@@ -930,10 +923,6 @@ services:
             $twig: '@twig'
             $from: '%commsy.email.from%'
 
-    commsy.utils.mail_account:
-        class: App\Utils\AccountMail
-        arguments: ['@commsy_legacy.environment', '@router']
-
     # Commands
     App\Command\CronCommand:
         autowire: true
@@ -1107,7 +1096,6 @@ services:
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.roomcategories_service:
         class: App\Services\RoomCategoriesService
@@ -1136,17 +1124,6 @@ services:
         arguments:
             $markReadStrategy: '@App\Action\MarkRead\MarkReadGeneric'
 
-    commsy.action.mark_read.material:
-        class: App\Action\MarkRead\MarkReadAction
-        autowire: true
-        arguments:
-            $markReadStrategy: '@App\Action\MarkRead\MarkReadMaterial'
-
-    commsy.action.mark_read.todo:
-        class: App\Action\MarkRead\MarkReadAction
-        autowire: true
-        arguments:
-            $markReadStrategy: '@App\Action\MarkRead\MarkReadTodo'
 
     App\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
 
@@ -1178,38 +1155,28 @@ services:
         autowire: true
     App\Action\Delete\DeleteDate:
         autowire: true
-        arguments:
-            $calendarsService: '@commsy.calendars_service'
+
 
     commsy.action.delete.generic:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteGeneric'
+
 
     commsy.action.delete.step:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteStep'
 
     commsy.action.delete.section:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteSection'
 
     commsy.action.delete.discussion_article:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteDiscussionArticle'
 
     commsy.action.delete.date:
         class: App\Action\Delete\DeleteAction
         autowire: true
-        arguments:
-            $deleteStrategy: '@App\Action\Delete\DeleteDate'
 
     App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 
@@ -1219,6 +1186,9 @@ services:
 
     # Events
     App\Event\CommsyEditEvent:
+        autowire: false
+
+    App\Event\ItemReindexEvent:
         autowire: false
 
     App\Event\ItemDeletedEvent:

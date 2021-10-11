@@ -12,64 +12,64 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AuthSourceShibboleth extends AuthSource
 {
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\Length(max=255)
      */
-    private $loginUrl;
+    private ?string $loginUrl;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\Length(max=255)
      */
-    private $logoutUrl;
+    private ?string $logoutUrl;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\Length(max=255)
      */
-    private $passwordResetUrl;
+    private ?string $passwordResetUrl;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=50, nullable=false)
      * @Assert\Length(max=50)
      */
-    private $mappingUsername;
+    private ?string $mappingUsername;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=50, nullable=false)
      * @Assert\Length(max=50)
      */
-    private $mappingFirstname;
+    private ?string $mappingFirstname;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=50, nullable=false)
      * @Assert\Length(max=50)
      */
-    private $mappingLastname;
+    private ?string $mappingLastname;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=50, nullable=false)
      * @Assert\Length(max=50)
      */
-    private $mappingEmail;
+    private ?string $mappingEmail;
 
     public function __construct()
     {
-        $this->addAccount = false;
+        $this->addAccount = self::ADD_ACCOUNT_NO;
         $this->changeUsername = false;
         $this->deleteAccount = false;
         $this->changeUserdata = false;
@@ -108,7 +108,7 @@ class AuthSourceShibboleth extends AuthSource
     }
 
     /**
-     * @param string $logoutUrl
+     * @param string|null $logoutUrl
      * @return self
      */
     public function setLogoutUrl(?string $logoutUrl): self
@@ -126,7 +126,7 @@ class AuthSourceShibboleth extends AuthSource
     }
 
     /**
-     * @param string $passwordResetUrl
+     * @param string|null $passwordResetUrl
      * @return self
      */
     public function setPasswordResetUrl(?string $passwordResetUrl): self

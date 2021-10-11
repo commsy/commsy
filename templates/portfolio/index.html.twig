@@ -20,7 +20,7 @@
 
                 {# create new #}
                 <div class="uk-margin-bottom">
-                    <a class="uk-button uk-button-primary" href="{{ path('app_portfolio_edit', { 'roomId': roomId, 'portfolioId': 'new' }) }}" data-uk-tooltip title="{{ 'Create new portfolio'|trans({}, 'portfolio') }}">
+                    <a class="uk-button uk-button-primary" href="{{ path('app_portfolio_edit', { 'roomId': roomId, 'portfolioId': -1 }) }}" data-uk-tooltip title="{{ 'Create new portfolio'|trans({}, 'portfolio') }}">
                         <i class="uk-icon-plus uk-icon-small"></i> {{ 'Create new portfolio'|trans({}, 'portfolio') }}
                     </a>
                 </div>
@@ -31,7 +31,7 @@
                         <div id="portfolio-source">
                             <ul id="portfolioSourceTabs" class="uk-tab uk-tab-left" data-uk-tab>
                                 <li class="uk-active" data-portfolio-source-id="my-portfolios"><a href="" data-uk-tooltip title="{{ 'my portfolios'|trans({}, 'portfolio') }}"><i class="uk-icon-archive"></i></a></li>
-                                <li data-portfolio-source-id="activated-portfolios"><a href="" data-uk-tooltip title="{{ 'activated portfolios'|trans({}, 'portfolio') }}"><i class="uk-icon-share-alt"></i></a></li>
+                                <li data-portfolio-source-id="activated-portfolios"><a href="" data-uk-tooltip="{pos:'right'}" title="{{ 'activated portfolios'|trans({}, 'portfolio') }}"><i class="uk-icon-share-alt"></i></a></li>
                             </ul>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Form\DataTransformer\PortfolioTransformer;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
@@ -13,13 +14,17 @@ use App\Form\Type\PortfolioType;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_user_item;
+use FeedIo\Rule\Title;
+use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CalendarController
@@ -28,6 +33,53 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class PortfolioController extends AbstractController
 {
+
+    private PortfolioService $portfolioService;
+
+    private PortfolioTransformer $transformer;
+
+    private ReaderService $readerService;
+
+    private ItemService $itemService;
+
+    private UserService $userService;
+
+    private CategoryService $categoryService;
+
+    private \cs_environment $legacyEnvironment;
+
+    private CoreSecurity $security;
+
+    /**
+     * PortfolioController constructor.
+     * @param PortfolioService $portfolioService
+     * @param PortfolioTransformer $transformer
+     * @param ReaderService $readerService
+     * @param ItemService $itemService
+     * @param UserService $userService
+     * @param CategoryService $categoryService
+     * @param LegacyEnvironment $legacyEnvironment
+     */
+    public function __construct(PortfolioService $portfolioService,
+                                PortfolioTransformer $transformer,
+                                ReaderService $readerService,
+                                ItemService $itemService,
+                                UserService $userService,
+                                CategoryService $categoryService,
+                                LegacyEnvironment $legacyEnvironment,
+                                CoreSecurity $coreSecurity)
+    {
+        $this->portfolioService = $portfolioService;
+        $this->transformer = $transformer;
+        $this->readerService = $readerService;
+        $this->itemService = $itemService;
+        $this->userService = $userService;
+        $this->categoryService = $categoryService;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->security = $coreSecurity;
+    }
+
+
     /**
      * @Route("/room/{roomId}/portfolio/")
      * @Template()
@@ -55,20 +107,17 @@ class PortfolioController extends AbstractController
      *     "portfolioId": "\d+"
      * }))
      * @Template()
-     * @param PortfolioService $portfolioService
-     * @param UserService $userService
      * @param int $roomId
+     * @param CoreSecurity $security
      * @param int|null $portfolioId
      * @return array
      */
     public function portfolioAction(
-        PortfolioService $portfolioService,
-        UserService $userService,
         int $roomId,
-        int $portfolioId = null
+        int $portfolioId = null,
+        CoreSecurity $security
     ) {
-        $portfolio = $portfolioService->getPortfolio($portfolioId);
-
+        $portfolio = $this->portfolioService->getPortfolio($portfolioId);
         $linkItemIds = [];
         foreach ($portfolio['links'] as $linkArray) {
             foreach ($linkArray as $link) {
@@ -116,11 +165,12 @@ class PortfolioController extends AbstractController
             }
         }
 
-        /** @var cs_user_item $user */
-        $user = $userService->getPortalUserFromSessionId();
+        /** @var Account $account */
+        $account = $security->getUser();
+        $portalUser = $this->userService->getPortalUser($account);
 
         $external = false;
-        if ($user->getRelatedPrivateRoomUserItem()->getItemId() != $portfolio['creatorId']) {
+        if ($portalUser->getRelatedPrivateRoomUserItem()->getItemId() != $portfolio['creatorId']) {
             $external = true;
         }
 
@@ -137,17 +187,15 @@ class PortfolioController extends AbstractController
     /**
      * @Route("/room/{roomId}/portfolio/portfoliosource/{source}")
      * @Template()
-     * @param PortfolioService $portfolioService
      * @param int $roomId
      * @param string|null $source
      * @return array
      */
     public function tabsAction(
-        PortfolioService $portfolioService,
         int $roomId,
         string $source = null
     ) {
-        $portfolioList = $portfolioService->getPortfolioList();
+        $portfolioList = $this->portfolioService->getPortfolioList();
 
         $portfolios = [];
         $myPortfolios = true;
@@ -168,11 +216,6 @@ class PortfolioController extends AbstractController
     /**
      * @Route("/room/{roomId}/portfolio/{portfolioId}/detail/{firstTagId}/{secondTagId}")
      * @Template()
-     * @param CategoryService $categoryService
-     * @param ItemService $itemService
-     * @param PortfolioService $portfolioService
-     * @param ReaderService $readerService
-     * @param UserService $userService
      * @param int $roomId
      * @param int $portfolioId
      * @param int $firstTagId
@@ -180,17 +223,12 @@ class PortfolioController extends AbstractController
      * @return array
      */
     public function detailAction(
-        CategoryService $categoryService,
-        ItemService $itemService,
-        PortfolioService $portfolioService,
-        ReaderService $readerService,
-        UserService $userService,
         int $roomId,
         int $portfolioId,
         int $firstTagId,
         int $secondTagId
     ) {
-        $portfolio = $portfolioService->getPortfolio($portfolioId);
+        $portfolio = $this->portfolioService->getPortfolio($portfolioId);
 
         $items = [];
         foreach ($portfolio['links'] as $tempFirstTagId => $firstEntries) {
@@ -199,7 +237,7 @@ class PortfolioController extends AbstractController
                     foreach ($firstEntries as $firstEntry) {
                         foreach ($secondEntries as $secondEntry) {
                             if ($firstEntry['itemId'] == $secondEntry['itemId']) {
-                                $items[] = $itemService->getTypedItem($firstEntry['itemId']);
+                                $items[] = $this->itemService->getTypedItem($firstEntry['itemId']);
                             }
                         }
                     }
@@ -207,15 +245,16 @@ class PortfolioController extends AbstractController
             }
         }
 
-        /** @var cs_user_item $user */
-        $user = $userService->getPortalUserFromSessionId();
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        $user = $this->userService->getPortalUser($account);
 
         $readerList = array();
         foreach ($items as $item) {
             if ($item != null) {
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
                 if ($relatedUser) {
-                    $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
+                    $readerList[$item->getItemId()] = $this->readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
                 }
             }
         }
@@ -228,8 +267,8 @@ class PortfolioController extends AbstractController
             'items' => $items,
             'feedList' => $items,
             'readerList' => $readerList,
-            'firstTag' => $categoryService->getTag($firstTagId),
-            'secondTag' => $categoryService->getTag($secondTagId),
+            'firstTag' => $this->categoryService->getTag($firstTagId),
+            'secondTag' => $this->categoryService->getTag($secondTagId),
             'annotationForm' => $form->createView(),
             'portfolio' => $portfolio,
             'portfolioId' => $portfolioId,
@@ -242,27 +281,19 @@ class PortfolioController extends AbstractController
      * @Route("/room/{roomId}/portfolio/{portfolioId}/edit")
      * @Template()
      * @param Request $request
-     * @param ItemService $itemService
-     * @param PortfolioService $portfolioService
-     * @param PortfolioTransformer $transformer
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
-     * @param int $portfolioId
+     * @param string $portfolioId
      * @return array|RedirectResponse
      */
     public function editAction(
         Request $request,
-        ItemService $itemService,
-        PortfolioService $portfolioService,
-        PortfolioTransformer $transformer,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
-        int $portfolioId
+        string $portfolioId
     ) {
 
         // when creating a new item, return a redirect to the edit form (portfolio draft)
-        if ($portfolioId === 'new') {
-            $portfolioItem = $portfolioService->getNewItem();
+        if ($portfolioId == -1) { // -1 represents 'new'
+            $portfolioItem = $this->portfolioService->getNewItem();
             $portfolioItem->save();
             return $this->redirectToRoute('app_portfolio_edit', [
                 'roomId' => $roomId,
@@ -270,12 +301,12 @@ class PortfolioController extends AbstractController
             ]);
         }
 
-        $item = $itemService->getItem($portfolioId);
+        $item = $this->itemService->getItem($portfolioId);
 
-        $portfolioManager = $legacyEnvironment->getEnvironment()->getPortfolioManager();
+        $portfolioManager = $this->legacyEnvironment->getPortfolioManager();
         $portfolioItem = $portfolioManager->getItem($portfolioId);
 
-        $formData = $transformer->transform($portfolioItem);
+        $formData = $this->transformer->transform($portfolioItem);
 
         $form = $this->createForm(PortfolioType::class, $formData, [
             'item' => $item,
@@ -284,7 +315,7 @@ class PortfolioController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $portfolioItem = $transformer->applyTransformation($portfolioItem, $form->getData());
+                $portfolioItem = $this->transformer->applyTransformation($portfolioItem, $form->getData());
                 $portfolioItem->save();
 
                 // ensure portfolio is now longer in draft state after saving
@@ -295,7 +326,7 @@ class PortfolioController extends AbstractController
                     $formData = $form->getData();
                     if (isset($formData['from_template'])) {
                         if ($formData['from_template'] != 'none') {
-                            $portfolioService->prepareFromTemplate((int) $formData['from_template'], $portfolioItem);
+                            $this->portfolioService->prepareFromTemplate((int) $formData['from_template'], $portfolioItem);
                         }
                     }
                 }
@@ -324,41 +355,41 @@ class PortfolioController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryId}/")
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryTerm}/")
      * @Template()
      * @param Request $request
-     * @param CategoryService $categoryService
      * @param int $roomId
      * @param int $portfolioId
      * @param string $position
-     * @param int $categoryId
+     * @param string $categoryTerm
      * @return array|RedirectResponse
      */
     public function editcategoryAction(
         Request $request,
-        CategoryService $categoryService,
         int $roomId,
         int $portfolioId,
         string $position,
-        int $categoryId
+        string $categoryTerm,
+        PortfolioService $portfolioService,
+        TranslatorInterface $translator,
+        CategoryService $categoryService
     ) {
-        $portfolioService = $this->get(PortfolioService::class);
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $formData = [
-            'delete-category' => $categoryId,
+            'delete-category' => $categoryTerm,
         ];
 
-        if (is_numeric($categoryId)) {
-            $formData['categories'] = [$categoryId];
+        if (is_numeric($categoryTerm)) {
+            $formData['categories'] = [$categoryTerm];
         }
 
-        $roomTags = $categoryService->getTags($roomId);
+        $roomTags = $this->categoryService->getTags($roomId);
 //        $disabledCategories = $this->getDisabledTags($roomTags, $categoryId, $portfolio);
 
         $form = $this->createForm(PortfolioEditCategoryType::class, $formData, array(
             'categories' => $roomTags,
-            'categoryId' => $categoryId,
+            'categoryId' => $categoryTerm,
             'portfolioId' => $portfolioId,
 //            'disabledCategories' => $disabledCategories,
         ));
@@ -367,11 +398,34 @@ class PortfolioController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
+            if ($form->get('addCategory')->isClicked()) {
+                $data = $form->getData();
+
+                if (empty($data['title'])){
+                    // the additional error has to be added here (instead of a formtype constraint) to prevent unnamed new categories.
+                    $form->addError(new FormError($translator->trans('Title may not be empty',[],'portfolio')));
+                    return [
+                        'form' => $form->createView(),
+                        'categoryTerm' => $categoryTerm,
+                    ];
+                }
+
+                // persist new category
+                $categoryService->addTag($data['title'], $roomId);
+
+                return $this->redirectToRoute('app_portfolio_editcategory', array(
+                    'roomId' => $roomId,
+                    'portfolioId' => $portfolioId,
+                    'position' => $position,
+                    'categoryTerm' => $categoryTerm
+                ));
+            }
+
             if ($form->get('save')->isClicked()) {
 
                 $tagId = $formData['categories'][0];
 
-                if ($categoryId == 'add') {
+                if ($categoryTerm == 'add') {
                     // add new row or column
 
                     $index = 1;
@@ -391,11 +445,11 @@ class PortfolioController extends AbstractController
 
                 } else {
                     // edit row or column
-                    $portfolioService->replaceTagForPortfolio($portfolioId, $tagId, $categoryId, $formData['description']);
+                    $portfolioService->replaceTagForPortfolio($portfolioId, $tagId, $categoryTerm, $formData['description']);
                 }
 
             } else if ($form->has('delete') && $form->get('delete')->isClicked()) {
-                $tagId = $categoryId;
+                $tagId = $categoryTerm;
 
                 $portfolioTags = $portfolioService->getPortfolioTags($portfolioId);
 
@@ -434,24 +488,21 @@ class PortfolioController extends AbstractController
 
         return [
             'form' => $form->createView(),
-            'categoryId' => $categoryId,
+            'categoryTerm' => $categoryTerm,
         ];
     }
 
     /**
      * @Route("/room/{roomId}/portfolio/{portfolioId}/stopActivation")
-     * @param LegacyEnvironment $environment
      * @param int $roomId
      * @param int $portfolioId
      * @return RedirectResponse
      */
     public function stopActivation(
-        LegacyEnvironment $environment,
         int $roomId,
         int $portfolioId
     ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $portfolioManager = $legacyEnvironment->getPortfolioManager();
+        $portfolioManager = $this->legacyEnvironment->getPortfolioManager();
 
         $portfolio = $portfolioManager->getItem($portfolioId);
 
@@ -459,7 +510,7 @@ class PortfolioController extends AbstractController
             throw new NotFoundHttpException('Portfolio not found');
         }
 
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $portfolioManager->removeExternalViewer($portfolio->getItemID(), $currentUser->getUserID());
 

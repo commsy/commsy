@@ -117,6 +117,7 @@ class ContextController extends AbstractController
         $formOptions = [
             'checkNewMembersWithCode' => false,
             'withAGB' => false,
+            'CheckNewMembersNever' => false,
         ];
 
         if ($roomItem->checkNewMembersWithCode()) {
@@ -129,6 +130,10 @@ class ContextController extends AbstractController
 
             // get agb text in users language
             $agbText = $roomItem->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
+        }
+
+        if ($roomItem->checkNewMembersNever()) {
+            $formOptions['CheckNewMembersNever']  = true;
         }
 
         $form = $this->createForm(ContextRequestType::class, null, $formOptions);
@@ -388,7 +393,7 @@ class ContextController extends AbstractController
                         $message->setReplyTo([$modEmail => $modFullName]);
                     }
 
-                    $this->get('mailer')->send($message);
+                    $this->mailer->send($message);
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }

@@ -1,5 +1,13 @@
+{% if not uikit3 %}
 <li>
     <a class="cs-link-highlight" href="{{ path('app_room_listall', {'roomId': itemId}) }}">
         {{ 'All rooms'|trans([], 'room') }}
     </a>
 </li>
+{% else %}
+    <div class="uk-navbar-item">
+        <a class="uk-text-large" href="{{ path('app_room_listall', {'roomId': itemId}) }}">
+            {{ 'All rooms'|trans([], 'room') }}
+        </a>
+    </div>
+{% endif %}

@@ -204,6 +204,7 @@ class SearchFilterType extends AbstractType
                     $this->translator->trans('any', [], 'form') => 'all',
                     'New' => ReaderService::READ_STATUS_NEW,
                     'Modified' => ReaderService::READ_STATUS_CHANGED,
+                    'Unread' => ReaderService::READ_STATUS_UNREAD,
                     'Read' => ReaderService::READ_STATUS_SEEN,
                 ],
                 'label' => 'Read status',
@@ -273,7 +274,7 @@ class SearchFilterType extends AbstractType
 
         $choices = [];
         foreach ($rubrics as $name => $count) {
-            $translatedTitle = $this->translator->trans(ucfirst($name), [], 'rubric');
+            $translatedTitle = $this->translator->trans(ucfirst($name), ['%count%' => 1], 'rubric');
             if ($name === "label") {
                 $translatedTitle = $this->translator->trans("Groups, Topics and Institutions", [], 'search');
             }
