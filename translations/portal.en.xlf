@@ -86,6 +86,10 @@
                 <source>Show?</source>
                 <target>Show?</target>
             </trans-unit>
+            <trans-unit id="show_anouncements?">
+                <source>Show announcements?</source>
+                <target>Show announcements?</target>
+            </trans-unit>
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
@@ -317,6 +321,34 @@
                 <source>Default template help text</source>
                 <target>By choosing a template, a newly created workspace will be prepopulated with contents from the template workspace (except for user information)</target>
             </trans-unit>
+            <trans-unit id="archiving_rooms">
+                <source>Archiving rooms</source>
+                <target>ARchiving</target>
+            </trans-unit>
+            <trans-unit id="archive_deletion">
+                <source>Archive deletion</source>
+                <target>Deletion of archiv. rooms</target>
+            </trans-unit>
+            <trans-unit id="activate">
+                <source>Activate</source>
+                <target>activate</target>
+            </trans-unit>
+            <trans-unit id="archive_after_x_days">
+                <source>Archive rooms after x days</source>
+                <target>Archive rooms after x days</target>
+            </trans-unit>
+            <trans-unit id="send_mail_x_days_before_archiving">
+                <source>Send mail x days before archiving</source>
+                <target>Send mail x days before archiving</target>
+            </trans-unit>
+            <trans-unit id="delete_after_x_days">
+                <source>Delete rooms after x days</source>
+                <target>Delete rooms after x days</target>
+            </trans-unit>
+            <trans-unit id="send_mail_x_days_before_deletion">
+                <source>Send mail x days before deletion</source>
+                <target>Send mail x days before deletion</target>
+            </trans-unit>
 
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
@@ -531,9 +563,45 @@
                 <source>Are you sure you want to delete</source>
                 <target>Are you sure you want to delete</target>
             </trans-unit>
+            <trans-unit id="perform_account_action_start">
+                <source>Are you sure you want to perform the action</source>
+                <target>Sind Sie sicher, dass Sie die Aktion</target>
+            </trans-unit>
+            <trans-unit id="perform_account_action_ending">
+                <source>For the following users</source>
+                <target>durchführen möchten für die nachfolgenden NutzerInnen</target>
+            </trans-unit>
             <trans-unit id="delete_success">
                 <source>Delete success</source>
                 <target>User deleted successfully</target>
+            </trans-unit>
+            <trans-unit id="user_block">
+                <source>user-block</source>
+                <target>block user</target>
+            </trans-unit>
+            <trans-unit id="user_confirm">
+                <source>user-confirm</source>
+                <target>confirm / role user</target>
+            </trans-unit>
+            <trans-unit id="user_status_reading_user">
+                <source>user-status-reading-user</source>
+                <target>status reading user</target>
+            </trans-unit>
+            <trans-unit id="user_status_user">
+                <source>user-status-user</source>
+                <target>status user</target>
+            </trans-unit>
+            <trans-unit id="user_status_moderator">
+                <source>user-status-moderator</source>
+                <target>status moderator</target>
+            </trans-unit>
+            <trans-unit id="user_contact">
+                <source>user-contact</source>
+                <target>make contact</target>
+            </trans-unit>
+            <trans-unit id="user_contact_remove">
+                <source>user-contact-remove</source>
+                <target>remove status contact</target>
             </trans-unit>
 
             <!-- Account Index send Password Mail -->
@@ -901,6 +969,18 @@
                 <source>Inactive</source>
                 <target>Deleting inactive users</target>
             </trans-unit>
+            <trans-unit id="deprovisioning">
+                <source>Deprovisioning</source>
+                <target>Deprovisioning</target>
+            </trans-unit>
+            <trans-unit id="archive_inactive_rooms">
+                <source>Archive inactive rooms</source>
+                <target>Archive inactive rooms</target>
+            </trans-unit>
+            <trans-unit id="delete_inactive_rooms">
+                <source>Delete inactive rooms</source>
+                <target>Delete inactive rooms</target>
+            </trans-unit>
 
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">
@@ -953,9 +1033,13 @@
                 <source>Import users from csv file</source>
                 <target>Import users from csv file</target>
             </trans-unit>
-            <trans-unit id="Files">
+            <trans-unit id="portal_csv_import_files">
                 <source>Files</source>
                 <target>Files</target>
+            </trans-unit>
+            <trans-unit id="portal_csv_import_sample">
+                <source>Download sample</source>
+                <target>Download sample</target>
             </trans-unit>
 
             <!-- auth -->
@@ -966,6 +1050,22 @@
             <trans-unit id="portal_auth_default_source">
                 <source>Default Source</source>
                 <target>Default Source</target>
+            </trans-unit>
+            <trans-unit id="helP_text_default">
+                <source>Pre select this authentication in the login box (deselect all others)</source>
+                <target>Pre select this authentication in the login box (deselect all others)</target>
+            </trans-unit>
+            <trans-unit id="default_auth">
+                <source>Default</source>
+                <target>Default</target>
+            </trans-unit>
+            <trans-unit id="add_account">
+                <source>Add account</source>
+                <target>Add account</target>
+            </trans-unit>
+            <trans-unit id="auth_invitation">
+                <source>Invitation</source>
+                <target>With invitation</target>
             </trans-unit>
 
             <!-- general -->

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexSendMail;
@@ -23,7 +24,9 @@ use App\Entity\RoomCategories;
 use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
+use App\Facade\UserCreatorFacade;
 use App\Form\DataTransformer\UserTransformer;
+use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
@@ -31,16 +34,19 @@ use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
 use App\Form\Type\Portal\AccountIndexDetailEditType;
 use App\Form\Type\Portal\AccountIndexDetailType;
+use App\Form\Type\Portal\AccountIndexPerformUserActionType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
+use App\Form\Type\Portal\ArchiveRoomsType;
 use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\DataPrivacyType;
+use App\Form\Type\Portal\DeleteArchiveRoomsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\ImpressumType;
 use App\Form\Type\Portal\InactiveType;
@@ -63,6 +69,7 @@ use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TranslationType;
 use App\Model\TimePulseTemplate;
+use App\Repository\AuthSourceRepository;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
@@ -474,7 +481,7 @@ class PortalSettingsController extends AbstractController
          */
         $authSources = $portal->getAuthSources();
 
-        /** @var AuthSourceShibboleth $localSource */
+        /** @var AuthSourceLocal $localSource */
         $localSource = $authSources->filter(function (AuthSource $authSource) {
             return $authSource instanceof AuthSourceLocal;
         })->first();
@@ -485,6 +492,7 @@ class PortalSettingsController extends AbstractController
             $localSource->setPortal($portal);
         }
 
+        $localSource->setPortal($portal);
         $localForm = $this->createForm(AuthLocalType::class, $localSource);
         $localForm->handleRequest($request);
 
@@ -498,7 +506,7 @@ class PortalSettingsController extends AbstractController
 
             if ($clickedButtonName === 'save') {
                 if ($localSource->isDefault()) {
-                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager) {
+                    $authSources->map(function (AuthSource $authSource) use ($localSource, $entityManager, $portal) {
                         $authSource->setDefault(false);
                         $entityManager->persist($authSource);
                     });
@@ -512,6 +520,45 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $localForm->createView(),
+            'portal' => $portal,
+        ];
+    }
+
+
+    /**
+     * @Route("/portal/{portalId}/settings/csvimport")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template()
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @param Request $request
+     * @param UserCreatorFacade $userCreator
+     * @param Portal $portal
+     * @return array
+     */
+    public function csvImportAction(
+        Request $request,
+        UserCreatorFacade $userCreator,
+        Portal $portal
+    ) {
+        $importForm = $this->createForm(CsvImportType::class, [], [
+            'portal' => $portal,
+        ]);
+
+        $importForm->handleRequest($request);
+        if ($importForm->isSubmitted() && $importForm->isValid()) {
+            /** @var ArrayCollection $datasets */
+            $datasets = $importForm->get('csv')->getData();
+
+            /** @var AuthSource $authSource */
+            $authSource = $importForm->get('auth_sources')->getData();
+
+            foreach ($datasets as $dataset) {
+                $userCreator->createFromCsvDataset($authSource, $dataset);
+            }
+        }
+
+        return [
+            'form' => $importForm->createView(),
             'portal' => $portal,
         ];
     }
@@ -746,17 +793,14 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param int|null $licenseId
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @param RoomService $roomService
      * @param EventDispatcherInterface $dispatcher
      * @param LegacyEnvironment $environment
+     * @return array|RedirectResponse
      */
     public function licenses(
         Portal $portal,
-        $licenseId,
+        ?int $licenseId,
         Request $request,
-        EntityManagerInterface $entityManager,
-        RoomService $roomService,
         EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment
     ) {
@@ -893,21 +937,61 @@ class PortalSettingsController extends AbstractController
      */
     public function inactive(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(InactiveType::class, $portal);
+        $inactiveForm = $this->createForm(InactiveType::class, $portal);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $inactiveForm->handleRequest($request);
+        if ($inactiveForm->isSubmitted() && $inactiveForm->isValid()) {
 
-            if ($form->getClickedButton()->getName() === 'save') {
+            if ($inactiveForm->getClickedButton()->getName() === 'save') {
                 $entityManager->persist($portal);
                 $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_inactive', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'inactive',
+                ]);
             }
 
             // TODO: inform the user how many inactive accounts would be locked/deleted due to the currently entered day values (see `configuration_inactive.php`)
         }
 
+        // archiving rooms form
+        $archiveRoomsForm = $this->createForm(ArchiveRoomsType::class, $portal, []);
+        $archiveRoomsForm->handleRequest($request);
+        if ($archiveRoomsForm->isSubmitted() && $archiveRoomsForm->isValid()) {
+
+            if ($archiveRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_inactive', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'archiveRooms',
+                ]);
+            }
+        }
+
+        // deleting archived rooms form
+        $deleteArchiveRoomsForm = $this->createForm(DeleteArchiveRoomsType::class, $portal, []);
+        $deleteArchiveRoomsForm->handleRequest($request);
+        if ($deleteArchiveRoomsForm->isSubmitted() && $deleteArchiveRoomsForm->isValid()) {
+
+            if ($deleteArchiveRoomsForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_portalsettings_inactive', [
+                    'portalId' => $portal->getId(),
+                    'tab' => 'deleteRooms',
+                ]);
+            }
+        }
+
         return [
-            'form' => $form->createView(),
+            'inactiveForm' => $inactiveForm->createView(),
+            'archiveRoomsForm' => $archiveRoomsForm->createView(),
+            'deleteArchiveRoomsForm' => $deleteArchiveRoomsForm->createView(),
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'inactive',
         ];
     }
 
@@ -1024,7 +1108,7 @@ class PortalSettingsController extends AbstractController
 
         $server = $entityManager->getRepository(Server::class)->getServer();
         $serverForm = $this->createForm(ServerAnnouncementsType::class, $server);
-        if ($this->isGranted('ROOT')) {
+        if ($this->isGranted(RootVoter::ROOT)) {
             $serverForm->handleRequest($request);
             if ($serverForm->isSubmitted() && $serverForm->isValid()) {
                 $entityManager->persist($server);
@@ -1159,9 +1243,11 @@ class PortalSettingsController extends AbstractController
             if ($form->get('execute')->isClicked()) {
                 $IdsMailRecipients[] = $userId;
                 $user = $userService->getUser($userId);
+
                 $user->delete();
                 $user->save();
                 $this->addFlash('deleteSuccess', true);
+
                 return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
                     'portalId' => $portalId,
                     'recipients' => implode(", ", $IdsMailRecipients),
@@ -1186,6 +1272,179 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
+     * @Route("/portal/{portalId}/settings/accountindex/{userIds}/performUserAction/{action}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexPerformUserAction (
+        $portalId,
+        $userIds,
+        $action,
+        Portal $portal,
+        UserService $userService,
+        Request $request,
+        LegacyEnvironment $environment,
+        \Swift_Mailer $mailer,
+        PaginatorInterface $paginator,
+        AccountManager $accountManager
+    ) {
+        $users = [];
+        $userNames = [];
+
+        foreach ( explode(", ",$userIds) as $userId) {
+            $user = $userService->getUser($userId);
+            $users[] = $user;
+            $userNames[] = $user->getFullName();
+        }
+
+        $formOptions = [
+            'action' => $action,
+            'users' => $users,
+            'portal' => $portal,
+        ];
+
+        $form = $this->createForm(AccountIndexPerformUserActionType::class, $formOptions);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            if ($form->get('execute')->isClicked()) {
+                $IdsMailRecipients = [];
+                switch($action) {
+                    case 'user-delete':
+                        //$user->delete();
+                        //$user->save();
+                        $this->addFlash('deleteSuccess', true);
+                        break;
+                    case 'user-block':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->reject();
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->lock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-confirm':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeUser();
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-status-reading-user':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->setStatus(4);
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-status-user':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeUser();
+                            $user->setStatus(2);
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-status-moderator':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeModerator();
+                            $user->setStatus(3);
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-contact':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeContactPerson();
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-contact-remove':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeNoContactPerson();
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    default:
+                        //$user->delete();
+                        //$user->save();
+                        $this->addFlash('deleteSuccess', true);
+                        $action = 'user-delete';
+                }
+
+                return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
+                    'portalId' => $portalId,
+                    'recipients' => implode(", ", $IdsMailRecipients),
+                    'action' => $action,
+                ]);
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    return $this->redirectToRoute('app_portalsettings_accountindex', [
+                        'portalId' => $portalId,
+                    ]);
+                }
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+            'portalId' => $portalId,
+            'users' => implode(", ", $userNames),
+            'action' => $action,
+            'portal' => $portal,
+        ];
+    }
+
+    /**
      * @Route("/portal/{portalId}/settings/accountindex")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -1198,10 +1457,15 @@ class PortalSettingsController extends AbstractController
         Request $request,
         LegacyEnvironment $environment,
         \Swift_Mailer $mailer,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
+        AuthSourceRepository $authSourceRepository,
+        AccountManager $accountManager,
+        RouterInterface $router
     ) {
         $user = $userService->getCurrentUserItem();
-        $portalUsers = $userService->getListUsers($portal->getId());
+        // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
+        $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
+        $authSources = $authSourceRepository->findByPortal($portalId);
         $userList = [];
         $alreadyIncludedUserIDs = [];
         foreach ($portalUsers as $portalUser) {
@@ -1236,7 +1500,8 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             if ($form->get('search')->isClicked()) {
 
-                $portalUsers = $userService->getListUsers($portal->getId());
+                // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
+                $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
                 $tempUserList = [];
                 $userList = [];
                 foreach ($portalUsers as $portalUser) {
@@ -1298,6 +1563,13 @@ class PortalSettingsController extends AbstractController
             } elseif ($form->get('execute')->isClicked()) {
                 $data = $form->getData();
                 $ids = $data->getIds();
+                $userIds = [];
+
+                foreach ($ids as $id => $checked) {
+                    if ($checked) {
+                        $userIds[] = $id;
+                    }
+                }
 
                 switch ($data->getIndexViewAction()) {
                     case 0:
@@ -1314,34 +1586,24 @@ class PortalSettingsController extends AbstractController
                             }
                         }
                         $this->sendUserInfoMail($IdsMailRecipients, 'user-delete', $user, $mailer, $userService,
-                            $environment);
+                            $environment, $router);
                         break;
                     case 2: // user-block
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->lock();
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-block', $user, $mailer, $userService,
-                            $environment);
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-block'
+                        ]);
+
                     case 3: // user-confirm
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->isNotActivated(); //TODO which function?
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-confirm', $user, $mailer, $userService,
-                            $environment);
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-confirm'
+                        ]);
+
                     case 4: // change user mail the next time he/she logs in
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1352,66 +1614,40 @@ class PortalSettingsController extends AbstractController
                         }
                         break;
                     case 'user-status-reading-user':
-                        foreach ($ids as $id) {
-                            $user = $userService->getUser($id);
-                            $user->setStatus(4);
-                            $user->save();
-                        }
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-status-reading-user'
+                        ]);
 
                     case 5: // 'user-status-user
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->makeUser();
-                                $user->setStatus(2);
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-user', $user, $mailer, $userService,
-                            $environment);
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-status-user'
+                        ]);
+
                     case 6: // user-status-moderator
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->setStatus(3);
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-moderator', $user, $mailer,
-                            $userService, $environment);
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-status-moderator'
+                        ]);
                     case 7: //user-contact
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                                $user = $userService->getUser($id);
-                                $user->makeContactPerson();
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact', $user, $mailer, $userService,
-                            $environment);
-                        break;
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-contact'
+                        ]);
                     case 8: // user-contact-remove
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                                $user = $userService->getUser($id);
-                                $user->makeContactPerson();
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact-remove', $user, $mailer, $userService,
-                            $environment);
-                        break;
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-contact-remove'
+                        ]);
                     case 9: // send mail
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1452,7 +1688,7 @@ class PortalSettingsController extends AbstractController
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
-                                $user->setDefaultMailNotVisible();
+                                $user->setEmailNotVisible();
                                 $user->save();
                             }
                         }
@@ -1462,10 +1698,12 @@ class PortalSettingsController extends AbstractController
                             if ($checked) {
                                 $user = $userService->getUser($id);
                                 $user->setDefaultMailNotVisible();
+                                $user->setEmailNotVisible();
                                 $user->save();
                                 $allRelatedUsers = $user->getRelatedPortalUserItem();
                                 foreach ($allRelatedUsers as $relatedUser) {
                                     $relatedUser->setDefaultMailNotVisible();
+                                    $relatedUser->setEmailNotVisible();
                                     $relatedUser->save();
                                 }
                             }
@@ -1475,20 +1713,22 @@ class PortalSettingsController extends AbstractController
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
-                                $user->setDefaultMailVisible();
+                                $user->setEmailVisible();
                                 $user->save();
                             }
                         }
                         break;
-                    case 15: // hide mail everywhere
+                    case 15: // show mail everywhere
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
                                 $user->setDefaultMailVisible();
+                                $user->setEmailVisible();
                                 $user->save();
                                 $allRelatedUsers = $user->getRelatedPortalUserItem();
                                 foreach ($allRelatedUsers as $relatedUser) {
                                     $relatedUser->setDefaultMailVisible();
+                                    $relatedUser->setEmailVisible();
                                     $relatedUser->save();
                                 }
                             }
@@ -1521,6 +1761,7 @@ class PortalSettingsController extends AbstractController
             'userList' => $userList,
             'portal' => $portal,
             'pagination' => $pagination,
+            'authSources' => $authSources,
         ];
     }
 
@@ -1537,13 +1778,13 @@ class PortalSettingsController extends AbstractController
                     $meetsCriteria = true;
                 }
                 break;
-            case 2: // locked
-                if ($userInQuestion->isLocked()) {
+            case 2: // locked // ->isLocked() only exhibits the extra flag 'LOCKED', not the set status
+                if ($userInQuestion->getStatus() == '0') {
                     $meetsCriteria = true;
                 }
                 break;
             case 3: // In activation
-                if ($userInQuestion->getStatus() == '0') {
+                if ($userInQuestion->isRequested()) {
                     $meetsCriteria = true;
                 }
                 break;
@@ -1674,12 +1915,14 @@ class PortalSettingsController extends AbstractController
             array_push($recipientArray, $currentUser);
         }
 
+        $multipleRecipients = sizeof($recipientArray) > 1;
+
         $sendMail = new AccountIndexSendMail();
         $sendMail->setRecipients($recipientArray);
 
         $chosenAction = isset($action) ? $action : 'user-account_send_mail';
         $accountMail = new AccountMail($legacyEnvironment, $router);
-        $body = $accountMail->generateBody($userService->getCurrentUserItem(), $chosenAction);
+        $body = $accountMail->generateBody($recipientArray[0], $chosenAction, $multipleRecipients);
         $subject = $accountMail->generateSubject($chosenAction);
         $sendMail->setSubject($subject);
         $sendMail->setMessage($body);
@@ -1918,7 +2161,7 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      * @param UserService $userService
-     * @param LegacyEnvironment $legacyEnvironment
+     * @param AuthSourceRepository $authSourceRepository
      * @param RoomService $roomService
      * @param Security $security
      * @return array|RedirectResponse
@@ -1927,7 +2170,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
+        AuthSourceRepository $authSourceRepository,
         RoomService $roomService,
         Security $security
     ) {
@@ -2035,7 +2278,6 @@ class PortalSettingsController extends AbstractController
                 ]);
             }
 
-
             if ($form->get('back')->isClicked()) {
                 return $this->redirectToRoute('app_portalsettings_accountindex', [
                     'portal' => $portal,
@@ -2047,6 +2289,7 @@ class PortalSettingsController extends AbstractController
         return [
             'user' => $user,
             'portalUser' => $portalUser,
+            'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
             'form' => $form->createView(),
             'portal' => $portal,
             'communities' => implode(', ', $communityListNames),
@@ -2211,7 +2454,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        AccountManager $accountManager
     ) {
         $user = $userService->getUser($request->get('userId'));
         $userChangeStatus = new PortalUserChangeStatus();
@@ -2221,10 +2465,8 @@ class PortalSettingsController extends AbstractController
 
         $userStatus = $user->getStatus();
         $currentStatus = 'Moderator';
-        if ($userStatus == 1) {
+        if ($userStatus == 0) {
             $currentStatus = 'Close';
-        } elseif ($userStatus == 0) {
-            $currentStatus = 'In acceptance';
         } elseif ($userStatus == 2) {
             $currentStatus = 'User';
         } elseif ($userStatus == 3) {
@@ -2245,15 +2487,20 @@ class PortalSettingsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userService->getUser($request->get('userId'));
 
+            $account = $accountManager->getAccount($user, $portal->getId());
+
             /** @var PortalUserChangeStatus $data */
             $data = $form->getData();
             $newStatus = $data->getNewStatus();
             if (strcmp($newStatus, 'user') == 0) {
                 $user->makeUser();
+                $accountManager->unlock($account);
             } elseif (strcmp($newStatus, 'moderator') == 0) {
                 $user->makeModerator();
+                $accountManager->unlock($account);
             } elseif (strcmp($newStatus, 'close') == 0) {
                 $user->reject();
+                $accountManager->lock($account);
             }
 
             if ($data->isContact()) {
@@ -2446,7 +2693,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        AccountManager $accountManager
     ) {
         $user = $userService->getUser($request->get('userId'));
         $userAssignWorkspace = new PortalUserAssignWorkspace();
@@ -2480,6 +2728,12 @@ class PortalSettingsController extends AbstractController
                     $newUser->setContextID($newAssignedRoom->getItemID());
                     $newUser->setUserComment($formData->getDescriptionOfParticipation());
                     $newUser->save();
+
+                    $newUser->makeUser();
+                    $newUser->save();
+
+                    $account = $accountManager->getAccount($newUser, $portal->getId());
+                    $accountManager->unlock($account);
 
                     $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                         'portalId' => $portal->getId(),

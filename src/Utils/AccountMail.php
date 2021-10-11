@@ -3,7 +3,8 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
-
+use cs_environment;
+use cs_user_item;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -13,8 +14,15 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class AccountMail
 {
-    private $legacyEnvironment;
-    private $router;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
+
+    /**
+     * @var RouterInterface
+     */
+    private RouterInterface $router;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RouterInterface $router)
     {
@@ -22,7 +30,11 @@ class AccountMail
         $this->router = $router;
     }
 
-    public function generateSubject($action)
+    /**
+     * @param string $action
+     * @return string
+     */
+    public function generateSubject(string $action): string
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
@@ -67,18 +79,39 @@ class AccountMail
                 $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON', $room->getTitle());
 
                 break;
+
+            case 'user-account-merge':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_MERGE', $room->getTitle());
+
+                break;
+
+            case 'user-account_password':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_PASSWORD', $room->getTitle());
+
+                break;
+
+            case 'user-account_send_mail':
+                $subject = $legacyTranslator->getMessage('MAIL_SUBJECT', $room->getTitle());
+
+                break;
         }
 
         return $subject;
     }
 
-    public function generateBody($user, $action)
+    /**
+     * @param cs_user_item $user
+     * @param string $action
+     * @param bool $multipleRecipients
+     * @return string
+     */
+    public function generateBody(cs_user_item $user, string $action, $multipleRecipients = false): string
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
 
-        $body = $legacyTranslator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
-        $body .= "\n\n";
+        $body = $legacyTranslator->getEmailMessage('MAIL_BODY_HELLO', $multipleRecipients ? ' ' : $user->getFullname());
+        $body .= "<br/><br/>";
 
         $moderator = $this->legacyEnvironment->getCurrentUserItem();
 
@@ -93,45 +126,73 @@ class AccountMail
                 break;
 
             case 'user-block':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK', $user->getUserID(), $room->getTitle());
+                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK', $multipleRecipients ? ' ' : $user->getUserID(),
+                    $room->getTitle());
+                $message = str_replace("\n","<br/>", $message);
+                $body .= $message;
 
                 break;
 
             case 'user-confirm':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $user->getUserID(), $room->getTitle());
+                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $multipleRecipients ? ' ' : $user->getUserID(),
+                    $room->getTitle());
+                $message = str_replace("\n","<br/>", $message);
+                $body .= $message;
 
                 break;
 
             case 'user-status-user':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $user->getUserID(), $room->getTitle());
+
+                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $multipleRecipients ? ' ' : $user->getUserID(),
+                    $room->getTitle());
+                $message = str_replace("\n","<br/>", $message);
+                $body .= $message;
 
                 break;
 
             case 'user-status-moderator':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR', $user->getUserID(), $room->getTitle());
+                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR', $multipleRecipients ? ' ' : $user->getUserID(),
+                    $room->getTitle());
+                $message = str_replace("\n","<br/>", $message);
+                $body .= $message;
 
                 break;
 
             case 'user-status-reading-user':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY', $user->getUserID(), $room->getTitle());
+
+                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY', $multipleRecipients ? ' ' : $user->getUserID(),
+                    $room->getTitle());
+                $message = str_replace("\n","<br/>", $message);
+                $body .= $message;
 
                 break;
 
             case 'user-contact':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
+
+                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON', $multipleRecipients ? ' ' : $user->getUserID(),
+                    $room->getTitle());
+                $message = str_replace("\n","<br/>", $message);
+                $body .= $message;
 
                 break;
 
             case 'user-contact-remove':
-                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
+                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $multipleRecipients ? ' ' : $user->getUserID(),
+                    $room->getTitle());
+                $message = str_replace("\n","<br/>", $message);
+                $body .= $message;
 
                 break;
         }
 
-        $body .= "\n\n";
+        $body .= "<br/><br/>";
         $body .= $absoluteRoomUrl;
-        $body .= "\n\n";
-        $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO', $moderator->getFullname(), $room->getTitle());
+        $body .= "<br/><br/>";
+
+        $message = $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO', $moderator->getFullname(),
+            $room->getTitle());
+        $message = str_replace("\n","<br/>", $message);
+        $body .= $message;
 
         return $body;
     }

@@ -86,6 +86,10 @@
                 <source>Show?</source>
                 <target>Anzeigen?</target>
             </trans-unit>
+            <trans-unit id="show_announcements?">
+                <source>Show announcements?</source>
+                <target>Ankündigungen anzeigen?</target>
+            </trans-unit>
 
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
@@ -317,6 +321,34 @@
                 <source>Default template help text</source>
                 <target>Bei Auswahl einer Vorlage werden beim Eröffnen eines Raumes sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen</target>
             </trans-unit>
+            <trans-unit id="archiving_rooms">
+                <source>Archiving rooms</source>
+                <target>Archivierung</target>
+            </trans-unit>
+            <trans-unit id="archive_deletion">
+                <source>Archive deletion</source>
+                <target>Löschung arch. Räume</target>
+            </trans-unit>
+            <trans-unit id="activate">
+                <source>Activate</source>
+                <target>aktivieren</target>
+            </trans-unit>
+            <trans-unit id="archive_after_x_days">
+                <source>Archive rooms after x days</source>
+                <target>Räume nach X Tagen Nichtnutzung archivieren</target>
+            </trans-unit>
+            <trans-unit id="send_mail_x_days_before_archiving">
+                <source>Send mail x days before archiving</source>
+                <target>X Tage vor Archivierung Raummod. benachrichtigen</target>
+            </trans-unit>
+            <trans-unit id="delete_after_x_days">
+                <source>Delete rooms after x days</source>
+                <target>arch. Räume nach X Tagen Nichtnutzung löschen</target>
+            </trans-unit>
+            <trans-unit id="send_mail_x_days_before_deletion">
+                <source>Send mail x days before deletion</source>
+                <target>X Tage vor Raumlöschung Raummod. benachrichtigen</target>
+            </trans-unit>
 
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
@@ -475,9 +507,45 @@
                 <source>Are you sure you want to delete</source>
                 <target>Sind Sie sicher, dass Sie die Kennung löschen möchten von</target>
             </trans-unit>
+            <trans-unit id="perform_account_action_start">
+                <source>Are you sure you want to perform the action</source>
+                <target>Sind Sie sicher, dass Sie die Aktion</target>
+            </trans-unit>
+            <trans-unit id="perform_account_action_ending">
+                <source>For the following users</source>
+                <target>durchführen möchten für die nachfolgenden NutzerInnen</target>
+            </trans-unit>
             <trans-unit id="delete_success">
                 <source>Delete success</source>
                 <target>NutzerIn erfolgreich gelöscht</target>
+            </trans-unit>
+            <trans-unit id="user_block">
+                <source>user-block</source>
+                <target>sperren</target>
+            </trans-unit>
+            <trans-unit id="user_confirm">
+                <source>user-confirm</source>
+                <target>freischalten / Status BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_reading_user">
+                <source>user-status-reading-user</source>
+                <target>Status lesende/r BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_user">
+                <source>user-status-user</source>
+                <target>Status BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_moderator">
+                <source>user-status-moderator</source>
+                <target>Status ModeratorIn</target>
+            </trans-unit>
+            <trans-unit id="user_contact">
+                <source>user-contact</source>
+                <target>zur Kontaktperson machen</target>
+            </trans-unit>
+            <trans-unit id="user_contact_remove">
+                <source>user-contact-remove</source>
+                <target>Status einer Kontaktperson entfernen</target>
             </trans-unit>
 
             <!-- Account Index send Password Mail -->
@@ -503,7 +571,7 @@
             </trans-unit>
             <trans-unit id="names">
                 <source>Names</source>
-                <target>Names</target>
+                <target>Namen</target>
             </trans-unit>
             <trans-unit id="standard">
                 <source>Standard</source>
@@ -901,6 +969,18 @@
                 <source>Search</source>
                 <target>Suchen</target>
             </trans-unit>
+            <trans-unit id="deprovisioning">
+                <source>Deprovisioning</source>
+                <target>Deprovisionierung</target>
+            </trans-unit>
+            <trans-unit id="archive_inactive_rooms">
+                <source>Archive inactive rooms</source>
+                <target>Archivierung</target>
+            </trans-unit>
+            <trans-unit id="delete_inactive_rooms">
+                <source>Delete inactive rooms</source>
+                <target>Löschung arch. Räume</target>
+            </trans-unit>
 
             <!-- portal licenses configuration -->
             <trans-unit id="portal_licenses_menu_title">
@@ -953,9 +1033,13 @@
                 <source>Import users from csv file</source>
                 <target>Benutzer aus CSV-Datei importieren</target>
             </trans-unit>
-            <trans-unit id="Files">
+            <trans-unit id="portal_csv_import_files">
                 <source>Files</source>
                 <target>Dateien</target>
+            </trans-unit>
+            <trans-unit id="portal_csv_import_sample">
+                <source>Download sample</source>
+                <target>Vorlage herunterladen</target>
             </trans-unit>
 
             <!-- auth -->
@@ -966,6 +1050,22 @@
             <trans-unit id="portal_auth_default_source">
                 <source>Default Source</source>
                 <target>Standard-Quelle</target>
+            </trans-unit>
+            <trans-unit id="helP_text_default">
+                <source>Pre select this authentication in the login box (deselect all others)</source>
+                <target>Diese Authentifizierungsquelle in der Login-Box vorauswählen (alle anderen werden abgewählt)</target>
+            </trans-unit>
+            <trans-unit id="default_auth">
+                <source>Default</source>
+                <target>Standardwert</target>
+            </trans-unit>
+            <trans-unit id="add_account">
+                <source>Add account</source>
+                <target>Kennungen anlegen</target>
+            </trans-unit>
+            <trans-unit id="auth_invitation">
+                <source>Invitation</source>
+                <target>Nach Einladung</target>
             </trans-unit>
 
             <!-- general -->
