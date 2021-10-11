@@ -3,15 +3,11 @@
 namespace App\Services;
 
 use App\Utils\ItemService;
-use App\Utils\RoomService;
-use cs_environment;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CopyService
 {
-    private cs_environment $legacyEnvironment;
-
     private ItemService $itemService;
 
     private SessionInterface $session;
@@ -20,14 +16,13 @@ class CopyService
 
     /**
      * CopyService constructor.
-     * @param \App\Services\LegacyEnvironment $legacyEnvironment
-     * @param RoomService $roomService
      * @param ItemService $itemService
      * @param SessionInterface $session
      */
-    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, SessionInterface $session)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    public function __construct(
+        ItemService $itemService,
+        SessionInterface $session
+    ) {
         $this->itemService = $itemService;
         $this->session = $session;
         $this->type = false;
@@ -54,7 +49,7 @@ class CopyService
      * @param integer $start
      * @return \cs_item[]
      */
-    public function getListEntries($roomId, $max = NULL, $start = NULL, $sort = NULL)
+    public function getListEntries($roomId, $max = null, $start = null, $sort = null)
     {
         $currentClipboardIds = $this->session->get('clipboard_ids', []);
 
@@ -125,5 +120,14 @@ class CopyService
         $this->session->set('clipboard_ids', $clipboardIds);
 
         return $this->getCountArray($roomId);
+    }
+
+    public function removeItemFromClipboard(int $itemId)
+    {
+        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+        if (in_array($itemId, $currentClipboardIds)) {
+            unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
+            $this->session->set('clipboard_ids', $currentClipboardIds);
+        }
     }
 }

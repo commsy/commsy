@@ -1067,42 +1067,45 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    /** reject a user
-     * this method sets the status of the user to rejected
+    /**
+     * Sets the status of the user to rejected. As a result, the user will be blocked from its context.
      */
-    function reject()
+    public function reject(): void
     {
-        $this->_setValue('status', 0);
+        $this->setStatus(0);
         $this->makeNoContactPerson();
     }
 
-    /** request a user
-     * this method sets the status of the user to request, an moderator must free the account
+    /**
+     * Sets the status of the user to request, a moderator must free the account.
      */
-    function request()
+    public function request(): void
     {
-        $this->_setValue('status', 1);
+        $this->setStatus(1);
     }
 
-    /** make a user normal user
-     * this method sets the status of the user to normal
+    /**
+     * Sets the status of the user to normal.
      */
-    function makeUser()
+    public function makeUser(): void
     {
-        $this->_setValue('status', 2);
+        $this->setStatus(2);
     }
 
-    function makeReadOnlyUser()
+    /**
+     * Sets the status of the user to read-only.
+     */
+    public function makeReadOnlyUser(): void
     {
-        $this->_setValue('status', 4);
+        $this->setStatus(4);
     }
 
-    /** make a user moderator
-     * this method sets the status of the user to moderator
+    /**
+     * Sets the status of the user to moderator.
      */
-    function makeModerator()
+    public function makeModerator(): void
     {
-        $this->_setValue('status', 3);
+        $this->setStatus(3);
     }
 
     /** get status of user

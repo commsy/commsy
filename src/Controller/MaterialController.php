@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
+use App\Action\Delete\DeleteMaterial;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadMaterial;
@@ -1640,12 +1641,14 @@ class MaterialController extends BaseController
      */
     public function xhrDeleteAction(
         Request $request,
-        int $roomId,
-        DeleteAction $deleteAction
+        DeleteAction $deleteAction,
+        DeleteMaterial $deleteMaterial,
+        int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
+        $deleteAction->setDeleteStrategy($deleteMaterial);
         return $deleteAction->execute($room, $items);
     }
 

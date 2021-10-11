@@ -22,16 +22,40 @@
                 <source>Your access code is invalid.</source>
                 <target>Ihr Zugangscode ist inkorrekt.</target>
             </trans-unit>
+            <trans-unit id="validators_room_code_filled">
+                <source>Please enter an access code.</source>
+                <target>Bitte geben Sie einen Zugangscode an.</target>
+            </trans-unit>
             <trans-unit id="validators_room_no_moderators">
                 <source>Please first assign another moderator for the workspace {{ criteria }} or delete the workspace {{ criteria }}</source>
                 <target>Bitte benennen Sie zunächst im Raum {{ criteria }} eine neue Moderation oder löschen Sie den Raum {{ criteria }}.</target>
             </trans-unit>
+            <trans-unit id="validators_no_userstatus_change_no_moderators">
+                <source>This action would leave the following workspace(s) without moderation:</source>
+                <target>Durch diese Aktion wären die folgenden Räume ohne Moderation:</target>
+            </trans-unit>
+            <trans-unit id="validators_no_userid_deletion_no_moderators">
+                <source>You cannot delete or lock the chosen user(s) from this workspace. The following workspaces would otherwise be without moderators:</source>
+                <target>Sie können diese Kennung(en) nicht sperren oder aus dem Raum löschen. Die folgenden Räume wären ansonsten ohne Moderation:</target>
+            </trans-unit>
+            <trans-unit id="validators_no_membership_deletion_rooms_moderated_start">
+                <source>You cannot delete or lock your workspace membership. The following workspaces would otherwise be without moderators:</source>
+                <target>Sie können Ihre Raummitgliedschaft nicht löschen oder sperren. Die folgenden Räume wären ansonsten ohne Moderation:</target>
+            </trans-unit>
+            <trans-unit id="validators_no_membership_deletion_rooms_moderated_end">
+                <source>Please assign further moderators or delete said workspace(s).</source>
+                <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
+            </trans-unit>
+            <trans-unit id="validators_no_membership_deletion_grouprooms_info">
+                <source>You can delete an unneeded group workspace by deleting its corresponding group. If you want to assign a new moderation to the group workspace please contact the portal moderation.</source>
+                <target>Sie können einen nicht mehr benötigten Gruppenraum löschen, indem Sie die dazugehörige Gruppe löschen. Sollten Sie eine neue Moderation für einen Gruppenraum einsetzen wollen, wenden Sie sich bitte an die Portalmoderation.</target>
+            </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_start">
-                <source>You can not delete or lock your account. The following workspaces would otherwise be without moderators:</source>
-                <target>Sie können Ihren Account NICHT löschen oder sperren. Die folgenden Räumen wären ansonsten ohne Moderation:</target>
+                <source>You cannot delete or lock your account. The following workspaces would otherwise be without moderators:</source>
+                <target>Sie können Ihren Account NICHT löschen oder sperren. Die folgenden Räume wären ansonsten ohne Moderation:</target>
             </trans-unit>
             <trans-unit id="validators_no_account_deletion_rooms_moderated_end">
-                <source>Please assign further moderators or delete said workspace/s.</source>
+                <source>Please assign further moderators or delete said workspace(s).</source>
                 <target>Bitte setzen Sie hier eine neue Moderation ein oder löschen Sie den/die Räume.</target>
             </trans-unit>
             <trans-unit id="validators_project_rooms_attached_to_deletion_group_room_start">
@@ -41,10 +65,6 @@
             <trans-unit id="validators_project_rooms_attached_to_deletion_group_room_end">
                 <source>Those project rooms must be delete first or must be assigned to a different workspace.</source>
                 <target>Diese Projketräume müssen zunöchst gelöscht- oder eine andere Zuordnung getroffen werden.</target>
-            </trans-unit>
-            <trans-unit id="validators_room_code_filled">
-                <source>Please enter an access code.</source>
-                <target>Bitte geben Sie einen Zugangscode an.</target>
             </trans-unit>
             <trans-unit id="validators_password_criteria">
                 <source>The password does not fulfill the following criteria: {{ criteria }}.</source>
@@ -75,7 +95,7 @@
                 <target>Es existiert kein Eintrag mit dieser Referenznummer.</target>
             </trans-unit>
             <trans-unit id="homeNotiveInvalidItemType">
-                <source>A item of this type ({{ type }}) can not be used as home notice.</source>
+                <source>A item of this type ({{ type }}) cannot be used as home notice.</source>
                 <target>Ein Eintrag mit diesem Typ ({{ type }}) kann nicht verwendet werden.</target>
             </trans-unit>
             <trans-unit id="homeNotiveInvalidId">
