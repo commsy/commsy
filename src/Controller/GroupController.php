@@ -30,6 +30,7 @@ use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Swift_Mailer;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,8 +49,21 @@ class GroupController extends BaseController
      * @var GroupService
      */
     private GroupService $groupService;
+
+    /**
+     * @var SessionInterface
+     */
     private SessionInterface $session;
-    private $mailer;
+
+    /**
+     * @var UserService
+     */
+    private UserService $userService;
+
+    /**
+     * @var Swift_Mailer
+     */
+    private Swift_Mailer $mailer;
 
     /**
      * @required
@@ -73,11 +87,20 @@ class GroupController extends BaseController
 
     /**
      * @required
-     * @param \Swift_Mailer $mailer
+     * @param Swift_Mailer $mailer
      */
-    public function setMailer(\Swift_Mailer $mailer)
+    public function setMailer(Swift_Mailer $mailer)
     {
         $this->mailer = $mailer;
+    }
+
+    /**
+     * @required
+     * @param UserService $userService
+     */
+    public function setUserService(UserService $userService): void
+    {
+        $this->userService = $userService;
     }
 
 
@@ -271,7 +294,7 @@ class GroupController extends BaseController
             // grouproom member status
             if ($item->isGroupRoomActivated()) {
                 if ($item->getGroupRoomItem()) {
-                    $groupMemberStatus['groupRoomMember'] = $userService->getMemberStatus(
+                    $groupMemberStatus['groupRoomMember'] = $this->userService->getMemberStatus(
                         $item->getGroupRoomItem(),
                         $this->legacyEnvironment->getCurrentUser()
                     );
@@ -331,7 +354,7 @@ class GroupController extends BaseController
         if ($infoArray['group']->isGroupRoomActivated()) {
             $groupRoomItem = $infoArray['group']->getGroupRoomItem();
             if ($groupRoomItem && !empty($groupRoomItem)) {
-                $memberStatus = $userService->getMemberStatus(
+                $memberStatus = $this->userService->getMemberStatus(
                     $groupRoomItem,
                     $this->legacyEnvironment->getCurrentUser()
                 );
@@ -355,6 +378,8 @@ class GroupController extends BaseController
         }
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
+
+        $currentUserIsLastGrouproomModerator = $this->userService->userIsLastModeratorForRoom($infoArray['group']->getGroupRoomItem());
 
         return array(
             'roomId' => $roomId,
@@ -388,7 +413,7 @@ class GroupController extends BaseController
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
-            'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
+            'lastModeratorStanding' => $currentUserIsLastGrouproomModerator,
             'userRubricVisible' => in_array("user", $this->roomService->getRubricInformation($roomId)),
         );
     }
@@ -994,7 +1019,6 @@ class GroupController extends BaseController
 
     /**
      * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
-     * @param UserService $userService
      * @param int $roomId
      * @param int $itemId
      * @param bool $joinRoom
@@ -1002,7 +1026,6 @@ class GroupController extends BaseController
      * @throws Exception
      */
     public function joinAction(
-        UserService $userService,
         int $roomId,
         int $itemId,
         bool $joinRoom
@@ -1031,7 +1054,7 @@ class GroupController extends BaseController
         if ($joinRoom) {
             $grouproomItem = $groupItem->getGroupRoomItem();
             if ($grouproomItem) {
-                $memberStatus = $userService->getMemberStatus($grouproomItem,
+                $memberStatus = $this->userService->getMemberStatus($grouproomItem,
                     $this->legacyEnvironment->getCurrentUser());
                 if ($memberStatus == 'join') {
                     return $this->redirectToRoute('app_context_request', [
@@ -1110,22 +1133,21 @@ class GroupController extends BaseController
      * }))
      * @Template()
      * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     * @param UserService $userService
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
     public function groupRoomAction(
-        UserService $userService,
         int $roomId,
         int $itemId
     ) {
         $group = $this->groupService->getGroup($itemId);
         $membersList = $group->getMemberItemList();
-        $memberStatus = $userService->getMemberStatus(
+        $memberStatus = $this->userService->getMemberStatus(
             $group->getGroupRoomItem(),
             $this->legacyEnvironment->getCurrentUser()
         );
+
         return [
             'group' => $group,
             'roomId' => $roomId,
@@ -1138,14 +1160,12 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/sendMultiple")
      * @Template()
      * @param Request $request
-     * @param UserService $userService
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
      */
     public function sendMultipleAction(
         Request $request,
-        UserService $userService,
         MailAssistant $mailAssistant,
         int $roomId
     ) {
@@ -1166,7 +1186,7 @@ class GroupController extends BaseController
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
-        $users = $userService->getUsersByGroupIds($roomId, $groupIds, true);
+        $users = $this->userService->getUsersByGroupIds($roomId, $groupIds, true);
 
         // include a footer message in the email body
         $groupCount = count($groupIds);
@@ -1409,7 +1429,7 @@ class GroupController extends BaseController
                 $from = $this->getParameter('commsy.email.from');
 
                 // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
-                $users = $userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
+                $users = $this->userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
                 // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
@@ -1684,29 +1704,6 @@ class GroupController extends BaseController
         }
 
         return $templates;
-    }
-
-    /**
-     * @param $groupRoom
-     * @return bool
-     */
-    private function userIsLastGrouproomModerator($groupRoom)
-    {
-
-        if (!empty($groupRoom)) {
-            $grouproomModerators = $groupRoom->getModeratorList();
-        } else {
-            return false;
-        }
-
-        $relatedUsers = $this->legacyEnvironment->getCurrentUser()->getRelatedUserList();
-
-        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'),
-            $grouproomModerators->to_array());
-        $relatedUsersItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $relatedUsers->to_array());
-
-        return count($grouproomModerators) == 1 and count(array_intersect($relatedUsersItemIds,
-                $grouproomModeratorItemIds));
     }
 
     /**

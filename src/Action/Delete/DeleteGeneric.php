@@ -9,22 +9,28 @@
 namespace App\Action\Delete;
 
 
+use App\Services\CopyService;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DeleteGeneric implements DeleteInterface
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    protected $legacyEnvironment;
+    protected cs_environment $legacyEnvironment;
 
-    private $session;
+    /** @var CopyService $copyService */
+    protected CopyService $copyService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, SessionInterface $session)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        CopyService $copyService,
+        SessionInterface $session
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->session = $session;
+        $this->copyService = $copyService;
     }
 
     /**
@@ -34,7 +40,7 @@ class DeleteGeneric implements DeleteInterface
     {
         $item->delete();
 
-        $this->removeItemFromClipboard($item->getItemId());
+        $this->copyService->removeItemFromClipboard($item->getItemId());
     }
 
     /**
@@ -44,14 +50,5 @@ class DeleteGeneric implements DeleteInterface
     public function getRedirectRoute(\cs_item $item)
     {
         return null;
-    }
-
-    private function removeItemFromClipboard(int $itemId)
-    {
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
-        if (in_array($itemId, $currentClipboardIds)) {
-            unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
-            $this->session->set('clipboard_ids', $currentClipboardIds);
-        }
     }
 }

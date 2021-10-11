@@ -451,7 +451,7 @@ class ProfileController extends AbstractController
 
                 $currentUser->reject();
                 $currentUser->save();
-
+                $userService->propagateStatusToGrouproomUsersForUser($currentUser);
                 return $this->redirect($portalUrl);
             }
         } // Delete room profile

@@ -36,7 +36,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,8 +44,8 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class UserController
@@ -66,7 +65,11 @@ class UserController extends BaseController
         $this->session = $session;
     }
 
-    public function __construct(UserService $userService)
+    /**
+     * @required
+     * @param UserService $userService
+     */
+    public function setUserService(UserService $userService): void
     {
         $this->userService = $userService;
     }
@@ -443,6 +446,7 @@ class UserController extends BaseController
                 $formData['userIds'] = $userIds;
             } else {
                 $postData = $request->request->get('user_status');
+                $formData['status'] = $postData['status'];
                 $formData['userIds'] = $postData['userIds'];
             }
         }
@@ -460,18 +464,9 @@ class UserController extends BaseController
                 }
             }
         }
-
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
-
-                // manual validation - moderator count check
-                if (in_array($formData['status'],
-                    ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
-                    if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
-                        $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
-                    }
-                }
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
@@ -484,36 +479,53 @@ class UserController extends BaseController
 
                         case 'user-block':
                             foreach ($users as $user) {
-                                $user->setStatus(0);
+                                $user->reject(); // status 0
                                 $user->save();
+                                $this->userService->propagateStatusToGrouproomUsersForUser($user);
                             }
                             break;
 
                         case 'user-confirm':
                             foreach ($users as $user) {
-                                $user->setStatus(2);
+                                $previousStatus = $user->getStatus();
+                                $user->makeUser(); // status 2
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
                         case 'user-status-reading-user':
                             foreach ($users as $user) {
-                                $user->setStatus(4);
+                                $previousStatus = $user->getStatus();
+                                $user->makeReadOnlyUser(); // status 4
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
                         case 'user-status-user':
                             foreach ($users as $user) {
-                                $user->setStatus(2);
+                                $previousStatus = $user->getStatus();
+                                $user->makeUser(); // status 2
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
                         case 'user-status-moderator':
                             foreach ($users as $user) {
-                                $user->setStatus(3);
+                                $previousStatus = $user->getStatus();
+                                $user->makeModerator(); // status 3
                                 $user->save();
+                                if ($previousStatus == 0) {
+                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
+                                }
                             }
                             break;
 
@@ -585,27 +597,6 @@ class UserController extends BaseController
             'form' => $form->createView(),
             'status' => $formData['status'],
         ];
-    }
-
-    private function contextHasModerators(
-        int $roomId,
-        $selectedIds
-    ) {
-        $moderators = $this->userService->getModeratorsForContext($roomId);
-        $moderatorIds = [];
-        foreach ($moderators as $moderator) {
-            $moderatorIds[] = $moderator->getItemId();
-        }
-
-        foreach ($selectedIds as $selectedId) {
-            if (in_array($selectedId, $moderatorIds)) {
-                if (($key = array_search($selectedId, $moderatorIds)) !== false) {
-                    unset($moderatorIds[$key]);
-                }
-            }
-        }
-
-        return !empty($moderatorIds);
     }
 
     /**

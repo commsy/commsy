@@ -111,35 +111,13 @@ class DeleteAction implements ActionInterface
             return false;
         }
 
-        // it is not allow to delete the last moderator of a room
+        // it is not allowed to delete the last moderator of a room
         if ($item->getItemType() == 'user') {
-            if (!$this->contextHasModerators($room, [$item->getItemId()])) {
+            if (!$this->userService->contextHasModerators($room->getItemId(), [$item->getItemId()])) {
                 return false;
             }
         }
 
         return true;
     }
-
-    private function contextHasModerators(\cs_room_item $room, $selectedIds)
-    {
-        $this->userService->resetLimits();
-        $moderators = $this->userService->getModeratorsForContext($room->getItemId());
-
-        $moderatorIds = [];
-        foreach ($moderators as $moderator) {
-            $moderatorIds[] = $moderator->getItemId();
-        }
-
-        foreach ($selectedIds as $selectedId) {
-            if (in_array($selectedId, $moderatorIds)) {
-                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
-                    unset($moderatorIds[$key]);
-                }
-            }
-        }
-
-        return !empty($moderatorIds);
-    }
-
 }
