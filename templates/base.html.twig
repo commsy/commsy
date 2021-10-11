@@ -22,15 +22,15 @@
                 <div id="commsy_logo"></div>
             </a>
 
-            <div class="uk-flex uk-flex-wrap uk-flex-wrap-space-between uk-height-1-1">
+            <div class="uk-flex uk-flex-inline uk-flex-wrap uk-flex-wrap-space-between uk-height-1-1 uk-width-1-1">
                 <div class="uk-flex-item-1">
                     {# Context Navigation #}
                     {% block side_navigation %}
                     {% endblock %}
                 </div>
 
-                <div id="nav_footer" class="uk-margin-large-bottom uk-flex-item-1">
-                    <div class="uk-accordion" data-uk-accordion="{showfirst: false}">
+                <div id="nav_footer" class="uk-margin-large-bottom uk-width-1-1">
+                    <div class="uk-accordion" data-uk-accordion="{showfirst: true}">
                         <div class="uk-accordion-title"><span class="uk-text-small">CommSy {{ commsy.version }}</span></div>
                         <div class="uk-accordion-content">
                             {{ footer.render(commsy.server, commsy.portal) }}
