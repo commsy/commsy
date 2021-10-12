@@ -126,57 +126,6 @@ class Section
     private $public = '0';
 
     /**
-     * @ORM\ManyToMany(targetEntity="Files")
-     * @ORM\JoinTable(name="item_link_file",
-     *      joinColumns={@ORM\JoinColumn(name="item_iid", referencedColumnName="item_id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="files_id", unique=true)}
-     *  )
-     */
-    private $files;
-
-
-    public function __construct()
-    {
-        $this->files = new ArrayCollection();
-    }
-
-    /**
-     * Add file
-     *
-     * @param \App\Entity\File $file
-     *
-     * @return Materials
-     */
-    public function addFile(\App\Entity\Files $file)
-    {
-        $this->files[] = $file;
-
-        return $this;
-    }
-
-    /**
-     * Remove file
-     *
-     * @param \App\Entity\File $file
-     */
-    public function removeFile(\App\Entity\Files $file)
-    {
-        $this->files->removeElement($file);
-    }
-
-    /**
-     * Get files
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFiles()
-    {
-        return $this->files;
-    }
-
-
-
-    /**
      * Set itemId
      *
      * @param integer $itemId
