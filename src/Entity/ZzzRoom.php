@@ -157,23 +157,6 @@ class ZzzRoom
      */
     private $lastlogin;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Room")
-     * @ORM\JoinTable(name="link_items",
-     *     joinColumns={
-     *         @ORM\JoinColumn(name="first_item_id", referencedColumnName="item_id")
-     *     },
-     *     inverseJoinColumns={
-     *         @ORM\JoinColumn(name="second_item_id", referencedColumnName="item_id")
-     *     }
-     * )
-     */
-    private $communityRooms;
-
-    public function __construct() {
-        $this->communityRooms = new ArrayCollection();
-    }
-
     public function isIndexable()
     {
         return ($this->deleter == null && $this->deletionDate == null);
@@ -269,11 +252,6 @@ class ZzzRoom
         $this->setExtras($extras);
 
         return $this;
-    }
-
-    public function getCommunityRooms()
-    {
-        return $this->communityRooms;
     }
 
     public function isAssignmentRestricted()
@@ -765,29 +743,5 @@ class ZzzRoom
     public function getDeleter()
     {
         return $this->deleter;
-    }
-
-    /**
-     * Add communityRoom
-     *
-     * @param \App\Entity\Room $communityRoom
-     *
-     * @return Room
-     */
-    public function addCommunityRoom(\App\Entity\Room $communityRoom)
-    {
-        $this->communityRooms[] = $communityRoom;
-
-        return $this;
-    }
-
-    /**
-     * Remove communityRoom
-     *
-     * @param \App\Entity\Room $communityRoom
-     */
-    public function removeCommunityRoom(\App\Entity\Room $communityRoom)
-    {
-        $this->communityRooms->removeElement($communityRoom);
     }
 }

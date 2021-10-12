@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -176,23 +175,6 @@ class Room
      */
     private $lastlogin;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Room")
-     * @ORM\JoinTable(name="link_items",
-     *     joinColumns={
-     *         @ORM\JoinColumn(name="first_item_id", referencedColumnName="item_id")
-     *     },
-     *     inverseJoinColumns={
-     *         @ORM\JoinColumn(name="second_item_id", referencedColumnName="item_id")
-     *     }
-     * )
-     */
-    private $communityRooms;
-
-    public function __construct() {
-        $this->communityRooms = new ArrayCollection();
-    }
-
     public function isIndexable()
     {
         return ($this->deleter == null && $this->deletionDate == null);
@@ -288,11 +270,6 @@ class Room
         $this->setExtras($extras);
 
         return $this;
-    }
-
-    public function getCommunityRooms()
-    {
-        return $this->communityRooms;
     }
 
     public function isAssignmentRestricted()
@@ -784,29 +761,5 @@ class Room
     public function getDeleter()
     {
         return $this->deleter;
-    }
-
-    /**
-     * Add communityRoom
-     *
-     * @param \App\Entity\Room $communityRoom
-     *
-     * @return Room
-     */
-    public function addCommunityRoom(\App\Entity\Room $communityRoom)
-    {
-        $this->communityRooms[] = $communityRoom;
-
-        return $this;
-    }
-
-    /**
-     * Remove communityRoom
-     *
-     * @param \App\Entity\Room $communityRoom
-     */
-    public function removeCommunityRoom(\App\Entity\Room $communityRoom)
-    {
-        $this->communityRooms->removeElement($communityRoom);
     }
 }
