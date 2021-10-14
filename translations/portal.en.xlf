@@ -615,6 +615,10 @@
                 <source>user-contact-remove</source>
                 <target>remove status contact</target>
             </trans-unit>
+            <trans-unit id="user_delete">
+                <source>user-delete</source>
+                <target>delete user</target>
+            </trans-unit>
 
             <!-- Account Index send Password Mail -->
             <trans-unit id="copy_cc_to_moderator">
