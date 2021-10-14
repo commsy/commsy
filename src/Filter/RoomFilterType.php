@@ -32,9 +32,9 @@ class RoomFilterType extends AbstractType
         $builder
             ->add('submit', SubmitType::class, array(
                 'attr' => array(
-                    'class' => 'uk-button uk-button-mini',
+                    'class' => 'uk-button uk-button-primary',
                 ),
-                'label' => 'Filter',
+                'label' => 'Restrict',
                 'translation_domain' => 'form',
             ))
             ->add('title', Filters\TextFilterType::class, [

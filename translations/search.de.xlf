@@ -58,9 +58,9 @@
                 <source>View title</source>
                 <target>Titel</target>
             </trans-unit>
-            <trans-unit id="search-results-restrict">
-                <source>Restrict results</source>
-                <target>Ergebnisse einschränken</target>
+            <trans-unit id="search-results-filter">
+                <source>Filter results</source>
+                <target>Ergebnisse filtern</target>
             </trans-unit>
             <trans-unit id="search-results-top50">
                 <source>Top 50 matches</source>
