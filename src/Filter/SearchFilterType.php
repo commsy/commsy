@@ -12,7 +12,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -95,17 +94,6 @@ class SearchFilterType extends AbstractType
                 }
             })
 
-            ->add('help', TextType::class, [
-                'attr' => [
-                    'class' => 'uk-text-warning',
-                    'style' => 'display:none; background:none; border:none',
-                ],
-                'label' => false,
-                'data' => $this->translator->trans('Apply filters', [], 'form'),
-                'required' => false,
-                'disabled' => true,
-                'mapped' => false,
-            ])
             ->add('submit', Types\SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button uk-button-primary',
@@ -137,9 +125,6 @@ class SearchFilterType extends AbstractType
                     'Description' => 'description',
 //                    'Files' => 'files',
                 ],
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
-                ],
                 'label' => 'Appearing in',
                 'required' => false,
                 'expanded' => true,
@@ -151,9 +136,6 @@ class SearchFilterType extends AbstractType
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getCreators()));
                 }),
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
-                ],
                 'label' => 'Creator',
                 'required' => false,
             ])
@@ -162,9 +144,6 @@ class SearchFilterType extends AbstractType
                     $translatedTitleAny = $this->translator->trans('All my rooms', [], 'search');
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getContexts()));
                 }),
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
-                ],
                 'label' => 'Contexts',
                 'required' => false,
             ])
@@ -172,7 +151,6 @@ class SearchFilterType extends AbstractType
                 'attr' => [
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                     'autocomplete' => 'off',
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
                 ],
                 'label' => 'Created from/until',
                 'required' => false,
@@ -194,7 +172,6 @@ class SearchFilterType extends AbstractType
                 'attr' => [
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                     'autocomplete' => 'off',
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
                 ],
                 'label' => 'Last modified from/until',
                 'required' => false,
@@ -217,9 +194,6 @@ class SearchFilterType extends AbstractType
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
                     return array_merge([$translatedTitleAny => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
                 }),
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
-                ],
                 'label' => 'Rubric',
                 'required' => false,
                 'placeholder' => false,
@@ -232,9 +206,6 @@ class SearchFilterType extends AbstractType
                     'Unread' => ReaderService::READ_STATUS_UNREAD,
                     'Read' => ReaderService::READ_STATUS_SEEN,
                 ],
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
-                ],
                 'label' => 'Read status',
                 'required' => false,
                 'placeholder' => false,
@@ -244,9 +215,6 @@ class SearchFilterType extends AbstractType
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     return $this->buildTermChoices($searchData->getHashtags());
                 }),
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
-                ],
                 'label' => 'Hashtags',
                 'expanded' => false,
                 'multiple' => true,
@@ -256,9 +224,6 @@ class SearchFilterType extends AbstractType
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
                     return $this->buildTermChoices($searchData->getCategories());
                 }),
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_help').style.display = 'block'",
-                ],
                 'label' => 'Categories',
                 'expanded' => false,
                 'multiple' => true,

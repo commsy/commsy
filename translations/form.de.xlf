@@ -10,10 +10,6 @@
                 <source>Filter</source>
                 <target>Filtern</target>
             </trans-unit>
-            <trans-unit id="form-filter-apply">
-                <source>Apply filters</source>
-                <target>Filter anwenden ⟶</target>
-            </trans-unit>
             <trans-unit id="form-filter-restrict">
                 <source>Restrict</source>
                 <target>Einschränken</target>
