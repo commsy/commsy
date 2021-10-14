@@ -163,6 +163,12 @@ class UserController extends BaseController
                 return $this->redirectToRoute($originPath, [
                     'roomId' => $roomId,
                     'itemId' => $item->getItemId(),
+                    // Specifing the portalId is just a workaround. This action is linked from the portal with the
+                    // portal id as roomId parameter. If the user cancels the form the parameter is needed to construct
+                    // the URL for app_portalsettings_accountindex
+                    // Instead we should consider to refactor the behavior to use a complete URL and not just the
+                    // route name
+                    'portalId' => $roomId,
                 ]);
             }
 
