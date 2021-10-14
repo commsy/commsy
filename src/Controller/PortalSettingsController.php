@@ -1695,12 +1695,10 @@ class PortalSettingsController extends AbstractController
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
-                                $user->setDefaultMailNotVisible();
                                 $user->setEmailNotVisible();
                                 $user->save();
-                                $allRelatedUsers = $user->getRelatedPortalUserItem();
+                                $allRelatedUsers = $user->getRelatedUserList(true);
                                 foreach ($allRelatedUsers as $relatedUser) {
-                                    $relatedUser->setDefaultMailNotVisible();
                                     $relatedUser->setEmailNotVisible();
                                     $relatedUser->save();
                                 }
@@ -1720,12 +1718,10 @@ class PortalSettingsController extends AbstractController
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
-                                $user->setDefaultMailVisible();
                                 $user->setEmailVisible();
                                 $user->save();
-                                $allRelatedUsers = $user->getRelatedPortalUserItem();
+                                $allRelatedUsers = $user->getRelatedUserList(true);
                                 foreach ($allRelatedUsers as $relatedUser) {
-                                    $relatedUser->setDefaultMailVisible();
                                     $relatedUser->setEmailVisible();
                                     $relatedUser->save();
                                 }
