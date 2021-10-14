@@ -541,19 +541,6 @@ class RoomController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
-        $showRoomModerationActions = false;
-        $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
-        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
-            $showRoomModerationActions = true;
-        } else {
-            $portalUser = $currentUser->getRelatedPortalUserItem();
-            if ($portalUser && $portalUser->isModerator()) {
-                $showRoomModerationActions = true;
-            }
-        }
-
-        $showRoomModerationActions = false; //TODO: why is that 'true' if e.g. Cmty Mod is not Mod of Prjct?
-
         $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
@@ -570,7 +557,6 @@ class RoomController extends Controller
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
             'contactModeratorItems' => $contactModeratorItems,
-            'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }
