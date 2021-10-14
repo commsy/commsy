@@ -437,13 +437,13 @@ class cs_item_manager extends cs_manager {
 
        // restrict materials by buzzword (la4)
        if (isset($this->_list_limit)) {
-          if ($this->_list_limit == -1){
-             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
-             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
-          }else{
-             $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
-             $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
-          }
+//          if ($this->_list_limit == -1){
+//             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
+//             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
+//          }else{
+//             $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
+//             $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
+//          }
        }
        if (isset($this->_matrix_limit)) {
           $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_x ON matrix_x.first_item_id='.$this->addDatabasePrefix('items').'.item_id';
