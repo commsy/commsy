@@ -1732,13 +1732,11 @@ class PortalSettingsController extends AbstractController
 
                 $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                     'portalId' => $portal->getId(),
-                    'userId' => $user->getItemID(),
                 ]);
 
                 if ($data->getIndexViewAction() != 0) {
                     $this->addFlash('performedSuccessfully', $returnUrl);
                     return $this->redirectToRoute('app_portalsettings_accountindex', [
-                        'portal' => $portal,
                         'portalId' => $portal->getId(),
                     ]);
                 }
@@ -1959,14 +1957,12 @@ class PortalSettingsController extends AbstractController
 
                 $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                     'portalId' => $portal->getId(),
-                    'userId' => $user->getItemID(),
                 ]);
                 $this->addFlash('savingSuccessfull', $returnUrl);
             } elseif ($form->get('cancel')->isClicked()) {
 
                 return $this->redirectToRoute('app_portalsettings_accountindex', [
                     'portalId' => $portal->getId(),
-                    'userId' => $user->getItemID(),
                 ]);
             }
         }
@@ -2049,7 +2045,6 @@ class PortalSettingsController extends AbstractController
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                 'portalId' => $portal->getId(),
-                'userId' => $user->getItemID(),
             ]);
             $this->addFlash('savedSuccess', $returnUrl);
 
@@ -2135,7 +2130,6 @@ class PortalSettingsController extends AbstractController
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                 'portalId' => $portal->getId(),
-                'userId' => $user->getItemID(),
             ]);
             $this->addFlash('savedSuccess', $returnUrl);
         }
@@ -2274,7 +2268,6 @@ class PortalSettingsController extends AbstractController
 
             if ($form->get('back')->isClicked()) {
                 return $this->redirectToRoute('app_portalsettings_accountindex', [
-                    'portal' => $portal,
                     'portalId' => $portal->getId(),
                 ]);
             }
@@ -2512,7 +2505,6 @@ class PortalSettingsController extends AbstractController
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                 'portalId' => $portal->getId(),
-                'userId' => $user->getItemID(),
             ]);
 
             $this->addFlash('performedSuccessfully', $returnUrl);
@@ -2549,7 +2541,6 @@ class PortalSettingsController extends AbstractController
 
         $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
             'portalId' => $portal->getId(),
-            'userId' => $user->getItemID(),
         ]);
 
         $this->addFlash('performedSuccessfully', $returnUrl);
@@ -2583,7 +2574,6 @@ class PortalSettingsController extends AbstractController
 
         $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
             'portalId' => $portal->getId(),
-            'userId' => $user->getItemID(),
         ]);
 
         $this->addFlash('performedSuccessfully', $returnUrl);
@@ -2611,7 +2601,6 @@ class PortalSettingsController extends AbstractController
 
         $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
             'portalId' => $portal->getId(),
-            'userId' => $user->getItemID(),
         ]);
 
         $this->addFlash('performedSuccessfully', $returnUrl);
@@ -2646,7 +2635,6 @@ class PortalSettingsController extends AbstractController
 
         $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
             'portalId' => $portal->getId(),
-            'userId' => $user->getItemID(),
         ]);
 
         $this->addFlash('performedSuccessfully', $returnUrl);
@@ -2739,7 +2727,6 @@ class PortalSettingsController extends AbstractController
 
                     $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                         'portalId' => $portal->getId(),
-                        'userId' => $user->getItemID(),
                     ]);
 
                     $this->addFlash('performedSuccessfully', $returnUrl);
