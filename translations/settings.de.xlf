@@ -695,7 +695,7 @@
             </trans-unit>
             <trans-unit id="settings_lock_intro">
                 <source>Lock intro</source>
-                <target>Wählen Sie diese Option, um disen Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Der Raum kann bei Bedarf wieder freigeschaltet werden.</target>
+                <target>Wählen Sie diese Option, um diesen Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Der Raum kann bei Bedarf wieder freigeschaltet werden.</target>
             </trans-unit>
             <trans-unit id="delete_user_rooms_text">
                 <source>Delete user rooms text</source>
