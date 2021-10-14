@@ -17,7 +17,7 @@
 
             {% if privateRoomItem %}
                 <li>
-                    <a href="{{ path('app_copy_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+                    <a href="{{ path('app_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
                         <i class="uk-icon-copy"></i>
                         <small id="cs-nav-copy-indicator">
                             {% if count > 0 %}
@@ -41,13 +41,11 @@
                     </a>
                 </li>
 
-                {% if privateRoomItem %}
-                    <li>
-                        <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}">
-                            <i class="uk-icon-qrcode"></i>
-                        </a>
-                    </li>
-                {% endif %}
+                <li>
+                    <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}">
+                        <i class="uk-icon-qrcode"></i>
+                    </a>
+                </li>
             {% endif %}
         </ul>
     </div>
@@ -88,10 +86,8 @@
             <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}" uk-icon="folder"></a>
         </li>
 
-        {% if privateRoomItem %}
-            <li>
-                <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}" uk-icon="world"></a>
-            </li>
-        {% endif %}
+        <li>
+            <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}" uk-icon="world"></a>
+        </li>
     {% endif %}
 {% endif %}
