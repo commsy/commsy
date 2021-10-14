@@ -2555,9 +2555,6 @@ class PortalSettingsController extends AbstractController
                     $newUser->makeUser();
                     $newUser->save();
 
-                    $account = $accountManager->getAccount($newUser, $portal->getId());
-                    $accountManager->unlock($account);
-
                     $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                         'portalId' => $portal->getId(),
                         'userId' => $user->getItemID(),
