@@ -43,8 +43,8 @@ class cs_matrix_item extends cs_label_item {
 
 
    function saveRubricLinksByIDArray($array,$rubric) {
-      $links_manager = $this->_environment->getLinkManager();
-      $links_manager->saveLinksRubricToMyList($array,$this->getItemID(),$rubric);
+//      $links_manager = $this->_environment->getLinkManager();
+//      $links_manager->saveLinksRubricToMyList($array,$this->getItemID(),$rubric);
    }
 
    function setIsColumn() {
