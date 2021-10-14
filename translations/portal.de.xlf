@@ -519,9 +519,45 @@
                 <source>Are you sure you want to delete</source>
                 <target>Sind Sie sicher, dass Sie die Kennung löschen möchten von</target>
             </trans-unit>
+            <trans-unit id="perform_account_action_start">
+                <source>Are you sure you want to perform the action</source>
+                <target>Sind Sie sicher, dass Sie die Aktion</target>
+            </trans-unit>
+            <trans-unit id="perform_account_action_ending">
+                <source>For the following users</source>
+                <target>durchführen möchten für die nachfolgenden NutzerInnen</target>
+            </trans-unit>
             <trans-unit id="delete_success">
                 <source>Delete success</source>
                 <target>NutzerIn erfolgreich gelöscht</target>
+            </trans-unit>
+            <trans-unit id="user_block">
+                <source>user-block</source>
+                <target>sperren</target>
+            </trans-unit>
+            <trans-unit id="user_confirm">
+                <source>user-confirm</source>
+                <target>freischalten / Status BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_reading_user">
+                <source>user-status-reading-user</source>
+                <target>Status lesende/r BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_user">
+                <source>user-status-user</source>
+                <target>Status BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_moderator">
+                <source>user-status-moderator</source>
+                <target>Status ModeratorIn</target>
+            </trans-unit>
+            <trans-unit id="user_contact">
+                <source>user-contact</source>
+                <target>zur Kontaktperson machen</target>
+            </trans-unit>
+            <trans-unit id="user_contact_remove">
+                <source>user-contact-remove</source>
+                <target>Status einer Kontaktperson entfernen</target>
             </trans-unit>
 
             <!-- Account Index send Password Mail -->
@@ -547,7 +583,7 @@
             </trans-unit>
             <trans-unit id="names">
                 <source>Names</source>
-                <target>Names</target>
+                <target>Namen</target>
             </trans-unit>
             <trans-unit id="standard">
                 <source>Standard</source>

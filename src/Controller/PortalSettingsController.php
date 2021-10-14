@@ -34,6 +34,7 @@ use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
 use App\Form\Type\Portal\AccountIndexDetailChangeStatusType;
 use App\Form\Type\Portal\AccountIndexDetailEditType;
 use App\Form\Type\Portal\AccountIndexDetailType;
+use App\Form\Type\Portal\AccountIndexPerformUserActionType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
@@ -1269,6 +1270,179 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
+     * @Route("/portal/{portalId}/settings/accountindex/{userIds}/performUserAction/{action}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     */
+    public function accountIndexPerformUserAction (
+        $portalId,
+        $userIds,
+        $action,
+        Portal $portal,
+        UserService $userService,
+        Request $request,
+        LegacyEnvironment $environment,
+        \Swift_Mailer $mailer,
+        PaginatorInterface $paginator,
+        AccountManager $accountManager
+    ) {
+        $users = [];
+        $userNames = [];
+
+        foreach ( explode(", ",$userIds) as $userId) {
+            $user = $userService->getUser($userId);
+            $users[] = $user;
+            $userNames[] = $user->getFullName();
+        }
+
+        $formOptions = [
+            'action' => $action,
+            'users' => $users,
+            'portal' => $portal,
+        ];
+
+        $form = $this->createForm(AccountIndexPerformUserActionType::class, $formOptions);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            if ($form->get('execute')->isClicked()) {
+                $IdsMailRecipients = [];
+                switch($action) {
+                    case 'user-delete':
+                        //$user->delete();
+                        //$user->save();
+                        $this->addFlash('deleteSuccess', true);
+                        break;
+                    case 'user-block':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->reject();
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->lock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-confirm':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeUser();
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-status-reading-user':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->setStatus(4);
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-status-user':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeUser();
+                            $user->setStatus(2);
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-status-moderator':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeModerator();
+                            $user->setStatus(3);
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-contact':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeContactPerson();
+
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            $accountManager->unlock($account);
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    case 'user-contact-remove':
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->makeNoContactPerson();
+
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
+
+                        $this->addFlash('performedSuccessfully', true);
+                        break;
+                    default:
+                        //$user->delete();
+                        //$user->save();
+                        $this->addFlash('deleteSuccess', true);
+                        $action = 'user-delete';
+                }
+
+                return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
+                    'portalId' => $portalId,
+                    'recipients' => implode(", ", $IdsMailRecipients),
+                    'action' => $action,
+                ]);
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    return $this->redirectToRoute('app_portalsettings_accountindex', [
+                        'portalId' => $portalId,
+                    ]);
+                }
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
+            'portalId' => $portalId,
+            'users' => implode(", ", $userNames),
+            'action' => $action,
+            'portal' => $portal,
+        ];
+    }
+
+    /**
      * @Route("/portal/{portalId}/settings/accountindex")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -1283,7 +1457,8 @@ class PortalSettingsController extends AbstractController
         \Swift_Mailer $mailer,
         PaginatorInterface $paginator,
         AuthSourceRepository $authSourceRepository,
-        AccountManager $accountManager
+        AccountManager $accountManager,
+        RouterInterface $router
     ) {
         $user = $userService->getCurrentUserItem();
         // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
@@ -1386,6 +1561,13 @@ class PortalSettingsController extends AbstractController
             } elseif ($form->get('execute')->isClicked()) {
                 $data = $form->getData();
                 $ids = $data->getIds();
+                $userIds = [];
+
+                foreach ($ids as $id => $checked) {
+                    if ($checked) {
+                        $userIds[] = $id;
+                    }
+                }
 
                 switch ($data->getIndexViewAction()) {
                     case 0:
@@ -1402,36 +1584,24 @@ class PortalSettingsController extends AbstractController
                             }
                         }
                         $this->sendUserInfoMail($IdsMailRecipients, 'user-delete', $user, $mailer, $userService,
-                            $environment);
+                            $environment, $router);
                         break;
                     case 2: // user-block
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->reject();
 
-                                $account = $accountManager->getAccount($user, $portal->getId());
-                                $accountManager->lock($account);
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-block', $user, $mailer, $userService,
-                            $environment);
-                        break;
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-block'
+                        ]);
+
                     case 3: // user-confirm
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->isNotActivated(); //TODO which function?
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-confirm', $user, $mailer, $userService,
-                            $environment);
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-confirm'
+                        ]);
+
                     case 4: // change user mail the next time he/she logs in
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1442,66 +1612,40 @@ class PortalSettingsController extends AbstractController
                         }
                         break;
                     case 'user-status-reading-user':
-                        foreach ($ids as $id) {
-                            $user = $userService->getUser($id);
-                            $user->setStatus(4);
-                            $user->save();
-                        }
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-status-reading-user'
+                        ]);
 
                     case 5: // 'user-status-user
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->makeUser();
-                                $user->setStatus(2);
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-user', $user, $mailer, $userService,
-                            $environment);
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-status-user'
+                        ]);
+
                     case 6: // user-status-moderator
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $IdsMailRecipients[] = $id;
-                                $user = $userService->getUser($id);
-                                $user->setStatus(3);
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-status-moderator', $user, $mailer,
-                            $userService, $environment);
-                        break;
+
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-status-moderator'
+                        ]);
                     case 7: //user-contact
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                                $user = $userService->getUser($id);
-                                $user->makeContactPerson();
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact', $user, $mailer, $userService,
-                            $environment);
-                        break;
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-contact'
+                        ]);
                     case 8: // user-contact-remove
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                                $user = $userService->getUser($id);
-                                $user->makeContactPerson();
-                                $user->save();
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-contact-remove', $user, $mailer, $userService,
-                            $environment);
-                        break;
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-contact-remove'
+                        ]);
                     case 9: // send mail
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1542,7 +1686,7 @@ class PortalSettingsController extends AbstractController
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
-                                $user->setDefaultMailNotVisible();
+                                $user->setEmailNotVisible();
                                 $user->save();
                             }
                         }
@@ -1552,10 +1696,12 @@ class PortalSettingsController extends AbstractController
                             if ($checked) {
                                 $user = $userService->getUser($id);
                                 $user->setDefaultMailNotVisible();
+                                $user->setEmailNotVisible();
                                 $user->save();
                                 $allRelatedUsers = $user->getRelatedPortalUserItem();
                                 foreach ($allRelatedUsers as $relatedUser) {
                                     $relatedUser->setDefaultMailNotVisible();
+                                    $relatedUser->setEmailNotVisible();
                                     $relatedUser->save();
                                 }
                             }
@@ -1565,20 +1711,22 @@ class PortalSettingsController extends AbstractController
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
-                                $user->setDefaultMailVisible();
+                                $user->setEmailVisible();
                                 $user->save();
                             }
                         }
                         break;
-                    case 15: // hide mail everywhere
+                    case 15: // show mail everywhere
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
                                 $user = $userService->getUser($id);
                                 $user->setDefaultMailVisible();
+                                $user->setEmailVisible();
                                 $user->save();
                                 $allRelatedUsers = $user->getRelatedPortalUserItem();
                                 foreach ($allRelatedUsers as $relatedUser) {
                                     $relatedUser->setDefaultMailVisible();
+                                    $relatedUser->setEmailVisible();
                                     $relatedUser->save();
                                 }
                             }
@@ -1765,12 +1913,14 @@ class PortalSettingsController extends AbstractController
             array_push($recipientArray, $currentUser);
         }
 
+        $multipleRecipients = sizeof($recipientArray) > 1;
+
         $sendMail = new AccountIndexSendMail();
         $sendMail->setRecipients($recipientArray);
 
         $chosenAction = isset($action) ? $action : 'user-account_send_mail';
         $accountMail = new AccountMail($legacyEnvironment, $router);
-        $body = $accountMail->generateBody($userService->getCurrentUserItem(), $chosenAction);
+        $body = $accountMail->generateBody($recipientArray[0], $chosenAction, $multipleRecipients);
         $subject = $accountMail->generateSubject($chosenAction);
         $sendMail->setSubject($subject);
         $sendMail->setMessage($body);
@@ -2549,7 +2699,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        AccountManager $accountManager
     ) {
         $user = $userService->getUser($request->get('userId'));
         $userAssignWorkspace = new PortalUserAssignWorkspace();
@@ -2583,6 +2734,12 @@ class PortalSettingsController extends AbstractController
                     $newUser->setContextID($newAssignedRoom->getItemID());
                     $newUser->setUserComment($formData->getDescriptionOfParticipation());
                     $newUser->save();
+
+                    $newUser->makeUser();
+                    $newUser->save();
+
+                    $account = $accountManager->getAccount($newUser, $portal->getId());
+                    $accountManager->unlock($account);
 
                     $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                         'portalId' => $portal->getId(),
