@@ -726,7 +726,7 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
            $second_item_type = $link_item->getSecondLinkedItemID();
         }
 
-        if (isset($creator_id)) {
+        if (isset($creator_id) && !empty($creator_id)) {
             $query .= 'creator_id="'.encode(AS_DB,$creator_id).'",';
         }
         
