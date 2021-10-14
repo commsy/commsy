@@ -334,6 +334,14 @@
                 <source>Contact persons:</source>
                 <target>Contact persons:</target>
             </trans-unit>
+            <trans-unit id="delete workspace">
+                <source>Delete workspace</source>
+                <target>Delete workspace</target>
+            </trans-unit>
+            <trans-unit id="lock workspace">
+                <source>Lock workspace</source>
+                <target>Lock workspace</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -24,7 +24,7 @@ class SecureProjectDetailDeletionController extends AbstractController
     /**
      * @Route("/room/{roomId}/settings/securedelete/{projectId}")
      * @Template
-     * @Security("is_granted('MODERATOR') or is_granted('PARENT_MODERATOR', projectId)")
+     * @Security("is_granted('ROOM_MODERATOR', projectId) or is_granted('PARENT_ROOM_MODERATOR', projectId)")
      */
     public function deleteOrLock(
         $roomId,

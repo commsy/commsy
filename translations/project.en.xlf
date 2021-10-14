@@ -34,12 +34,12 @@
                 <source>Room description...</source>
                 <target>Workspace description...</target>
             </trans-unit>
-            <trans-unit id="delete">
-                <source>delete</source>
+            <trans-unit id="delete project workspace">
+                <source>Delete project workspace</source>
                 <target>Delete project workspace</target>
             </trans-unit>
-            <trans-unit id="lock">
-                <source>lock</source>
+            <trans-unit id="lock project workspace">
+                <source>Lock project workspace</source>
                 <target>Lock project workspace</target>
             </trans-unit>
         </body>
