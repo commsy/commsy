@@ -1311,8 +1311,12 @@ class PortalSettingsController extends AbstractController
                 $IdsMailRecipients = [];
                 switch($action) {
                     case 'user-delete':
-                        //$user->delete();
-                        //$user->save();
+                        foreach (explode(",",$userIds) as $userId) {
+                            $user = $userService->getUser($userId);
+                            $user->delete();
+                            $user->save();
+                            $IdsMailRecipients[] = $userId;
+                        }
                         $this->addFlash('deleteSuccess', true);
                         break;
                     case 'user-block':
@@ -1573,19 +1577,11 @@ class PortalSettingsController extends AbstractController
                     case 0:
                         break;
                     case 1: // user-delete
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                return $this->redirectToRoute('app_portalsettings_accountindexdeleteuser', [
-                                    'portalId' => $portalId,
-                                    'userId' => $id,
-                                ]);
-                                break;
-                            }
-                        }
-                        $this->sendUserInfoMail($IdsMailRecipients, 'user-delete', $user, $mailer, $userService,
-                            $environment, $router);
-                        break;
+                        return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
+                            'portalId' => $portalId,
+                            'userIds' => implode(", ",$userIds),
+                            'action' => 'user-delete'
+                        ]);
                     case 2: // user-block
 
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [

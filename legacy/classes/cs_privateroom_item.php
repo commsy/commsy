@@ -33,9 +33,9 @@ include_once('classes/cs_room_item.php');
 class cs_privateroom_item extends cs_room_item
 {
     /**
-     * @var cs_user_item
+     * @var cs_user_item|null
      */
-    private cs_user_item $ownerUserItem;
+    private ?cs_user_item $ownerUserItem;
 
     var $_check_customized_room_id_array = false;
     private $_home_conf_done = false;
