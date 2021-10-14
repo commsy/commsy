@@ -505,32 +505,39 @@ class UserService
             return false;
         }
 
+        $user = $user ?? $this->legacyEnvironment->getCurrentUserItem();
         if (!$user) {
-            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-            if ($currentUser) {
-                $user = $currentUser;
-            }
-            if (!$user) {
-                return false;
-            }
+            return false;
         }
 
-        $roomModerators = $room->getModeratorList()->to_array();
-        $roomModeratorIds = array_map(function (cs_user_item $user) {
-            return $user->getItemID();
-        }, $roomModerators);
-
-        $users = $user->getRelatedUserList()->to_array();
-        $userIds = array_map(function (cs_user_item $user) {
-            return $user->getItemID();
-        }, $users);
+        $roomModeratorIds = $this->idsForUsers($room->getModeratorList()->to_array());
+        $userIds = $this->idsForUsers($user->getRelatedUserList()->to_array());
 
         // also check the given/current user's own item ID
         $userIds[] = $user->getItemID();
 
-        $userIsLastModerator = (count($roomModerators) == 1) && (count(array_intersect($userIds, $roomModeratorIds)));
+        $userIsLastModerator = (count($roomModeratorIds) == 1) && (count(array_intersect($userIds, $roomModeratorIds)) > 0);
 
         return $userIsLastModerator;
+    }
+
+    /**
+     * Returns the IDs of all given users.
+     *
+     * @param cs_user_item[] $users The array of users whose IDs shall be returned
+     * @return int[]
+     */
+    private function idsForUsers(array $users): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $userIds = array_map(function (cs_user_item $user) {
+            return $user->getItemID();
+        }, $users);
+
+        return $userIds;
     }
 
     public function hideDeactivatedEntries()
