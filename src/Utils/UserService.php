@@ -522,6 +522,92 @@ class UserService
     }
 
     /**
+     * Checks whether the given (or otherwise the current) user is among the moderators of the given room.
+     *
+     * @param int $room The room for which this method will check whether the given user is among its moderators
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the
+     * specified room's moderators (defaults to the current user if not given)
+     * @return bool Whether the given (or current) user is among the moderators of the specified room (true), or not (false)
+     */
+    public function userIsModeratorForRoom(cs_room_item $room, ?cs_user_item $user = null): bool
+    {
+        $user = $user ?? $this->legacyEnvironment->getCurrentUserItem();
+        if (!$user) {
+            return false;
+        }
+
+        $roomModeratorIds = $this->idsForUsers($this->getModeratorsForContext($room->getItemId()));
+        $userIds = $this->idsForUsers($user->getRelatedUserList()->to_array());
+
+        // also check the given/current user's own item ID
+        $userIds[] = $user->getItemID();
+
+        $userIsModerator = (count(array_intersect($userIds, $roomModeratorIds)) > 0);
+
+        return $userIsModerator;
+    }
+
+    /**
+     * Checks whether the given (or otherwise the current) user is among the "parent" moderators of the given room.
+     * Parent moderators considered by this method are the root user & portal moderator as well as any moderator of
+     * a community room that hosts the given (project) room.
+     *
+     * @param cs_room_item $room The room for which this method will check whether the given user is among its parent moderators
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the parent
+     * moderators of the specified room (defaults to the current user if not given)
+     * @return bool Whether the given (or current) user is among the parent moderators of the specified room (true), or not (false)
+     */
+    public function userIsParentModeratorForRoom(cs_room_item $room, ?cs_user_item $user = null): bool
+    {
+        $user = $user ?? $this->legacyEnvironment->getCurrentUserItem();
+        if (!$user) {
+            return false;
+        }
+
+        // root user & portal moderator are considered as "parent" moderators
+        if ($user->isRoot()) {
+            return true;
+        }
+
+        $portalUser = $user->getRelatedPortalUserItem();
+        if ($portalUser && $portalUser->isModerator()) {
+            return true;
+        }
+
+        $roomType = $room->getType();
+        if ($roomType !== 'project') {
+            return false;
+        }
+
+        // check if the given user corresponds to a moderator in a community room that hosts the given project room
+        // NOTE: we can't seem to use $room->getCommunityList() here since that method may incorrectly set the room limit
+        //       to the current context (instead of the passed room's context); this e.g. happens if this method gets
+        //       called for a project room's detail page within a community room
+        $link_item_manager = $this->legacyEnvironment->getLinkItemManager();
+        $link_item_manager->resetLimits();
+        $link_item_manager->setLinkedItemLimit($room);
+        $link_item_manager->setTypeLimit(CS_COMMUNITY_TYPE);
+        $link_item_manager->setRoomLimit($room->getContextID());
+        $link_item_manager->select();
+        $link_list = $link_item_manager->get();
+        $result_list = new \cs_list();
+        $link_item = $link_list->getFirst();
+        while ($link_item) {
+            $result_list->add($link_item->getLinkedItem($room));
+            $link_item = $link_list->getNext();
+        }
+        $communityRooms = $result_list;
+
+        foreach ($communityRooms as $communityRoom) {
+            if ($this->userIsModeratorForRoom($communityRoom, $user)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the IDs of all given users.
      *
      * @param cs_user_item[] $users The array of users whose IDs shall be returned
