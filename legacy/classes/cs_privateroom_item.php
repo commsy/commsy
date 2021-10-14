@@ -35,7 +35,7 @@ class cs_privateroom_item extends cs_room_item
     /**
      * @var cs_user_item|null
      */
-    private ?cs_user_item $ownerUserItem;
+    private ?cs_user_item $ownerUserItem = null;
 
     var $_check_customized_room_id_array = false;
     private $_home_conf_done = false;
@@ -512,7 +512,7 @@ class cs_privateroom_item extends cs_room_item
         return $retour;
     }
 
-    public function getOwnerUserItem(): cs_user_item
+    public function getOwnerUserItem(): ?cs_user_item
     {
         if (!isset($this->ownerUserItem)) {
             $moderator_list = $this->getModeratorList();
