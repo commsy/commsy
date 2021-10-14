@@ -41,7 +41,7 @@
             {{ form_row(form.save) }}
             {% do form.names.setRendered %}
             {% do form.bcc.setRendered %}
-            <a href="{{ path('app_portalsettings_accountindex', {'portalId': portal.id} ) }}" class="data-uk-button">{{'Cancel'|trans({},'portal') }}</a>
+            <a href="{{ path('app_portalsettings_accountindex', {'portalId': portal.id}) }}" class="data-uk-button">{{'Cancel'|trans({},'portal') }}</a>
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}
