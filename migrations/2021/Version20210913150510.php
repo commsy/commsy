@@ -41,7 +41,9 @@ final class Version20210913150510 extends AbstractMigration
 
         $qb = $queryBuilder
             ->select('t.' . $identityColumn, 't.extras')
-            ->from($table, 't');
+            ->from($table, 't')
+            ->where('t.extras lIKE "%CRON_DAILY%"')
+            ->orWhere('t.extras lIKE "%CRON_WEEKLY%"');
         $entries = $qb->execute();
 
         foreach ($entries as $entry) {
