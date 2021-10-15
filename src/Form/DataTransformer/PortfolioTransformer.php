@@ -16,7 +16,7 @@ class PortfolioTransformer extends AbstractTransformer
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->portfolioManager = $legacyEnvironment->getPortfolioManager();
+        $this->portfolioManager = $legacyEnvironment->getEnvironment()->getPortfolioManager();
     }
 
     /**
