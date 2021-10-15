@@ -294,16 +294,6 @@ class cs_link_item extends cs_item {
       $retour = $this->_getExtra('y');
       return $retour;
    }
-
-
-   function getMatrixKey () {
-      $retour = $this->_getExtra('MATRIX_KEY');
-      return $retour;
-   }
-   
-   function setMatrixKey ($value) {
-      $this->_addExtra('MATRIX_KEY', $value);
-   }
    
 /** other methods **/
 

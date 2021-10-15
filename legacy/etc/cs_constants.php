@@ -73,7 +73,6 @@ define('CS_SECTION_TYPE','section');
 define('CS_DISCARTICLE_TYPE','discarticle');
 define('CS_TASK_TYPE','task');
 define('CS_BUZZWORD_TYPE','buzzword');
-define('CS_MATRIX_TYPE','matrix');
 define('CS_TAG_TYPE','tag');
 define('CS_TAG2TAG_TYPE','tag2tag');
 define('CS_ITEM_BACKUP','item_backup');
