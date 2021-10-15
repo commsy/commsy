@@ -1482,15 +1482,6 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_hash_manager');
    }
 
-  /** get instance of cs_wiki_manager
-   *
-   * @return cs_wiki_manager
-   * @access public
-   */
-   function getWikiManager() {
-      return $this->_getInstance('cs_wiki_manager');
-   }
-
   /** get instance of cs_wordpress_manager
    *
    * @return cs_wordpress_manager
@@ -1704,8 +1695,6 @@ class cs_environment {
                 return $this->getNoticedManager();
             } elseif ($type == CS_TIME_TYPE) {
                 return $this->getTimeManager();
-            } elseif ($type == CS_WIKI_TYPE) {
-                return $this->getWikiManager();
             } elseif ($type == CS_TAG_TYPE) {
                 return $this->getTagManager();
             } elseif ($type == CS_TAG2TAG_TYPE) {

@@ -348,10 +348,6 @@ services:
     commsy.export.wordpress:
         alias: App\Export\WordpressExporter
 
-    commsy.export.wiki:
-        class: App\Export\WikiExporter
-        arguments: ['@commsy_legacy.environment']
-
     # EventListener
     Liip\ThemeBundle\ActiveTheme: '@liip_theme.active_theme'
 

@@ -280,11 +280,6 @@ class cs_group_item extends cs_label_item {
       $this->save(false);
    }
 
-   function updateWikiNotification(){
-      $wiki_manager = $this->_environment->getWikiManager();
-      $wiki_manager->updateNotification();
-   }
-
    /** delete group item
     * this methode delete the group item
     * with the group room

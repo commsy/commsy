@@ -1417,26 +1417,6 @@ class cs_user_item extends cs_item
         $this->oldStatus = $this->getStatus();
         $this->oldContact = $this->getContactStatus();
 
-        if (($this->getStatus() == 2) or ($this->getStatus() == 3)) {
-            // wenn $this->getStatus() einen freigeschalteten Benutzer angibt
-            // 2 = normaler Benutzer
-            // 3 = Moderator
-            //if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion() == "1"){
-            //  $this->updateWikiProfile();
-            //}
-
-            //if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification() == "1"){
-            //  $this->updateWikiNotification();
-            //}
-        } else {
-            // Wenn der Benutzer gesperrt oder geloescht ist, müssen Profile und
-            // Notification entsprechend angepasst werden
-            // 0 = gesperrt & geloescht (+ deletion_date)
-            //
-            // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
-            //$this->updateWikiRemoveUser();
-        }
-
         $this->updateElastic();
     }
 
@@ -2425,25 +2405,6 @@ class cs_user_item extends cs_item
         include_once('functions/date_functions.php');
         return $this->getLastLogin() > getCurrentDateTimeMinusDaysInMySQL(99);
     }
-
-    public function updateWikiProfile()
-    {
-        $wiki_manager = $this->_environment->getWikiManager();
-        $wiki_manager->updateWikiProfileFile($this);
-        //$wiki_manager->updateWikiProfileFile_soap($this);
-    }
-
-    public function updateWikiNotification()
-    {
-        $wiki_manager = $this->_environment->getWikiManager();
-        $wiki_manager->updateNotification();
-    }
-
-    // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
-    //public function updateWikiRemoveUser(){
-    //     $wiki_manager = $this->_environment->getWikiManager();
-    //     $wiki_manager->updateWikiRemoveUser($this);
-    //}
 
     public function isRoomMember()
     {
