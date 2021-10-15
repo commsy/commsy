@@ -1482,15 +1482,6 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_hash_manager');
    }
 
-  /** get instance of cs_etchat_manager
-   *
-   * @return cs_etchat_manager
-   * @access public
-   */
-   function getETChatManager () {
-      return $this->_getInstance('cs_etchat_manager');
-   }
-
   /** get instance of cs_wiki_manager
    *
    * @return cs_wiki_manager
