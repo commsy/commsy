@@ -1265,15 +1265,6 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_buzzword_manager');
    }
 
-  /** get instance of cs_matrix_manager
-   *
-   * @return cs_matrix_manager
-   * @access public
-   */
-   function getMatrixManager() {
-      return $this->_getInstance('cs_matrix_manager');
-   }
-
   /** get instance of cs_file_manager
    *
    * @return cs_file_manager
@@ -1730,8 +1721,6 @@ class cs_environment {
                 return $this->getTag2TagManager();
             } elseif ($type == CS_BUZZWORD_TYPE) {
                 return $this->getBuzzwordManager();
-            } elseif ($type == CS_MATRIX_TYPE) {
-                return $this->getMatrixManager();
             } elseif ($type == CS_ITEM_BACKUP) {
                 return $this->getBackupItemManager();
             } elseif ($type == CS_ENTRY_TYPE) {
