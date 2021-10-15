@@ -2,22 +2,36 @@
 
 namespace App\Utils;
 
+use App\Room\Copy\LegacyCopy;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 
 class RoomService
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var CalendarsService
      */
-    private $calendarsService;
+    private CalendarsService $calendarsService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, CalendarsService $calendarsService)
-    {
+    /**
+     * @var LegacyCopy
+     */
+    private LegacyCopy $legacyCopy;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        CalendarsService $calendarsService,
+        LegacyCopy $legacyCopy
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->calendarsService = $calendarsService;
+        $this->legacyCopy = $legacyCopy;
     }
 
     /**
@@ -136,18 +150,12 @@ class RoomService
 
     private function copySettings($masterRoom, $targetRoom)
     {
-        // NOTE: the variable names in this method are required by the below included files
-        $old_room = $masterRoom;
-        $new_room = $targetRoom;
-        $old_room_id = $old_room->getItemID();
-        $environment = $this->legacyEnvironment;
-
 // TODO: check if the commented code is still necessary
 // (when creating a project room with user rooms, the commented code would hit the exception since the user room creator is not a room member)
 
         /**/
-        $user_manager = $environment->getUserManager();
-        $creator_item = $user_manager->getItem($new_room->getCreatorID());
+        $user_manager = $this->legacyEnvironment->getUserManager();
+        $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
 //        if ($creator_item->getContextID() == $new_room->getItemID()) {
             $creator_id = $creator_item->getItemID();
 //        } else {
@@ -171,16 +179,14 @@ class RoomService
 //        $creator_item->save();
 
         // copy room settings
-        require('include/inc_room_copy_config.php');
+        $this->legacyCopy->copySettings($masterRoom, $targetRoom);
 
         // save new room
-        $new_room->save();
+        $targetRoom->save();
 
         // copy data
-        require('include/inc_room_copy_data.php');
+        $this->legacyCopy->copyData($masterRoom, $targetRoom, $creator_item);
         /**/
-
-        $targetRoom = $new_room;
 
         return $targetRoom;
     }
@@ -188,7 +194,7 @@ class RoomService
     /**
      * returns a user list for the room with the $roomId
      * @param Integer $roomId room id
-     * @return Array         Array with legacy user items
+     * @return array array with legacy user items
      */
     public function getUserList($roomId)
     {

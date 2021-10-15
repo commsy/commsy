@@ -13,6 +13,7 @@ use App\Form\Type\GrouproomType;
 use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
+use App\Room\Copy\LegacyCopy;
 use App\Services\CalendarsService;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -933,6 +934,7 @@ class GroupController extends BaseController
      * @param Request $request
      * @param CalendarsService $calendarsService
      * @param GroupTransformer $transformer
+     * @param LegacyCopy $legacyCopy
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -942,6 +944,7 @@ class GroupController extends BaseController
         Request $request,
         CalendarsService $calendarsService,
         GroupTransformer $transformer,
+        LegacyCopy $legacyCopy,
         int $roomId,
         int $itemId
     ) {
@@ -998,7 +1001,7 @@ class GroupController extends BaseController
 
                         $masterRoom = $this->roomService->getRoomItem($masterTemplate);
                         if ($masterRoom) {
-                            $groupRoom = $this->copySettings($masterRoom, $groupRoom);
+                            $groupRoom = $this->copySettings($masterRoom, $groupRoom, $legacyCopy);
                         }
                     }
                     $groupItem->save(true);
@@ -1605,24 +1608,18 @@ class GroupController extends BaseController
     /**
      * @param $masterRoom
      * @param $targetRoom
+     * @param LegacyCopy $legacyCopy
      * @return mixed
      * @throws Exception
      */
-    private function copySettings($masterRoom, $targetRoom)
+    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy)
     {
-        $old_room = $masterRoom;
-        $new_room = $targetRoom;
-
-        $old_room_id = $old_room->getItemID();
-
         /**/
         $user_manager = $this->legacyEnvironment->getUserManager();
-        $creator_item = $user_manager->getItem($new_room->getCreatorID());
-        if ($creator_item->getContextID() == $new_room->getItemID()) {
-            $creator_id = $creator_item->getItemID();
-        } else {
+        $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
+        if ($creator_item->getContextID() != $targetRoom->getItemID()) {
             $user_manager->resetLimits();
-            $user_manager->setContextLimit($new_room->getItemID());
+            $user_manager->setContextLimit($targetRoom->getItemID());
             $user_manager->setUserIDLimit($creator_item->getUserID());
             $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
             $user_manager->setModeratorLimit();
@@ -1630,7 +1627,6 @@ class GroupController extends BaseController
             $user_list = $user_manager->get();
             if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
                 $creator_item = $user_list->getFirst();
-                $creator_id = $creator_item->getItemID();
             } else {
                 throw new Exception('can not get creator of new room');
             }
@@ -1641,16 +1637,14 @@ class GroupController extends BaseController
         $creator_item->save();
 
         // copy room settings
-        require_once('include/inc_room_copy_config.php');
+        $legacyCopy->copySettings($masterRoom, $targetRoom);
 
         // save new room
-        $new_room->save(false);
+        $targetRoom->save(false);
 
         // copy data
-        require_once('include/inc_room_copy_data.php');
+        $legacyCopy->copyData($masterRoom, $targetRoom, $creator_item);
         /**/
-
-        $targetRoom = $new_room;
 
         return $targetRoom;
     }
