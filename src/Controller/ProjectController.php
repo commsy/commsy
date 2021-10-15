@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Event\UserJoinedRoomEvent;
 use App\Form\Type\ProjectType;
+use App\Room\Copy\LegacyCopy;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -229,7 +230,10 @@ class ProjectController extends AbstractController
      * @param CalendarsService $calendarsService
      * @param RoomCategoriesService $roomCategoriesService
      * @param RoomService $roomService
+     * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyCopy $legacyCopy
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
@@ -242,6 +246,7 @@ class ProjectController extends AbstractController
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
+        LegacyCopy $legacyCopy,
         int $roomId
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -332,7 +337,7 @@ class ProjectController extends AbstractController
 
                     $masterRoom = $roomService->getRoomItem($masterTemplate);
                     if ($masterRoom) {
-                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyEnvironment);
+                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyCopy);
                     }
                 }
 
@@ -477,23 +482,14 @@ class ProjectController extends AbstractController
         return $info;
     }
 
-    private function copySettings($masterRoom, $targetRoom, LegacyEnvironment $legacyEnvironment)
+    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy)
     {
-        $old_room = $masterRoom;
-        $new_room = $targetRoom;
-
-        $old_room_id = $old_room->getItemID();
-
-        $environment = $legacyEnvironment->getEnvironment();
-
         /**/
-        $user_manager = $environment->getUserManager();
-        $creator_item = $user_manager->getItem($new_room->getCreatorID());
-        if ($creator_item->getContextID() == $new_room->getItemID()) {
-            $creator_id = $creator_item->getItemID();
-        } else {
+        $user_manager = $this->legacyEnvironment->getUserManager();
+        $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
+        if ($creator_item->getContextID() != $targetRoom->getItemID()) {
             $user_manager->resetLimits();
-            $user_manager->setContextLimit($new_room->getItemID());
+            $user_manager->setContextLimit($targetRoom->getItemID());
             $user_manager->setUserIDLimit($creator_item->getUserID());
             $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
             $user_manager->setModeratorLimit();
@@ -501,7 +497,6 @@ class ProjectController extends AbstractController
             $user_list = $user_manager->get();
             if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
                 $creator_item = $user_list->getFirst();
-                $creator_id = $creator_item->getItemID();
             } else {
                 throw new Exception('can not get creator of new room');
             }
@@ -512,20 +507,17 @@ class ProjectController extends AbstractController
         $creator_item->save();
 
         // copy room settings
-        require_once('include/inc_room_copy_config.php');
+        $legacyCopy->copySettings($masterRoom, $targetRoom);
 
         // save new room
-        $new_room->save();
+        $targetRoom->save();
 
         // copy data
-        require_once('include/inc_room_copy_data.php');
+        $legacyCopy->copyData($masterRoom, $targetRoom, $creator_item);
         /**/
-
-        $targetRoom = $new_room;
 
         return $targetRoom;
     }
-
 
     /**
      * @param \cs_environment $legacyEnvironment
