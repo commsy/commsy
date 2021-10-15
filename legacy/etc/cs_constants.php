@@ -104,8 +104,6 @@ define('CS_LOG_TYPE','log');
 define('CS_LOGARCHIVE_TYPE','log_archive');
 define('CS_LOG_ERROR_TYPE','log_error');
 
-define('CS_WIKI_TYPE','wiki');
-
 define('CS_ASSESSMENT_TYPE', 'assessments');
 
 define('CS_PLUGIN_TYPE','plugin');

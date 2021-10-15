@@ -2306,36 +2306,6 @@ function getExternalViewerArray(){
    }
 
    //------------------------------------------
-   //------------- Wikiexport -------------
-   function setExportToWiki($value) {
-      $this->_addExtra('EXPORT_TO_WIKI', (string)$value);
-   }
-   function getExportToWiki() {
-      return (string) $this->_getExtra('EXPORT_TO_WIKI');
-   }
-   function isExportToWiki() {
-      if($this->getExportToWiki() == '1'){
-         $wiki_manager = $this->_environment->getWikiManager();
-         //return $wiki_manager->existsItemToWiki($this->getItemID());
-         global $c_use_soap_for_wiki;
-         if(!$c_use_soap_for_wiki){
-            return $wiki_manager->existsItemToWiki($this->getItemID());
-         } else {
-            return $wiki_manager->existsItemToWiki_soap($this->getItemID());
-         }
-      } else {
-         return false;
-      }
-   }
-   function getExportToWikiLink(){
-      $wiki_manager = $this->_environment->getWikiManager();
-      return $wiki_manager->getExportToWikiLink($this->getItemID());
-   }
-   //------------- Wikiexport -------------
-   //------------------------------------------
-
-
-//------------------------------------------
    //------------- Wordpressexport -------------
    function setExportToWordpress($value) {
       $this->_addExtra('EXPORT_TO_WORDPRESS', (string)$value);
