@@ -9,6 +9,7 @@ use App\Entity\AuthSource;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
+use cs_list;
 use cs_user_item;
 use cs_user_manager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -96,6 +97,26 @@ class AccountManager
 
             $relatedUser->save();
         }
+    }
+
+    public function isLastModerator(Account $account): bool
+    {
+        $projectManager = $this->legacyEnvironment->getProjectManager();
+        $communityManager = $this->legacyEnvironment->getCommunityManager();
+
+        $portalUser = $this->userService->getPortalUser($account);
+
+        $roomList = new cs_list();
+        $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
+        $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
+
+        foreach ($roomList as $room) {
+            if ($this->userService->userIsLastModeratorForRoom($room, $portalUser)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

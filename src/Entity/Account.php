@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Account
@@ -28,7 +29,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $contextId;
+    private int $contextId;
 
     /**
      * @var string
@@ -40,7 +41,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @Assert\NotBlank()
      * @Assert\Regex(pattern="/^(root|guest)$/i", match=false, message="{{ value }} is a reserved name")
      */
-    private $username;
+    private string $username;
 
     /**
      * @Assert\NotBlank()
@@ -50,63 +51,84 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     private $plainPassword;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
-    private $passwordMd5;
+    private ?string $passwordMd5;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $password;
+    private ?string $password;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      *
      * @Assert\NotBlank()
      */
-    private $firstname;
+    private string $firstname;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(type="string", length=50)
      *
      * @Assert\NotBlank()
      */
-    private $lastname;
+    private string $lastname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=100, nullable=false)
+     * @ORM\Column(name="email", type="string", length=100)
      *
      * @Assert\Email()
      */
-    private $email;
+    private string $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="language", type="string", length=10, nullable=false)
+     * @ORM\Column(name="language", type="string", length=10)
      */
-    private $language;
+    private string $language;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuthSource")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\JoinColumn()
      */
-    private $authSource;
+    private AuthSource $authSource;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="locked", type="boolean")
      */
-    private $locked = false;
+    private bool $locked = false;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="last_login", type="datetime", nullable=true)
+     */
+    private ?DateTime $lastLogin;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="activity", type="string", length=10)
+     */
+    private string $activity;
+
+    public function __construct()
+    {
+        $this->lastLogin = null;
+        $this->password = null;
+        $this->passwordMd5 = null;
+    }
 
     /**
      * Returns the roles granted to the user.
@@ -122,7 +144,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      *
      * @return (Role|string)[] The user roles
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         return ['ROLE_USER'];
     }
@@ -135,7 +157,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      *
      * @return string The password
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password ?: $this->passwordMd5;
     }
@@ -157,7 +179,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      *
      * @return string|null The salt
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
@@ -185,7 +207,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      *
      * @return string The username
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -318,12 +340,12 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     {
     }
 
-    public function hasLegacyPassword()
+    public function hasLegacyPassword(): bool
     {
         return $this->passwordMd5 !== null;
     }
 
-    public function getEncoderName()
+    public function getEncoderName(): ?string
     {
         if ($this->hasLegacyPassword()) {
             return 'legacy_encoder';
@@ -337,7 +359,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         return $this->authSource;
     }
 
-    public function setAuthSource(?AuthSource $authSource): self
+    public function setAuthSource(?AuthSource $authSource): Account
     {
         $this->authSource = $authSource;
 
@@ -356,14 +378,49 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @param bool $locked
      * @return Account
      */
-    public function setLocked(bool $locked): self
+    public function setLocked(bool $locked): Account
     {
         $this->locked = $locked;
         return $this;
     }
 
-    // Serializable
+    /**
+     * @return DateTime|null
+     */
+    public function getLastLogin(): ?DateTime
+    {
+        return $this->lastLogin;
+    }
 
+    /**
+     * @param DateTime|null $lastLogin
+     * @return Account
+     */
+    public function setLastLogin(?DateTime $lastLogin): Account
+    {
+        $this->lastLogin = $lastLogin;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivity(): string
+    {
+        return $this->activity;
+    }
+
+    /**
+     * @param string $activity
+     * @return Account
+     */
+    public function setActivity(string $activity): Account
+    {
+        $this->activity = $activity;
+        return $this;
+    }
+
+    // Serializable
     public function serialize()
     {
         $serializableData = get_object_vars($this);

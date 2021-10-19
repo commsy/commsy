@@ -358,9 +358,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
-    kernel.listener.commsy_login:
-        class: App\EventListener\CommsyLoginListener
-        arguments: ['@commsy_legacy.environment']
+    App\EventListener\CommsyLoginListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 

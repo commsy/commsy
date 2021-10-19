@@ -1434,7 +1434,7 @@ class cs_user_item extends cs_item
      * This method only updates the LastLogin Of the User.
      * Only the LastLoginField will be touched.
      */
-    function updateLastLogin()
+    public function updateLastLogin()
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->updateLastLoginOf($this);

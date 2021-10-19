@@ -2,19 +2,23 @@
 
 namespace App\EventListener;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class CommsyLoginListener
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         /*
            restrict logging to the following requests:
@@ -36,18 +40,12 @@ class CommsyLoginListener
         }
         
         if ($logRequest) {
-            $user = $this->legacyEnvironment->getEnvironment()->getCurrentUser();
+            $user = $this->legacyEnvironment->getCurrentUser();
             if ($user->isUser() and !$user->isRoot()) {
                 $user->updateLastLogin();
 
-                $portalUser = $user->getRelatedCommSyUserItem();
-                if ($portalUser) {
-                    $portalUser->updateLastLogin();
-
-                    if ($portalUser->getMailSendNextLock() || $portalUser->getMailSendBeforeLock() || $portalUser->getNotifyLockDate()) {
-                        $portalUser->resetInactivity();
-                    }
-                }
+                // The portal user is no longer updated here
+                // This is now done by the LoginSubscriber and stored in the Account
             }
         }
     }
