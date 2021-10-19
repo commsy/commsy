@@ -4,6 +4,9 @@ namespace App\Database;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Deletes entries with a context id that does not exist
+ */
 class FixContext extends GeneralCheck
 {
     public function resolve(SymfonyStyle $io): bool
