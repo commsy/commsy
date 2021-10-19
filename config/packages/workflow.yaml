@@ -1,0 +1,22 @@
+framework:
+    workflows:
+
+        account_activity:
+            type: state_machine
+            marking_store:
+                type: method
+                property: activity
+            supports:
+                - App\Entity\Account
+            initial_marking: active
+            places:
+                - active
+                - idle
+                - abandoned
+            transitions:
+                lock:
+                    from: active
+                    to: idle
+                forsake:
+                    from: idle
+                    to: abandoned
