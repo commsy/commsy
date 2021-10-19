@@ -9,13 +9,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DBCheckCommand extends Command
 {
-    private $databaseChecks;
+    private DatabaseChecks $databaseChecks;
 
     public function __construct(DatabaseChecks $databaseChecks)
     {
-        $this->databaseChecks = $databaseChecks;
-
         parent::__construct();
+
+        $this->databaseChecks = $databaseChecks;
     }
 
     protected function configure()
@@ -25,16 +25,15 @@ class DBCheckCommand extends Command
             ->setDescription('Checks the database tables')
             ->addOption(
                 'limit',
-                null,
+                'l',
                 InputOption::VALUE_REQUIRED,
-                'Resolve problems after after number of problems found',
-                0
+                'Limit the checks to run'
             );
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->databaseChecks->runChecks($this, $input, $output);
+        $this->databaseChecks->runChecks($input, $output);
     }
 }

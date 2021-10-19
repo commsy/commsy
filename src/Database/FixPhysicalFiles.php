@@ -9,7 +9,6 @@
 namespace App\Database;
 
 
-use App\Services\LegacyEnvironment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
@@ -19,17 +18,12 @@ class FixPhysicalFiles implements DatabaseCheck
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private EntityManagerInterface $entityManager;
 
-    /**
-     * @var \cs_environment
-     */
-    private $legacyEnvironment;
-
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
-    {
-        $this->em = $em;
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    public function __construct(
+        EntityManagerInterface $entityManager
+    ) {
+        $this->entityManager = $entityManager;
     }
 
     public function getPriority()
@@ -37,15 +31,15 @@ class FixPhysicalFiles implements DatabaseCheck
         return 100;
     }
 
-    public function findProblems(SymfonyStyle $io, int $limit)
+    public function resolve(SymfonyStyle $io): bool
     {
         $io->text('Inspecting physical files');
 
-        $qb = $this->em->getConnection()->createQueryBuilder()
-            ->select('f.*', 'i.context_id as portalId')
-            ->from('files', 'f')
-            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')
-            ->where('f.deletion_date IS NULL');
+//        $qb = $this->em->getConnection()->createQueryBuilder()
+//            ->select('f.*', 'i.context_id as portalId')
+//            ->from('files', 'f')
+//            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')
+//            ->where('f.deletion_date IS NULL');
 
         $finder = new Finder();
         $finder->files()
@@ -56,11 +50,7 @@ class FixPhysicalFiles implements DatabaseCheck
         foreach ($finder as $file) {
             $io->text($file->getRelativePathname());
         }
-    }
 
-    public function getResolutionStrategies()
-    {
-        return [
-        ];
+        return true;
     }
 }

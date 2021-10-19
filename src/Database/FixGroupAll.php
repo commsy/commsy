@@ -1,18 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 22.02.18
- * Time: 22:18
- */
 
 namespace App\Database;
 
 
-use App\Services\LegacyEnvironment;
 use App\Database\Resolve\CreateGroupAllResolution;
 use App\Entity\Room;
+use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_group_item;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixGroupAll implements DatabaseCheck
@@ -20,16 +17,18 @@ class FixGroupAll implements DatabaseCheck
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private EntityManagerInterface $entityManager;
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
-    {
-        $this->em = $em;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -38,13 +37,13 @@ class FixGroupAll implements DatabaseCheck
         return 200;
     }
 
-    public function findProblems(SymfonyStyle $io, int $limit)
+    public function resolve(SymfonyStyle $io): bool
     {
         $groupManager = $this->legacyEnvironment->getGroupManager();
 
         $io->text('Inspecting project rooms, looking for system group "ALL"');
 
-        $qb = $this->em->createQueryBuilder()
+        $qb = $this->entityManager->createQueryBuilder()
             ->select('r')
             ->from('App:Room', 'r')
             ->where('r.deleter IS NULL')
@@ -56,7 +55,8 @@ class FixGroupAll implements DatabaseCheck
         /** @var Room[] $projectRooms */
         $projectRooms = $qb->execute();
 
-        $problems = [];
+        $progressBar = new ProgressBar($io, count($projectRooms));
+        $progressBar->start();
 
         foreach ($projectRooms as $projectRoom) {
             if ($io->isVerbose()) {
@@ -71,22 +71,21 @@ class FixGroupAll implements DatabaseCheck
             if (!$groupAll) {
                 $io->warning('Missing group found');
 
-                $problems[] = new DatabaseProblem($projectRoom);
-
-                if ($limit > 0 && sizeof($problems) === $limit) {
-                    $io->warning('Number of problems found reached limit -> early return. Please rerun the command.');
-                    return $problems;
-                }
+                /** @var cs_group_item $group */
+                $group = $groupManager->getNewItem('group');
+                $group->setName('ALL');
+                $group->setDescription('GROUP_ALL_DESC');
+                $group->setContextID($projectRoom->getItemId());
+                $group->setCreatorID($projectRoom->getCreator()->getItemId());
+                $group->makeSystemLabel();
+                $group->save();
             }
+
+            $progressBar->advance();
         }
 
-        return $problems;
-    }
+        $progressBar->finish();
 
-    public function getResolutionStrategies()
-    {
-        return [
-            new CreateGroupAllResolution($this->legacyEnvironment),
-        ];
+        return true;
     }
 }
