@@ -1,7 +1,8 @@
 {% extends 'base/securedelete.html.twig' %}
 {% import "utils/macros.html.twig" as utilsMacros %}
 
-{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+{% form_theme lock_form 'form/uikit_horizontal_layout.html.twig' %}
+{% form_theme delete_form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid">
@@ -97,10 +98,10 @@
                         {{ 'Delete explanation end'|trans({}, 'settings') }}
                     </div>
                     <div class="uk-margin">
-                        {{ form_start(form) }}
+                        {{ form_start(delete_form) }}
 
                         <div class="uk-form-row">
-                            {% for error in form.confirm.vars.errors  %}
+                            {% for error in delete_form.confirm.vars.errors  %}
                                 {% if ' ' not in error.message %}
                                     <br /><a href="/room/{{ error.message}}">
                                     {{ error.message | roomtitle}}
@@ -109,16 +110,16 @@
                                     {{ error.message | trans({}, "validators")}}<br/>
                                 {% endif %}
                             {% endfor %}
-                            {{ form_label(form.confirm) }}
-                            {{ form_widget(form.confirm) }}
+                            {{ form_label(delete_form.confirm) }}
+                            {{ form_widget(delete_form.confirm) }}
                         </div>
 
                         <div class="uk-form-row">
-                            {{ form_widget(form.delete) }}
-                            {% do form.lock.setRendered() %}
+                            {{ form_widget(delete_form.delete) }}
+                            {% do delete_form.lock.setRendered() %}
                         </div>
 
-                        {{ form_end(form) }}
+                        {{ form_end(delete_form) }}
                     </div>
                 </div>
             </div>
