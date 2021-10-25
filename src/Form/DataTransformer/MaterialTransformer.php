@@ -3,6 +3,7 @@ namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use cs_material_item;
 
 class MaterialTransformer extends AbstractTransformer
 {
@@ -34,7 +35,7 @@ class MaterialTransformer extends AbstractTransformer
             $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();
 
-            if (get_class($materialItem) != 'cs_section_item') {
+            if ($materialItem instanceof cs_material_item) {
 
                 $materialData['editor_switch'] = $materialItem->getEtherpadEditor() > 0;
 
@@ -47,7 +48,7 @@ class MaterialTransformer extends AbstractTransformer
                     $materialData['biblio_select'] = 'Biblio'.ucfirst($bibKind).'Type';
                 }
 
-                /** @var \cs_material_item $materialItem */
+                /** @var cs_material_item $materialItem */
                 $materialData['biblio_sub']['author'] = $materialItem->getAuthor();
                 $materialData['biblio_sub']['publishing_date'] = $materialItem->getPublishingDate();
                 $materialData['biblio_sub']['common'] = $materialItem->getBibliographicValues();
