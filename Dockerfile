@@ -19,6 +19,7 @@ RUN apk add --no-cache \
 		git \
 		gnu-libiconv \
 		libxrender \
+        mariadb-client \
 		nodejs \
 		ttf-freefont \
 		yarn \

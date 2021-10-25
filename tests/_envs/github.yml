@@ -1,0 +1,13 @@
+modules:
+    config:
+#        WebDriver:
+#            url: http://localhost:8080/
+#            browser: chrome
+#            host: 127.0.0.1
+#            port: 9515
+#            window_size: false
+#            capabilities:
+#                chromeOptions:
+#                    args: ["--headless", "--disable-gpu"]
+        Db:
+            dsn: 'mysql:host=127.0.0.1;dbname=commsy_test'
