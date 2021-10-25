@@ -4,26 +4,18 @@ namespace App\Tests\Unit;
 
 use App\Form\DataTransformer\MaterialTransformer;
 use App\Tests\UnitTester;
+use Codeception\Stub;
+use cs_section_item;
 
 
 class TransformerCest
 {
-    public function _before(UnitTester $I)
-    {
-    }
-
-    public function _after(UnitTester $I)
-    {
-    }
-    
     public function transformSectionTest(UnitTester $I)
     {
-        $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
+        require_once 'classes/cs_section_item.php';
 
-        $sectionManager = $legacyEnvironment->getSectionManager();
-        $section = $sectionManager->getNewItem();
-
-        $I->assertInstanceOf(\cs_section_item::class, $section);
+        /** @var cs_section_item $section */
+        $section = Stub::make(cs_section_item::class);
 
         $msTransformer = $I->grabService(MaterialTransformer::class);
         $dataArray = $msTransformer->transform($section);

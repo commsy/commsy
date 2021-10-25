@@ -2,50 +2,40 @@
 
 namespace App\Tests\Functional;
 
-use App\Tests\Step\Functional\Root;
-use App\Tests\Step\Functional\User;
+use App\Tests\FunctionalTester;
 
 class LoginCest
 {
-    public function loginAsRoot(Root $I)
+    public function loginAsRoot(FunctionalTester $I)
     {
-        $I->loginAsRoot();
+        $I->amOnPage('/login/server');
+        $I->see('Login Systemadministration');
+
+        $I->fillField('#inputEmail', 'root');
+        $I->fillField('#inputPassword', 'pcxEmQj6QzE5');
+        $I->click('button[name=login_local]');
+
         $I->seeCurrentRouteIs('app_server_show');
     }
 
-    public function register(Root $I, User $U)
+    public function loginAsUser(FunctionalTester $I)
     {
-        $I->loginAsRoot();
-        $I->createPortal('Testportal');
-        $I->amOnRoute('app_logout');
+        $portal = $I->havePortal('Testportal');
+        $account = $I->haveAccount($portal, 'user');
 
-        $U->register('Testportal');
-    }
+        $I->amOnRoute('app_login', [
+            'context' => $portal->getId(),
+        ]);
 
-    public function loginAsUser(Root $I, User $U)
-    {
-        // Create two portals as root
-        $I->loginAsRoot();
-        $I->createPortal('Portal A');
-        $I->createPortal('Portal B');
-        $I->amOnRoute('app_logout');
+        $I->fillField('#inputEmail', $account->getUsername());
+        $I->fillField('#inputPassword', $account->getPlainPassword());
+        $I->click('button[name=login_local]');
 
-        // Register on both portals with the same username
-        $U->register('Portal A');
-        $U->amOnRoute('app_logout');
-        $U->register('Portal B');
-        $U->amOnRoute('app_logout');
-
-        // This is the first login and the user will be redirected to the dashboard on success
-        $U->login('Portal A');
-        $U->seeCurrentRouteIs('app_dashboard_overview');
-
-        // Make sure the user is redirected if he gets to the login form again
-        $U->amOnRoute('app_server_show');
-        $U->click(['link' => 'Portal A']);
-        $U->seeCurrentRouteIs('app_dashboard_overview');
+        $I->seeCurrentRouteIs('app_dashboard_overview');
 
         // Make sure ...
+
+        // TODO: Make sure the user is redirected if he gets to the login form again
 
         /**
          * TODO: This is very basic right now and we should check that the access to a room on a portal the user is
@@ -54,5 +44,25 @@ class LoginCest
          * - If the user is already logged in, check he gets a 404 forbidden when trying to acccess another room
          * - ...
          */
+    }
+
+    public function register(FunctionalTester $I)
+    {
+        $portal = $I->havePortal('Testportal');
+
+        $I->amOnRoute('app_account_signup', [
+            'id' => $portal->getId(),
+        ]);
+
+        $I->fillField(['name' => 'sign_up_form[firstname]'], 'Firstname');
+        $I->fillField(['name' => 'sign_up_form[lastname]'], 'Lastname');
+        $I->fillField(['name' => 'sign_up_form[email][first]'], 'some@mail.test');
+        $I->fillField(['name' => 'sign_up_form[email][second]'], 'some@mail.test');
+        $I->fillField(['name' => 'sign_up_form[username]'], 'username');
+        $I->fillField(['name' => 'sign_up_form[plainPassword][first]'], 'ZSzq9z3aH8xDmGnLip');
+        $I->fillField(['name' => 'sign_up_form[plainPassword][second]'], 'ZSzq9z3aH8xDmGnLip');
+        $I->click(['name' => 'sign_up_form[submit]']);
+
+        $I->seeCurrentRouteIs('app_login');
     }
 }
