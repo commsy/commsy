@@ -74,6 +74,7 @@
         "codeception/module-datafactory": "^1.1",
         "codeception/module-db": "^1.1",
         "codeception/module-doctrine2": "^1.1",
+        "codeception/module-filesystem": "^1.0",
         "codeception/module-phpbrowser": "^1.0",
         "codeception/module-symfony": "^2.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7",

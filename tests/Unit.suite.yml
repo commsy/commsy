@@ -10,5 +10,6 @@ modules:
         - Db
         - Doctrine2:
             depends: Symfony
+        - Filesystem
         - Symfony
         - \App\Tests\Helper\Unit
