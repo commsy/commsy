@@ -3,11 +3,12 @@
 # Suite for unit or integration tests.
 
 actor: UnitTester
+suite_namespace: \App\Tests\Unit
 modules:
     enabled:
         - Asserts
-        - \App\Tests\Helper\Unit
-        - Symfony
         - Db
         - Doctrine2:
             depends: Symfony
+        - Symfony
+        - \App\Tests\Helper\Unit

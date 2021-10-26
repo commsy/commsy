@@ -5,13 +5,16 @@
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
 actor: AcceptanceTester
+suite_namespace: \App\Tests\Acceptance
 modules:
     enabled:
-        - WebDriver:
-            url: http://test_nginx/
-            browser: chrome
-            host: commsy_selenium_hub
-            port: 4444
         - Db
-        - Asserts
+        - PhpBrowser:
+            url: http://localhost/myapp
+#        - WebDriver:
+#              url: http://test_nginx/
+#              browser: chrome
+#              host: commsy_selenium_hub
+#              port: 4444
+#        - Asserts
         - \App\Tests\Helper\Acceptance

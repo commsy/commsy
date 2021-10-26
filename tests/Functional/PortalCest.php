@@ -8,13 +8,15 @@ class PortalCest
 {
     public function createPortal(Root $I)
     {
-        $I->loginAsRoot();
+        $I->amLoggedInAsRoot();
 
         $I->amOnRoute('app_server_show');
         $I->seeLink('Portal erstellen');
         $I->click(['link' => 'Portal erstellen']);
 
-        $I->createPortal('Testportal');
+        $I->amOnRoute('app_server_createportal');
+        $I->fillField(['name' => 'general[title]'], 'Testportal');
+        $I->click(['name' => 'general[save]']);
 
         $I->seeCurrentRouteIs('app_server_show');
         $I->see('Testportal');
