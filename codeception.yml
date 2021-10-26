@@ -1,33 +1,34 @@
 namespace: App\Tests
 paths:
     tests: tests
-    support: tests/_build/support
-    data: tests/_build/data
-    envs: tests/_build/envs
-    output: tests/_build/output
-
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
 actor_suffix: Tester
-
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
-
-settings:
-
-modules:
-    config:
-        Db:
-            dsn: 'mysql:host=commsy_test_db;dbname=commsy'
-            user: 'root'
-            password: 'root'
-            dump: tests/_data/bootstrap.sql
-            cleanup: true # reload dump between tests
-            populate: true # load dump before all tests
-            populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
-        Symfony:
-            app_path: 'src'
-            environment: 'test'
-
 params:
     - .env
     - .env.test
+modules:
+    config:
+        Db:
+            dsn: 'mysql:host=db;dbname='
+            user: 'root'
+            password: 'root'
+            dump: tests/_data/dump.sql
+            cleanup: true # whether the dump should be reloaded before each test
+            populate: true # whether the the dump should be loaded before the test suite is started
+            populator: 'mysql -u $user -p$password -h $host commsy_test < $dump'
+            initial_queries:
+                - 'CREATE DATABASE IF NOT EXISTS commsy_test;'
+                - 'USE commsy_test;'
+        Symfony:
+            app_path: 'src'
+            environment: 'test'
+settings:
+    shuffle: true
+    colors: true
+    report_useless_tests: true
