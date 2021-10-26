@@ -90,9 +90,6 @@
         "sort-packages": true
     },
     "autoload": {
-        "classmap": [
-            "tests/_support"
-        ],
         "psr-4": {
             "App\\": "src/"
         }
@@ -100,7 +97,10 @@
     "autoload-dev": {
         "psr-4": {
             "App\\Tests\\": "tests/"
-        }
+        },
+        "classmap": [
+            "tests/_support"
+        ]
     },
     "replace": {
         "paragonie/random_compat": "2.*",
