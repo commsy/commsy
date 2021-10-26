@@ -15,13 +15,13 @@ params:
 modules:
     config:
         Db:
-            dsn: 'mysql:host=db;dbname=commsy_test'
+            dsn: 'mysql:host=db;dbname='
             user: 'root'
             password: 'root'
             dump: tests/_data/dump.sql
             cleanup: true # whether the dump should be reloaded before each test
             populate: true # whether the the dump should be loaded before the test suite is started
-            populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
+            populator: 'mysql -u $user -p$password -h $host commsy_test < $dump'
             initial_queries:
                 - 'CREATE DATABASE IF NOT EXISTS commsy_test;'
                 - 'USE commsy_test;'
