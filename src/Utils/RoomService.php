@@ -287,6 +287,25 @@ class RoomService
         return $communityRooms->to_array();
     }
 
+    /**
+     * Returns the IDs of all given rooms.
+     *
+     * @param cs_room_item[] $rooms The array of rooms whose IDs shall be returned
+     * @return int[]
+     */
+    public function getIdsForRooms(array $rooms): array
+    {
+        if (empty($rooms)) {
+            return [];
+        }
+
+        $roomIds = array_map(function (cs_room_item $room) {
+            return $room->getItemID();
+        }, $rooms);
+
+        return $roomIds;
+    }
+
     public function getFilterableRubrics($roomId)
     {
         // get active rubrics
