@@ -74,7 +74,7 @@ class SecureProjectDetailDeletionController extends AbstractController
         $lockForm->handleRequest($request);
         if ($lockForm->isSubmitted() && $lockForm->isValid()) {
             if ($lockForm->get('lock')->isClicked()) {
-                $roomItem->setStatus(3);
+                $roomItem->lock();
                 $roomItem->save();
 
                 // redirect back to project ws list

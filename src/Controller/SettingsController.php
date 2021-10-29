@@ -510,7 +510,7 @@ class SettingsController extends Controller
         $lockForm->handleRequest($request);
         if ($lockForm->isSubmitted() && $form->isValid()) {
             if ($lockForm->get('lock')->isClicked()) {
-                $roomItem->reject();
+                $roomItem->lock();
                 $roomItem->save();
 
                 // redirect back to portal
