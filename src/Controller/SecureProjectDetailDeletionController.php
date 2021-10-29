@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Form\Type\Room\DeleteType;
 use App\Form\Type\Room\SecureDeleteType;
 use App\Utils\RoomService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -19,7 +18,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SecureProjectDetailDeletionController extends AbstractController
 {
-
     /**
      * @Route("/room/{roomId}/settings/securedelete/{subRoomId}")
      * @Template
@@ -38,8 +36,15 @@ class SecureProjectDetailDeletionController extends AbstractController
             throw $this->createNotFoundException('No room found for id ' . $subRoomId);
         }
 
+        $isProjectRoom = $roomItem->isProjectRoom();
+        $communityRooms = $roomService->getCommunityRoomsForRoom($roomItem);
+        $communityRoomIds = $roomService->getIdsForRooms($communityRooms);
+        $projectRoomIsViewedFromItsCommunityRoom = ($isProjectRoom && in_array($roomId, $communityRoomIds));
+        $cancelRoute = ($projectRoomIsViewedFromItsCommunityRoom) ? 'app_project_detail' : 'app_room_detail' ;
+        $successRoute = ($projectRoomIsViewedFromItsCommunityRoom) ? 'app_project_list' : 'app_room_listall' ;
+
         $relatedGroupRooms = [];
-        if ($roomItem instanceof \cs_project_item) {
+        if ($isProjectRoom) {
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
@@ -52,18 +57,22 @@ class SecureProjectDetailDeletionController extends AbstractController
         ]);
 
         $deleteForm->handleRequest($request);
-        if ($deleteForm->get('cancel')->isClicked()) {
-            return $this->redirectToRoute('app_project_list', [
-                'roomId' => $roomId,
-            ]);
-        }
+
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-            if ($deleteForm->get('delete')->isClicked()) {
+            $clickedButton = $deleteForm->getClickedButton();
+            $buttonName = $clickedButton ? $clickedButton->getName() : '';
+
+            if ($buttonName === 'cancel') {
+                return $this->redirectToRoute($cancelRoute, [
+                    'roomId' => $roomId,
+                    'itemId' => $subRoomId,
+                ]);
+            } elseif ($buttonName === 'delete') {
                 $roomItem->delete();
                 $roomItem->save();
 
-                // redirect back to project ws list
-                return $this->redirectToRoute('app_project_list', [
+                // redirect back to hosting context/room
+                return $this->redirectToRoute($successRoute, [
                     'roomId' => $roomId,
                 ]);
             } else {
@@ -72,28 +81,27 @@ class SecureProjectDetailDeletionController extends AbstractController
         }
 
         $lockForm->handleRequest($request);
+
         if ($lockForm->isSubmitted() && $lockForm->isValid()) {
-            if ($lockForm->get('lock')->isClicked()) {
+            $clickedButton = $lockForm->getClickedButton();
+            $buttonName = $clickedButton ? $clickedButton->getName() : '';
+
+            if ($buttonName === 'cancel') {
+                return $this->redirectToRoute($cancelRoute, [
+                    'roomId' => $roomId,
+                    'itemId' => $subRoomId,
+                ]);
+            } elseif ($buttonName === 'lock') {
                 $roomItem->lock();
                 $roomItem->save();
 
-                // redirect back to project ws list
-                return $this->redirectToRoute('app_project_list', [
+                // redirect back to hosting context/room
+                return $this->redirectToRoute($successRoute, [
                     'roomId' => $roomId,
                 ]);
             } else {
                 $lockForm->clearErrors(true);
             }
-        }
-
-        if ($lockForm->get('lock')->isClicked()) {
-            $deleteForm = $this->createForm(DeleteType::class, $roomItem, [
-                'confirm_string' => $translator->trans('delete', [], 'profile')
-            ]);
-        } elseif ($deleteForm->get('delete')->isClicked()) {
-            $lockForm = $this->createForm(DeleteType::class, $roomItem, [
-                'confirm_string' => $translator->trans('lock', [], 'profile')
-            ]);
         }
 
         return [
