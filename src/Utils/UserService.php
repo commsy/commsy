@@ -513,8 +513,8 @@ class UserService
             return false;
         }
 
-        $roomModeratorIds = $this->idsForUsers($room->getModeratorList()->to_array());
-        $userIds = $this->idsForUsers($user->getRelatedUserList()->to_array());
+        $roomModeratorIds = $this->getIdsForUsers($room->getModeratorList()->to_array());
+        $userIds = $this->getIdsForUsers($user->getRelatedUserList()->to_array());
 
         // also check the given/current user's own item ID
         $userIds[] = $user->getItemID();
@@ -539,8 +539,8 @@ class UserService
             return false;
         }
 
-        $roomModeratorIds = $this->idsForUsers($this->getModeratorsForContext($room->getItemId()));
-        $userIds = $this->idsForUsers($user->getRelatedUserList()->to_array());
+        $roomModeratorIds = $this->getIdsForUsers($this->getModeratorsForContext($room->getItemId()));
+        $userIds = $this->getIdsForUsers($user->getRelatedUserList()->to_array());
 
         // also check the given/current user's own item ID
         $userIds[] = $user->getItemID();
@@ -599,7 +599,7 @@ class UserService
      * @param cs_user_item[] $users The array of users whose IDs shall be returned
      * @return int[]
      */
-    private function idsForUsers(array $users): array
+    public function getIdsForUsers(array $users): array
     {
         if (empty($users)) {
             return [];
