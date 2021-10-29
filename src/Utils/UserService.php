@@ -14,12 +14,13 @@ use Symfony\Component\Form\FormInterface;
 class UserService
 {
     private $legacyEnvironment;
-
     private $userManager;
-
     private $roomManager;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    /** @var RoomService $roomService */
+    private $roomService;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     { 
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         
@@ -28,6 +29,8 @@ class UserService
 
         $this->roomManager = $this->legacyEnvironment->getRoomManager();
         $this->roomManager->reset();
+
+        $this->roomService = $roomService;
     }
 
     public function getCountArray($roomId, $moderation = false)
@@ -580,24 +583,7 @@ class UserService
         }
 
         // check if the given user corresponds to a moderator in a community room that hosts the given project room
-        // NOTE: we can't seem to use $room->getCommunityList() here since that method may incorrectly set the room limit
-        //       to the current context (instead of the passed room's context); this e.g. happens if this method gets
-        //       called for a project room's detail page within a community room
-        $link_item_manager = $this->legacyEnvironment->getLinkItemManager();
-        $link_item_manager->resetLimits();
-        $link_item_manager->setLinkedItemLimit($room);
-        $link_item_manager->setTypeLimit(CS_COMMUNITY_TYPE);
-        $link_item_manager->setRoomLimit($room->getContextID());
-        $link_item_manager->select();
-        $link_list = $link_item_manager->get();
-        $result_list = new \cs_list();
-        $link_item = $link_list->getFirst();
-        while ($link_item) {
-            $result_list->add($link_item->getLinkedItem($room));
-            $link_item = $link_list->getNext();
-        }
-        $communityRooms = $result_list;
-
+        $communityRooms = $this->roomService->getCommunityRoomsForRoom($room);
         foreach ($communityRooms as $communityRoom) {
             if ($this->userIsModeratorForRoom($communityRoom, $user)) {
                 return true;

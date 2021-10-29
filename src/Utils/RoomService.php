@@ -258,6 +258,35 @@ class RoomService
         return $roomItem;
     }
 
+    /**
+     * Returns all community rooms that host the given (project) room.
+     * @param cs_room_item $room The room whose related community rooms shall be returned
+     * @return cs_community_item[] Array of community rooms that host the given (project) room
+     */
+    public function getCommunityRoomsForRoom(cs_room_item $room): array
+    {
+        // NOTE: we don't use $room->getCommunityList() here since that method may incorrectly set the room limit
+        //       to the current context (instead of the room's context); this e.g. happens if this method gets
+        //       called for a project room's detail page within a community room
+
+        $link_item_manager = $this->legacyEnvironment->getLinkItemManager();
+        $link_item_manager->resetLimits();
+        $link_item_manager->setLinkedItemLimit($room);
+        $link_item_manager->setTypeLimit(CS_COMMUNITY_TYPE);
+        $link_item_manager->setRoomLimit($room->getContextID());
+        $link_item_manager->select();
+        $link_list = $link_item_manager->get();
+        $result_list = new \cs_list();
+        $link_item = $link_list->getFirst();
+        while ($link_item) {
+            $result_list->add($link_item->getLinkedItem($room));
+            $link_item = $link_list->getNext();
+        }
+        $communityRooms = $result_list;
+
+        return $communityRooms->to_array();
+    }
+
     public function getFilterableRubrics($roomId)
     {
         // get active rubrics
