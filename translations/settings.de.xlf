@@ -711,15 +711,15 @@
             </trans-unit>
             <trans-unit id="settings_delete_explanation_end">
                 <source>Delete explanation end</source>
-                <target>ein und bestätigen den Vorgang.</target>
+                <target>ein und bestätigen Sie den Vorgang.</target>
             </trans-unit>
             <trans-unit id="settings_delete_grouprooms">
                 <source>Deletion of grouprooms</source>
-                <target>Das Löschen dieses Projektraums führt ebenfalls auch zur Löschung der folgenden ihm untergeordneten Gruppenräume</target>
+                <target>Das Löschen dieses Projektraums führt ebenfalls auch zur Löschung der folgenden ihm untergeordneten Gruppenräume:</target>
             </trans-unit>
             <trans-unit id="settings_lock_grouprooms">
                 <source>Locking of grouprooms</source>
-                <target>Das Sperren dieses Projektraums führt ebenfalls auch zur Sperrung der folgenden ihm untergeordneten Gruppenräume</target>
+                <target>Das Sperren dieses Projektraums führt ebenfalls auch zur Sperrung der folgenden ihm untergeordneten Gruppenräume:</target>
             </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>
@@ -729,9 +729,13 @@
                 <source>Delete</source>
                 <target>Löschen</target>
             </trans-unit>
-            <trans-unit id="confirm">
-                <source>confirm</source>
-                <target>Bestätigen</target>
+            <trans-unit id="settings_confirm_delete_button">
+                <source>Confirm delete</source>
+                <target>Löschen bestätigen</target>
+            </trans-unit>
+            <trans-unit id="settings_confirm_lock_button">
+                <source>Confirm lock</source>
+                <target>Sperren bestätigen</target>
             </trans-unit>
             <trans-unit id="Invitations">
                 <source>Invitations</source>
@@ -795,11 +799,7 @@
             </trans-unit>
             <trans-unit id="Cancel securedelete">
                 <source>Cancel secure delete</source>
-                <target>Zurück zur Projektraumliste</target>
-            </trans-unit>
-            <trans-unit id="Delete or lock project">
-                <source>Delete or lock project</source>
-                <target>Raum sperren/löschen</target>
+                <target>Zurück</target>
             </trans-unit>
         </body>
     </file>

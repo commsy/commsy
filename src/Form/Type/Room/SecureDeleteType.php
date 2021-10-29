@@ -33,17 +33,17 @@ class SecureDeleteType extends AbstractType
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
                 ],
-                'required' => false,
+                'required' => true,
                 'mapped' => false,
             ])
             ->add('delete', SubmitType::class, [
-                'label' => 'confirm',
+                'label' => 'Confirm delete',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],
             ])
             ->add('lock', SubmitType::class, [
-                'label' => 'confirm',
+                'label' => 'Confirm lock',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],
@@ -52,7 +52,9 @@ class SecureDeleteType extends AbstractType
                 'label' => 'Cancel secure delete',
                 'attr' => [
                     'class' => 'uk-button-danger',
+                    'formnovalidate' => '',
                 ],
+                'validation_groups' => false,
             ])
         ;
     }
