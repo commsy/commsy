@@ -37,13 +37,13 @@ class DeleteType extends AbstractType
                 'mapped' => false,
             ])
             ->add('delete', SubmitType::class, [
-                'label' => 'confirm',
+                'label' => 'Confirm delete',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],
             ])
             ->add('lock', SubmitType::class, [
-                'label' => 'confirm',
+                'label' => 'Confirm lock',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],
