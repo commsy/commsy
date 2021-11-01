@@ -981,9 +981,9 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                   'copy_of="'.encode(AS_DB,$copy_id).'",'.
                   'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
                   'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
-                   $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowResubmissionDate(), 'workflow_resubmission_date').
-                   $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowValidityDate(), 'workflow_validity_date').
-                   $this->returnQuerySentenceIfFieldIsValid($material_item->getLicenseId(), 'license_id');
+                   $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowResubmissionDate(), 'workflow_resubmission_date', true).
+                   $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowValidityDate(), 'workflow_validity_date', true).
+                   $this->returnQuerySentenceIfFieldIsValid($material_item->getLicenseId(), 'license_id', true);
           // Remove unexpected commas at the end if some of the queries are left behind
          $query = rtrim($query, ',');
          $whereClause =
