@@ -53,18 +53,16 @@
 
 {% block javascripts %}
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var regExp = /#section(\d+)$/;
-            function setSectionOrder(){
-                var $sections = $(".section-list").find("a").map(function(){
-                    var sectionId = regExp.exec($(this).attr('href'));
-                    if(sectionId){
-                        return sectionId[1];
-                    }
-                }).get();
-                $("#material_sectionOrder").val($sections);
-            }
-            $(".section-list").on('change.uk.sortable', setSectionOrder);
-        });
+        var regExp = /#section(\d+)$/;
+        function setSectionOrder(){
+            var $sections = $(".section-list").find("a").map(function(){
+                var sectionId = regExp.exec($(this).attr('href'));
+                if(sectionId){
+                    return sectionId[1];
+                }
+            }).get();
+            $("#material_sectionOrder").val($sections);
+        }
+        $(".section-list").on('change.uk.sortable', setSectionOrder);
     </script>
 {% endblock %}
