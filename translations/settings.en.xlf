@@ -693,13 +693,13 @@
                 <source>Project workspace unchanged</source>
                 <target>The project workspace will stay unchanged.</target>
             </trans-unit>
-            <trans-unit id="settings_delete_intro">
-                <source>Delete intro</source>
+            <trans-unit id="settings_delete_room_intro">
+                <source>Delete room intro</source>
                 <target>Attention: The entire workspace and all data will be deleted. This action cannot be undone!</target>
             </trans-unit>
-            <trans-unit id="settings_lock_intro">
-                <source>Lock intro</source>
-                <target>Chose this option to lock this workspace. After this, you will no longer have access to this workspace. Posts will remain. If you wan to delete certain posts, please do this before locking the workspace. The workspace can be un-locked if necessary.</target>
+            <trans-unit id="settings_lock_room_intro">
+                <source>Lock room intro</source>
+                <target>Choose this option to lock this workspace. After this, you will no longer have access to this workspace. Posts will remain. If you wan to delete certain posts, please do this before locking the workspace. The workspace can be un-locked if necessary.</target>
             </trans-unit>
             <trans-unit id="delete_user_rooms_text">
                 <source>Delete user rooms text</source>

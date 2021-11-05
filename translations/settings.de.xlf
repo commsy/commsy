@@ -689,13 +689,13 @@
                 <source>Delete userrooms</source>
                 <target>Personenräume löschen</target>
             </trans-unit>
-            <trans-unit id="settings_delete_intro">
-                <source>Delete intro</source>
+            <trans-unit id="settings_delete_room_intro">
+                <source>Delete room intro</source>
                 <target>Achtung: Der gesamte Raum und alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!</target>
             </trans-unit>
-            <trans-unit id="settings_lock_intro">
-                <source>Lock intro</source>
-                <target>Wählen Sie diese Option, um diesen Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Der Raum kann bei Bedarf wieder freigeschaltet werden.</target>
+            <trans-unit id="settings_lock_room_intro">
+                <source>Lock room intro</source>
+                <target>Wählen Sie diese Option, um diesen Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie den Raum sperren. Der Raum kann bei Bedarf wieder freigeschaltet werden.</target>
             </trans-unit>
             <trans-unit id="delete_user_rooms_text">
                 <source>Delete user rooms text</source>
