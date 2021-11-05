@@ -473,6 +473,8 @@ class SettingsController extends Controller
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment
     ) {
+        $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -483,7 +485,7 @@ class SettingsController extends Controller
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
-        $form = $this->createForm(DeleteType::class, $roomItem, [
+        $deleteForm = $this->createForm(DeleteType::class, $roomItem, [
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
@@ -491,50 +493,38 @@ class SettingsController extends Controller
             'confirm_string' => $translator->trans('lock', [], 'profile')
         ]);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('delete')->isClicked()) {
+        $deleteForm->handleRequest($request);
+        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+            if ($deleteForm->get('delete')->isClicked()) {
                 $roomItem->delete();
                 $roomItem->save();
 
-                // redirect back to portal
-                $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
-                $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
-
-                return $this->redirect($url);
-            }else{
-                $form->clearErrors(true);
+                // redirect back to all rooms
+                return $this->redirectToRoute('app_helper_gotoallrooms', [
+                    "portalId" => $portal->getItemId()
+                ]);
+            } else {
+                $deleteForm->clearErrors(true);
             }
         }
 
         $lockForm->handleRequest($request);
-        if ($lockForm->isSubmitted() && $form->isValid()) {
+        if ($lockForm->isSubmitted() && $lockForm->isValid()) {
             if ($lockForm->get('lock')->isClicked()) {
                 $roomItem->lock();
                 $roomItem->save();
 
-                // redirect back to portal
-                $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
-                $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
-
-                return $this->redirect($url);
-            }else{
+                // redirect back to all rooms
+                return $this->redirectToRoute('app_helper_gotoallrooms', [
+                    "portalId" => $portal->getItemId()
+                ]);
+            } else {
                 $lockForm->clearErrors(true);
             }
         }
 
-        if ($lockForm->get('lock')->isClicked()) {
-            $form = $this->createForm(DeleteType::class, $roomItem, [
-                'confirm_string' => $translator->trans('delete', [], 'profile')
-            ]);
-        }elseif($form->get('delete')->isClicked()){
-            $lockForm = $this->createForm(DeleteType::class, $roomItem, [
-                'confirm_string' => $translator->trans('lock', [], 'profile')
-            ]);
-        }
-
         return [
-            'form' => $form->createView(),
+            'delete_form' => $deleteForm->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,
             'lock_form' => $lockForm->createView(),
         ];
