@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,14 +13,17 @@ class GotoController extends AbstractController
 {
     /**
      * @Route("/goto/{itemId}")
+     * @param EntityManager $entityManager
      * @param int $itemId
      * @return RedirectResponse
+     * @throws Exception
      */
     public function gotoAction(
+        EntityManagerInterface $entityManager,
         int $itemId
     ) {
         // for now, we are using DBAL here, instead of ORM Entities
-        $dbConnection = $this->get('database_connection');
+        $dbConnection = $entityManager->getConnection();
         $queryBuilder = $dbConnection->createQueryBuilder();
 
         $queryBuilder
