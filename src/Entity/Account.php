@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,6 +23,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Account implements UserInterface, EncoderAwareInterface, \Serializable
 {
+    public const ACTIVITY_ACTIVE = 'active';
+    public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
+    public const ACTIVITY_IDLE = 'idle';
+    public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
+    public const ACTIVITY_ABANDONED = 'abandoned';
+
     /**
      * @var integer
      *
@@ -119,15 +126,23 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="activity", type="string", length=10)
+     * @ORM\Column(name="activity_state", type="string", length=15, options={"default"="active"})
      */
-    private string $activity;
+    private string $activityState;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="activity_state_updated", type="datetime", nullable=true)
+     */
+    private ?DateTime $activityStateUpdated;
 
     public function __construct()
     {
         $this->lastLogin = null;
         $this->password = null;
         $this->passwordMd5 = null;
+        $this->activityState = self::ACTIVITY_ACTIVE;
     }
 
     /**
@@ -405,18 +420,46 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     /**
      * @return string
      */
-    public function getActivity(): string
+    public function getActivityState(): string
     {
-        return $this->activity;
+        return $this->activityState;
     }
 
     /**
-     * @param string $activity
+     * @param string $activityState
      * @return Account
      */
-    public function setActivity(string $activity): Account
+    public function setActivityState(string $activityState): Account
     {
-        $this->activity = $activity;
+        if (!in_array($activityState, [
+            self::ACTIVITY_ACTIVE,
+            self::ACTIVITY_ACTIVE_NOTIFIED,
+            self::ACTIVITY_IDLE,
+            self::ACTIVITY_IDLE_NOTIFIED,
+            self::ACTIVITY_ABANDONED,
+        ])) {
+            throw new InvalidArgumentException("Invalid activity");
+        }
+
+        $this->activityState = $activityState;
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getActivityStateUpdated(): ?DateTime
+    {
+        return $this->activityStateUpdated;
+    }
+
+    /**
+     * @param DateTime|null $activityStateUpdated
+     * @return Room
+     */
+    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Room
+    {
+        $this->activityStateUpdated = $activityStateUpdated;
         return $this;
     }
 

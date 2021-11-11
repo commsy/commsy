@@ -114,6 +114,10 @@
                 <source>The value {{ value }} should not be blank.</source>
                 <target>The value {{ value }} should not be blank.</target>
             </trans-unit>
+            <trans-unit id="violation_not_positive">
+                <source>This value should be positive.</source>
+                <target>This value should be positive.</target>
+            </trans-unit>
             <trans-unit id="violation_not_positive_or_empty">
                 <source>This value should be positive or empty.</source>
                 <target>This value should be positive or empty.</target>

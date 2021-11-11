@@ -1256,18 +1256,6 @@ class cs_room_item extends cs_context_item {
          $retour = $manager->saveLastLogin($this,$datetime);
       }
       return $retour;
-   }   
-
-   public function getArchiveMailSendDateTime () {
-      $retour = '';
-      if ( $this->_issetExtra('ARCHIVE_SEND_MAIL_DATETIME') ) {
-         $retour = $this->_getExtra('ARCHIVE_SEND_MAIL_DATETIME');
-      }
-      return $retour;
-   }
-
-   public function setArchiveMailSendDateTime ($value) {
-      $this->_addExtra('ARCHIVE_SEND_MAIL_DATETIME',$value);
    }
 
     public function sendMailArchiveInfoToModeration()
@@ -1406,18 +1394,6 @@ class cs_room_item extends cs_context_item {
 
         return false;
     }
-
-   public function getDeleteMailSendDateTime () {
-   	$retour = '';
-   	if ( $this->_issetExtra('DELETE_SEND_MAIL_DATETIME') ) {
-   		$retour = $this->_getExtra('DELETE_SEND_MAIL_DATETIME');
-   	}
-   	return $retour;
-   }
-   
-   public function setDeleteMailSendDateTime ($value) {
-   	$this->_addExtra('DELETE_SEND_MAIL_DATETIME',$value);
-   }
 
     public function sendMailDeleteInfoToModeration()
     {

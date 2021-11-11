@@ -2,19 +2,35 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
-
 
 /**
  * Room
  *
- * @ORM\Table(name="room", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="type", columns={"type"}), @ORM\Index(name="activity", columns={"activity"}), @ORM\Index(name="deleter_id", columns={"deleter_id"}), @ORM\Index(name="deletion_date", columns={"deletion_date"}), @ORM\Index(name="room_description", columns={"room_description"}), @ORM\Index(name="contact_persons", columns={"contact_persons"}), @ORM\Index(name="title", columns={"title"}), @ORM\Index(name="modifier_id", columns={"modifier_id"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="lastlogin", columns={"lastlogin"})})
+ * @ORM\Table(name="room", indexes={
+ *     @ORM\Index(name="activity", columns={"activity"}),
+ *     @ORM\Index(name="context_id", columns={"context_id"}),
+ *     @ORM\Index(name="delete_idx", columns={"deleter_id", "deletion_date"}),
+ *     @ORM\Index(name="lastlogin", columns={"lastlogin"}),
+ *     @ORM\Index(name="search_idx", columns={"title", "contact_persons"}),
+ *     @ORM\Index(name="status", columns={"status"}),
+ *     @ORM\Index(name="title", columns={"title"}),
+ *     @ORM\Index(name="type", columns={"type"})
+ * })
  * @ORM\Entity(repositoryClass="App\Repository\RoomRepository")
  */
 class Room
 {
+    public const ACTIVITY_ACTIVE = 'active';
+    public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
+    public const ACTIVITY_IDLE = 'idle';
+    public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
+    public const ACTIVITY_ABANDONED = 'abandoned';
+
     /**
      * @var integer
      *
@@ -25,157 +41,178 @@ class Room
      * @Groups({"api_read"})
      * @SWG\Property(description="The unique identifier.")
      */
-    private $itemId = '0';
+    private $itemId;
 
     /**
-     * @var integer
+     * @var integer|null
      *
      * @ORM\Column(name="context_id", type="integer", nullable=true)
      */
-    private $contextId;
+    private ?int $contextId;
 
     /**
-     * @var integer
+     * @var User|null
      *
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id", nullable=true)
      */
-    private $creator;
+    private ?User $creator;
 
     /**
-     * @var integer
+     * @var User|null
      *
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
+     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id", nullable=true)
      */
-    private $modifier;
+    private ?User $modifier;
 
     /**
-     * @var integer
+     * @var User|null
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id", nullable=true)
      */
-    private $deleter;
+    private ?User $deleter;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      *
      * @Groups({"api_read"})
      */
-    private $creationDate = '0000-00-00 00:00:00';
+    private DateTime $creationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      *
      * @Groups({"api_read"})
      */
-    private $modificationDate = '0000-00-00 00:00:00';
+    private DateTime $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
-    private $deletionDate;
+    private ?DateTime $deletionDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @ORM\Column(name="title", type="string", length=255)
      *
      * @Groups({"api_read"})
      * @SWG\Property(type="string", maxLength=255)
      */
-    private $title;
+    private string $title;
 
     /**
-     * @var string
+     * @var array|null
      *
      * @ORM\Column(name="extras", type="mbarray", nullable=true)
      */
-    private $extras;
+    private ?array $extras;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=20, nullable=false)
+     * @ORM\Column(name="status", type="string", length=20)
      */
-    private $status;
+    private string $status;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="activity", type="integer", nullable=false)
+     * @ORM\Column(name="activity", type="integer", options={"default":0})
      */
-    private $activity = '0';
+    private int $activity = 0;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     * @ORM\Column(name="type", type="string", length=20)
      *
      * @Groups({"api_read"})
      * @SWG\Property(description="Either project or community")
      */
-    private $type = 'project';
+    private string $type = 'project';
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @ORM\Column(name="public", type="boolean", options={"default":0})
      */
-    private $public = '0';
+    private bool $public = false;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_open_for_guests", type="boolean", nullable=false)
+     * @ORM\Column(name="is_open_for_guests", type="boolean", options={"default":0})
      */
-    private $openForGuests = '0';
+    private bool $openForGuests = false;
 
     /**
-     * @var boolean
+     * @var int
      *
-     * @ORM\Column(name="continuous", type="boolean", nullable=false)
+     * @ORM\Column(name="continuous", type="smallint", options={"default":-1})
      */
-    private $continuous = '-1';
+    private int $continuous = -1;
 
     /**
-     * @var boolean
+     * @var int
      *
-     * @ORM\Column(name="template", type="integer", nullable=false)
+     * @ORM\Column(name="template", type="smallint", options={"default":-1})
      */
-    private $template = '-1';
+    private int $template = -1;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="contact_persons", type="string", length=255, nullable=true)
      */
-    private $contactPersons;
+    private ?string $contactPersons;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="room_description", type="string", length=10000, nullable=true)
      *
      * @Groups({"api_read"})
      */
-    private $roomDescription;
+    private ?string $roomDescription;
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
      *
      * @ORM\Column(name="lastlogin", type="datetime", nullable=true)
      */
-    private $lastlogin;
+    private ?DateTime $lastlogin;
 
-    public function isIndexable()
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="activity_state", type="string", length=15, options={"default"="active"})
+     */
+    private string $activityState;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="activity_state_updated", type="datetime", nullable=true)
+     */
+    private ?DateTime $activityStateUpdated;
+
+    public function __construct()
+    {
+        $this->activityState = self::ACTIVITY_ACTIVE;
+        $this->creationDate = new DateTime();
+        $this->modificationDate = new DateTime();
+    }
+
+    public function isIndexable(): bool
     {
         return ($this->deleter == null && $this->deletionDate == null);
     }
@@ -191,7 +228,7 @@ class Room
         return 'user';
     }
 
-    public function setLanguage($language)
+    public function setLanguage($language): Room
     {
         $extras = $this->getExtras();
         $extras['LANGUAGE'] = $language;
@@ -200,12 +237,12 @@ class Room
         return $this;
     }
 
-    public function getLogo()
+    public function getLogo(): string
     {
         return '';
     }
 
-    public function getAccessCheck()
+    public function getAccessCheck(): string
     {
         $extras = $this->getExtras();
 
@@ -226,7 +263,7 @@ class Room
         return 'always';
     }
 
-    public function setAccessCheck($access)
+    public function setAccessCheck($access): Room
     {
         $mapping = array(
             'never' => -1,
@@ -241,17 +278,17 @@ class Room
         return $this;
     }
 
-    public function isProjectRoom()
+    public function isProjectRoom(): bool
     {
         return $this->type === 'project';
     }
 
-    public function isCommunityRoom()
+    public function isCommunityRoom(): bool
     {
         return $this->type === 'community';
     }
 
-    public function isMaterialOpenForGuests()
+    public function isMaterialOpenForGuests(): bool
     {
         $extras = $this->getExtras();
         if (isset($extras['MATERIAL_GUESTS'])) {
@@ -263,7 +300,7 @@ class Room
         return false;
     }
 
-    public function setIsMaterialOpenForGuests($open)
+    public function setIsMaterialOpenForGuests($open): Room
     {
         $extras = $this->getExtras();
         $extras['MATERIAL_GUESTS'] = $open;
@@ -272,7 +309,7 @@ class Room
         return $this;
     }
 
-    public function isAssignmentRestricted()
+    public function isAssignmentRestricted(): bool
     {
         $extras = $this->getExtras();
         if (isset($extras['ROOMASSOCIATION'])) {
@@ -284,7 +321,7 @@ class Room
         return false;
     }
 
-    public function setAssignmentRestricted($isRestricted)
+    public function setAssignmentRestricted($isRestricted): Room
     {
         $roomAssociation = 'forall';
 
@@ -295,6 +332,8 @@ class Room
         $extras = $this->getExtras();
         $extras['ROOMASSOCIATION'] = $roomAssociation;
         $this->setExtras($extras);
+
+        return $this;
     }
 
     /**
@@ -302,7 +341,7 @@ class Room
      *
      * @return integer
      */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }
@@ -314,7 +353,7 @@ class Room
      *
      * @return Room
      */
-    public function setContextId($contextId)
+    public function setContextId($contextId): Room
     {
         $this->contextId = $contextId;
 
@@ -326,7 +365,7 @@ class Room
      *
      * @return integer
      */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
@@ -334,11 +373,11 @@ class Room
     /**
      * Set creationDate
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Room
      */
-    public function setCreationDate($creationDate)
+    public function setCreationDate($creationDate): Room
     {
         $this->creationDate = $creationDate;
 
@@ -348,9 +387,9 @@ class Room
     /**
      * Get creationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreationDate()
+    public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
@@ -358,11 +397,11 @@ class Room
     /**
      * Set modificationDate
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Room
      */
-    public function setModificationDate($modificationDate)
+    public function setModificationDate($modificationDate): Room
     {
         $this->modificationDate = $modificationDate;
 
@@ -372,9 +411,9 @@ class Room
     /**
      * Get modificationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getModificationDate()
+    public function getModificationDate(): DateTime
     {
         return $this->modificationDate;
     }
@@ -382,11 +421,11 @@ class Room
     /**
      * Set deletionDate
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Room
      */
-    public function setDeletionDate($deletionDate)
+    public function setDeletionDate(DateTime $deletionDate): Room
     {
         $this->deletionDate = $deletionDate;
 
@@ -396,9 +435,9 @@ class Room
     /**
      * Get deletionDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDeletionDate()
+    public function getDeletionDate(): ?DateTime
     {
         return $this->deletionDate;
     }
@@ -410,7 +449,7 @@ class Room
      *
      * @return Room
      */
-    public function setTitle($title)
+    public function setTitle(string $title): Room
     {
         $this->title = $title;
 
@@ -422,7 +461,7 @@ class Room
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -430,11 +469,11 @@ class Room
     /**
      * Set extras
      *
-     * @param mbarray $extras
+     * @param array $extras
      *
      * @return Room
      */
-    public function setExtras($extras)
+    public function setExtras(array $extras): Room
     {
         $this->extras = $extras;
 
@@ -444,9 +483,9 @@ class Room
     /**
      * Get extras
      *
-     * @return mbarray
+     * @return array
      */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
@@ -458,7 +497,7 @@ class Room
      *
      * @return Room
      */
-    public function setStatus($status)
+    public function setStatus($status): Room
     {
         $this->status = $status;
 
@@ -470,7 +509,7 @@ class Room
      *
      * @return string
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -482,7 +521,7 @@ class Room
      *
      * @return Room
      */
-    public function setActivity($activity)
+    public function setActivity($activity): Room
     {
         $this->activity = $activity;
 
@@ -494,7 +533,7 @@ class Room
      *
      * @return integer
      */
-    public function getActivity()
+    public function getActivity(): int
     {
         return $this->activity;
     }
@@ -506,7 +545,7 @@ class Room
      *
      * @return Room
      */
-    public function setType($type)
+    public function setType($type): Room
     {
         $this->type = $type;
 
@@ -518,7 +557,7 @@ class Room
      *
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -530,7 +569,7 @@ class Room
      *
      * @return Room
      */
-    public function setPublic($public)
+    public function setPublic($public): Room
     {
         $this->public = $public;
 
@@ -542,7 +581,7 @@ class Room
      *
      * @return boolean
      */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
@@ -554,7 +593,7 @@ class Room
      *
      * @return Room
      */
-    public function setOpenForGuests($openForGuests)
+    public function setOpenForGuests($openForGuests): Room
     {
         $this->openForGuests = $openForGuests;
 
@@ -566,7 +605,7 @@ class Room
      *
      * @return boolean
      */
-    public function getOpenForGuests()
+    public function getOpenForGuests(): bool
     {
         return $this->openForGuests;
     }
@@ -574,11 +613,11 @@ class Room
     /**
      * Set continuous
      *
-     * @param boolean $continuous
+     * @param int $continuous
      *
      * @return Room
      */
-    public function setContinuous($continuous)
+    public function setContinuous($continuous): Room
     {
         $this->continuous = $continuous;
 
@@ -588,9 +627,9 @@ class Room
     /**
      * Get continuous
      *
-     * @return boolean
+     * @return int
      */
-    public function getContinuous()
+    public function getContinuous(): int
     {
         return $this->continuous;
     }
@@ -598,11 +637,11 @@ class Room
     /**
      * Set template
      *
-     * @param boolean $template
+     * @param int $template
      *
      * @return Room
      */
-    public function setTemplate($template)
+    public function setTemplate($template): Room
     {
         $this->template = $template;
 
@@ -612,9 +651,9 @@ class Room
     /**
      * Get template
      *
-     * @return boolean
+     * @return int
      */
-    public function getTemplate()
+    public function getTemplate(): int
     {
         return $this->template;
     }
@@ -626,7 +665,7 @@ class Room
      *
      * @return Room
      */
-    public function setContactPersons($contactPersons)
+    public function setContactPersons($contactPersons): Room
     {
         $this->contactPersons = $contactPersons;
 
@@ -638,7 +677,7 @@ class Room
      *
      * @return string
      */
-    public function getContactPersons()
+    public function getContactPersons(): ?string
     {
         return $this->contactPersons;
     }
@@ -650,7 +689,7 @@ class Room
      *
      * @return Room
      */
-    public function setRoomDescription($roomDescription)
+    public function setRoomDescription($roomDescription): Room
     {
         $this->roomDescription = $roomDescription;
 
@@ -662,7 +701,7 @@ class Room
      *
      * @return string
      */
-    public function getRoomDescription()
+    public function getRoomDescription(): ?string
     {
         return $this->roomDescription;
     }
@@ -670,11 +709,11 @@ class Room
     /**
      * Set lastlogin
      *
-     * @param \DateTime $lastlogin
+     * @param DateTime $lastlogin
      *
      * @return Room
      */
-    public function setLastlogin($lastlogin)
+    public function setLastlogin($lastlogin): Room
     {
         $this->lastlogin = $lastlogin;
 
@@ -684,9 +723,9 @@ class Room
     /**
      * Get lastlogin
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getLastlogin()
+    public function getLastlogin(): ?DateTime
     {
         return $this->lastlogin;
     }
@@ -694,11 +733,11 @@ class Room
     /**
      * Set creator
      *
-     * @param \App\Entity\User $creator
+     * @param User|null $creator
      *
      * @return Room
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null): Room
     {
         $this->creator = $creator;
 
@@ -708,9 +747,9 @@ class Room
     /**
      * Get creator
      *
-     * @return \App\Entity\User
+     * @return User
      */
-    public function getCreator()
+    public function getCreator(): ?User
     {
         return $this->creator;
     }
@@ -718,11 +757,11 @@ class Room
     /**
      * Set modifier
      *
-     * @param \App\Entity\User $modifier
+     * @param User|null $modifier
      *
      * @return Room
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null): Room
     {
         $this->modifier = $modifier;
 
@@ -732,9 +771,9 @@ class Room
     /**
      * Get modifier
      *
-     * @return \App\Entity\User
+     * @return User
      */
-    public function getModifier()
+    public function getModifier(): ?User
     {
         return $this->modifier;
     }
@@ -742,11 +781,11 @@ class Room
     /**
      * Set deleter
      *
-     * @param \App\Entity\User $deleter
+     * @param User|null $deleter
      *
      * @return Room
      */
-    public function setDeleter(\App\Entity\User $deleter = null)
+    public function setDeleter(User $deleter = null): Room
     {
         $this->deleter = $deleter;
 
@@ -756,10 +795,56 @@ class Room
     /**
      * Get deleter
      *
-     * @return \App\Entity\User
+     * @return User|null
      */
-    public function getDeleter()
+    public function getDeleter(): ?User
     {
         return $this->deleter;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivityState(): string
+    {
+        return $this->activityState;
+    }
+
+    /**
+     * @param string $activityState
+     * @return Room
+     */
+    public function setActivityState(string $activityState): Room
+    {
+        if (!in_array($activityState, [
+            self::ACTIVITY_ACTIVE,
+            self::ACTIVITY_ACTIVE_NOTIFIED,
+            self::ACTIVITY_IDLE,
+            self::ACTIVITY_IDLE_NOTIFIED,
+            self::ACTIVITY_ABANDONED,
+        ])) {
+            throw new InvalidArgumentException("Invalid activity");
+        }
+
+        $this->activityState = $activityState;
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getActivityStateUpdated(): ?DateTime
+    {
+        return $this->activityStateUpdated;
+    }
+
+    /**
+     * @param DateTime|null $activityStateUpdated
+     * @return Room
+     */
+    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Room
+    {
+        $this->activityStateUpdated = $activityStateUpdated;
+        return $this;
     }
 }
