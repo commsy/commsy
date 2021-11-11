@@ -5,208 +5,264 @@ namespace App\EventSubscriber;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\Portal;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Mail\Factories\AccountMessageFactory;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
+use App\Repository\PortalRepository;
+use DateInterval;
+use DateTime;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Workflow\Event\EnterEvent;
+use Symfony\Component\Workflow\Event\EnteredEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
 class AccountActivityStateSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var PortalRepository
      */
-    private EntityManagerInterface $entityManager;
+    private PortalRepository $portalRepository;
 
     /**
      * @var AccountManager
      */
     private AccountManager $accountManager;
 
+    /**
+     * @var AccountMessageFactory
+     */
+    private AccountMessageFactory $accountMessageFactory;
+
+    /**
+     * @var Mailer
+     */
+    private Mailer $mailer;
+
     public function __construct(
-        EntityManagerInterface $entityManager,
-        AccountManager $accountManager
+        PortalRepository $portalRepository,
+        AccountManager $accountManager,
+        AccountMessageFactory $messageFactory,
+        Mailer $mailer
     ) {
-        $this->entityManager = $entityManager;
+        $this->portalRepository = $portalRepository;
         $this->accountManager = $accountManager;
+        $this->accountMessageFactory = $messageFactory;
+        $this->mailer = $mailer;
+    }
+
+    /**
+     * Called on all transitions, perform general checks here
+     *
+     * @param GuardEvent $event
+     */
+    public function guard(GuardEvent $event)
+    {
+        /** @var Account $account */
+        $account = $event->getSubject();
+
+        // Block all transitions if the portal configuration has disabled the account activity feature
+        /** @var Portal $portal */
+        $portal = $this->portalRepository->find($account->getContextId());
+        if (!$portal->isClearInactiveAccountsFeatureEnabled()) {
+            $event->setBlocked(true);
+            return;
+        }
+
+        // Deny, if the account is the root account
+        if ($account->getUsername() === 'root') {
+            $event->setBlocked(true);
+            return;
+        }
+
+        // Deny, if account is last moderator (this will also reset the account state)
+        if ($this->accountManager->isLastModerator($account)) {
+            $this->accountManager->resetInactivity($account, false, true);
+
+            $event->setBlocked(true);
+        }
+    }
+
+    /**
+     * Decides if an account can make the transition to the active_notified state
+     *
+     * @param GuardEvent $event
+     * @throws Exception
+     */
+    public function guardNotifyLock(GuardEvent $event)
+    {
+        /** @var Account $account */
+        $account = $event->getSubject();
+
+        /** @var Portal $portal */
+        $portal = $this->portalRepository->find($account->getContextId());
+        if (!$this->datePassedDays($account->getLastLogin(), $portal->getClearInactiveAccountsNotifyLockDays())) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
      * Decides if an account can make the transition to the idle state
      *
      * @param GuardEvent $event
+     * @throws Exception
      */
     public function guardLock(GuardEvent $event)
     {
         /** @var Account $account */
         $account = $event->getSubject();
 
-        // Deny transition if user is last moderator of any room
-        if ($this->accountManager->isLastModerator($account)) {
+        /** @var Portal $portal */
+        $portal = $this->portalRepository->find($account->getContextId());
+        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsLockDays())) {
             $event->setBlocked(true);
         }
+    }
 
-        $event->setBlocked(true);
+    /**
+     * Decides if an account can make the transition to the idle_notified state
+     *
+     * @param GuardEvent $event
+     * @throws Exception
+     */
+    public function guardNotifyForsake(GuardEvent $event)
+    {
+        /** @var Account $account */
+        $account = $event->getSubject();
+
+        // Deny transition if the inactive period is not long enough
+        /** @var Portal $portal */
+        $portal = $this->portalRepository->find($account->getContextId());
+        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsNotifyDeleteDays())) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
      * Decides if an account can make the transition to the abandoned state
      *
      * @param GuardEvent $event
+     * @throws Exception
      */
     public function guardForsake(GuardEvent $event)
     {
         /** @var Account $account */
         $account = $event->getSubject();
 
-        $event->setBlocked(true);
+        // Deny transition if the inactive period is not long enough
+        /** @var Portal $portal */
+        $portal = $this->portalRepository->find($account->getContextId());
+        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsDeleteDays())) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
-     * The account is about to enter the idle state. The marking is not yet updated.
+     * The account has entered a new state and the marking is updated.
      *
-     * @param EnterEvent $event
+     * @param EnteredEvent $event
      */
-    public function enterIdle(EnterEvent $event)
+    public function entered(EnteredEvent $event)
     {
+        /** @var Account $account */
+        $account = $event->getSubject();
 
+        $this->accountManager->renewActivityUpdated($account);
     }
 
     /**
-     * The account is about to enter the abandoned state. The marking is not yet updated.
+     * The account has entered the active_notified state. The marking is updated.
      *
-     * @param EnterEvent $event
+     * @param EnteredEvent $event
      */
-    public function enterAbandoned(EnterEvent $event)
+    public function enteredActiveNotified(EnteredEvent $event)
     {
+        /** @var Account $account */
+        $account = $event->getSubject();
 
+        $message = $this->accountMessageFactory->createAccountActivityLockWarningMessage($account);
+        if ($message) {
+            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+        }
     }
 
-    protected function sendMailForUserInactivity($state, $user, Portal $portal, $days)
+    /**
+     * The account has entered the idle state. The marking is updated.
+     *
+     * @param EnteredEvent $event
+     */
+    public function enteredIdle(EnteredEvent $event)
     {
-//        // deleted deleteNext deleteNotify locked lockNext lockNotify
-//        $translator = $this->legacyEnvironment->getTranslationObject();
-//
-//        $mail = new cs_mail();
-//
-//        $to = $user->getEmail();
-//        $mod_contact_list = $portal->getContactModeratorList($this->legacyEnvironment);
-//        $mod_user_first = $mod_contact_list->getFirst();
-//
-//        $urlToPortal = $this->router->generate('app_portal_goto', [
-//            'portalId' => $portal->getId(),
-//        ], UrlGeneratorInterface::ABSOLUTE_URL);
-//
-//        //content
-//        $translator->setEmailTextArray($portal->getEmailTextArray());
-//
-//        $account = $this->accountManager->getAccount($user, $portal->getId());
-//        if (!$account) {
-//            return false;
-//        }
-//
-//        $authSource = $account->getAuthSource();
-//
-//        if ($mod_user_first) {
-//            $fullnameFirstModUser = $mod_user_first->getFullName();
-//        } else {
-//            $fullnameFirstModUser = '';
-//        }
-//
-//        $emailFrom = $this->parameterBag->get('commsy.email.from');
-//        $mail->set_from_email($emailFrom);
-//
-//        $mail->set_from_name($portal->getTitle());
-//
-//
-//        // set message body for every inactivity state
-//        switch ($state) {
-//            case 'lockNotify':
-//                $subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT', $portal->getInactivitySendMailBeforeLockDays(), $portal->getTitle());
-//                // lock in x days
-//                $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $user->getUserID(), $authSource->getTitle(), $portal->getInactivitySendMailBeforeLockDays(), $urlToPortal, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-//                break;
-//            case 'lockNext':
-//                $subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT', $portal->getTitle());
-//                // lock tomorrow
-//                $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_BODY', $user->getUserID(), $authSource->getTitle(), $urlToPortal, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-//                break;
-//            case 'locked':
-//                $subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NOW_SUBJECT', $portal->getTitle());
-//                // locked
-//                $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NOW_BODY', $user->getUserID(), $authSource->getTitle(), $urlToPortal, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-//                break;
-//            case 'deleteNotify':
-//                $subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT', $portal->getInactivitySendMailBeforeDeleteDays(), $portal->getTitle());
-//                // delete in x days
-//                $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $user->getUserID(), $authSource->getTitle(), $portal->getInactivitySendMailBeforeDeleteDays(), $urlToPortal, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-//                break;
-//            case 'deleteNext':
-//                $subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT', $portal->getTitle());
-//                // delete tomorrow
-//                $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getUserID(), $authSource->getTitle(), $urlToPortal, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-//                break;
-//            case 'deleted':
-//                $subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NOW_SUBJECT', '', $portal->getTitle());
-//                // deleted
-//                $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NOW_BODY', $user->getUserID(), $authSource->getTitle(), $urlToPortal, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getMessage('EMAIL_COMMSY_PORTAL_MODERATION');
-//                $body .= "\n\n";
-//                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal->getTitle());
-//                $body .= "\n\n";
-//                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-//                break;
-//            default:
-//                // Should not be used
-//                break;
-//        }
-//
-//        $mail->set_subject($subject);
-//        $mail->set_message($body);
-//        $mail->set_to($to);
-//
-//        return $mail;
+        /** @var Account $account */
+        $account = $event->getSubject();
+
+        $this->accountManager->lock($account);
+
+        $message = $this->accountMessageFactory->createAccountActivityLockedMessage($account);
+        if ($message) {
+            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+        }
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * The account has entered the idle_notified state. The marking is updated.
+     *
+     * @param EnteredEvent $event
+     */
+    public function enteredIdleNotified(EnteredEvent $event)
+    {
+        /** @var Account $account */
+        $account = $event->getSubject();
+
+        $message = $this->accountMessageFactory->createAccountActivityDeleteWarningMessage($account);
+        if ($message) {
+            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+        }
+    }
+
+    /**
+     * The account has entered the abandoned state. The marking is updated.
+     *
+     * @param EnteredEvent $event
+     */
+    public function enteredAbandoned(EnteredEvent $event)
+    {
+        /** @var Account $account */
+        $account = $event->getSubject();
+
+        $this->accountManager->delete($account);
+
+        $message = $this->accountMessageFactory->createAccountActivityDeletedMessage($account);
+        if ($message) {
+            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+        }
+    }
+
+    /**
+     * @param DateTime $compare
+     * @param int $numDays
+     * @return void
+     * @throws Exception
+     */
+    private function datePassedDays(DateTime $compare, int $numDays): bool
+    {
+        $threshold = new DateTime();
+        $threshold->sub(new DateInterval('P' . $numDays . 'D'));
+        return $compare < $threshold;
+    }
+
+    public static function getSubscribedEvents(): array
     {
         return [
+            'workflow.account_activity.guard' => ['guard'],
+            'workflow.account_activity.guard.notify_lock' => ['guardNotifyLock'],
             'workflow.account_activity.guard.lock' => ['guardLock'],
+            'workflow.account_activity.guard.notify_forsake' => ['guardNotifyForsake'],
             'workflow.account_activity.guard.forsake' => ['guardForsake'],
-            'workflow.account_activity.enter.idle' =>  ['enterIdle'],
-            'workflow.account_activity.enter.abandoned' => ['enterAbandoned'],
+            'workflow.account_activity.entered' => ['entered'],
+            'workflow.account_activity.entered.active_notified' =>  ['enteredActiveNotified'],
+            'workflow.account_activity.entered.idle' =>  ['enteredIdle'],
+            'workflow.account_activity.entered.idle_notified' =>  ['enteredIdleNotified'],
+            'workflow.account_activity.entered.abandoned' => ['enteredAbandoned'],
         ];
     }
 }

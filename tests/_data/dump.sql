@@ -1,6 +1,6 @@
 -- MySQL dump 10.18  Distrib 10.3.27-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: commsy
+-- Host: localhost    Database: commsy_test
 -- ------------------------------------------------------
 -- Server version	10.3.27-MariaDB-1:10.3.27+maria~focal
 
@@ -33,8 +33,10 @@ CREATE TABLE `accounts` (
   `language` varchar(10) NOT NULL,
   `auth_source_id` int(11) NOT NULL,
   `locked` tinyint(1) NOT NULL,
+  `activity` varchar(10) NOT NULL DEFAULT 'active',
+  `last_login` datetime DEFAULT NULL,
   PRIMARY KEY (`context_id`,`username`,`auth_source_id`),
-  KEY `accounts_auth_source_id_fk` (`auth_source_id`),
+  KEY `IDX_CAC89EAC91C3C0F3` (`auth_source_id`),
   CONSTRAINT `accounts_auth_source_id_fk` FOREIGN KEY (`auth_source_id`) REFERENCES `auth_source` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -45,7 +47,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES (99,'root','','$2y$13$jgr8HC8tMzIPi2R5wQhxwODouVIZkqKvK6Z44vKIdTpy27lAQfcCu',NULL,'CommSy','Administrator','de',100,0);
+INSERT INTO `accounts` VALUES (99,'root','','$2y$13$jgr8HC8tMzIPi2R5wQhxwODouVIZkqKvK6Z44vKIdTpy27lAQfcCu',NULL,'CommSy','Administrator','de',100,0,'active',NULL);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2744,4 +2746,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-22 14:05:02
+-- Dump completed on 2021-10-26 12:01:04

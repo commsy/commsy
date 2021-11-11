@@ -63,4 +63,21 @@ class AccountsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param string $oldState
+     * @param string $newState
+     * @return int|mixed|string
+     */
+    public function updateActivity(string $oldState, string $newState)
+    {
+        return $this->createQueryBuilder('a')
+            ->update()
+            ->set('a.activity', ':newState')
+            ->where('a.activity = :oldState')
+            ->setParameter('oldState', $oldState)
+            ->setParameter('newState', $newState)
+            ->getQuery()
+            ->execute();
+    }
 }

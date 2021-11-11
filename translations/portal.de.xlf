@@ -333,34 +333,6 @@
                 <source>Default template help text</source>
                 <target>Bei Auswahl einer Vorlage werden beim Eröffnen eines Raumes sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen</target>
             </trans-unit>
-            <trans-unit id="archiving_rooms">
-                <source>Archiving rooms</source>
-                <target>Archivierung</target>
-            </trans-unit>
-            <trans-unit id="archive_deletion">
-                <source>Archive deletion</source>
-                <target>Löschung arch. Räume</target>
-            </trans-unit>
-            <trans-unit id="activate">
-                <source>Activate</source>
-                <target>aktivieren</target>
-            </trans-unit>
-            <trans-unit id="archive_after_x_days">
-                <source>Archive rooms after x days</source>
-                <target>Räume nach X Tagen Nichtnutzung archivieren</target>
-            </trans-unit>
-            <trans-unit id="send_mail_x_days_before_archiving">
-                <source>Send mail x days before archiving</source>
-                <target>X Tage vor Archivierung Raummod. benachrichtigen</target>
-            </trans-unit>
-            <trans-unit id="delete_after_x_days">
-                <source>Delete rooms after x days</source>
-                <target>arch. Räume nach X Tagen Nichtnutzung löschen</target>
-            </trans-unit>
-            <trans-unit id="send_mail_x_days_before_deletion">
-                <source>Send mail x days before deletion</source>
-                <target>X Tage vor Raumlöschung Raummod. benachrichtigen</target>
-            </trans-unit>
 
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
@@ -897,26 +869,101 @@
             </trans-unit>
 
             <!-- inactive -->
-            <trans-unit id="lock_user">
-                <source>Lock user</source>
-                <target>Nach x Tagen Inaktivität sperren</target>
+            <trans-unit id="deprovisioning">
+                <source>Deprovisioning</source>
+                <target>Deprovisionierung</target>
             </trans-unit>
-            <trans-unit id="email_before_lock">
-                <source>Email before lock</source>
-                <target>x Tage vor dem Sperren eine Email schreiben</target>
-            </trans-unit>
-            <trans-unit id="delete_user">
-                <source>Delete user</source>
-                <target>Nach x Tagen Inaktivität löschen</target>
-            </trans-unit>
-            <trans-unit id="email_before_delete">
-                <source>Email before delete</source>
-                <target>x Tage vor dem Löschen eine Email schreiben</target>
-            </trans-unit>
-            <trans-unit id="inactive">
-                <source>Inactive</source>
+
+            <trans-unit id="portal.inactive.account.title">
+                <source>portal.inactive.account.title</source>
                 <target>Löschen inaktiver Kennungen</target>
             </trans-unit>
+            <trans-unit id="portal.inactive.account.enable.label">
+                <source>portal.inactive.account.enable.label</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.enable.help">
+                <source>portal.inactive.account.enable.help</source>
+                <target>Das Deaktivieren dieser Funktion setzt alle erfolgten Benachrichtigungen zurück.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_lock.label">
+                <source>portal.inactive.account.email_before_lock.label</source>
+                <target>Benachrichtigung vor Sperrung</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_lock.help">
+                <source>portal.inactive.account.email_before_lock.help</source>
+                <target>Anzahl der Tage an Inaktivität nach der eine Benachrichtigung über eine bevorstehende Sperrung versendet wird.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.lock.label">
+                <source>portal.inactive.account.lock.label</source>
+                <target>Sperren nach Inaktivität</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.lock.help">
+                <source>portal.inactive.account.lock.help</source>
+                <target>Anzahl der Tage nach Benachrichtigung nach der ein Nutzer gesperrt wird.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_delete.label">
+                <source>portal.inactive.account.email_before_delete.label</source>
+                <target>Benachrichtigung vor Löschung</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_delete.help">
+                <source>portal.inactive.account.email_before_delete.help</source>
+                <target>Anzahl der Tage an Inaktivität nach der ein gesperrter Benutzer über eine bevorstehende Löschungen informiert wird.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.delete.label">
+                <source>portal.inactive.account.delete.label</source>
+                <target>Löschung nach Inaktivität</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.delete.help">
+                <source>portal.inactive.account.delete.help</source>
+                <target>Anzahl der Tage nach Benachrichtigung nach der ein Nutzer gelöscht wird.</target>
+            </trans-unit>
+
+            <trans-unit id="portal.inactive.room.title">
+                <source>portal.inactive.room.title</source>
+                <target>Löschen inaktiver Räume</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.enable.label">
+                <source>portal.inactive.room.enable.label</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.enable.help">
+                <source>portal.inactive.room.enable.help</source>
+                <target>Das Deaktivieren dieser Funktion setzt alle erfolgten Benachrichtigungen zurück.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_lock.label">
+                <source>portal.inactive.room.email_before_lock.label</source>
+                <target>Benachrichtigung vor Sperrung</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_lock.help">
+                <source>portal.inactive.room.email_before_lock.help</source>
+                <target>Anzahl der Tage an Inaktivität nach der eine Benachrichtigung über eine bevorstehende Sperrung an die Raummoderation versendet wird.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.lock.label">
+                <source>portal.inactive.room.lock.label</source>
+                <target>Sperren nach Inaktivität</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.lock.help">
+                <source>portal.inactive.room.lock.help</source>
+                <target>Anzahl der Tage nach Benachrichtigung nach der ein Raum gesperrt wird.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_delete.label">
+                <source>portal.inactive.room.email_before_delete.label</source>
+                <target>Benachrichtigung vor Löschung</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_delete.help">
+                <source>portal.inactive.room.email_before_delete.help</source>
+                <target>Anzahl der Tage an Inaktivität nach der die Raummoderation eines gesperrten Raums über eine bevorstehende Löschungen informiert wird.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.delete.label">
+                <source>portal.inactive.room.delete.label</source>
+                <target>Löschung nach Inaktivität</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.delete.help">
+                <source>portal.inactive.room.delete.help</source>
+                <target>Anzahl der Tage nach Benachrichtigung nach der ein Raum gelöscht wird.</target>
+            </trans-unit>
+
             <trans-unit id="status">
                 <source>Status</source>
                 <target>Status</target>
@@ -984,18 +1031,6 @@
             <trans-unit id="search">
                 <source>Search</source>
                 <target>Suchen</target>
-            </trans-unit>
-            <trans-unit id="deprovisioning">
-                <source>Deprovisioning</source>
-                <target>Deprovisionierung</target>
-            </trans-unit>
-            <trans-unit id="archive_inactive_rooms">
-                <source>Archive inactive rooms</source>
-                <target>Archivierung</target>
-            </trans-unit>
-            <trans-unit id="delete_inactive_rooms">
-                <source>Delete inactive rooms</source>
-                <target>Löschung arch. Räume</target>
             </trans-unit>
 
             <!-- portal licenses configuration -->

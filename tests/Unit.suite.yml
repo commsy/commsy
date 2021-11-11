@@ -11,4 +11,5 @@ modules:
         - Doctrine2:
             depends: Symfony
         - Symfony
+        - App\Tests\Helper\SymfonyHelper
         - \App\Tests\Helper\Unit

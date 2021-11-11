@@ -6,12 +6,14 @@ namespace App\Account;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
 use cs_list;
 use cs_user_item;
 use cs_user_manager;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -133,6 +135,16 @@ class AccountManager
 
     /**
      * @param Account $account
+     * @return Portal|null
+     */
+    public function getPortal(Account $account): ?Portal
+    {
+        $portalRepository = $this->entityManager->getRepository(Portal::class);
+        return $portalRepository->find($account->getContextId());
+    }
+
+    /**
+     * @param Account $account
      */
     public function delete(Account $account)
     {
@@ -167,9 +179,14 @@ class AccountManager
         $this->entityManager->flush();
     }
 
+    /**
+     * @param Account $account
+     */
     public function unlock(Account $account)
     {
         $account->setLocked(false);
+        $account->setActivity(Account::ACTIVITY_ACTIVE);
+        $account->setActivityUpdated(null);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
     }
@@ -187,5 +204,50 @@ class AccountManager
         // Update the user's session here too (normally done on login)
         // This will affect the translation language in cs_environment::getSelectedLanguage.
         $this->session->set('_locale', $account->getLanguage());
+    }
+
+    /**
+     * @param Account $account
+     */
+    public function renewActivityUpdated(Account $account): void
+    {
+        $account->setActivityUpdated(new DateTime());
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param Account $account
+     * @param bool $resetLastLogin
+     * @param bool $resetActivityState
+     */
+    public function resetInactivity(
+        Account $account,
+        bool $resetLastLogin = true,
+        bool $resetActivityState = true
+    ) : void
+    {
+        if ($resetLastLogin) {
+            $account->setLastLogin(new DateTime());
+        }
+
+        if ($resetActivityState) {
+            $account->setActivity(Account::ACTIVITY_ACTIVE);
+            $account->setActivityUpdated(null);
+        }
+
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+    }
+
+    /**
+     *
+     */
+    public function resetInactivityToPreviousNonNotificationState(): void
+    {
+        $accountRepository = $this->entityManager->getRepository(Account::class);
+
+        $accountRepository->updateActivity(Account::ACTIVITY_IDLE_NOTIFIED, Account::ACTIVITY_IDLE);
+        $accountRepository->updateActivity(Account::ACTIVITY_ACTIVE_NOTIFIED, Account::ACTIVITY_ACTIVE);
     }
 }

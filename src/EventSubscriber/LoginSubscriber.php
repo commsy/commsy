@@ -2,8 +2,8 @@
 
 namespace App\EventSubscriber;
 
+use App\Account\AccountManager;
 use App\Entity\Account;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -24,19 +24,16 @@ class LoginSubscriber implements EventSubscriberInterface
      */
     private UrlGeneratorInterface $urlGenerator;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
+    private AccountManager $accountManager;
 
     public function __construct(
         Security $security,
         UrlGeneratorInterface $urlGenerator,
-        EntityManagerInterface $entityManager
+        AccountManager $accountManager
     ) {
         $this->security = $security;
         $this->urlGenerator = $urlGenerator;
-        $this->entityManager = $entityManager;
+        $this->accountManager = $accountManager;
     }
 
     public static function getSubscribedEvents()
@@ -71,17 +68,7 @@ class LoginSubscriber implements EventSubscriberInterface
         $account = $this->security->getUser();
 
         if ($account) {
-            $account->setLastLogin(new \DateTime());
-            $this->entityManager->persist($account);
-            $this->entityManager->flush();
+            $this->accountManager->resetInactivity($account);
         }
-
-        // TODO: Reset user inactivity?
-//        $portalUser = $user->getRelatedCommSyUserItem();
-//        if ($portalUser) {
-//            if ($portalUser->getMailSendNextLock() || $portalUser->getMailSendBeforeLock() || $portalUser->getNotifyLockDate()) {
-//                $portalUser->resetInactivity();
-//            }
-//        }
     }
 }
