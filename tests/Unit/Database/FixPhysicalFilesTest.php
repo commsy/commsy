@@ -2,14 +2,12 @@
 namespace App\Tests\Database;
 
 use App\Database\FixPhysicalFiles;
-use App\Form\Model\File;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Routing\Annotation\Route;
 
 final class FixPhysicalFilesTest extends Unit
 {
@@ -42,7 +40,6 @@ final class FixPhysicalFilesTest extends Unit
     }
 
     // tests
-
     public function testStringPath()
     {
         $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
@@ -55,14 +52,11 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('portal');
         mkdir('someother');
 
-        $file = $this->make(File::class, ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345]);
-
-        $queryBuilderStub = $this->make(QueryBuilder::class, [
-            'execute' => [$file]
-        ]);
-
+        $file = ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345];
         $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $queryBuilderStub,
+            'createQueryBuilder' => $this->make(QueryBuilder::class, [
+                'execute' => [$file]
+            ]),
         ]);
 
         $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
@@ -84,19 +78,11 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('12345/1234/123');
         mkdir('12345/1234/invalid');
 
-        $file = $this->make(File::class, [
-            'filesId' => 1234,
-            'filename' => 'org_filename.txt',
-            'contextId' => 1234123,
-            'portalId' => 12345,
-        ]);
-
-        $queryBuilderStub = $this->make(QueryBuilder::class, [
-            'execute' => [$file]
-        ]);
-
+        $file = ['filesId' => 1234, 'filename' => 'org_filename.txt', 'contextId' => 1234123, 'portalId' => 12345];
         $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $queryBuilderStub,
+            'createQueryBuilder' => $this->make(QueryBuilder::class, [
+                'execute' => [$file]
+            ]),
         ]);
 
         $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
@@ -128,17 +114,12 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('temp');
         mkdir('somefolder');
 
-        // TODO: Files has no 'portalId', but a 'contextId'
-        $fileA = $this->make(File::class, ['portalId' => 12345]);
-        $fileB = $this->make(File::class, ['portalId' => 23456]);
-
-        $queryBuilderStub = $this->make(QueryBuilder::class, [
-            'execute' => [$fileA, $fileB]
-        ]);
-
-        // If unit framework asks for files, those mocks will be returned
+        $fileA = ['portalId' => 12345];
+        $fileB = ['portalId' => 23456];
         $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $queryBuilderStub,
+            'createQueryBuilder' => $this->make(QueryBuilder::class, [
+                'execute' => [$fileA, $fileB]
+            ]),
         ]);
 
         $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
@@ -175,14 +156,11 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('12345/123');
         mkdir('12345/12345');
 
-        $file = $this->make(File::class, ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345]);
-
-        $queryBuilderStub = $this->make(QueryBuilder::class, [
-            'execute' => [$file]
-        ]);
-
+        $file = ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345];
         $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $queryBuilderStub,
+            'createQueryBuilder' => $this->make(QueryBuilder::class, [
+                'execute' => [$file]
+            ]),
         ]);
 
         $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
@@ -211,14 +189,11 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('12345/somefolder');
         mkdir('12345/1234');
 
-        $file = $this->make(File::class, ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345]);
-
-        $queryBuilderStub = $this->make(QueryBuilder::class, [
-            'execute' => [$file]
-        ]);
-
+        $file = ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345];
         $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $queryBuilderStub,
+            'createQueryBuilder' => $this->make(QueryBuilder::class, [
+                'execute' => [$file]
+            ]),
         ]);
 
         $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
@@ -248,19 +223,11 @@ final class FixPhysicalFilesTest extends Unit
         touch('12345/1234/_123/cid1234125_logo_filename.jpg');
         touch('12345/1234/_123/cid1234126_user_filename.jpg');
 
-        $file = $this->make(File::class, [
-            'filesId' => 1234123,
-            'filename' => 'org_filename.txt',
-            'contextId' => 1234123,
-            'portalId' => 12345,
-        ]);
-
-        $queryBuilderStub = $this->make(QueryBuilder::class, [
-            'execute' => [$file]
-        ]);
-
+        $file = ['filesId' => 1234123, 'filename' => 'org_filename.txt', 'contextId' => 1234123, 'portalId' => 12345];
         $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $queryBuilderStub,
+            'createQueryBuilder' => $this->make(QueryBuilder::class, [
+                'execute' => [$file]
+            ]),
         ]);
 
         $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
