@@ -12,6 +12,8 @@ namespace App\Database;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 class FixPhysicalFiles implements DatabaseCheck
 {
@@ -30,11 +32,6 @@ class FixPhysicalFiles implements DatabaseCheck
      */
     private $folderFiles;
 
-    /**
-     * @var array
-     */
-    private $allDirs;
-
     public function __construct(
         Connection $connection,
         ParameterBagInterface $parameterBag
@@ -52,12 +49,14 @@ class FixPhysicalFiles implements DatabaseCheck
     {
         $io->text('Inspecting physical files');
 
+        $filesystem = new Filesystem();
+
         $qb = $this->connection->createQueryBuilder()
             ->select('f.*', 'i.context_id as portalId')
             ->from('files', 'f')
             ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')->setMaxResults(1)
             ->where('f.deletion_date IS NULL');
-        $files =     $qb->execute();
+        $files = $qb->execute();
 
         $filesDirectory = $this->parameterBag->get('files_directory');
 
@@ -70,9 +69,10 @@ class FixPhysicalFiles implements DatabaseCheck
 
         //TODO: Only use files with full path structure instead of both files and directories?
         $this->folderFiles = array();
-        $this->allDirs = array();
         $scannedFileNames = $this->listFolderFiles($filesDirectory);
-        $directories = $this->listNestedDirs($filesDirectory);
+
+        $directories = (new Finder())->directories()
+            ->in($filesDirectory);
 
         //TODO: remove?
         $scannedFiles = $files = array_diff( scandir($filesDirectory), array(".", "..") );
@@ -92,7 +92,7 @@ class FixPhysicalFiles implements DatabaseCheck
                 $haystack = array('temp','portal');
                 $needle = $file;
                 if (!in_array($needle, $haystack)) {
-                    $this->rrmdir($relativePathName);
+                    $filesystem->remove($relativePathName);
                 }
 
                 $io->text($relativePathName);
@@ -101,45 +101,43 @@ class FixPhysicalFiles implements DatabaseCheck
 
         // check first level: must be numeric, can only be 4 digits long
         // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
-        if (!empty($directories)) {
+        if ($directories->hasResults()) {
             foreach ($directories as $directory) {
+                $relativePathName = $directory->getRelativePathname();
 
-                // only check directories here
-                if(!is_dir($directory)) {
-                    continue;
-                }
 
-                //TODO: can path length be assumed to be stable?
-                $parts = explode("/", $directory);
-                if (sizeof($parts) > 6) {
-                    $toBeChecked = $parts[6];
 
-                    // check numeric
-                    if (!is_numeric($toBeChecked)) {
-                        $this->rrmdir($directory);
-                    }
-
-                    // check length being 4
-                    if (strlen($toBeChecked) != 4) {
-                        $this->rrmdir($directory);
-                    }
-                }
-
-                if (sizeof($parts) > 7) {
-                    $toBeChecked = $parts[7];
-
-                    if (!str_contains($toBeChecked, '_')) {
-                        $this->rrmdir($directory);
-                    }
-
-                    if (!substr($toBeChecked, 1) == '_') {
-                        $this->rrmdir($directory);
-                    }
-
-                    if (!is_numeric(substr($toBeChecked, 1))) {
-                        $this->rrmdir($directory);
-                    }
-                }
+//                //TODO: can path length be assumed to be stable?
+//                $parts = explode("/", $directory);
+//                if (sizeof($parts) > 6) {
+//                    $toBeChecked = $parts[6];
+//
+//                    // check numeric
+//                    if (!is_numeric($toBeChecked)) {
+//                        $filesystem->remove($directory);
+//                    }
+//
+//                    // check length being 4
+//                    if (strlen($toBeChecked) != 4) {
+//                        $filesystem->remove($directory);
+//                    }
+//                }
+//
+//                if (sizeof($parts) > 7) {
+//                    $toBeChecked = $parts[7];
+//
+//                    if (!str_contains($toBeChecked, '_')) {
+//                        $filesystem->remove($directory);
+//                    }
+//
+//                    if (!substr($toBeChecked, 1) == '_') {
+//                        $filesystem->remove($directory);
+//                    }
+//
+//                    if (!is_numeric(substr($toBeChecked, 1))) {
+//                        $filesystem->remove($directory);
+//                    }
+//                }
             }
         }
 
@@ -149,32 +147,30 @@ class FixPhysicalFiles implements DatabaseCheck
 
                     $filesDirParts = explode("/",$scannedFile);
                     $toBeChecked = end($filesDirParts);
-                    $isValid = false;
 
                     // if is directory, do not check
                     if (is_dir($scannedFile)) {
-                        $isValid = true;
-                        //TODO use continue & remove dir at end at all times, if end is reached
+                        continue;
                     }
 
                     // check digit + file extension
-                    if (!$isValid and str_contains($toBeChecked,'.') and !str_contains($toBeChecked,'_')) {
+                    if (str_contains($toBeChecked,'.') and !str_contains($toBeChecked,'_')) {
                         $extensionParts = explode(".", $toBeChecked);
                         if (is_numeric($extensionParts[0])) {
-                            $isValid = true;
+                            continue;
                         }
                     }
 
                 // check digit + file extension + file extension contains '_' e.g. '1.jpg_thumbnail'
-                if (!$isValid and str_contains($toBeChecked,'.') and str_contains($toBeChecked,'_')) {
+                if (str_contains($toBeChecked,'.') and str_contains($toBeChecked,'_')) {
                     $extensionParts = explode(".", $toBeChecked);
                     if (is_numeric($extensionParts[0]) and str_contains(end($extensionParts),'_')) {
-                        $isValid = true;
+                        continue;
                     }
                 }
 
                     // check cid[roomId]_bginfo|logo|[username]_[filename].[extension]
-                    if (!$isValid and str_contains($toBeChecked,'.') and str_contains($toBeChecked,'_')) {
+                    if (str_contains($toBeChecked,'.') and str_contains($toBeChecked,'_')) {
                         //TODO use ending function
                         $extensionParts = explode(".", $toBeChecked);
                         $underscoreParts = explode('_', $extensionParts[0]);
@@ -191,7 +187,7 @@ class FixPhysicalFiles implements DatabaseCheck
 
                                     // check if first three chars of ID string is 'CID'
                                     if ($result = substr($underscoreParts[0], 0, 3)) {
-                                        $isValid = true;
+                                        continue;
                                     }
                                 }
                             }
@@ -199,32 +195,12 @@ class FixPhysicalFiles implements DatabaseCheck
                     }
 
                     // delete if no allowed pattern could be found
-                    //TODO: always remove in case of 'continue' not being reached
-                    if (!$isValid) {
-                        $this->rrmdir($scannedFile);
-                    }
+                    $filesystem->remove($scannedFile);
                 }
             }
 
         return true;
     }
-
-    /**
-     * @param $dir
-     */
-    private function rrmdir($dir) {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (filetype($dir."/".$object) == "dir") $this->rrmdir($dir."/".$object); else unlink($dir."/".$object);
-                }
-            }
-            reset($objects);
-            rmdir($dir);
-        }
-    }
-
 
     /**
      * @param $dir
@@ -247,16 +223,4 @@ class FixPhysicalFiles implements DatabaseCheck
 
         return $this->folderFiles;
     }
-
-    private function listNestedDirs($inputDir) {
-
-        $dirs = glob($inputDir . '/*' , GLOB_ONLYDIR);
-        foreach ($dirs as $dir) {
-            array_push($this->allDirs, $dir);
-            $this->listNestedDirs($dir);
-        }
-
-        return $this->allDirs;
-    }
-
 }
