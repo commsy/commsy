@@ -5,9 +5,14 @@ namespace App\EventSubscriber;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\ZzzRoom;
-use App\Mail\Factories\AccountMessageFactory;
+use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
+use App\Room\RoomManager;
+use App\Utils\ItemService;
+use DateInterval;
+use DateTime;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\EnteredEvent;
@@ -21,9 +26,19 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     private PortalRepository $portalRepository;
 
     /**
-     * @var AccountMessageFactory
+     * @var RoomManager
      */
-    private AccountMessageFactory $accountMessageFactory;
+    private RoomManager $roomManager;
+
+    /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
+     * @var RoomMessageFactory
+     */
+    private RoomMessageFactory $roomMessageFactory;
 
     /**
      * @var Mailer
@@ -32,11 +47,15 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
     public function __construct(
         PortalRepository $portalRepository,
-        AccountMessageFactory $messageFactory,
+        RoomManager $roomManager,
+        ItemService $itemService,
+        RoomMessageFactory $messageFactory,
         Mailer $mailer
     ) {
         $this->portalRepository = $portalRepository;
-        $this->accountMessageFactory = $messageFactory;
+        $this->roomManager = $roomManager;
+        $this->itemService = $itemService;
+        $this->roomMessageFactory = $messageFactory;
         $this->mailer = $mailer;
     }
 
@@ -57,6 +76,17 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
             $event->setBlocked(true);
             return;
         }
+
+        // Block if room is a template
+        if ($room->getTemplate()) {
+            $event->setBlocked(true);
+            return;
+        }
+
+        // Block if not project or community type
+        if (!$room->isProjectRoom() && !$room->isCommunityRoom()) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
@@ -72,9 +102,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-//        if (!$this->datePassedDays($account->getLastLogin(), $portal->getClearInactiveAccountsNotifyLockDays())) {
-//            $event->setBlocked(true);
-//        }
+        if (!$this->datePassedDays($room->getLastLogin(), $portal->getClearInactiveRoomsNotifyLockDays())) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
@@ -90,9 +120,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-//        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsLockDays())) {
-//            $event->setBlocked(true);
-//        }
+        if (!$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsLockDays())) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
@@ -109,9 +139,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-//        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsNotifyDeleteDays())) {
-//            $event->setBlocked(true);
-//        }
+        if (!$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsNotifyDeleteDays())) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
@@ -128,9 +158,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-//        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsDeleteDays())) {
-//            $event->setBlocked(true);
-//        }
+        if (!$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsDeleteDays())) {
+            $event->setBlocked(true);
+        }
     }
 
     /**
@@ -143,7 +173,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room|ZzzRoom $room */
         $room = $event->getSubject();
 
-//        $this->accountManager->renewActivityUpdated($account);
+        $this->roomManager->renewActivityUpdated($room);
     }
 
     /**
@@ -156,10 +186,11 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room|ZzzRoom $room */
         $room = $event->getSubject();
 
-//        $message = $this->accountMessageFactory->createAccountActivityLockWarningMessage($account);
-//        if ($message) {
-//            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
-//        }
+        $message = $this->roomMessageFactory->createRoomActivityLockWarningMessage($room);
+        if ($message) {
+            $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
+            $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
+        }
     }
 
     /**
@@ -172,12 +203,10 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room|ZzzRoom $room */
         $room = $event->getSubject();
 
-//        $this->accountManager->lock($account);
-//
-//        $message = $this->accountMessageFactory->createAccountActivityLockedMessage($account);
-//        if ($message) {
-//            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
-//        }
+        $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
+        if ($legacyRoom) {
+            $legacyRoom->lock();
+        }
     }
 
     /**
@@ -190,10 +219,11 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room|ZzzRoom $room */
         $room = $event->getSubject();
 
-//        $message = $this->accountMessageFactory->createAccountActivityDeleteWarningMessage($account);
-//        if ($message) {
-//            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
-//        }
+        $message = $this->roomMessageFactory->createRoomActivityDeleteWarningMessage($room);
+        if ($message) {
+            $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
+            $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
+        }
     }
 
     /**
@@ -206,12 +236,23 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room|ZzzRoom $room */
         $room = $event->getSubject();
 
-//        $this->accountManager->delete($account);
-//
-//        $message = $this->accountMessageFactory->createAccountActivityDeletedMessage($account);
-//        if ($message) {
-//            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
-//        }
+        $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
+        if ($legacyRoom) {
+            $legacyRoom->delete();
+        }
+    }
+
+    /**
+     * @param DateTime $compare
+     * @param int $numDays
+     * @return void
+     * @throws Exception
+     */
+    private function datePassedDays(DateTime $compare, int $numDays): bool
+    {
+        $threshold = new DateTime();
+        $threshold->sub(new DateInterval('P' . $numDays . 'D'));
+        return $compare < $threshold;
     }
 
     public static function getSubscribedEvents(): array

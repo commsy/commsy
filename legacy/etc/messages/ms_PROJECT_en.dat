@@ -33,7 +33,6 @@ $message["PROJECT_MAIL_BODY_REOPEN"]["en"] = "Reopening of a %_PROJECT_SUB_GENS_
 $message["PROJECT_MAIL_BODY_UNDELETE"]["en"] = "Undeletion of a %_PROJECT_SUB_NOMS_LOW.";
 $message["PROJECT_MAIL_BODY_UNLOCK"]["en"] = "Unblocking of a %_PROJECT_SUB_NOMS_LOW.";
 $message["PROJECT_MAIL_SUBJECT_ARCHIVE"]["en"] = "%1 stored";
-$message["PROJECT_MAIL_SUBJECT_ARCHIVE_INFO"]["en"] = "%1 will be stored in %2 days";
 $message["PROJECT_MAIL_SUBJECT_DELETE"]["en"] = "%1 deleted";
 $message["PROJECT_MAIL_SUBJECT_DELETE_INFO"]["en"] = "%1 will be deleted in %2 days";
 $message["PROJECT_MAIL_SUBJECT_LINK"]["en"] = "%1 linked";

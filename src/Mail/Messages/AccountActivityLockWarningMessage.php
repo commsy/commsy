@@ -37,7 +37,6 @@ class AccountActivityLockWarningMessage extends Message
         LegacyEnvironment $legacyEnvironment,
         Portal $portal,
         Account $account
-
     ) {
         $this->urlGenerator = $urlGenerator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

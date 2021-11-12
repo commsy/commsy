@@ -822,7 +822,7 @@ class Room
             self::ACTIVITY_IDLE,
             self::ACTIVITY_IDLE_NOTIFIED,
             self::ACTIVITY_ABANDONED,
-        ])) {
+        ], true)) {
             throw new InvalidArgumentException("Invalid activity");
         }
 

@@ -73,16 +73,18 @@ class cs_project_manager extends cs_room2_manager {
 
   var $_template_limit = NULL;
 
-  /** constructor: cs_project_manager
-    * the only available constructor, initial values for internal variables
-    *
-    * @param object cs_environment the environment
-    */
-  function __construct($environment) {
-     $this->_db_table = 'room';
-     $this->_room_type = CS_PROJECT_TYPE;
-     cs_context_manager::__construct($environment);
-  }
+    /** constructor: cs_project_manager
+     * the only available constructor, initial values for internal variables
+     *
+     * @param object cs_environment the environment
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+
+        $this->_db_table = 'room';
+        $this->_room_type = CS_PROJECT_TYPE;
+    }
 
   /** reset limits
     * reset limits of this class: age limit, from limit, interval limit, order limit and all limits from upper class

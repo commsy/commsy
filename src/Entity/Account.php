@@ -457,7 +457,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @param DateTime|null $activityStateUpdated
      * @return Room
      */
-    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Room
+    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Account
     {
         $this->activityStateUpdated = $activityStateUpdated;
         return $this;

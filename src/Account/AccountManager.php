@@ -88,16 +88,18 @@ class AccountManager
         $this->legacyEnvironment->setCurrentPortalID($account->getContextId());
 
         $portalUser = $this->userService->getPortalUser($account);
-        $relatedUsers = $portalUser->getRelatedUserList();
-        $relatedUsers->add($portalUser);
+        if ($portalUser) {
+            $relatedUsers = $portalUser->getRelatedUserList();
+            $relatedUsers->add($portalUser);
 
-        foreach ($relatedUsers as $relatedUser) {
-            /** @var cs_user_item $relatedUser */
-            $relatedUser->setFirstname($account->getFirstname());
-            $relatedUser->setLastname($account->getLastname());
-            $relatedUser->setEmail($account->getEmail());
+            foreach ($relatedUsers as $relatedUser) {
+                /** @var cs_user_item $relatedUser */
+                $relatedUser->setFirstname($account->getFirstname());
+                $relatedUser->setLastname($account->getLastname());
+                $relatedUser->setEmail($account->getEmail());
 
-            $relatedUser->save();
+                $relatedUser->save();
+            }
         }
     }
 
@@ -107,14 +109,15 @@ class AccountManager
         $communityManager = $this->legacyEnvironment->getCommunityManager();
 
         $portalUser = $this->userService->getPortalUser($account);
+        if ($portalUser) {
+            $roomList = new cs_list();
+            $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
+            $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
 
-        $roomList = new cs_list();
-        $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
-        $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
-
-        foreach ($roomList as $room) {
-            if ($this->userService->userIsLastModeratorForRoom($room, $portalUser)) {
-                return true;
+            foreach ($roomList as $room) {
+                if ($this->userService->userIsLastModeratorForRoom($room, $portalUser)) {
+                    return true;
+                }
             }
         }
 
@@ -152,16 +155,18 @@ class AccountManager
         // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
         $portalUser = $this->userService->getPortalUser($account);
 
-        $userList = $portalUser->getRelatedUserList();
-        foreach ($userList as $user) {
-            /** @var $user cs_user_item */
-            $user->delete();
+        if ($portalUser) {
+            $userList = $portalUser->getRelatedUserList();
+            foreach ($userList as $user) {
+                /** @var $user cs_user_item */
+                $user->delete();
+            }
+
+            $this->entityManager->remove($account);
+            $this->entityManager->flush();
+
+            $portalUser->delete();
         }
-
-        $this->entityManager->remove($account);
-        $this->entityManager->flush();
-
-        $portalUser->delete();
     }
 
     /**
@@ -171,8 +176,10 @@ class AccountManager
     {
         $portalUser = $this->userService->getPortalUser($account);
 
-        $portalUser->reject();
-        $portalUser->save();
+        if ($portalUser) {
+            $portalUser->reject();
+            $portalUser->save();
+        }
 
         $account->setLocked(true);
         $this->entityManager->persist($account);
@@ -185,8 +192,8 @@ class AccountManager
     public function unlock(Account $account)
     {
         $account->setLocked(false);
-        $account->setActivity(Account::ACTIVITY_ACTIVE);
-        $account->setActivityUpdated(null);
+        $account->setActivityState(Account::ACTIVITY_ACTIVE);
+        $account->setActivityStateUpdated(null);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
     }
@@ -211,7 +218,7 @@ class AccountManager
      */
     public function renewActivityUpdated(Account $account): void
     {
-        $account->setActivityUpdated(new DateTime());
+        $account->setActivityStateUpdated(new DateTime());
         $this->entityManager->persist($account);
         $this->entityManager->flush();
     }
@@ -232,8 +239,8 @@ class AccountManager
         }
 
         if ($resetActivityState) {
-            $account->setActivity(Account::ACTIVITY_ACTIVE);
-            $account->setActivityUpdated(null);
+            $account->setActivityState(Account::ACTIVITY_ACTIVE);
+            $account->setActivityStateUpdated(null);
         }
 
         $this->entityManager->persist($account);

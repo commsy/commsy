@@ -33,7 +33,6 @@ $message["PROJECT_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung %_PROJECT_ART_UND
 $message["PROJECT_MAIL_BODY_UNDELETE"]["de"] = "Wiederherstellung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_BODY_UNLOCK"]["de"] = "Entsperrung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_SUBJECT_ARCHIVE"]["de"] = "%1 archiviert";
-$message["PROJECT_MAIL_SUBJECT_ARCHIVE_INFO"]["de"] = "%1 wird in %2 Tagen archiviert";
 $message["PROJECT_MAIL_SUBJECT_DELETE"]["de"] = "%1 gelöscht";
 $message["PROJECT_MAIL_SUBJECT_DELETE_INFO"]["de"] = "%1 wird in %2 Tagen gelöscht";
 $message["PROJECT_MAIL_SUBJECT_LINK"]["de"] = "%1 verlinkt";

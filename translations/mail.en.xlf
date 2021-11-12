@@ -158,6 +158,14 @@
                 <source>%portal_name%: Your account has been deleted</source>
                 <target>%portal_name%: Your account has been deleted</target>
             </trans-unit>
+            <trans-unit id="mail_subject_workspace_activity_lock_warning">
+                <source>%portal_name%: Workspace will be locked in %num_days% days</source>
+                <target>%portal_name%: Workspace will be locked in %num_days% days</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_workspace_activity_delete_warning">
+                <source>%portal_name%: Workspace will be deleted in %num_days% days</source>
+                <target>%portal_name%: Workspace will be deleted in %num_days% days</target>
+            </trans-unit>
             <trans-unit id="mail_body_common_title">
                 <source>Title: %title%</source>
                 <target>Title: %title%</target>
