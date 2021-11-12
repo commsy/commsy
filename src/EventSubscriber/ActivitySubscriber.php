@@ -1,36 +1,36 @@
 <?php
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
 use App\Entity\Portal;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-
-use Liip\ThemeBundle\ActiveTheme;
-
-use App\Utils\RoomService;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class CommsyActivityListener
+class ActivitySubscriber implements EventSubscriberInterface
 {
-    private $roomService;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $legacyEnvironment;
-
-    private $entityManager;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
-        RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
         EntityManagerInterface $entityManager
     ) {
-        $this->roomService = $roomService;
-        $this->legacyEnvironment = $legacyEnvironment;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->entityManager = $entityManager;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         if ($event->isMasterRequest()) {
             $request = $event->getRequest();
@@ -46,10 +46,7 @@ class CommsyActivityListener
                 }
 
                 if ($countRequest) {
-                    $environment = $this->legacyEnvironment->getEnvironment();
-
-                    $activity_points = 1;
-                    $currentContextItem = $environment->getCurrentContextItem();
+                    $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
                     if ($currentContextItem) {
                         if ($currentContextItem->isPortal()) {
@@ -81,5 +78,12 @@ class CommsyActivityListener
             $this->entityManager->persist($portal);
             $this->entityManager->flush();
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest',
+        ];
     }
 }

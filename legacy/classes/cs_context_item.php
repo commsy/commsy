@@ -519,7 +519,6 @@ class cs_context_item extends cs_item {
   }
 
   function getDescription () {
-    $retour = '';
     $retour = $this->getDescriptionByLanguage($this->_environment->getSelectedLanguage());
     if ( empty($retour) ) {
       $current_user = $this->_environment->getCurrentUserItem();
@@ -4846,7 +4845,8 @@ class cs_context_item extends cs_item {
     $temp = $this->getLastStatus();
     $this->setLastStatus($this->getStatus());
     $this->_data['status'] = $temp;
-    unset($temp);
+
+
   }
 
   /** is room a normal open ?
