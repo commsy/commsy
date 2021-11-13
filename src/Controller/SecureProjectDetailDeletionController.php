@@ -41,11 +41,11 @@ class SecureProjectDetailDeletionController extends AbstractController
         $groupId = $group ? $group->getItemID() : null;
 
         $isProjectRoom = $roomItem->isProjectRoom();
-        $communityRooms = $roomService->getCommunityRoomsForRoom($roomItem);
+        $communityRooms = $isProjectRoom ? $roomService->getCommunityRoomsForRoom($roomItem) : [];
         $communityRoomIds = $roomService->getIdsForRooms($communityRooms);
         $projectRoomIsViewedFromItsCommunityRoom = ($isProjectRoom && in_array($roomId, $communityRoomIds));
-        $cancelRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_room_detail') ;
-        $successRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_list' : 'app_room_listall') ;
+        $detailRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_room_detail') ;
+        $listRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_list' : 'app_room_listall') ;
 
         $relatedGroupRooms = [];
         if ($isProjectRoom) {
@@ -67,7 +67,7 @@ class SecureProjectDetailDeletionController extends AbstractController
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
             if ($buttonName === 'cancel') {
-                return $this->redirectToRoute($cancelRoute, [
+                return $this->redirectToRoute($detailRoute, [
                     'roomId' => $roomId,
                     'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
@@ -75,8 +75,8 @@ class SecureProjectDetailDeletionController extends AbstractController
                 $roomItem->delete();
                 $roomItem->save();
 
-                // redirect back to hosting context/room
-                return $this->redirectToRoute($successRoute, [
+                // redirect back to hosting context/room/group
+                return $this->redirectToRoute($listRoute, [
                     'roomId' => $roomId,
                     'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
@@ -92,7 +92,7 @@ class SecureProjectDetailDeletionController extends AbstractController
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
             if ($buttonName === 'cancel') {
-                return $this->redirectToRoute($cancelRoute, [
+                return $this->redirectToRoute($detailRoute, [
                     'roomId' => $roomId,
                     'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
@@ -100,8 +100,7 @@ class SecureProjectDetailDeletionController extends AbstractController
                 $roomItem->lock();
                 $roomItem->save();
 
-                // redirect back to hosting context/room
-                return $this->redirectToRoute($successRoute, [
+                return $this->redirectToRoute($detailRoute, [
                     'roomId' => $roomId,
                     'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
