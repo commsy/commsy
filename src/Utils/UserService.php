@@ -552,8 +552,12 @@ class UserService
 
     /**
      * Checks whether the given (or otherwise the current) user is among the "parent" moderators of the given room.
-     * Parent moderators considered by this method are the root user & portal moderator as well as any moderator of
-     * a community room that hosts the given (project) room.
+     * Parent moderators considered by this method are:
+     * - the root user
+     * - the portal moderator
+     * - any moderator of a community room that hosts the given (project) room
+     * - any moderator of a project room whose group is linked to the given (group) room.
+     * - any group creator whose group is linked to the given (group) room.
      *
      * @param cs_room_item $room The room for which this method will check whether the given user is among its parent moderators
      * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the parent
@@ -578,15 +582,31 @@ class UserService
         }
 
         $roomType = $room->getType();
-        if ($roomType !== 'project') {
-            return false;
+        if ($roomType === CS_PROJECT_TYPE) {
+            // check if the given user corresponds to a moderator in a community room that hosts the given project room
+            $communityRooms = $this->roomService->getCommunityRoomsForRoom($room);
+            foreach ($communityRooms as $communityRoom) {
+                if ($this->userIsModeratorForRoom($communityRoom, $user)) {
+                    return true;
+                }
+            }
         }
+        else {
+            if ($roomType === CS_GROUPROOM_TYPE) {
+                // check if the given user is a moderator of the project room that hosts the given group room
+                $projectRoom = $room->getLinkedProjectItem();
+                if ($projectRoom && $this->userIsModeratorForRoom($projectRoom, $user)) {
+                    return true;
+                }
 
-        // check if the given user corresponds to a moderator in a community room that hosts the given project room
-        $communityRooms = $this->roomService->getCommunityRoomsForRoom($room);
-        foreach ($communityRooms as $communityRoom) {
-            if ($this->userIsModeratorForRoom($communityRoom, $user)) {
-                return true;
+                // check if the given user is the creator of the group that's linked to the given group room
+                $group = $room->getLinkedGroupItem();
+                if ($group) {
+                    $groupCreator = $group->getCreatorItem();
+                    if ($groupCreator && $groupCreator->getItemID() === $user->getItemID()) {
+                        return true;
+                    }
+                }
             }
         }
 
