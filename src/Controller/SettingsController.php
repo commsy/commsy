@@ -523,6 +523,17 @@ class SettingsController extends Controller
             }
         }
 
+        // prevents any error message and confirmation string from being displayed redundantly in the other form
+        if ($lockForm->get('lock')->isClicked()) {
+            $deleteForm = $this->createForm(DeleteType::class, $roomItem, [
+                'confirm_string' => $translator->trans('delete', [], 'profile')
+            ]);
+        } elseif ($deleteForm->get('delete')->isClicked()) {
+            $lockForm = $this->createForm(DeleteType::class, $roomItem, [
+                'confirm_string' => $translator->trans('lock', [], 'profile')
+            ]);
+        }
+
         return [
             'delete_form' => $deleteForm->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,

@@ -104,6 +104,17 @@ class SecureProjectDetailDeletionController extends AbstractController
             }
         }
 
+        // prevents any error message and confirmation string from being displayed redundantly in the other form
+        if ($lockForm->get('lock')->isClicked()) {
+            $deleteForm = $this->createForm(SecureDeleteType::class, $roomItem, [
+                'confirm_string' => $translator->trans('delete', [], 'profile')
+            ]);
+        } elseif ($deleteForm->get('delete')->isClicked()) {
+            $lockForm = $this->createForm(SecureDeleteType::class, $roomItem, [
+                'confirm_string' => $translator->trans('lock', [], 'profile')
+            ]);
+        }
+
         return [
             'delete_form' => $deleteForm->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,
