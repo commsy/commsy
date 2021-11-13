@@ -42,13 +42,13 @@
                                     <div id="cs-entry-navigation" class="cs-additional-actions uk-padding-remove uk-dropdown uk-dropdown-small">
                                         <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
                                             <li>
-                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'subRoomId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'subRoomId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'Delete workspace'|trans({}, 'room') }}
+                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete workspace'|trans({}, 'room') }}
                                                 </a>
                                             </li>
                                         </ul>

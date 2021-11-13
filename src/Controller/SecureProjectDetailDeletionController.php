@@ -19,29 +19,33 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SecureProjectDetailDeletionController extends AbstractController
 {
     /**
-     * @Route("/room/{roomId}/settings/securedelete/{subRoomId}")
+     * @Route("/room/{roomId}/settings/securedelete/{itemId}")
      * @Template
-     * @Security("is_granted('ROOM_MODERATOR', subRoomId) or is_granted('PARENT_ROOM_MODERATOR', subRoomId)")
+     * @Security("is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)")
      */
     public function deleteOrLock(
         $roomId,
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
-        $subRoomId
+        $itemId
     )
     {
-        $roomItem = $roomService->getRoomItem($subRoomId);
+        $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
-            throw $this->createNotFoundException('No room found for id ' . $subRoomId);
+            throw $this->createNotFoundException('No room found for id ' . $itemId);
         }
+
+        $isGroupRoom = $roomItem->isGroupRoom();
+        $group = $isGroupRoom ? $roomItem->getLinkedGroupItem() : null;
+        $groupId = $group ? $group->getItemID() : null;
 
         $isProjectRoom = $roomItem->isProjectRoom();
         $communityRooms = $roomService->getCommunityRoomsForRoom($roomItem);
         $communityRoomIds = $roomService->getIdsForRooms($communityRooms);
         $projectRoomIsViewedFromItsCommunityRoom = ($isProjectRoom && in_array($roomId, $communityRoomIds));
-        $cancelRoute = ($projectRoomIsViewedFromItsCommunityRoom) ? 'app_project_detail' : 'app_room_detail' ;
-        $successRoute = ($projectRoomIsViewedFromItsCommunityRoom) ? 'app_project_list' : 'app_room_listall' ;
+        $cancelRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_room_detail') ;
+        $successRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_list' : 'app_room_listall') ;
 
         $relatedGroupRooms = [];
         if ($isProjectRoom) {
@@ -65,7 +69,7 @@ class SecureProjectDetailDeletionController extends AbstractController
             if ($buttonName === 'cancel') {
                 return $this->redirectToRoute($cancelRoute, [
                     'roomId' => $roomId,
-                    'itemId' => $subRoomId,
+                    'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
             } elseif ($buttonName === 'delete') {
                 $roomItem->delete();
@@ -74,6 +78,7 @@ class SecureProjectDetailDeletionController extends AbstractController
                 // redirect back to hosting context/room
                 return $this->redirectToRoute($successRoute, [
                     'roomId' => $roomId,
+                    'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
             } else {
                 $deleteForm->clearErrors(true);
@@ -89,7 +94,7 @@ class SecureProjectDetailDeletionController extends AbstractController
             if ($buttonName === 'cancel') {
                 return $this->redirectToRoute($cancelRoute, [
                     'roomId' => $roomId,
-                    'itemId' => $subRoomId,
+                    'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
             } elseif ($buttonName === 'lock') {
                 $roomItem->lock();
@@ -98,6 +103,7 @@ class SecureProjectDetailDeletionController extends AbstractController
                 // redirect back to hosting context/room
                 return $this->redirectToRoute($successRoute, [
                     'roomId' => $roomId,
+                    'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
             } else {
                 $lockForm->clearErrors(true);
