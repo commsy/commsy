@@ -38,9 +38,15 @@
                                     <div id="cs-entry-navigation" class="cs-additional-actions uk-padding-remove uk-dropdown uk-dropdown-small">
                                         <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
                                             <li>
-                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock project workspace'|trans({}, 'project') }}
-                                                </a>
+                                                {% if project.isLocked %}
+                                                    <a href="{{ path('app_secureprojectdetaildeletion_unlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
+                                                        <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock project workspace'|trans({}, 'project') }}
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock project workspace'|trans({}, 'project') }}
+                                                    </a>
+                                                {% endif %}
                                             </li>
                                             <li>
                                                 <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
