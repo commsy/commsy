@@ -342,6 +342,10 @@
                 <source>Lock workspace</source>
                 <target>Lock workspace</target>
             </trans-unit>
+            <trans-unit id="unlock workspace">
+                <source>Unlock workspace</source>
+                <target>Unlock workspace</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

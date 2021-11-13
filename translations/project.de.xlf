@@ -42,6 +42,10 @@
                 <source>Lock project workspace</source>
                 <target>Projektraum sperren</target>
             </trans-unit>
+            <trans-unit id="unlock project workspace">
+                <source>Unlock project workspace</source>
+                <target>Projektraum entsperren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
