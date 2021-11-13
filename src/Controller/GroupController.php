@@ -8,10 +8,12 @@ use App\Http\JsonDataResponse;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\CategoryService;
+use App\Utils\GroupService;
 use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_grouproom_item;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -1516,6 +1518,29 @@ class GroupController extends BaseController
 
         $action = $this->get(DownloadAction::class);
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/{itemId}/unlockgrouproom")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
+     */
+    public function unlockGrouproom($roomId, $itemId, Request $request, GroupService $groupService)
+    {
+        $group = $groupService->getGroup($itemId);
+        if ($group) {
+            /** @var cs_grouproom_item $grouproomItem */
+            $groupRoom = $group->getGroupRoomItem();
+            if ($groupRoom) {
+                $groupRoom->unlock();
+                $groupRoom->save();
+            }
+        }
+
+        return $this->redirectToRoute('app_group_detail', [
+            'roomId' => $roomId,
+            'itemId' => $itemId,
+        ]);
     }
 
     ###################################################################################################
