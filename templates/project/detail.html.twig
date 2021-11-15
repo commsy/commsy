@@ -28,7 +28,7 @@
 
 
                             {# additional actions #}
-                            {% if (is_granted('ROOM_MODERATOR', project.itemId) or is_granted('PARENT_ROOM_MODERATOR', project.itemId)) %}
+                            {% if not project.isUserroom and (is_granted('ROOM_MODERATOR', project.itemId) or is_granted('PARENT_ROOM_MODERATOR', project.itemId)) %}
                                 <div class="uk-button-dropdown" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                                     <button class="uk-button uk-button-mini">
                                         {{ 'selected entries'|trans({}, 'rubric') }}
