@@ -8,7 +8,7 @@ use App\Services\CopyService;
 class DeleteMaterial implements DeleteInterface
 {
     /** @var CopyService $copyService */
-    protected $copyService;
+    protected CopyService $copyService;
 
     public function __construct(CopyService $copyService)
     {
