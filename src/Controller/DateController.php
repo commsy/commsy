@@ -20,11 +20,11 @@ use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
+use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_dates_item;
 use cs_room_item;
 use cs_user_item;
-use App\Utils\LabelService;
 use DateTime;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -2012,12 +2012,9 @@ class DateController extends BaseController
             $recurring = isset($payload['recurring']) ?? false;
         }
 
-        $strategy = $action->getStrategy();
+        $deleteDate->setRecurring($recurring);
+        $deleteDate->setDateMode($room->getDatesPresentationStatus());
 
-        if ($strategy instanceof DeleteDate) {
-            $strategy->setRecurring($recurring);
-            $strategy->setDateMode($room->getDatesPresentationStatus());
-        }
         $action->setDeleteStrategy($deleteDate);
         return $action->execute($room, $items);
     }

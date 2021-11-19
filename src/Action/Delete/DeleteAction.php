@@ -9,41 +9,42 @@
 namespace App\Action\Delete;
 
 
-use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
-use App\Utils\UserService;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Http\JsonRedirectResponse;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use App\Utils\UserService;
+use cs_environment;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeleteAction implements ActionInterface
 {
     /**
      * @var DeleteInterface
      */
-    private $deleteStrategy;
+    private DeleteInterface $deleteStrategy;
 
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * @var ItemService
      */
-    private $itemService;
+    private ItemService $itemService;
 
     /**
      * @var UserService
      */
-    private $userService;
+    private UserService $userService;
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
 
     /**

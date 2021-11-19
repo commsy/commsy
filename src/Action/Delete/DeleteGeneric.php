@@ -12,7 +12,6 @@ namespace App\Action\Delete;
 use App\Services\CopyService;
 use App\Services\LegacyEnvironment;
 use cs_environment;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DeleteGeneric implements DeleteInterface
 {
@@ -26,8 +25,7 @@ class DeleteGeneric implements DeleteInterface
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        CopyService $copyService,
-        SessionInterface $session
+        CopyService $copyService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->copyService = $copyService;

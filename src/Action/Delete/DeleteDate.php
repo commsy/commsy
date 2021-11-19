@@ -9,39 +9,58 @@
 namespace App\Action\Delete;
 
 
-use App\Services\LegacyEnvironment;
 use App\Services\CalendarsService;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Services\CopyService;
+use App\Services\LegacyEnvironment;
+use cs_dates_item;
+use cs_environment;
+use cs_item;
+use cs_list;
+use DateTime;
 use Symfony\Component\Routing\RouterInterface;
 
-class DeleteDate extends DeleteGeneric
+class DeleteDate implements DeleteInterface
 {
     /**
      * @var RouterInterface
      */
-    private $router;
+    private RouterInterface $router;
 
     /**
      * @var bool
      */
-    private $recurring;
+    private bool $recurring;
 
     /**
      * @var string
      */
-    private $dateMode = 'normal';
+    private string $dateMode = 'normal';
+
+    /**
+     * @var CopyService
+     */
+    private CopyService $copyService;
 
     /**
      * @var CalendarsService
      */
-    private $calendarsService;
+    private CalendarsService $calendarsService;
 
-    public function __construct(RouterInterface $router, LegacyEnvironment $legacyEnvironment, CalendarsService $calendarsService, SessionInterface $session)
-    {
-        parent::__construct($legacyEnvironment, $session);
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
+    public function __construct(
+        RouterInterface $router,
+        CopyService $copyService,
+        CalendarsService $calendarsService,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->router = $router;
+        $this->copyService = $copyService;
         $this->calendarsService = $calendarsService;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function setRecurring(bool $recurring): void
@@ -55,13 +74,15 @@ class DeleteDate extends DeleteGeneric
     }
 
     /**
-     * @param \cs_item $item
+     * @param cs_item $item
      */
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
-        parent::delete($item);
+        $item->delete();
 
-        /** @var \cs_dates_item $date */
+        $this->copyService->removeItemFromClipboard($item->getItemId());
+
+        /** @var cs_dates_item $date */
         $date = $item;
 
         $this->calendarsService->updateSynctoken($date->getCalendarId());
@@ -72,7 +93,7 @@ class DeleteDate extends DeleteGeneric
         $datesManager->setWithoutDateModeLimit();
         $datesManager->select();
 
-        /** @var \cs_list $recurringDates */
+        /** @var cs_list $recurringDates */
         $recurringDates = $datesManager->get();
 
         if ($this->recurring && $date->getRecurrenceId() != '') {
@@ -85,7 +106,7 @@ class DeleteDate extends DeleteGeneric
             $recurringDate = $recurringDates->getFirst();
             while ($recurringDate) {
                 $recurrencePattern = $recurringDate->getRecurrencePattern();
-                $recurrencePatternExcludeDate = new \DateTime($date->getDateTime_start());
+                $recurrencePatternExcludeDate = new DateTime($date->getDateTime_start());
                 if (!isset($recurrencePattern['recurringExclude'])) {
                     $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
                 } else {
@@ -100,12 +121,12 @@ class DeleteDate extends DeleteGeneric
     }
 
     /**
-     * @param \cs_item $item
+     * @param cs_item $item
      * @return string|null
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
-        /** @var \cs_dates_item $date */
+        /** @var cs_dates_item $date */
         $date = $item;
 
         if ($this->dateMode == 'normal') {
