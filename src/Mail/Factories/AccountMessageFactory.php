@@ -39,6 +39,10 @@ class AccountMessageFactory
         $this->accountManager = $accountManager;
     }
 
+    /**
+     * @param Account $account
+     * @return MessageInterface|null
+     */
     public function createAccountActivityLockWarningMessage(Account $account): ?MessageInterface
     {
         $portal = $this->accountManager->getPortal($account);
@@ -49,6 +53,10 @@ class AccountMessageFactory
         return null;
     }
 
+    /**
+     * @param Account $account
+     * @return MessageInterface|null
+     */
     public function createAccountActivityLockedMessage(Account $account): ?MessageInterface
     {
         $portal = $this->accountManager->getPortal($account);

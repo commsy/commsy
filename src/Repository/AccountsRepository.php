@@ -64,6 +64,15 @@ class AccountsRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllExceptRoot()
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.username != :rootUsername')
+            ->setParameter('rootUsername', 'root')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param string $oldState
      * @param string $newState

@@ -34,7 +34,7 @@ class CronUpdateActivityStateTest extends Unit
     public function testCronCallsApply()
     {
         $accountRepositoryStub = $this->makeEmpty(AccountsRepository::class, [
-            'findAll' => [$this->make(Account::class)],
+            'findAllExceptRoot' => [$this->make(Account::class)],
         ]);
         $roomRepositoryStub = $this->makeEmpty(RoomRepository::class, [
             'findAll' => [$this->make(Room::class)],

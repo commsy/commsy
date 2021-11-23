@@ -2,12 +2,12 @@
 
 <br/><br/>
 
-{{ hello }}
-
-<br/><br/>
-
 {{ content }}
 
 <br/><br/>
+{{ 'Workspace: %workspace%'|trans({ '%workspace%': room.title }, 'mail') }}<br/>
+<a href="{{ absolute_url('app_room_home', { 'roomId': room.itemId }) }}">{{ absolute_url('app_room_home', { 'roomId': room.itemId }) }}</a>
 
-{{ ciao }}
+<br/><br/>
+
+{{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': room.title }, 'mail') }}

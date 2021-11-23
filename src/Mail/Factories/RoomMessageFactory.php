@@ -2,51 +2,68 @@
 
 namespace App\Mail\Factories;
 
-use App\Account\AccountManager;
-use App\Entity\Account;
+use App\Entity\Room;
+use App\Entity\ZzzRoom;
 use App\Mail\MessageInterface;
-use App\Mail\Messages\RoomActivityDeletedMessage;
 use App\Mail\Messages\RoomActivityDeleteWarningMessage;
-use App\Mail\Messages\RoomActivityLockedMessage;
 use App\Mail\Messages\RoomActivityLockWarningMessage;
+use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use LogicException;
 
 class RoomMessageFactory
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
     /**
      * @var LegacyEnvironment
      */
     private LegacyEnvironment $legacyEnvironment;
 
+    /**
+     * @var PortalRepository
+     */
+    private PortalRepository $portalRepository;
+
     public function __construct(
-        UrlGeneratorInterface $urlGenerator,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        PortalRepository $portalRepository
     ) {
-        $this->urlGenerator = $urlGenerator;
         $this->legacyEnvironment = $legacyEnvironment;
+        $this->portalRepository = $portalRepository;
     }
 
-    public function createRoomActivityLockWarningMessage(Room $room): ?MessageInterface
+    /**
+     * @param object $room
+     * @return MessageInterface|null
+     */
+    public function createRoomActivityLockWarningMessage(object $room): ?MessageInterface
     {
-        $portal = $this->accountManager->getPortal($room);
+        /** @var Room|ZzzRoom $room */
+        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
+            throw new LogicException('$room must be of type Room or ZzzRoom');
+        }
+
+        $portal = $this->portalRepository->find($room->getContextId());
         if ($portal) {
-            return new RoomActivityLockWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $room);
+            return new RoomActivityLockWarningMessage($this->legacyEnvironment, $portal, $room);
         }
 
         return null;
     }
 
-    public function createRoomActivityDeleteWarningMessage(Room $room): ?MessageInterface
+    /**
+     * @param object $room
+     * @return MessageInterface|null
+     */
+    public function createRoomActivityDeleteWarningMessage(object $room): ?MessageInterface
     {
-        $portal = $this->accountManager->getPortal($room);
+        /** @var Room|ZzzRoom $room */
+        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
+            throw new LogicException('$room must be of type Room or ZzzRoom');
+        }
+
+        $portal = $this->portalRepository->find($room->getContextId());
         if ($portal) {
-            return new RoomActivityDeleteWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $room);
+            return new RoomActivityDeleteWarningMessage($this->legacyEnvironment, $portal, $room);
         }
 
         return null;

@@ -12,16 +12,10 @@ $message["PROJECT_MAIL_BODY_ACTION_REOPEN"]["en"] = "Reopening";
 $message["PROJECT_MAIL_BODY_ACTION_UNDELETE"]["en"] = "Undeletion";
 $message["PROJECT_MAIL_BODY_ACTION_UNLOCK"]["en"] = "Unblocking";
 $message["PROJECT_MAIL_BODY_ARCHIVE"]["en"] = "Storage of a %_PROJECT_SUB_NOMS_LOW.";
-$message["PROJECT_MAIL_BODY_ARCHIVE_INFO"]["en"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW &quot;%1&quot; is unused for almost %3 days. It will be stored in %2 days. After storing you can receive all data furthermore.
-
-If can stop the storage with login into %_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW within the following %2 days.";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS"]["en"] = "The %_PROJECT_SUB_NOMS_LOW is linked to the following %_COMMUNITY_SUB_NOMPL_LOW:";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_EMPTY"]["en"] = "*no %_COMMUNITY_SUB_NOMPL_LOW";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_UNLINKED"]["en"] = "The %_PROJECT_SUB_NOMS_LOW is NOT linked to the following %_COMMUNITY_SUB_NOMPL_LOW anymore:";
 $message["PROJECT_MAIL_BODY_DELETE"]["en"] = "Deletion of a %_PROJECT_SUB_NOMS_LOW.";
-$message["PROJECT_MAIL_BODY_DELETE_INFO"]["en"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW &quot;%1&quot; is unused for almost %3 days. It will be deleted in %2 days.
-
-If can stop the deleting with login into %_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW within the following %2 days.";
 $message["PROJECT_MAIL_BODY_INFORMATION"]["en"] = "Further information:
 Name of the room: %1
 Editor:           %2

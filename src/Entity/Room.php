@@ -637,13 +637,13 @@ class Room
     /**
      * Set template
      *
-     * @param int $template
+     * @param bool $template
      *
      * @return Room
      */
-    public function setTemplate($template): Room
+    public function setTemplate(bool $template): Room
     {
-        $this->template = $template;
+        $this->template = $template ? 1 : -1;
 
         return $this;
     }
@@ -651,11 +651,11 @@ class Room
     /**
      * Get template
      *
-     * @return int
+     * @return bool
      */
-    public function getTemplate(): int
+    public function getTemplate(): bool
     {
-        return $this->template;
+        return $this->template == 1;
     }
 
     /**
