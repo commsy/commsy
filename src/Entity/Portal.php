@@ -38,7 +38,7 @@ class Portal implements \Serializable
     private $id;
 
     /**
-     * @var integer
+     * @var User|null
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id", nullable=true)
@@ -161,7 +161,7 @@ class Portal implements \Serializable
      *
      * @var bool
      */
-    private bool $clearInactiveAccountsFeatureEnabled;
+    private bool $clearInactiveAccountsFeatureEnabled = false;
 
     /**
      * @ORM\Column(type="smallint", options={"default":180})
@@ -169,7 +169,7 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveAccountsNotifyLockDays;
+    private int $clearInactiveAccountsNotifyLockDays = 180;
 
     /**
      * @ORM\Column(type="smallint", options={"default":30})
@@ -177,7 +177,7 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveAccountsLockDays;
+    private int $clearInactiveAccountsLockDays = 30;
 
     /**
      * @ORM\Column(type="smallint", options={"default":180})
@@ -185,7 +185,7 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveAccountsNotifyDeleteDays;
+    private int $clearInactiveAccountsNotifyDeleteDays = 180;
 
     /**
      * @ORM\Column(type="smallint", options={"default":30})
@@ -193,14 +193,14 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveAccountsDeleteDays;
+    private int $clearInactiveAccountsDeleteDays = 30;
 
     /**
      * @ORM\Column(type="boolean", options={"default":0})
      *
      * @var bool
      */
-    private bool $clearInactiveRoomsFeatureEnabled;
+    private bool $clearInactiveRoomsFeatureEnabled = false;
 
     /**
      * @ORM\Column(type="smallint", options={"default":180})
@@ -208,7 +208,7 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveRoomsNotifyLockDays;
+    private int $clearInactiveRoomsNotifyLockDays = 180;
 
     /**
      * @ORM\Column(type="smallint", options={"default":30})
@@ -216,7 +216,7 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveRoomsLockDays;
+    private int $clearInactiveRoomsLockDays = 30;
 
     /**
      * @ORM\Column(type="smallint", options={"default":180})
@@ -224,7 +224,7 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveRoomsNotifyDeleteDays;
+    private int $clearInactiveRoomsNotifyDeleteDays = 180;
 
     /**
      * @ORM\Column(type="smallint", options={"default":30})
@@ -232,19 +232,11 @@ class Portal implements \Serializable
      *
      * @var int
      */
-    private int $clearInactiveRoomsDeleteDays;
-
-    /**
-     * array - containing the data of this item, including lists of linked items
-     */
-    var $_data = array();
-    private $_environment;
-    var $_room_list_continuous = null;
+    private int $clearInactiveRoomsDeleteDays = 30;
 
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
-        $this->_environment = $this;
     }
 
     /**
@@ -260,11 +252,11 @@ class Portal implements \Serializable
     /**
      * Set deleter
      *
-     * @param \App\Entity\User $deleter
+     * @param User $deleter
      *
      * @return Portal
      */
-    public function setDeleter(\App\Entity\User $deleter = null)
+    public function setDeleter(User $deleter = null)
     {
         $this->deleter = $deleter;
 
@@ -274,9 +266,9 @@ class Portal implements \Serializable
     /**
      * Get deleter
      *
-     * @return \App\Entity\User
+     * @return User|null
      */
-    public function getDeleter()
+    public function getDeleter(): ?User
     {
         return $this->deleter;
     }
@@ -1074,15 +1066,11 @@ class Portal implements \Serializable
 
     public function getContinuousRoomList(LegacyEnvironment $environment)
     {
-        if (!isset($this->_room_list_continuous)) {
-            $manager = $environment->getEnvironment()->getRoomManager();
-            $manager->setContextLimit($this->getId());
-            $manager->setContinuousLimit();
-            $manager->select();
-            $this->_room_list_continuous = $manager->get();
-            unset($manager);
-        }
-        return $this->_room_list_continuous;
+        $manager = $environment->getEnvironment()->getRoomManager();
+        $manager->setContextLimit($this->getId());
+        $manager->setContinuousLimit();
+        $manager->select();
+        return $manager->get();
     }
 
     /**
@@ -1227,9 +1215,6 @@ class Portal implements \Serializable
      */
     function save()
     {
-        $manager = $this->_environment->getManager($this->_type);
-        $this->_save($manager);
-        $this->_changes = array();
     }
 
     /**

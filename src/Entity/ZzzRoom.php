@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  * ZzzRoom
@@ -162,11 +162,11 @@ class ZzzRoom
     private ?string $roomDescription;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      *
      * @ORM\Column(name="lastlogin", type="datetime", nullable=true)
      */
-    private $lastlogin;
+    private ?DateTime $lastlogin;
 
     /**
      * @var string
@@ -328,9 +328,9 @@ class ZzzRoom
      *
      * @param integer $contextId
      *
-     * @return Room
+     * @return ZzzRoom
      */
-    public function setContextId($contextId): Room
+    public function setContextId($contextId): ZzzRoom
     {
         $this->contextId = $contextId;
 
@@ -614,13 +614,13 @@ class ZzzRoom
     /**
      * Set template
      *
-     * @param int $template
+     * @param bool $template
      *
      * @return ZzzRoom
      */
-    public function setTemplate($template)
+    public function setTemplate(bool $template)
     {
-        $this->template = $template;
+        $this->template = $template ? 1 : -1;
 
         return $this;
     }
@@ -628,11 +628,11 @@ class ZzzRoom
     /**
      * Get template
      *
-     * @return int
+     * @return bool
      */
-    public function getTemplate(): int
+    public function getTemplate(): bool
     {
-        return $this->template;
+        return $this->template == 1;
     }
 
     /**
@@ -702,7 +702,7 @@ class ZzzRoom
      *
      * @return DateTime
      */
-    public function getLastlogin(): DateTime
+    public function getLastlogin(): ?DateTime
     {
         return $this->lastlogin;
     }

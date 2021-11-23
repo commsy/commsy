@@ -215,23 +215,29 @@ class AccountManager
 
     /**
      * @param Account $account
+     * @param bool $flush
      */
-    public function renewActivityUpdated(Account $account): void
+    public function renewActivityUpdated(Account $account, bool $flush = true): void
     {
         $account->setActivityStateUpdated(new DateTime());
         $this->entityManager->persist($account);
-        $this->entityManager->flush();
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
     }
 
     /**
      * @param Account $account
      * @param bool $resetLastLogin
      * @param bool $resetActivityState
+     * @param bool $flush
      */
     public function resetInactivity(
         Account $account,
         bool $resetLastLogin = true,
-        bool $resetActivityState = true
+        bool $resetActivityState = true,
+        bool $flush = true
     ) : void
     {
         if ($resetLastLogin) {
@@ -244,7 +250,10 @@ class AccountManager
         }
 
         $this->entityManager->persist($account);
-        $this->entityManager->flush();
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
     }
 
     /**

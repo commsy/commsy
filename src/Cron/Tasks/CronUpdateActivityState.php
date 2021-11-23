@@ -11,6 +11,8 @@ use Symfony\Component\Workflow\WorkflowInterface;
 
 class CronUpdateActivityState implements CronTaskInterface
 {
+    private const BATCH_SIZE = 5000;
+
     /**
      * @var AccountsRepository
      */
@@ -59,8 +61,9 @@ class CronUpdateActivityState implements CronTaskInterface
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $accountActivityObjects = $this->accountRepository->findAll();
+        $accountActivityObjects = $this->accountRepository->findAllExceptRoot();
 
+        $i = 0;
         foreach ($accountActivityObjects as $accountActivityObject) {
             $transitions = $this->accountActivityStateMachine->getEnabledTransitions($accountActivityObject);
 
@@ -72,13 +75,20 @@ class CronUpdateActivityState implements CronTaskInterface
                     $this->entityManager->persist($accountActivityObject);
                 }
             }
+
+            $i++;
+            if (($i % self::BATCH_SIZE) === 0) {
+                $this->entityManager->flush();
+            }
         }
         $this->entityManager->flush();
+
         $roomActivityObjects = array_merge(
             $this->roomRepository->findAll(),
             $this->zzzRoomRepository->findAll()
         );
 
+        $i = 0;
         foreach ($roomActivityObjects as $roomActivityObject) {
             $transitions = $this->roomActivityStateMachine->getEnabledTransitions($roomActivityObject);
 
@@ -88,9 +98,16 @@ class CronUpdateActivityState implements CronTaskInterface
                 if ($this->roomActivityStateMachine->can($roomActivityObject, $transitionName)) {
                     $this->roomActivityStateMachine->apply($roomActivityObject, $transitionName);
                     $this->entityManager->persist($roomActivityObject);
+
                 }
             }
+
+            $i++;
+            if (($i % self::BATCH_SIZE) === 0) {
+                $this->entityManager->flush();
+            }
         }
+
         $this->entityManager->flush();
     }
 

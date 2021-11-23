@@ -11,6 +11,7 @@ use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Room\RoomManager;
 use App\Utils\ItemService;
+use cs_room_item;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -72,6 +73,11 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         // Block all transitions if the portal configuration has disabled the account activity feature
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
+        if (!$portal) {
+            $event->setBlocked(true);
+            return;
+        }
+
         if (!$portal->isClearInactiveRoomsFeatureEnabled()) {
             $event->setBlocked(true);
             return;
@@ -102,7 +108,10 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-        if (!$this->datePassedDays($room->getLastLogin(), $portal->getClearInactiveRoomsNotifyLockDays())) {
+
+        if (!$room->getLastLogin() ||
+            !$this->datePassedDays($room->getLastLogin(), $portal->getClearInactiveRoomsNotifyLockDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -120,7 +129,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-        if (!$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsLockDays())) {
+        if (!$room->getActivityStateUpdated() ||
+            !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsLockDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -139,7 +150,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-        if (!$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsNotifyDeleteDays())) {
+        if (!$room->getActivityStateUpdated() ||
+            !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsNotifyDeleteDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -158,7 +171,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($room->getContextId());
-        if (!$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsDeleteDays())) {
+        if (!$room->getActivityStateUpdated() ||
+            !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsDeleteDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -173,7 +188,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room|ZzzRoom $room */
         $room = $event->getSubject();
 
-        $this->roomManager->renewActivityUpdated($room);
+        $this->roomManager->renewActivityUpdated($room, false);
     }
 
     /**
@@ -188,8 +203,11 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->roomMessageFactory->createRoomActivityLockWarningMessage($room);
         if ($message) {
+            /** @var cs_room_item $legacyRoom */
             $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
-            $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
+            if ($legacyRoom) {
+                $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
+            }
         }
     }
 
@@ -221,8 +239,11 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->roomMessageFactory->createRoomActivityDeleteWarningMessage($room);
         if ($message) {
+            /** @var cs_room_item $legacyRoom */
             $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
-            $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
+            if ($legacyRoom) {
+                $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
+            }
         }
     }
 

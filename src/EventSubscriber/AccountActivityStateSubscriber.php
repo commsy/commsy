@@ -76,7 +76,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
         // Deny, if account is last moderator (this will also reset the account state)
         if ($this->accountManager->isLastModerator($account)) {
-            $this->accountManager->resetInactivity($account, false, true);
+            $this->accountManager->resetInactivity($account, false, true, false);
 
             $event->setBlocked(true);
         }
@@ -95,7 +95,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($account->getContextId());
-        if (!$this->datePassedDays($account->getLastLogin(), $portal->getClearInactiveAccountsNotifyLockDays())) {
+        if (!$account->getLastLogin() ||
+            !$this->datePassedDays($account->getLastLogin(), $portal->getClearInactiveAccountsNotifyLockDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -113,7 +115,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($account->getContextId());
-        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsLockDays())) {
+        if (!$account->getActivityStateUpdated() ||
+            !$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsLockDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -132,7 +136,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($account->getContextId());
-        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsNotifyDeleteDays())) {
+        if (!$account->getActivityStateUpdated() ||
+            !$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsNotifyDeleteDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -151,7 +157,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
         $portal = $this->portalRepository->find($account->getContextId());
-        if (!$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsDeleteDays())) {
+        if (!$account->getActivityStateUpdated() ||
+            !$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsDeleteDays())
+        ) {
             $event->setBlocked(true);
         }
     }
@@ -166,7 +174,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $event->getSubject();
 
-        $this->accountManager->renewActivityUpdated($account);
+        $this->accountManager->renewActivityUpdated($account, false);
     }
 
     /**

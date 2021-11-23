@@ -8,18 +8,21 @@ $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["en"] = "Text";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Your account %1 (%2) will be deleted in %3 days.
 
 %4";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["en"] = "Your account %1 (%2) will be deleted tomorrow.
-
-%3";
 $message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["en"] = "your account %1 (%2) will be locked in %3 days because of inactivity. Log on to your account will prevent you from getting locked.
 
 %4";
 $message["EMAIL_INACTIVITY_LOCK_NOW_BODY"]["en"] = "your account %1 (%2) is locked because of inactivity.
 
 %3";
-$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["en"] = "your account %1 (%2) will be locked tomorrow. Log on to your account will prevent you from getting locked.
+$message["EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY"]["en"] = "The workspace &quot;%1&quot; is unused for almost %2 days. It will be locked in %3 days.
 
-%3";
+If you want to continue using the workspace, please enter it within the following %3 days.";
+$message["EMAIL_LOGIN_EXPIRATION_BODY"]["en"] = "your right to login as another user is deactivated now.
+
+Best regards ... %2";
+$message["EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY"]["en"] = "The worksapce &quot;%1&quot; is unused for almost %2 days. It will be deleted in %3 days.
+
+If you want to continue using the workspace please contact a portal moderator within the following %3 days and ask for unlocking.";
 $message["EMAIL_LOGIN_EXPIRATION_BODY"]["en"] = "your right to login as another user is deactivated now.
 
 Best regards ... %2";

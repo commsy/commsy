@@ -28,8 +28,9 @@ class RoomManager
 
     /**
      * @param object $room
+     * @param bool $flush
      */
-    public function renewActivityUpdated(object $room): void
+    public function renewActivityUpdated(object $room, bool $flush = true): void
     {
         if (!$room instanceof Room && !$room instanceof ZzzRoom) {
             throw new LogicException('$room must be of type Room or ZzzRoom');
@@ -37,7 +38,10 @@ class RoomManager
 
         $room->setActivityStateUpdated(new DateTime());
         $this->entityManager->persist($room);
-        $this->entityManager->flush();
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
     }
 
     /**
