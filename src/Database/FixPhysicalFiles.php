@@ -58,14 +58,14 @@ class FixPhysicalFiles implements DatabaseCheck
             ->where('f.deletion_date IS NULL');
         $files = $qb->execute();
 
-        $filesDirectory = $this->parameterBag->get('files_directory');
+        $qb2 = $this->connection->createQueryBuilder()
+            ->select('*')
+            ->from('files', 'f')
+            ->where('f.deletion_date IS NULL');
+        $qb2->setMaxResults(1);
+        $files = $qb2->getFirstResult();
 
-        // TODO: "files()" for files, "directories()" for directories...
-//        $finder = new Finder();
-//        $finder->files()
-//            ->in($filesDirectory)
-//            ->followLinks()
-//            ->path('/^\d/');
+        $filesDirectory = $this->parameterBag->get('files_directory');
 
         //TODO: Only use files with full path structure instead of both files and directories?
         $this->folderFiles = array();
@@ -74,10 +74,13 @@ class FixPhysicalFiles implements DatabaseCheck
         $directories = (new Finder())->directories()
             ->in($filesDirectory);
 
+        $finderFileNames = (new Finder())->files()
+            ->in($filesDirectory);
+
         //TODO: remove?
-        $scannedFiles = $files = array_diff( scandir($filesDirectory), array(".", "..") );
-        $scannedFilesNumbers = preg_grep('/^\d/',$scannedFiles);
-        $scannedFilesStrings = preg_grep('/^[a-zA-Z]/',$scannedFiles);
+        $scannedFiles = $files = array_diff(scandir($filesDirectory), array(".", ".."));
+        $scannedFilesNumbers = preg_grep('/^\d/', $scannedFiles);
+        $scannedFilesStrings = preg_grep('/^[a-zA-Z]/', $scannedFiles);
 
         if (!empty($scannedFilesNumbers)) {
             foreach ($scannedFilesNumbers as $file) {
@@ -89,9 +92,9 @@ class FixPhysicalFiles implements DatabaseCheck
         if (!empty($scannedFilesStrings)) {
             foreach ($scannedFilesStrings as $file) {
                 $relativePathName = $filesDirectory . "/" . $file;
-                $haystack = array('temp','portal');
+                $haystack = array('temp', 'portal');
                 $needle = $file;
-                if (!in_array($needle, $haystack)) {
+                if (!in_array($needle, $haystack) && file_exists($relativePathName)) {
                     $filesystem->remove($relativePathName);
                 }
 
@@ -102,102 +105,119 @@ class FixPhysicalFiles implements DatabaseCheck
         // check first level: must be numeric, can only be 4 digits long
         // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
         if ($directories->hasResults()) {
+
+            $markedForRemoval = array();
+
             foreach ($directories as $directory) {
                 $relativePathName = $directory->getRelativePathname();
 
 
+                //TODO: remove bas dir from rest to ensure stability
+                $parts = explode("/", $directory);
+                if (sizeof($parts) > 6) {
+                    $toBeChecked = $parts[6];
 
-//                //TODO: can path length be assumed to be stable?
-//                $parts = explode("/", $directory);
-//                if (sizeof($parts) > 6) {
-//                    $toBeChecked = $parts[6];
-//
-//                    // check numeric
-//                    if (!is_numeric($toBeChecked)) {
-//                        $filesystem->remove($directory);
-//                    }
-//
-//                    // check length being 4
-//                    if (strlen($toBeChecked) != 4) {
-//                        $filesystem->remove($directory);
-//                    }
-//                }
-//
-//                if (sizeof($parts) > 7) {
-//                    $toBeChecked = $parts[7];
-//
-//                    if (!str_contains($toBeChecked, '_')) {
-//                        $filesystem->remove($directory);
-//                    }
-//
-//                    if (!substr($toBeChecked, 1) == '_') {
-//                        $filesystem->remove($directory);
-//                    }
-//
-//                    if (!is_numeric(substr($toBeChecked, 1))) {
-//                        $filesystem->remove($directory);
-//                    }
-//                }
+                    // check numeric
+                    if (!is_numeric($toBeChecked) && file_exists($relativePathName)) {
+                        $markedForRemoval[] = $directory;
+                    }
+
+                    // check length being 4
+                    if (strlen($toBeChecked) != 4 && file_exists($relativePathName)) {
+                        $markedForRemoval[] = $directory;
+                    }
+                }
+
+                if (sizeof($parts) > 7) {
+                    $toBeChecked = $parts[7];
+
+                    if (!str_contains($toBeChecked, '_') && file_exists($relativePathName)) {
+                        $markedForRemoval[] = $directory;
+                    }
+
+                    if (!substr($toBeChecked, 1) == '_' && file_exists($relativePathName)) {
+                        $markedForRemoval[] = $directory;
+                    }
+
+                    if (!is_numeric(substr($toBeChecked, 1)) && file_exists($relativePathName)) {
+                        $markedForRemoval[] = $directory;
+                    }
+                }
+            }
+
+            foreach ($markedForRemoval as $removal) {
+                $filesystem->remove($removal);
             }
         }
 
-        if(!empty($scannedFileNames)) {
+        if (!empty($scannedFileNames)) {
 
+            if ($finderFileNames->hasResults()) {
+                foreach($finderFileNames as $finderFileName) {
+                    $name = $finderFileName->getPath();
+                    echo('hey');
+                }
+            }
+
+            //TODO: Use Finder w. fies()
             foreach ($scannedFileNames as $scannedFile) {
 
-                    $filesDirParts = explode("/",$scannedFile);
-                    $toBeChecked = end($filesDirParts);
+                $filesDirParts = explode("/", $scannedFile);
+                $toBeChecked = end($filesDirParts);
 
-                    // if is directory, do not check
-                    if (is_dir($scannedFile)) {
-                        continue;
-                    }
+                // if is directory, do not check
+                if (is_dir($scannedFile)) {
+                    continue;
+                }
 
-                    // check digit + file extension
-                    if (str_contains($toBeChecked,'.') and !str_contains($toBeChecked,'_')) {
-                        $extensionParts = explode(".", $toBeChecked);
-                        if (is_numeric($extensionParts[0])) {
-                            continue;
-                        }
-                    }
-
-                // check digit + file extension + file extension contains '_' e.g. '1.jpg_thumbnail'
-                if (str_contains($toBeChecked,'.') and str_contains($toBeChecked,'_')) {
+                // check digit + file extension
+                if (str_contains($toBeChecked, '.') and !str_contains($toBeChecked, '_')) {
                     $extensionParts = explode(".", $toBeChecked);
-                    if (is_numeric($extensionParts[0]) and str_contains(end($extensionParts),'_')) {
+                    if (is_numeric($extensionParts[0])) {
                         continue;
                     }
                 }
 
-                    // check cid[roomId]_bginfo|logo|[username]_[filename].[extension]
-                    if (str_contains($toBeChecked,'.') and str_contains($toBeChecked,'_')) {
-                        //TODO use ending function
-                        $extensionParts = explode(".", $toBeChecked);
-                        $underscoreParts = explode('_', $extensionParts[0]);
+                // check digit + file extension + file extension contains '_' e.g. '1.jpg_thumbnail'
+                if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
+                    $extensionParts = explode(".", $toBeChecked);
+                    if (is_numeric($extensionParts[0]) and str_contains(end($extensionParts), '_')) {
+                        continue;
+                    }
+                }
 
-                        // check if third level contains two underscores
-                        if (substr_count($extensionParts[0],"_") == 2) {
+                // check cid[roomId]_bginfo|logo|[username]_[filename].[extension]
+                if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
+                    //TODO use ending function
+                    $extensionParts = explode(".", $toBeChecked);
+                    $underscoreParts = explode('_', $extensionParts[0]);
 
-                            // check if cid + int (e.g. cid12345)
-                            if (str_contains($underscoreParts[0],'cid')) {
+                    // check if third level contains two underscores
+                    if (substr_count($extensionParts[0], "_") == 2) {
 
-                                // check if ID string (without CID) is indeed numeric
-                                $idStringWithoutCID = substr($underscoreParts[0],3);
-                                if (is_numeric($idStringWithoutCID)) {
+                        // check if cid + int (e.g. cid12345)
+                        if (str_contains($underscoreParts[0], 'cid')) {
 
-                                    // check if first three chars of ID string is 'CID'
-                                    if ($result = substr($underscoreParts[0], 0, 3)) {
-                                        continue;
-                                    }
+                            // check if ID string (without CID) is indeed numeric
+                            $idStringWithoutCID = substr($underscoreParts[0], 3);
+                            if (is_numeric($idStringWithoutCID)) {
+
+                                // check if first three chars of ID string is 'CID'
+                                if ($result = substr($underscoreParts[0], 0, 3)) {
+                                    continue;
                                 }
                             }
                         }
                     }
+                }
 
-                    // delete if no allowed pattern could be found
+                // delete if no allowed pattern could be found
+                if (file_exists($scannedFile)) {
                     $filesystem->remove($scannedFile);
                 }
+
             }
+        }
 
         return true;
     }
@@ -205,7 +225,8 @@ class FixPhysicalFiles implements DatabaseCheck
     /**
      * @param $dir
      */
-    private function listFolderFiles($dir){
+    private function listFolderFiles($dir)
+    {
 
         $ffs = scandir($dir);
 
@@ -213,12 +234,15 @@ class FixPhysicalFiles implements DatabaseCheck
         unset($ffs[array_search('..', $ffs, true)]);
 
         // prevent empty ordered elements
-        if (count($ffs) < 1)
+        if (count($ffs) < 1) {
             return $this->folderFiles;
+        }
 
-        foreach($ffs as $ff){
+        foreach ($ffs as $ff) {
             array_push($this->folderFiles, $dir . '/' . $ff);
-            if(is_dir($dir.'/'.$ff)) $this->listFolderFiles($dir.'/'.$ff);
+            if (is_dir($dir . '/' . $ff)) {
+                $this->listFolderFiles($dir . '/' . $ff);
+            }
         }
 
         return $this->folderFiles;
