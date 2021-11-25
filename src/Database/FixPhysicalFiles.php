@@ -51,20 +51,6 @@ class FixPhysicalFiles implements DatabaseCheck
 
         $filesystem = new Filesystem();
 
-        $qb = $this->connection->createQueryBuilder()
-            ->select('f.*', 'i.context_id as portalId')
-            ->from('files', 'f')
-            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')->setMaxResults(1)
-            ->where('f.deletion_date IS NULL');
-        $files = $qb->execute();
-
-        $qb2 = $this->connection->createQueryBuilder()
-            ->select('*')
-            ->from('files', 'f')
-            ->where('f.deletion_date IS NULL');
-        $qb2->setMaxResults(1);
-        $files = $qb2->getFirstResult();
-
         $filesDirectory = $this->parameterBag->get('files_directory');
 
         //TODO: Only use files with full path structure instead of both files and directories?
@@ -143,6 +129,44 @@ class FixPhysicalFiles implements DatabaseCheck
                         $markedForRemoval[] = $directory;
                     }
                 }
+
+                // check if file is associated with existing portal
+                if (sizeof($parts) > 5) {
+                    $contextId = $parts[5];
+
+                    // exclude the server (99) and 'temp'
+                    if ($contextId != '99' and $contextId != 'temp' and $contextId != 'portal') {
+                        $qb = $this->connection->createQueryBuilder()
+                            ->select('f.*', 'i.context_id as portalId')
+                            ->from('files', 'f')
+                            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')->setMaxResults(1)
+                            ->where('f.deletion_date IS NULL')
+                            ->andWhere('f.context_id LIKE ' . $contextId);
+                        $files = $qb->execute();
+                        if (!is_array($files)) {
+
+                            // local file system
+                            $files = $files->fetchAllAssociative();
+                            if (!count($files) > 0) {
+                                $markedForRemoval[] = $directory;
+                            }
+                        } else {
+
+                            // testing file system
+                            $hit = false;
+                            foreach ($files as $file) {
+                                if (in_array($contextId, $file)) {
+                                    $hit = true;
+                                    continue;
+                                }
+                            }
+
+                            if (!$hit) {
+                                $markedForRemoval[] = $directory;
+                            }
+                        }
+                    }
+                }
             }
 
             foreach ($markedForRemoval as $removal) {
@@ -153,7 +177,7 @@ class FixPhysicalFiles implements DatabaseCheck
         if (!empty($scannedFileNames)) {
 
             if ($finderFileNames->hasResults()) {
-                foreach($finderFileNames as $finderFileName) {
+                foreach ($finderFileNames as $finderFileName) {
                     $name = $finderFileName->getPath();
                     echo('hey');
                 }

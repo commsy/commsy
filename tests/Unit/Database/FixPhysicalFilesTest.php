@@ -52,10 +52,11 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('portal');
         mkdir('someother');
 
-        $file = ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345];
+        $fileA = ['portalId' => 11111];
+        $fileB = ['portalId' => 22222];
         $connectionStub = $this->makeEmpty(Connection::class, [
             'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$file]
+                'execute' => [$fileA, $fileB]
             ]),
         ]);
 
@@ -78,10 +79,10 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('12345/1234/123');
         mkdir('12345/1234/invalid');
 
-        $file = ['filesId' => 1234, 'filename' => 'org_filename.txt', 'contextId' => 1234123, 'portalId' => 12345];
+        $fileA = ['portalId' => 12345];
         $connectionStub = $this->makeEmpty(Connection::class, [
             'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$file]
+                'execute' => [$fileA]
             ]),
         ]);
 
@@ -101,24 +102,25 @@ final class FixPhysicalFilesTest extends Unit
         $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
 
         /**
-         * Create top level folder test data
+         * Create top level folder files_test
          * - 99 Server content
          * - Numeric folders for existing and non existing portals
          * - temp/
          * - Other non-numeric folders
          */
         mkdir('99');
-        mkdir('12345');
-        mkdir('23456');
-        mkdir('34567');
+        mkdir('11111');
+        mkdir('22222');
+        mkdir('33333');
         mkdir('temp');
         mkdir('somefolder');
 
-        $fileA = ['portalId' => 12345];
-        $fileB = ['portalId' => 23456];
+        $fileA = ['portalId' => 11111];
+        $fileB = ['portalId' => 22222];
+        $fileC = ['portalId' => 99];
         $connectionStub = $this->makeEmpty(Connection::class, [
             'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$fileA, $fileB]
+                'execute' => [$fileA, $fileB, $fileC]
             ]),
         ]);
 
@@ -131,9 +133,9 @@ final class FixPhysicalFilesTest extends Unit
 
         // Only the directories with existing portals must remain
         // TODO: Take care of userrooms!
-        $this->tester->assertDirectoryExists('12345');
-        $this->tester->assertDirectoryExists('23456');
-        $this->tester->assertDirectoryDoesNotExist('34567');
+        $this->tester->assertDirectoryExists('11111');
+        $this->tester->assertDirectoryExists('22222');
+        $this->tester->assertDirectoryDoesNotExist('33333');
 
         // Non-numeric folds must not remain
         $this->tester->assertDirectoryDoesNotExist('somefolder');
@@ -156,10 +158,11 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('12345/123');
         mkdir('12345/12345');
 
-        $file = ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345];
+        $fileA = ['portalId' => 12345];
+        $fileB = ['portalId' => 22222];
         $connectionStub = $this->makeEmpty(Connection::class, [
             'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$file]
+                'execute' => [$fileA, $fileB]
             ]),
         ]);
 
@@ -189,10 +192,11 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('12345/somefolder');
         mkdir('12345/1234');
 
-        $file = ['filesId' => 1, 'contextId' => 1234123, 'portalId' => 12345];
+        $fileA = ['portalId' => 12345];
+        $fileB = ['portalId' => 22222];
         $connectionStub = $this->makeEmpty(Connection::class, [
             'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$file]
+                'execute' => [$fileA, $fileB]
             ]),
         ]);
 
@@ -223,10 +227,11 @@ final class FixPhysicalFilesTest extends Unit
         touch('12345/1234/_123/cid1234125_logo_filename.jpg');
         touch('12345/1234/_123/cid1234126_user_filename.jpg');
 
-        $file = ['filesId' => 1234123, 'filename' => 'org_filename.txt', 'contextId' => 1234123, 'portalId' => 12345];
+        $fileA = ['portalId' => 12345];
+        $fileB = ['portalId' => 22222];
         $connectionStub = $this->makeEmpty(Connection::class, [
             'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$file]
+                'execute' => [$fileA, $fileB]
             ]),
         ]);
 
