@@ -67,6 +67,8 @@ class AuthSourceLdap extends AuthSource
      */
     private ?string $authQuery;
 
+    protected string $type = 'ldap';
+
     public function __construct()
     {
         $this->addAccount = self::ADD_ACCOUNT_NO;
@@ -74,11 +76,6 @@ class AuthSourceLdap extends AuthSource
         $this->deleteAccount = false;
         $this->changeUserdata = false;
         $this->changePassword = false;
-    }
-
-    public function getType(): string
-    {
-        return 'ldap';
     }
 
     /**

@@ -9,7 +9,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -32,7 +32,7 @@ class Portal implements \Serializable
      * @ORM\GeneratedValue
      *
      * @Groups({"api"})
-     * @SWG\Property(description="The unique identifier.")
+     * @OA\Property(description="The unique identifier.")
      */
     private $id;
 
@@ -75,7 +75,7 @@ class Portal implements \Serializable
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      */
     private $title;
 
@@ -85,7 +85,7 @@ class Portal implements \Serializable
      * @ORM\Column(name="description_de", type="text")
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string")
+     * @OA\Property(type="string")
      */
     private $descriptionGerman;
 
@@ -95,7 +95,7 @@ class Portal implements \Serializable
      * @ORM\Column(name="description_en", type="text")
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string")
+     * @OA\Property(type="string")
      */
     private $descriptionEnglish;
 

@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
@@ -23,7 +23,7 @@ class Room
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
      * @Groups({"api_read"})
-     * @SWG\Property(description="The unique identifier.")
+     * @OA\Property(description="The unique identifier.")
      */
     private $itemId = '0';
 
@@ -89,7 +89,7 @@ class Room
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      *
      * @Groups({"api_read"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      */
     private $title;
 
@@ -120,7 +120,7 @@ class Room
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
      *
      * @Groups({"api_read"})
-     * @SWG\Property(description="Either project or community")
+     * @OA\Property(description="Either project or community")
      */
     private $type = 'project';
 
