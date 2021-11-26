@@ -47,33 +47,41 @@ class FixPhysicalFiles implements DatabaseCheck
 
     public function resolve(SymfonyStyle $io): bool
     {
+        // io for logs
         $io->text('Inspecting physical files');
 
+        // filesystem for removing directories / files
         $filesystem = new Filesystem();
 
+        // base directory to be checked
         $filesDirectory = $this->parameterBag->get('files_directory');
 
+        // fetch all fileNames with preceding paths - use finder?
         $this->folderFiles = array();
         $scannedFileNames = $this->listFolderFiles($filesDirectory);
 
+        // finder instances for directories and files
         $directories = (new Finder())->directories()
             ->in($filesDirectory);
 
         $finderFileNames = (new Finder())->files()
             ->in($filesDirectory);
 
-        // check first level: must be numeric, can only be 4 digits long
-        // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
+
         if ($directories->hasResults()) {
 
+            // only remove dirs at the end of all checks
             $markedForRemoval = array();
 
+            // iterate dirs; attention: those are finder instances
             foreach ($directories as $directory) {
                 $relativePathName = $directory->getRelativePathname();
 
-
                 //TODO: remove bas dir from rest to ensure stability
                 $parts = explode("/", $directory);
+
+                // check first level: must be numeric, can only be 4 digits long
+                // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
                 if (sizeof($parts) > 6) {
                     $toBeChecked = $parts[6];
 
@@ -88,6 +96,7 @@ class FixPhysicalFiles implements DatabaseCheck
                     }
                 }
 
+                // check on e.g. _123
                 if (sizeof($parts) > 7) {
                     $toBeChecked = $parts[7];
 
@@ -104,7 +113,7 @@ class FixPhysicalFiles implements DatabaseCheck
                     }
                 }
 
-                // check if file is associated with existing portal
+                // check if file is associated with existing portal and delete orphans
                 if (sizeof($parts) > 5) {
                     $contextId = $parts[5];
 
@@ -143,6 +152,7 @@ class FixPhysicalFiles implements DatabaseCheck
                 }
             }
 
+            // remove all dirs marked for removal
             foreach ($markedForRemoval as $removal) {
                 $filesystem->remove($removal);
             }
@@ -155,7 +165,7 @@ class FixPhysicalFiles implements DatabaseCheck
             }
         }
 
-        // check if file names are valid
+        // check on file names being valid
         if (!empty($scannedFileNames)) {
 
             if ($finderFileNames->hasResults()) {
@@ -229,6 +239,7 @@ class FixPhysicalFiles implements DatabaseCheck
     private function listFolderFiles($dir)
     {
 
+        // make instance variable
         $ffs = scandir($dir);
 
         unset($ffs[array_search('.', $ffs, true)]);
@@ -239,6 +250,7 @@ class FixPhysicalFiles implements DatabaseCheck
             return $this->folderFiles;
         }
 
+        // recursively deepen path
         foreach ($ffs as $ff) {
             array_push($this->folderFiles, $dir . '/' . $ff);
             if (is_dir($dir . '/' . $ff)) {
