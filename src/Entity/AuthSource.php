@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -32,7 +32,7 @@ abstract class AuthSource
      * @ORM\GeneratedValue(strategy="AUTO")
      *
      * @Groups({"api"})
-     * @SWG\Property(description="The unique identifier.")
+     * @OA\Property(description="The unique identifier.")
      */
     private int $id;
 
@@ -42,7 +42,7 @@ abstract class AuthSource
      * @ORM\Column(type="string", length=255, nullable=false)
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      */
     private ?string $title;
 
@@ -52,16 +52,13 @@ abstract class AuthSource
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      */
     private ?string $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
      * @ORM\JoinColumn(name="portal_id", referencedColumnName="id")
-     *
-     * @Groups({"api"})
-     * @SWG\Property(description="The portal.")
      */
     private ?Portal $portal;
 
@@ -69,6 +66,9 @@ abstract class AuthSource
      * @var boolean
      *
      * @ORM\Column(type="boolean")
+     *
+     * @Groups({"api"})
+     * @OA\Property(type="boolean")
      */
     private ?bool $enabled;
 
@@ -119,7 +119,13 @@ abstract class AuthSource
      */
     protected bool $createRoom;
 
-    abstract public function getType(): string;
+    /**
+     * @var string
+     *
+     * @Groups({"api"})
+     * @OA\Property(type="string")
+     */
+    protected string $type = '';
 
     /**
      * @return int
@@ -327,5 +333,13 @@ abstract class AuthSource
     {
         $this->changePassword = $changePassword;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

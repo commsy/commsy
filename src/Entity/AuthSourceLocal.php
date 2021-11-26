@@ -18,6 +18,8 @@ class AuthSourceLocal extends AuthSource
      */
     private ?string $mailRegex;
 
+    protected string $type = 'local';
+
     public function __construct()
     {
         $this->addAccount = self::ADD_ACCOUNT_YES;
@@ -25,11 +27,6 @@ class AuthSourceLocal extends AuthSource
         $this->deleteAccount = true;
         $this->changeUserdata = true;
         $this->changePassword = true;
-    }
-
-    public function getType(): string
-    {
-        return 'local';
     }
 
     /**

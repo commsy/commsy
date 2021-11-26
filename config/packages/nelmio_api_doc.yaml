@@ -1,18 +1,17 @@
 nelmio_api_doc:
     documentation:
-#        basePath: /api/v2
         info:
             title: CommSy
             description: A web-based community system.
             version: 0.1.0
-        securityDefinitions:
-            Bearer:
-                type: apiKey
-                description: 'Value: Bearer {jwt}'
-                name: Authorization
-                in: header
+        components:
+            securitySchemes:
+                bearerAuth:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
         security:
-            - Bearer: []
+            - bearerAuth: []
 
     areas: # to filter documented areas
         path_patterns:

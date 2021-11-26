@@ -3,10 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Model\API\Room as RoomAPI;
+use App\Repository\AuthSourceRepository;
+use App\Repository\PortalRepository;
+use App\Repository\ServerRepository;
 use App\Services\LegacyEnvironment;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,37 +20,138 @@ use FOS\RestBundle\Controller\Annotations\View;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class RESTController extends AbstractFOSRestController
 {
+    /**
+     * Get server announcement
+     *
+     * @Rest\Get("/api/v2/server/announcement")
+     * @OA\Response(
+     *     response="200",
+     *     description="Return server announcement",
+     *     @OA\JsonContent(
+     *         @OA\Property(property="enabled", type="boolean"),
+     *         @OA\Property(property="title", type="string"),
+     *         @OA\Property(property="severity", type="string"),
+     *         @OA\Property(property="text", type="string")
+     *     )
+     * )
+     * @OA\Tag(name="Server")
+     * @Security(name="bearerAuth")
+     * @View(
+     *     statusCode=200,
+     *     serializerGroups={"api"}
+     * )
+     */
+    public function serverAnnouncement(ServerRepository $serverRepository)
+    {
+        $server = $serverRepository->getServer();
+
+        return [
+            'enabled' => $server->hasAnnouncementEnabled(),
+            'title' => $server->getAnnouncementTitle(),
+            'severity' => $server->getAnnouncementSeverity(),
+            'text' => $server->getAnnouncementText(),
+        ];
+    }
+
     /**
      * List portals
      *
      * Top level portals.
      *
      * @Rest\Get("/api/v2/portal/list")
-     * @SWG\Response(
+     * @OA\Response(
      *     response="200",
      *     description="Return a list of portals",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Portal::class, groups={"api"}))
+     *         @OA\Items(ref=@Model(type=Portal::class, groups={"api"}))
      *     )
      * )
-     * @SWG\Tag(name="portals")
-     * @Security(name="Bearer")
+     * @OA\Tag(name="Portals")
+     * @Security(name="bearerAuth")
      * @View(
      *     statusCode=200,
      *     serializerGroups={"api"}
      * )
      */
-    public function portalList(EntityManagerInterface $entityManager)
+    public function portalList(PortalRepository $portalRepository)
     {
-        return $entityManager->getRepository(Portal::class)
-            ->findActivePortals();
+        return $portalRepository->findActivePortals();
+    }
+
+    /**
+     * Get a single portal
+     *
+     * @Rest\Get("/api/v2/portal/{id}")
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     description="Return a single portal",
+     *     @OA\JsonContent(
+     *         ref=@Model(type=Portal::class, groups={"api"})
+     *     )
+     * )
+     * @OA\Tag(name="Portals")
+     * @Security(name="bearerAuth")
+     * @View(
+     *     statusCode=200,
+     *     serializerGroups={"api"}
+     * )
+     */
+    public function portal(PortalRepository $portalRepository, int $id)
+    {
+        return $portalRepository->find($id);
+    }
+
+    /**
+     * Get portal announcement
+     *
+     * @Rest\Get("/api/v2/portal/{id}/announcement")
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     description="Return portal announcement",
+     *     @OA\JsonContent(
+     *         @OA\Property(property="enabled", type="boolean"),
+     *         @OA\Property(property="title", type="string"),
+     *         @OA\Property(property="severity", type="string"),
+     *         @OA\Property(property="text", type="string")
+     *     )
+     * )
+     * @OA\Tag(name="Portals")
+     * @Security(name="bearerAuth")
+     * @View(
+     *     statusCode=200,
+     *     serializerGroups={"api"}
+     * )
+     */
+    public function portalAnnouncement(PortalRepository $portalRepository, int $id)
+    {
+        $portal = $portalRepository->find($id);
+
+        return [
+            'enabled' => $portal->hasAnnouncementEnabled(),
+            'title' => $portal->getAnnouncementTitle(),
+            'severity' => $portal->getAnnouncementSeverity(),
+            'text' => $portal->getAnnouncementText(),
+        ];
     }
 
     /**
@@ -55,31 +160,102 @@ class RESTController extends AbstractFOSRestController
      * Auth sources for a given portal.
      *
      * @Rest\Get("/api/v2/portal/{id}/auth")
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
-     *     type="integer"
+     *     @OA\Schema(type="integer")
      * )
-     * @SWG\Response(
+     * @OA\Response(
      *     response="200",
      *     description="Return a list of auth sources",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=AuthSource::class, groups={"api"}))
+     *         @OA\Items(ref=@Model(type=AuthSource::class, groups={"api"}))
      *     )
      * )
-     * @SWG\Tag(name="portals")
-     * @Security(name="Bearer")
+     * @OA\Tag(name="Portals")
+     * @Security(name="bearerAuth")
      * @View(
      *     statusCode=200,
      *     serializerGroups={"api"}
      * )
      */
-    public function authList(EntityManagerInterface $entityManager, int $id)
+    public function authSourceList(AuthSourceRepository $authSourceRepository, int $id)
     {
-        return $entityManager->getRepository(AuthSource::class)
-            ->findByPortal($id);
+        return $authSourceRepository->findByPortal($id);
+    }
+
+    /**
+     * Get a single auth source
+     *
+     * @Rest\Get("/api/v2/auth_source/{id}")
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     description="Return a single auth source",
+     *     @OA\JsonContent(
+     *         ref=@Model(type=AuthSource::class, groups={"api"})
+     *     )
+     * )
+     * @OA\Tag(name="Authentication Sources")
+     * @Security(name="bearerAuth")
+     * @View(
+     *     statusCode=200,
+     *     serializerGroups={"api"}
+     * )
+     */
+    public function authSource(AuthSourceRepository $authSourceRepository, int $id)
+    {
+        return $authSourceRepository->find($id);
+    }
+
+    /**
+     * Get a single auth source login url
+     *
+     * @Rest\Get("/api/v2/auth_source/{id}/login_url")
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     description="Return a direct login url",
+     *     @OA\JsonContent(
+     *         @OA\Property(property="url", type="string")
+     *     )
+     * )
+     * @OA\Tag(name="Authentication Sources")
+     * @Security(name="bearerAuth")
+     * @View(
+     *     statusCode=200,
+     *     serializerGroups={"api"}
+     * )
+     */
+    public function authSourceDirectLoginUrl(
+        AuthSourceRepository $authSourceRepository,
+        UrlGeneratorInterface $urlGenerator,
+        int $id
+    ) {
+        $authSource = $authSourceRepository->find($id);
+
+        // shibboleth is the only authentication source supporting a direct login for now
+        if ($authSource instanceof AuthSourceShibboleth) {
+            return [
+                'url' => $urlGenerator->generate('app_shibboleth_authshibbolethinit', [
+                    'portalId' => $authSource->getPortal()->getId(),
+                ], UrlGeneratorInterface::ABSOLUTE_URL),
+            ];
+        }
+
+        return ['url' => null];
     }
 
     /**
@@ -88,22 +264,22 @@ class RESTController extends AbstractFOSRestController
      * Rooms in a portal, either of type project or community.
      *
      * @Rest\Get("/api/v2/portal/{id}/rooms")
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
-     *     type="integer"
+     *     @OA\Schema(type="integer")
      * )
-     * @SWG\Response(
+     * @OA\Response(
      *     response="200",
      *     description="Return a list of rooms",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Room::class, groups={"api_read"}))
+     *         @OA\Items(ref=@Model(type=Room::class, groups={"api_read"}))
      *     )
      * )
-     * @SWG\Tag(name="rooms")
-     * @Security(name="Bearer")
+     * @OA\Tag(name="Rooms")
+     * @Security(name="bearerAuth")
      * @View(
      *     statusCode=200,
      *     serializerGroups={"api_read"}
@@ -123,22 +299,22 @@ class RESTController extends AbstractFOSRestController
      * Users in a portal.
      *
      * @Rest\Get("/api/v2/portal/{id}/users")
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
-     *     type="integer"
+     *     @OA\Schema(type="integer")
      * )
-     * @SWG\Response(
+     * @OA\Response(
      *     response="200",
      *     description="Return a list of users",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=User::class, groups={"api_read"}))
+     *         @OA\Items(ref=@Model(type=User::class, groups={"api_read"}))
      *     )
      * )
-     * @SWG\Tag(name="users")
-     * @Security(name="Bearer")
+     * @OA\Tag(name="Users")
+     * @Security(name="bearerAuth")
      * @View(
      *     statusCode=200,
      *     serializerGroups={"api_read"}
@@ -161,25 +337,22 @@ class RESTController extends AbstractFOSRestController
      *     converter="fos_rest.request_body",
      *     options={"validator"={"groups"={"api_write"}}}
      * )
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
-     *     type="integer"
+     *     @OA\Schema(type="integer")
      * )
-     * @SWG\Parameter(
-     *     name="body",
-     *     in="body",
-     *     required=true,
-     *     @SWG\Schema(ref=@Model(type=RoomAPI::class, groups={"api_write"}))
+     * @OA\RequestBody(
+     *     @OA\JsonContent(ref=@Model(type=RoomAPI::class, groups={"api_write"}))
      * )
-     * @SWG\Response(
+     * @OA\Response(
      *     response="201",
      *     description="The created room",
-     *     @SWG\Schema(ref=@Model(type=Room::class, groups={"api_read"}))
+     *     @OA\JsonContent(ref=@Model(type=Room::class, groups={"api_read"}))
      * )
-     * @SWG\Tag(name="rooms")
-     * @Security(name="Bearer")
+     * @OA\Tag(name="Rooms")
+     * @Security(name="bearerAuth")
      * @View(
      *     statusCode=201,
      *     serializerGroups={"api_read"}
@@ -233,18 +406,18 @@ class RESTController extends AbstractFOSRestController
      * Deleted an existing room
      *
      * @Rest\Delete("/api/v2/rooms/{id}")
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
-     *     type="integer"
+     *     @OA\Schema(type="integer")
      * )
-     * @SWG\Response(
+     * @OA\Response(
      *     response="204",
      *     description="No content"
      * )
-     * @SWG\Tag(name="rooms")
-     * @Security(name="Bearer")
+     * @OA\Tag(name="Rooms")
+     * @Security(name="bearerAuth")
      * @View(
      *     statusCode=204,
      *     serializerGroups={"api_read"}
@@ -274,30 +447,30 @@ class RESTController extends AbstractFOSRestController
      * Adds a user to a room
      *
      * @Rest\Put("/api/v2/rooms/{id}/membership/{authSourceId}/{username}")
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
-     *     type="integer"
+     *     @OA\Schema(type="integer")
      * )
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="authSourceId",
      *     in="path",
      *     required=true,
-     *     type="integer"
+     *     @OA\Schema(type="integer")
      * )
-     * @SWG\Parameter(
+     * @OA\Parameter(
      *     name="username",
      *     in="path",
      *     required=true,
-     *     type="string"
+     *     @OA\Schema(type="string")
      * )
-     * @SWG\Response(
+     * @OA\Response(
      *     response="204",
      *     description="No content"
      * )
-     * @SWG\Tag(name="rooms")
-     * @Security(name="Bearer")
+     * @OA\Tag(name="Rooms")
+     * @Security(name="bearerAuth")
      * @View(
      *     statusCode=204,
      *     serializerGroups={"api_read"}

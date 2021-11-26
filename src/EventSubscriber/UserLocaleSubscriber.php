@@ -51,8 +51,10 @@ class UserLocaleSubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $event->getAuthenticationToken()->getUser();
 
-        if ($account) {
-            $this->session->set('_locale', $account->getLanguage());
+        if (!$account instanceof Account) {
+            return;
         }
+
+        $this->session->set('_locale', $account->getLanguage());
     }
 }

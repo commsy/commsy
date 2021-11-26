@@ -1,0 +1,13 @@
+actor: ApiTester
+step_decorators:
+    - \Codeception\Step\AsJson
+suite_namespace: \App\Tests\Api
+modules:
+    enabled:
+        - Doctrine2:
+            depends: Symfony
+        - REST:
+            url: /api/v2/
+            depends: Symfony
+            part: Json
+        - \App\Tests\Helper\Api

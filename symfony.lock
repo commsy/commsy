@@ -50,6 +50,9 @@
     "codeception/module-phpbrowser": {
         "version": "1.0.2"
     },
+    "codeception/module-rest": {
+        "version": "1.4.2"
+    },
     "codeception/module-symfony": {
         "version": "1.1.0"
     },
@@ -190,9 +193,6 @@
     "eluceo/ical": {
         "version": "0.15.1"
     },
-    "exsyst/swagger": {
-        "version": "v0.4.1"
-    },
     "ezimuel/guzzlestreams": {
         "version": "3.0.1"
     },
@@ -230,12 +230,12 @@
         ]
     },
     "friendsofsymfony/rest-bundle": {
-        "version": "2.2",
+        "version": "3.1",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "2.2",
-            "ref": "cad41ef93d6150067ae2bb3c7fd729492dff6f0a"
+            "ref": "fa845143b7e0a4c70aedd1a88c549e6d977e9ae5"
         },
         "files": [
             "config/packages/fos_rest.yaml"
@@ -255,6 +255,9 @@
     },
     "jms/metadata": {
         "version": "2.3.0"
+    },
+    "justinrainbow/json-schema": {
+        "version": "5.2.11"
     },
     "knplabs/knp-components": {
         "version": "v2.3.6"
@@ -536,6 +539,9 @@
     "smalot/pdfparser": {
         "version": "v1.1.0"
     },
+    "softcreatr/jsonpath": {
+        "version": "0.7.5"
+    },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
         "recipe": {
@@ -757,7 +763,7 @@
         "version": "v4.4.5"
     },
     "symfony/property-info": {
-        "version": "v4.4.9"
+        "version": "v4.4.31"
     },
     "symfony/routing": {
         "version": "4.2",
@@ -951,7 +957,7 @@
         "version": "v1.1.0"
     },
     "willdurand/negotiation": {
-        "version": "v2.3.1"
+        "version": "3.0.0"
     },
     "zendframework/zend-code": {
         "version": "3.4.1"
@@ -978,6 +984,6 @@
         "version": "2.13.0"
     },
     "zircote/swagger-php": {
-        "version": "2.0.16"
+        "version": "3.3.2"
     }
 }

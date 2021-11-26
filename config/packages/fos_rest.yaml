@@ -20,4 +20,4 @@ fos_rest:
         rules:
             - { path: ^/api/v2, prefer_extension: true, fallback_format: json, priorities: [ json ] }
     zone:
-      - { path: ^/api/v2/* }
+        - { path: ^/api/v2/* }
