@@ -77,78 +77,83 @@ class FixPhysicalFiles implements DatabaseCheck
             foreach ($directories as $directory) {
                 $relativePathName = $directory->getRelativePathname();
 
-                //TODO: remove bas dir from rest to ensure stability
-                $parts = explode("/", $directory);
-
-                // check first level: must be numeric, can only be 4 digits long
-                // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
-                if (sizeof($parts) > 6) {
-                    $toBeChecked = $parts[6];
-
-                    // check numeric
-                    if (!is_numeric($toBeChecked) && file_exists($relativePathName)) {
-                        $markedForRemoval[] = $directory;
-                    }
-
-                    // check length being 4
-                    if (strlen($toBeChecked) != 4 && file_exists($relativePathName)) {
-                        $markedForRemoval[] = $directory;
-                    }
-                }
-
-                // check on e.g. _123
-                if (sizeof($parts) > 7) {
-                    $toBeChecked = $parts[7];
-
-                    if (!str_contains($toBeChecked, '_') && file_exists($relativePathName)) {
-                        $markedForRemoval[] = $directory;
-                    }
-
-                    if (!substr($toBeChecked, 1) == '_' && file_exists($relativePathName)) {
-                        $markedForRemoval[] = $directory;
-                    }
-
-                    if (!is_numeric(substr($toBeChecked, 1)) && file_exists($relativePathName)) {
-                        $markedForRemoval[] = $directory;
-                    }
-                }
+                $relativePathNameExp = explode('/', $relativePathName);
+                $level = count($relativePathNameExp);
 
                 // check if file is associated with existing portal and delete orphans
-                if (sizeof($parts) > 5) {
-                    $contextId = $parts[5];
+                switch ($level) {
+                    case 1:
+                        $contextId = $relativePathNameExp[0];
 
-                    // exclude the server (99) and 'temp'
-                    if ($contextId != '99' and $contextId != 'temp' and $contextId != 'portal') {
-                        $qb = $this->connection->createQueryBuilder()
-                            ->select('f.*', 'i.context_id as portalId')
-                            ->from('files', 'f')
-                            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')->setMaxResults(1)
-                            ->where('f.deletion_date IS NULL')
-                            ->andWhere('f.context_id LIKE ' . $contextId);
-                        $files = $qb->execute();
-                        if (!is_array($files)) {
+                        // exclude the server (99) and 'temp'
+                        if ($contextId != '99' and $contextId != 'temp' and $contextId != 'portal') {
+                            $qb = $this->connection->createQueryBuilder()
+                                ->select('f.*', 'i.context_id as portalId')
+                                ->from('files', 'f')
+                                ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')->setMaxResults(1)
+                                ->where('f.deletion_date IS NULL')
+                                ->andWhere('f.context_id LIKE ' . $contextId);
+                            $files = $qb->execute();
+                            if (!is_array($files)) {
 
-                            // local file system
-                            $files = $files->fetchAllAssociative();
-                            if (!count($files) > 0) {
-                                $markedForRemoval[] = $directory;
-                            }
-                        } else {
+                                // local file system
+                                $files = $files->fetchAllAssociative();
+                                if (!count($files) > 0) {
+                                    $markedForRemoval[] = $directory;
+                                }
+                            } else {
 
-                            // testing file system
-                            $hit = false;
-                            foreach ($files as $file) {
-                                if (in_array($contextId, $file)) {
-                                    $hit = true;
-                                    continue;
+                                // testing file system
+                                $hit = false;
+                                foreach ($files as $file) {
+                                    if (in_array($contextId, $file)) {
+                                        $hit = true;
+                                        continue;
+                                    }
+                                }
+
+                                if (!$hit) {
+                                    $markedForRemoval[] = $directory;
                                 }
                             }
-
-                            if (!$hit) {
-                                $markedForRemoval[] = $directory;
-                            }
                         }
-                    }
+
+                        break;
+
+                    // check first level: must be numeric, can only be 4 digits long
+                    // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
+                    case 2:
+                        $toBeChecked = $relativePathNameExp[1];
+
+                        // check numeric
+                        if (!is_numeric($toBeChecked) && file_exists($relativePathName)) {
+                            $markedForRemoval[] = $directory;
+                        }
+
+                        // check length being 4
+                        if (strlen($toBeChecked) != 4 && file_exists($relativePathName)) {
+                            $markedForRemoval[] = $directory;
+                        }
+
+                        break;
+
+                    // check on e.g. _123
+                    case 3:
+                        $toBeChecked = $relativePathNameExp[2];
+
+                        if (!str_contains($toBeChecked, '_') && file_exists($relativePathName)) {
+                            $markedForRemoval[] = $directory;
+                        }
+
+                        if (!substr($toBeChecked, 1) == '_' && file_exists($relativePathName)) {
+                            $markedForRemoval[] = $directory;
+                        }
+
+                        if (!is_numeric(substr($toBeChecked, 1)) && file_exists($relativePathName)) {
+                            $markedForRemoval[] = $directory;
+                        }
+                        break;
+
                 }
             }
 
