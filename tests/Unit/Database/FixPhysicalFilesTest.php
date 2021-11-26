@@ -132,7 +132,6 @@ final class FixPhysicalFilesTest extends Unit
         $this->tester->assertDirectoryExists('temp');
 
         // Only the directories with existing portals must remain
-        // TODO: Take care of userrooms!
         $this->tester->assertDirectoryExists('11111');
         $this->tester->assertDirectoryExists('22222');
         $this->tester->assertDirectoryDoesNotExist('33333');
