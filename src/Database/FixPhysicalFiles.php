@@ -27,11 +27,6 @@ class FixPhysicalFiles implements DatabaseCheck
      */
     private ParameterBagInterface $parameterBag;
 
-    /**
-     * @var array
-     */
-    private $folderFiles;
-
     public function __construct(
         Connection $connection,
         ParameterBagInterface $parameterBag
@@ -56,17 +51,12 @@ class FixPhysicalFiles implements DatabaseCheck
         // base directory to be checked
         $filesDirectory = $this->parameterBag->get('files_directory');
 
-        // fetch all fileNames with preceding paths - use finder?
-        $this->folderFiles = array();
-        $scannedFileNames = $this->listFolderFiles($filesDirectory);
-
         // finder instances for directories and files
         $directories = (new Finder())->directories()
             ->in($filesDirectory);
 
         $finderFileNames = (new Finder())->files()
             ->in($filesDirectory);
-
 
         if ($directories->hasResults()) {
 
@@ -85,36 +75,39 @@ class FixPhysicalFiles implements DatabaseCheck
                     case 1:
                         $contextId = $relativePathNameExp[0];
 
-                        // exclude the server (99) and 'temp'
-                        if ($contextId != '99' and $contextId != 'temp' and $contextId != 'portal') {
-                            $qb = $this->connection->createQueryBuilder()
-                                ->select('f.*', 'i.context_id as portalId')
-                                ->from('files', 'f')
-                                ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')->setMaxResults(1)
-                                ->where('f.deletion_date IS NULL')
-                                ->andWhere('f.context_id LIKE ' . $contextId);
-                            $files = $qb->execute();
-                            if (!is_array($files)) {
+                        // exclude folders
+                        if ($contextId == 99 || $contextId == 'temp' || $contextId == 'portal') {
+                            continue;
+                        }
 
-                                // local file system
-                                $files = $files->fetchAllAssociative();
-                                if (!count($files) > 0) {
-                                    $markedForRemoval[] = $directory;
-                                }
-                            } else {
+                        $qb = $this->connection->createQueryBuilder()
+                            ->select('f.*', 'i.context_id as portalId')
+                            ->from('files', 'f')
+                            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')
+                            ->where('f.deletion_date IS NULL')
+                            ->andWhere('f.context_id = :contextId')
+                            ->setParameter('contextId', $contextId);
+                        $files = $qb->execute();
 
-                                // testing file system
-                                $hit = false;
-                                foreach ($files as $file) {
-                                    if (in_array($contextId, $file)) {
-                                        $hit = true;
-                                        continue;
-                                    }
-                                }
+                        if (!is_array($files)) {
 
-                                if (!$hit) {
-                                    $markedForRemoval[] = $directory;
+                            // local file system
+                            $files = $files->fetchAllAssociative();
+                            if (!count($files) > 0) {
+                                $markedForRemoval[] = $directory;
+                            }
+                        } else {
+                            // testing file system
+                            $hit = false;
+                            foreach ($files as $file) {
+                                if (in_array($contextId, $file)) {
+                                    $hit = true;
+                                    continue;
                                 }
+                            }
+
+                            if (!$hit) {
+                                $markedForRemoval[] = $directory;
                             }
                         }
 
@@ -163,52 +156,34 @@ class FixPhysicalFiles implements DatabaseCheck
             }
         }
 
-        //TODO: Use Finder w. fies() - finder does not find files yet...
         if ($finderFileNames->hasResults()) {
-            foreach ($finderFileNames as $finderFileName) {
-                $currentName = $finderFileName;
-            }
-        }
+            foreach ($finderFileNames as $file) {
+                $filename = $file->getFilename();
+                $filenameWithoutExtension = $file->getFilenameWithoutExtension();
 
-        // check on file names being valid
-        if (!empty($scannedFileNames)) {
-
-            if ($finderFileNames->hasResults()) {
-
-                foreach ($scannedFileNames as $scannedFile) {
-
-                    $filesDirParts = explode("/", $scannedFile);
-                    $toBeChecked = end($filesDirParts);
-
-                    // if is directory, do not check
-                    if (is_dir($scannedFile)) {
-                        continue;
-                    }
-
+                if (!empty($file->getExtension())) {
                     // check digit + file extension
-                    if (str_contains($toBeChecked, '.') and !str_contains($toBeChecked, '_')) {
-                        $extensionParts = explode(".", $toBeChecked);
-                        if (is_numeric($extensionParts[0])) {
+                    if (!str_contains($filename, '_')) {
+                        if (is_numeric($filenameWithoutExtension)) {
                             continue;
                         }
                     }
 
                     // check digit + file extension + file extension contains '_' e.g. '1.jpg_thumbnail'
-                    if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
-                        $extensionParts = explode(".", $toBeChecked);
-                        if (is_numeric($extensionParts[0]) and str_contains(end($extensionParts), '_')) {
+                    if (str_contains($filename, '_')) {
+                        if (is_numeric($filenameWithoutExtension) &&
+                            str_contains($file->getExtension(), '_')) {
                             continue;
                         }
                     }
 
                     // check cid[roomId]_bginfo|logo|[username]_[filename].[extension]
-                    if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
-                        //TODO use ending function
-                        $extensionParts = explode(".", $toBeChecked);
-                        $underscoreParts = explode('_', $extensionParts[0]);
+                    if (str_contains($filename, '_')) {
+                        // TODO use ending function
+                        $underscoreParts = explode('_', $filenameWithoutExtension);
 
                         // check if third level contains two underscores
-                        if (substr_count($extensionParts[0], "_") == 2) {
+                        if (substr_count($filenameWithoutExtension, "_") == 2) {
 
                             // check if cid + int (e.g. cid12345)
                             if (str_contains($underscoreParts[0], 'cid')) {
@@ -216,53 +191,21 @@ class FixPhysicalFiles implements DatabaseCheck
                                 // check if ID string (without CID) is indeed numeric
                                 $idStringWithoutCID = substr($underscoreParts[0], 3);
                                 if (is_numeric($idStringWithoutCID)) {
-
                                     // check if first three chars of ID string is 'CID'
-                                    if ($result = substr($underscoreParts[0], 0, 3)) {
+                                    if (substr($underscoreParts[0], 0, 3)) {
                                         continue;
                                     }
                                 }
                             }
                         }
                     }
-
-                    // delete if no allowed pattern could be found
-                    if (file_exists($scannedFile)) {
-                        $filesystem->remove($scannedFile);
-                    }
-
                 }
+
+                // delete if no allowed pattern could be found
+                $filesystem->remove($file);
             }
         }
 
         return true;
-    }
-
-    /**
-     * @param $dir
-     */
-    private function listFolderFiles($dir)
-    {
-
-        // make instance variable
-        $ffs = scandir($dir);
-
-        unset($ffs[array_search('.', $ffs, true)]);
-        unset($ffs[array_search('..', $ffs, true)]);
-
-        // prevent empty ordered elements
-        if (count($ffs) < 1) {
-            return $this->folderFiles;
-        }
-
-        // recursively deepen path
-        foreach ($ffs as $ff) {
-            array_push($this->folderFiles, $dir . '/' . $ff);
-            if (is_dir($dir . '/' . $ff)) {
-                $this->listFolderFiles($dir . '/' . $ff);
-            }
-        }
-
-        return $this->folderFiles;
     }
 }
