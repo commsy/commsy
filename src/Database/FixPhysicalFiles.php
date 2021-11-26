@@ -53,7 +53,6 @@ class FixPhysicalFiles implements DatabaseCheck
 
         $filesDirectory = $this->parameterBag->get('files_directory');
 
-        //TODO: Only use files with full path structure instead of both files and directories?
         $this->folderFiles = array();
         $scannedFileNames = $this->listFolderFiles($filesDirectory);
 
@@ -62,31 +61,6 @@ class FixPhysicalFiles implements DatabaseCheck
 
         $finderFileNames = (new Finder())->files()
             ->in($filesDirectory);
-
-        //TODO: remove?
-        $scannedFiles = $files = array_diff(scandir($filesDirectory), array(".", ".."));
-        $scannedFilesNumbers = preg_grep('/^\d/', $scannedFiles);
-        $scannedFilesStrings = preg_grep('/^[a-zA-Z]/', $scannedFiles);
-
-        if (!empty($scannedFilesNumbers)) {
-            foreach ($scannedFilesNumbers as $file) {
-                $relativePathName = $filesDirectory . "/" . $file;
-                $io->text($relativePathName);
-            }
-        }
-
-        if (!empty($scannedFilesStrings)) {
-            foreach ($scannedFilesStrings as $file) {
-                $relativePathName = $filesDirectory . "/" . $file;
-                $haystack = array('temp', 'portal');
-                $needle = $file;
-                if (!in_array($needle, $haystack) && file_exists($relativePathName)) {
-                    $filesystem->remove($relativePathName);
-                }
-
-                $io->text($relativePathName);
-            }
-        }
 
         // check first level: must be numeric, can only be 4 digits long
         // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
@@ -174,72 +148,75 @@ class FixPhysicalFiles implements DatabaseCheck
             }
         }
 
+        //TODO: Use Finder w. fies() - finder does not find files yet...
+        if ($finderFileNames->hasResults()) {
+            foreach ($finderFileNames as $finderFileName) {
+                $currentName = $finderFileName;
+            }
+        }
+
+        // check if file names are valid
         if (!empty($scannedFileNames)) {
 
             if ($finderFileNames->hasResults()) {
-                foreach ($finderFileNames as $finderFileName) {
-                    $name = $finderFileName->getPath();
-                    echo('hey');
-                }
-            }
 
-            //TODO: Use Finder w. fies()
-            foreach ($scannedFileNames as $scannedFile) {
+                foreach ($scannedFileNames as $scannedFile) {
 
-                $filesDirParts = explode("/", $scannedFile);
-                $toBeChecked = end($filesDirParts);
+                    $filesDirParts = explode("/", $scannedFile);
+                    $toBeChecked = end($filesDirParts);
 
-                // if is directory, do not check
-                if (is_dir($scannedFile)) {
-                    continue;
-                }
-
-                // check digit + file extension
-                if (str_contains($toBeChecked, '.') and !str_contains($toBeChecked, '_')) {
-                    $extensionParts = explode(".", $toBeChecked);
-                    if (is_numeric($extensionParts[0])) {
+                    // if is directory, do not check
+                    if (is_dir($scannedFile)) {
                         continue;
                     }
-                }
 
-                // check digit + file extension + file extension contains '_' e.g. '1.jpg_thumbnail'
-                if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
-                    $extensionParts = explode(".", $toBeChecked);
-                    if (is_numeric($extensionParts[0]) and str_contains(end($extensionParts), '_')) {
-                        continue;
+                    // check digit + file extension
+                    if (str_contains($toBeChecked, '.') and !str_contains($toBeChecked, '_')) {
+                        $extensionParts = explode(".", $toBeChecked);
+                        if (is_numeric($extensionParts[0])) {
+                            continue;
+                        }
                     }
-                }
 
-                // check cid[roomId]_bginfo|logo|[username]_[filename].[extension]
-                if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
-                    //TODO use ending function
-                    $extensionParts = explode(".", $toBeChecked);
-                    $underscoreParts = explode('_', $extensionParts[0]);
+                    // check digit + file extension + file extension contains '_' e.g. '1.jpg_thumbnail'
+                    if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
+                        $extensionParts = explode(".", $toBeChecked);
+                        if (is_numeric($extensionParts[0]) and str_contains(end($extensionParts), '_')) {
+                            continue;
+                        }
+                    }
 
-                    // check if third level contains two underscores
-                    if (substr_count($extensionParts[0], "_") == 2) {
+                    // check cid[roomId]_bginfo|logo|[username]_[filename].[extension]
+                    if (str_contains($toBeChecked, '.') and str_contains($toBeChecked, '_')) {
+                        //TODO use ending function
+                        $extensionParts = explode(".", $toBeChecked);
+                        $underscoreParts = explode('_', $extensionParts[0]);
 
-                        // check if cid + int (e.g. cid12345)
-                        if (str_contains($underscoreParts[0], 'cid')) {
+                        // check if third level contains two underscores
+                        if (substr_count($extensionParts[0], "_") == 2) {
 
-                            // check if ID string (without CID) is indeed numeric
-                            $idStringWithoutCID = substr($underscoreParts[0], 3);
-                            if (is_numeric($idStringWithoutCID)) {
+                            // check if cid + int (e.g. cid12345)
+                            if (str_contains($underscoreParts[0], 'cid')) {
 
-                                // check if first three chars of ID string is 'CID'
-                                if ($result = substr($underscoreParts[0], 0, 3)) {
-                                    continue;
+                                // check if ID string (without CID) is indeed numeric
+                                $idStringWithoutCID = substr($underscoreParts[0], 3);
+                                if (is_numeric($idStringWithoutCID)) {
+
+                                    // check if first three chars of ID string is 'CID'
+                                    if ($result = substr($underscoreParts[0], 0, 3)) {
+                                        continue;
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                // delete if no allowed pattern could be found
-                if (file_exists($scannedFile)) {
-                    $filesystem->remove($scannedFile);
-                }
+                    // delete if no allowed pattern could be found
+                    if (file_exists($scannedFile)) {
+                        $filesystem->remove($scannedFile);
+                    }
 
+                }
             }
         }
 
