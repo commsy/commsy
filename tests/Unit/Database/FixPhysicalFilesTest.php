@@ -220,6 +220,7 @@ final class FixPhysicalFilesTest extends Unit
         mkdir('12345');
         mkdir('12345/1234');
         mkdir('12345/1234/_123');
+        touch('12345/1234/_123/no_extension');
         touch('12345/1234/_123/1234.txt');
         touch('12345/1234/_123/invalid.txt');
         touch('12345/1234/_123/cid1234123_bginfo_filename.jpg');
