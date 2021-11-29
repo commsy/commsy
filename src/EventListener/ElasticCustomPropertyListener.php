@@ -7,11 +7,9 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
 use cs_file_item;
-use cs_item;
 use cs_project_item;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use Psr\Cache\InvalidArgumentException;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -30,10 +28,6 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      * @var DocumentConverter
      */
     private DocumentConverter $file2TextService;
-    /**
-     * @var FilesystemAdapter
-     */
-    private FilesystemAdapter $cache;
 
     /**
      * @var string
@@ -61,7 +55,6 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->file2TextService = $file2TextService;
         $this->projectDir = $kernel->getProjectDir();
-        $this->cache = new FilesystemAdapter();
         $this->itemService = $itemService;
     }
 
@@ -138,7 +131,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      */
     private function addHashtags(TransformEvent $event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
             $hashtags = $item->getBuzzwordList();
@@ -167,7 +160,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      */
     private function addTags(TransformEvent $event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
             // when building the index from the CLI command, the context ID is not populated, thus we set it here explicitly
@@ -200,7 +193,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      */
     private function addContext(TransformEvent $event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
             $context = $item->getContextItem();
@@ -218,7 +211,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      */
     private function addAnnotations(TransformEvent $event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
             $annotations = $item->getAnnotationList();
@@ -247,7 +240,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      */
     private function addFilesContent(TransformEvent $event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
             $fileContents = [];
@@ -275,44 +268,34 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
-
     private function addFilesRawContent(TransformEvent $event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
-            $filesPlain = [];
             $files = $item->getFileList();
-
-            foreach ($files as $file) {
-                /** @var cs_file_item $file */
-                if (!$file->isDeleted()) {
-                    $fileName = $this->projectDir . '/' . $file->getFilepath();
-                    $contentPlain = $this->file2TextService->convert($fileName);
-                    if (!empty($contentPlain)) {
-                        // Ensure that the content is utf-8 encoded. This seems to be a problen only on production
-                        // server for now and not in the development environment for whatever reason.
-                        $filesPlain[] = mb_convert_encoding($contentPlain, 'UTF-8');
-                    }
-                }
-            }
+            $filesPlain = $this->getPlainContentofAllFiles($files);
 
             $event->getDocument()->set('filesRaw', $filesPlain);
         }
     }
 
-
-    public function getPlainContentofAllFiles($files)
+    /**
+     * @param cs_file_item[] $files
+     * @return array
+     */
+    private function getPlainContentofAllFiles(array $files): array
     {
         $filesPlain = [];
 
-        /** @var cs_file_item $file */
         foreach ($files as $file) {
             if (!$file->isDeleted()) {
                 $fileName = $this->projectDir . '/' . $file->getFilepath();
                 $contentPlain = $this->file2TextService->convert($fileName);
                 if (!empty($contentPlain)) {
-                    $filesPlain[] = $contentPlain;
+                    // Ensure that the content is utf-8 encoded. This seems to be a problen only on production
+                    // server for now and not in the development environment for whatever reason.
+                    $filesPlain[] = mb_convert_encoding($contentPlain, 'UTF-8');
                 }
             }
         }
@@ -440,24 +423,22 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $room = $roomManager->getItem($event->getObject()->getItemId());
 
-        if ($room) {
-            if ($room instanceof cs_project_item) {
-                $communityRooms = $room->getCommunityList();
+        if ($room instanceof cs_project_item) {
+            $communityRooms = $room->getCommunityList();
 
-                if ($communityRooms->isNotEmpty()) {
-                    $parentIds = [];
+            if ($communityRooms->isNotEmpty()) {
+                $parentIds = [];
 
-                    $communityRoom = $communityRooms->getFirst();
+                $communityRoom = $communityRooms->getFirst();
 
-                    while ($communityRoom) {
-                        $parentIds[] = $communityRoom->getItemId();
+                while ($communityRoom) {
+                    $parentIds[] = $communityRoom->getItemId();
 
-                        $communityRoom = $communityRooms->getNext();
-                    }
+                    $communityRoom = $communityRooms->getNext();
+                }
 
-                    if (!empty($parentIds)) {
-                        $event->getDocument()->set('parentId', $parentIds);
-                    }
+                if (!empty($parentIds)) {
+                    $event->getDocument()->set('parentId', $parentIds);
                 }
             }
         }
@@ -465,11 +446,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
     /**
      * @param $event
-     * @throws InvalidArgumentException
      */
     public function addCreator($event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
             if ($item->getItemType() !== CS_USER_TYPE) {
@@ -497,11 +477,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
     /**
      * @param $event
-     * @throws InvalidArgumentException
      */
     public function addModifier($event)
     {
-        $item = $this->getItemCached($event->getObject()->getItemId());
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
             if ($item->getItemType() !== CS_USER_TYPE) {
@@ -528,29 +507,12 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     }
 
     /**
-     * @param $itemId
-     * @return cs_item|null
-     * @throws InvalidArgumentException
-     */
-    private function getItemCached($itemId): ?cs_item
-    {
-//        return $this->cache->get($itemId, function (ItemInterface $cachedItem) {
-//            $cachedItem->expiresAfter(60 * 60);
-//
-//            return $this->itemService->getTypedItem($cachedItem->getKey());
-//        });
-
-        return $this->itemService->getTypedItem($itemId);
-    }
-
-    /**
      * @param $contextId
      * @return bool
-     * @throws InvalidArgumentException
      */
     private function setLegacyContext($contextId): bool
     {
-        $contextItem = $this->getItemCached($contextId);
+        $contextItem = $this->itemService->getTypedItem($contextId);
 
         if ($contextItem) {
             $this->legacyEnvironment->setCurrentContextID($contextId);
