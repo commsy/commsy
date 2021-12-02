@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Controller\Api\GetPortalAnnouncement;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_list;
@@ -23,6 +26,54 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass="App\Repository\PortalRepository")
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get",
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "get_announcement"={
+ *             "method"="GET",
+ *             "path"="portals/{id}/announcement",
+ *             "controller"=GetPortalAnnouncement::class,
+ *             "openapi_context"={
+ *                 "summary"="Get portal announcement",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="Portal announcement",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "enabled"={
+ *                                             "type"="boolean",
+ *                                         },
+ *                                         "title"={
+ *                                             "type"="string",
+ *                                         },
+ *                                         "severity"={
+ *                                             "type"="string",
+ *                                         },
+ *                                         "text"={
+ *                                             "type"="string",
+ *                                         },
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"},
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"},
+ *     }
+ * )
  */
 class Portal implements \Serializable
 {
@@ -136,6 +187,8 @@ class Portal implements \Serializable
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuthSource", mappedBy="portal")
+     *
+     * @ApiSubresource()
      */
     private $authSources;
 

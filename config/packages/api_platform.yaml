@@ -1,0 +1,16 @@
+api_platform:
+    title: CommSy
+    description: A web-based community system.
+    version: 0.2.0
+
+    formats:
+        json:
+            mime_types: ['application/json']
+        html:
+            mime_types: [ 'text/html' ]
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+    patch_formats:
+        json: ['application/merge-patch+json']
+    swagger:
+        versions: [3]
