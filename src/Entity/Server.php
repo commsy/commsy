@@ -2,8 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Api\GetServerAnnouncement;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -15,17 +21,72 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * })
  * @ORM\Entity(repositoryClass="App\Repository\ServerRepository")
  * @Vich\Uploadable
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get",
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *             "controller"=NotFoundAction::class,
+ *             "read"=false,
+ *             "output"=false,
+ *         },
+ *         "get_announcement"={
+ *             "method"="GET",
+ *             "path"="server/{id}/announcement",
+ *             "controller"=GetServerAnnouncement::class,
+ *             "openapi_context"={
+ *                 "summary"="Get server announcement",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="Server announcement",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "enabled"={
+ *                                             "type"="boolean",
+ *                                         },
+ *                                         "title"={
+ *                                             "type"="string",
+ *                                         },
+ *                                         "severity"={
+ *                                             "type"="string",
+ *                                         },
+ *                                         "text"={
+ *                                             "type"="string",
+ *                                         },
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"},
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"},
+ *     }
+ * )
  */
 class Server
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="item_id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(name="item_id", type="integer")
+     * @ORM\GeneratedValue()
+     *
+     * @Groups({"api"})
+     * @OA\Property(description="The unique identifier.")
      */
-    private $itemId = '0';
+    private $id;
 
     /**
      * @var integer
@@ -138,6 +199,16 @@ class Server
      * @ORM\Column(type="string")
      */
     private $logoImageName;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return File|null

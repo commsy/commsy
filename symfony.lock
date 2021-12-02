@@ -1,4 +1,18 @@
 {
+    "api-platform/core": {
+        "version": "2.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "05b57782a78c21a664a42055dc11cf1954ca36bb"
+        },
+        "files": [
+            "config/packages/api_platform.yaml",
+            "config/routes/api_platform.yaml",
+            "src/Entity/.gitignore"
+        ]
+    },
     "behat/gherkin": {
         "version": "v4.6.1"
     },
@@ -205,6 +219,9 @@
     "fakerphp/faker": {
         "version": "v1.16.0"
     },
+    "fig/link-util": {
+        "version": "1.1.2"
+    },
     "friendsofsymfony/ckeditor-bundle": {
         "version": "2.0",
         "recipe": {
@@ -351,7 +368,7 @@
         "version": "0.2.20"
     },
     "nelmio/api-doc-bundle": {
-        "version": "3.0",
+        "version": "4.6",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
@@ -361,6 +378,18 @@
         "files": [
             "config/packages/nelmio_api_doc.yaml",
             "config/routes/nelmio_api_doc.yaml"
+        ]
+    },
+    "nelmio/cors-bundle": {
+        "version": "2.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
+        },
+        "files": [
+            "config/packages/nelmio_cors.yaml"
         ]
     },
     "nette/utils": {
@@ -454,6 +483,9 @@
     },
     "psr/http-message": {
         "version": "1.0.1"
+    },
+    "psr/link": {
+        "version": "1.0.0"
     },
     "psr/log": {
         "version": "1.0.2"
@@ -726,9 +758,6 @@
     "symfony/options-resolver": {
         "version": "v4.4.5"
     },
-    "symfony/orm-pack": {
-        "version": "v1.0.8"
-    },
     "symfony/polyfill-apcu": {
         "version": "v1.14.0"
     },
@@ -764,6 +793,9 @@
     },
     "symfony/property-info": {
         "version": "v4.4.31"
+    },
+    "symfony/proxy-manager-bridge": {
+        "version": "v4.4.34"
     },
     "symfony/routing": {
         "version": "4.2",
@@ -883,6 +915,9 @@
     },
     "symfony/var-exporter": {
         "version": "v4.4.5"
+    },
+    "symfony/web-link": {
+        "version": "v4.4.27"
     },
     "symfony/web-profiler-bundle": {
         "version": "3.3",

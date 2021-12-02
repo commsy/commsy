@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Api\GetAuthSourceDirectLoginUrl;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use OpenApi\Annotations as OA;
@@ -17,6 +19,45 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"local" = "AuthSourceLocal", "oidc" = "AuthSourceOIDC", "ldap" = "AuthSourceLdap", "shib" = "AuthSourceShibboleth", "guest" = "AuthSourceGuest"})
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get"
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "get_direct_login_url"={
+ *             "method"="GET",
+ *             "path"="auth_sources/{id}/login_url",
+ *             "controller"=GetAuthSourceDirectLoginUrl::class,
+ *             "openapi_context"={
+ *                 "summary"="Get a single auth source login url",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="A direct login url",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "url"={
+ *                                             "type"="string",
+ *                                         },
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"}
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"}
+ *     }
+ * )
  */
 abstract class AuthSource
 {
