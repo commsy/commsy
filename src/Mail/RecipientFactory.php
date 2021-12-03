@@ -9,34 +9,56 @@
 namespace App\Mail;
 
 
+use App\Entity\Account;
+use cs_room_item;
+use cs_user_item;
+
 class RecipientFactory
 {
-    public static function createModerationRecipients(\cs_room_item $room, callable $callback = null)
+    /**
+     * @param cs_room_item $room
+     * @param callable|null $callback
+     * @return array
+     */
+    public static function createModerationRecipients(cs_room_item $room, callable $callback = null): array
     {
         $recipients = [];
 
         $moderators = $room->getModeratorList();
-        if (!$moderators->isEmpty()) {
-            /** @var \cs_user_item $moderator */
-            $moderator = $moderators->getFirst();
-
-            while ($moderator) {
-                if ($callback) {
-                    if ($callback($moderator)) {
-                        $recipients[] = RecipientFactory::createRecipient($moderator);
-                    }
-                } else {
-                    $recipients[] = RecipientFactory::createRecipient($moderator);
+        foreach ($moderators as $moderator) {
+            /** @var cs_user_item $moderator */
+            if ($callback) {
+                if ($callback($moderator)) {
+                    $recipients[] = self::createRecipient($moderator);
                 }
-
-                $moderator = $moderators->getNext();
+            } else {
+                $recipients[] = self::createRecipient($moderator);
             }
         }
 
         return $recipients;
     }
 
-    public static function createRecipient(\cs_user_item $user): Recipient
+    /**
+     * @param Account $account
+     * @return Recipient
+     */
+    public static function createAccountRecipient(Account $account): Recipient
+    {
+        $recipient = new Recipient();
+        $recipient->setFirstname($account->getFirstname());
+        $recipient->setLastname($account->getLastname());
+        $recipient->setEmail($account->getEmail());
+        $recipient->setLanguage($account->getLanguage());
+
+        return $recipient;
+    }
+
+    /**
+     * @param cs_user_item $user
+     * @return Recipient
+     */
+    public static function createRecipient(cs_user_item $user): Recipient
     {
         $recipient = new Recipient();
         $recipient->setFirstname($user->getFirstname());

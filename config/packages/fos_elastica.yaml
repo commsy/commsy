@@ -154,7 +154,7 @@ fos_elastica:
                         identifier: itemId
                         finder: ~
                         provider: ~
-                        listener: ~
+                        listener: { enabled: false }
 
         commsy_date:
             index_name: '%env(ELASTIC_INDEX)%_date'
@@ -298,7 +298,7 @@ fos_elastica:
                         identifier: itemId
                         finder: ~
                         provider: ~
-                        listener: ~
+                        listener: { enabled: false }
 
         commsy_discussion:
             index_name: '%env(ELASTIC_INDEX)%_discussion'
@@ -449,7 +449,7 @@ fos_elastica:
                         identifier: itemId
                         finder: ~
                         provider: ~
-                        listener: ~
+                        listener: { enabled: false }
 
         commsy_label:
             index_name: '%env(ELASTIC_INDEX)%_label'
@@ -567,7 +567,7 @@ fos_elastica:
                         identifier: itemId
                         finder: ~
                         provider: ~
-                        listener: ~
+                        listener: { enabled: false }
 
         commsy_room:
             index_name: '%env(ELASTIC_INDEX)%_room'
@@ -686,7 +686,7 @@ fos_elastica:
                         identifier: itemId
                         finder: ~
                         provider: ~
-                        listener: ~
+                        listener: { enabled: false }
 
         commsy_todo:
             index_name: '%env(ELASTIC_INDEX)%_todo'
@@ -849,7 +849,7 @@ fos_elastica:
                         identifier: itemId
                         finder: ~
                         provider: ~
-                        listener: ~
+                        listener: { enabled: false }
 
         commsy_user:
             index_name: '%env(ELASTIC_INDEX)%_user'
@@ -979,7 +979,7 @@ fos_elastica:
                         identifier: itemId
                         finder: ~
                         provider: ~
-                        listener: ~
+                        listener: { enabled: false }
 
         commsy_material:
             index_name: '%env(ELASTIC_INDEX)%_material'
