@@ -15,6 +15,7 @@
         "debril/rss-atom-bundle": "^5.0",
         "doctrine/doctrine-bundle": "^2.1",
         "doctrine/doctrine-migrations-bundle": "^3.0",
+        "doctrine/dbal": "^2.13",
         "doctrine/orm": "^2.7",
         "eluceo/ical": "^0.15",
         "ezyang/htmlpurifier": "^4.1",
