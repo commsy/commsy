@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="context_id", columns={"context_id"}),
  *     @ORM\Index(name="creator_id", columns={"creator_id"})
  * })
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\FilesRepository")
  */
 class Files
 {

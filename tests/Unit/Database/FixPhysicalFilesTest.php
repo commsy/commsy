@@ -2,9 +2,18 @@
 namespace App\Tests\Database;
 
 use App\Database\FixPhysicalFiles;
+use App\Entity\Portal;
+use App\Repository\FilesRepository;
+use App\Repository\ItemRepository;
+use App\Repository\PortalRepository;
+use App\Repository\RoomRepository;
+use App\Repository\ZzzFilesRepository;
+use App\Repository\ZzzItemRepository;
+use App\Repository\ZzzRoomRepository;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\PDOStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -40,91 +49,48 @@ final class FixPhysicalFilesTest extends Unit
     }
 
     // tests
-    public function testStringPath()
-    {
-        $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
-
-        /**
-         * The second level (room part one) only contains numeric folders with a length of 4 digits
-         * The third level will hold the remaining digits + '_'
-         */
-        mkdir('temp');
-        mkdir('portal');
-        mkdir('someother');
-
-        $fileA = ['portalId' => 11111];
-        $fileB = ['portalId' => 22222];
-        $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$fileA, $fileB]
-            ]),
-        ]);
-
-        $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
-        $this->assertTrue($fix->resolve($symfonyStyle));
-
-        $this->tester->assertDirectoryExists('temp');
-        $this->tester->assertDirectoryExists('portal');
-
-        $this->tester->assertDirectoryDoesNotExist('someother');
-    }
-
-    public function testRoomFolder()
-    {
-        $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
-
-        mkdir('12345');
-        mkdir('12345/1234');
-        mkdir('12345/1234/_123');
-        mkdir('12345/1234/123');
-        mkdir('12345/1234/invalid');
-
-        $fileA = ['portalId' => 12345];
-        $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$fileA]
-            ]),
-        ]);
-
-        $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
-        $this->assertTrue($fix->resolve($symfonyStyle));
-
-        $this->tester->assertDirectoryExists('12345');
-        $this->tester->assertDirectoryExists('12345/1234');
-        $this->tester->assertDirectoryExists('12345/1234/_123');
-
-        $this->tester->assertDirectoryDoesNotExist('12345/1234/123');
-        $this->tester->assertDirectoryDoesNotExist('12345/1234/invalid');
-    }
-
-    public function testTopFolder()
+    public function testFirstLevelFolder()
     {
         $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
 
         /**
          * Create top level folder files_test
          * - 99 Server content
-         * - Numeric folders for existing and non existing portals
+         * - Numeric folders for existing and non existing portals / project rooms
          * - temp/
          * - Other non-numeric folders
          */
         mkdir('99');
-        mkdir('11111');
+        mkdir('12345');
         mkdir('22222');
         mkdir('33333');
         mkdir('temp');
         mkdir('somefolder');
 
-        $fileA = ['portalId' => 11111];
-        $fileB = ['portalId' => 22222];
-        $fileC = ['portalId' => 99];
-        $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$fileA, $fileB, $fileC]
-            ]),
+        $portalRepository = $this->makeEmpty(PortalRepository::class, [
+            'findAll' => [
+                $this->make(Portal::class, ['id' => 12345]),
+            ],
         ]);
+        $roomRepository = $this->makeEmpty(RoomRepository::class, [
+            'getProjectAndUserRoomIds' => [22222],
+        ]);
+        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
+        $filesRepository = $this->makeEmpty(FilesRepository::class);
+        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
+        $itemRepository = $this->makeEmpty(ItemRepository::class);
+        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
-        $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
+        $fix = new FixPhysicalFiles(
+            $this->parameterBagStub,
+            $portalRepository,
+            $roomRepository,
+            $zzzRoomRepository,
+            $filesRepository,
+            $zzzFilesRepository,
+            $itemRepository,
+            $zzzItemRepository
+        );
         $this->assertTrue($fix->resolve($symfonyStyle));
 
         // Server and temp directory must remain
@@ -132,7 +98,7 @@ final class FixPhysicalFilesTest extends Unit
         $this->tester->assertDirectoryExists('temp');
 
         // Only the directories with existing portals must remain
-        $this->tester->assertDirectoryExists('11111');
+        $this->tester->assertDirectoryExists('12345');
         $this->tester->assertDirectoryExists('22222');
         $this->tester->assertDirectoryDoesNotExist('33333');
 
@@ -140,7 +106,8 @@ final class FixPhysicalFilesTest extends Unit
         $this->tester->assertDirectoryDoesNotExist('somefolder');
     }
 
-    public function testRoomPath()
+
+    public function testSecondLevelFolder()
     {
         $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
 
@@ -150,36 +117,43 @@ final class FixPhysicalFilesTest extends Unit
          */
         mkdir('12345');
         mkdir('12345/somefolder');
-        mkdir('12345/1234');
-        mkdir('12345/1234/abc');
-        mkdir('12345/1234/123');
-        mkdir('12345/1234/_123');
         mkdir('12345/123');
+        mkdir('12345/1234');
         mkdir('12345/12345');
 
-        $fileA = ['portalId' => 12345];
-        $fileB = ['portalId' => 22222];
-        $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$fileA, $fileB]
-            ]),
+        $portalRepository = $this->makeEmpty(PortalRepository::class, [
+            'findAll' => [
+                $this->make(Portal::class, ['id' => 12345]),
+            ],
         ]);
+        $roomRepository = $this->makeEmpty(RoomRepository::class);
+        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
+        $filesRepository = $this->makeEmpty(FilesRepository::class);
+        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
+        $itemRepository = $this->makeEmpty(ItemRepository::class);
+        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
-        $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
+        $fix = new FixPhysicalFiles(
+            $this->parameterBagStub,
+            $portalRepository,
+            $roomRepository,
+            $zzzRoomRepository,
+            $filesRepository,
+            $zzzFilesRepository,
+            $itemRepository,
+            $zzzItemRepository
+        );
         $this->assertTrue($fix->resolve($symfonyStyle));
 
         $this->tester->assertDirectoryExists('12345');
         $this->tester->assertDirectoryExists('12345/1234');
-        $this->tester->assertDirectoryExists('12345/1234/_123');
 
         $this->tester->assertDirectoryDoesNotExist('12345/somefolder');
         $this->tester->assertDirectoryDoesNotExist('12345/123');
         $this->tester->assertDirectoryDoesNotExist('12345/12345');
-        $this->tester->assertDirectoryDoesNotExist('12345/1234/abc');
-        $this->tester->assertDirectoryDoesNotExist('12345/1234/123');
     }
 
-    public function testRoomPathFirstLevel()
+    public function testThirdLevelFolder()
     {
         $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
 
@@ -188,27 +162,61 @@ final class FixPhysicalFilesTest extends Unit
          * The third level will hold the remaining digits + '_'
          */
         mkdir('12345');
-        mkdir('12345/somefolder');
         mkdir('12345/1234');
+        mkdir('12345/1234/abc');
+        mkdir('12345/1234/123');
+        mkdir('12345/1234/_123');
+        mkdir('12345/1234/123_');
+        mkdir('12345/1234/888_');
+        mkdir('12345/1234/999_');
 
-        $fileA = ['portalId' => 12345];
-        $fileB = ['portalId' => 22222];
-        $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$fileA, $fileB]
-            ]),
+        $portalRepository = $this->makeEmpty(PortalRepository::class, [
+            'findAll' => [
+                $this->make(Portal::class, ['id' => 12345]),
+            ],
         ]);
+        $roomRepository = $this->makeEmpty(RoomRepository::class);
+        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
+        $filesRepository = $this->makeEmpty(FilesRepository::class, [
+            'getNumFiles' => function(int $fileId, int $contextId) {
+                return $contextId == 1234123 ? 1 : 0;
+            },
+        ]);
+        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
+        $itemRepository = $this->makeEmpty(ItemRepository::class, [
+            'getNumItems' => function(int $itemId) {
+                return ($itemId == 1234123 || $itemId == 1234888) ? 1 : 0;
+            },
+        ]);
+        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
-        $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
+        $fix = new FixPhysicalFiles(
+            $this->parameterBagStub,
+            $portalRepository,
+            $roomRepository,
+            $zzzRoomRepository,
+            $filesRepository,
+            $zzzFilesRepository,
+            $itemRepository,
+            $zzzItemRepository
+        );
         $this->assertTrue($fix->resolve($symfonyStyle));
 
         $this->tester->assertDirectoryExists('12345');
         $this->tester->assertDirectoryExists('12345/1234');
+        $this->tester->assertDirectoryExists('12345/1234/123_');
 
-        $this->tester->assertDirectoryDoesNotExist('12345/somefolder');
+        // Make sure folder is not deleted even if the files table does not contain any files for the context.
+        // Otherwise, we would also delete the autogenerated ones.
+        $this->tester->assertDirectoryExists('12345/1234/888_');
+
+        $this->tester->assertDirectoryDoesNotExist('12345/1234/abc');
+        $this->tester->assertDirectoryDoesNotExist('12345/1234/123');
+        $this->tester->assertDirectoryDoesNotExist('12345/1234/_123');
+        $this->tester->assertDirectoryDoesNotExist('12345/1234/999_');
     }
 
-    public function testFileNamingPattern()
+    public function testFileLevel()
     {
         $symfonyStyle = $this->makeEmpty(SymfonyStyle::class);
 
@@ -219,30 +227,54 @@ final class FixPhysicalFilesTest extends Unit
          */
         mkdir('12345');
         mkdir('12345/1234');
-        mkdir('12345/1234/_123');
-        touch('12345/1234/_123/no_extension');
-        touch('12345/1234/_123/1234.txt');
-        touch('12345/1234/_123/invalid.txt');
-        touch('12345/1234/_123/cid1234123_bginfo_filename.jpg');
-        touch('12345/1234/_123/cid1234125_logo_filename.jpg');
-        touch('12345/1234/_123/cid1234126_user_filename.jpg');
+        mkdir('12345/1234/123_');
+        touch('12345/1234/123_/no_extension');
+        touch('12345/1234/123_/1234.txt');
+        touch('12345/1234/123_/8888.txt');
+        touch('12345/1234/123_/invalid.txt');
+        touch('12345/1234/123_/cid1234123_bginfo_filename.jpg');
+        touch('12345/1234/123_/cid1234125_logo_filename.jpg');
+        touch('12345/1234/123_/cid1234126_user_filename.jpg');
 
-        $fileA = ['portalId' => 12345];
-        $fileB = ['portalId' => 22222];
-        $connectionStub = $this->makeEmpty(Connection::class, [
-            'createQueryBuilder' => $this->make(QueryBuilder::class, [
-                'execute' => [$fileA, $fileB]
-            ]),
+        $portalRepository = $this->makeEmpty(PortalRepository::class, [
+            'findAll' => [
+                $this->make(Portal::class, ['id' => 12345]),
+            ],
         ]);
+        $roomRepository = $this->makeEmpty(RoomRepository::class);
+        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
+        $filesRepository = $this->makeEmpty(FilesRepository::class, [
+            'getNumFiles' => function(int $fileId, int $contextId) {
+                return ($fileId == 1234 && $contextId == 1234123) ? 1 : 0;
+            },
+        ]);
+        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
+        $itemRepository = $this->makeEmpty(ItemRepository::class, [
+            'getNumItems' => function() {
+                return 1;
+            },
+        ]);
+        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
-        $fix = new FixPhysicalFiles($connectionStub, $this->parameterBagStub);
+        $fix = new FixPhysicalFiles(
+            $this->parameterBagStub,
+            $portalRepository,
+            $roomRepository,
+            $zzzRoomRepository,
+            $filesRepository,
+            $zzzFilesRepository,
+            $itemRepository,
+            $zzzItemRepository
+        );
         $this->assertTrue($fix->resolve($symfonyStyle));
 
-        $this->tester->assertFileExists('12345/1234/_123/1234.txt');
-        $this->tester->assertFileExists('12345/1234/_123/cid1234123_bginfo_filename.jpg');
-        $this->tester->assertFileExists('12345/1234/_123/cid1234125_logo_filename.jpg');
-        $this->tester->assertFileExists('12345/1234/_123/cid1234126_user_filename.jpg');
+        $this->tester->assertFileExists('12345/1234/123_/1234.txt');
+        $this->tester->assertFileExists('12345/1234/123_/cid1234123_bginfo_filename.jpg');
+        $this->tester->assertFileExists('12345/1234/123_/cid1234125_logo_filename.jpg');
+        $this->tester->assertFileExists('12345/1234/123_/cid1234126_user_filename.jpg');
 
+        $this->tester->assertFileDoesNotExist('12345/1234/123_/8888.txt');
+        $this->tester->assertFileDoesNotExist('12345/1234/123_/no_extension');
         $this->tester->assertFileDoesNotExist('12345/1234/123_/invalid.txt');
     }
 }
