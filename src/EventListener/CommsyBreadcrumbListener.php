@@ -90,9 +90,9 @@ class CommsyBreadcrumbListener
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addItem($this->translator->trans('hashtags', [], 'room'));
         }
-        elseif ($controller == 'secureprojectdetaildeletion') {
+        elseif ($controller == 'cancellablelockanddelete') {
             $requestUri = $request->getRequestUri();
-            if (strpos($requestUri, 'securedelete') !== false) {
+            if (strpos($requestUri, 'cancellabledelete') !== false) {
                 $lastSlashPos = strrpos($requestUri, '/');
                 $newRoomId = substr($requestUri, $lastSlashPos+1);
                 $projectRoomItem = $this->roomService->getRoomItem(intval($newRoomId));

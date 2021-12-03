@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Form\Type\Room\SecureDeleteType;
+use App\Form\Type\Room\CancellableDeleteType;
 use App\Utils\RoomService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -12,14 +12,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class SecureProjectDetailDeletionController
+ * Class CancellableLockAndDeleteController
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class SecureProjectDetailDeletionController extends AbstractController
+class CancellableLockAndDeleteController extends AbstractController
 {
     /**
-     * @Route("/room/{roomId}/settings/securedelete/{itemId}")
+     * @Route("/room/{roomId}/settings/cancellabledelete/{itemId}")
      * @Template
      * @Security("is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)")
      */
@@ -52,11 +52,11 @@ class SecureProjectDetailDeletionController extends AbstractController
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
-        $deleteForm = $this->createForm(SecureDeleteType::class, $roomItem, [
+        $deleteForm = $this->createForm(CancellableDeleteType::class, $roomItem, [
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
-        $lockForm = $this->createForm(SecureDeleteType::class, $roomItem, [
+        $lockForm = $this->createForm(CancellableDeleteType::class, $roomItem, [
             'confirm_string' => $translator->trans('lock', [], 'profile')
         ]);
 
@@ -111,11 +111,11 @@ class SecureProjectDetailDeletionController extends AbstractController
 
         // prevents any error message and confirmation string from being displayed redundantly in the other form
         if ($lockForm->get('lock')->isClicked()) {
-            $deleteForm = $this->createForm(SecureDeleteType::class, $roomItem, [
+            $deleteForm = $this->createForm(CancellableDeleteType::class, $roomItem, [
                 'confirm_string' => $translator->trans('delete', [], 'profile')
             ]);
         } elseif ($deleteForm->get('delete')->isClicked()) {
-            $lockForm = $this->createForm(SecureDeleteType::class, $roomItem, [
+            $lockForm = $this->createForm(CancellableDeleteType::class, $roomItem, [
                 'confirm_string' => $translator->trans('lock', [], 'profile')
             ]);
         }

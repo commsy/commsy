@@ -186,7 +186,7 @@
                                                             <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
                                                         </a>
                                                     {% else %}
-                                                        <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
+                                                        <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
                                                             <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock group workspace'|trans({}, 'group') }}
                                                         </a>
                                                     {% endif %}
@@ -194,7 +194,7 @@
 
                                                 {# delete group room #}
                                                 <li>
-                                                    <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
+                                                    <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete group workspace'|trans({}, 'group') }}
                                                     </a>
                                                 </li>
