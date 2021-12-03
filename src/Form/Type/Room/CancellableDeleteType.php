@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class SecureDeleteType extends AbstractType
+class CancellableDeleteType extends AbstractType
 {
     /**
      * Builds the form.
@@ -49,7 +49,7 @@ class SecureDeleteType extends AbstractType
                 ],
             ])
             ->add('cancel', SubmitType::class, [
-                'label' => 'Cancel secure delete',
+                'label' => 'Cancel cancellable delete',
                 'attr' => [
                     'class' => 'uk-button-danger',
                     'formnovalidate' => '',

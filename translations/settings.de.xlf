@@ -797,8 +797,8 @@
                 <source>Portal terms</source>
                 <target>Vorlagen</target>
             </trans-unit>
-            <trans-unit id="Cancel securedelete">
-                <source>Cancel secure delete</source>
+            <trans-unit id="Cancel cancellable delete">
+                <source>Cancel cancellable delete</source>
                 <target>Zurück</target>
             </trans-unit>
         </body>
