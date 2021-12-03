@@ -6,11 +6,14 @@ namespace App\Account;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
+use cs_list;
 use cs_user_item;
 use cs_user_manager;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -85,17 +88,40 @@ class AccountManager
         $this->legacyEnvironment->setCurrentPortalID($account->getContextId());
 
         $portalUser = $this->userService->getPortalUser($account);
-        $relatedUsers = $portalUser->getRelatedUserList();
-        $relatedUsers->add($portalUser);
+        if ($portalUser) {
+            $relatedUsers = $portalUser->getRelatedUserList();
+            $relatedUsers->add($portalUser);
 
-        foreach ($relatedUsers as $relatedUser) {
-            /** @var cs_user_item $relatedUser */
-            $relatedUser->setFirstname($account->getFirstname());
-            $relatedUser->setLastname($account->getLastname());
-            $relatedUser->setEmail($account->getEmail());
+            foreach ($relatedUsers as $relatedUser) {
+                /** @var cs_user_item $relatedUser */
+                $relatedUser->setFirstname($account->getFirstname());
+                $relatedUser->setLastname($account->getLastname());
+                $relatedUser->setEmail($account->getEmail());
 
-            $relatedUser->save();
+                $relatedUser->save();
+            }
         }
+    }
+
+    public function isLastModerator(Account $account): bool
+    {
+        $projectManager = $this->legacyEnvironment->getProjectManager();
+        $communityManager = $this->legacyEnvironment->getCommunityManager();
+
+        $portalUser = $this->userService->getPortalUser($account);
+        if ($portalUser) {
+            $roomList = new cs_list();
+            $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
+            $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
+
+            foreach ($roomList as $room) {
+                if ($this->userService->userIsLastModeratorForRoom($room, $portalUser)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -112,6 +138,16 @@ class AccountManager
 
     /**
      * @param Account $account
+     * @return Portal|null
+     */
+    public function getPortal(Account $account): ?Portal
+    {
+        $portalRepository = $this->entityManager->getRepository(Portal::class);
+        return $portalRepository->find($account->getContextId());
+    }
+
+    /**
+     * @param Account $account
      */
     public function delete(Account $account)
     {
@@ -119,16 +155,18 @@ class AccountManager
         // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
         $portalUser = $this->userService->getPortalUser($account);
 
-        $userList = $portalUser->getRelatedUserList();
-        foreach ($userList as $user) {
-            /** @var $user cs_user_item */
-            $user->delete();
+        if ($portalUser) {
+            $userList = $portalUser->getRelatedUserList();
+            foreach ($userList as $user) {
+                /** @var $user cs_user_item */
+                $user->delete();
+            }
+
+            $this->entityManager->remove($account);
+            $this->entityManager->flush();
+
+            $portalUser->delete();
         }
-
-        $this->entityManager->remove($account);
-        $this->entityManager->flush();
-
-        $portalUser->delete();
     }
 
     /**
@@ -138,17 +176,24 @@ class AccountManager
     {
         $portalUser = $this->userService->getPortalUser($account);
 
-        $portalUser->reject();
-        $portalUser->save();
+        if ($portalUser) {
+            $portalUser->reject();
+            $portalUser->save();
+        }
 
         $account->setLocked(true);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
     }
 
+    /**
+     * @param Account $account
+     */
     public function unlock(Account $account)
     {
         $account->setLocked(false);
+        $account->setActivityState(Account::ACTIVITY_ACTIVE);
+        $account->setActivityStateUpdated(null);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
     }
@@ -166,5 +211,59 @@ class AccountManager
         // Update the user's session here too (normally done on login)
         // This will affect the translation language in cs_environment::getSelectedLanguage.
         $this->session->set('_locale', $account->getLanguage());
+    }
+
+    /**
+     * @param Account $account
+     * @param bool $flush
+     */
+    public function renewActivityUpdated(Account $account, bool $flush = true): void
+    {
+        $account->setActivityStateUpdated(new DateTime());
+        $this->entityManager->persist($account);
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    /**
+     * @param Account $account
+     * @param bool $resetLastLogin
+     * @param bool $resetActivityState
+     * @param bool $flush
+     */
+    public function resetInactivity(
+        Account $account,
+        bool $resetLastLogin = true,
+        bool $resetActivityState = true,
+        bool $flush = true
+    ) : void
+    {
+        if ($resetLastLogin) {
+            $account->setLastLogin(new DateTime());
+        }
+
+        if ($resetActivityState) {
+            $account->setActivityState(Account::ACTIVITY_ACTIVE);
+            $account->setActivityStateUpdated(null);
+        }
+
+        $this->entityManager->persist($account);
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    /**
+     *
+     */
+    public function resetInactivityToPreviousNonNotificationState(): void
+    {
+        $accountRepository = $this->entityManager->getRepository(Account::class);
+
+        $accountRepository->updateActivity(Account::ACTIVITY_IDLE_NOTIFIED, Account::ACTIVITY_IDLE);
+        $accountRepository->updateActivity(Account::ACTIVITY_ACTIVE_NOTIFIED, Account::ACTIVITY_ACTIVE);
     }
 }

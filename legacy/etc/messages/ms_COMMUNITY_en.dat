@@ -2,13 +2,7 @@
 $message["COMMUNITY_ACCESS_NOT_GRANTED"]["en"] = "You are not allowed to enter the %_COMMUNITY_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> because you are not a member of the %_COMMUNITY_SUB_NOMS_LOW. You can %2 here.";
 $message["COMMUNITY_INDEX"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["COMMUNITY_MAIL_BODY_ARCHIVE"]["en"] = "Archiving of a %_COMMUNITY_SUB_NOMS_LOW.";
-$message["COMMUNITY_MAIL_BODY_ARCHIVE_INFO"]["en"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW &quot;%1&quot; is unused for almost %3 days. It will be stored in %2 days. After storing you can receive all data furthermore.
-
-If can stop the storage with login into %_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW within the following %2 days.";
 $message["COMMUNITY_MAIL_BODY_DELETE"]["en"] = "Deletion of a %_COMMUNITY_SUB_NOMS_LOW.";
-$message["COMMUNITY_MAIL_BODY_DELETE_INFO"]["en"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW &quot;%1&quot; is unused for almost %3 days. It will be deleted in %2 days.
-
-If can stop the deletion with login into %_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW within the following %2 days.";
 $message["COMMUNITY_MAIL_BODY_LOCK"]["en"] = "Blocking of a %_COMMUNITY_SUB_NOMS_LOW.";
 $message["COMMUNITY_MAIL_BODY_OPEN"]["en"] = "Initiation of a %_COMMUNITY_SUB_NOMS_LOW.";
 $message["COMMUNITY_MAIL_BODY_REOPEN"]["en"] = "Reopening of a %_COMMUNITY_SUB_NOMS_LOW.";

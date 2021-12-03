@@ -9,19 +9,21 @@
 namespace App\Mail;
 
 
+use Swift_Mailer;
+
 class Mailer
 {
     /**
      * @var MessageBuilder $messageBuilder
      */
-    private $messageBuilder;
+    private MessageBuilder $messageBuilder;
 
     /**
-     * @var \Swift_Mailer $swiftMailer
+     * @var Swift_Mailer $swiftMailer
      */
-    private $swiftMailer;
+    private Swift_Mailer $swiftMailer;
 
-    public function __construct(MessageBuilder $messageBuilder, \Swift_Mailer $swiftMailer  )
+    public function __construct(MessageBuilder $messageBuilder, Swift_Mailer $swiftMailer)
     {
         $this->messageBuilder = $messageBuilder;
         $this->swiftMailer = $swiftMailer;
@@ -31,25 +33,24 @@ class Mailer
      * Sends the given message to all recipients.
      *
      * @param MessageInterface $message The message to send
-     * @param string $fromSenderName The from name of the sender
      * @param Recipient recipient The recipient
+     * @param string $fromSenderName The from name of the sender
      * @param array $replyTo Reply to in the form of email => name
      *
      * @return bool The success status
      */
-    public function send(MessageInterface $message, string $fromSenderName, Recipient $recipient, array $replyTo = []): bool
+    public function send(MessageInterface $message, Recipient $recipient, string $fromSenderName = 'CommSy', array $replyTo = []): bool
     {
-        $swiftMessage = $this->messageBuilder->generateSwiftMessage($message, $fromSenderName, $recipient, $replyTo);
-
-        if ($swiftMessage) {
-            $successfullRecipients = $this->swiftMailer->send($swiftMessage);
-
-            return $successfullRecipients > 0;
-        }
-
-        return false;
+        return $this->sendMultiple($message, [$recipient], $fromSenderName, $replyTo);
     }
 
+    /**
+     * @param MessageInterface $message
+     * @param array $recipients
+     * @param string $fromSenderName
+     * @param array $replyTo
+     * @return bool
+     */
     public function sendMultiple(MessageInterface $message, array $recipients, string $fromSenderName = 'CommSy', array $replyTo = []): bool
     {
         $withErrors = false;
@@ -82,7 +83,7 @@ class Mailer
         $withErrors = false;
 
         foreach ($recipients as $recipient) {
-            $swiftMessage = $this->messageBuilder->generateSwiftMessage($message, $fromSenderName, [$recipient], $replyTo);
+            $swiftMessage = $this->messageBuilder->generateSwiftMessage($message, $fromSenderName, $recipient, $replyTo);
 
             if ($swiftMessage) {
                 $successfullRecipients = $this->swiftMailer->send($swiftMessage);

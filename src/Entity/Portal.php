@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Portal
@@ -37,7 +38,7 @@ class Portal implements \Serializable
     private $id;
 
     /**
-     * @var integer
+     * @var User|null
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id", nullable=true)
@@ -156,16 +157,86 @@ class Portal implements \Serializable
     private $logoFilename;
 
     /**
-     * array - containing the data of this item, including lists of linked items
+     * @ORM\Column(type="boolean", options={"default":0})
+     *
+     * @var bool
      */
-    var $_data = array();
-    private $_environment;
-    var $_room_list_continuous = null;
+    private bool $clearInactiveAccountsFeatureEnabled = false;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":180})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveAccountsNotifyLockDays = 180;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":30})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveAccountsLockDays = 30;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":180})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveAccountsNotifyDeleteDays = 180;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":30})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveAccountsDeleteDays = 30;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":0})
+     *
+     * @var bool
+     */
+    private bool $clearInactiveRoomsFeatureEnabled = false;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":180})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveRoomsNotifyLockDays = 180;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":30})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveRoomsLockDays = 30;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":180})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveRoomsNotifyDeleteDays = 180;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":30})
+     * @Assert\Positive(message="This value should be positive.")
+     *
+     * @var int
+     */
+    private int $clearInactiveRoomsDeleteDays = 30;
 
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
-        $this->_environment = $this;
     }
 
     /**
@@ -181,11 +252,11 @@ class Portal implements \Serializable
     /**
      * Set deleter
      *
-     * @param \App\Entity\User $deleter
+     * @param User $deleter
      *
      * @return Portal
      */
-    public function setDeleter(\App\Entity\User $deleter = null)
+    public function setDeleter(User $deleter = null)
     {
         $this->deleter = $deleter;
 
@@ -195,9 +266,9 @@ class Portal implements \Serializable
     /**
      * Get deleter
      *
-     * @return \App\Entity\User
+     * @return User|null
      */
-    public function getDeleter()
+    public function getDeleter(): ?User
     {
         return $this->deleter;
     }
@@ -822,78 +893,6 @@ class Portal implements \Serializable
     }
 
     /**
-     * @return int|null
-     */
-    public function getInactivityLockDays(): ?int
-    {
-        return $this->extras['INACTIVITY_LOCK'] ?? null;
-    }
-
-    /**
-     * @param int|null $days
-     * @return self
-     */
-    public function setInactivityLockDays(?int $days): self
-    {
-        $this->extras['INACTIVITY_LOCK'] = $days;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getInactivitySendMailBeforeLockDays(): ?int
-    {
-        return $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] ?? null;
-    }
-
-    /**
-     * @param int|null $days
-     * @return self
-     */
-    public function setInactivitySendMailBeforeLockDays(?int $days): self
-    {
-        $this->extras['INACTIVITY_MAIL_BEFORE_LOCK'] = $days;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getInactivityDeleteDays(): ?int
-    {
-        return $this->extras['INACTIVITY_DELETE'] ?? null;
-    }
-
-    /**
-     * @param int|null $days
-     * @return self
-     */
-    public function setInactivityDeleteDays(?int $days): self
-    {
-        $this->extras['INACTIVITY_DELETE'] = $days;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getInactivitySendMailBeforeDeleteDays(): ?int
-    {
-        return $this->extras['INACTIVITY_MAIL_DELETE'] ?? null;
-    }
-
-    /**
-     * @param int|null $days
-     * @return self
-     */
-    public function setInactivitySendMailBeforeDeleteDays(?int $days): self
-    {
-        $this->extras['INACTIVITY_MAIL_DELETE'] = $days;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getDescriptionGerman(): ?string
@@ -1067,15 +1066,11 @@ class Portal implements \Serializable
 
     public function getContinuousRoomList(LegacyEnvironment $environment)
     {
-        if (!isset($this->_room_list_continuous)) {
-            $manager = $environment->getEnvironment()->getRoomManager();
-            $manager->setContextLimit($this->getId());
-            $manager->setContinuousLimit();
-            $manager->select();
-            $this->_room_list_continuous = $manager->get();
-            unset($manager);
-        }
-        return $this->_room_list_continuous;
+        $manager = $environment->getEnvironment()->getRoomManager();
+        $manager->setContextLimit($this->getId());
+        $manager->setContinuousLimit();
+        $manager->select();
+        return $manager->get();
     }
 
     /**
@@ -1220,142 +1215,185 @@ class Portal implements \Serializable
      */
     function save()
     {
-        $manager = $this->_environment->getManager($this->_type);
-        $this->_save($manager);
-        $this->_changes = array();
     }
 
-
-    ###################################################
-    # archiving and deleting rooms
-    ###################################################
-
-    function setStatusArchivingUnusedRooms(bool $statusArchivingUnusedRooms)
+    /**
+     * @return bool
+     */
+    public function isClearInactiveAccountsFeatureEnabled(): bool
     {
-        $this->extras['ARCHIVING_ROOMS_STATUS'] = $statusArchivingUnusedRooms ? 1 : -1;
+        return $this->clearInactiveAccountsFeatureEnabled;
+    }
+
+    /**
+     * @param bool $clearInactiveAccountsFeatureEnabled
+     * @return Portal
+     */
+    public function setClearInactiveAccountsFeatureEnabled(bool $clearInactiveAccountsFeatureEnabled): Portal
+    {
+        $this->clearInactiveAccountsFeatureEnabled = $clearInactiveAccountsFeatureEnabled;
         return $this;
     }
 
-    public function getStatusArchivingUnusedRooms(): bool
-    {
-        $statusArchivingUnusedRooms = $this->extras['ARCHIVING_ROOMS_STATUS'] ?? -1;
-        return $statusArchivingUnusedRooms === 1;
-    }
-
-
-    public function turnOnArchivingUnusedRooms()
-    {
-        $this->extras['ARCHIVING_ROOMS_STATUS'] = 1;
-    }
-
-    public function turnOffArchivingUnusedRooms()
-    {
-        $this->extras['ARCHIVING_ROOMS_STATUS'] = -1;
-    }
-
-    public function getDaysUnusedBeforeArchivingRooms(): int
-    {
-        $retour = 365; //default
-        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE')) {
-            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE'];
-        }
-        return $retour;
-    }
-
-    public function setDaysUnusedBeforeArchivingRooms(int $value)
-    {
-        $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE'] = $value;
-    }
-
-    public function isActivatedArchivingUnusedRooms(): bool
-    {
-        $status = $this->getStatusArchivingUnusedRooms();
-        return $status === 1;
-    }
-
-    /** get days send an email before archiving an unused room
-     *
-     * @return int days send email before archiving an unused room
+    /**
+     * @return int
      */
-    public function getDaysSendMailBeforeArchivingRooms(): int
+    public function getClearInactiveAccountsNotifyLockDays(): int
     {
-        $retour = 0;
-        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE')) {
-            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE'];
-        }
-        return $retour;
+        return $this->clearInactiveAccountsNotifyLockDays;
     }
 
-    /** set days sed mail before archiving an unused room
-     *
-     * @param int days send mail before archiving an unused room
+    /**
+     * @param int $clearInactiveAccountsNotifyLockDays
+     * @return Portal
      */
-    public function setDaysSendMailBeforeArchivingRooms(int $value)
+    public function setClearInactiveAccountsNotifyLockDays(int $clearInactiveAccountsNotifyLockDays): Portal
     {
-        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE'] = $value;
+        $this->clearInactiveAccountsNotifyLockDays = $clearInactiveAccountsNotifyLockDays;
+        return $this;
     }
 
-    public function turnOnDeletingUnusedRooms()
-    {
-        $this->setStatusDeletingUnusedRooms(1);
-    }
-
-    public function turnOffDeletingUnusedRooms()
-    {
-        $this->setStatusDeletingUnusedRooms(-1);
-    }
-
-    public function getStatusDeletingUnusedRooms(): bool
-    {
-        return $this->extras['DELETING_ROOMS_STATUS'] ?? 0;
-    }
-
-    public function setStatusDeletingUnusedRooms(bool $value)
-    {
-        $this->extras['DELETING_ROOMS_STATUS'] = $value;
-    }
-
-    /** get days before deleting an unused archived room
-     *
-     * @return int days before deleting an unused archived room
+    /**
+     * @return int
      */
-    public function getDaysUnusedBeforeDeletingRooms(): int
+    public function getClearInactiveAccountsLockDays(): int
     {
-        $retour = 365; //default
-        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE')) {
-            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE'];
-        }
-        return $retour;
+        return $this->clearInactiveAccountsLockDays;
     }
 
-    /** set days before deleting an unused archived room
-     *
-     * @param int days before deleting an unused archived room
+    /**
+     * @param int $clearInactiveAccountsLockDays
+     * @return Portal
      */
-    public function setDaysUnusedBeforeDeletingRooms(int $value)
+    public function setClearInactiveAccountsLockDays(int $clearInactiveAccountsLockDays): Portal
     {
-        $this->extras['ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE'] = $value;
+        $this->clearInactiveAccountsLockDays = $clearInactiveAccountsLockDays;
+        return $this;
     }
 
-    /** get days send an email before deleting an unused archived room
-     *
-     * @return int days send email before deleting an unused archived room
+    /**
+     * @return int
      */
-    public function getDaysSendMailBeforeDeletingRooms(): int
+    public function getClearInactiveAccountsNotifyDeleteDays(): int
     {
-        $retour = 0;
-        if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE')) {
-            $retour = $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'];
-        }
-        return $retour;
+        return $this->clearInactiveAccountsNotifyDeleteDays;
     }
 
-    /** set days sed mail before deleting an unused archived room
-     *
-     * @param int days send mail before deleting an unused archived room
+    /**
+     * @param int $clearInactiveAccountsNotifyDeleteDays
+     * @return Portal
      */
-    public function setDaysSendMailBeforeDeletingRooms(int $value)
+    public function setClearInactiveAccountsNotifyDeleteDays(int $clearInactiveAccountsNotifyDeleteDays): Portal
     {
-        $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'] = $value;
+        $this->clearInactiveAccountsNotifyDeleteDays = $clearInactiveAccountsNotifyDeleteDays;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getClearInactiveAccountsDeleteDays(): int
+    {
+        return $this->clearInactiveAccountsDeleteDays;
+    }
+
+    /**
+     * @param int $clearInactiveAccountsDeleteDays
+     * @return Portal
+     */
+    public function setClearInactiveAccountsDeleteDays(int $clearInactiveAccountsDeleteDays): Portal
+    {
+        $this->clearInactiveAccountsDeleteDays = $clearInactiveAccountsDeleteDays;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClearInactiveRoomsFeatureEnabled(): bool
+    {
+        return $this->clearInactiveRoomsFeatureEnabled;
+    }
+
+    /**
+     * @param bool $clearInactiveRoomsFeatureEnabled
+     * @return Portal
+     */
+    public function setClearInactiveRoomsFeatureEnabled(bool $clearInactiveRoomsFeatureEnabled): Portal
+    {
+        $this->clearInactiveRoomsFeatureEnabled = $clearInactiveRoomsFeatureEnabled;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getClearInactiveRoomsNotifyLockDays(): int
+    {
+        return $this->clearInactiveRoomsNotifyLockDays;
+    }
+
+    /**
+     * @param int $clearInactiveRoomsNotifyLockDays
+     * @return Portal
+     */
+    public function setClearInactiveRoomsNotifyLockDays(int $clearInactiveRoomsNotifyLockDays): Portal
+    {
+        $this->clearInactiveRoomsNotifyLockDays = $clearInactiveRoomsNotifyLockDays;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getClearInactiveRoomsLockDays(): int
+    {
+        return $this->clearInactiveRoomsLockDays;
+    }
+
+    /**
+     * @param int $clearInactiveRoomsLockDays
+     * @return Portal
+     */
+    public function setClearInactiveRoomsLockDays(int $clearInactiveRoomsLockDays): Portal
+    {
+        $this->clearInactiveRoomsLockDays = $clearInactiveRoomsLockDays;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getClearInactiveRoomsNotifyDeleteDays(): int
+    {
+        return $this->clearInactiveRoomsNotifyDeleteDays;
+    }
+
+    /**
+     * @param int $clearInactiveRoomsNotifyDeleteDays
+     * @return Portal
+     */
+    public function setClearInactiveRoomsNotifyDeleteDays(int $clearInactiveRoomsNotifyDeleteDays): Portal
+    {
+        $this->clearInactiveRoomsNotifyDeleteDays = $clearInactiveRoomsNotifyDeleteDays;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getClearInactiveRoomsDeleteDays(): int
+    {
+        return $this->clearInactiveRoomsDeleteDays;
+    }
+
+    /**
+     * @param int $clearInactiveRoomsDeleteDays
+     * @return Portal
+     */
+    public function setClearInactiveRoomsDeleteDays(int $clearInactiveRoomsDeleteDays): Portal
+    {
+        $this->clearInactiveRoomsDeleteDays = $clearInactiveRoomsDeleteDays;
+        return $this;
     }
 }

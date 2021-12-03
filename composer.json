@@ -62,6 +62,7 @@
         "symfony/twig-bundle": "4.4.*",
         "symfony/validator": "4.4.*",
         "symfony/webpack-encore-bundle": "^1.6",
+        "symfony/workflow": "4.4.*",
         "symfony/yaml": "4.4.*",
         "tomnomnom/etherpad-lite-client": "^0.1.2",
         "twig/extra-bundle": "^3.3",
