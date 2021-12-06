@@ -7,8 +7,8 @@ on:
             - '*'
 
 jobs:
-    release:
-        name: Create Release
+    release-gh:
+        name: Create GitHub Release
         runs-on: ubuntu-latest
         steps:
             -   name: actions/checkout

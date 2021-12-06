@@ -52,8 +52,8 @@ jobs:
             -   name: Run tests
                 run: vendor/bin/codecept run --env github
 
-    release:
-        name: Create Release
+    release-docker:
+        name: Create and push docker images
         needs: test
         runs-on: ubuntu-latest
         steps:
@@ -72,7 +72,7 @@ jobs:
                     context: .
                     push: true
                     target: commsy_php
-                    tags: effectivewebwork/commsy:10.1.0-php7.4-fpm
+                    tags: effectivewebwork/commsy:10.1.0-php7.4-fpm-ci
 
             -   name: Build nginx image and push
                 uses: docker/build-push-action@v2
@@ -80,11 +80,11 @@ jobs:
                     context: .
                     push: true
                     target: commsy_nginx
-                    tags: effectivewebwork/commsy:10.1.0-nginx
+                    tags: effectivewebwork/commsy:10.1.0-nginx-ci
 
             -   name: Build elasticsearch image and push
                 uses: docker/build-push-action@v2
                 with:
                     context: ./docker/elasticsearch
                     push: true
-                    tags: effectivewebwork/commsy:10.1.0-elastic
+                    tags: effectivewebwork/commsy:10.1.0-elastic-ci
