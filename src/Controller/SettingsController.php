@@ -4,32 +4,27 @@ namespace App\Controller;
 
 use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
-use App\Form\Type\Room\DeleteType;
-use App\Form\Type\Room\UserRoomDeleteType;
-use App\Services\InvitationsService;
-use App\Services\LegacyEnvironment;
-use App\Utils\UserroomService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-
-use App\Entity\Room;
 use App\Form\DataTransformer\ExtensionSettingsTransformer;
-use App\Form\Type\GeneralSettingsType;
-use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\AdditionalSettingsType;
 use App\Form\Type\AppearanceSettingsType;
 use App\Form\Type\ExtensionSettingsType;
+use App\Form\Type\GeneralSettingsType;
 use App\Form\Type\InvitationsSettingsType;
+use App\Form\Type\ModerationSettingsType;
+use App\Form\Type\Room\DeleteType;
+use App\Form\Type\Room\LockType;
+use App\Form\Type\Room\UserRoomDeleteType;
+use App\Services\InvitationsService;
+use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
-
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use App\Utils\UserroomService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -485,11 +480,13 @@ class SettingsController extends Controller
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
-        $deleteForm = $this->createForm(DeleteType::class, $roomItem, [
+        $deleteForm = $this->createForm(DeleteType::class, [], [
+            'room' => $roomItem,
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
-        $lockForm = $this->createForm(DeleteType::class, $roomItem, [
+        $lockForm = $this->createForm(LockType::class, [], [
+            'room' => $roomItem,
             'confirm_string' => $translator->trans('lock', [], 'profile')
         ]);
 
@@ -503,8 +500,6 @@ class SettingsController extends Controller
                 return $this->redirectToRoute('app_helper_gotoallrooms', [
                     "portalId" => $portal->getItemId()
                 ]);
-            } else {
-                $deleteForm->clearErrors(true);
             }
         }
 
@@ -518,20 +513,7 @@ class SettingsController extends Controller
                 return $this->redirectToRoute('app_helper_gotoallrooms', [
                     "portalId" => $portal->getItemId()
                 ]);
-            } else {
-                $lockForm->clearErrors(true);
             }
-        }
-
-        // prevents any error message and confirmation string from being displayed redundantly in the other form
-        if ($lockForm->get('lock')->isClicked()) {
-            $deleteForm = $this->createForm(DeleteType::class, $roomItem, [
-                'confirm_string' => $translator->trans('delete', [], 'profile')
-            ]);
-        } elseif ($deleteForm->get('delete')->isClicked()) {
-            $lockForm = $this->createForm(DeleteType::class, $roomItem, [
-                'confirm_string' => $translator->trans('lock', [], 'profile')
-            ]);
         }
 
         return [
