@@ -28,6 +28,7 @@ use App\Facade\UserCreatorFacade;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
+use App\Form\Type\Portal\AccountInactiveType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
 use App\Form\Type\Portal\AccountIndexDetailAssignWorkspaceType;
 use App\Form\Type\Portal\AccountIndexDetailChangePasswordType;
@@ -39,17 +40,14 @@ use App\Form\Type\Portal\AccountIndexSendMailType;
 use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexSendPasswordMailType;
 use App\Form\Type\Portal\AccountIndexType;
-use App\Form\Type\Portal\RoomInactiveType;
 use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\DataPrivacyType;
-use App\Form\Type\Portal\DeleteArchiveRoomsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\ImpressumType;
-use App\Form\Type\Portal\AccountInactiveType;
 use App\Form\Type\Portal\LicenseSortType;
 use App\Form\Type\Portal\LicenseType;
 use App\Form\Type\Portal\MailtextsType;
@@ -60,6 +58,7 @@ use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
 use App\Form\Type\Portal\ProjectRoomsCreationType;
 use App\Form\Type\Portal\RoomCategoriesType;
+use App\Form\Type\Portal\RoomInactiveType;
 use App\Form\Type\Portal\ServerAnnouncementsType;
 use App\Form\Type\Portal\ServerAppearanceType;
 use App\Form\Type\Portal\SupportRequestsType;
@@ -70,6 +69,7 @@ use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TranslationType;
 use App\Model\TimePulseTemplate;
 use App\Repository\AuthSourceRepository;
+use App\Room\RoomManager;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
@@ -95,7 +95,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -934,13 +933,16 @@ class PortalSettingsController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param AccountManager $accountManager
+     * @param RoomManager $roomManager
      * @return array|RedirectResponse
      */
     public function inactive(
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager,
-        AccountManager $accountManager
+        AccountManager $accountManager,
+        RoomManager $roomManager
     ) {
         $accountInactiveForm = $this->createForm(AccountInactiveType::class, $portal);
         $accountInactiveForm->handleRequest($request);
@@ -959,10 +961,13 @@ class PortalSettingsController extends AbstractController
             ]);
         }
 
-        // archiving rooms form
         $roomInactiveForm = $this->createForm(RoomInactiveType::class, $portal, []);
         $roomInactiveForm->handleRequest($request);
         if ($roomInactiveForm->isSubmitted() && $roomInactiveForm->isValid()) {
+            if (!$portal->isClearInactiveRoomsFeatureEnabled()) {
+                $roomManager->resetInactivityToPreviousNonNotificationState();
+            }
+
             $entityManager->persist($portal);
             $entityManager->flush();
 
@@ -1641,7 +1646,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 10: // send mail userID and password
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1653,7 +1657,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 11: // send mail merge userIDs
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1665,7 +1668,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 12: // hide mail
                         foreach ($ids as $id => $checked) {
                             if ($checked) {

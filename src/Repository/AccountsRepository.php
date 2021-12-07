@@ -82,8 +82,8 @@ class AccountsRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->update()
-            ->set('a.activity', ':newState')
-            ->where('a.activity = :oldState')
+            ->set('a.activityState', ':newState')
+            ->where('a.activityState = :oldState')
             ->setParameter('oldState', $oldState)
             ->setParameter('newState', $newState)
             ->getQuery()

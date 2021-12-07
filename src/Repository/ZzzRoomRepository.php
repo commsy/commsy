@@ -48,4 +48,21 @@ class ZzzRoomRepository extends ServiceEntityRepository
                 'contextId' => $portalId,
             ]);
     }
+
+    /**
+     * @param string $oldState
+     * @param string $newState
+     * @return int|mixed|string
+     */
+    public function updateActivity(string $oldState, string $newState)
+    {
+        return $this->createQueryBuilder('r')
+            ->update()
+            ->set('r.activityState', ':newState')
+            ->where('r.activityState = :oldState')
+            ->setParameter('oldState', $oldState)
+            ->setParameter('newState', $newState)
+            ->getQuery()
+            ->execute();
+    }
 }
