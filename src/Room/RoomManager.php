@@ -2,7 +2,6 @@
 
 namespace App\Room;
 
-use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\ZzzRoom;
 use DateTime;
@@ -27,6 +26,27 @@ class RoomManager
     }
 
     /**
+     * @param int $roomId
+     * @return Room|ZzzRoom|null
+     */
+    public function getRoom(int $roomId): ?object
+    {
+        $roomRepository = $this->entityManager->getRepository(Room::class);
+        $room = $roomRepository->findOneBy(['itemId' => $roomId]);
+        if ($room) {
+            return $room;
+        }
+
+        $zzzRoomRepository = $this->entityManager->getRepository(ZzzRoom::class);
+        $room = $zzzRoomRepository->findOneBy(['itemId' => $roomId]);
+        if ($room) {
+            return $room;
+        }
+
+        return null;
+    }
+
+    /**
      * @param object $room
      * @param bool $flush
      */
@@ -48,11 +68,13 @@ class RoomManager
      * @param object $room
      * @param bool $resetLastLogin
      * @param bool $resetActivityState
+     * @param bool $flush
      */
     public function resetInactivity(
         object $room,
         bool $resetLastLogin = true,
-        bool $resetActivityState = true
+        bool $resetActivityState = true,
+        bool $flush = true
     ) : void
     {
         if (!$room instanceof Room && !$room instanceof ZzzRoom) {
@@ -64,11 +86,29 @@ class RoomManager
         }
 
         if ($resetActivityState) {
-            $room->setActivityState(Account::ACTIVITY_ACTIVE);
+            $room->setActivityState(Room::ACTIVITY_ACTIVE);
             $room->setActivityStateUpdated(null);
         }
 
         $this->entityManager->persist($room);
-        $this->entityManager->flush();
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    /**
+     *
+     */
+    public function resetInactivityToPreviousNonNotificationState(): void
+    {
+        $roomRepository = $this->entityManager->getRepository(Room::class);
+        $zzzRoomRepository = $this->entityManager->getRepository(ZzzRoom::class);
+
+        $roomRepository->updateActivity(Room::ACTIVITY_IDLE_NOTIFIED, Room::ACTIVITY_IDLE);
+        $roomRepository->updateActivity(Room::ACTIVITY_ACTIVE_NOTIFIED, Room::ACTIVITY_ACTIVE);
+
+        $zzzRoomRepository->updateActivity(Room::ACTIVITY_IDLE_NOTIFIED, Room::ACTIVITY_IDLE);
+        $zzzRoomRepository->updateActivity(Room::ACTIVITY_ACTIVE_NOTIFIED, Room::ACTIVITY_ACTIVE);
     }
 }
