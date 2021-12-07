@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Portal;
+use App\Room\RoomManager;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,12 +23,19 @@ class ActivitySubscriber implements EventSubscriberInterface
      */
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @var RoomManager
+     */
+    private RoomManager $roomManager;
+
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoomManager $roomManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->entityManager = $entityManager;
+        $this->roomManager = $roomManager;
     }
 
     public function onKernelRequest(RequestEvent $event)
@@ -60,6 +68,11 @@ class ActivitySubscriber implements EventSubscriberInterface
                             $currentContextItem->isGroupRoom()
                         ) {
                             $currentContextItem->saveLastLogin();
+                            $room = $this->roomManager->getRoom($currentContextItem->getItemId());
+                            if ($room) {
+                                $this->roomManager->resetInactivity($room, false, true, true);
+                            }
+
                             $portalId = $currentContextItem->getContextID();
                             $this->updatePortalActivity($portalId);
                         }
