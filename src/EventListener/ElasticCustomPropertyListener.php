@@ -7,6 +7,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
 use cs_file_item;
+use cs_list;
 use cs_project_item;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use Psr\Cache\InvalidArgumentException;
@@ -281,10 +282,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     }
 
     /**
-     * @param cs_file_item[] $files
+     * @param cs_list $files
      * @return array
      */
-    private function getPlainContentofAllFiles(array $files): array
+    private function getPlainContentofAllFiles(cs_list $files): array
     {
         $filesPlain = [];
 
