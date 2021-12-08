@@ -38,6 +38,8 @@ services:
       - commsy-data:/var/www/html/files
       - ./:/var/www/html:cached
       - ./docker/php/conf.d/commsy.dev.ini/:/usr/local/etc/php/conf.d/commsy.ini
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   db-data:
