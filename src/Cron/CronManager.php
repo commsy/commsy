@@ -75,7 +75,7 @@ class CronManager
             $cronRun = array_filter($lastCronRuns, function (CronTask $task) use ($cronTask) {
                 return $task->getName() === get_class($cronTask);
             });
-            $lastRun = !empty($cronRun) ? current($cronRun)->getLastRun() : null;
+            $lastRun = !empty($cronRun) ? DateTimeImmutable::createFromMutable(current($cronRun)->getLastRun()) : null;
 
             $cmp = (new DateTimeImmutable())->sub(new DateInterval('PT23H'));
             if (!$force && $lastRun && $lastRun >= $cmp) {
