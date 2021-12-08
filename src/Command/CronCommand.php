@@ -38,7 +38,13 @@ class CronCommand extends Command
                 InputArgument::OPTIONAL,
                 'Context ID (Portal / Server) to be processed in this run'
             )
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force run and ignore if already run');
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force run and ignore if already run')
+            ->addOption(
+                'exclude',
+                'ex',
+                InputOption::VALUE_REQUIRED,
+                'Exclude tasks from execution (separated by ,)'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -49,9 +55,17 @@ class CronCommand extends Command
             return 0;
         }
 
+        $excludeOption = $input->getOption('exclude');
+        $exclude = [];
+        if ($excludeOption) {
+            $exclude = explode(',', $input->getOption('exclude'));
+        }
+
         $io = new SymfonyStyle($input, $output);
-        $this->cronManager->run($io, $input->getOption('force'));
+        $this->cronManager->run($io, $exclude, $input->getOption('force'));
 
         $this->release();
+
+        return 0;
     }
 }
