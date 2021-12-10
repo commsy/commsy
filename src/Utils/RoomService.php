@@ -269,22 +269,23 @@ class RoomService
         //       to the current context (instead of the room's context); this e.g. happens if this method gets
         //       called for a project room's detail page within a community room
 
-        $link_item_manager = $this->legacyEnvironment->getLinkItemManager();
-        $link_item_manager->resetLimits();
-        $link_item_manager->setLinkedItemLimit($room);
-        $link_item_manager->setTypeLimit(CS_COMMUNITY_TYPE);
-        $link_item_manager->setRoomLimit($room->getContextID());
-        $link_item_manager->select();
-        $link_list = $link_item_manager->get();
-        $result_list = new \cs_list();
-        $link_item = $link_list->getFirst();
-        while ($link_item) {
-            $result_list->add($link_item->getLinkedItem($room));
-            $link_item = $link_list->getNext();
-        }
-        $communityRooms = $result_list;
+        $linkItemManager = $this->legacyEnvironment->getLinkItemManager();
+        $linkItemManager->resetLimits();
+        $linkItemManager->setLinkedItemLimit($room);
+        $linkItemManager->setTypeLimit(CS_COMMUNITY_TYPE);
+        $linkItemManager->setRoomLimit($room->getContextID());
+        $linkItemManager->select();
+        $linkList = $linkItemManager->get();
 
-        return $communityRooms->to_array();
+        $communityRooms = [];
+        foreach ($linkList as $linkItem) {
+            $communityRoom = $linkItem->getLinkedItem($room);
+            if ($communityRoom) {
+                $communityRooms[] = $communityRoom;
+            }
+        }
+
+        return $communityRooms;
     }
 
     /**
