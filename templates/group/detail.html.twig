@@ -173,6 +173,33 @@
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             </li>
+
+                                            {% set groupRoomItem = group.groupRoomItem %}
+                                            {% if group.isGroupRoomActivated and groupRoomItem is not null %}
+                                                {# separator #}
+                                                <li>&nbsp;</li>
+
+                                                {# lock group room #}
+                                                <li>
+                                                    {% if groupRoomItem.isLocked %}
+                                                        <a href="{{ path('app_group_unlockgrouproom', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                                            <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock group workspace'|trans({}, 'group') }}
+                                                        </a>
+                                                    {% endif %}
+                                                </li>
+
+                                                {# delete group room #}
+                                                <li>
+                                                    <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete group workspace'|trans({}, 'group') }}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+
                                         {% endif %}
                                     </ul>
                                 </div>

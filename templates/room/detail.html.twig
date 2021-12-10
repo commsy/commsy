@@ -32,48 +32,29 @@
                         
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
-                            {% if showRoomModerationActions %}
-                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                    <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }}
-                                        <i class="uk-icon-caret-down"></i></button>
-                                    <div id="cs-entry-navigation"
-                                         class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                            {% if not project.isUserroom and (is_granted('ROOM_MODERATOR', project.itemId) or is_granted('PARENT_ROOM_MODERATOR', project.itemId)) %}
+                                <div class="uk-button-dropdown" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini">
+                                        {{ 'selected entries'|trans({}, 'rubric') }}
+                                        <i class="uk-icon-caret-down"></i>
+                                    </button>
+
+                                    <div id="cs-entry-navigation" class="cs-additional-actions uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
                                             <li>
-                                                {% if item.isProjectRoom %}
-                                                <a href="{{ path('app_settings_delete', {'roomId': project.itemId}) }}" id="delete">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'delete'|trans({},'project') }}
-                                                </a>
+                                                {% if project.isLocked %}
+                                                    <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
+                                                        <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}
+                                                    </a>
+                                                {% endif %}
                                             </li>
                                             <li>
-                                                <a href="{{ path('app_settings_delete', {'roomId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'lock'|trans({},'project') }}
-                                                </a>
-                                            </li>
-                                            {% else %}
-                                                <a href="/?cid={{ portalId }}&mod=home&fct=index&room_id={{ item.itemId }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-wrench"></i> {{ 'moderation actions'|trans({}, 'room') }}
-                                                </a>
-                                            </li>
-                                            {% endif %}
-                                        </ul>
-                                    </div>
-                                </div>
-                            {% elseif ((is_granted('PARENT_MODERATOR',project.itemId) or is_granted('PROJECT_MODERATOR', project.itemId)) and item.isProjectRoom)  %}
-                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                    <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }}
-                                        <i class="uk-icon-caret-down"></i></button>
-                                    <div id="cs-entry-navigation"
-                                         class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                                            <li>
-                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'delete'|trans({},'project') }}
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('app_secureprojectdetaildeletion_deleteorlock', {'roomId': project.itemId, 'communityId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'lock'|trans({},'project') }}
+                                                <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete workspace'|trans({}, 'room') }}
                                                 </a>
                                             </li>
                                         </ul>
