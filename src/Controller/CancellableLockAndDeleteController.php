@@ -22,7 +22,7 @@ class CancellableLockAndDeleteController extends AbstractController
     /**
      * @Route("/room/{roomId}/settings/cancellabledelete/{itemId}")
      * @Template
-     * @Security("is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)")
+     * @Security("(is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)) and is_granted('ITEM_DELETE', itemId)")
      */
     public function deleteOrLock(
         $roomId,

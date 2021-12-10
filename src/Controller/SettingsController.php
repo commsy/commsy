@@ -459,7 +459,7 @@ class SettingsController extends Controller
     /**
      * @Route("/room/{roomId}/settings/delete/")
      * @Template
-     * @Security("is_granted('MODERATOR')")
+     * @Security("is_granted('MODERATOR') and is_granted('ITEM_DELETE', roomId)")
      */
     public function deleteAction(
         $roomId,
