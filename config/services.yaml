@@ -498,7 +498,7 @@ services:
 
     commsy.security.item_voter:
         class: App\Security\Authorization\Voter\ItemVoter
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service', '@request_stack']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service', '@commsy_legacy.room_service', '@request_stack']
         public: false
         tags:
             - { name: security.voter }
