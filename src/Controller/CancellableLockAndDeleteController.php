@@ -15,7 +15,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CancellableLockAndDeleteController
  * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("(is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)) and is_granted('ITEM_DELETE', itemId)")
  */
 class CancellableLockAndDeleteController extends AbstractController
 {
