@@ -4,6 +4,9 @@ namespace App\Security\Authorization\Voter;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
+use App\Utils\UserService;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -22,13 +25,15 @@ class ItemVoter extends Voter
     private $legacyEnvironment;
     private $itemService;
     private $roomService;
+    private $userService;
     private $requestStack;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, RoomService $roomService, RequestStack $requestStack)
+    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, RoomService $roomService, UserService $userService, RequestStack $requestStack)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
         $this->roomService = $roomService;
+        $this->userService = $userService;
         $this->requestStack = $requestStack;
     }
 
@@ -227,6 +232,13 @@ class ItemVoter extends Voter
             return false;
         }
 
+        // the parent moderator can always delete (or lock) a room even if (s)he cannot view/enter
+        // it; this is needed so that a community room moderator can delete/(un)lock any contained
+        // project room even if (s)he isn't a member of that project room
+        if ($this->isParentModeratorForRoom($currentUser, $roomItem)) {
+            return true;
+        }
+
         if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
             return true;
         }
@@ -242,5 +254,21 @@ class ItemVoter extends Voter
         }
 
         return false;
+    }
+
+    /**
+     * Checks whether the given user is a parent moderator for the given room.
+     *
+     * @param cs_user_item $user
+     * @param cs_room_item|null $room
+     * @return bool
+     */
+    private function isParentModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
+    {
+        if (!$room) {
+            return false;
+        }
+
+        return $this->userService->userIsParentModeratorForRoom($room, $user);
     }
 }
