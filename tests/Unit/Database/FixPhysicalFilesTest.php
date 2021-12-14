@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Tests\Database;
 
 use App\Database\FixPhysicalFiles;
@@ -12,9 +13,7 @@ use App\Repository\ZzzItemRepository;
 use App\Repository\ZzzRoomRepository;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\PDOStatement;
-use Doctrine\DBAL\Query\QueryBuilder;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -26,7 +25,7 @@ final class FixPhysicalFilesTest extends Unit
     protected UnitTester $tester;
 
     private ParameterBagInterface $parameterBagStub;
-    
+
     protected function _before()
     {
         $filesDirectory = $this->tester->grabParameter('kernel.project_dir') . '/files_test';
@@ -36,7 +35,9 @@ final class FixPhysicalFilesTest extends Unit
         $this->tester->cleanDir($filesDirectory);
 
         $this->parameterBagStub = $this->makeEmpty(ParameterBagInterface::class, [
-            'get' => function() use ($filesDirectory) { return $filesDirectory; }
+            'get' => function () use ($filesDirectory) {
+                return $filesDirectory;
+            }
         ]);
 
         $this->tester->amInPath($filesDirectory);
@@ -75,21 +76,17 @@ final class FixPhysicalFilesTest extends Unit
         $roomRepository = $this->makeEmpty(RoomRepository::class, [
             'getProjectAndUserRoomIds' => [22222],
         ]);
-        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
-        $filesRepository = $this->makeEmpty(FilesRepository::class);
-        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
-        $itemRepository = $this->makeEmpty(ItemRepository::class);
-        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
         $fix = new FixPhysicalFiles(
             $this->parameterBagStub,
             $portalRepository,
             $roomRepository,
-            $zzzRoomRepository,
-            $filesRepository,
-            $zzzFilesRepository,
-            $itemRepository,
-            $zzzItemRepository
+            $this->makeEmpty(ZzzRoomRepository::class),
+            $this->makeEmpty(FilesRepository::class),
+            $this->makeEmpty(ZzzFilesRepository::class),
+            $this->makeEmpty(ItemRepository::class),
+            $this->makeEmpty(ZzzItemRepository::class),
+            $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));
 
@@ -126,22 +123,17 @@ final class FixPhysicalFilesTest extends Unit
                 $this->make(Portal::class, ['id' => 12345]),
             ],
         ]);
-        $roomRepository = $this->makeEmpty(RoomRepository::class);
-        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
-        $filesRepository = $this->makeEmpty(FilesRepository::class);
-        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
-        $itemRepository = $this->makeEmpty(ItemRepository::class);
-        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
         $fix = new FixPhysicalFiles(
             $this->parameterBagStub,
             $portalRepository,
-            $roomRepository,
-            $zzzRoomRepository,
-            $filesRepository,
-            $zzzFilesRepository,
-            $itemRepository,
-            $zzzItemRepository
+            $this->makeEmpty(RoomRepository::class),
+            $this->makeEmpty(ZzzRoomRepository::class),
+            $this->makeEmpty(FilesRepository::class),
+            $this->makeEmpty(ZzzFilesRepository::class),
+            $this->makeEmpty(ItemRepository::class),
+            $this->makeEmpty(ZzzItemRepository::class),
+            $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));
 
@@ -178,13 +170,13 @@ final class FixPhysicalFilesTest extends Unit
         $roomRepository = $this->makeEmpty(RoomRepository::class);
         $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
         $filesRepository = $this->makeEmpty(FilesRepository::class, [
-            'getNumFiles' => function(int $fileId, int $contextId) {
+            'getNumFiles' => function (int $fileId, int $contextId) {
                 return $contextId == 1234123 ? 1 : 0;
             },
         ]);
         $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
         $itemRepository = $this->makeEmpty(ItemRepository::class, [
-            'getNumItems' => function(int $itemId) {
+            'getNumItems' => function (int $itemId) {
                 return ($itemId == 1234123 || $itemId == 1234888) ? 1 : 0;
             },
         ]);
@@ -198,7 +190,8 @@ final class FixPhysicalFilesTest extends Unit
             $filesRepository,
             $zzzFilesRepository,
             $itemRepository,
-            $zzzItemRepository
+            $zzzItemRepository,
+            $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));
 
@@ -241,30 +234,27 @@ final class FixPhysicalFilesTest extends Unit
                 $this->make(Portal::class, ['id' => 12345]),
             ],
         ]);
-        $roomRepository = $this->makeEmpty(RoomRepository::class);
-        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
         $filesRepository = $this->makeEmpty(FilesRepository::class, [
-            'getNumFiles' => function(int $fileId, int $contextId) {
+            'getNumFiles' => function (int $fileId, int $contextId) {
                 return ($fileId == 1234 && $contextId == 1234123) ? 1 : 0;
             },
         ]);
-        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
         $itemRepository = $this->makeEmpty(ItemRepository::class, [
-            'getNumItems' => function() {
+            'getNumItems' => function () {
                 return 1;
             },
         ]);
-        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
         $fix = new FixPhysicalFiles(
             $this->parameterBagStub,
             $portalRepository,
-            $roomRepository,
-            $zzzRoomRepository,
+            $this->makeEmpty(RoomRepository::class),
+            $this->makeEmpty(ZzzRoomRepository::class),
             $filesRepository,
-            $zzzFilesRepository,
+            $this->makeEmpty(ZzzFilesRepository::class),
             $itemRepository,
-            $zzzItemRepository
+            $this->makeEmpty(ZzzItemRepository::class),
+            $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));
 

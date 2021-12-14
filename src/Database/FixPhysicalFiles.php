@@ -18,6 +18,7 @@ use App\Repository\ZzzItemRepository;
 use App\Repository\ZzzRoomRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -65,6 +66,11 @@ class FixPhysicalFiles implements DatabaseCheck
      */
     private ZzzItemRepository $zzzItemRepository;
 
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $cleanupLogger;
+
     public function __construct(
         ParameterBagInterface $parameterBag,
         PortalRepository $portalRepository,
@@ -73,7 +79,8 @@ class FixPhysicalFiles implements DatabaseCheck
         FilesRepository $filesRespository,
         ZzzFilesRepository $zzzFilesRepository,
         ItemRepository $itemRepository,
-        ZzzItemRepository $zzzItemRepository
+        ZzzItemRepository $zzzItemRepository,
+        LoggerInterface $cleanupLogger
     ) {
         $this->parameterBag = $parameterBag;
         $this->portalRepository = $portalRepository;
@@ -83,6 +90,7 @@ class FixPhysicalFiles implements DatabaseCheck
         $this->zzzFilesRepository = $zzzFilesRepository;
         $this->itemRepository = $itemRepository;
         $this->zzzItemRepository = $zzzItemRepository;
+        $this->cleanupLogger = $cleanupLogger;
     }
 
     public function getPriority()
@@ -173,6 +181,7 @@ class FixPhysicalFiles implements DatabaseCheck
                 if ($io->isVerbose()) {
                     $io->note('Deleting ' . $removal);
                 }
+                $this->cleanupLogger->info('Deleting ' . $removal);
                 $filesystem->remove($removal);
             }
         }
@@ -215,6 +224,7 @@ class FixPhysicalFiles implements DatabaseCheck
                 if ($io->isVerbose()) {
                     $io->note('Deleting ' . $file);
                 }
+                $this->cleanupLogger->info('Deleting ' . $file);
                 $filesystem->remove($file);
             }
         }
