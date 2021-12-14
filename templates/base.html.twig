@@ -7,7 +7,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{% block title %}{{ pageTitle() }}{% endblock %}</title>
+        <title>{% block title %}{{ pageTitle(app.request.attributes.get('roomId') ?? app.request.attributes.get('portalId')) }}{% endblock %}</title>
 
         {% include 'stylesheets.html.twig' %}
 
