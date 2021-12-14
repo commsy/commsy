@@ -1,0 +1,9 @@
+monolog:
+    channels: ['cleanup']
+
+    handlers:
+        cleanup:
+            type: stream
+            path: "%kernel.logs_dir%/cleanup.log"
+            level: debug
+            channels: ['cleanup']
