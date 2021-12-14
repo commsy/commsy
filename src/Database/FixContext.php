@@ -43,6 +43,26 @@ class FixContext extends GeneralCheck
         ";
         $this->executeSQL($sql, $io);
 
+        // Account
+        $sql = "
+            DELETE t FROM accounts AS t
+            LEFT JOIN portal AS c1 ON t.context_id = c1.id
+            LEFT JOIN server AS c2 ON t.context_id = c2.item_id
+            WHERE t.context_id IS NOT NULL
+            AND c1.id IS NULL AND c2.item_id IS NULL;
+        ";
+        $this->executeSQL($sql, $io);
+
+        // Auth Sources
+        $sql = "
+            DELETE t FROM auth_source AS t
+            LEFT JOIN portal AS c1 ON t.portal_id = c1.id
+            LEFT JOIN server AS c2 ON t.portal_id = c2.item_id
+            WHERE t.portal_id IS NOT NULL
+            AND c1.id IS NULL AND c2.item_id IS NULL;
+        ";
+        $this->executeSQL($sql, $io);
+
         return true;
     }
 }
