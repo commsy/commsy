@@ -2148,6 +2148,7 @@ class PortalSettingsController extends AbstractController
      * @param AuthSourceRepository $authSourceRepository
      * @param RoomService $roomService
      * @param Security $security
+     * @param TranslatorInterface $translator
      * @return array|RedirectResponse
      */
     public function accountIndexDetail(
@@ -2156,6 +2157,7 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         AuthSourceRepository $authSourceRepository,
         RoomService $roomService,
+        TranslatorInterface $translator,
         Security $security
     ) {
         /** @var Account $account */
@@ -2182,30 +2184,31 @@ class PortalSettingsController extends AbstractController
         foreach ($relatedUsers as $relatedUser) {
 
             $contextID = $relatedUser->getContextID();
+            $locked = $relatedUser->getStatus() === "0" ? "(".$translator->trans('Locked', [], 'portal'). ") " : "";
             $relatedRoomItem = $roomService->getRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $projectsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                    $projectsArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $projectsListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $projectsListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'community') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $communityArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                    $communityArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $communityListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $communityListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'userroom') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $userRoomsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                    $userRoomsArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $userRoomListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $userRoomListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'privateroom') {
                 if ($relatedRoomItem->getStatus() === '2') {
-                    $privateRoomArchivedNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                    $privateRoomArchivedNameList[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $privateRoomNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $privateRoomNameList[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             }
         }
