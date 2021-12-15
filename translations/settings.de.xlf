@@ -318,10 +318,6 @@
                 <source>Archive text permanently archived</source>
                 <target>Der Zugriff auf alle Inhalte bleibt aber weiterhin bestehen.</target>
             </trans-unit>
-            <trans-unit id="archive_text_deletion_warning">
-                <source>Archive text deletion warning</source>
-                <target>Bei Archivierung dieses Raumes wird dieser nach %days% Tagen Nichtnutzung gelöscht.</target>
-            </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>
                 <target>Hiermit werden Nutzungsbedingungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs akzeptieren, um Zutritt zu diesem Raum zu erhalten.</target>
