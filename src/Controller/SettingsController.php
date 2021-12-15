@@ -244,7 +244,6 @@ class SettingsController extends AbstractController
         return [
             'form' => $form->createView(),
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
-            'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
         ];
     }
 
