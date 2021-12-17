@@ -225,6 +225,7 @@ class cs_grouproom_item extends cs_room_item {
       $group = $this->getLinkedGroupItem();
       $group->unsetGroupRoomActive();
       $group->unsetGroupRoomItemID();
+      $group->saveOnlyItem();
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');

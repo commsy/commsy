@@ -1,5 +1,8 @@
 <?php
+
+
 namespace App\Form\Type\Room;
+
 
 use App\Validator\Constraints\DeleteGroupRoomConstraint;
 use Symfony\Component\Form\AbstractType;
@@ -9,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class DeleteType extends AbstractType
+class CancellableLockType extends AbstractType
 {
     /**
      * Builds the form.
@@ -29,18 +32,23 @@ class DeleteType extends AbstractType
                         'value' => mb_strtoupper($options['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
-                    new DeleteGroupRoomConstraint([
-                        'room' => $options['data'],
-                    ]),
                 ],
                 'required' => true,
                 'mapped' => false,
             ])
-            ->add('delete', SubmitType::class, [
-                'label' => 'Confirm delete',
+            ->add('lock', SubmitType::class, [
+                'label' => 'Confirm lock',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],
+            ])
+            ->add('cancel', SubmitType::class, [
+                'label' => 'Cancel cancellable lock',
+                'attr' => [
+                    'class' => 'uk-button-danger',
+                    'formnovalidate' => '',
+                ],
+                'validation_groups' => false,
             ])
         ;
     }
@@ -61,17 +69,5 @@ class DeleteType extends AbstractType
                 'translation_domain' => 'settings'
             ])
         ;
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'delete_room';
     }
 }
