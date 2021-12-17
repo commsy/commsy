@@ -364,7 +364,7 @@
 
             <trans-unit id="lock_room_membership_text">
                 <source>lockRoomMembershipText</source>
-                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft in diesem Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Ihre Mitgliedschaft kann bei Bedarf wieder freigeschaltet werden.</target>
+                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft in diesem Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie Ihren Zugang sperren. Ihre Mitgliedschaft kann bei Bedarf wieder freigeschaltet werden.</target>
             </trans-unit>
             <trans-unit id="delete_room_membership_text">
                 <source>deleteRoomMembershipText</source>

@@ -674,18 +674,6 @@ class RoomController extends AbstractController
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
-        $showRoomModerationActions = false;
-        /** @var cs_user_item $roomUser */
-        $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
-        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
-            $showRoomModerationActions = true;
-        } else {
-            $portalUser = $currentUser->getRelatedPortalUserItem();
-            if ($portalUser && $portalUser->isModerator()) {
-                $showRoomModerationActions = true;
-            }
-        }
-
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
@@ -699,7 +687,6 @@ class RoomController extends AbstractController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
             'contactModeratorItems' => $contactModeratorItems,
-            'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }

@@ -6,6 +6,9 @@ use App\Room\Copy\LegacyCopy;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use cs_community_item;
+use cs_room_item;
+use cs_user_item;
 
 class RoomService
 {
@@ -40,22 +43,22 @@ class RoomService
      * @param int $contextID the ID of the room which hosts the created room
      * @param string $title the title of the created room
      * @param string $description (optional) the description of the created room
-     * @param \cs_room_item|null (optional) $roomTemplate the room to be used as a template when creating the new room
-     * @param \cs_user_item|null (optional) $creator the user who will be specified as the room's creator; if left out,
+     * @param cs_room_item|null (optional) $roomTemplate the room to be used as a template when creating the new room
+     * @param cs_user_item|null (optional) $creator the user who will be specified as the room's creator; if left out,
      * the current user will be used
-     * @param \cs_user_item|null (optional) $modifier the user who will be specified as the room's modifier; if left out,
+     * @param cs_user_item|null (optional) $modifier the user who will be specified as the room's modifier; if left out,
      * the current user will be used
-     * @return \cs_room_item|null the newly created room, or null if an error occurred
+     * @return cs_room_item|null the newly created room, or null if an error occurred
      */
     public function createRoom(
         \cs_room2_manager $roomManager,
         int $contextID,
         string $title,
         string $description = "",
-        \cs_room_item $roomTemplate = null,
-        \cs_user_item $creator = null,
-        \cs_user_item $modifier = null
-    ): ?\cs_room_item
+        cs_room_item $roomTemplate = null,
+        cs_user_item $creator = null,
+        cs_user_item $modifier = null
+    ): ?cs_room_item
     {
         // TODO: use a facade/factory to create a new room
 
@@ -192,9 +195,9 @@ class RoomService
     }
 
     /**
-     * returns a user list for the room with the $roomId
+     * Returns a user list for the room with the $roomId
      * @param Integer $roomId room id
-     * @return array array with legacy user items
+     * @return array Array with legacy user items
      */
     public function getUserList($roomId)
     {
@@ -211,7 +214,7 @@ class RoomService
      * the room moderators will be returned.
      *
      * @param int $roomId The ID of the containing context
-     * @return \cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
+     * @return cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
      */
     public function getContactModeratorItems($roomId)
     {
@@ -230,7 +233,7 @@ class RoomService
 
     /**
      * @param integer $roomId
-     * @return \cs_room_item
+     * @return cs_room_item
      */
     public function getRoomItem($roomId)
     {
@@ -242,7 +245,7 @@ class RoomService
 
         // get room item
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        /** @var \cs_room_item $roomItem */
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
@@ -259,6 +262,55 @@ class RoomService
         $roomItem = $zzzRoomItem->getItem($roomId);
 
         return $roomItem;
+    }
+
+    /**
+     * Returns all community rooms that host the given (project) room.
+     * @param cs_room_item $room The room whose related community rooms shall be returned
+     * @return cs_community_item[] Array of community rooms that host the given (project) room
+     */
+    public function getCommunityRoomsForRoom(cs_room_item $room): array
+    {
+        // NOTE: we don't use $room->getCommunityList() here since that method may incorrectly set the room limit
+        //       to the current context (instead of the room's context); this e.g. happens if this method gets
+        //       called for a project room's detail page within a community room
+
+        $linkItemManager = $this->legacyEnvironment->getLinkItemManager();
+        $linkItemManager->resetLimits();
+        $linkItemManager->setLinkedItemLimit($room);
+        $linkItemManager->setTypeLimit(CS_COMMUNITY_TYPE);
+        $linkItemManager->setRoomLimit($room->getContextID());
+        $linkItemManager->select();
+        $linkList = $linkItemManager->get();
+
+        $communityRooms = [];
+        foreach ($linkList as $linkItem) {
+            $communityRoom = $linkItem->getLinkedItem($room);
+            if ($communityRoom) {
+                $communityRooms[] = $communityRoom;
+            }
+        }
+
+        return $communityRooms;
+    }
+
+    /**
+     * Returns the IDs of all given rooms.
+     *
+     * @param cs_room_item[] $rooms The array of rooms whose IDs shall be returned
+     * @return int[]
+     */
+    public function getIdsForRooms(array $rooms): array
+    {
+        if (empty($rooms)) {
+            return [];
+        }
+
+        $roomIds = array_map(function (cs_room_item $room) {
+            return $room->getItemID();
+        }, $rooms);
+
+        return $roomIds;
     }
 
     public function getFilterableRubrics($roomId)
