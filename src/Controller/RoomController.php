@@ -541,17 +541,6 @@ class RoomController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
-        $showRoomModerationActions = false;
-        $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
-        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
-            $showRoomModerationActions = true;
-        } else {
-            $portalUser = $currentUser->getRelatedPortalUserItem();
-            if ($portalUser && $portalUser->isModerator()) {
-                $showRoomModerationActions = true;
-            }
-        }
-
         $roomService = $this->get('commsy_legacy.room_service');
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
@@ -568,7 +557,6 @@ class RoomController extends Controller
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
             'contactModeratorItems' => $contactModeratorItems,
-            'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }

@@ -2,22 +2,22 @@
 
 namespace App\Controller;
 
+use App\Entity\Room;
 use App\Event\UserJoinedRoomEvent;
+use App\Filter\ProjectFilterType;
 use App\Form\Type\ProjectType;
+use App\Form\Type\Room\DeleteType;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
-use App\Form\Type\Room\DeleteType;
-use App\Filter\ProjectFilterType;
-use App\Entity\Room;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ProjectController
@@ -334,9 +334,22 @@ class ProjectController extends Controller
      * @Template()
      * @Security("is_granted('MODERATOR', itemId)")
      */
-    public function deleteAction($roomId, $itemId, Request $request)
-    {
-        $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
+    public function deleteAction(
+        $roomId,
+        $itemId,
+        Request $request,
+        RoomService $roomService,
+        TranslatorInterface $translator
+    ) {
+        $roomItem = $roomService->getRoomItem($roomId);
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $form = $this->createForm(DeleteType::class, [], [
+            'room' => $roomItem,
+            'confirm_string' => $translator->trans('delete', [], 'profile')
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

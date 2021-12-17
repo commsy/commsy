@@ -1,12 +1,15 @@
 <?php
 namespace App\Security\Authorization\Voter;
 
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use App\Utils\RoomService;
+use App\Utils\UserService;
+use cs_room_item;
+use cs_user_item;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ItemVoter extends Voter
 {
@@ -21,12 +24,16 @@ class ItemVoter extends Voter
 
     private $legacyEnvironment;
     private $itemService;
+    private $roomService;
+    private $userService;
     private $requestStack;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, RequestStack $requestStack)
+    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, RoomService $roomService, UserService $userService, RequestStack $requestStack)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
+        $this->roomService = $roomService;
+        $this->userService = $userService;
         $this->requestStack = $requestStack;
     }
 
@@ -53,7 +60,7 @@ class ItemVoter extends Voter
         // if (!$user instanceof User) {
         //     return false
         // }
-        
+
         $itemId = $object;
 
         $item = $this->itemService->getTypedItem($itemId);
@@ -79,7 +86,7 @@ class ItemVoter extends Voter
                     return $this->canEnter($item, $currentUser);
 
                 case self::USERROOM:
-                    return $this->hasUserroomItemPriviledges($item, $currentUser);
+                    return $this->hasUserroomItemPrivileges($item, $currentUser);
 
                 case self::DELETE:
                     return $this->canDelete($item, $currentUser);
@@ -194,21 +201,21 @@ class ItemVoter extends Voter
 
     private function canEnter($item, $currentUser)
     {
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($item->getItemID());
+        if ($item->isPrivateRoom()) {
+            return true;
+        }
 
-        try{
-            if ($item->isPrivateRoom()) {
-                return true;
-            } else if ($roomItem) {
-                if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
-                    return true;
-                }
-            } else if ($item->isPortal() && $item->mayEnter($currentUser)) {
-                return true;
-            }
-        }catch(\Exception $e){
+        if ($item->isPortal() && $item->mayEnter($currentUser)) {
+            return true;
+        }
+
+        $roomItem = $this->roomService->getRoomItem($item->getItemID());
+        if (!$roomItem) {
             return false;
+        }
+
+        if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+            return true;
         }
 
         return false;
@@ -216,30 +223,52 @@ class ItemVoter extends Voter
 
     private function canDelete($item, $currentUser)
     {
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($item->getItemID());
-
-        try{
-            if ($roomItem->getType() == 'userroom') {
-                return false;
-            } else if ($roomItem) {
-                if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
-                    return true;
-                }
-            }
-        }catch(\Exception $e){
+        $roomItem = $this->roomService->getRoomItem($item->getItemID());
+        if (!$roomItem) {
             return false;
+        }
+
+        if ($roomItem->getType() === 'userroom') {
+            return false;
+        }
+
+        // the parent moderator can always delete (or lock) a room even if (s)he cannot view/enter
+        // it; this is needed so that a community room moderator can delete/(un)lock any contained
+        // project room even if (s)he isn't a member of that project room
+        if ($this->isParentModeratorForRoom($currentUser, $roomItem)) {
+            return true;
+        }
+
+        if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+            return true;
         }
 
         return false;
     }
 
-    private function hasUserroomItemPriviledges($item, $currentUser)
+    private function hasUserroomItemPrivileges($item, $currentUser)
     {
-            if($item->getContextItem()->getType() == 'userroom'
-                && $this->canParticipate($item, $currentUser)){
-                return true;
-            }
+        if ($item->getContextItem()->getType() === 'userroom'
+            && $this->canParticipate($item, $currentUser)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether the given user is a parent moderator for the given room.
+     *
+     * @param cs_user_item $user
+     * @param cs_room_item|null $room
+     * @return bool
+     */
+    private function isParentModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
+    {
+        if (!$room) {
             return false;
+        }
+
+        return $this->userService->userIsParentModeratorForRoom($room, $user);
     }
 }

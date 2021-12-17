@@ -4,32 +4,27 @@ namespace App\Controller;
 
 use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
-use App\Form\Type\Room\DeleteType;
-use App\Form\Type\Room\UserRoomDeleteType;
-use App\Services\InvitationsService;
-use App\Services\LegacyEnvironment;
-use App\Utils\UserroomService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-
-use App\Entity\Room;
 use App\Form\DataTransformer\ExtensionSettingsTransformer;
-use App\Form\Type\GeneralSettingsType;
-use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\AdditionalSettingsType;
 use App\Form\Type\AppearanceSettingsType;
 use App\Form\Type\ExtensionSettingsType;
+use App\Form\Type\GeneralSettingsType;
 use App\Form\Type\InvitationsSettingsType;
+use App\Form\Type\ModerationSettingsType;
+use App\Form\Type\Room\DeleteType;
+use App\Form\Type\Room\LockType;
+use App\Form\Type\Room\UserRoomDeleteType;
+use App\Services\InvitationsService;
+use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
-
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use App\Utils\UserroomService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -462,7 +457,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/settings/delete/{deleteUserRooms}", defaults={"deleteUserRooms"=0})
+     * @Route("/room/{roomId}/settings/delete/")
      * @Template
      * @Security("is_granted('MODERATOR') and is_granted('ITEM_DELETE', roomId)")
      */
@@ -471,10 +466,10 @@ class SettingsController extends Controller
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
-        UserroomService $userroomService,
-        $deleteUserRooms
+        LegacyEnvironment $legacyEnvironment
     ) {
+        $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -485,29 +480,46 @@ class SettingsController extends Controller
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
-        $form = $this->createForm(DeleteType::class, $roomItem, [
+        $deleteForm = $this->createForm(DeleteType::class, [], [
+            'room' => $roomItem,
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($deleteUserRooms) {
-                $userroomService->deleteUserroomsForProjectRoomId($roomId);
-            } else {
+        $lockForm = $this->createForm(LockType::class, [], [
+            'room' => $roomItem,
+            'confirm_string' => $translator->trans('lock', [], 'profile')
+        ]);
+
+        $deleteForm->handleRequest($request);
+        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+            if ($deleteForm->get('delete')->isClicked()) {
                 $roomItem->delete();
                 $roomItem->save();
+
+                // redirect back to all rooms
+                return $this->redirectToRoute('app_helper_gotoallrooms', [
+                    "portalId" => $portal->getItemId()
+                ]);
             }
+        }
 
-            // redirect back to portal
-            $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
-            $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+        $lockForm->handleRequest($request);
+        if ($lockForm->isSubmitted() && $lockForm->isValid()) {
+            if ($lockForm->get('lock')->isClicked()) {
+                $roomItem->lock();
+                $roomItem->save();
 
-            return $this->redirect($url);
+                // redirect back to all rooms
+                return $this->redirectToRoute('app_helper_gotoallrooms', [
+                    "portalId" => $portal->getItemId()
+                ]);
+            }
         }
 
         return [
-            'form' => $form->createView(),
+            'delete_form' => $deleteForm->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,
+            'lock_form' => $lockForm->createView(),
         ];
     }
 

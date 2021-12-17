@@ -14,12 +14,13 @@ use Symfony\Component\Form\FormInterface;
 class UserService
 {
     private $legacyEnvironment;
-
     private $userManager;
-
     private $roomManager;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    /** @var RoomService $roomService */
+    private $roomService;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     { 
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         
@@ -28,6 +29,8 @@ class UserService
 
         $this->roomManager = $this->legacyEnvironment->getRoomManager();
         $this->roomManager->reset();
+
+        $this->roomService = $roomService;
     }
 
     public function getCountArray($roomId, $moderation = false)
@@ -505,32 +508,128 @@ class UserService
             return false;
         }
 
+        $user = $user ?? $this->legacyEnvironment->getCurrentUserItem();
         if (!$user) {
-            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-            if ($currentUser) {
-                $user = $currentUser;
-            }
-            if (!$user) {
-                return false;
-            }
+            return false;
         }
 
-        $roomModerators = $room->getModeratorList()->to_array();
-        $roomModeratorIds = array_map(function (cs_user_item $user) {
-            return $user->getItemID();
-        }, $roomModerators);
-
-        $users = $user->getRelatedUserList()->to_array();
-        $userIds = array_map(function (cs_user_item $user) {
-            return $user->getItemID();
-        }, $users);
+        $roomModeratorIds = $this->getIdsForUsers($room->getModeratorList()->to_array());
+        $userIds = $this->getIdsForUsers($user->getRelatedUserList()->to_array());
 
         // also check the given/current user's own item ID
         $userIds[] = $user->getItemID();
 
-        $userIsLastModerator = (count($roomModerators) == 1) && (count(array_intersect($userIds, $roomModeratorIds)));
+        $userIsLastModerator = (count($roomModeratorIds) == 1) && (count(array_intersect($userIds, $roomModeratorIds)) > 0);
 
         return $userIsLastModerator;
+    }
+
+    /**
+     * Checks whether the given (or otherwise the current) user is among the moderators of the given room.
+     *
+     * @param int $room The room for which this method will check whether the given user is among its moderators
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the
+     * specified room's moderators (defaults to the current user if not given)
+     * @return bool Whether the given (or current) user is among the moderators of the specified room (true), or not (false)
+     */
+    public function userIsModeratorForRoom(cs_room_item $room, ?cs_user_item $user = null): bool
+    {
+        $user = $user ?? $this->legacyEnvironment->getCurrentUserItem();
+        if (!$user) {
+            return false;
+        }
+
+        $roomModeratorIds = $this->getIdsForUsers($this->getModeratorsForContext($room->getItemId()));
+        $userIds = $this->getIdsForUsers($user->getRelatedUserList()->to_array());
+
+        // also check the given/current user's own item ID
+        $userIds[] = $user->getItemID();
+
+        $userIsModerator = (count(array_intersect($userIds, $roomModeratorIds)) > 0);
+
+        return $userIsModerator;
+    }
+
+    /**
+     * Checks whether the given (or otherwise the current) user is among the "parent" moderators of the given room.
+     * Parent moderators considered by this method are:
+     * - the root user
+     * - the portal moderator
+     * - any moderator of a community room that hosts the given (project) room
+     * - any moderator of a project room whose group is linked to the given (group) room.
+     * - any group creator whose group is linked to the given (group) room.
+     *
+     * @param cs_room_item $room The room for which this method will check whether the given user is among its parent moderators
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the parent
+     * moderators of the specified room (defaults to the current user if not given)
+     * @return bool Whether the given (or current) user is among the parent moderators of the specified room (true), or not (false)
+     */
+    public function userIsParentModeratorForRoom(cs_room_item $room, ?cs_user_item $user = null): bool
+    {
+        $user = $user ?? $this->legacyEnvironment->getCurrentUserItem();
+        if (!$user) {
+            return false;
+        }
+
+        // root user & portal moderator are considered as "parent" moderators
+        if ($user->isRoot()) {
+            return true;
+        }
+
+        $portalUser = $user->getRelatedPortalUserItem();
+        if ($portalUser && $portalUser->isModerator()) {
+            return true;
+        }
+
+        $roomType = $room->getType();
+        if ($roomType === CS_PROJECT_TYPE) {
+            // check if the given user corresponds to a moderator in a community room that hosts the given project room
+            $communityRooms = $this->roomService->getCommunityRoomsForRoom($room);
+            foreach ($communityRooms as $communityRoom) {
+                if ($this->userIsModeratorForRoom($communityRoom, $user)) {
+                    return true;
+                }
+            }
+        }
+        else {
+            if ($roomType === CS_GROUPROOM_TYPE) {
+                // check if the given user is a moderator of the project room that hosts the given group room
+                $projectRoom = $room->getLinkedProjectItem();
+                if ($projectRoom && $this->userIsModeratorForRoom($projectRoom, $user)) {
+                    return true;
+                }
+
+                // check if the given user is the creator of the group that's linked to the given group room
+                $group = $room->getLinkedGroupItem();
+                if ($group) {
+                    $groupCreator = $group->getCreatorItem();
+                    if ($groupCreator && $groupCreator->getItemID() === $user->getItemID()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the IDs of all given users.
+     *
+     * @param cs_user_item[] $users The array of users whose IDs shall be returned
+     * @return int[]
+     */
+    public function getIdsForUsers(array $users): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $userIds = array_map(function (cs_user_item $user) {
+            return $user->getItemID();
+        }, $users);
+
+        return $userIds;
     }
 
     public function hideDeactivatedEntries()
