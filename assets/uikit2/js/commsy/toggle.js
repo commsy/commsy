@@ -2,7 +2,10 @@
 
     "use strict";
 
-    UIkit.on('beforeready.uk.dom', function() {
+    // TODO: this function somehow gets triggered twice but it should only get called once; the second invocation
+    //       would revert the hide/unhide again; so, as a workaround, we use `one()` to ensure that the function
+    //       only gets executed once
+    UIkit.one('beforeready.uk.dom', function() {
 
         var toggleRef = UI.components.toggle.prototype.toggle;
         UI.components.toggle.prototype.toggle = function() {
