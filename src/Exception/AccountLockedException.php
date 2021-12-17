@@ -4,9 +4,9 @@
 namespace App\Exception;
 
 
-use Symfony\Component\Security\Core\Exception\AccountStatusException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
-class AccountLockedException extends AccountStatusException
+class AccountLockedException extends CustomUserMessageAuthenticationException
 {
 
 }

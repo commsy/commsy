@@ -26,7 +26,7 @@ class UserChecker implements UserCheckerInterface
 
         /** @var $user Account */
         if ($user->isLocked()) {
-            throw new AccountLockedException('Account is locked');
+            throw new AccountLockedException('Account is locked.');
         }
     }
 }
