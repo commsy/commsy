@@ -179,25 +179,28 @@ class cs_link_item_file_manager extends cs_link_father_manager {
       }
    }
 
-  /** delete link , but it is just an update
-    * this method deletes all links from an item, but only as an update to restore it later and for evaluation
-    *
-    * @param integer item_id       id of the item
-    * @param integer version_id    version id of the item
-    */
-  function deleteByItem ($item_id, $version_id=NULL) {
-     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
-              'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
-              ' WHERE item_iid="'.encode(AS_DB,$item_id).'"';
-     if (!is_null($version_id)) {
-        $query .= ' AND item_vid="'.encode(AS_DB,$version_id).'"';
-     }
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"',E_USER_WARNING);
-     }
-  }
+    /** delete link , but it is just an update
+     * this method deletes all links from an item, but only as an update to restore it later and for evaluation
+     *
+     * @param integer item_id       id of the item
+     * @param integer version_id    version id of the item
+     */
+    public function deleteByItem($item_id, $version_id = null)
+    {
+        $deleterId = $this->_current_user->getItemID() ?: 0;
+        $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET ' .
+            'deletion_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'deleter_id="' . encode(AS_DB, $deleterId) . '"' .
+            ' WHERE item_iid="' . encode(AS_DB, $item_id) . '"';
+        if ($version_id) {
+            $query .= ' AND item_vid="' . encode(AS_DB, $version_id) . '"';
+        }
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '"', E_USER_WARNING);
+        }
+    }
 
   /** delete link , but it is just an update
     * this method deletes all links from an item, but only as an update to restore it later and for evaluation

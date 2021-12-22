@@ -19,7 +19,10 @@ use App\Form\Type\GeneralSettingsType;
 use App\Form\Type\InvitationsSettingsType;
 use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\Room\DeleteType;
+use App\Form\Type\Room\LockType;
 use App\Form\Type\Room\UserRoomDeleteType;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
@@ -509,7 +512,7 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/settings/delete/{deleteUserRooms}", defaults={"deleteUserRooms"=0})
+     * @Route("/room/{roomId}/settings/delete/")
      * @Template
      * @Security("is_granted('MODERATOR') and is_granted('ITEM_DELETE', roomId)")
      * @param Request $request
@@ -524,11 +527,10 @@ class SettingsController extends AbstractController
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
-        UserroomService $userroomService,
-        $deleteUserRooms
-    )
-    {
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
@@ -539,27 +541,46 @@ class SettingsController extends AbstractController
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
-        $form = $this->createForm(DeleteType::class, $roomItem, [
+        $deleteForm = $this->createForm(DeleteType::class, [], [
+            'room' => $roomItem,
             'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($deleteUserRooms) {
-                $userroomService->deleteUserroomsForProjectRoomId($roomId);
-            } else {
+        $lockForm = $this->createForm(LockType::class, [], [
+            'room' => $roomItem,
+            'confirm_string' => $translator->trans('lock', [], 'profile')
+        ]);
+
+        $deleteForm->handleRequest($request);
+        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+            if ($deleteForm->get('delete')->isClicked()) {
                 $roomItem->delete();
                 $roomItem->save();
-            }
 
-            // redirect back to portal
-            $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
-            return $this->redirectToRoute('app_helper_portalenter', ["context" => $portal->getItemId()]);
+                // redirect back to all rooms
+                return $this->redirectToRoute('app_room_listall', [
+                    "roomId" => $portal->getItemId()
+                ]);
+            }
+        }
+
+        $lockForm->handleRequest($request);
+        if ($lockForm->isSubmitted() && $lockForm->isValid()) {
+            if ($lockForm->get('lock')->isClicked()) {
+                $roomItem->lock();
+                $roomItem->save();
+
+                // redirect back to all rooms
+                return $this->redirectToRoute('app_room_listall', [
+                    "roomId" => $portal->getItemId()
+                ]);
+            }
         }
 
         return [
-            'form' => $form->createView(),
+            'delete_form' => $deleteForm->createView(),
             'relatedGroupRooms' => $relatedGroupRooms,
+            'lock_form' => $lockForm->createView(),
         ];
     }
 
@@ -572,6 +593,8 @@ class SettingsController extends AbstractController
      * @param RoomService $roomService
      * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
+     * @param PortalRepository $portalRepository
+     * @param Mailer $mailer
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -582,7 +605,7 @@ class SettingsController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         PortalRepository $portalRepository,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         int $roomId
     ) {
         // get room from RoomService
@@ -651,13 +674,13 @@ class SettingsController extends AbstractController
                         ], UrlGeneratorInterface::ABSOLUTE_URL)." ",
                         '%sender%' => $user->getFullName(),
                     ]);
-                    $mailMessage = (new \Swift_Message())
-                        ->setSubject($subject)
-                        ->setBody($body, 'text/plain')
-                        ->setFrom([$fromAddress => $fromSender])
-                        ->setTo([$data['email']]);
 
-                    $mailer->send($mailMessage);
+                    $mailer->sendRaw(
+                        $subject,
+                        $body,
+                        RecipientFactory::createFromRaw($data['email']),
+                        $fromSender
+                    );
                 }
             } else if ($clickedButton === 'delete') {
                 foreach ($data['remove_invitees'] as $removeInvitee) {

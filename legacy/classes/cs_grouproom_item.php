@@ -27,6 +27,9 @@
  */
 include_once('classes/cs_room_item.php');
 
+use App\Mail\Mailer;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /** group room
@@ -44,7 +47,8 @@ class cs_grouproom_item extends cs_room_item {
     * @param object environment environment of the commsy project
     */
    public function __construct ($environment) {
-      cs_context_item::__construct($environment);
+      parent::__construct($environment);
+
       $this->_type = CS_GROUPROOM_TYPE;
 
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
@@ -211,6 +215,7 @@ class cs_grouproom_item extends cs_room_item {
       $group = $this->getLinkedGroupItem();
       $group->unsetGroupRoomActive();
       $group->unsetGroupRoomItemID();
+      $group->saveOnlyItem();
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_room.room');
@@ -1140,23 +1145,23 @@ class cs_grouproom_item extends cs_room_item {
          }
 
          // send email
-         $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
          $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle());
 
-         $message = (new \Swift_Message())
-            ->setSubject($subject)
-            ->setBody($body, 'text/plain')
-            ->setFrom([$emailFrom => $fromName])
-            ->setTo($value);
+         $message = (new Email())
+             ->subject($subject)
+             ->html(nl2br($body))
+             ->to($value);
 
          if ($current_user) {
             $email = $current_user->getEmail();
             if (!empty($email)) {
-               $message->setReplyTo([$email => $current_user->getFullname()]);
+               $message->replyTo(new Address($email, $current_user->getFullName()));
             }
          }
 
-         $symfonyContainer->get('mailer')->send($message);
+         /** @var Mailer $mailer */
+         $mailer = $symfonyContainer->get(Mailer::class);
+         $mailer->sendEmailObject($message, $fromName);
 
          $translator->setSelectedLanguage($save_language);
          unset($save_language);

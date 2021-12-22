@@ -22,8 +22,11 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use App\Mail\Mailer;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 class cs_mail
 {
@@ -169,53 +172,40 @@ class cs_mail
      */
     public function send($recipients = '', $headers = '', $body = '', $return = '')
     {
-        $message = new \Swift_Message();
+        $message = new Email();
 
         // body
         if ($this->asHTML) {
-            $message->setBody($this->message, 'text/html');
+            $message->html($this->message);
         } else {
-            $message->setBody($this->message, 'text/plain');
-        }
-
-        // from
-        if (isset($this->fromName)) {
-            $cleanedFromEmails = $this->filterValidEmails([$this->fromEmail]);
-            if (!empty($cleanedFromEmails)) {
-                $message->setFrom([$cleanedFromEmails[0] => $this->fromName]);
-            }
-        } else {
-            $cleanedFromEmails = $this->filterValidEmails([$this->fromEmail]);
-            if (!empty($cleanedFromEmails)) {
-                $message->setFrom([$cleanedFromEmails[0]]);
-            }
+            $message->text($this->message);
         }
 
         // reply
         if (isset($this->replyToName)) {
             $cleanedReplyToEmails = $this->filterValidEmails([$this->replyToEmail]);
             if (!empty($cleanedReplyToEmails)) {
-                $message->setReplyTo([$cleanedReplyToEmails[0] => $this->replyToName]);
+                $message->replyTo(new Address($cleanedReplyToEmails[0], $this->replyToName));
             }
         } else {
             if (isset($this->replyToEmail)) {
                 $cleanedReplyToEmails = $this->filterValidEmails([$this->replyToEmail]);
                 if (!empty($cleanedReplyToEmails)) {
-                    $message->setReplyTo([$cleanedReplyToEmails[0]]);
+                    $message->replyTo(new Address($cleanedReplyToEmails[0]));
                 }
             } else {
                 $cleanedFromEmails = $this->filterValidEmails([$this->fromEmail]);
                 if (!empty($cleanedFromEmails)) {
-                    $message->setReplyTo([$cleanedFromEmails[0]]);
+                    $message->replyTo(new Address($cleanedFromEmails[0]));
                 }
             }
         }
 
         // subject
         if (isset($this->subject)) {
-            $message->setSubject($this->subject);
+            $message->subject($this->subject);
         } else {
-            $message->setSubject('');
+            $message->subject('');
         }
 
         // to
@@ -228,13 +218,13 @@ class cs_mail
             return false;
         }
 
-        $message->setTo($to);
+        $message->to(...$to);
 
         // cc
         if (isset($this->ccRecipients)) {
             $cc = explode(',', $this->cleanRecipients($this->ccRecipients));
             if ($cc) {
-                $message->setCc($cc);
+                $message->cc(...$cc);
             }
         }
 
@@ -242,20 +232,16 @@ class cs_mail
         if (isset($this->bccRecipients)) {
             $bcc = explode(',', $this->cleanRecipients($this->bccRecipients));
             if ($bcc) {
-                $message->setBcc($bcc);
+                $message->bcc(...$bcc);
             }
         }
 
         global $symfonyContainer;
-        $mailer = $symfonyContainer->get('mailer');
-        $transport = $symfonyContainer->get('swiftmailer.mailer.default.transport.real');
 
-        $success = $mailer->send($message);
+        /** @var Mailer $mailer */
+        $mailer = $symfonyContainer->get(Mailer::class);
 
-        $spool = $mailer->getTransport()->getSpool();
-        $spool->flushQueue($transport);
-
-        return $success;
+        return $mailer->sendEmailObject($message, ($this->fromName ?? 'CommSy'));
     }
 
     public function getErrorArray()

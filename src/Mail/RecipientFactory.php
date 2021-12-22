@@ -40,21 +40,6 @@ class RecipientFactory
     }
 
     /**
-     * @param Account $account
-     * @return Recipient
-     */
-    public static function createAccountRecipient(Account $account): Recipient
-    {
-        $recipient = new Recipient();
-        $recipient->setFirstname($account->getFirstname());
-        $recipient->setLastname($account->getLastname());
-        $recipient->setEmail($account->getEmail());
-        $recipient->setLanguage($account->getLanguage());
-
-        return $recipient;
-    }
-
-    /**
      * @param cs_user_item $user
      * @return Recipient
      */
@@ -77,6 +62,44 @@ class RecipientFactory
         }
 
         $recipient->setLanguage($language);
+
+        return $recipient;
+    }
+
+    /**
+     * @param string $email
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $language
+     * @return Recipient
+     */
+    public static function createFromRaw(
+        string $email,
+        string $firstname = '',
+        string $lastname = '',
+        string $language = 'de'
+    ): Recipient {
+        $recipient = new Recipient();
+        $recipient->setFirstname($firstname);
+        $recipient->setLastname($lastname);
+        $recipient->setEmail($email);
+        $recipient->setLanguage($language);
+
+        return $recipient;
+    }
+
+    /**
+     * @param Account $account
+     * @return Recipient
+     */
+    public static function createFromAccount(
+        Account $account
+    ): Recipient {
+        $recipient = new Recipient();
+        $recipient->setFirstname($account->getFirstname());
+        $recipient->setLastname($account->getLastname());
+        $recipient->setEmail($account->getEmail());
+        $recipient->setLanguage($account->getLanguage());
 
         return $recipient;
     }

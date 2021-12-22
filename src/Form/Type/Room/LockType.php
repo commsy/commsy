@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class DeleteType extends AbstractType
+class LockType extends AbstractType
 {
     /**
      * Builds the form.
@@ -36,8 +36,8 @@ class DeleteType extends AbstractType
                 'required' => true,
                 'mapped' => false,
             ])
-            ->add('delete', SubmitType::class, [
-                'label' => 'Confirm delete',
+            ->add('lock', SubmitType::class, [
+                'label' => 'Confirm lock',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],
@@ -72,6 +72,6 @@ class DeleteType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'delete_room';
+        return 'lock_room';
     }
 }
