@@ -430,7 +430,7 @@
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
-                <target>For best results, chose an image with side ratio of approximately 1:1 and a resolution of at least 200x200 pixel!</target>
+                <target>For best results, choose an image with side ratio of approximately 1:1 and a resolution of at least 200x200 pixel!</target>
             </trans-unit>
             <trans-unit id="use_profile_image">
                 <source>Use profile image</source>
