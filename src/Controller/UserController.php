@@ -15,6 +15,8 @@ use App\Form\Type\SendType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Services\AvatarService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -33,8 +35,6 @@ use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Swift_Mailer;
-use Swift_Message;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,6 +42,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -123,13 +125,15 @@ class UserController extends BaseController
     public function sendMailViaContactForm(
         Request $request,
         MailAssistant $mailAssistant,
-        Swift_Mailer $mailer,
+        Mailer $mailer,
         TranslatorInterface $translator,
         $roomId,
         $itemId,
         $originPath,
         $moderatorIds = null
     ) {
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+
         $item = $this->itemService->getTypedItem($itemId);
         $formData = null;
         if (!is_null($item->getLinkedUserroomItem())) {
@@ -173,25 +177,10 @@ class UserController extends BaseController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessageContactForm($form, $item, true, $moderatorIds,
-                $this->userService);
-            $mailer->send($message);
+            $email = $mailAssistant->getUserContactMessage($form, $item, $moderatorIds, $this->userService);
+            $mailer->sendEmailObject($email, $portalItem->getTitle());
 
-            $countTo = 0;
-            $countCc = 0;
-            $countBcc = 0;
-
-            if (!is_null($message->getTo())) {
-                $countTo = count($message->getTo());
-            }
-            if (!is_null($message->getCc())) {
-                $countTo = count($message->getCc());
-            }
-            if (!is_null($message->getBcc())) {
-                $countTo = count($message->getBcc());
-            }
-
-            $recipientCount = $countTo + $countCc + $countBcc;
+            $recipientCount = count($email->getTo() ?? []) + count($email->getCc() ?? []) + count($email->getBcc() ?? []);
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
@@ -411,7 +400,7 @@ class UserController extends BaseController
      * @Security("is_granted('MODERATOR')")
      * @param Request $request
      * @param EventDispatcherInterface $eventDispatcher
-     * @param Swift_Mailer $mailer
+     * @param Mailer $mailer
      * @param AccountMail $accountMail
      * @param int $roomId
      * @return array|RedirectResponse
@@ -420,10 +409,9 @@ class UserController extends BaseController
     public function changeStatusAction(
         Request $request,
         EventDispatcherInterface $eventDispatcher,
-        Swift_Mailer $mailer,
+        Mailer $mailer,
         AccountMail $accountMail,
-        int $roomId,
-        RouterInterface $router
+        int $roomId
     ) {
         $room = $this->getRoom($roomId);
 
@@ -971,7 +959,7 @@ class UserController extends BaseController
      * @param Request $request
      * @param TranslatorInterface $translator
      * @param MailAssistant $mailAssistant
-     * @param Swift_Mailer $mailer
+     * @param Mailer $mailer
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -980,7 +968,7 @@ class UserController extends BaseController
         Request $request,
         TranslatorInterface $translator,
         MailAssistant $mailAssistant,
-        Swift_Mailer $mailer,
+        Mailer $mailer,
         int $roomId,
         int $itemId
     ) {
@@ -1018,44 +1006,41 @@ class UserController extends BaseController
 
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                $from = $this->getParameter('commsy.email.from');
-
                 // TODO: validate sender & recipient email addresses (similar to sendMultipleAction())
-                $sender = [$currentUser->getEmail() => $currentUser->getFullName()];
-                $recipient = [$item->getEmail() => $item->getFullName()];
+                $sender = new Address($currentUser->getEmail(), $currentUser->getFullName());
+                $recipient = new Address($item->getEmail(), $item->getFullName());
 
                 // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $message = (new Swift_Message())
-                    ->setSubject($formData['subject'])
-                    ->setBody($formData['message'], 'text/html')
-                    ->setFrom([$from => $portalItem->getTitle()]);
+                $email = (new Email())
+                    ->subject($formData['subject'])
+                    ->html($formData['message']);
 
                 $formDataFiles = $formData['files'];
                 if ($formDataFiles) {
-                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
+                    $email = $mailAssistant->addAttachments($formDataFiles, $email);
                 }
 
                 if ($currentUser->isEmailVisible()) {
-                    $message->setReplyTo($sender);
+                    $email->replyTo($sender);
                 }
 
                 // form option: copy_to_sender
                 if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
                     if ($currentUser->isEmailVisible()) {
-                        $message->setCc($sender);
+                        $email->cc($sender);
                     } else {
-                        $message->addBcc(key($sender), current($sender));
+                        $email->addBcc($sender);
                     }
                 }
 
                 if ($item->isEmailVisible()) {
-                    $message->setTo($recipient);
+                    $email->to($recipient);
                 } else {
-                    $message->addBcc(key($recipient), current($recipient));
+                    $email->addBcc($recipient);
                 }
 
                 // send mail
-                $mailer->send($message);
+                $mailer->sendEmailObject($email, $portalItem->getTitle());
 
                 // redirect to success page
                 return $this->redirectToRoute('app_user_sendsuccess', [
@@ -1356,16 +1341,11 @@ class UserController extends BaseController
     }
 
     private function sendUserInfoMail(
+        Mailer $mailer,
+        AccountMail $accountMail,
         $userIds,
-        $action,
-        LegacyEnvironment $legacyEnvironment,
-        \Swift_Mailer $mailer,
-        RouterInterface $router
+        $action
     ) {
-
-        $accountMail = new AccountMail($legacyEnvironment, $router);
-
-        $fromAddress = $this->getParameter('commsy.email.from');
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $fromSender = $this->legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
@@ -1374,52 +1354,25 @@ class UserController extends BaseController
         $currentUserEmail = $currentUser->getEmail();
         if ($validator->isValid($currentUserEmail, new RFCValidation())) {
             if ($currentUser->isEmailVisible()) {
-                $replyTo[$currentUserEmail] = $currentUser->getFullName();
+                $replyTo[] = new Address($currentUserEmail, $currentUser->getFullName());
             }
         }
 
-        $users = [];
-        $failedUsers = [];
         foreach ($userIds as $userId) {
             $user = $this->userService->getUser($userId);
 
             $userEmail = $user->getEmail();
             if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
-                $to = [$userEmail => $user->getFullname()];
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
-                $mailMessage = (new Swift_Message())
-                    ->setSubject($subject)
-                    ->setBody($body, 'text/plain')
-                    ->setFrom([$fromAddress => $fromSender])
-                    ->setReplyTo($replyTo);
-
-                if ($user->isEmailVisible()) {
-                    $mailMessage->setTo($to);
-                } else {
-                    $mailMessage->setBcc($to);
-                }
-
-                // send mail
-                $failedRecipients = [];
-                $mailer->send($mailMessage, $failedRecipients);
-            } else {
-                $failedUsers[] = $user;
-            }
-        }
-
-        foreach ($failedUsers as $failedUser) {
-            $this->addFlash('failedRecipients', $failedUser->getUserId());
-        }
-
-        foreach ($failedRecipients as $failedRecipient) {
-            $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
-                return $user->getEmail() == $failedRecipient;
-            });
-
-            if ($failedUser) {
-                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+                $success = $mailer->sendRaw(
+                    $subject,
+                    $body,
+                    RecipientFactory::createRecipient($user),
+                    $fromSender,
+                    $replyTo
+                );
             }
         }
     }
@@ -1535,7 +1488,7 @@ class UserController extends BaseController
      * @param Request $request
      * @param TranslatorInterface $translator
      * @param MailAssistant $mailAssistant
-     * @param Swift_Mailer $mailer
+     * @param Mailer $mailer
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
@@ -1544,7 +1497,7 @@ class UserController extends BaseController
         Request $request,
         TranslatorInterface $translator,
         MailAssistant $mailAssistant,
-        Swift_Mailer $mailer,
+        Mailer $mailer,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
@@ -1622,23 +1575,17 @@ class UserController extends BaseController
 
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                $from = $this->getParameter('commsy.email.from');
-
-                // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $forceBCCMail = true;
-
                 $to = [];
                 $toBCC = [];
                 $validator = new EmailValidator();
                 $failedUsers = [];
                 foreach ($users as $user) {
-                    $users[] = $user;
                     if ($validator->isValid($user->getEmail(), new RFCValidation())) {
                         if ($user->isEmailVisible()) {
-                            $to[$user->getEmail()] = $user->getFullName();
+                            $to[] = new Address($user->getEmail(), $user->getFullName());
                         } else {
-                            $toBCC[$user->getEmail()] = $user->getFullName();
+                            $toBCC[] = new Address($user->getEmail(), $user->getFullName());
                         }
                     } else {
                         $failedUsers[] = $user;
@@ -1649,73 +1596,41 @@ class UserController extends BaseController
                 $toCC = [];
                 if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
                     if ($currentUser->isEmailVisible()) {
-                        $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                        $replyTo[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
                     }
 
                     // form option: copy_to_sender
                     if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
                         if ($currentUser->isEmailVisible()) {
-                            $toCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                            $toCC[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
                         } else {
-                            $toBCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                            $toBCC[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
                         }
                     }
                 }
 
                 // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $message = (new Swift_Message())
-                    ->setSubject($formData['subject'])
-                    ->setBody($formData['message'], 'text/html')
-                    ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo($replyTo);
+                $email = (new Email())
+                    ->subject($formData['subject'])
+                    ->html($formData['message'])
+                    ->replyTo(...$replyTo);
 
                 $formDataFiles = $formData['files'];
                 if ($formDataFiles) {
-                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
+                    $email = $mailAssistant->addAttachments($formDataFiles, $email);
                 }
 
-                $recipientCount = 0;
-
-                if ($forceBCCMail) {
-                    $allRecipients = array_merge($to, $toCC, $toBCC);
-                    $message->setBcc($allRecipients);
-                    $recipientCount += count($allRecipients);
-                } else {
-                    if (!empty($to)) {
-                        $message->setTo($to);
-                        $recipientCount += count($to);
-                    }
-
-                    if (!empty($toCC)) {
-                        $message->setCc($toCC);
-                        $recipientCount += count($toCC);
-                    }
-
-                    if (!empty($toBCC)) {
-                        $message->setBcc($toBCC);
-                        $recipientCount += count($toBCC);
-                    }
-                }
+                // NOTE: as of #2461 all mail should be sent as BCC mail
+                $allRecipients = array_merge($to, $toCC, $toBCC);
+                $email->bcc(...$allRecipients);
+                $recipientCount = count($allRecipients);
 
                 $this->addFlash('recipientCount', $recipientCount);
 
                 // send mail
-                $failedRecipients = [];
-                $mailer->send($message, $failedRecipients);
-
-                foreach ($failedUsers as $failedUser) {
-                    $this->addFlash('failedRecipients', $failedUser->getUserId());
-                }
-
-                foreach ($failedRecipients as $failedRecipient) {
-                    $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
-                        return $user->getEmail() == $failedRecipient;
-                    });
-
-                    if ($failedUser) {
-                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
-                    }
-                }
+                $mailSend = $mailer->sendEmailObject($email, $portalItem->getTitle());
+                $mailSend = $mailSend && empty($failedUsers);
+                $this->addFlash('mailSend', $mailSend);
 
                 // redirect to success page
                 return $this->redirectToRoute('app_user_sendmultiplesuccess', [

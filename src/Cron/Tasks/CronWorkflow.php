@@ -2,12 +2,11 @@
 
 namespace App\Cron\Tasks;
 
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use DateTimeImmutable;
-use Swift_Mailer;
-use Swift_Message;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -19,28 +18,21 @@ class CronWorkflow implements CronTaskInterface
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var ParameterBagInterface
-     */
-    private ParameterBagInterface $parameterBag;
-
-    /**
      * @var RouterInterface
      */
     private RouterInterface $router;
 
     /**
-     * @var Swift_Mailer
+     * @var Mailer
      */
-    private Swift_Mailer $mailer;
+    private Mailer $mailer;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        ParameterBagInterface $parameterBag,
         RouterInterface $router,
-        Swift_Mailer $mailer
+        Mailer $mailer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->parameterBag = $parameterBag;
         $this->router = $router;
         $this->mailer = $mailer;
     }
@@ -80,6 +72,10 @@ class CronWorkflow implements CronTaskInterface
                         }
                     }
                     $to = array_unique($to);
+                    $recipients = [];
+                    foreach ($to as $mail) {
+                        $recipients[] = RecipientFactory::createFromRaw($mail);
+                    }
 
                     $translator = $this->legacyEnvironment->getTranslationObject();
 
@@ -96,14 +92,15 @@ class CronWorkflow implements CronTaskInterface
 
                     $portal = $room->getPortalItem();
 
-                    $message = (new Swift_Message())
-                        ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION',
-                            $portal->getTitle()))
-                        ->setBody($body, 'text/html')
-                        ->setFrom([$this->parameterBag->get('commsy.email.from') => $portal->getTitle()])
-                        ->setTo($to);
-
-                    $this->mailer->send($message);
+                    $this->mailer->sendMultipleRaw(
+                        $translator->getMessage(
+                            'COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION',
+                            $portal->getTitle()
+                        ),
+                        $body,
+                        $recipients,
+                        $portal->getTitle()
+                    );
 
                     // change material status
                     $materialManager->setWorkflowStatus($material->getItemID(),
@@ -141,6 +138,12 @@ class CronWorkflow implements CronTaskInterface
                         $to = array_merge($to, explode(',', $additionalReceiver));
                     }
 
+                    $to = array_unique($to);
+                    $recipients = [];
+                    foreach ($to as $mail) {
+                        $recipients[] = RecipientFactory::createFromRaw($mail);
+                    }
+
                     $translator = $this->legacyEnvironment->getTranslationObject();
 
                     $path = $this->router->generate('app_material_detail', [
@@ -156,14 +159,15 @@ class CronWorkflow implements CronTaskInterface
 
                     $portal = $room->getPortalItem();
 
-                    $message = (new Swift_Message())
-                        ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY',
-                            $portal->getTitle()))
-                        ->setBody($body, 'text/html')
-                        ->setFrom([$this->parameterBag->get('commsy.email.from') => $portal->getTitle()])
-                        ->setTo($to);
-
-                    $this->mailer->send($message);
+                    $this->mailer->sendMultipleRaw(
+                        $translator->getMessage(
+                            'COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY',
+                            $portal->getTitle()
+                        ),
+                        $body,
+                        $recipients,
+                        $portal->getTitle()
+                    );
 
                     // change material status
                     $materialManager->setWorkflowStatus($material->getItemID(),

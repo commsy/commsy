@@ -68,6 +68,7 @@ use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TranslationType;
+use App\Mail\Mailer;
 use App\Model\TimePulseTemplate;
 use App\Repository\AuthSourceRepository;
 use App\Security\Authorization\Voter\RootVoter;
@@ -1876,7 +1877,7 @@ class PortalSettingsController extends AbstractController
         MailAssistant $mailAssistant,
         UserService $userService,
         ItemService $itemService,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         Portal $portal,
         RouterInterface $router
     ) {
@@ -1913,27 +1914,24 @@ class PortalSettingsController extends AbstractController
                     $mailRecipients[] = $userService->getCurrentUserItem();
                 }
 
-                $countTo = 0;
-                $countCc = 0;
-                $countBcc = 0;
+                $recipientCount = 0;
 
                 foreach ($mailRecipients as $mailRecipient) {
                     $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                    $message = $mailAssistant->getSwiftMailForAccountIndexSendMail($form, $item, false);
-                    $mailer->send($message);
+                    $email = $mailAssistant->getAccountIndexActionMessage($form, $item);
+                    $mailer->sendEmailObject($email, $portal->getTitle());
 
-                    if (!is_null($message->getTo())) {
-                        $countTo += count($message->getTo());
+                    if (!is_null($email->getTo())) {
+                        $recipientCount += count($email->getTo());
                     }
-                    if (!is_null($message->getCc())) {
-                        $countTo += count($message->getCc());
+                    if (!is_null($email->getCc())) {
+                        $recipientCount += count($email->getCc());
                     }
-                    if (!is_null($message->getBcc())) {
-                        $countTo += count($message->getBcc());
+                    if (!is_null($email->getBcc())) {
+                        $recipientCount += count($email->getBcc());
                     }
                 }
 
-                $recipientCount = $countTo + $countCc + $countBcc;
                 $this->addFlash('recipientCount', $recipientCount);
 
                 $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
@@ -1970,7 +1968,7 @@ class PortalSettingsController extends AbstractController
         MailAssistant $mailAssistant,
         UserService $userService,
         ItemService $itemService,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         RouterInterface $router
     ) {
         $recipientArray = [];
@@ -1999,28 +1997,24 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $mailRecipients = $data->getRecipients();
 
-            $countTo = 0;
-            $countCc = 0;
-            $countBcc = 0;
-
+            $recipientCount = 0;
             foreach ($mailRecipients as $mailRecipient) {
 
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
-                $mailer->send($message);
+                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
+                $mailer->sendEmailObject($email, $portal->getTitle());
 
-                if (!is_null($message->getTo())) {
-                    $countTo += count($message->getTo());
+                if (!is_null($email->getTo())) {
+                    $recipientCount += count($email->getTo());
                 }
-                if (!is_null($message->getCc())) {
-                    $countTo += count($message->getCc());
+                if (!is_null($email->getCc())) {
+                    $recipientCount += count($email->getCc());
                 }
-                if (!is_null($message->getBcc())) {
-                    $countTo += count($message->getBcc());
+                if (!is_null($email->getBcc())) {
+                    $recipientCount += count($email->getBcc());
                 }
             }
 
-            $recipientCount = $countTo + $countCc + $countBcc;
             $this->addFlash('recipientCount', $recipientCount);
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
@@ -2052,7 +2046,7 @@ class PortalSettingsController extends AbstractController
         MailAssistant $mailAssistant,
         UserService $userService,
         ItemService $itemService,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         RouterInterface $router
     ) {
         $recipientArray = [];
@@ -2080,29 +2074,24 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $mailRecipients = $data->getRecipients();
 
-            $countTo = 0;
-            $countCc = 0;
-            $countBcc = 0;
-
+            $recipientCount = 0;
             foreach ($mailRecipients as $mailRecipient) {
 
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
-                $mailer->send($message);
+                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
+                $mailer->sendEmailObject($email, $portal->getTitle());
 
-                if (!is_null($message->getTo())) {
-                    $countTo += count($message->getTo());
+                if (!is_null($email->getTo())) {
+                    $recipientCount += count($email->getTo());
                 }
-                if (!is_null($message->getCc())) {
-                    $countTo += count($message->getCc());
+                if (!is_null($email->getCc())) {
+                    $recipientCount += count($email->getCc());
                 }
-                if (!is_null($message->getBcc())) {
-                    $countTo += count($message->getBcc());
+                if (!is_null($email->getBcc())) {
+                    $recipientCount += count($email->getBcc());
                 }
-
             }
 
-            $recipientCount = $countTo + $countCc + $countBcc;
             $this->addFlash('recipientCount', $recipientCount);
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
@@ -2866,75 +2855,6 @@ class PortalSettingsController extends AbstractController
             'translations' => $translations,
             'selectedTranslation' => $translation,
         ];
-    }
-
-    private function sendUserInfoMail(
-        $userIds,
-        $action,
-        \cs_user_item $user,
-        \Swift_Mailer $mailer,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
-        RouterInterface $router
-    ) {
-        $fromAddress = $user->getEmail();
-        $currentUser = $user;
-        $fromSender = $user->getFullName();
-
-        $validator = new EmailValidator();
-        $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
-            if ($currentUser->isEmailVisible()) {
-                $replyTo[$currentUserEmail] = $currentUser->getFullName();
-            }
-        }
-
-        $users = [];
-        $failedUsers = [];
-        foreach ($userIds as $userId) {
-            $user = $userService->getUser($userId);
-
-            $userEmail = $user->getEmail();
-            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
-                $to = [$userEmail => $user->getFullname()];
-                $accountMail = new AccountMail($legacyEnvironment, $router);
-                $subject = $accountMail->generateSubject($action);
-                $body = $accountMail->generateBody($userService->getCurrentUserItem(), $action);
-
-                $mailMessage = (new \Swift_Message())
-                    ->setSubject($subject)
-                    ->setBody($body, 'text/plain')
-                    ->setFrom([$fromAddress => $fromSender])
-                    ->setReplyTo($replyTo);
-
-                if ($user->isEmailVisible()) {
-                    $mailMessage->setTo($to);
-                } else {
-                    $mailMessage->setBcc($to);
-                }
-
-                // send mail
-                $failedRecipients = [];
-                $mailer->send($mailMessage, $failedRecipients);
-            } else {
-                $failedUsers[] = $user;
-            }
-        }
-
-        foreach ($failedUsers as $failedUser) {
-            $this->addFlash('failedRecipients', $failedUser->getUserId());
-        }
-
-        foreach ($failedRecipients as $failedRecipient) {
-            $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
-                return $user->getEmail() == $failedRecipient;
-            });
-
-            if ($failedUser) {
-                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
-            }
-        }
     }
 
     private function generateRedirectForAuthType(string $type, Portal $portal)

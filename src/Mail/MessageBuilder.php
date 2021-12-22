@@ -9,100 +9,142 @@
 namespace App\Mail;
 
 
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MessageBuilder
 {
     /**
      * @var TranslatorInterface $translator
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * @var EngineInterface $templating
      */
-    private $templating;
-
-    /**
-     * @var LoggerInterface $logger
-     */
-    private $logger;
+    private EngineInterface $templating;
 
     /**
      * @var string $emailFrom
      */
-    private $emailFrom;
+    private string $emailFrom;
 
     public function __construct(
         TranslatorInterface $translator,
         EngineInterface $templating,
-        LoggerInterface $logger,
         string $emailFrom
     ) {
         $this->translator = $translator;
         $this->templating = $templating;
-        $this->logger = $logger;
         $this->emailFrom = $emailFrom;
     }
 
     /**
+     * @param Email $email
      * @param string $fromSenderName
-     * @param Recipient $recipient The recipient
-     * @param array $replyTo Reply to in the form of email => name
-     * @return \Swift_Message|null
-     *
-     * @†hrows \Exception
+     * @return Email
      */
-    public function generateSwiftMessage(
+    public function generateFromEmail(
+        Email $email,
+        string $fromSenderName
+    ): Email {
+        $email->from(new Address($this->emailFrom, $fromSenderName));
+
+        return $email;
+    }
+
+    /**
+     * @param string $subject
+     * @param string $message
+     * @param string $fromSenderName
+     * @param Recipient $recipient
+     * @param array $replyTo
+     * @param array $cc
+     * @return Email
+     */
+    public function generateFromString(
+        string $subject,
+        string $message,
+        string $fromSenderName,
+        Recipient $recipient,
+        array $replyTo = [],
+        array $cc = []
+    ): Email {
+        $email = (new Email())
+            ->subject($subject)
+            ->from(new Address($this->emailFrom, $fromSenderName))
+            ->html($message);
+
+        // To
+        if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
+            $email->to(new Address(
+                $recipient->getEmail(),
+                $recipient->getFirstname() . ' ' . $recipient->getLastname()
+            ));
+        } else {
+            $email->to(new Address($recipient->getEmail()));
+        }
+
+        // Reply-To
+        if (!empty($replyTo)) {
+            $email->replyTo(...$replyTo);
+        }
+
+        // Cc
+        if (!empty($cc)) {
+            $email->cc(...$cc);
+        }
+
+        return $email;
+    }
+
+    /**
+     * @param MessageInterface $message
+     * @param string $fromSenderName
+     * @param Recipient $recipient
+     * @param array $replyTo
+     * @return Email
+     */
+    public function generateFromMessage(
         MessageInterface $message,
         string $fromSenderName,
         Recipient $recipient,
         array $replyTo = []
-    ): ?\Swift_Message {
+    ): Email {
+        $locale = $this->translator->getLocale();
+        $this->translator->setLocale($recipient->getLanguage());
+
+        $email = (new Email())
+            ->from(new Address($this->emailFrom, $fromSenderName));
+
+        // Subject
         $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
-        $swiftMessage = new \Swift_Message();
+        $email->subject($subject);
 
-        try {
-            // Validation
-            array_walk($replyTo, function ($name, $email) {
-                $this->validateEmail($email);
-            });
-            $this->validateEmail($this->emailFrom);
-
-            $locale = $this->translator->getLocale();
-            $this->translator->setLocale($recipient->getLanguage());
-
-            $swiftMessage
-                ->setSubject($subject)
-                ->setFrom([$this->emailFrom => $fromSenderName])
-                ->setReplyTo($replyTo)
-                ->setTo([$recipient->getEmail() => $recipient->getFirstname() . ' ' . $recipient->getLastname()])
-                ->setBody($this->templating->render($message->getTemplateName(), $message->getParameters()), 'text/html')
-            ;
-
-            // Restore the previous locale
-            $this->translator->setLocale($locale);
-        } catch (\Swift_RfcComplianceException $e) {
-            $this->logger->warning('Swift Message cannot be generated, RFC violation.', [$e->getMessage()]);
-            return null;
+        // To
+        if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
+            $email->to(new Address(
+                $recipient->getEmail(),
+                $recipient->getFirstname() . ' ' . $recipient->getLastname()
+            ));
+        } else {
+            $email->to(new Address($recipient->getEmail()));
         }
 
-        return $swiftMessage;
-    }
-
-    /**
-     * @param string $email The email address to validate
-     * @throws \Swift_RfcComplianceException
-     */
-    private function validateEmail(string $email)
-    {
-        $validator = new EmailValidator();
-        if (!$validator->isValid($email, new RFCValidation())) {
-            throw new \Swift_RfcComplianceException('Invalid email given: ' .  $email);
+        // Reply-To
+        if (!empty($replyTo)) {
+            $email->replyTo(...$replyTo);
         }
+
+        // Body
+        $body = $this->templating->render($message->getTemplateName(), $message->getParameters());
+        $email->html($body);
+
+        // Restore the previous locale
+        $this->translator->setLocale($locale);
+
+        return $email;
     }
 }

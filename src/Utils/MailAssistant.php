@@ -2,29 +2,28 @@
 
 namespace App\Utils;
 
-use App\Entity\Account;
-use App\Entity\Portal;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
 
 class MailAssistant
 {
-    private $legacyEnvironment;
-    private $twig;
-    private $from;
+    private cs_environment $legacyEnvironment;
+
+    private Environment $twig;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        Environment $twig,
-        $from
+        Environment $twig
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->twig = $twig;
-        $this->from = $from;
     }
 
     public function prepareMessage($item)
@@ -36,7 +35,7 @@ class MailAssistant
             'contextItem' => $currentContextItem,
             'currentUser' => $currentUser,
             'item' => $item,
-            'content' => $this->generateMessageData($item),
+            'content' => [],
         ]);
     }
 
@@ -105,15 +104,12 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessageContactForm(
+    public function getUserContactMessage(
         FormInterface $form,
         $item,
-        $forceBCCMail = false,
-        $moderatorIds = null,
+        $moderatorIds,
         UserService $userService
-    ): \Swift_Message
-    {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+    ): Email {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $formData = $form->getData();
 
@@ -138,23 +134,16 @@ class MailAssistant
         $currentUserEmail = $currentUser->getEmail();
         $currentUserName = $currentUser->getFullName();
         if ($currentUser->isEmailVisible()) {
-            $replyTo[$currentUserEmail] = $currentUserName;
+            $replyTo[] = new Address($currentUserEmail, $currentUserName);
         }
 
         $formDataSubject = $formData['subject'];
         $formDataMessage = $formData['message'];
 
-        $from = '';
-        if(empty($this->from)){
-            $from = 'noreply@commsy.net';
-        }else{
-            $from = $this->from;
-        }
-        $message = (new \Swift_Message())
-            ->setSubject($formDataSubject)
-            ->setBody($formDataMessage, 'text/html')
-            ->setFrom([$from => $portalItem->getTitle()])
-            ->setReplyTo($replyTo);
+        $message = (new Email())
+            ->subject($formDataSubject)
+            ->html($formDataMessage)
+            ->replyTo(...$replyTo);
 
         // form option: files
         $formDataFiles = $formData['files'];
@@ -182,29 +171,16 @@ class MailAssistant
             $toCC[$formData['additional_recipient']] = $formData['additional_recipient'];
         }
 
-        if ($forceBCCMail) {
-            $allRecipients = array_merge($to, $toCC, $toBCC);
-            $message->setBcc($allRecipients);
-        } else {
-            if (!empty($to)) {
-                $message->setTo($to);
-            }
-
-            if (!empty($toCC)) {
-                $message->setCC($toCC);
-            }
-
-            if (!empty($toBCC)) {
-                $message->setBcc($toBCC);
-            }
-        }
+        $allRecipients = array_merge($to, $toCC, $toBCC);
+        $message->bcc(...$this->convertArrayToAddresses($allRecipients));
 
         return $message;
     }
 
-    public function getSwiftMailForAccountIndexSendMail(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
-    {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+    public function getAccountIndexActionMessage(
+        FormInterface $form,
+        $item
+    ): Email {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $formData = $form->getData();
 
@@ -222,18 +198,17 @@ class MailAssistant
         $currentUserEmail = $currentUser->getEmail();
         $currentUserName = $currentUser->getFullName();
         if ($currentUser->isEmailVisible()) {
-            $replyTo[$currentUserEmail] = $currentUserName;
+            $replyTo[] = new Address($currentUserEmail, $currentUserName);
         }
 
         $formDataSubject = $formData->getSubject();
 
         $formDataMessage = $formData->getMessage();
 
-        $message = (new \Swift_Message())
-            ->setSubject($formDataSubject)
-            ->setBody($formDataMessage, 'text/html')
-            ->setFrom([$currentUserEmail => $portalItem->getTitle()])
-            ->setReplyTo($replyTo);
+        $message = (new Email())
+            ->subject($formDataSubject)
+            ->html($formDataMessage)
+            ->replyTo(...$replyTo);
 
         // form option: copy_to_sender
         $toCC = [];
@@ -248,46 +223,25 @@ class MailAssistant
             }
         }
 
-        if ($forceBCCMail) {
-            $allRecipients = array_merge($to, $toCC, $toBCC);
-            $message->setBcc($allRecipients);
-        } else {
-            if (!empty($to)) {
-                $message->setTo($to);
-            }
+        if (!empty($to)) {
+            $message->to(...$this->convertArrayToAddresses($to));
+        }
 
-            if (!empty($toCC)) {
-                $message->setCC($toCC);
-            }
+        if (!empty($toCC)) {
+            $message->cc(...$this->convertArrayToAddresses($toCC));
+        }
 
-            if (!empty($toBCC)) {
-                $message->setBcc($toBCC);
-            }
+        if (!empty($toBCC)) {
+            $message->bcc(...$this->convertArrayToAddresses($toBCC));
         }
 
         return $message;
     }
 
-    public function getSwiftMessageFromPortalToAccount(
-        string $subject,
-        string $body,
-        Portal $portal,
-        Account $account
-    ): \Swift_Message
-    {
-        $message = (new \Swift_Message())
-            ->setSubject($subject)
-            ->setBody($body, 'text/html')
-            ->setFrom([$this->from => $portal->getTitle()]);
-
-        $message->setTo([$account->getEmail() => $account->getFirstname() . ' ' . $account->getLastname()]);
-
-        return $message;
-    }
-
-    public function getSwiftMailForAccountIndexSendPasswordMail(FormInterface $form, $item, $forceBCCMail = false): \Swift_Message
-    {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+    public function getAccountIndexPasswordMessage(
+        FormInterface $form,
+        $item)
+    : Email {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $formData = $form->getData();
 
@@ -305,18 +259,17 @@ class MailAssistant
         $currentUserEmail = $currentUser->getEmail();
         $currentUserName = $currentUser->getFullName();
         if ($currentUser->isEmailVisible()) {
-            $replyTo[$currentUserEmail] = $currentUserName;
+            $replyTo[] = new Address($currentUserEmail, $currentUserName);
         }
 
         $formDataSubject = $formData->getSubject();
 
         $formDataMessage = $formData->getMessage();
 
-        $message = (new \Swift_Message())
-            ->setSubject($formDataSubject)
-            ->setBody($formDataMessage, 'text/html')
-            ->setFrom([$currentUserEmail => $portalItem->getTitle()])
-            ->setReplyTo($replyTo);
+        $message = (new Email())
+            ->subject($formDataSubject)
+            ->html($formDataMessage)
+            ->replyTo(...$replyTo);
 
         // form option: copy_to_sender
         $toCC = [];
@@ -353,23 +306,22 @@ class MailAssistant
 
 
         if (!empty($to)) {
-            $message->setTo($to);
+            $message->to(...$this->convertArrayToAddresses($to));
         }
 
         if (!empty($toCC)) {
-            $message->setCC($toCC);
+            $message->cc(...$this->convertArrayToAddresses($toCC));
         }
 
         if (!empty($toBCC)) {
-            $message->setBcc($toBCC);
+            $message->bcc(...$this->convertArrayToAddresses($toBCC));
         }
 
         return $message;
     }
 
-    public function getSwiftMessage(FormInterface $form, \cs_item $item, $forceBCCMail = false): \Swift_Message
+    public function getItemSendMessage(FormInterface $form, \cs_item $item): Email
     {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $formData = $form->getData();
 
@@ -381,7 +333,7 @@ class MailAssistant
         $currentUserEmail = $currentUser->getEmail();
         $currentUserName = $currentUser->getFullName();
         if ($currentUser->isEmailVisible()) {
-            $replyTo[$currentUserEmail] = $currentUserName;
+            $replyTo[] = new Address($currentUserEmail, $currentUserName);
         }
 
         $formDataSubject = (get_class($formData) == Send::class ? (is_null($formData->getSubject())
@@ -390,11 +342,10 @@ class MailAssistant
         $formDataMessage = (get_class($formData) == Send::class ? (is_null($formData->getMessage())
             ? false : $formData->getMessage()) : $formData['message']);
 
-        $message = (new \Swift_Message())
-            ->setSubject($formDataSubject)
-            ->setBody($formDataMessage, 'text/html')
-            ->setFrom([$this->from => $portalItem->getTitle()])
-            ->setReplyTo($replyTo);
+        $message = (new Email())
+            ->subject($formDataSubject)
+            ->html($formDataMessage)
+            ->replyTo(...$replyTo);
 
         // form option: files
         $formDataFiles = (get_class($formData) == Send::class ? (is_null($formData->getFiles())
@@ -445,22 +396,8 @@ class MailAssistant
             }
         }
 
-        if ($forceBCCMail) {
-            $allRecipients = array_merge($to, $toCC, $toBCC);
-            $message->setBcc($allRecipients);
-        } else {
-            if (!empty($to)) {
-                $message->setTo($to);
-            }
-
-            if (!empty($toCC)) {
-                $message->setCC($toCC);
-            }
-
-            if (!empty($toBCC)) {
-                $message->setBcc($toBCC);
-            }
-        }
+        $allRecipients = array_merge($to, $toCC, $toBCC);
+        $message->bcc(...$this->convertArrayToAddresses($allRecipients));
 
         return $message;
     }
@@ -569,10 +506,10 @@ class MailAssistant
     /**
      * Adds the given files as attachments to the given message.
      * @param File[] $files The array of File objects which shall be added as attachments to the given message.
-     * @param \Swift_Message $message The message to which the given files shall be added as attachments.
-     * @return \Swift_Message The message with added attachments.
+     * @param Email $message The message to which the given files shall be added as attachments.
+     * @return Email The message with added attachments.
      */
-    public function addAttachments(array $files, \Swift_Message $message): \Swift_Message
+    public function addAttachments(array $files, Email $message): Email
     {
         if (empty($files)) {
             return $message;
@@ -585,14 +522,8 @@ class MailAssistant
                 continue;
             }
 
-            $attachment = \Swift_Attachment::fromPath($filePath);
-
             $fileName = $file->getFilename();
-            if (!empty($fileName)) {
-                $attachment->setFilename($fileName);
-            }
-
-            $message->attach($attachment);
+            $message->attachFromPath($filePath, !empty($fileName) ? $fileName : null);
         }
 
         return $message;
@@ -625,132 +556,18 @@ class MailAssistant
         return $choiceArray;
     }
 
-    private function generateMessageData($item)
+    /**
+     * @param array $recipients
+     * @return array
+     */
+    public function convertArrayToAddresses(array $recipients): array
     {
-        $data = [];
-        /*
-        $type = $item->getType();
-        if ($type === 'date') {
+        $addresses = [];
 
-            // set up style of days and times
-            $parse_time_start = convertTimeFromInput($item->getStartingTime());
-            $conforms = $parse_time_start['conforms'];
-            if ($conforms == TRUE) {
-                $start_time_print = getTimeLanguage($parse_time_start['datetime']);
-            } else {
-                $start_time_print = $item->getStartingTime();
-            }
-
-            $parse_time_end = convertTimeFromInput($item->getEndingTime());
-            $conforms = $parse_time_end['conforms'];
-            if ($conforms == TRUE) {
-                $end_time_print = getTimeLanguage($parse_time_end['datetime']);
-            } else {
-                $end_time_print = $item->getEndingTime();
-            }
-
-            $parse_day_start = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
-            $conforms = $parse_day_start['conforms'];
-            if ($conforms == TRUE) {
-                $start_day_print = getDateInLang($parse_day_start['datetime']);
-            } else {
-                $start_day_print = $item->getStartingDay();
-            }
-
-            $parse_day_end = convertDateFromInput($item->getEndingDay(),$this->_environment->getSelectedLanguage());
-            $conforms = $parse_day_end['conforms'];
-            if ($conforms == TRUE) {
-                $end_day_print =getDateLanguage($parse_day_end['datetime']);
-            } else {
-                $end_day_print =$item->getEndingDay();
-            }
-            //formating dates and times for displaying
-            $date_print ="";
-            $time_print ="";
-
-            if ($end_day_print != "") { //with ending day
-                $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
-                if ($parse_day_start['conforms']
-                        and $parse_day_end['conforms']) { //start and end are dates, not strings
-                    $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
-                }
-                if ($start_time_print != "" and $end_time_print =="") { //starting time given
-                    $time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
-                    if ($parse_time_start['conforms'] == true) {
-                        $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
-                    $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
-                    if ($parse_time_end['conforms'] == true) {
-                        $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
-                    if ($parse_time_end['conforms'] == true) {
-                        $end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                    if ($parse_time_start['conforms'] == true) {
-                        $start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                    $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.'<br />'.
-                            $translator->getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
-                    if ($parse_day_start['conforms']
-                            and $parse_day_end['conforms']) {
-                        $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
-                    }
-                }
-
-            } else { //without ending day
-                $date_print = $start_day_print;
-                if ($start_time_print != "" and $end_time_print =="") { //starting time given
-                    $time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
-                    if ($parse_time_start['conforms'] == true) {
-                        $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
-                    $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
-                    if ($parse_time_end['conforms'] == true) {
-                        $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
-                    if ($parse_time_end['conforms'] == true) {
-                        $end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                    if ($parse_time_start['conforms'] == true) {
-                        $start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
-                    }
-                    $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
-                }
-            }
-
-            if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
-                $date_print = $translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
-                if ($start_time_print != "" and $end_time_print =="") { //starting time given
-                    $time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
-                } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
-                    $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
-                } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
-                    $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
-                }
-            }
-            // Date and time
-            $dates_content = '';
-            $dates_content = $translator->getMessage('DATES_DATETIME').': '.$item_name.LF;
-            if ($time_print != '') {
-                $dates_content .= $translator->getMessage('COMMON_TIME').': '.$date_print.','.$time_print.LF;
-            } else {
-                $dates_content .= $translator->getMessage('COMMON_TIME').': '.$date_print.LF;
-            }
-            // Place
-            $place = $item->getPlace();
-            if (!empty($place)) {
-                $dates_content .= $translator->getMessage('DATES_PLACE').': ';
-                $dates_content .= $place.LF;
-            }
-            $content = $dates_content;
-
-
+        foreach ($recipients as $email => $name) {
+            $addresses[] = new Address($email, $name);
         }
-        */
-        return $data;
+
+        return $addresses;
     }
 }

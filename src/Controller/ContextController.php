@@ -5,17 +5,21 @@ namespace App\Controller;
 use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\ProjectService;
+use App\Utils\UserService;
+use cs_user_item;
 use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Utils\UserService;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -29,15 +33,15 @@ class ContextController extends AbstractController
 {
     /**
      *
-     * @var \Swift_Mailer
+     * @var Mailer
      */
-    private $mailer;
+    private Mailer $mailer;
 
     /**
      * @required
-     * @param \Swift_Mailer $mailer
+     * @param Mailer $mailer
      */
-    public function setMailer(\Swift_Mailer $mailer)
+    public function setMailer(Mailer $mailer)
     {
         $this->mailer = $mailer;
     }
@@ -215,29 +219,11 @@ class ContextController extends AbstractController
                     }
 
                     // mail to moderators
-                    $message = (new \Swift_Message())
-                        ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
-                        ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
-
-                    $userManager = $legacyEnvironment->getUserManager();
-                    $userManager->resetLimits();
-                    $userManager->setModeratorLimit();
-                    $userManager->setContextLimit($roomItem->getItemID());
-                    $userManager->select();
-
-                    $moderatorList = $userManager->get();
-
-                    /** @var \cs_user_item $moderator */
-                    $moderator = $moderatorList->getFirst();
-                    $moderators = '';
-                    while ($moderator) {
-                        if ($moderator->getAccountWantMail() == 'yes') {
-                            $message->addTo($moderator->getEmail(), $moderator->getFullname());
-                            $moderators .= $moderator->getFullname() . "\n";
-                        }
-
-                        $moderator = $moderatorList->getNext();
-                    }
+                    $moderatorRecipients = RecipientFactory::createModerationRecipients(
+                        $roomItem, function ($moderator) {
+                            /** @var cs_user_item $moderator */
+                            return $moderator->getAccountWantMail() == 'yes';
+                        });
 
                     // language
                     $language = $roomItem->getLanguage();
@@ -250,12 +236,9 @@ class ContextController extends AbstractController
 
                     $translator = $legacyEnvironment->getTranslationObject();
 
-                    if ($message->getTo()) {
+                    if (!empty($moderatorRecipients)) {
                         $savedLanguage = $translator->getSelectedLanguage();
                         $translator->setSelectedLanguage($language);
-
-                        $message->setSubject($translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',
-                            $newUser->getFullname(), $roomItem->getTitle()));
 
                         $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")),
                             $translator->getTimeInLang(date("Y-m-d H:i:s")));
@@ -293,6 +276,11 @@ class ContextController extends AbstractController
                             $body .= "\n\n";
                         }
 
+                        $moderators = '';
+                        foreach ($moderatorRecipients as $recipient) {
+                            $moderators .= $recipient->getFirstname() . ' ' . $recipient->getLastname() .  "\n";
+                        }
+
                         $body .= $translator->getMessage('MAIL_SEND_TO', $moderators);
                         $body .= "\n";
 
@@ -310,9 +298,12 @@ class ContextController extends AbstractController
                             ], UrlGeneratorInterface::ABSOLUTE_URL);
                         }
 
-                        $message->setBody($body, 'text/plain');
-
-                        $this->mailer->send($message);
+                        $subject = $translator->getMessage(
+                            'USER_JOIN_CONTEXT_MAIL_SUBJECT',
+                            $newUser->getFullname(),
+                            $roomItem->getTitle()
+                        );
+                        $this->mailer->sendMultipleRaw($subject, nl2br($body), $moderatorRecipients);
 
                         $translator->setSelectedLanguage($savedLanguage);
                     }
@@ -383,17 +374,18 @@ class ContextController extends AbstractController
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $message = (new \Swift_Message())
-                        ->setSubject($subject)
-                        ->setBody($body, 'text/plain')
-                        ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
-                        ->setTo([$newUser->getEmail()]);
-
+                    $replyTo = [];
                     if ($modEmail != '' && $modFullName != '') {
-                        $message->setReplyTo([$modEmail => $modFullName]);
+                        $replyTo[] = new Address($modEmail, $modFullName);
                     }
 
-                    $this->mailer->send($message);
+                    $this->mailer->sendRaw(
+                        $subject,
+                        nl2br($body),
+                        RecipientFactory::createRecipient($newUser),
+                        $roomItem->getContextItem()->getTitle(),
+                        $replyTo
+                    );
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }
@@ -432,5 +424,4 @@ class ContextController extends AbstractController
             'title' => html_entity_decode($roomItem->getTitle()),
         ];
     }
-
 }
