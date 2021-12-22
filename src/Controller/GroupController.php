@@ -13,6 +13,7 @@ use App\Form\Type\GrouproomType;
 use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
+use App\Mail\Mailer;
 use App\Room\Copy\LegacyCopy;
 use App\Services\CalendarsService;
 use App\Services\LegacyMarkup;
@@ -24,6 +25,7 @@ use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
+use cs_grouproom_item;
 use cs_room_item;
 use cs_user_item;
 use Egulias\EmailValidator\EmailValidator;
@@ -31,12 +33,13 @@ use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Swift_Mailer;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -62,9 +65,9 @@ class GroupController extends BaseController
     private UserService $userService;
 
     /**
-     * @var Swift_Mailer
+     * @var Mailer
      */
-    private Swift_Mailer $mailer;
+    private Mailer $mailer;
 
     /**
      * @required
@@ -88,9 +91,9 @@ class GroupController extends BaseController
 
     /**
      * @required
-     * @param Swift_Mailer $mailer
+     * @param Mailer $mailer
      */
-    public function setMailer(Swift_Mailer $mailer)
+    public function setMailer(Mailer $mailer)
     {
         $this->mailer = $mailer;
     }
@@ -821,10 +824,6 @@ class GroupController extends BaseController
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else {
-                if ($form->get('cancel')->isClicked()) {
-                    // ToDo ...
-                }
             }
             return $this->redirectToRoute('app_group_save', array('roomId' => $roomId, 'itemId' => $itemId));
 
@@ -1007,8 +1006,6 @@ class GroupController extends BaseController
                     $groupItem->save(true);
                 }
 
-            } else {
-                // ToDo ...
             }
             return $this->redirectToRoute('app_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
         }
@@ -1243,12 +1240,7 @@ class GroupController extends BaseController
 
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                $from = $this->getParameter('commsy.email.from');
-
-                // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $forceBCCMail = true;
-
                 $to = [];
                 $toBCC = [];
                 $validator = new EmailValidator();
@@ -1273,7 +1265,7 @@ class GroupController extends BaseController
                 $currentUserName = $currentUser->getFullName();
                 if ($validator->isValid($currentUserEmail, new RFCValidation())) {
                     if ($currentUser->isEmailVisible()) {
-                        $replyTo[$currentUserEmail] = $currentUserName;
+                        $replyTo[] = new Address($currentUserEmail, $currentUserName);
                     }
 
                     // form option: copy_to_sender
@@ -1287,59 +1279,25 @@ class GroupController extends BaseController
                 }
 
                 // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $message = (new \Swift_Message())
-                    ->setSubject($formData['subject'])
-                    ->setBody($formData['message'], 'text/html')
-                    ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo($replyTo);
+                $message = (new Email())
+                    ->subject($formData['subject'])
+                    ->html($formData['message'])
+                    ->replyTo(...$replyTo);
 
                 $formDataFiles = $formData['files'];
                 if ($formDataFiles) {
                     $message = $mailAssistant->addAttachments($formDataFiles, $message);
                 }
 
-                $recipientCount = 0;
+                // NOTE: as of #2461 all mail should be sent as BCC mail
+                $allRecipients = array_merge($to, $toCC, $toBCC);
+                $message->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
 
-                if ($forceBCCMail) {
-                    $allRecipients = array_merge($to, $toCC, $toBCC);
-                    $message->setBcc($allRecipients);
-                    $recipientCount += count($allRecipients);
-                } else {
-                    if (!empty($to)) {
-                        $message->setTo($to);
-                        $recipientCount += count($to);
-                    }
-
-                    if (!empty($toCC)) {
-                        $message->setCc($toCC);
-                        $recipientCount += count($toCC);
-                    }
-
-                    if (!empty($toBCC)) {
-                        $message->setBcc($toBCC);
-                        $recipientCount += count($toBCC);
-                    }
-                }
-
-                $this->addFlash('recipientCount', $recipientCount);
+                $this->addFlash('recipientCount', count($allRecipients));
 
                 // send mail
-                $failedRecipients = [];
-                $this->mailer->send($message, $failedRecipients);
-
-                foreach ($failedUsers as $failedUser) {
-                    $this->addFlash('failedRecipients', $failedUser->getUserId());
-                }
-
-                foreach ($failedRecipients as $failedRecipient) {
-                    $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
-                        return $user->getEmail() == $failedRecipient;
-                    });
-
-                    if ($failedUser) {
-                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
-                    }
-                }
+                $mailSend = $this->mailer->sendEmailObject($message, $portalItem->getTitle());
+                $this->addFlash('mailSend', $mailSend);
 
                 // redirect to success page
                 return $this->redirectToRoute('app_group_sendmultiplesuccess', [
@@ -1378,14 +1336,13 @@ class GroupController extends BaseController
      * @Route("/room/{roomId}/group/{itemId}/send")
      * @Template()
      * @param Request $request
-     * @param UserService $userService
+     * @param MailAssistant $mailAssistant
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function sendAction(
         Request $request,
-        UserService $userService,
         MailAssistant $mailAssistant,
         int $roomId,
         int $itemId
@@ -1429,15 +1386,10 @@ class GroupController extends BaseController
 
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                $from = $this->getParameter('commsy.email.from');
-
                 // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
                 $users = $this->userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
-                // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $forceBCCMail = true;
-
                 $to = [];
                 $toBCC = [];
                 $validator = new EmailValidator();
@@ -1462,7 +1414,7 @@ class GroupController extends BaseController
                 $currentUserName = $currentUser->getFullName();
                 if ($validator->isValid($currentUserEmail, new RFCValidation())) {
                     if ($currentUser->isEmailVisible()) {
-                        $replyTo[$currentUserEmail] = $currentUserName;
+                        $replyTo[] = new Address($currentUserEmail, $currentUserName);
                     }
 
                     // form option: copy_to_sender
@@ -1476,59 +1428,25 @@ class GroupController extends BaseController
                 }
 
                 // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $message = (new \Swift_Message())
-                    ->setSubject($formData['subject'])
-                    ->setBody($formData['message'], 'text/html')
-                    ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo($replyTo);
+                $email = (new Email())
+                    ->subject($formData['subject'])
+                    ->html($formData['message'])
+                    ->replyTo(...$replyTo);
 
                 $formDataFiles = $formData['files'];
                 if ($formDataFiles) {
-                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
+                    $email = $mailAssistant->addAttachments($formDataFiles, $email);
                 }
 
-                $recipientCount = 0;
+                // NOTE: as of #2461 all mail should be sent as BCC mail
+                $allRecipients = array_merge($to, $toCC, $toBCC);
+                $email->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
 
-                if ($forceBCCMail) {
-                    $allRecipients = array_merge($to, $toCC, $toBCC);
-                    $message->setBcc($allRecipients);
-                    $recipientCount += count($allRecipients);
-                } else {
-                    if (!empty($to)) {
-                        $message->setTo($to);
-                        $recipientCount += count($to);
-                    }
-
-                    if (!empty($toCC)) {
-                        $message->setCc($toCC);
-                        $recipientCount += count($toCC);
-                    }
-
-                    if (!empty($toBCC)) {
-                        $message->setBcc($toBCC);
-                        $recipientCount += count($toBCC);
-                    }
-                }
-
-                $this->addFlash('recipientCount', $recipientCount);
+                $this->addFlash('recipientCount', count($allRecipients));
 
                 // send mail
-                $failedRecipients = [];
-                $this->mailer->send($message, $failedRecipients);
-
-                foreach ($failedUsers as $failedUser) {
-                    $this->addFlash('failedRecipients', $failedUser->getUserId());
-                }
-
-                foreach ($failedRecipients as $failedRecipient) {
-                    $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
-                        return $user->getEmail() == $failedRecipient;
-                    });
-
-                    if ($failedUser) {
-                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
-                    }
-                }
+                $mailSend = $this->mailer->sendEmailObject($email, $portalItem->getTitle());
+                $this->addFlash('mailSend', $mailSend);
 
                 // redirect to success page
                 return $this->redirectToRoute('app_group_sendmultiplesuccess', [
@@ -1564,6 +1482,29 @@ class GroupController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/{itemId}/unlockgrouproom")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
+     */
+    public function unlockGrouproom($roomId, $itemId, Request $request, GroupService $groupService)
+    {
+        $group = $groupService->getGroup($itemId);
+        if ($group) {
+            /** @var cs_grouproom_item $grouproomItem */
+            $groupRoom = $group->getGroupRoomItem();
+            if ($groupRoom) {
+                $groupRoom->unlock();
+                $groupRoom->save();
+            }
+        }
+
+        return $this->redirectToRoute('app_group_detail', [
+            'roomId' => $roomId,
+            'itemId' => $itemId,
+        ]);
     }
 
     ###################################################################################################

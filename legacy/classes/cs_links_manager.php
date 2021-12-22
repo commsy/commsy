@@ -653,11 +653,11 @@ class cs_links_manager extends cs_manager {
               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
               'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
               ' WHERE (from_item_id="'.encode(AS_DB,$item_id).'"';
-     if (!is_null($version_id)) {
+     if ($version_id) {
         $query .= ' AND from_version_id="'.encode(AS_DB,$version_id).'"';
      }
      $query .= ') OR (to_item_id="'.encode(AS_DB,$item_id).'"';
-     if (!is_null($version_id)) {
+     if ($version_id) {
         $query .= ' AND to_version_id="'.encode(AS_DB,$version_id).'"';
      }
      $query .= ')';
@@ -839,7 +839,7 @@ class cs_links_manager extends cs_manager {
       $query = "UPDATE ".$this->addDatabasePrefix("item_link_file")." SET deletion_date='".getCurrentDateTimeInMySQL()."', deleter_id=".encode(AS_DB,$deleter->getItemID());
       $query .= " WHERE item_iid=".encode(AS_DB,$from_item->getItemID());
       $query .= " AND item_vid=".encode(AS_DB,$from_item->getVersionID());
-      if (!is_null($file_id)) {   // this test is needed when invoked by deleteFileLinks()
+      if ($file_id) {   // this test is needed when invoked by deleteFileLinks()
          $query .= " AND file_id=".$file_id;
       }
       $result = $this->_db_connector->performQuery($query);

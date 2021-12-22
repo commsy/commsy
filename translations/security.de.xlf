@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="de" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="login_authentication_checkcredentials_exception">
+                <source>Invalid credentials.</source>
+                <target>Ungültige Login-Daten.</target>
+            </trans-unit>
+            <trans-unit id="login_authentication_getuser_exception">
+                <source>A problem with your account occurred.</source>
+                <target>Es ist ein Problem mit Ihrer Kennung aufgetreten.</target>
+            </trans-unit>
+            <trans-unit id="login_authentication_userchecker_exception">
+                <source>Account is locked.</source>
+                <target>Diese Kennung ist gesperrt.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

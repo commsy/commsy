@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>
-                <target>Your email may only have been partially sent. We encountered some problems while sending to:</target>
+                <target>Your email may only have been partially sent. We encountered some problems while sending.</target>
             </trans-unit>
             <trans-unit id="mailBackToEntry">
                 <source>Back to</source>

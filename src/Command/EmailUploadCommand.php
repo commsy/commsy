@@ -2,7 +2,10 @@
 
 namespace App\Command;
 
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use PhpImap\Mailbox;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,29 +13,72 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailUploadCommand extends Command
 {
-    private $legacyEnvironment;
-    private $mailer;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $projectDir;
-    private $uploadEnabled;
-    private $uploadServer;
-    private $uploadPort;
-    private $uploadOptions;
-    private $uploadAccount;
-    private $uploadPassword;
-    private $emailFrom;
+    /**
+     * @var Mailer
+     */
+    private Mailer $mailer;
 
+    /**
+     * @var string
+     */
+    private string $projectDir;
+
+    /**
+     * @var string
+     */
+    private string $uploadEnabled;
+
+    /**
+     * @var string
+     */
+    private string $uploadServer;
+
+    /**
+     * @var string
+     */
+    private string $uploadPort;
+
+    /**
+     * @var string
+     */
+    private string $uploadOptions;
+
+    /**
+     * @var string
+     */
+    private string $uploadAccount;
+
+    /**
+     * @var string
+     */
+    private string $uploadPassword;
+
+    /**
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param Mailer $mailer
+     * @param $projectDir
+     * @param $uploadEnabled
+     * @param $uploadServer
+     * @param $uploadPort
+     * @param $uploadOptions
+     * @param $uploadAccount
+     * @param $uploadPassword
+     */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         $projectDir,
         $uploadEnabled,
         $uploadServer,
         $uploadPort,
         $uploadOptions,
         $uploadAccount,
-        $uploadPassword,
-        $emailFrom
+        $uploadPassword
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->mailer = $mailer;
@@ -44,7 +90,6 @@ class EmailUploadCommand extends Command
         $this->uploadOptions = $uploadOptions;
         $this->uploadAccount = $uploadAccount;
         $this->uploadPassword = $uploadPassword;
-        $this->emailFrom = $emailFrom;
 
         parent::__construct();
     }
@@ -161,13 +206,13 @@ class EmailUploadCommand extends Command
 
         $nonMetaBody = implode("<br/>", $nonMetaLines);
 
-        $serverItem = $legacyEnvironment->getServerItem();
+        $serverItem = $this->legacyEnvironment->getServerItem();
         $portalIds = $serverItem->getPortalIDArray();
 
         foreach ($portalIds as $portalId) {
-            $legacyEnvironment->setCurrentPortalID($portalId);
+            $this->legacyEnvironment->setCurrentPortalID($portalId);
 
-            $userManager = $legacyEnvironment->getUserManager();
+            $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->setContextArrayLimit($portalId);
             $userManager->setEMailLimit($mail->fromAddress);
             $userManager->select();
@@ -196,29 +241,25 @@ class EmailUploadCommand extends Command
                 if ($privateRoom->getEmailToCommSy()) {
                     $privateSecret = $privateRoom->getEmailToCommSySecret();
 
-                    $message = (new \Swift_Message())
-                        ->setTo([$mail->fromAddress => $mail->fromName])
-                        ->setFrom([$this->emailFrom => $legacyEnvironment->getCurrentPortalItem()->getTitle()]);
-
                     if ($secret == $privateSecret) {
                         $privateRoomId = $privateRoom->getItemID();
 
-                        $legacyEnvironment->setCurrentContextID($privateRoomId);
-                        $legacyEnvironment->setCurrentUser($privateRoomUser);
-                        $legacyEnvironment->unsetLinkModifierItemManager();
+                        $this->legacyEnvironment->setCurrentContextID($privateRoomId);
+                        $this->legacyEnvironment->setCurrentUser($privateRoomUser);
+                        $this->legacyEnvironment->unsetLinkModifierItemManager();
 
                         // create new material
-                        $materialManager = $legacyEnvironment->getMaterialManager();
+                        $materialManager = $this->legacyEnvironment->getMaterialManager();
 
                         $materialItem = $materialManager->getNewItem();
                         $materialItem->setTitle(trim(str_replace($privateSecret . ':', '', $mail->subject)));
                         $materialItem->setDescription($nonMetaBody);
 
                         // attach files
-                        $fileManager = $legacyEnvironment->getFileManager();
+                        $fileManager = $this->legacyEnvironment->getFileManager();
                         $fileManager->setContextLimit($privateRoomId);
 
-                        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+                        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
                         $portalMaxFileSize = $portalItem->getMaxUploadSizeInBytes();
 
                         $fileIdArray = [];
@@ -266,19 +307,25 @@ class EmailUploadCommand extends Command
 
                         $body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_REGARDS');
 
-                        $message
-                            ->setSubject('Upload2CommSy - erfolgreich')
-                            ->setBody($body);
+                        $recipient = RecipientFactory::createFromRaw($mail->fromAddress);
+                        $this->mailer->sendRaw(
+                            'Upload2CommSy - erfolgreich',
+                            $body,
+                            $recipient,
+                            $this->legacyEnvironment->getCurrentPortalItem()->getTitle()
+                        );
                     } else {
                         // send e-mail with 'password or subject not correct' back to sender
                         $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $privateRoomUser->getFullName(), $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'));
 
-                        $message
-                            ->setSubject('Upload2CommSy - fehlgeschlagen')
-                            ->setBody($body);
+                        $recipient = RecipientFactory::createFromRaw($mail->fromAddress);
+                        $this->mailer->sendRaw(
+                            'Upload2CommSy - fehlgeschlagen',
+                            $body,
+                            $recipient,
+                            $this->legacyEnvironment->getCurrentPortalItem()->getTitle()
+                        );
                     }
-
-                    $this->mailer->send($message);
                 }
             }
         }

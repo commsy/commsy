@@ -343,6 +343,36 @@ class cs_project_item extends cs_room_item {
     }
 
     /**
+     * Locks the project room as well as any group rooms belonging to groups of this room
+     */
+    public function lock()
+    {
+        parent::lock();
+
+        // lock related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /** @var \cs_grouproom_item $groupRoom */
+            $groupRoom->lock();
+            $groupRoom->save();
+        }
+    }
+
+    /**
+     * Unlocks the project room as well as any group rooms belonging to groups of this room
+     */
+    public function unlock()
+    {
+        parent::unlock();
+
+        // unlock related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /** @var \cs_grouproom_item $groupRoom */
+            $groupRoom->unlock();
+            $groupRoom->save();
+        }
+    }
+
+    /**
      * Deletes the project room
      */
     public function delete()

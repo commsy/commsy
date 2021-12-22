@@ -119,7 +119,15 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         } elseif ($controller == 'hashtag') {
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addItem($this->translator->trans('hashtags', [], 'room'));
-        } else {
+        }
+        elseif ($controller == 'cancellablelockanddelete' && $action == 'deleteorlock') {
+            $itemId = $routeParameters['itemId'] ?? null;
+            if ($itemId) {
+                $room = $this->roomService->getRoomItem(intval($itemId));
+                $this->addRoom($room, true);
+            }
+        }
+        else {
             $this->addRoom($roomItem, true);
 
             // rubric & entry

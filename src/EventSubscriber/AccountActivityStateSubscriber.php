@@ -189,7 +189,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->accountMessageFactory->createAccountActivityLockWarningMessage($account);
         if ($message) {
-            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+            $this->mailer->send($message, RecipientFactory::createFromAccount($account));
         }
     }
 
@@ -207,7 +207,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->accountMessageFactory->createAccountActivityLockedMessage($account);
         if ($message) {
-            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+            $this->mailer->send($message, RecipientFactory::createFromAccount($account));
         }
     }
 
@@ -223,7 +223,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->accountMessageFactory->createAccountActivityDeleteWarningMessage($account);
         if ($message) {
-            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+            $this->mailer->send($message, RecipientFactory::createFromAccount($account));
         }
     }
 
@@ -241,7 +241,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->accountMessageFactory->createAccountActivityDeletedMessage($account);
         if ($message) {
-            $this->mailer->send($message, RecipientFactory::createAccountRecipient($account));
+            $this->mailer->send($message, RecipientFactory::createFromAccount($account));
         }
     }
 

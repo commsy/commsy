@@ -316,14 +316,14 @@ services:
 
     commsy.security.item_voter:
         class: App\Security\Authorization\Voter\ItemVoter
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service', '@request_stack']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service', '@commsy_legacy.room_service', '@commsy_legacy.user_service', '@request_stack']
         public: false
         tags:
             - { name: security.voter }
 
     commsy.security.user_voter:
         class: App\Security\Authorization\Voter\UserVoter
-        arguments: ['@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.user_service', '@commsy_legacy.room_service']
         public: false
         tags:
             - { name: security.voter }
@@ -554,12 +554,9 @@ services:
     App\Utils\MailAssistant:
         arguments:
             $twig: '@twig'
-            $from: '%commsy.email.from%'
 
     # Commands
     App\Command\EmailUploadCommand:
-        autowire: true
-        autoconfigure: true
         arguments:
             $projectDir: '%kernel.project_dir%'
             $uploadEnabled: '%commsy.upload.enabled%'
@@ -568,17 +565,11 @@ services:
             $uploadOptions: '%commsy.upload.options%'
             $uploadAccount: '%commsy.upload.account%'
             $uploadPassword: '%commsy.upload.password%'
-            $emailFrom: '%commsy.email.from%'
 
     # Database checks
     App\Database\DatabaseChecks:
         arguments:
             $databaseChecks: !tagged_iterator app.database.check
-
-    # API
-    commsy.api.soap:
-        class: App\Services\SoapService
-        arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Feed
     debril.rss_atom.provider:

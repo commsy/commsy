@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Room;
 use App\Event\UserJoinedRoomEvent;
+use App\Filter\ProjectFilterType;
 use App\Form\Type\ProjectType;
+use App\Form\Type\Room\DeleteType;
 use App\Room\Copy\LegacyCopy;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
@@ -14,18 +17,13 @@ use App\Utils\ProjectService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use cs_room_item;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-
-use App\Form\Type\Room\DeleteType;
-use App\Filter\ProjectFilterType;
-use App\Entity\Room;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -411,7 +409,8 @@ class ProjectController extends AbstractController
             throw $this->createNotFoundException('No room found for id ' . $itemId);
         }
 
-        $form = $this->createForm(DeleteType::class, $roomItem, [
+        $form = $this->createForm(DeleteType::class, [], [
+            'room' => $roomItem,
             'confirm_string' => $this->translator->trans('delete', [], 'profile')
         ]);
 
