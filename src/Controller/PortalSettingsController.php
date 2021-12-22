@@ -1222,12 +1222,8 @@ class PortalSettingsController extends AbstractController
         $userId,
         Portal $portal,
         UserService $userService,
-        Request $request,
-        LegacyEnvironment $environment,
-        \Swift_Mailer $mailer,
-        PaginatorInterface $paginator
+        Request $request
     ) {
-
         $user = $userService->getUser($userId);
 
         $formOptions = [
@@ -1282,9 +1278,6 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         Request $request,
-        LegacyEnvironment $environment,
-        \Swift_Mailer $mailer,
-        PaginatorInterface $paginator,
         AccountManager $accountManager
     ) {
         $users = [];
@@ -1458,13 +1451,9 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         Request $request,
         LegacyEnvironment $environment,
-        \Swift_Mailer $mailer,
         PaginatorInterface $paginator,
-        AuthSourceRepository $authSourceRepository,
-        AccountManager $accountManager,
-        RouterInterface $router
+        AuthSourceRepository $authSourceRepository
     ) {
-        $user = $userService->getCurrentUserItem();
         // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
         $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
         $authSources = $authSourceRepository->findByPortal($portalId);
@@ -1653,7 +1642,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 10: // send mail userID and password
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1665,7 +1653,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 11: // send mail merge userIDs
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1677,7 +1664,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 12: // hide mail
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1889,7 +1875,6 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         UserService $userService,
-        UserTransformer $userTransformer,
         ItemService $itemService,
         \Swift_Mailer $mailer,
         Portal $portal,
@@ -1984,7 +1969,6 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         UserService $userService,
-        UserTransformer $userTransformer,
         ItemService $itemService,
         \Swift_Mailer $mailer,
         RouterInterface $router
@@ -2067,7 +2051,6 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         UserService $userService,
-        UserTransformer $userTransformer,
         ItemService $itemService,
         \Swift_Mailer $mailer,
         RouterInterface $router
@@ -2081,8 +2064,6 @@ class PortalSettingsController extends AbstractController
 
         $sendMail = new AccountIndexSendMergeMail();
         $sendMail->setRecipients($recipientArray);
-
-        $user = $legacyEnvironment->getEnvironment()->getCurrentUser();
 
         $action = 'user-account-merge';
         $accountMail = new AccountMail($legacyEnvironment, $router);

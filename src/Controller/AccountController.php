@@ -65,6 +65,7 @@ class AccountController extends AbstractController
      * @param LegacyEnvironment $legacyEnvironment
      * @param TranslatorInterface $translator
      * @param InvitationsService $invitationsService
+     * @param UserService $userService
      * @return array|Response
      */
     public function signUp(

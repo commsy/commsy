@@ -44,7 +44,8 @@ class cs_grouproom_item extends cs_room_item {
     * @param object environment environment of the commsy project
     */
    public function __construct ($environment) {
-      cs_context_item::__construct($environment);
+      parent::__construct($environment);
+
       $this->_type = CS_GROUPROOM_TYPE;
 
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;

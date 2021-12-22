@@ -822,10 +822,6 @@ class GroupController extends BaseController
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else {
-                if ($form->get('cancel')->isClicked()) {
-                    // ToDo ...
-                }
             }
             return $this->redirectToRoute('app_group_save', array('roomId' => $roomId, 'itemId' => $itemId));
 
@@ -1008,8 +1004,6 @@ class GroupController extends BaseController
                     $groupItem->save(true);
                 }
 
-            } else {
-                // ToDo ...
             }
             return $this->redirectToRoute('app_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
         }
