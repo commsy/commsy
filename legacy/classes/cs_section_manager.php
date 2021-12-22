@@ -325,7 +325,7 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
       } else {
          $section = NULL;
          $query = "SELECT * FROM ".$this->addDatabasePrefix("section")." WHERE ".$this->addDatabasePrefix("section").".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
-         if (!is_null($version_id)) {
+         if ($version_id) {
             $query .= " AND ".$this->addDatabasePrefix("section").".version_id='".encode(AS_DB,$version_id)."'";
          }
          $query .= " ORDER BY ".$this->addDatabasePrefix("section").".number";
@@ -500,7 +500,7 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
-      if (!is_null($version_id)) {
+      if ($version_id) {
          $query .= ' AND version_id="'.encode(AS_DB,$version_id).'"';
       }
 
