@@ -560,12 +560,9 @@ services:
     App\Utils\MailAssistant:
         arguments:
             $twig: '@twig'
-            $from: '%commsy.email.from%'
 
     # Commands
     App\Command\EmailUploadCommand:
-        autowire: true
-        autoconfigure: true
         arguments:
             $projectDir: '%kernel.project_dir%'
             $uploadEnabled: '%commsy.upload.enabled%'
@@ -574,7 +571,6 @@ services:
             $uploadOptions: '%commsy.upload.options%'
             $uploadAccount: '%commsy.upload.account%'
             $uploadPassword: '%commsy.upload.password%'
-            $emailFrom: '%commsy.email.from%'
 
     commsy.command.db_check:
         class: App\Command\DBCheckCommand
@@ -630,11 +626,6 @@ services:
 
     App\Database\Resolve\DeleteDatabaseFilesResolution:
         autowire: false
-
-    # API
-    commsy.api.soap:
-        class: App\Services\SoapService
-        arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Feed
     debril.rss_atom.provider:

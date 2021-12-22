@@ -2,29 +2,46 @@
 
 namespace App\Services;
 
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
+use cs_environment;
+use SoapFault;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use App\Services\LegacyEnvironment;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class SoapService
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $serviceContainer;
+    /**
+     * @var Mailer
+     */
+    private Mailer $mailer;
 
-    private $sessionIdArray = [];
+    /**
+     * @var array
+     */
+    private array $sessionIdArray = [];
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        Mailer $mailer,
+        ParameterBagInterface $parameterBag
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->serviceContainer = $container;
+        $this->mailer = $mailer;
 
         /**
-         * The require statement is necessary to import the legacy class. Otherwise the class cannot be found
+         * The require statement is necessary to import the legacy class. Otherwise, the class cannot be found
          * in a productive server environment. The problem does not arise in the development stack, even when using
          * the production environment. There must be some side effects in relation to the server configuration, which
          * are not obvious yet.
          */
-        $projectDir = $this->serviceContainer->getParameter('kernel.project_dir');
+        $projectDir = $parameterBag->get('kernel.project_dir');
         require_once($projectDir . '/legacy/classes/cs_session_item.php');
     }
 
@@ -38,7 +55,7 @@ class SoapService
     public function getGuestSession($portalId)
     {
         if (!$portalId) {
-            return new \SoapFault('ERROR', 'portalId not set!');
+            return new SoapFault('ERROR', 'portalId not set!');
         }
 
         $this->legacyEnvironment->setCurrentContextID($portalId);
@@ -69,25 +86,25 @@ class SoapService
     public function authenticate($userId, $password, $portalId = 99, $authSourceId = 0)
     {
         if (!$userId) {
-            return new \SoapFault('ERROR', 'userId not set!');
+            return new SoapFault('ERROR', 'userId not set!');
         }
 
         if (!$password) {
-            return new \SoapFault('ERROR', 'password not set!');
+            return new SoapFault('ERROR', 'password not set!');
         }
 
         $this->legacyEnvironment->setCurrentContextID($portalId);
 
         $authentication = $this->legacyEnvironment->getAuthenticationObject();
         if (!isset($authentication)) {
-            return new \SoapFault('ERROR', 'no authentication found!');
+            return new SoapFault('ERROR', 'no authentication found!');
         }
 
         if ($authentication->isAccountGranted($userId, $password, $authSourceId)) {
             if ($this->isSessionActive($userId, $portalId)) {
                 $sessionId = $this->getActiveSessionId($userId, $portalId);
                 if (!$sessionId) {
-                    return new \SoapFault('ERROR', 'no session found!');
+                    return new SoapFault('ERROR', 'no session found!');
                 }
 
                 return $sessionId;
@@ -115,7 +132,7 @@ class SoapService
                 return $sessionItem->getSessionID();
             }
         } else {
-            return new \SoapFault('ERROR', 'permission denied!');
+            return new SoapFault('ERROR', 'permission denied!');
         }
     }
 
@@ -130,7 +147,7 @@ class SoapService
     public function createWiki($sessionId, $contextId)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'session invalid!');
+            return new SoapFault('ERROR', 'session invalid!');
         }
 
 //          $room_manager = $this->_environment->getRoomManager();
@@ -178,7 +195,7 @@ class SoapService
     public function deleteWiki($sessionId, $contextId)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'session invalid!');
+            return new SoapFault('ERROR', 'session invalid!');
         }
 
 //          $room_manager = $this->_environment->getRoomManager();
@@ -237,7 +254,7 @@ class SoapService
     public function getUserInfo($sessionId, $contextId)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'given session id is invalid!');
+            return new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         // grep the session
@@ -260,7 +277,7 @@ class SoapService
             return $userList->getFirst()->getDataAsXML();
         }
 
-        return new \SoapFault('ERROR', 'no user found!');
+        return new SoapFault('ERROR', 'no user found!');
     }
 
     /**
@@ -452,19 +469,13 @@ class SoapService
                                             $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$portal_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
                                             global $c_single_entry_point;
                                             $body .= str_replace('soap.php',$c_single_entry_point,$url);
-                                            //$mail->set_message($body);
-                                            //$mail->send();
 
-                                            $mailer =  $this->serviceContainer->get('mailer');
-
-                                            $mailMessage = (new \Swift_Message())
-                                                ->setSubject($translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()))
-                                                ->setBody($body, 'text/plain')
-                                                ->setFrom([$senderAddress => $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())])
-                                                ->setTo($value);
-
-                                            // send mail
-                                            $mailer->send($mailMessage);
+                                            $this->mailer->sendRaw(
+                                                $translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()),
+                                                $body,
+                                                $recipient,
+                                                $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())
+                                            );
                                         }
                                     }
                                     $translator->setSelectedLanguage($save_language);
@@ -546,45 +557,38 @@ class SoapService
                                         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->legacyEnvironment->getCurrentContextID();
                                         global $c_single_entry_point;
                                         $body .= str_replace('soap.php',$c_single_entry_point,$url);
-                                        //$mail->set_message($body);
-                                        //$mail->send();
 
-                                        $mailer =  $this->serviceContainer->get('mailer');
-
-                                        $mailMessage = (new \Swift_Message())
-                                            ->setSubject($translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()))
-                                            ->setBody($body, 'text/plain')
-                                            ->setFrom([$senderAddress => $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())])
-                                            ->setTo([$current_user->getEmail()]);
-
-                                        // send mail
-                                        $mailer->send($mailMessage);
-
+                                        $this->mailer->sendRaw(
+                                            $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()),
+                                            $body,
+                                            RecipientFactory::createRecipient($current_user),
+                                            $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())
+                                        );
                                     }
 
                                     // login in user
                                     #return $this->authenticate($this->_encode_output($user_id),$this->_encode_output($user_pwd),$this->_encode_output($portal_id),$this->_encode_output($auth_source_id));
                                     return true;
                                 } else {
-                                    return new \SoapFault('ERROR','createUser: error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
+                                    return new SoapFault('ERROR','createUser: error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
                                 }
                             } else {
-                                return new \SoapFault('ERROR','createUser: account is not free! - ('.$user_id.')'.__FILE__.' - '.__LINE__);
+                                return new SoapFault('ERROR','createUser: account is not free! - ('.$user_id.')'.__FILE__.' - '.__LINE__);
                             }
                         } else {
-                            return new \SoapFault('ERROR','createUser: Portal ID is not valid! - '.__FILE__.' - '.__LINE__);
+                            return new SoapFault('ERROR','createUser: Portal ID is not valid! - '.__FILE__.' - '.__LINE__);
                         }
                     } else {
-                        return new \SoapFault('ERROR','createUser: user_id is not valid: user_id has umlauts! - '.__FILE__.' - '.__LINE__);
+                        return new SoapFault('ERROR','createUser: user_id is not valid: user_id has umlauts! - '.__FILE__.' - '.__LINE__);
                     }
                 } else {
-                    return new \SoapFault('ERROR','createUser: Logged in user is not allowed to create accounts. - '.__FILE__.' - '.__LINE__);
+                    return new SoapFault('ERROR','createUser: Logged in user is not allowed to create accounts. - '.__FILE__.' - '.__LINE__);
                 }
             } else {
-                return new \SoapFault('ERROR','createUser: can not identify current user. - '.__FILE__.' - '.__LINE__);
+                return new SoapFault('ERROR','createUser: can not identify current user. - '.__FILE__.' - '.__LINE__);
             }
         } else {
-            return new \SoapFault('ERROR','createUser: session id ('.$session_id.') is not set. - '.__FILE__.' - '.__LINE__);
+            return new SoapFault('ERROR','createUser: session id ('.$session_id.') is not set. - '.__FILE__.' - '.__LINE__);
         }
     }
 
@@ -602,7 +606,7 @@ class SoapService
     public function getStatistics($sessionId, $dateStart, $dateEnd)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'given session id is invalid!');
+            return new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $sessionId = $this->_encode_input($sessionId);
@@ -640,22 +644,22 @@ class SoapService
                     } else {
                         $info = 'ERROR: GET STATISTICS';
                         $info_text = 'server_item is empty';
-                        return new \SoapFault($info, $info_text);
+                        return new SoapFault($info, $info_text);
                     }
                 } else {
                     $info = 'ERROR: GET STATISTICS';
                     $info_text = 'date_start (second parameter) is empty';
-                    return new \SoapFault($info, $info_text);
+                    return new SoapFault($info, $info_text);
                 }
             } else {
                 $info = 'ERROR: GET STATISTICS';
                 $info_text = 'only root is allowed to use this function';
-                return new \SoapFault($info, $info_text);
+                return new SoapFault($info, $info_text);
             }
         } else {
             $info = 'ERROR: GET STATISTICS';
             $info_text = 'multiple user (' . $user_id . ') with auth source (' . $auth_source_id . ')';
-            return new \SoapFault($info, $info_text);
+            return new SoapFault($info, $info_text);
         }
     }
 
@@ -672,7 +676,7 @@ class SoapService
     public function getDatesList($sessionId, $contextId)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'given session id is invalid!');
+            return new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $this->legacyEnvironment->setSessionID($sessionId);
@@ -735,14 +739,14 @@ class SoapService
      * @param integer $startTimestamp Starting timestamp
      * @param integer $endTimestamp Ending timestamp
      *
-     * @throws \SoapFault
+     * @throws SoapFault
      *
      * @return string
      */
     public function getDatesInRange($sessionId, $contextId, $startTimestamp, $endTimestamp)
     {
         if (!$this->isSessionValid($sessionId)) {
-            throw new \SoapFault('ERROR', 'given session id is invalid!');
+            throw new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $startDate = date("Y-m-d H:i:s", $startTimestamp);
@@ -796,14 +800,14 @@ class SoapService
      * @param integer $contextId The context id
      * @param integer $validTimestamp Valid timestamp
      *
-     * @throws \SoapFault
+     * @throws SoapFault
      *
      * @return string
      */
     public function getAnnouncementsInRange($sessionId, $contextId, $validTimestamp)
     {
         if (!$this->isSessionValid($sessionId)) {
-            throw new \SoapFault('ERROR', 'given session id is invalid!');
+            throw new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $validDate = date("Y-m-d H:i:s", $validTimestamp);

@@ -21,6 +21,8 @@ use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\Room\DeleteType;
 use App\Form\Type\Room\LockType;
 use App\Form\Type\Room\UserRoomDeleteType;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
@@ -591,6 +593,8 @@ class SettingsController extends AbstractController
      * @param RoomService $roomService
      * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
+     * @param PortalRepository $portalRepository
+     * @param Mailer $mailer
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -601,7 +605,7 @@ class SettingsController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         PortalRepository $portalRepository,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         int $roomId
     ) {
         // get room from RoomService
@@ -670,13 +674,13 @@ class SettingsController extends AbstractController
                         ], UrlGeneratorInterface::ABSOLUTE_URL)." ",
                         '%sender%' => $user->getFullName(),
                     ]);
-                    $mailMessage = (new \Swift_Message())
-                        ->setSubject($subject)
-                        ->setBody($body, 'text/plain')
-                        ->setFrom([$fromAddress => $fromSender])
-                        ->setTo([$data['email']]);
 
-                    $mailer->send($mailMessage);
+                    $mailer->sendRaw(
+                        $subject,
+                        $body,
+                        RecipientFactory::createFromRaw($data['email']),
+                        $fromSender
+                    );
                 }
             } else if ($clickedButton === 'delete') {
                 foreach ($data['remove_invitees'] as $removeInvitee) {
