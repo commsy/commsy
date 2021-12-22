@@ -292,22 +292,16 @@ class UserController extends BaseController
         switch ($userStatus) {
             case 'is blocked':
                 return '0';
-                break;
             case 'is applying':
                 return '1';
-                break;
             case 'user':
                 return '8';
-                break;
             case 'moderator':
                 return '3';
-                break;
             case 'is contact':
                 return 'is contact';
-                break;
             case 'reading user':
                 return '4';
-                break;
         }
 
         return '8';
@@ -416,7 +410,6 @@ class UserController extends BaseController
      * @Template()
      * @Security("is_granted('MODERATOR')")
      * @param Request $request
-     * @param TranslatorInterface $translator
      * @param EventDispatcherInterface $eventDispatcher
      * @param Swift_Mailer $mailer
      * @param AccountMail $accountMail
@@ -426,7 +419,6 @@ class UserController extends BaseController
      */
     public function changeStatusAction(
         Request $request,
-        TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher,
         Swift_Mailer $mailer,
         AccountMail $accountMail,
@@ -571,7 +563,7 @@ class UserController extends BaseController
                     }
 
                     if ($formData['inform_user']) {
-                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status'], $router);
+                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status']);
                     }
                     if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('app_user_detail', [
@@ -835,30 +827,6 @@ class UserController extends BaseController
         return $infoArray;
     }
 
-
-    /**
-     * @Route("/room/{roomId}/user/create")
-     * @param TranslatorInterface $translator
-     * @param int $roomId
-     * @return RedirectResponse
-     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'user')")
-     */
-    public function createAction(
-        TranslatorInterface $translator,
-        int $roomId
-    ) {
-        // create new user item
-        $userItem = $this->userService->getNewuser();
-        $userItem->setTitle('[' . $translator->trans('insert title') . ']');
-        $userItem->setBibKind('none');
-        $userItem->setDraftStatus(1);
-        $userItem->save();
-
-        return $this->redirectToRoute('app_user_detail',
-            array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
-    }
-
-
     /**
      * @Route("/room/{roomId}/user/{itemId}/edit")
      * @Template()
@@ -909,8 +877,6 @@ class UserController extends BaseController
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else {
-                // ToDo ...
             }
             return $this->redirectToRoute('app_user_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
@@ -1263,26 +1229,6 @@ class UserController extends BaseController
         $response->headers->set('Content-Disposition', $contentDisposition);
 
         return $response;
-    }
-
-    /**
-     * @Route("/room/{roomId}/user/rooms/{start}")
-     * @Template("menu/room_list.html.twig")
-     * @param int $roomId
-     * @return array
-     */
-    public function roomsAction(
-        int $roomId
-    ) {
-        $user = $this->userService->getCurrentUserItem();
-
-        // Room list feed
-        $rooms = $this->userService->getRoomList($user);
-
-        return [
-            'roomId' => $roomId,
-            'roomList' => $rooms,
-        ];
     }
 
     /**
