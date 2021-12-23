@@ -110,7 +110,7 @@ class cs_myroom_manager extends cs_context_manager {
   }
 
    function getRelatedCommunityListForUser ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
    }
 
   /** set time limit

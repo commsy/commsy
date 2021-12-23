@@ -807,10 +807,6 @@ services:
 
     App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 
-    # DataTransformer
-    App\Form\DataTransformer\Base64ToCsvDatasetTransformer:
-        autowire: true
-
     # Events
     App\Event\CommsyEditEvent:
         autowire: false
