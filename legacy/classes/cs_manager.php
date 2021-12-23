@@ -155,7 +155,9 @@ class cs_manager {
    var $_cached_sql = array();
 
    public $_class_factory = NULL;
-   public $_id_array_limit = NULL;
+
+   protected $_id_array_limit = NULL;
+
    public $_link_modifier = true;
    public $_db_prefix = '';
    public $_with_db_prefix = true;
@@ -166,20 +168,21 @@ class cs_manager {
     public const SHOW_ENTRIES_ONLY_DEACTIVATED = 'only.deactivated';
     public const SHOW_ENTRIES_ACTIVATED_DEACTIVATED = 'either';
 
-  /** constructor: cs_manager
-    * the only available constructor, initial values for internal variables. sets room limit to room
-    *
-    * @param object cs_environment the environment
-    */
-  function __construct($environment) {
-     $this->_environment = $environment;
-     $this->_class_factory = $this->_environment->getClassFactory();
-     $this->reset();
-     $this->_room_limit      =  $this->_environment->getCurrentContextID();
-     $this->_attribute_limit =  NULL;
-     $this->_current_user    =  $this->_environment->getCurrentUser();
-     $this->_db_connector    =  $this->_environment->getDBConnector();
-  }
+    /** constructor: cs_manager
+     * the only available constructor, initial values for internal variables. sets room limit to room
+     *
+     * @param object cs_environment the environment
+     */
+    public function __construct($environment)
+    {
+        $this->_environment = $environment;
+        $this->_class_factory = $this->_environment->getClassFactory();
+        $this->reset();
+        $this->_room_limit = $this->_environment->getCurrentContextID();
+        $this->_attribute_limit = null;
+        $this->_current_user = $this->_environment->getCurrentUser();
+        $this->_db_connector = $this->_environment->getDBConnector();
+    }
 
   /** set context id
     * this method sets the context id

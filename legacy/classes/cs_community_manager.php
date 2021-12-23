@@ -126,13 +126,16 @@ class cs_community_manager extends cs_room2_manager {
     $this->_template_limit = NULL;
   }
 
-    public function getRelatedCommunityRooms($userItem, $contextId) {
-        return $this->_getRelatedContextListForUser($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
+    public function getRelatedCommunityRooms(cs_user_item $userItem, $contextId)
+    {
+        return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
     }
 
-   function getRelatedCommunityListForUser ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
-   }
+    function getRelatedCommunityListForUser($user_item)
+    {
+        return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(),
+            $this->_environment->getCurrentPortalID());
+    }
    
    function getRelatedCommunityListForUserAllUserStatus ($user_item) {
       $this->_all_status_limit = true;
@@ -140,7 +143,7 @@ class cs_community_manager extends cs_room2_manager {
    }
 
    function getUserRelatedCommunityListForUser ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
    }
 
   /** select communities limited by limits
@@ -151,31 +154,6 @@ class cs_community_manager extends cs_room2_manager {
         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as count';
      } elseif ($mode == 'id_array') {
         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
-     } elseif ( !$this->_sql_with_extra ) {
-        $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.context_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creator_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modifier_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deleter_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creation_date';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deletion_date';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.title';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.status';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.activity';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.type';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.public';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.is_open_for_guests';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.continuous';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.template';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.contact_persons';
-        if ($this->_existsField($this->_db_table, 'room_description')){
-           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.room_description';
-        }else{
-           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
-        }
-        // archive (2012 IJ)
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.lastlogin';
      } else {
         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
