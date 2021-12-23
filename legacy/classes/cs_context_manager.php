@@ -33,53 +33,52 @@ include_once('interfaces/cs_export_import_interface.php');
 /** upper class for database connection to the database table "community", "project" and "portal"
  * this upper class implements a database manager for the table "community", "project" and "portal"
  */
-class cs_context_manager extends cs_manager implements cs_export_import_interface {
+class cs_context_manager extends cs_manager implements cs_export_import_interface
+{
+    protected $_room_type = null;
 
-   var $_room_type = NULL;
+    protected $_all_room_limit = false;
 
-   var $_all_room_limit = false;
-   
-   var $_all_status_limit = false;
+    protected $_all_status_limit = false;
 
-  /**
-   * integer - containing the id of a institution as a limit for the selected announcement
-   */
-  var $_institution_limit = NULL;
+    /**
+     * integer - containing the id of a institution as a limit for the selected announcement
+     */
+    protected $_institution_limit = null;
 
-  /**
-   * integer - containing the id of a topic as a limit for the selected announcement
-   */
-  var $_topic_limit = NULL;
+    /**
+     * integer - containing the id of a topic as a limit for the selected announcement
+     */
+    protected $_topic_limit = null;
 
-   /**
-    * string - containing an order limit for the select context
-    */
-   var $_order = NULL;
+    /**
+     * string - containing an order limit for the select context
+     */
+    protected $_order = null;
 
-   /**
-    * string - containing an order limit for the select project
-    */
-   var $_sort_order = NULL;
+    /**
+     * string - containing an order limit for the select project
+     */
+    protected $_sort_order = null;
 
-   /**
-    * integer - containing a status limit: 0 no project, 1 open, 2 closed, 3 deleted
-    */
-   var $_status_limit = NULL;
+    /**
+     * integer - containing a status limit: 0 no project, 1 open, 2 closed, 3 deleted
+     */
+    protected $_status_limit = null;
 
-   var $_id_array_limit = NULL;
-   var $_cache_extras = array();
-   var $_cache_list = array();
-   var $_cache_row = array();
-   var $_sql_with_extra = true;
+    private array $extrasCache = [];
+    private array $rowCache = [];
+    private array $listCache = [];
 
-   /** constructor: cs_room_manager
-    * the only available constructor, initial values for internal variables
-    *
-    * @param object cs_environment the environment
-    */
-   function __construct($environment) {
-      cs_manager::__construct($environment);
-   }
+    /** constructor: cs_room_manager
+     * the only available constructor, initial values for internal variables
+     *
+     * @param object cs_environment the environment
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+    }
 
    /** reset limits
     * reset limits of this class: age limit, from limit, interval limit, order limit and all limits from upper class
@@ -94,6 +93,15 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $this->_topic_limit = NULL;
       $this->_sort_order = NULL;
       $this->_id_array_limit = NULL;
+   }
+
+    /**
+     * @param bool $enabled
+     * @return void
+     */
+   public function setAllStatusLimit(bool $enabled)
+   {
+       $this->_all_status_limit = $enabled;
    }
 
    /** set status limit
@@ -176,10 +184,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $item = $this->_getNewRoomItem($db_array['type']);
       $item->_setItemData(encode(FROM_DB,$db_array));
 
-      if ( isset($this->_sql_with_extra)
-           and !$this->_sql_with_extra ) {
-         $item->unsetLoadExtras();
-      }
       if ( !empty($db_array['zzz_table'])
       	  and $db_array['zzz_table'] == 1
       	) {
@@ -232,104 +236,121 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       return $retour;
    }
 
-   function _getRelatedContextListForUser ($user_id, $auth_source, $context_id, $grouproom = false, $only_user = false) {
-      include_once('classes/cs_list.php');
-      $list = new cs_list();
-      if ( !isset($this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id]) ) {
-         $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
-         $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
-         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id
-                     AND '.$this->addDatabasePrefix('user').'.auth_source="'.$auth_source.'"
-                     AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL
-                     AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$user_id).'"';
-         if (!$this->_all_status_limit) {
-            if ( !$only_user ) {
-               $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "1"';
+    /**
+     * @param $user_id
+     * @param $auth_source
+     * @param $context_id
+     * @param $grouproom
+     * @param $only_user
+     * @return cs_list|mixed
+     */
+    public function getRelatedContextListForUserInt(
+        $user_id,
+        $auth_source,
+        $context_id,
+        $grouproom = false,
+        $only_user = false
+    ) {
+        $list = new cs_list();
+        if (!isset($this->listCache[$user_id . '_' . $auth_source . '_' . $context_id])) {
+            $query = 'SELECT ' . $this->addDatabasePrefix($this->_db_table) . '.*';
+            $query .= ' FROM ' . $this->addDatabasePrefix($this->_db_table);
+            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('user') . ' ON ' . $this->addDatabasePrefix('user') . '.context_id=' . $this->addDatabasePrefix($this->_db_table) . '.item_id
+                     AND ' . $this->addDatabasePrefix('user') . '.auth_source="' . $auth_source . '"
+                     AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL
+                     AND ' . $this->addDatabasePrefix('user') . '.user_id="' . encode(AS_DB, $user_id) . '"';
+            if (!$this->_all_status_limit) {
+                if (!$only_user) {
+                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "1"';
+                } else {
+                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"';
+                }
             } else {
-               $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "0"';
             }
-         } else {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "0"';
-         }
-         $query .= ' WHERE 1';
-         if ( isset($this->_room_type) and !empty($this->_room_type) ) {
-            ############################################
-            # FLAG: group room
-            ###################BEGIN####################
-            $current_portal = $this->_environment->getCurrentPortalItem();
-            if ( !isset($current_portal) and !empty($context_id) ) {
-               $portal_manager = $this->_environment->getPortalManager();
-               $current_portal = $portal_manager->getItem($context_id);
-            }
-            if ( $this->_room_type == CS_PROJECT_TYPE
-                 and (
-                       ( isset($current_portal) and $current_portal->withGroupRoomFunctions() )
-                       or $grouproom
-                     )
-               ) {
-               $query .= ' AND ('.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,$this->_room_type).'" or '.$this->addDatabasePrefix($this->_db_table).'.type = "'.CS_GROUPROOM_TYPE.'")';
+            $query .= ' WHERE 1';
+            if (isset($this->_room_type) and !empty($this->_room_type)) {
+                ############################################
+                # FLAG: group room
+                ###################BEGIN####################
+                $current_portal = $this->_environment->getCurrentPortalItem();
+                if (!isset($current_portal) and !empty($context_id)) {
+                    $portal_manager = $this->_environment->getPortalManager();
+                    $current_portal = $portal_manager->getItem($context_id);
+                }
+                if ($this->_room_type == CS_PROJECT_TYPE
+                    and (
+                        (isset($current_portal) and $current_portal->withGroupRoomFunctions())
+                        or $grouproom
+                    )
+                ) {
+                    $query .= ' AND (' . $this->addDatabasePrefix($this->_db_table) . '.type = "' . encode(AS_DB,
+                            $this->_room_type) . '" or ' . $this->addDatabasePrefix($this->_db_table) . '.type = "' . CS_GROUPROOM_TYPE . '")';
+                } else {
+                    ####################END#####################
+                    # FLAG: group room
+                    ############################################
+                    $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.type = "' . encode(AS_DB,
+                            $this->_room_type) . '"';
+                    ############################################
+                    # FLAG: group room
+                    ##################BEGIN####################
+                    if ($this->_room_type != CS_GROUPROOM_TYPE) {
+                        $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.type != "' . CS_GROUPROOM_TYPE . '"';
+                    }
+                }
             } else {
-            ####################END#####################
-            # FLAG: group room
-            ############################################
-               $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,$this->_room_type).'"';
-            ############################################
-            # FLAG: group room
-            ##################BEGIN####################
-               if ( $this->_room_type != CS_GROUPROOM_TYPE ) {
-                  $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "'.CS_GROUPROOM_TYPE.'"';
-               }
+                $current_portal = $this->_environment->getCurrentPortalItem();
+                if (!isset($current_portal) and !empty($context_id)) {
+                    $portal_manager = $this->_environment->getPortalManager();
+                    $current_portal = $portal_manager->getItem($context_id);
+                }
+                if ((isset($current_portal)
+                        and !$current_portal->withGroupRoomFunctions()
+                    )
+                    or !$grouproom
+                ) {
+                    $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.type != "' . CS_GROUPROOM_TYPE . '"';
+                }
+                ###################END######################
+                # FLAG: group room
+                ############################################
             }
-         } else {
-            $current_portal = $this->_environment->getCurrentPortalItem();
-            if ( !isset($current_portal) and !empty($context_id) ) {
-               $portal_manager = $this->_environment->getPortalManager();
-               $current_portal = $portal_manager->getItem($context_id);
-            }
-            if ( ( isset($current_portal)
-                   and !$current_portal->withGroupRoomFunctions()
-                 )
-                 or !$grouproom
-               ) {
-               $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "'.CS_GROUPROOM_TYPE.'"';
-            }
-            ###################END######################
-            # FLAG: group room
-            ############################################
-         }
 
-         if ($this->_room_type !== cs_userroom_item::ROOM_TYPE_USER) {
-             // NOTE: for user rooms, we don't include the context_id in the WHERE clause; this is since user rooms have
-             // their context_id set to the room ID of their hosting project room (and not to the portal ID)
-             $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id="' . encode(AS_DB, $context_id) . '"';
-         }
-
-         if ($this->_delete_limit == true) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
-         }
-         if (isset($this->_status_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
-         }
-         $query .= ' ORDER BY title, creation_date DESC';
-
-         // perform query
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems selecting '.$this->_db_table.' items.',E_USER_WARNING);
-         } else {
-            foreach ($result as $query_result) {
-               $list->add($this->_buildItem($query_result));
+            if ($this->_room_type !== cs_userroom_item::ROOM_TYPE_USER) {
+                // NOTE: for user rooms, we don't include the context_id in the WHERE clause; this is since user rooms have
+                // their context_id set to the room ID of their hosting project room (and not to the portal ID)
+                $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id="' . encode(AS_DB,
+                        $context_id) . '"';
             }
-            if ( $this->_cache_on ) {
-               $this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id] = $list;
+
+            if ($this->_delete_limit == true) {
+                $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.deleter_id IS NULL';
             }
-         }
-      } else {
-         $list = $this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id];
-      }
-      return $list;
-   }
+            if (isset($this->_status_limit)) {
+                $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.status = "' . encode(AS_DB,
+                        $this->_status_limit) . '"';
+            }
+            $query .= ' ORDER BY title, creation_date DESC';
+
+            // perform query
+            $result = $this->_db_connector->performQuery($query);
+            if (!isset($result)) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems selecting ' . $this->_db_table . ' items.', E_USER_WARNING);
+            } else {
+                foreach ($result as $query_result) {
+                    $list->add($this->_buildItem($query_result));
+                }
+                if ($this->_cache_on) {
+                    $this->listCache[$user_id . '_' . $auth_source . '_' . $context_id] = $list;
+                }
+            }
+        } else {
+            $list = $this->listCache[$user_id . '_' . $auth_source . '_' . $context_id];
+        }
+        return $list;
+    }
 
    function _getRelatedContextListForUserSortByTime ($user_id, $auth_source, $context_id, $grouproom = false) {
       $list = new cs_list();
@@ -426,7 +447,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
            and is_numeric($item_id)
          ) {
          if ( !isset($this->_cache_object[$item_id])
-              and !isset($this->_cache_row[$item_id])
+              and !isset($this->rowCache[$item_id])
             ) {
             // NOTE: as of migration Version20191007171054.php, the `portal` table's `item_id` column is now called `id`
             $id_column_name = ($this->_db_table === 'portal') ? 'id' : 'item_id';
@@ -457,7 +478,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             if ( !empty($this->_cache_object[$item_id]) ) {
                $retour = $this->_cache_object[$item_id];
             } else {
-               $retour = $this->_buildItem($this->_cache_row[$item_id]);
+               $retour = $this->_buildItem($this->rowCache[$item_id]);
             }
          }
       }
@@ -475,8 +496,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       if ( !empty($item_id)
            and is_numeric($item_id)
          ) {
-         if (isset($this->_cache_extras[$item_id])){
-            $retour = mb_unserialize($this->_cache_extras[$item_id]);
+         if (isset($this->extrasCache[$item_id])){
+            $retour = mb_unserialize($this->extrasCache[$item_id]);
          }else{
             $query = "SELECT extras FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB,$item_id)."'";
             $result = $this->_db_connector->performQuery($query);
@@ -509,7 +530,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
       } else{
          foreach($result as $r){
-            $this->_cache_extras[$r['item_id']]=$r['extras'];
+            $this->extrasCache[$r['item_id']]=$r['extras'];
          }
       }
 
@@ -762,14 +783,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             trigger_error('Problems updating activity points ' . $this->_db_table . '.', E_USER_WARNING);
         }
     }
-
-   public function setQueryWithExtra () {
-      $this->_sql_with_extra = true;
-   }
-
-   public function setQueryWithoutExtra () {
-      $this->_sql_with_extra = false;
-   }
    
    function export_item($id) {
       $item_manager = $this->_environment->getItemManager();

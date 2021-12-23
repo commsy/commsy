@@ -65,9 +65,6 @@
                                 <div style="margin-bottom: 25px;">{{ generalArchiveText }} {{ 'Archive text permanently archived'|trans({}, 'settings') }}</div>
                             {% else %}
                                 <div>{{ generalArchiveText }}</div>
-                                <div class="uk-alert uk-alert-danger" style="margin-bottom: 25px; border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
-                                    <p><strong>{{ 'warning'|trans({}, "menu") }}</strong> {{ 'Archive text deletion warning'|trans({'%days%': daysUnusedBeforeRoomDeletion}, "settings") }}</p>
-                                </div>
                             {% endif %}
                             {{ form_row(form.archived.active) }}
                             {{ form_rest(form.archived) }}

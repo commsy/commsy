@@ -131,7 +131,7 @@ class CronNewsletter implements CronTaskInterface
             $room_manager = $this->legacyEnvironment->getRoomManager();
             $customizedRoomList = $privateRoom->getCustomizedRoomList();
             if (!isset($customizedRoomList)) {
-                $customizedRoomList = $room_manager->_getRelatedContextListForUser($user->getUserID(),
+                $customizedRoomList = $room_manager->getRelatedContextListForUserInt($user->getUserID(),
                     $user->getAuthSource(), $portal->getItemID(), true, true);
             }
 
