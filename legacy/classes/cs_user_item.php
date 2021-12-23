@@ -1260,11 +1260,10 @@ class cs_user_item extends cs_item
         return $list;
     }
 
-    function getRelatedProjectList()
+    public function getRelatedProjectList()
     {
         $manager = $this->_environment->getProjectManager();
-        $list = $manager->getRelatedProjectListForUser($this, null);
-        return $list;
+        return $manager->getRelatedProjectListForUser($this, null);
     }
 
     function getRelatedProjectListAllUserStatus()
