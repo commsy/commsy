@@ -148,7 +148,7 @@
             </trans-unit>
             <trans-unit id="mail_subject_account_activity_locked">
                 <source>%portal_name%: Your account is locked</source>
-                <target>%portal_name%: Ihre Kennung wurde gesperr</target>
+                <target>%portal_name%: Ihre Kennung wurde gesperrt</target>
             </trans-unit>
             <trans-unit id="mail_subject_account_activity_delete_warning">
                 <source>%portal_name%: Account will be deleted in %num_days% days</source>
