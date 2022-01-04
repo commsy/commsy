@@ -6,11 +6,12 @@ require('select2/dist/css/select2.css');
 require("flatpickr/dist/themes/light.css");
 
 // JS
-require('expose-loader?$!jquery');
+const $ = require('jquery');
+global.$ = global.jQuery = $;
 
-require('expose-loader?NProgress!nprogress/nprogress');
+require('expose-loader?exposes=NProgress!nprogress/nprogress');
 require('moment/moment');
-require('expose-loader?URI!urijs/src/URI');
+require('expose-loader?exposes=URI!urijs/src/URI');
 require('select2/dist/js/select2');
 
 import UIkit from 'uikit3';
