@@ -3,8 +3,10 @@
     "use strict";
 
     // TODO: this function somehow gets triggered twice but it should only get called once; the second invocation
-    //       would revert the hide/unhide again; so, as a workaround, we use `one()` to ensure that the function
-    //       only gets executed once
+    // would revert the hide/unhide again; so, as a workaround, we use `one()` to ensure that the function
+    // only gets executed once
+    // Addition: It turned out the problem occurred when including js with the "defer" attribute,
+    // see webpack_encore.yaml
     UIkit.one('beforeready.uk.dom', function() {
 
         var toggleRef = UI.components.toggle.prototype.toggle;
