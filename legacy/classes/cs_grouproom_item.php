@@ -1150,7 +1150,7 @@ class cs_grouproom_item extends cs_room_item {
          $message = (new Email())
              ->subject($subject)
              ->html(nl2br($body))
-             ->to($value);
+             ->to(...$value);
 
          if ($current_user) {
             $email = $current_user->getEmail();
