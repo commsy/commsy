@@ -30,7 +30,7 @@ class LockType extends AbstractType
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
                     new DeleteGroupRoomConstraint([
-                        'room' => $options['data'],
+                        'room' => $options['room'],
                     ]),
                 ],
                 'required' => true,
