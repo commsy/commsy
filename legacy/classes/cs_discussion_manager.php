@@ -675,13 +675,6 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
         if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
-            // create backup of item
-            $this->backupItem($uid, array(
-                'title' => 'title',
-                'public' => 'public',
-                'modification_date' => 'modification_date',
-            ));
-
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query  = 'SELECT ' . $this->addDatabasePrefix('discussions').'.* FROM ' . $this->addDatabasePrefix('discussions').' WHERE ' . $this->addDatabasePrefix('discussions') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
             $result = $this->_db_connector->performQuery($query);
