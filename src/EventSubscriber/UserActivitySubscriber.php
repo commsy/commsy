@@ -1,12 +1,14 @@
 <?php
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
 use cs_environment;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class CommsyLoginListener
+class UserActivitySubscriber implements EventSubscriberInterface
 {
     /**
      * @var cs_environment
@@ -18,7 +20,16 @@ class CommsyLoginListener
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::CONTROLLER => [
+                ['updateActivity', 0],
+            ],
+        ];
+    }
+
+    public function updateActivity(ControllerEvent $event)
     {
         /*
            restrict logging to the following requests:
