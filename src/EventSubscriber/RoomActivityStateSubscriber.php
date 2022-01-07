@@ -224,6 +224,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
         if ($legacyRoom) {
             $legacyRoom->lock();
+            $legacyRoom->save();
         }
     }
 
