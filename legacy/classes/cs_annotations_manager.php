@@ -453,13 +453,6 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
         if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
-            // create backup of item
-            $this->backupItem($uid, array(
-                'title' => 'title',
-                'description' => 'description',
-                'modification_date' => 'modification_date',
-            ));
-
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query  = 'SELECT ' . $this->addDatabasePrefix('annotations').'.* FROM ' . $this->addDatabasePrefix('annotations').' WHERE ' . $this->addDatabasePrefix('annotations') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
             $result = $this->_db_connector->performQuery($query);

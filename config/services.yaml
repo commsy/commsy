@@ -360,10 +360,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
-    App\EventListener\CommsyLoginListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
     commsy.listener.get_room_membership_filter:
         class: App\EventListener\RoomMembershipFilterConditionListener
         arguments: ['@commsy_legacy.user_service']

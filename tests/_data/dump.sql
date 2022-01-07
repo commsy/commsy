@@ -562,34 +562,6 @@ LOCK TABLES `invitations` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `item_backup`
---
-
-DROP TABLE IF EXISTS `item_backup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item_backup` (
-  `item_id` int(11) NOT NULL,
-  `backup_date` datetime NOT NULL,
-  `modification_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
-  `public` tinyint(11) NOT NULL,
-  `special` text CHARACTER SET ucs2 NOT NULL,
-  PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `item_backup`
---
-
-LOCK TABLES `item_backup` WRITE;
-/*!40000 ALTER TABLE `item_backup` DISABLE KEYS */;
-/*!40000 ALTER TABLE `item_backup` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `item_link_file`
 --
 
