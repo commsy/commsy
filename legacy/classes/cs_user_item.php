@@ -1836,7 +1836,6 @@ class cs_user_item extends cs_item
      */
     public function getRelatedUserList(bool $includeUserroomUsers = false): \cs_list
     {
-        include_once('classes/cs_list.php');
         $emptyList = new cs_list();
         $currentContextId = $this->getContextID();
         $currentPortalId = $this->_environment->getCurrentPortalID();
@@ -1852,7 +1851,7 @@ class cs_user_item extends cs_item
 
         // project rooms
         $projectManager = $this->_environment->getProjectManager();
-        $projectRooms = $projectManager->getRelatedProjectListForUser($this, $currentContextId);
+        $projectRooms = $projectManager->getRelatedProjectListForUser($this);
 
         // user rooms
         $userroomManager = $this->_environment->getUserRoomManager();
