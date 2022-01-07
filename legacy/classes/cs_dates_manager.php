@@ -1057,16 +1057,6 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
         if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
-            // create backup of item
-            $this->backupItem($uid, array(
-                'title' => 'title',
-                'description' => 'description',
-                'modification_date' => 'modification_date',
-                'public' => 'public'
-            ), array(
-                'place'
-            ));
-
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query = 'SELECT ' . $this->addDatabasePrefix('dates') . '.* FROM ' . $this->addDatabasePrefix('dates') . ' WHERE ' . $this->addDatabasePrefix('dates') . '.creator_id = "' . encode(AS_DB,
                     $uid) . '"';
