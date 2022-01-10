@@ -50,7 +50,10 @@ class LoginSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($event->getRequest()->attributes->get('_route') === 'app_migration_password') {
+        if (
+            $event->getRequest()->attributes->get('_route') === 'app_migration_password' ||
+            $this->security->isGranted('ROLE_PREVIOUS_ADMIN')
+        ) {
             return;
         }
 
