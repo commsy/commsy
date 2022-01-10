@@ -144,7 +144,7 @@
             </trans-unit>
             <trans-unit id="mail_subject_account_activity_lock_warning">
                 <source>%portal_name%: Account will be locked in %num_days% days</source>
-                <target>%portal_name%: Kennung wird in %num_days% gesperrt</target>
+                <target>%portal_name%: Kennung wird in %num_days% Tagen gesperrt</target>
             </trans-unit>
             <trans-unit id="mail_subject_account_activity_locked">
                 <source>%portal_name%: Your account is locked</source>
@@ -152,7 +152,7 @@
             </trans-unit>
             <trans-unit id="mail_subject_account_activity_delete_warning">
                 <source>%portal_name%: Account will be deleted in %num_days% days</source>
-                <target>%portal_name%: Kennung wird in %num_days% gelöscht</target>
+                <target>%portal_name%: Kennung wird in %num_days% Tagen gelöscht</target>
             </trans-unit>
             <trans-unit id="mail_subject_account_activity_deleted">
                 <source>%portal_name%: Your account has been deleted</source>
@@ -164,7 +164,7 @@
             </trans-unit>
             <trans-unit id="mail_subject_workspace_activity_delete_warning">
                 <source>%portal_name%: Workspace will be deleted in %num_days% days</source>
-                <target>%portal_name%: Raum wird in %num_days% gelöscht</target>
+                <target>%portal_name%: Raum wird in %num_days% Tagen gelöscht</target>
             </trans-unit>
             <trans-unit id="mail_body_common_title">
                 <source>Title: %title%</source>
