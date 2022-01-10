@@ -96,7 +96,7 @@ class ZzzRoom
      *
      * @ORM\Column(name="extras", type="mbarray", nullable=true)
      */
-    private ?array $extras;
+    private ?array $extras = null;
 
     /**
      * @var string
@@ -460,7 +460,7 @@ class ZzzRoom
     /**
      * Get extras
      *
-     * @return array
+     * @return array|null
      */
     public function getExtras(): ?array
     {

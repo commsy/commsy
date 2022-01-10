@@ -114,7 +114,7 @@ class Room
      *
      * @ORM\Column(name="extras", type="mbarray", nullable=true)
      */
-    private ?array $extras;
+    private ?array $extras = null;
 
     /**
      * @var string
@@ -182,7 +182,7 @@ class Room
      *
      * @Groups({"api_read"})
      */
-    private ?string $roomDescription;
+    private ?string $roomDescription = null;
 
     /**
      * @var DateTime|null
@@ -483,7 +483,7 @@ class Room
     /**
      * Get extras
      *
-     * @return array
+     * @return array|null
      */
     public function getExtras(): ?array
     {
