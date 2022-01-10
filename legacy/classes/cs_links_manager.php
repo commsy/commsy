@@ -642,31 +642,33 @@ class cs_links_manager extends cs_manager {
      }
   }
 
-  /** delete link , but it is just an update
-    * this method deletes all links from an item, but only as an update to restore it later and for evaluation
-    *
-    * @param integer item_id       id of the item
-    * @param integer version_id    version id of the item
-    */
-  function deleteLinksBecauseItemIsDeleted ($item_id, $version_id=NULL) {
-     $query = 'UPDATE '.$this->addDatabasePrefix('links').' SET '.
-              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
-              'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
-              ' WHERE (from_item_id="'.encode(AS_DB,$item_id).'"';
-     if ($version_id) {
-        $query .= ' AND from_version_id="'.encode(AS_DB,$version_id).'"';
-     }
-     $query .= ') OR (to_item_id="'.encode(AS_DB,$item_id).'"';
-     if ($version_id) {
-        $query .= ' AND to_version_id="'.encode(AS_DB,$version_id).'"';
-     }
-     $query .= ')';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"',E_USER_WARNING);
-     }
-  }
+    /** delete link , but it is just an update
+     * this method deletes all links from an item, but only as an update to restore it later and for evaluation
+     *
+     * @param integer item_id       id of the item
+     * @param integer version_id    version id of the item
+     */
+    public function deleteLinksBecauseItemIsDeleted($item_id, $version_id = null)
+    {
+        $user_id = $this->_current_user->getItemID() ?: 0;
+        $query = 'UPDATE ' . $this->addDatabasePrefix('links') . ' SET ' .
+            'deletion_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'deleter_id="' . encode(AS_DB, $user_id) . '"' .
+            ' WHERE (from_item_id="' . encode(AS_DB, $item_id) . '"';
+        if ($version_id) {
+            $query .= ' AND from_version_id="' . encode(AS_DB, $version_id) . '"';
+        }
+        $query .= ') OR (to_item_id="' . encode(AS_DB, $item_id) . '"';
+        if ($version_id) {
+            $query .= ' AND to_version_id="' . encode(AS_DB, $version_id) . '"';
+        }
+        $query .= ')';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '"', E_USER_WARNING);
+        }
+    }
 
    /*
    checks if link type is supported in the current context
