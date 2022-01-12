@@ -4,6 +4,9 @@ namespace App\Room;
 
 use App\Entity\Room;
 use App\Entity\ZzzRoom;
+use App\Utils\ItemService;
+use cs_community_item;
+use cs_list;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
@@ -16,13 +19,21 @@ class RoomManager
     private EntityManagerInterface $entityManager;
 
     /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
      * AccountManager constructor.
      * @param EntityManagerInterface $entityManager
+     * @param ItemService $itemService
      */
     public function __construct(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ItemService $itemService
     ) {
         $this->entityManager = $entityManager;
+        $this->itemService = $itemService;
     }
 
     /**
@@ -44,6 +55,29 @@ class RoomManager
         }
 
         return null;
+    }
+
+    /**
+     * @param object $room
+     * @return cs_list
+     */
+    public function getLinkedProjectRooms(object $room): cs_list
+    {
+        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
+            throw new LogicException('$room must be of type Room or ZzzRoom');
+        }
+
+        if (!$room->isCommunityRoom()) {
+            throw new LogicException('$room must be a community room');
+        }
+
+        /** @var cs_community_item $legacyItem */
+        $legacyItem = $this->itemService->getTypedItem($room->getItemId());
+        if ($legacyItem) {
+            return $legacyItem->getProjectList();
+        }
+
+        return new cs_list();
     }
 
     /**
