@@ -1162,9 +1162,10 @@ class DiscussionController extends BaseController
                     $article->save();
                 }
             }
-            return $this->redirectToRoute('app_discussion_detail',
-                array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
         }
+
+        return $this->redirectToRoute('app_discussion_detail',
+            array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
     }
 
     /**
