@@ -24,7 +24,9 @@
 
 use App\Entity\Portal;
 use App\Proxy\PortalProxy;
+use App\Repository\MaterialsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
 include_once('functions/misc_functions.php');
 include_once('functions/text_functions.php');
@@ -2770,19 +2772,22 @@ function getExternalViewerArray(){
       }
    }
 
-    protected function replaceElasticItem($objectPersister, $repository)
+    protected function replaceElasticItem(ObjectPersisterInterface $objectPersister, $repository)
     {
         $elasticHost = $_ENV['ELASTICSEARCH_URL'];
 
         if ($elasticHost) {
-            if ($repository instanceof \App\Repository\MaterialsRepository) {
+            if ($repository instanceof MaterialsRepository) {
                 $object = $repository->findLatestVersionByItemId($this->getItemID());
             } else {
                 $object = $repository->findOneByItemId($this->getItemID());
             }
 
             if ($object && $object->isIndexable() && !$this->isDraft()) {
-                $objectPersister->replaceOne($object);
+                // Replacing delete + insert with replace will not call the ingest pipeline and
+                // will not process any file attachments
+                $objectPersister->deleteOne($object);
+                $objectPersister->insertOne($object);
             }
         }
     }

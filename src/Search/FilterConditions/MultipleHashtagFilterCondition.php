@@ -11,7 +11,7 @@ class MultipleHashtagFilterCondition implements FilterConditionInterface
     /**
      * @var string[] $hashtags
      */
-    private $hashtags;
+    private array $hashtags;
 
     /**
      * @param string[] $hashtags

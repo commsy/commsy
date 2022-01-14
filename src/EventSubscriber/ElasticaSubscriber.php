@@ -1,34 +1,30 @@
 <?php
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
-use App\Search\DocumentConverter\DocumentConverter;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
 use cs_file_item;
 use cs_list;
 use cs_project_item;
-use FOS\ElasticaBundle\Event\TransformEvent;
+use Elastica\Pipeline;
+use Elastica\Processor\AttachmentProcessor;
+use Elastica\Processor\ForeachProcessor;
+use FOS\ElasticaBundle\Event\PostIndexResetEvent;
+use FOS\ElasticaBundle\Event\PostTransformEvent;
+use FOS\ElasticaBundle\Index\IndexManager;
 use Psr\Cache\InvalidArgumentException;
+use ReflectionClass;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-/**
- * Class ElasticCustomPropertyListener
- * @package App\EventListener
- */
-class ElasticCustomPropertyListener implements EventSubscriberInterface
+class ElasticaSubscriber implements EventSubscriberInterface
 {
     /**
      * @var cs_environment
      */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var DocumentConverter
-     */
-    private DocumentConverter $file2TextService;
 
     /**
      * @var string
@@ -41,41 +37,70 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     private ItemService $itemService;
 
     /**
+     * @var IndexManager
+     */
+    private IndexManager $indexManager;
+
+    /**
      * ElasticCustomPropertyListener constructor.
      * @param LegacyEnvironment $legacyEnvironment
-     * @param DocumentConverter $file2TextService
      * @param KernelInterface $kernel
      * @param ItemService $itemService
+     * @param IndexManager $indexManager
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        DocumentConverter $file2TextService,
         KernelInterface $kernel,
-        ItemService $itemService
+        ItemService $itemService,
+        IndexManager $indexManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->file2TextService = $file2TextService;
         $this->projectDir = $kernel->getProjectDir();
         $this->itemService = $itemService;
+        $this->indexManager = $indexManager;
     }
 
-    /**
-     * @return string[]
-     */
-    public static function getSubscribedEvents(): array
+    public static function getSubscribedEvents()
     {
         return [
-            TransformEvent::POST_TRANSFORM => 'addCustomProperty'
+            PostIndexResetEvent::class => 'prepareIngestPipeline',
+            PostTransformEvent::class => 'addCustomProperty',
         ];
     }
 
+    public function prepareIngestPipeline(PostIndexResetEvent $event)
+    {
+        $index = $this->indexManager->getIndex($event->getIndex());
+        $pipeline = new Pipeline($index->getClient());
+
+        $attachmentPipelineId = 'attachment';
+
+        $response = $pipeline->getPipeline($attachmentPipelineId);
+        if ($response->getStatus() === 404) {
+            $attachmentProcessor = new AttachmentProcessor('_ingest._value.data');
+            $attachmentProcessor->setTargetField('_ingest._value.attachment');
+
+            $foreachProcessor = new ForeachProcessor('attachments', $attachmentProcessor);
+            $foreachProcessor->setIgnoreMissing(true);
+
+            $pipeline->setId($attachmentPipelineId);
+            $pipeline->setDescription('Pipeline for attachments');
+            $pipeline->addProcessor($foreachProcessor);
+            $pipeline->create();
+        }
+    }
+
     /**
-     * @param TransformEvent $event
+     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
-    public function addCustomProperty(TransformEvent $event)
+    public function addCustomProperty(PostTransformEvent $event)
     {
         $fields = $event->getFields();
+
+        if (isset($fields['rubric'])) {
+            $this->addRubric($event);
+        }
 
         if (isset($fields['hashtags'])) {
             $this->addHashtags($event);
@@ -89,12 +114,8 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
             $this->addAnnotations($event);
         }
 
-        if (isset($fields['files'])) {
-            $this->addFilesContent($event);
-        }
-
-        if (isset($fields['filesRaw'])) {
-            $this->addFilesRawContent($event);
+        if (isset($fields['attachments'])) {
+            $this->addAttachments($event);
         }
 
         if (isset($fields['context'])) {
@@ -126,11 +147,23 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
     }
 
+    private function addRubric(PostTransformEvent $event)
+    {
+        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
+
+        if ($item) {
+            // TODO: Consider using proper types / constants to transform an object to its rubric name
+            $ref = new ReflectionClass($event->getObject());
+            $rubric = strtolower(rtrim($ref->getShortName(), 's'));
+            $event->getDocument()->set('rubric', $rubric);
+        }
+    }
+
     /**
-     * @param TransformEvent $event
+     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
-    private function addHashtags(TransformEvent $event)
+    private function addHashtags(PostTransformEvent $event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -156,10 +189,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     }
 
     /**
-     * @param TransformEvent $event
+     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
-    private function addTags(TransformEvent $event)
+    private function addTags(PostTransformEvent $event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -189,10 +222,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     }
 
     /**
-     * @param TransformEvent $event
+     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
-    private function addContext(TransformEvent $event)
+    private function addContext(PostTransformEvent $event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -207,10 +240,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     }
 
     /**
-     * @param TransformEvent $event
+     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
-    private function addAnnotations(TransformEvent $event)
+    private function addAnnotations(PostTransformEvent $event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -236,48 +269,19 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
     }
 
     /**
-     * @param TransformEvent $event
-     * @throws InvalidArgumentException
+     * @param PostTransformEvent $event
      */
-    private function addFilesContent(TransformEvent $event)
+    private function addAttachments(PostTransformEvent $event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
-            $fileContents = [];
             $files = $item->getFileList();
-            if ($files->isNotEmpty()) {
+            $filesBase64 = $this->getBase64ContentofAllFiles($files);
 
-                /** @var cs_file_item $file */
-                $file = $files->getFirst();
-                while ($file) {
-                    if (!$file->isDeleted()) {
-                        $fileSize = $file->getFileSize();
-                        if ($fileSize > 0 && round($fileSize / 1024) < 25) {
-                            $content = $file->getContentBase64();
-                            if (!empty($content)) {
-                                $fileContents[] = $content;
-                            }
-                        }
-                    }
-
-                    $file = $files->getNext();
-                }
+            if (!empty($filesBase64)) {
+                $event->getDocument()->set('attachments', $filesBase64);
             }
-
-            $event->getDocument()->set('files', $fileContents);
-        }
-    }
-
-    private function addFilesRawContent(TransformEvent $event)
-    {
-        $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
-
-        if ($item) {
-            $files = $item->getFileList();
-            $filesPlain = $this->getPlainContentofAllFiles($files);
-
-            $event->getDocument()->set('filesRaw', $filesPlain);
         }
     }
 
@@ -285,24 +289,26 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
      * @param cs_list $files
      * @return array
      */
-    private function getPlainContentofAllFiles(cs_list $files): array
+    private function getBase64ContentofAllFiles(cs_list $files): array
     {
-        $filesPlain = [];
+        $filesBase64 = [];
 
         foreach ($files as $file) {
+            /** @var cs_file_item $file */
             if (!$file->isDeleted()) {
-                $fileName = $this->projectDir . '/' . $file->getFilepath();
-                $contentPlain = $this->file2TextService->convert($fileName);
-                if (!empty($contentPlain)) {
-                    // Ensure that the content is utf-8 encoded. This seems to be a problen only on production
-                    // server for now and not in the development environment for whatever reason.
-                    $filesPlain[] = mb_convert_encoding($contentPlain, 'UTF-8');
+                $fileSize = $file->getFileSize();
+                if ($fileSize > 0 && round($fileSize / 1024) < 25) {
+                    $content = $file->getContentBase64();
+                    if (!empty($content)) {
+                        $filesBase64[] = [
+                            'data' => $content,
+                        ];
+                    }
                 }
             }
         }
 
-        return $filesPlain;
-
+        return $filesBase64;
     }
 
     /**
@@ -322,12 +328,12 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 while ($article) {
                     if (!$article->isDeleted() && !$article->isDraft()) {
                         $files = $article->getFileList();
-                        $filesPlain = $this->getPlainContentofAllFiles($files);
+//                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
 
                         $articleContents[] = [
                             'subject' => $article->getSubject(),
                             'description' => $article->getDescription(),
-                            'filesRaw' => $filesPlain,
+//                            'files' => $filesBase64,
                         ];
                     }
 
@@ -362,11 +368,11 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                     while ($step) {
                         if (!$step->isDeleted() && !$step->isDraft()) {
                             $files = $step->getFileList();
-                            $filesPlain = $this->getPlainContentofAllFiles($files);
+//                            $filesBase64 = $this->getBase64ContentofAllFiles($files);
                             $stepContents[] = [
                                 'title' => $step->getTitle(),
                                 'description' => $step->getDescription(),
-                                'filesRaw' => $filesPlain,
+//                                'files' => $filesBase64,
                             ];
                         }
 
@@ -398,11 +404,11 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 while ($section) {
                     if (!$section->isDeleted() && !$section->isDraft()) {
                         $files = $section->getFileList();
-                        $filesPlain = $this->getPlainContentofAllFiles($files);
+//                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
                         $sectionContents[] = [
                             'title' => $section->getTitle(),
                             'description' => $section->getDescription(),
-                            'filesRaw' => $filesPlain,
+//                            'files' => $filesBase64,
                         ];
                     }
 
