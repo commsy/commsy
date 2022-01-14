@@ -50,7 +50,7 @@ class SearchManager
     public function getResults($sortArguments = [])
     {
         // create our basic query
-        $query = new \Elastica\Query();
+        $query = new Queries();
         $boolQuery = new Queries\BoolQuery();
 
         // query context
@@ -70,7 +70,7 @@ class SearchManager
 
         // aggregation
         $typeAggregation = new Aggregations\Terms('rubrics');
-        $typeAggregation->setField('_type');
+        $typeAggregation->setField('rubric');
         $query->addAggregation($typeAggregation);
 
         $creatorAggregation = new Aggregations\Terms('creators');
@@ -103,23 +103,13 @@ class SearchManager
         $statusesAggregation->setSize(100);
         $query->addAggregation($statusesAggregation);
 
-        // aggregations
-//        $filterAggregation = new Aggregations\Filter('filterContext');
-//        $filterAggregation->setFilter($contextFilter);
-
-//        $termsAggregation = new Aggregations\Terms('contexts');
-//        $termsAggregation->setField('contextId');
-//        $filterAggregation->addAggregation($termsAggregation);
-
-//        $query->addAggregation($filterAggregation);
-
         return $this->commsyFinder->createPaginatorAdapter($query);
     }
 
     public function getLinkedItemResults()
     {
         // create our basic query
-        $query = new \Elastica\Query();
+        $query = new Queries();
         $boolQuery = new Queries\BoolQuery();
 
         // query context
@@ -137,7 +127,7 @@ class SearchManager
 
     public function getRoomResults()
     {
-        $query = new \Elastica\Query();
+        $query = new Queries();
         $boolQuery = new Queries\BoolQuery();
 
         // query context

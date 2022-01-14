@@ -4,14 +4,15 @@
 namespace App\Search\QueryConditions;
 
 
+use DateTime;
 use Elastica\Query\MultiMatch;
 
 class MostFieldsQueryCondition implements QueryConditionInterface
 {
     /**
-     * @var string $query
+     * @var string|null $query
      */
-    private $query;
+    private ?string $query;
 
     /**
      * @param string $query
@@ -50,7 +51,7 @@ class MostFieldsQueryCondition implements QueryConditionInterface
 //            'modificationDate',
 
             // files
-            'files.content^1.6',
+            'attachments.attachment.content^1.6',
 //            'discussionarticles.files.content',
 //            'steps.files.content',
 //            'sections.files.content',
@@ -100,7 +101,7 @@ class MostFieldsQueryCondition implements QueryConditionInterface
          * In order to search in datetime fields we must ensure to send only search strings that are already in
          * a valid format.
          */
-        $queryAsDate = (\DateTime::createFromFormat('d.m.Y', $this->query)) ?: \DateTime::createFromFormat('Y-m-d', $this->query);
+        $queryAsDate = (DateTime::createFromFormat('d.m.Y', $this->query)) ?: DateTime::createFromFormat('Y-m-d', $this->query);
         if ($queryAsDate) {
             $fields[] = 'modificationDate';
             $multiMatch->setQuery($queryAsDate->format('Y-m-d'));

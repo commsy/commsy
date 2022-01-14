@@ -11,9 +11,9 @@ use Elastica\Query\Term;
 class TodoStatusFilterCondition implements FilterConditionInterface
 {
     /**
-     * @var int Todo status (1: 'pending', 2: 'in progress', 3: 'done')
+     * @var int|null Todo status (1: 'pending', 2: 'in progress', 3: 'done')
      */
-    private $todoStatus;
+    private ?int $todoStatus;
 
     /**
      * @param int $todoStatus

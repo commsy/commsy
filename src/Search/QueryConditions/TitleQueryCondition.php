@@ -9,9 +9,9 @@ use Elastica\Query\MultiMatch;
 class TitleQueryCondition implements QueryConditionInterface
 {
     /**
-     * @var string $title
+     * @var string|null $title
      */
-    private $title;
+    private ?string $title;
 
     /**
      * @param string $title
@@ -24,7 +24,7 @@ class TitleQueryCondition implements QueryConditionInterface
     }
 
     /**
-     * @return Match[]
+     * @return MultiMatch[]
      */
     public function getConditions(): array
     {

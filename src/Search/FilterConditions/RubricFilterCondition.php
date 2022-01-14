@@ -11,13 +11,13 @@ class RubricFilterCondition implements FilterConditionInterface
     /**
      * @var string|null $rubric
      */
-    private $rubric;
+    private ?string $rubric;
 
     /**
      * @param string $rubric
      * @return RubricFilterCondition
      */
-    public function setRubric($rubric): RubricFilterCondition
+    public function setRubric(string $rubric): RubricFilterCondition
     {
         $this->rubric = $rubric;
         return $this;
@@ -32,8 +32,8 @@ class RubricFilterCondition implements FilterConditionInterface
             return [];
         }
 
-        $rubricTerms = new Terms();
-        $rubricTerms->setTerms('_type', [$this->rubric]);
+        $rubricTerms = new Terms('rubric');
+        $rubricTerms->setTerms([$this->rubric]);
         return [$rubricTerms];
     }
 
