@@ -9,9 +9,9 @@ use Elastica\Query\MultiMatch;
 class DescriptionQueryCondition implements QueryConditionInterface
 {
     /**
-     * @var string $description
+     * @var string|null $description
      */
-    private $description;
+    private ?string $description;
 
     /**
      * @param string $description
@@ -24,7 +24,7 @@ class DescriptionQueryCondition implements QueryConditionInterface
     }
 
     /**
-     * @return Match[]
+     * @return MultiMatch[]
      */
     public function getConditions(): array
     {
