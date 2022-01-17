@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
+use App\Entity\IdP;
 use App\Entity\Portal;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,13 +17,21 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class ShibbolethController extends AbstractController
 {
     /**
-     * @Route("/login/{portalId}/auth/shib")
+     * @Route("/login/{portalId}/auth/shib/{idpsUri}")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      */
-    public function authShibbolethInit(Portal $portal): Response
+    public function authShibbolethInit(
+        Portal $portal,
+        $idpsUri = null,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         // Check that we have an enabled shibboleth authentication
         $authSources = $portal->getAuthSources();
+
+        // fetch the chosen ipd by its ID
+        $idpRepo = $entityManager->getRepository(Idp::Class);
+        $idp = $idpRepo->find($idpsUri);
 
         /** @var AuthSourceShibboleth $shibSource */
         $shibSource = $authSources->filter(function (AuthSource $authSource) {
@@ -41,7 +51,7 @@ class ShibbolethController extends AbstractController
         ],UrlGeneratorInterface::ABSOLUTE_URL);
 
         // redirect to Idp
-        $initiatorUrl = $shibSource->getLoginUrl() . '?target=' . urlencode($returnUrl);
+        $initiatorUrl = $shibSource->getLoginUrl() . '?target=' . urlencode($returnUrl) .'&entityID=' . urlencode($idp->getUrl());
         return $this->redirect($initiatorUrl);
     }
 

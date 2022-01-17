@@ -31,6 +31,9 @@
             {{ form_row(form.mappingEmail) }}
             <hr />
             {{ form_row(form.createRoom) }}
+            {{ form_row(form.idps) }}
+            <a href="{{ path('app_portalsettings_idpmanagement', {'portalId': portal.id}) }}" class="uk-button uk-button-primary">{{ 'Manage idps'|trans({}, "portal") }}</a>
+            <hr />
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}
