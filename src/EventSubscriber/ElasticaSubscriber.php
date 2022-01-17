@@ -11,13 +11,14 @@ use cs_project_item;
 use Elastica\Pipeline;
 use Elastica\Processor\AttachmentProcessor;
 use Elastica\Processor\ForeachProcessor;
+use Elastica\Processor\RemoveProcessor;
+use Elastica\Request;
 use FOS\ElasticaBundle\Event\PostIndexResetEvent;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
 use Psr\Cache\InvalidArgumentException;
 use ReflectionClass;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class ElasticaSubscriber implements EventSubscriberInterface
 {
@@ -25,11 +26,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
      * @var cs_environment
      */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var string
-     */
-    private string $projectDir;
 
     /**
      * @var ItemService
@@ -44,18 +40,15 @@ class ElasticaSubscriber implements EventSubscriberInterface
     /**
      * ElasticCustomPropertyListener constructor.
      * @param LegacyEnvironment $legacyEnvironment
-     * @param KernelInterface $kernel
      * @param ItemService $itemService
      * @param IndexManager $indexManager
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        KernelInterface $kernel,
         ItemService $itemService,
         IndexManager $indexManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->projectDir = $kernel->getProjectDir();
         $this->itemService = $itemService;
         $this->indexManager = $indexManager;
     }
@@ -77,16 +70,39 @@ class ElasticaSubscriber implements EventSubscriberInterface
 
         $response = $pipeline->getPipeline($attachmentPipelineId);
         if ($response->getStatus() === 404) {
-            $attachmentProcessor = new AttachmentProcessor('_ingest._value.data');
-            $attachmentProcessor->setTargetField('_ingest._value.attachment');
-
-            $foreachProcessor = new ForeachProcessor('attachments', $attachmentProcessor);
-            $foreachProcessor->setIgnoreMissing(true);
-
             $pipeline->setId($attachmentPipelineId);
             $pipeline->setDescription('Pipeline for attachments');
-            $pipeline->addProcessor($foreachProcessor);
-            $pipeline->create();
+
+            $attachmentProcessor = new AttachmentProcessor('_ingest._value.data');
+            $attachmentProcessor->setTargetField('_ingest._value.attachment');
+            $foreachAttachmentProcessor = new ForeachProcessor('attachments', $attachmentProcessor);
+            $foreachAttachmentProcessor->setIgnoreMissing(true);
+//            $pipeline->addProcessor($foreachAttachmentProcessor);
+
+            $removeProcessor = new RemoveProcessor('_ingest._value.data');
+            $foreachRemoveProcessor = new ForeachProcessor('attachments', $removeProcessor);
+            $foreachRemoveProcessor->setIgnoreMissing(true);
+//            $pipeline->addProcessor($foreachRemoveProcessor);
+
+            /*
+             * TODO: This is a workaround (see https://github.com/ruflin/Elastica/issues/1810), because ruflin/elastica
+             * does not support creating multiple processors with the same name yet. It will override the previously
+             * added processors.
+             */
+            $pipelineDefinition = [
+                'description' => 'Pipeline for attachments',
+                'processors' => [
+                    $foreachAttachmentProcessor->toArray(),
+                    $foreachRemoveProcessor->toArray(),
+                ]
+            ];
+            $index->getClient()->request(
+                "_ingest/pipeline/{$attachmentPipelineId}",
+                Request::PUT,
+                json_encode($pipelineDefinition)
+            );
+
+//            $pipeline->create();
         }
     }
 
