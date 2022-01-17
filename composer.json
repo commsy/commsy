@@ -21,7 +21,7 @@
         "eluceo/ical": "^0.15",
         "ezyang/htmlpurifier": "^4.1",
         "friendsofsymfony/ckeditor-bundle": "^2.0",
-        "friendsofsymfony/elastica-bundle": "^5.2",
+        "friendsofsymfony/elastica-bundle": "^6.0",
         "friendsofsymfony/rest-bundle": "^3.0",
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^5.3",
@@ -39,10 +39,8 @@
         "nette/utils": "^3.1",
         "ozdemirburak/iris": "^2.3",
         "php-imap/php-imap": "^4.1",
-        "phpoffice/phpword": "^0.18.2",
         "sabre/vobject": "^4.3",
         "sensio/framework-extra-bundle": "^5.6",
-        "smalot/pdfparser": "^1.1",
         "symfony/asset": "4.4.*",
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",
@@ -116,17 +114,6 @@
         "symfony/polyfill-php56": "*"
     },
     "scripts": {
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "ckeditor:install --clear=drop": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        },
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ]
     },
     "conflict": {
         "symfony/symfony": "*"

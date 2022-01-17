@@ -12,7 +12,7 @@ class RoomFilterCondition implements FilterConditionInterface
     /**
      * @var UserService $userService
      */
-    private $userService;
+    private UserService $userService;
 
     public function __construct(UserService $userService)
     {
@@ -20,7 +20,7 @@ class RoomFilterCondition implements FilterConditionInterface
     }
 
     /**
-     * @return Terms[]
+     * @return Ids[]
      */
     public function getConditions(): array
     {

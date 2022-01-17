@@ -14,18 +14,19 @@ fos_elastica:
         default: { url: '%env(ELASTICSEARCH_URL)%' }
 
     indexes:
+        # Announcements
         commsy_announcement:
             index_name: '%env(ELASTIC_INDEX)%_announcement'
             client: default
             finder: ~
             settings:
+                max_ngram_diff: 20
                 analysis:
                     analyzer:
                         commsy_analyzer:
                             type: custom
                             tokenizer: standard
                             filter:
-                                - standard
                                 - lowercase
                                 - stop_de_filter
                                 - stop_en_filter
@@ -37,7 +38,6 @@ fos_elastica:
                             type: custom
                             tokenizer: standard
                             filter:
-                                - standard
                                 - lowercase
                                 - stop_de_filter
                                 - stop_en_filter
@@ -47,8 +47,8 @@ fos_elastica:
                     filter:
                         ngrams_filter:
                             type: ngram
-                            min_gram: 3
-                            max_gram: 25
+                            min_gram: 1
+                            max_gram: 20
                             token_chars:
                                 - letter
                                 - digit
@@ -61,860 +61,34 @@ fos_elastica:
                             type: stop
                             stopword: _english_
 
-            types:
-                # Announcements
-                announcement:
-                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
+            persistence:
+                driver: orm
+                model: App\Entity\Announcement
+                identifier: itemId
+                finder: ~
+                provider: ~
+                listener:
+                    enabled: false
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                context:
+                    type: object
                     properties:
-                        context:
-                            type: object
-                            properties:
-                                title:
-                                    type: keyword
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                        contextId:
-                            type: integer
-                        creator:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
                         title:
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
-                            fields:
-                                raw:
-                                    type: keyword
-                        description:
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                        endDate:
-                            type: date
-                            format: date_optional_time
-                        hashtags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
                             type: keyword
-                        tags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: keyword
-                        annotations:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                    #                        files:
-                    #                            # resolved by FOSElastica using POST_TRANSFORM
-                    #                            property_path: false
-                    #                            type: 'attachment'
-                        filesRaw:
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                    persistence:
-                        driver: orm
-                        model: App\Entity\Announcement
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: { enabled: false }
-
-        commsy_date:
-            index_name: '%env(ELASTIC_INDEX)%_date'
-            client: default
-            finder: ~
-            settings:
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 25
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
-            types:
-                # Dates
-                date:
-                    indexable_callback: ['@commsy_date.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                contextId:
+                    type: integer
+                creator:
+                    type: object
                     properties:
-                        context:
-                            type: object
-                            properties:
-                                title:
-                                    type: keyword
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                        contextId:
-                            type: integer
-                        creator:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
-                        title:
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
-                            fields:
-                                raw:
-                                    type: keyword
-                        description:
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                        datetimeStart:
-                            type: date
-                            format: date_optional_time
-                        datetimeEnd:
-                            type: date
-                            format: date_optional_time
-                        hashtags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: keyword
-                        tags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: keyword
-                        annotations:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                        filesRaw:
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                    #                        files:
-                    #                            # resolved by FOSElastica using POST_TRANSFORM
-                    #                            property_path: false
-                    #                            type: 'attachment'
-                    persistence:
-                        driver: orm
-                        model: App\Entity\Dates
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: { enabled: false }
-
-        commsy_discussion:
-            index_name: '%env(ELASTIC_INDEX)%_discussion'
-            client: default
-            finder: ~
-            settings:
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 25
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
-            types:
-                # Discussions
-                discussion:
-                    indexable_callback: ['@commsy_discussion.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
-                    properties:
-                        context:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: object
-                            properties:
-                                title:
-                                    type: keyword
-                        contextId:
-                            type: integer
-                        creator:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
-                        title:
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
-                            fields:
-                                raw:
-                                    type: keyword
-                        discussionarticles:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: object
-                            properties:
-                                subject:
-                                    type: text
-                                    analyzer: commsy_analyzer
-                                    search_analyzer: html_strip_analyzer
-                                description:
-                                    type: text
-                                    analyzer: html_strip_analyzer
-                                    search_analyzer: html_strip_analyzer
-                        filesRaw:
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                        #                                files:
-                        #                                    # resolved by FOSElastica using POST_TRANSFORM
-                        #                                    property_path: false
-                        #                                    type: 'attachment'
-                        hashtags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: keyword
-                        tags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: keyword
-                        annotations:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                    #                        files:
-                    #                            # resolved by FOSElastica using POST_TRANSFORM
-                    #                            property_path: false
-                    #                            type: 'attachment'
-                    persistence:
-                        driver: orm
-                        model: App\Entity\Discussions
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: { enabled: false }
-
-        commsy_label:
-            index_name: '%env(ELASTIC_INDEX)%_label'
-            client: default
-            finder: ~
-            settings:
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 25
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
-            types:
-                # Labels (Groups, Topics, Institutions)
-                label:
-                    indexable_callback: ['@commsy_label.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
-                    properties:
-                        context:
-                            type: object
-                            properties:
-                                title:
-                                    type: keyword
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                        contextId:
-                            type: integer
-                        creator:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
-                        name:
-                            type: text
-                            copy_to: title
-                        title:
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
-                            fields:
-                                raw:
-                                    type: keyword
-                        description:
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                    persistence:
-                        driver: orm
-                        model: App\Entity\Labels
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: { enabled: false }
-
-        commsy_room:
-            index_name: '%env(ELASTIC_INDEX)%_room'
-            client: default
-            finder: ~
-            settings:
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 25
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
-            types:
-                # Rooms
-                room:
-                    indexable_callback: ['@commsy_room.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
-                    properties:
-                        contextId:
-                            type: integer
-                        parentId:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: integer
-                        creator:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
-                        title:
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
-                            fields:
-                                raw:
-                                    type: keyword
-                        contactPersons:
-                            type: text
-                        roomDescription:
-                            type: text
-                        description:
-                            property_path: getRoomDescription
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                        activity:
-                            type: integer
-                    persistence:
-                        driver: orm
-                        model: App\Entity\Room
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: { enabled: false }
-
-        commsy_todo:
-            index_name: '%env(ELASTIC_INDEX)%_todo'
-            client: default
-            finder: ~
-            settings:
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 25
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
-            types:
-                # Todos
-                todo:
-                    indexable_callback: ['@commsy_todo.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
-                    properties:
-                        context:
-                            type: object
-                            properties:
-                                title:
-                                    type: keyword
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                        contextId:
-                            type: integer
-                        creator:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
-                        title:
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
-                            fields:
-                                raw:
-                                    type: keyword
-                        date:
-                            type: date
-                            format: date_optional_time
-                        description:
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                        status:
-                            type: integer
-                        steps:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: object
-                            properties:
-                                title:
-                                    type: text
-                                    analyzer: commsy_analyzer
-                                    search_analyzer: html_strip_analyzer
-                                    fields:
-                                        raw:
-                                            type: keyword
-                                description:
-                                    type: text
-                                    analyzer: html_strip_analyzer
-                                    search_analyzer: html_strip_analyzer
-                        filesRaw:
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                        #                                files:
-                        #                                    # resolved by FOSElastica using POST_TRANSFORM
-                        #                                    property_path: false
-                        #                                    type: 'attachment'
-                        hashtags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: keyword
-                        tags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: keyword
-                        annotations:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                    #                        files:
-                    #                            # resolved by FOSElastica using POST_TRANSFORM
-                    #                            property_path: false
-                    #                            type: 'attachment'
-                    persistence:
-                        driver: orm
-                        model: App\Entity\Todos
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: { enabled: false }
-
-        commsy_user:
-            index_name: '%env(ELASTIC_INDEX)%_user'
-            client: default
-            finder: ~
-            settings:
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - standard
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 25
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
-            types:
-                # User
-                user:
-                    indexable_callback: ['@commsy_user.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
-                    properties:
-                        context:
-                            type: object
-                            properties:
-                                title:
-                                    type: keyword
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                        userId:
-                            type: text
-                        contextId:
-                            type: integer
                         firstName:
                             type: text
                             copy_to: fullName
@@ -923,76 +97,75 @@ fos_elastica:
                             copy_to: fullName
                         fullName:
                             type: text
-                        creator:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
-                        title:
-                            property_path: getFullname
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
                             fields:
                                 raw:
                                     type: keyword
-                        description:
+                modifier:
+                    type: object
+                    properties:
+                        firstName:
                             type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
-                    persistence:
-                        driver: orm
-                        model: App\Entity\User
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: { enabled: false }
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                title:
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
+                            type: keyword
+                description:
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                endDate:
+                    type: date
+                    format: date_optional_time
+                hashtags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                tags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                annotations:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                attachments:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
 
-        commsy_material:
-            index_name: '%env(ELASTIC_INDEX)%_material'
+        # Dates
+        commsy_date:
+            index_name: '%env(ELASTIC_INDEX)%_date'
             client: default
             finder: ~
             settings:
+                max_ngram_diff: 20
                 analysis:
                     analyzer:
                         commsy_analyzer:
                             type: custom
                             tokenizer: standard
                             filter:
-                                - standard
                                 - lowercase
                                 - stop_de_filter
                                 - stop_en_filter
@@ -1004,7 +177,6 @@ fos_elastica:
                             type: custom
                             tokenizer: standard
                             filter:
-                                - standard
                                 - lowercase
                                 - stop_de_filter
                                 - stop_en_filter
@@ -1015,7 +187,7 @@ fos_elastica:
                         ngrams_filter:
                             type: ngram
                             min_gram: 3
-                            max_gram: 25
+                            max_gram: 20
                             token_chars:
                                 - letter
                                 - digit
@@ -1027,58 +199,621 @@ fos_elastica:
                         stop_en_filter:
                             type: stop
                             stopword: _english_
-            types:
-                # Materials
-                material:
-                    indexable_callback: ['@commsy_material.search.indexable_checker', 'isIndexable']
-                    _all:
-                        enabled: false
+
+            persistence:
+                driver: orm
+                model: App\Entity\Dates
+                identifier: itemId
+                finder: ~
+                provider: ~
+                listener:
+                    enabled: false
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                context:
+                    type: object
                     properties:
-                        context:
-                            type: object
-                            properties:
-                                title:
+                        title:
+                            type: keyword
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                contextId:
+                    type: integer
+                creator:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
                                     type: keyword
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                        versionId:
-                            type: integer
-                        contextId:
-                            type: integer
-                        creator:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        modifier:
-                            type: object
-                            properties:
-                                firstName:
-                                    type: text
-                                    copy_to: fullName
-                                lastName:
-                                    type: text
-                                    copy_to: fullName
-                                fullName:
-                                    type: text
-                                    fields:
-                                        raw:
-                                            type: keyword
-                        creationDate:
-                            type: date
-                            format: date_optional_time
-                        modificationDate:
-                            type: date
-                            format: date_optional_time
+                modifier:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                title:
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
+                            type: keyword
+                description:
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                datetimeStart:
+                    type: date
+                    format: date_optional_time
+                datetimeEnd:
+                    type: date
+                    format: date_optional_time
+                hashtags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                tags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                annotations:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                attachments:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+
+        # Discussions
+        commsy_discussion:
+            index_name: '%env(ELASTIC_INDEX)%_discussion'
+            client: default
+            finder: ~
+            settings:
+                max_ngram_diff: 20
+                analysis:
+                    analyzer:
+                        commsy_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                                - ngrams_filter
+                            char_filter:
+                                - html_strip
+
+                        html_strip_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                            char_filter:
+                                - html_strip
+
+                    filter:
+                        ngrams_filter:
+                            type: ngram
+                            min_gram: 3
+                            max_gram: 20
+                            token_chars:
+                                - letter
+                                - digit
+
+                        stop_de_filter:
+                            type: stop
+                            stopword: _german_
+
+                        stop_en_filter:
+                            type: stop
+                            stopword: _english_
+
+            persistence:
+                driver: orm
+                model: App\Entity\Discussions
+                identifier: itemId
+                finder: ~
+                provider: ~
+                listener:
+                    enabled: false
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                context:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                    properties:
+                        title:
+                            type: keyword
+                contextId:
+                    type: integer
+                creator:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                modifier:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                title:
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
+                            type: keyword
+                discussionarticles:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                    properties:
+                        subject:
+                            type: text
+                            analyzer: commsy_analyzer
+                            search_analyzer: html_strip_analyzer
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
+                attachments:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                hashtags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                tags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                annotations:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+            #                        attachments:
+            #                            # resolved by FOSElastica using POST_TRANSFORM
+            #                            property_path: false
+            #                            type: object
+
+        # Labels (Groups, Topics, Institutions)
+        commsy_label:
+            index_name: '%env(ELASTIC_INDEX)%_label'
+            client: default
+            finder: ~
+            settings:
+                max_ngram_diff: 20
+                analysis:
+                    analyzer:
+                        commsy_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                                - ngrams_filter
+                            char_filter:
+                                - html_strip
+
+                        html_strip_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                            char_filter:
+                                - html_strip
+
+                    filter:
+                        ngrams_filter:
+                            type: ngram
+                            min_gram: 3
+                            max_gram: 20
+                            token_chars:
+                                - letter
+                                - digit
+
+                        stop_de_filter:
+                            type: stop
+                            stopword: _german_
+
+                        stop_en_filter:
+                            type: stop
+                            stopword: _english_
+
+            persistence:
+                driver: orm
+                model: App\Entity\Labels
+                identifier: itemId
+                finder: ~
+                provider: ~
+                listener:
+                    enabled: false
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                context:
+                    type: object
+                    properties:
+                        title:
+                            type: keyword
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                contextId:
+                    type: integer
+                creator:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                modifier:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                name:
+                    type: text
+                    copy_to: title
+                title:
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
+                            type: keyword
+                description:
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+
+        # Rooms
+        commsy_room:
+            index_name: '%env(ELASTIC_INDEX)%_room'
+            client: default
+            finder: ~
+            settings:
+                max_ngram_diff: 20
+                analysis:
+                    analyzer:
+                        commsy_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                                - ngrams_filter
+                            char_filter:
+                                - html_strip
+
+                        html_strip_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                            char_filter:
+                                - html_strip
+
+                    filter:
+                        ngrams_filter:
+                            type: ngram
+                            min_gram: 3
+                            max_gram: 20
+                            token_chars:
+                                - letter
+                                - digit
+
+                        stop_de_filter:
+                            type: stop
+                            stopword: _german_
+
+                        stop_en_filter:
+                            type: stop
+                            stopword: _english_
+
+            persistence:
+                driver: orm
+                model: App\Entity\Room
+                identifier: itemId
+                finder: ~
+                provider: ~
+                listener:
+                    enabled: false
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                contextId:
+                    type: integer
+                parentId:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: integer
+                creator:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                modifier:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                title:
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
+                            type: keyword
+                contactPersons:
+                    type: text
+                roomDescription:
+                    type: text
+                description:
+                    property_path: getRoomDescription
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                activity:
+                    type: integer
+
+        # Todos
+        commsy_todo:
+            index_name: '%env(ELASTIC_INDEX)%_todo'
+            client: default
+            finder: ~
+            settings:
+                max_ngram_diff: 20
+                analysis:
+                    analyzer:
+                        commsy_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                                - ngrams_filter
+                            char_filter:
+                                - html_strip
+
+                        html_strip_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                            char_filter:
+                                - html_strip
+
+                    filter:
+                        ngrams_filter:
+                            type: ngram
+                            min_gram: 3
+                            max_gram: 20
+                            token_chars:
+                                - letter
+                                - digit
+
+                        stop_de_filter:
+                            type: stop
+                            stopword: _german_
+
+                        stop_en_filter:
+                            type: stop
+                            stopword: _english_
+
+            persistence:
+                driver: orm
+                model: App\Entity\Todos
+                identifier: itemId
+                finder: ~
+                provider: ~
+                listener:
+                    enabled: false
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                context:
+                    type: object
+                    properties:
+                        title:
+                            type: keyword
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                contextId:
+                    type: integer
+                creator:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                modifier:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                title:
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
+                            type: keyword
+                date:
+                    type: date
+                    format: date_optional_time
+                description:
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                status:
+                    type: integer
+                steps:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                    properties:
                         title:
                             type: text
                             analyzer: commsy_analyzer
@@ -1090,58 +825,320 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-                        sections:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
-                            type: object
-                            properties:
-                                title:
-                                    type: text
-                                    analyzer: commsy_analyzer
-                                    search_analyzer: html_strip_analyzer
-                                    fields:
-                                        raw:
-                                            type: keyword
-                                description:
-                                    type: text
-                                    analyzer: html_strip_analyzer
-                                    search_analyzer: html_strip_analyzer
-                        #                                files:
-                        #                                    # resolved by FOSElastica using POST_TRANSFORM
-                        #                                    property_path: false
-                        #                                    type: 'attachment'
+                attachments:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                hashtags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                tags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                annotations:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+            #                        attachments:
+            #                            # resolved by FOSElastica using POST_TRANSFORM
+            #                            property_path: false
+            #                            type: object
 
-                        hashtags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
+        # User
+        commsy_user:
+            index_name: '%env(ELASTIC_INDEX)%_user'
+            client: default
+            finder: ~
+            settings:
+                max_ngram_diff: 20
+                analysis:
+                    analyzer:
+                        commsy_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                                - ngrams_filter
+                            char_filter:
+                                - html_strip
+
+                        html_strip_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                            char_filter:
+                                - html_strip
+
+                    filter:
+                        ngrams_filter:
+                            type: ngram
+                            min_gram: 3
+                            max_gram: 20
+                            token_chars:
+                                - letter
+                                - digit
+
+                        stop_de_filter:
+                            type: stop
+                            stopword: _german_
+
+                        stop_en_filter:
+                            type: stop
+                            stopword: _english_
+
+            persistence:
+                driver: orm
+                model: App\Entity\User
+                identifier: itemId
+                finder: ~
+                provider: ~
+                listener:
+                    enabled: false
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                context:
+                    type: object
+                    properties:
+                        title:
                             type: keyword
-                        tags:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                userId:
+                    type: text
+                contextId:
+                    type: integer
+                firstName:
+                    type: text
+                    copy_to: fullName
+                lastName:
+                    type: text
+                    copy_to: fullName
+                fullName:
+                    type: text
+                creator:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                modifier:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                title:
+                    property_path: getFullname
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
                             type: keyword
-                        annotations:
-                            # resolved by FOSElastica using POST_TRANSFORM
-                            property_path: false
+                description:
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+
+        # Materials
+        commsy_material:
+            index_name: '%env(ELASTIC_INDEX)%_material'
+            client: default
+            finder: ~
+            settings:
+                max_ngram_diff: 20
+                analysis:
+                    analyzer:
+                        commsy_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                                - ngrams_filter
+                            char_filter:
+                                - html_strip
+
+                        html_strip_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                            char_filter:
+                                - html_strip
+
+                    filter:
+                        ngrams_filter:
+                            type: ngram
+                            min_gram: 3
+                            max_gram: 20
+                            token_chars:
+                                - letter
+                                - digit
+
+                        stop_de_filter:
+                            type: stop
+                            stopword: _german_
+
+                        stop_en_filter:
+                            type: stop
+                            stopword: _english_
+
+            persistence:
+                driver: orm
+                model: App\Entity\Materials
+                identifier: itemId
+                finder: ~
+                provider:
+                    query_builder_method: createSearchQueryBuilder
+                listener:
+                    enabled: false
+                elastica_to_model_transformer:
+                    query_builder_method: createSearchHydrationQueryBuilder
+
+            indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+
+            properties:
+                rubric:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                context:
+                    type: object
+                    properties:
+                        title:
+                            type: keyword
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                versionId:
+                    type: integer
+                contextId:
+                    type: integer
+                creator:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                modifier:
+                    type: object
+                    properties:
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
+                            fields:
+                                raw:
+                                    type: keyword
+                creationDate:
+                    type: date
+                    format: date_optional_time
+                modificationDate:
+                    type: date
+                    format: date_optional_time
+                title:
+                    type: text
+                    analyzer: commsy_analyzer
+                    search_analyzer: html_strip_analyzer
+                    fields:
+                        raw:
+                            type: keyword
+                description:
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                sections:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
+                    properties:
+                        title:
+                            type: text
+                            analyzer: commsy_analyzer
+                            search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
+                        description:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-#                        files:
-                            # resolved by FOSElastica using POST_TRANSFORM
-#                            property_path: false
-#                            type: 'attachment'
-                        filesRaw:
-                            property_path: false
-                            type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
+                #                                attachments:
+                #                                    # resolved by FOSElastica using POST_TRANSFORM
+                #                                    property_path: false
+                #                                    type: object
 
-                    persistence:
-                        driver: orm
-                        model: App\Entity\Materials
-                        identifier: itemId
-                        finder: ~
-                        provider:
-                            query_builder_method: createSearchQueryBuilder
-                        listener: ~
-                        elastica_to_model_transformer:
-                            query_builder_method: createSearchHydrationQueryBuilder
+                hashtags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                tags:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: keyword
+                annotations:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: text
+                    analyzer: html_strip_analyzer
+                    search_analyzer: html_strip_analyzer
+                attachments:
+                    # resolved by FOSElastica using POST_TRANSFORM
+                    property_path: false
+                    type: object
