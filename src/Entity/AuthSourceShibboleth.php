@@ -67,6 +67,8 @@ class AuthSourceShibboleth extends AuthSource
      */
     private ?string $mappingEmail;
 
+    private $idps;
+
     public function __construct()
     {
         $this->addAccount = self::ADD_ACCOUNT_NO;
@@ -206,4 +208,21 @@ class AuthSourceShibboleth extends AuthSource
         $this->mappingEmail = $mappingEmail;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getIdps()
+    {
+        return $this->idps;
+    }
+
+    /**
+     * @param mixed $idps
+     */
+    public function setIdps($idps): void
+    {
+        $this->idps = $idps;
+    }
+
 }

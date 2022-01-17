@@ -1127,6 +1127,18 @@
                 <source>portal.form_desc_en</source>
                 <target>Beschreibung Englisch</target>
             </trans-unit>
+            <trans-unit id="available_idps">
+                <source>Available idps</source>
+                <target>Verfügbare Idps</target>
+            </trans-unit>
+            <trans-unit id="manage_idps">
+                <source>Manage idps</source>
+                <target>Idps verwalten</target>
+            </trans-unit>
+            <trans-unit id="remove">
+                <source>Remove</source>
+                <target>Entfernen</target>
+            </trans-unit>
 
             <!-- appearance form -->
             <trans-unit id="portal_fappearance_orm_title">
