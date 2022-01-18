@@ -14,7 +14,6 @@ use App\Entity\AuthSourceGuest;
 use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceLocal;
 use App\Entity\AuthSourceShibboleth;
-use App\Entity\IdP;
 use App\Entity\License;
 use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
@@ -26,7 +25,6 @@ use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
-use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
@@ -49,7 +47,6 @@ use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\DataPrivacyType;
 use App\Form\Type\Portal\DeleteArchiveRoomsType;
 use App\Form\Type\Portal\GeneralType;
-use App\Form\Type\Portal\IdpType;
 use App\Form\Type\Portal\ImpressumType;
 use App\Form\Type\Portal\InactiveType;
 use App\Form\Type\Portal\LicenseSortType;
@@ -86,8 +83,6 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -95,12 +90,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -632,6 +625,8 @@ class PortalSettingsController extends AbstractController
      * @Template()
      * @param Portal $portal
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return array|RedirectResponse
      */
     public function authShibboleth(
         Portal $portal,
@@ -655,18 +650,7 @@ class PortalSettingsController extends AbstractController
             $shibSource->setPortal($portal);
         }
 
-        $idpRepo = $entityManager->getRepository(Idp::Class);
-        $idps = $idpRepo->findBy(array('authSourceShibboleth' => $shibSource));
-        $shibSource->setIdps($idps);
-
-        $choices = [];
-        foreach($idps as $currentIpd) {
-            $choices[$currentIpd->getName() . ' = ' . $currentIpd->getUrl()] = $currentIpd->getId();
-         }
-
-        $authShibbolethForm = $this->createForm(AuthShibbolethType::class, $shibSource, array(
-            'idps_options_array' => $choices,
-        ));
+        $authShibbolethForm = $this->createForm(AuthShibbolethType::class, $shibSource);
         $authShibbolethForm->handleRequest($request);
 
         if ($authShibbolethForm->isSubmitted() && $authShibbolethForm->isValid()) {
@@ -685,6 +669,9 @@ class PortalSettingsController extends AbstractController
                     });
                     $shibSource->setDefault(true);
                 }
+                /** @var AuthSourceShibboleth $formData */
+                $formData = $authShibbolethForm->getData();
+                $shibSource->setIdentityProviders($formData->getIdentityProviders());
 
                 $entityManager->persist($shibSource);
                 $entityManager->flush();
@@ -693,105 +680,6 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $authShibbolethForm->createView(),
-            'portal' => $portal
-        ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/settings/auth/shib/idp/{idpId}")
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     * @Template()
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @param Portal $portal
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     */
-    public function idpManagement(
-        Request $request,
-        Portal $portal,
-        EntityManagerInterface $entityManager,
-        $idpId = null
-    ) {
-        $portalId = $portal->getId();
-        $authSources = $portal->getAuthSources();
-
-        /** @var AuthSourceShibboleth $shibSource */
-        $shibSource = $authSources->filter(function (AuthSource $authSource) {
-            return $authSource instanceof AuthSourceShibboleth;
-        })->first();
-
-        $idpRepo = $entityManager->getRepository(Idp::Class);
-        $idps = $idpRepo->findBy(array('authSourceShibboleth' => $shibSource));
-
-        if ($idpId) {
-            $idp = $idpRepo->find($idpId);
-        } else {
-            $idp = new IdP();
-            $idp->setAuthSourceShibboleth($shibSource);
-        }
-
-        $idp->setIdps($idps);
-
-        $choices = [];
-        foreach($idps as $currentIpd) {
-            $choices[$currentIpd->getName() . ' = ' . $currentIpd->getUrl()] = $currentIpd->getId();
-        }
-
-
-        $idpForm = $this->createForm(IdpType::class, $idp, array(
-            'idps_options_array' => $choices,
-        ));
-
-        if ($shibSource === false) {
-            $idpForm->addError(new FormError('not allowed'));
-        }
-
-        $idpForm->handleRequest($request);
-        if ($idpForm->isSubmitted() && $idpForm->isValid()) {
-            $clickedButtonName = $idpForm->getClickedButton()->getName();
-            if ($clickedButtonName === 'back') {
-                return $this->redirectToRoute('app_portalsettings_authshibboleth', [
-                    'portalId' => $portalId,
-                ]);
-            }
-
-            if ($clickedButtonName === 'add') {
-                $entityManager->persist($idp);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_portalsettings_idpmanagement', [
-                    'portalId' => $portalId,
-                ]);
-            }
-
-            if ($clickedButtonName === 'remove') {
-                $choice = $idpForm->get('idps')->getData();
-                $em = $this->getDoctrine()->getManager();
-                $repository = $em->getRepository(IdP::class);
-                $chosenIdp = $repository->find($choice[0]);
-                $em->remove($chosenIdp);
-                $em->flush();
-
-                return $this->redirectToRoute('app_portalsettings_idpmanagement', [
-                    'portalId' => $portalId,
-                ]);
-            }
-
-            if ($clickedButtonName === 'edit') {
-                $choice = $idpForm->get('idps')->getData();
-                $em = $this->getDoctrine()->getManager();
-                $repository = $em->getRepository(IdP::class);
-                $chosenIdp = $repository->find($choice[0]);
-
-                return $this->redirectToRoute('app_portalsettings_idpmanagement', [
-                    'portalId' => $portalId,
-                    'idpId' => $chosenIdp->getId()
-                ]);
-            }
-        }
-
-        return [
-            'form' => $idpForm->createView(),
             'portal' => $portal
         ];
     }

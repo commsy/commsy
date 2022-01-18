@@ -6,6 +6,10 @@
                 <source>Add</source>
                 <target>Add</target>
             </trans-unit>
+            <trans-unit id="form-remove">
+                <source>Remove</source>
+                <target>Remove</target>
+            </trans-unit>
             <trans-unit id="form-back">
                 <source>Back</source>
                 <target>Back</target>
