@@ -65,8 +65,7 @@ class db_mysql_connector
                     || strstr($query, 'INSERT INTO materials')
                     || strstr($query, 'INSERT INTO noticed')
                     || strstr($query, 'INSERT INTO reader')
-                    || strstr($query, 'INSERT INTO section')
-                    || strstr($query, 'INSERT INTO item_backup')) {
+                    || strstr($query, 'INSERT INTO section')) {
 
                     $retour = $statement;
                 } else {

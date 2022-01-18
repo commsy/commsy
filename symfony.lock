@@ -366,6 +366,9 @@
     "nikic/php-parser": {
         "version": "v4.3.0"
     },
+    "nyholm/dsn": {
+        "version": "2.0.1"
+    },
     "ocramius/package-versions": {
         "version": "1.5.1"
     },
@@ -404,9 +407,6 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.1.0"
-    },
-    "phpoffice/phpword": {
-        "version": "0.18.2"
     },
     "phpspec/prophecy": {
         "version": "v1.10.3"
@@ -532,9 +532,6 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
-    },
-    "smalot/pdfparser": {
-        "version": "v1.1.0"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.0",

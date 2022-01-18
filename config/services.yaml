@@ -147,6 +147,7 @@ services:
             - '../src/DataFixtures/'
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/Event/'
             - '../src/Form/Model/'
             - '../src/Kernel.php'
             - '../src/Mail/Messages/'
@@ -169,8 +170,6 @@ services:
             - 'doctrine.fixture.orm'
 
     _instanceof:
-        App\Search\DocumentConverter\DocumentConverterInterface:
-            tags: ['app.document_converter']
         App\Form\DataTransformer\DataTransformerInterface:
             tags: [ 'app.data_transformer' ]
         App\Cron\Tasks\CronTaskInterface:
@@ -358,12 +357,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
-    kernel.listener.commsy_login:
-        class: App\EventListener\CommsyLoginListener
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
     kernel.listener.commsy_activity:
         class: App\EventListener\CommsyActivityListener
         arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
@@ -411,14 +404,6 @@ services:
     commsy.search.manager:
         alias: App\Search\SearchManager
 
-
-    App\Services\File2TextService: ~
-
-    App\Search\DocumentConverter\ConverterManager:
-        class: App\Search\DocumentConverter\ConverterManager
-        arguments:
-            - !tagged 'app.document_converter'
-
     App\Form\DataTransformer\TransformerManager:
         class: App\Form\DataTransformer\TransformerManager
         arguments:
@@ -439,72 +424,92 @@ services:
 
     App\Search\MultiIndex:
         arguments:
-            $name: 'commsy'
             $client: '@fos_elastica.client.default'
+            $name: 'commsy'
         calls:
-            - [ addIndices, [[
-                                 '@fos_elastica.index.commsy_announcement',
-                                 '@fos_elastica.index.commsy_date',
-                                 '@fos_elastica.index.commsy_discussion',
-                                 '@fos_elastica.index.commsy_label',
-                                 '@fos_elastica.index.commsy_user',
-                                 '@fos_elastica.index.commsy_room',
-                                 '@fos_elastica.index.commsy_todo',
-                                 '@fos_elastica.index.commsy_material',
-                             ]]]
-
-    FOS\ElasticaBundle\Finder\TransformedFinder: ~
-
-    FOS\ElasticaBundle\Finder\PaginatedFinderInterface: '@FOS\ElasticaBundle\Finder\TransformedFinder'
+            - [addIndices, [[
+                 '@fos_elastica.index.commsy_announcement',
+                 '@fos_elastica.index.commsy_date',
+                 '@fos_elastica.index.commsy_discussion',
+                 '@fos_elastica.index.commsy_label',
+                 '@fos_elastica.index.commsy_user',
+                 '@fos_elastica.index.commsy_room',
+                 '@fos_elastica.index.commsy_todo',
+                 '@fos_elastica.index.commsy_material',
+            ]]]
 
     Elastica\SearchableInterface: '@App\Search\MultiIndex'
 
-    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection'
-
-    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection:
+    App\Search\Transformer\ElasticaToModelTransformerCollection:
         arguments:
             - {
-                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement.announcement',
-                date: '@fos_elastica.elastica_to_model_transformer.commsy_date.date',
-                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion.discussion',
-                label: '@fos_elastica.elastica_to_model_transformer.commsy_label.label',
-                room: '@fos_elastica.elastica_to_model_transformer.commsy_room.room',
-                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo.todo',
-                user: '@fos_elastica.elastica_to_model_transformer.commsy_user.user',
-                material: '@fos_elastica.elastica_to_model_transformer.commsy_material.material',
+                commsy_announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement',
+                commsy_date: '@fos_elastica.elastica_to_model_transformer.commsy_date',
+                commsy_discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion',
+                commsy_label: '@fos_elastica.elastica_to_model_transformer.commsy_label',
+                commsy_room: '@fos_elastica.elastica_to_model_transformer.commsy_room',
+                commsy_todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo',
+                commsy_user: '@fos_elastica.elastica_to_model_transformer.commsy_user',
+                commsy_material: '@fos_elastica.elastica_to_model_transformer.commsy_material',
             }
+    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@App\Search\Transformer\ElasticaToModelTransformerCollection'
+
+    FOS\ElasticaBundle\Finder\TransformedFinder: ~
+    FOS\ElasticaBundle\Finder\PaginatedFinderInterface: '@FOS\ElasticaBundle\Finder\TransformedFinder'
+
+    app.elastica.object_persister.commsy_announcement:
+        alias: 'fos_elastica.object_persister.commsy_announcement'
+        public: true
+
+    app.elastica.object_persister.commsy_date:
+        alias: 'fos_elastica.object_persister.commsy_date'
+        public: true
+
+    app.elastica.object_persister.commsy_discussion:
+        alias: 'fos_elastica.object_persister.commsy_discussion'
+        public: true
+
+    app.elastica.object_persister.commsy_label:
+        alias: 'fos_elastica.object_persister.commsy_label'
+        public: true
+
+    app.elastica.object_persister.commsy_room:
+        alias: 'fos_elastica.object_persister.commsy_room'
+        public: true
+
+    app.elastica.object_persister.commsy_todo:
+        alias: 'fos_elastica.object_persister.commsy_todo'
+        public: true
+
+    app.elastica.object_persister.commsy_user:
+        alias: 'fos_elastica.object_persister.commsy_user'
+        public: true
+
+    app.elastica.object_persister.commsy_material:
+        alias: 'fos_elastica.object_persister.commsy_material'
+        public: true
+
+    #
+#
+
+#    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection'
+#
+#    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection:
+#        arguments:
+#            - {
+#                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement.announcement',
+#                date: '@fos_elastica.elastica_to_model_transformer.commsy_date.date',
+#                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion.discussion',
+#                label: '@fos_elastica.elastica_to_model_transformer.commsy_label.label',
+#                room: '@fos_elastica.elastica_to_model_transformer.commsy_room.room',
+#                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo.todo',
+#                user: '@fos_elastica.elastica_to_model_transformer.commsy_user.user',
+#                material: '@fos_elastica.elastica_to_model_transformer.commsy_material.material',
+#            }
 
 
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker
-
-    commsy_announcement.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_date.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_discussion.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_label.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_room.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_todo.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_user.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_material.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    App\Search\IndexableChecker:
-        autowire: true
-        autoconfigure: true
 
     # Validator
     commsy.validator.unique_label_name:
@@ -806,37 +811,6 @@ services:
         autowire: true
 
     App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
-
-    # Events
-    App\Event\CommsyEditEvent:
-        autowire: false
-
-    App\Event\ItemReindexEvent:
-        autowire: false
-
-    App\Event\ItemDeletedEvent:
-        autowire: false
-
-    App\Event\UserJoinedRoomEvent:
-        autowire: false
-
-    App\Event\UserLeftRoomEvent:
-        autowire: false
-
-    App\Event\RoomSettingsChangedEvent:
-        autowire: false
-
-    App\Event\UserStatusChangedEvent:
-        autowire: false
-
-    App\Event\ReadStatusPreChangeEvent:
-        autowire: false
-
-    App\Event\AccountChangedEvent:
-        autowire: false
-
-    App\Event\AccountDeletedEvent:
-        autowire: false
 
     # Response
     App\Http\JsonDataResponse:

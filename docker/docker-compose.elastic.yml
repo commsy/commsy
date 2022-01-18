@@ -8,11 +8,7 @@ services:
     volumes:
       - elastic-data:/usr/share/elasticsearch/data
     environment:
-      - "xpack.security.enabled=false"
-      - "cluster.routing.allocation.disk.threshold_enabled=false"
-      - "http.cors.enabled=true"
-      - "http.cors.allow-origin=*"
-      - "http.cors.allow-headers=Authorization"
+      - "discovery.type=single-node"
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:

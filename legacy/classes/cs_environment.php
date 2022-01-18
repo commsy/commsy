@@ -1513,15 +1513,6 @@ class cs_environment {
       return $this->instance['cs_session_manager'];
    }
 
-   /**
-    * get instance of cs_backupitem_manager
-    *
-    * @return cs_backupitem_manager
-    */
-   public function getBackupItemManager() {
-        return $this->_getInstance('cs_backupitem_manager');
-   }
-
    function getSession () {
       global $session; // (TBD) !!!!!!!
       return $session;
@@ -1701,8 +1692,6 @@ class cs_environment {
                 return $this->getTag2TagManager();
             } elseif ($type == CS_BUZZWORD_TYPE) {
                 return $this->getBuzzwordManager();
-            } elseif ($type == CS_ITEM_BACKUP) {
-                return $this->getBackupItemManager();
             } elseif ($type == CS_ENTRY_TYPE) {
                 return $this->getEntryManager();
             } elseif (!$this->isPlugin($type)) {
