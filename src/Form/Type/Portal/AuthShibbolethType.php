@@ -3,16 +3,12 @@
 
 namespace App\Form\Type\Portal;
 
-use App\Entity\IdP;
 use App\Form\DataTransformer\IdpTransformer;
-use Doctrine\ORM\EntityRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
-use Nette\Utils\Callback;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -21,26 +17,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AuthShibbolethType extends AbstractType
 {
-
-    private $transformer;
-
-    public function __construct(IdpTransformer $transformer)
-    {
-        $this->transformer = $transformer;
-    }
-
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $idpOptions = $options['idps_options_array'];
+//        $idpOptions = $options['idps_options_array'];
+        $idpOptions = [];
         $builder
             ->add('typeChoice', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
                     'Shibboleth' => 'shib',
@@ -110,17 +99,20 @@ class AuthShibbolethType extends AbstractType
                 'label' => 'Users may create rooms',
                 'required' => false,
             ])
-            ->add('idps', ChoiceType::class, [
-                'choices' => $idpOptions,
+            ->add('identityProviders', CollectionType::class, [
+                'entry_type' => ShibbolethIdentityProviderType::class,
+                'entry_options' => [
+                    'label' => false,
+                ],
                 'label' => 'Available idps',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+//                'by_reference' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save',
-            ])
-        ;
-
-        $builder->get('idps')
-            ->addModelTransformer($this->transformer);
+            ]);
     }
 
     /**
@@ -132,9 +124,7 @@ class AuthShibbolethType extends AbstractType
     {
         $resolver
             ->setDefaults([
-            'translation_domain' => 'portal',
-        ])
-            ->setRequired('idps_options_array')
-        ;
+                'translation_domain' => 'portal',
+            ]);
     }
 }

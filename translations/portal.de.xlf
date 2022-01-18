@@ -1067,7 +1067,7 @@
                 <source>Default Source</source>
                 <target>Standard-Quelle</target>
             </trans-unit>
-            <trans-unit id="helP_text_default">
+            <trans-unit id="help_text_default">
                 <source>Pre select this authentication in the login box (deselect all others)</source>
                 <target>Diese Authentifizierungsquelle in der Login-Box vorauswählen (alle anderen werden abgewählt)</target>
             </trans-unit>
@@ -1130,14 +1130,6 @@
             <trans-unit id="available_idps">
                 <source>Available idps</source>
                 <target>Verfügbare Idps</target>
-            </trans-unit>
-            <trans-unit id="manage_idps">
-                <source>Manage idps</source>
-                <target>Idps verwalten</target>
-            </trans-unit>
-            <trans-unit id="remove">
-                <source>Remove</source>
-                <target>Entfernen</target>
             </trans-unit>
 
             <!-- appearance form -->
