@@ -4,51 +4,53 @@
 namespace App\Search\FilterConditions;
 
 
+use DateTime;
+use DateTimeInterface;
 use Elastica\Query\Range;
 
 class ModificationDateFilterCondition implements FilterConditionInterface
 {
     /**
-     * @var \DateTime|null $startDate
+     * @var DateTime|null $startDate
      */
-    private $startDate;
+    private ?DateTime $startDate;
 
     /**
-     * @var \DateTime|null $endDate
+     * @var DateTime|null $endDate
      */
-    private $endDate;
+    private ?DateTime $endDate;
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getStartDate(): ?\DateTime
+    public function getStartDate(): ?DateTime
     {
         return $this->startDate;
     }
 
     /**
-     * @param \DateTime|null $startDate
+     * @param DateTime|null $startDate
      * @return ModificationDateFilterCondition
      */
-    public function setStartDate(?\DateTime $startDate): ModificationDateFilterCondition
+    public function setStartDate(?DateTime $startDate): ModificationDateFilterCondition
     {
         $this->startDate = $startDate;
         return $this;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getEndDate(): ?\DateTime
+    public function getEndDate(): ?DateTime
     {
         return $this->endDate;
     }
 
     /**
-     * @param \DateTime|null $endDate
+     * @param DateTime|null $endDate
      * @return ModificationDateFilterCondition
      */
-    public function setEndDate(?\DateTime $endDate): ModificationDateFilterCondition
+    public function setEndDate(?DateTime $endDate): ModificationDateFilterCondition
     {
         $this->endDate = $endDate;
         return $this;
@@ -63,13 +65,12 @@ class ModificationDateFilterCondition implements FilterConditionInterface
             return [];
         }
 
-        // TODO: when using PHP >=7.2, the DateTime class constants are defined in DateTimeInterface (i.e., \DateTime::RFC3339 -> \DateTimeInterface::RFC3339)
         $rangeParams = [];
         if ($this->startDate !== null) {
-            $rangeParams["gte"] = $this->startDate->format(\DateTime::RFC3339);
+            $rangeParams["gte"] = $this->startDate->format(DateTimeInterface::RFC3339);
         }
         if ($this->endDate !== null) {
-            $rangeParams["lte"] = $this->endDate->format(\DateTime::RFC3339);
+            $rangeParams["lte"] = $this->endDate->format(DateTimeInterface::RFC3339);
         }
 
         $modificationDateRange= new Range();

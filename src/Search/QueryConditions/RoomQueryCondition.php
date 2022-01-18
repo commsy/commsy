@@ -4,14 +4,14 @@
 namespace App\Search\QueryConditions;
 
 
-use Elastica\Query\Match;
+use Elastica\Query\MatchQuery;
 
 class RoomQueryCondition implements QueryConditionInterface
 {
     /**
-     * @var string $query
+     * @var string|null $query
      */
-    private $query;
+    private ?string $query;
 
     /**
      * @param string $query
@@ -24,7 +24,7 @@ class RoomQueryCondition implements QueryConditionInterface
     }
 
     /**
-     * @return Match[]
+     * @return MatchQuery[]
      */
     public function getConditions(): array
     {
@@ -33,15 +33,15 @@ class RoomQueryCondition implements QueryConditionInterface
         }
 
         // title
-        $titleMatch = new Match();
+        $titleMatch = new MatchQuery();
         $titleMatch->setFieldQuery('title', $this->query);
 
         // description
-        $descriptionMatch = new Match();
+        $descriptionMatch = new MatchQuery();
         $descriptionMatch->setFieldQuery('roomDescription', $this->query);
 
         // contact persons
-        $contactPersonsMatch = new Match();
+        $contactPersonsMatch = new MatchQuery();
         $contactPersonsMatch->setFieldQuery('contactPersons', $this->query);
 
         return [$titleMatch, $descriptionMatch, $contactPersonsMatch];

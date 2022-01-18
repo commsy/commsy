@@ -1,20 +1,35 @@
 <?php
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class CommsyLoginListener
+class UserActivitySubscriber implements EventSubscriberInterface
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::CONTROLLER => [
+                ['updateActivity', 0],
+            ],
+        ];
+    }
+
+    public function updateActivity(ControllerEvent $event)
     {
         /*
            restrict logging to the following requests:
@@ -36,7 +51,7 @@ class CommsyLoginListener
         }
         
         if ($logRequest) {
-            $user = $this->legacyEnvironment->getEnvironment()->getCurrentUser();
+            $user = $this->legacyEnvironment->getCurrentUser();
             if ($user->isUser() and !$user->isRoot()) {
                 $user->updateLastLogin();
 

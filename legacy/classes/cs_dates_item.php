@@ -522,7 +522,7 @@ class cs_dates_item extends cs_item {
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_date.date');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_date');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Dates');
 
@@ -545,7 +545,7 @@ class cs_dates_item extends cs_item {
         // delete associated annotations
         $this->deleteAssociatedAnnotations();
 
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_date.date');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_date');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Dates');
 

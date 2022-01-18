@@ -737,7 +737,7 @@ class cs_material_item extends cs_item {
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_material.material');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_material');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Materials');
 
@@ -878,7 +878,7 @@ class cs_material_item extends cs_item {
     {
         global $symfonyContainer;
 
-        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
+        /** @var EventDispatcher $eventDispatcer */
         $eventDispatcer = $symfonyContainer->get('event_dispatcher');
 
         $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
@@ -929,7 +929,7 @@ class cs_material_item extends cs_item {
         // delete associated annotations
         $this->deleteAssociatedAnnotations();
 
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_material.material');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_material');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Materials');
 
