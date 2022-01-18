@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AuthSourceLocal;
+use App\Entity\ShibbolethIdentityProvider;
 use App\Entity\Portal;
 use App\Entity\Server;
 use App\Form\Model\LocalAccount;
@@ -91,6 +92,19 @@ class SecurityController extends AbstractController
 
         $server = $entityManager->getRepository(Server::class)->getServer();
 
+        $idps = [];
+//        $authSources = $portal->getAuthSources();
+//        foreach($authSources as $authSource) {
+//            if($authSource->getType() === 'shib') {
+//                $idpRepo = $entityManager->getRepository(Idp::Class);
+//                $idps = $idpRepo->findBy(array('authSourceShibboleth' => $authSource));
+//            }
+//        }
+        $choices = [];
+        foreach($idps as $currentIpd) {
+            $choices[$currentIpd->getName()] = $currentIpd->getId();
+        }
+
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
@@ -98,6 +112,7 @@ class SecurityController extends AbstractController
             'portal' => $portal ?? null,
             'server' => $server,
             'lastSource' => $lastSource,
+            'idps' => $choices,
         ]);
     }
 
