@@ -25,7 +25,6 @@ use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
-use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
@@ -84,8 +83,6 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -97,7 +94,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -197,9 +193,6 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
-     * @param Portal $portal
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
      */
     public function support(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
@@ -632,6 +625,8 @@ class PortalSettingsController extends AbstractController
      * @Template()
      * @param Portal $portal
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return array|RedirectResponse
      */
     public function authShibboleth(
         Portal $portal,
@@ -674,6 +669,9 @@ class PortalSettingsController extends AbstractController
                     });
                     $shibSource->setDefault(true);
                 }
+                /** @var AuthSourceShibboleth $formData */
+                $formData = $authShibbolethForm->getData();
+                $shibSource->setIdentityProviders($formData->getIdentityProviders());
 
                 $entityManager->persist($shibSource);
                 $entityManager->flush();
@@ -682,6 +680,7 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $authShibbolethForm->createView(),
+            'portal' => $portal
         ];
     }
 
