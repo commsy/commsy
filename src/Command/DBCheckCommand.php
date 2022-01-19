@@ -35,5 +35,7 @@ class DBCheckCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->databaseChecks->runChecks($input, $output);
+
+        return 0;
     }
 }
