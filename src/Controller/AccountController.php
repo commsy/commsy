@@ -396,7 +396,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/acount/privacy")
+     * @Route("/portal/{portalId}/account/privacy")
      * @Template
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -418,7 +418,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/acount/privacy/print")
+     * @Route("/portal/{portalId}/account/privacy/print")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @param Portal $portal
