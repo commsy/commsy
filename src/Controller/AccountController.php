@@ -451,7 +451,7 @@ class AccountController extends AbstractController
         // generate HTML data
         $html = $this->renderView('profile/privacy_print.html.twig', [
             'portalId' => $portal->getId(),
-            'printProfileImages' => true, // set to `false` to omit profile images when generating the PDF (much faster)
+            'printProfileImages' => false, // set to `false` to omit profile images when generating the PDF (much faster)
             'accountData' => $personalData->getAccountData(),
             'communityRoomProfileDataArray' => $personalData->getCommunityRoomProfileDataArray(),
             'projectRoomProfileDataArray' => $personalData->getProjectRoomProfileDataArray(),
