@@ -183,7 +183,7 @@ class CronCommand extends Command
     {
         $materialManager = $this->legacyEnvironment->getMaterialManager();
 
-        $resubmissionItems = $materialManager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
+        $resubmissionItems = $materialManager->getResubmissionItemIDsByDate(new \DateTimeImmutable());
         foreach ($resubmissionItems as $resubmissionItemInfo) {
             $material = $materialManager->getItem($resubmissionItemInfo['item_id']);
             $latestMaterialVersionId = $materialManager->getLatestVersionID($resubmissionItemInfo['item_id']);
@@ -244,19 +244,19 @@ class CronCommand extends Command
             }
         }
 
-        $validityItems = $materialManager->getValidityItemIDsByDate(date('Y'), date('m'), date('d'));
+        $validityItems = $materialManager->getValidityItemIDsByDate(new \DateTimeImmutable());
         foreach ($validityItems as $validityItemInfo) {
             $material = $materialManager->getItem($validityItemInfo['item_id']);
             $latestMaterialVersionId = $materialManager->getLatestVersionID($validityItemInfo['item_id']);
 
-            if (isset($material) && !$material->isDeleted() && ($validityItemInfo['item_id'] == $latestMaterialVersionId)) {
+            if (isset($material) && !$material->isDeleted() && ($validityItemInfo['version_id'] == $latestMaterialVersionId)) {
                 $roomManager = $this->legacyEnvironment->getRoomManager();
                 $room = $roomManager->getItem($material->getContextId());
 
                 // check if context of room is current portal
                 if ($room->getContextID() != $portalItem->getItemID()) continue;
 
-                if ($material->getWorkflowValidity() && $material->withWorkflowValidity()) {
+                if ($material->getWorkflowValidity() && $room->withWorkflowValidity()) {
                     $emailReceivers = [];
 
                     if ($material->getWorkflowValidityWho() == 'creator') {

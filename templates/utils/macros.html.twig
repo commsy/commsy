@@ -481,15 +481,15 @@
     {% endif %}
     <div class="uk-text-nowrap">
         <span class="cs-workflow-traffic-light" data-uk-tooltip title="{{ title }}">
-            {% if status is same as('0_green') %}
+            {% if status is same as('valid') %}
                 <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-            {% elseif status is same as('1_yellow') %}
+            {% elseif status is same as('draft') %}
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-warning"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-            {% elseif status is same as('2_red') %}
+            {% elseif status is same as('invalid') %}
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-danger"></i>

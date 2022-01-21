@@ -1297,18 +1297,46 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
         }
     }
 
-	function getResubmissionItemIDsByDate($year, $month, $day){
-	   $query = 'SELECT item_id, version_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_resubmission_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
-	   return $this->_db_connector->performQuery($query);
-	}
+    /**
+     * @param DateTimeImmutable $date
+     * @return array
+     */
+    public function getResubmissionItemIDsByDate(DateTimeImmutable $date): array
+    {
+        $dateFormatted = $date->format('Y-m-d');
+
+        $query = '
+            SELECT item_id, version_id
+            FROM ' . $this->addDatabasePrefix('materials') . '
+            WHERE workflow_resubmission_date IS NOT NULL AND
+                workflow_resubmission_date != "" AND
+                workflow_resubmission_date = "' . $dateFormatted . '" AND
+                deleter_id IS NULL AND
+                deletion_date IS NULL';
+        return $this->_db_connector->performQuery($query);
+    }
+
+    /**
+     * @param DateTimeImmutable $date
+     * @return array
+     */
+    public function getValidityItemIDsByDate(DateTimeImmutable $date): array
+    {
+        $dateFormatted = $date->format('Y-m-d');
+
+        $query = '
+            SELECT item_id, version_id
+            FROM ' . $this->addDatabasePrefix('materials') . '
+            WHERE workflow_validity_date IS NOT NULL AND
+                workflow_validity_date != "" AND
+                workflow_validity_date = "' . $dateFormatted . '" AND
+                deleter_id IS NULL AND
+                deletion_date IS NULL';
+        return $this->_db_connector->performQuery($query);
+    }
 
 	function setWorkflowStatus($item_id, $status, $version_id){
 	   $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET workflow_status = "'.$status.'" WHERE item_id = '.$item_id.' AND version_id = '.$version_id;
-	   return $this->_db_connector->performQuery($query);
-	}
-
-   function getValidityItemIDsByDate($year, $month, $day){
-	   $query = 'SELECT item_id, version_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_validity_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);
 	}
 
