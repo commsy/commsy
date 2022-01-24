@@ -80,7 +80,7 @@ class AccountActivityDeleteWarningMessage extends Message
             ),
             'ciao' => $legacyTranslator->getEmailMessage(
                 'MAIL_BODY_CIAO',
-                $firstContactModerator !== null ? $firstContactModerator->getFullName() : '',
+                $firstContactModerator ? $firstContactModerator->getFullName() : '',
                 $this->portal->getTitle()
             ),
         ];
