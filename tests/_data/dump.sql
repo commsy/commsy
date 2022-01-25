@@ -223,6 +223,7 @@ CREATE TABLE `auth_source` (
   `auth_dn` varchar(50) DEFAULT NULL,
   `auth_query` varchar(50) DEFAULT NULL,
   `mail_regex` varchar(100) DEFAULT NULL,
+  `identity_provider` LONGTEXT DEFAULT NULL comment '(DC2Type:array)',
   PRIMARY KEY (`id`),
   KEY `auth_source_portal_id_index` (`portal_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
@@ -234,7 +235,7 @@ CREATE TABLE `auth_source` (
 
 LOCK TABLES `auth_source` WRITE;
 /*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
-INSERT INTO `auth_source` VALUES (100,99,'CommSy',NULL,'local',1,1,'no',0,0,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `auth_source` VALUES (100,99,'CommSy',NULL,'local',1,1,'no',0,0,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `auth_source` ENABLE KEYS */;
 UNLOCK TABLES;
 

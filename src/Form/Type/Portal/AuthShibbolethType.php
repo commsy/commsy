@@ -3,10 +3,12 @@
 
 namespace App\Form\Type\Portal;
 
+use App\Form\DataTransformer\IdpTransformer;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -15,18 +17,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AuthShibbolethType extends AbstractType
 {
-
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+//        $idpOptions = $options['idps_options_array'];
+        $idpOptions = [];
         $builder
             ->add('typeChoice', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
                     'Shibboleth' => 'shib',
@@ -96,10 +99,20 @@ class AuthShibbolethType extends AbstractType
                 'label' => 'Users may create rooms',
                 'required' => false,
             ])
+            ->add('identityProviders', CollectionType::class, [
+                'entry_type' => ShibbolethIdentityProviderType::class,
+                'entry_options' => [
+                    'label' => false,
+                ],
+                'label' => 'Available idps',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+//                'by_reference' => false,
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save',
-            ])
-        ;
+            ]);
     }
 
     /**
@@ -109,8 +122,9 @@ class AuthShibbolethType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'translation_domain' => 'portal',
-        ]);
+        $resolver
+            ->setDefaults([
+                'translation_domain' => 'portal',
+            ]);
     }
 }

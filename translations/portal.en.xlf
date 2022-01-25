@@ -1101,7 +1101,7 @@
                 <source>Default Source</source>
                 <target>Default Source</target>
             </trans-unit>
-            <trans-unit id="helP_text_default">
+            <trans-unit id="help_text_default">
                 <source>Pre select this authentication in the login box (deselect all others)</source>
                 <target>Pre select this authentication in the login box (deselect all others)</target>
             </trans-unit>
@@ -1146,6 +1146,10 @@
             <trans-unit id="portal_num_rooms">
                 <source>portal.num_rooms</source>
                 <target># Workspaces</target>
+            </trans-unit>
+            <trans-unit id="available_idps">
+                <source>Available idps</source>
+                <target>Available idps</target>
             </trans-unit>
 
             <!-- general form -->
