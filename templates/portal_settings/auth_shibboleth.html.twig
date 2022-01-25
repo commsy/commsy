@@ -31,6 +31,16 @@
             {{ form_row(form.mappingEmail) }}
             <hr />
             {{ form_row(form.createRoom) }}
+
+            <div data-form-collection="{{ {
+                'selector': '#auth_shibboleth_identityProviders',
+                'removeMessage': 'Remove'|trans({}, 'form')
+            }|json_encode|e('html_attr') }}">
+                {{ form_row(form.identityProviders) }}
+                <button class="uk-button uk-button-primary add_item_link" type="button">{{ 'Add'|trans({}, 'form') }}</button>
+            </div>
+
+            <hr />
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

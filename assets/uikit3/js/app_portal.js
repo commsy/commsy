@@ -31,3 +31,9 @@ DatePicker.bootstrap();
 
 import {LicenseEdit} from "./commsy/LicenseEdit";
 LicenseEdit.bootstrap();
+
+import {FormCollection} from "./commsy/FormCollection";
+FormCollection.bootstrap();
+
+import {handleShibIdPSelect} from "./commsy/Login";
+handleShibIdPSelect();

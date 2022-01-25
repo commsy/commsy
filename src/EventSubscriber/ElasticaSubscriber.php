@@ -18,7 +18,11 @@ use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
 use Psr\Cache\InvalidArgumentException;
 use ReflectionClass;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Mime\MimeTypes;
 
 class ElasticaSubscriber implements EventSubscriberInterface
 {
@@ -38,19 +42,27 @@ class ElasticaSubscriber implements EventSubscriberInterface
     private IndexManager $indexManager;
 
     /**
+     * @var ParameterBagInterface
+     */
+    private ParameterBagInterface $parameterBag;
+
+    /**
      * ElasticCustomPropertyListener constructor.
      * @param LegacyEnvironment $legacyEnvironment
      * @param ItemService $itemService
      * @param IndexManager $indexManager
+     * @param ParameterBagInterface $parameterBag
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         ItemService $itemService,
-        IndexManager $indexManager
+        IndexManager $indexManager,
+        ParameterBagInterface $parameterBag
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
         $this->indexManager = $indexManager;
+        $this->parameterBag = $parameterBag;
     }
 
     public static function getSubscribedEvents()
@@ -309,12 +321,37 @@ class ElasticaSubscriber implements EventSubscriberInterface
     {
         $filesBase64 = [];
 
-        foreach ($files as $file) {
-            /** @var cs_file_item $file */
-            if (!$file->isDeleted()) {
-                $fileSize = $file->getFileSize();
-                if ($fileSize > 0 && round($fileSize / 1024) < 25) {
-                    $content = $file->getContentBase64();
+        foreach ($files as $legacyFile) {
+            /** @var cs_file_item $legacyFile */
+            if (!$legacyFile->isDeleted()) {
+                /** @noinspection MissingService */
+                $fileInfo = pathinfo($this->parameterBag->get('kernel.project_dir') . '/' . $legacyFile->getFilepath());
+                $dirname = $fileInfo['dirname'];
+                $basename = $fileInfo['basename'];
+
+                if (!file_exists($dirname . '/' . $basename)) {
+                    continue;
+                }
+
+                $finder = new Finder();
+                $finder
+                    ->files()
+                    ->size('<= 25M')
+                    ->name($fileInfo['basename'])
+                    ->in($fileInfo['dirname'])
+                    ->filter(function(SplFileInfo $file) {
+                        $mimeTypes = new MimeTypes();
+                        $mimeType = $mimeTypes->guessMimeType($file->getPathname());
+
+                        return in_array($mimeType, self::VALID_MIMES);
+                    });
+
+                if ($finder->hasResults()) {
+                    $results = iterator_to_array($finder);
+                    /** @var SplFileInfo $splFile */
+                    $splFile = current($results);
+
+                    $content = base64_encode($splFile->getContents());
                     if (!empty($content)) {
                         $filesBase64[] = [
                             'data' => $content,
@@ -546,4 +583,15 @@ class ElasticaSubscriber implements EventSubscriberInterface
 
         return false;
     }
+
+    private const VALID_MIMES = [
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/msexcel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/mspowerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/pdf',
+        'text/plain',
+    ];
 }
