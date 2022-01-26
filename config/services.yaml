@@ -485,24 +485,17 @@ services:
         alias: 'fos_elastica.object_persister.commsy_material'
         public: true
 
-    #
-#
+    FOS\ElasticaBundle\Persister\AsyncPagerPersister:
+        arguments:
+            - '@fos_elastica.pager_persister_registry'
+            - '@fos_elastica.pager_provider_registry'
+            # In the bundle this messagebus is different, but we should pass official Symfony bus.
+            - '@Symfony\Component\Messenger\MessageBusInterface'
+        tags:
+            - { name: "fos_elastica.pager_persister", persisterName: "async" }
 
-#    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection'
-#
-#    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection:
-#        arguments:
-#            - {
-#                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement.announcement',
-#                date: '@fos_elastica.elastica_to_model_transformer.commsy_date.date',
-#                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion.discussion',
-#                label: '@fos_elastica.elastica_to_model_transformer.commsy_label.label',
-#                room: '@fos_elastica.elastica_to_model_transformer.commsy_room.room',
-#                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo.todo',
-#                user: '@fos_elastica.elastica_to_model_transformer.commsy_user.user',
-#                material: '@fos_elastica.elastica_to_model_transformer.commsy_material.material',
-#            }
-
+    FOS\ElasticaBundle\Message\Handler\AsyncPersistPageHandler:
+        tags: [ messenger.message_handler ]
 
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker

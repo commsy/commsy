@@ -21,6 +21,7 @@ RUN apk add --no-cache \
 		libxrender \
         mariadb-client \
 		nodejs \
+        supervisor \
 		ttf-freefont \
 		yarn \
 	;
@@ -141,8 +142,11 @@ HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
+COPY docker/php/supervisord.conf /etc/supervisord.conf
+COPY docker/php/supervisor.d /etc/supervisor/conf.d/
+
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["php-fpm"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
 ##############################################################################
 
