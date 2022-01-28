@@ -2405,27 +2405,6 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-
-  function setWithLogArchive () {
-    $this->_setExtraConfig('LOGARCHIVE',1);
-  }
-
-  function setWithoutLogArchive () {
-    $this->_setExtraConfig('LOGARCHIVE',-1);
-  }
-  
-  function getLogDeleteInterval () {
-  	$retour = 0;
-    $value = $this->_getExtraConfig('LOGDELETEDAYS');
-    if (!empty($value)) {
-      $retour = $this->_getExtraConfig('LOGDELETEDAYS');;
-    }
-    return $retour;
-  }
-  
-  function setLogDeleteInterval ($days) {
-  	$this->_setExtraConfig('LOGDELETEDAYS', $days);
-  }
   
   ##########################################
   # log-ip flag
