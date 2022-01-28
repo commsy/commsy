@@ -241,23 +241,6 @@ class cs_log_manager extends cs_manager {
    	  	}
    	  }
    }
-   
-   function getLogdataByContextID ($cid) {
-   	$retour = false;
-   	$query = 'SELECT * FROM '.$this->addDatabasePrefix('log').' WHERE 1';
-   	$query .= ' AND cid = '.encode(AS_DB,$cid);
-   	// perform query
-   	$result = $this->_db_connector->performQuery($query);
-   	if ( !isset($result) or !$result ) {
-   		#include_once('functions/error_functions.php');
-   		#trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
-   	} else {
-   		$retour = $result;
-   	}
-   	return $retour;
-   
-   }
-
 
    public function saveArray ( $array ) {
       $retour = false;
