@@ -4,9 +4,7 @@
 {% form_theme licenseSortForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
-    {% embed 'components/context_navigation.html.twig' %}
-        {% block menu %}{{ knp_menu_render('portal_settings', { 'template': 'menu/knp_menu_sidebar_uikit3.html.twig' } ) }}{% endblock %}
-    {% endembed %}
+    {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
 {% endblock %}
 
 {% block main %}
