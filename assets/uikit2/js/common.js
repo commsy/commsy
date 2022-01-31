@@ -40,12 +40,12 @@ require(['uikit'], function () {
     require('uikit/dist/js/components/datepicker');
     require('uikit/dist/js/components/timepicker');
     require('uikit/dist/js/components/form-select');
-});
 
-// import commsy modules
-var commsyModules = require.context('./commsy', true, /\.js$/);
-commsyModules.keys().forEach(function(key) {
-    commsyModules(key);
+    // import commsy modules
+    var commsyModules = require.context('./commsy', true, /\.js$/);
+    commsyModules.keys().forEach(function(key) {
+        commsyModules(key);
+    });
 });
 
 import {DetailActionManager} from "./commsy/actions/DetailActionManager";
