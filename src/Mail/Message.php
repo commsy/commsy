@@ -9,9 +9,7 @@
 namespace App\Mail;
 
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class Message implements MessageInterface
 {
