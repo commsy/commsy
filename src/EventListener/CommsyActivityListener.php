@@ -3,14 +3,10 @@
 namespace App\EventListener;
 
 use App\Entity\Portal;
+use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-
-use Liip\ThemeBundle\ActiveTheme;
-
-use App\Utils\RoomService;
-use App\Services\LegacyEnvironment;
 
 class CommsyActivityListener
 {

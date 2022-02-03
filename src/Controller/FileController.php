@@ -10,8 +10,10 @@ use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -137,17 +139,16 @@ class FileController extends AbstractController
     public function getBackgroundImageAction(
         RoomService $roomService,
         int $roomId,
-        $imageType
+        $imageType,
+        SettableThemeContext $themeContext
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
         $filename = $roomItem->getBGImageFilename();
         $themesDir = $this->getParameter("themes_directory");
 
         if ($imageType == 'theme') {
-
-            // is theme pre-defined in config?
-            $preDefinedTheme = $this->getParameter('liip_theme_pre_configuration.active_theme');
-            $themeName = $preDefinedTheme ?? $roomItem->getColorArray()['schema'];
+            $currentTheme = $themeContext->getTheme();
+            $themeName = $currentTheme ? substr($currentTheme->getName(), 7) : 'default';
             $completePath = $themesDir . "/" . $themeName . "/bg.jpg";
 
             if (!file_exists($completePath)) {
@@ -185,7 +186,7 @@ class FileController extends AbstractController
      */
     public function getThemeBackgroundAction(
         $theme
-    ) {
+    ): Response {
         $themesDir = $this->getParameter("themes_directory");
         $filePath = $themesDir . "/" . $theme . "/bg.jpg";
 
@@ -194,9 +195,10 @@ class FileController extends AbstractController
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($finfo, $filePath);
 
-            $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
-            $response->headers->set('Content-Disposition',
-                $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, "bg.jpg"));
+            $disposition = HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_INLINE, 'bg.jpg');
+
+            $response = new Response($content, Response::HTTP_OK, ['content-type' => $mimeType]);
+            $response->headers->set('Content-Disposition', $disposition);
         } else {
             $response = new Response("Could not find background image for selected theme!", Response::HTTP_NOT_FOUND);
         }

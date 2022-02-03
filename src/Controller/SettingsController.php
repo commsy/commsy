@@ -32,6 +32,7 @@ use App\Utils\UserroomService;
 use cs_room_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormError;
@@ -257,6 +258,8 @@ class SettingsController extends AbstractController
      * @param Request $request
      * @param RoomService $roomService
      * @param AppearanceSettingsTransformer $transformer
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param ThemeRepositoryInterface $themeRepository
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -265,9 +268,9 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         AppearanceSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
+        ThemeRepositoryInterface $themeRepository,
         int $roomId
-    )
-    {
+    ) {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -276,13 +279,12 @@ class SettingsController extends AbstractController
 
         $roomData = $transformer->transform($roomItem);
 
-        // is theme pre-defined in config?
-        $preDefinedTheme = $this->params->get('liip_theme_pre_configuration.active_theme');
+        /**
+         * If a specific theme is forced, we do not show any selection at all
+         */
+        $forceTheme = $this->params->get('commsy.force_theme');
+        $themeArray = !empty($forceTheme) ? null : $themeRepository->findAll();
 
-        //if theme is pre-decined, do not include it in the form
-        // get the configured LiipThemeBundle themes
-
-        $themeArray = (!empty($preDefinedTheme)) ? null : $this->params->get('liip_theme.themes');
         $form = $this->createForm(AppearanceSettingsType::class, $roomData, [
             'roomId' => $roomId,
             'themes' => $themeArray,
@@ -293,7 +295,6 @@ class SettingsController extends AbstractController
                 'theme' => 'THEME'
             ]),
         ]);
-
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

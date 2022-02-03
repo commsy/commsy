@@ -6,6 +6,8 @@
 parameters:
     locale: '%env(LOCALE)%'
 
+    commsy.force_theme: '%env(FORCE_THEME)%'
+
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
@@ -348,15 +350,6 @@ services:
         alias: App\Export\WordpressExporter
 
     # EventListener
-    Liip\ThemeBundle\ActiveTheme: '@liip_theme.active_theme'
-
-    App\EventListener\CommsyRequestListener:
-        arguments:
-            $themeArray: '%liip_theme.themes%'
-            $preDefinedTheme: '%liip_theme_pre_configuration.active_theme%'
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
     kernel.listener.commsy_activity:
         class: App\EventListener\CommsyActivityListener
         arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']

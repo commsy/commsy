@@ -545,6 +545,9 @@
             "phpcs.xml.dist"
         ]
     },
+    "sylius/theme-bundle": {
+        "version": "v2.2.0"
+    },
     "symfony/asset": {
         "version": "v4.4.5"
     },
