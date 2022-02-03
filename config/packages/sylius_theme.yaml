@@ -1,0 +1,4 @@
+sylius_theme:
+    sources:
+        filesystem:
+            filename: theme.json
