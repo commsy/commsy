@@ -31,6 +31,7 @@ use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -73,6 +74,7 @@ class RoomController extends AbstractController
      * @param RoomFeedGenerator $roomFeedGenerator
      * @param LegacyMarkup $legacyMarkup
      * @param LegacyEnvironment $legacyEnvironment
+     * @param ThemeRepositoryInterface $themeRepository
      * @param int $roomId
      * @return array
      */
@@ -83,7 +85,7 @@ class RoomController extends AbstractController
         RoomFeedGenerator $roomFeedGenerator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $legacyEnvironment,
-        ParameterBagInterface $parameterBag,
+        ThemeRepositoryInterface $themeRepository,
         int $roomId
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -92,9 +94,12 @@ class RoomController extends AbstractController
         $roomItem = $roomService->getRoomItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
-        if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $parameterBag->get('liip_theme.themes'))) {
-            $roomItem->setColorArray(array('schema' => 'default'));
-            $roomItem->save();
+        if ($roomItem) {
+            $themeName = 'commsy/' . $roomItem->getColorArray()['schema'];
+            if ($themeName !== 'commsy/default' && !$themeRepository->findOneByName($themeName)) {
+                $roomItem->setColorArray(['schema' => 'default']);
+                $roomItem->save();
+            }
         }
 
         if (!$roomItem) {
