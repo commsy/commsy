@@ -11,16 +11,15 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PortfolioEditCategoryType extends AbstractType
 {
     /**
      * @var TranslatorInterface $translator
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * PortfolioType constructor.

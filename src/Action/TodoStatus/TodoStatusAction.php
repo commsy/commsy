@@ -13,19 +13,19 @@ use App\Utils\TodoService;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TodoStatusAction implements ActionInterface
 {
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * @var TodoService
      */
-    private $todoService;
+    private TodoService $todoService;
 
     /**
      * @var string
