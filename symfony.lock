@@ -65,6 +65,9 @@
     "codeception/stub": {
         "version": "3.6.1"
     },
+    "composer/package-versions-deprecated": {
+        "version": "1.11.99.1"
+    },
     "container-interop/container-interop": {
         "version": "1.2.0"
     },
@@ -208,6 +211,9 @@
     "fakerphp/faker": {
         "version": "v1.16.0"
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
+    },
     "friendsofsymfony/ckeditor-bundle": {
         "version": "2.0",
         "recipe": {
@@ -286,6 +292,30 @@
             "config/packages/knp_snappy.yaml"
         ]
     },
+    "laminas/laminas-code": {
+        "version": "3.4.1"
+    },
+    "laminas/laminas-escaper": {
+        "version": "2.9.0"
+    },
+    "laminas/laminas-eventmanager": {
+        "version": "3.3.1"
+    },
+    "laminas/laminas-server": {
+        "version": "2.9.1"
+    },
+    "laminas/laminas-soap": {
+        "version": "2.9.0"
+    },
+    "laminas/laminas-stdlib": {
+        "version": "3.3.1"
+    },
+    "laminas/laminas-uri": {
+        "version": "2.8.1"
+    },
+    "laminas/laminas-validator": {
+        "version": "2.14.4"
+    },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.0"
     },
@@ -328,9 +358,6 @@
             "config/packages/liip_imagine.yaml",
             "config/routes/liip_imagine.yaml"
         ]
-    },
-    "liip/theme-bundle": {
-        "version": "1.7.0"
     },
     "masterminds/html5": {
         "version": "2.7.0"
