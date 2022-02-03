@@ -8,11 +8,11 @@ use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ChosenRubricSubscriber implements EventSubscriberInterface
 {
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * @param TranslatorInterface $translator

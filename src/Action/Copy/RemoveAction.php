@@ -9,34 +9,31 @@
 namespace App\Action\Copy;
 
 
-use App\Services\LegacyEnvironment;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Services\CopyService;
+use App\Services\LegacyEnvironment;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RemoveAction implements ActionInterface
 {
     /**
      * @var TranslatorInterface
      */
-    private $translator;
-
-    /**
-     * @var \cs_environment
-     */
-    private $legacyEnvironment;
+    private TranslatorInterface $translator;
 
     /**
      * @var CopyService
      */
-    private $copyService;
+    private CopyService $copyService;
 
-    public function __construct(TranslatorInterface $translator, LegacyEnvironment $legacyEnvironment, CopyService $copyService)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment,
+        CopyService $copyService
+    ) {
         $this->translator = $translator;
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->copyService = $copyService;
     }
 

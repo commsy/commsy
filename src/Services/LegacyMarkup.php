@@ -9,21 +9,26 @@
 namespace App\Services;
 
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LegacyMarkup
 {
-    private $legacyEnvironment;
+    /**
+     * @var RouterInterface
+     */
+    private RouterInterface $router;
 
-    private $router;
+    /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
 
-    private $translator;
+    private array $files = [];
 
-    private $files = [];
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, RouterInterface $router, TranslatorInterface $translator)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    public function __construct(
+        RouterInterface $router,
+        TranslatorInterface $translator
+    ) {
         $this->router = $router;
         $this->translator = $translator;
     }

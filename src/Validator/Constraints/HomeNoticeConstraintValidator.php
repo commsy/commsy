@@ -4,12 +4,19 @@ namespace App\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class HomeNoticeConstraintValidator extends ConstraintValidator
 {
-    private $container;
-    private $translator;
+    /**
+     * @var ContainerInterface
+     */
+    private ContainerInterface $container;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
 
     public function __construct(ContainerInterface $container, TranslatorInterface $translator)
     {
