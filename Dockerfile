@@ -79,7 +79,7 @@ RUN set -eux; \
 	apk del .build-deps
 
 # Composer
-COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # wkhtmltopdf
 COPY --from=surnet/alpine-wkhtmltopdf:3.13.5-0.12.6-full /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
