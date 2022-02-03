@@ -109,33 +109,40 @@
         },
         {
             "name": "craue/twigextensions-bundle",
-            "version": "2.8.0",
+            "version": "2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craue/TwigExtensionsBundle.git",
-                "reference": "844cd479076f717ffc23e91f526a254a8a4c5c5f"
+                "reference": "4352fb54667efcf1b0b217075014b2921039a4d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craue/TwigExtensionsBundle/zipball/844cd479076f717ffc23e91f526a254a8a4c5c5f",
-                "reference": "844cd479076f717ffc23e91f526a254a8a4c5c5f",
+                "url": "https://api.github.com/repos/craue/TwigExtensionsBundle/zipball/4352fb54667efcf1b0b217075014b2921039a4d0",
+                "reference": "4352fb54667efcf1b0b217075014b2921039a4d0",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.3|^8",
-                "symfony/config": "~3.4|~4.4|~5.1",
-                "symfony/dependency-injection": "~3.4|~4.4|~5.1",
-                "symfony/twig-bundle": "~3.4|~4.4|~5.1"
+                "symfony/config": "~4.4|~5.3|^6",
+                "symfony/dependency-injection": "~4.4|~5.3|^6",
+                "symfony/twig-bundle": "~4.4|~5.3|^6"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9.4",
-                "symfony/phpunit-bridge": "~5.2",
-                "symfony/symfony": "~3.4.23|~4.4|~5.1"
+                "phpunit/phpunit": "^9.5",
+                "symfony/browser-kit": "~4.4|~5.3|^6",
+                "symfony/form": "~4.4|~5.3|^6",
+                "symfony/framework-bundle": "~4.4|~5.3|^6",
+                "symfony/phpunit-bridge": "^6",
+                "symfony/translation": "~4.4|~5.3|^6",
+                "symfony/yaml": "~4.4|~5.3|^6"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8.x-dev"
+                    "dev-master": "2.9.x-dev"
+                },
+                "symfony": {
+                    "require": "~4.4|~5.3|^6"
                 }
             },
             "autoload": {
@@ -167,7 +174,11 @@
                 "symfony",
                 "twig"
             ],
-            "time": "2020-12-21T11:34:10+00:00"
+            "support": {
+                "issues": "https://github.com/craue/TwigExtensionsBundle/issues",
+                "source": "https://github.com/craue/TwigExtensionsBundle/tree/2.9.0"
+            },
+            "time": "2022-01-24T15:19:23+00:00"
         },
         {
             "name": "debril/feed-io",
