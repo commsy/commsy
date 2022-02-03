@@ -12,19 +12,19 @@ namespace App\Action\MarkRead;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MarkReadAction implements ActionInterface
 {
     /**
      * @var MarkReadInterface
      */
-    private $markReadStrategy;
+    private MarkReadInterface $markReadStrategy;
 
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(MarkReadInterface $markReadStrategy, TranslatorInterface $translator)
     {

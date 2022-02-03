@@ -4,15 +4,26 @@ namespace App\Validator\Constraints;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UniqueModeratorConstraintValidator extends ConstraintValidator
 {
-    private $userService;
-    private $legacyEnvironment;
-    private $translator;
+    /**
+     * @var UserService
+     */
+    private UserService $userService;
+
+    /**
+     * @var LegacyEnvironment
+     */
+    private LegacyEnvironment $legacyEnvironment;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
 
     public function __construct(UserService $userService, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
     {
