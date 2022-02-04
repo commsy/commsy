@@ -10,9 +10,21 @@
                 <source>A label with the same name already exists.</source>
                 <target>Ein Label mit diesem Namen existiert bereits.</target>
             </trans-unit>
+            <trans-unit id="validators_current_password_wrong">
+                <source>Wrong value for your current password.</source>
+                <target>Die Eingabe entspricht nicht dem aktuellen Passwort.</target>
+            </trans-unit>
             <trans-unit id="validators_identical_to">
                 <source>The input does not match {{ compared_value }}</source>
                 <target>Die Eingabe entspricht nicht {{ compared_value }}</target>
+            </trans-unit>
+            <trans-unit id="validators_new_passwords_not_identical">
+                <source>Your password confirmation does not match.</source>
+                <target>Die Eingaben für das neue Passwort sind nicht identisch.</target>
+            </trans-unit>
+            <trans-unit id="validators_new_password_identical_to_old">
+                <source>Your new password must not be identical to your current one.</source>
+                <target>Das neue Passwort kann nicht identisch mit dem alten sein.</target>
             </trans-unit>
             <trans-unit id="validators_room_agb">
                 <source>You must accept room agb.</source>
