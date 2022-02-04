@@ -15,7 +15,7 @@ class NewPassword
 
     /**
      * @Assert\IdenticalTo(propertyPath="passwordConfirm", message="Your password confirmation does not match.")
-     * @Assert\NotIdenticalTo(propertyPath="currentPassword", message="Your new password should not be identical to your current one.")
+     * @Assert\NotIdenticalTo(propertyPath="currentPassword", message="Your new password must not be identical to your current one.")
      * @Assert\NotCompromisedPassword()
      */
     private $password;
