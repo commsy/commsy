@@ -86,6 +86,26 @@
                 <source>Password incorrect.</source>
                 <target>The password you entered is not correct.</target>
             </trans-unit>
+            <trans-unit id="validators_password_too_short">
+                <source>Your password must be at least {{ limit }} characters long.</source>
+                <target>Your password must be at least {{ limit }} characters long.</target>
+            </trans-unit>
+            <trans-unit id="validators_password_must_contain_lowercase_char">
+                <source>Your password must contain at least one lowercase character.</source>
+                <target>Your password must contain at least one lowercase character.</target>
+            </trans-unit>
+            <trans-unit id="validators_password_must_contain_uppercase_char">
+                <source>Your password must contain at least one uppercase character.</source>
+                <target>Your password must contain at least one uppercase character.</target>
+            </trans-unit>
+            <trans-unit id="validators_password_must_contain_special_char">
+                <source>Your password must contain at least one special character.</source>
+                <target>Your password must contain at least one special character.</target>
+            </trans-unit>
+            <trans-unit id="validators_password_must_contain_numeric_char">
+                <source>Your password must contain at least one numeric character.</source>
+                <target>Your password must contain at least one numeric character.</target>
+            </trans-unit>
             <trans-unit id="validators_passwords_dont_match">
                 <source>Passwords do not match</source>
                 <target>Passwords do not match.</target>
