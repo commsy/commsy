@@ -59,8 +59,8 @@ class LoginCest
         $I->fillField(['name' => 'sign_up_form[email][first]'], 'some@mail.test');
         $I->fillField(['name' => 'sign_up_form[email][second]'], 'some@mail.test');
         $I->fillField(['name' => 'sign_up_form[username]'], 'username');
-        $I->fillField(['name' => 'sign_up_form[plainPassword][first]'], 'ZSzq9z3aH8xDmGnLip');
-        $I->fillField(['name' => 'sign_up_form[plainPassword][second]'], 'ZSzq9z3aH8xDmGnLip');
+        $I->fillField(['name' => 'sign_up_form[plainPassword][first]'], 'zfCbzLm9h4$h');
+        $I->fillField(['name' => 'sign_up_form[plainPassword][second]'], 'zfCbzLm9h4$h');
         $I->click(['name' => 'sign_up_form[submit]']);
 
         $I->seeCurrentRouteIs('app_login');
