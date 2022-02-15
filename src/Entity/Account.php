@@ -52,8 +52,12 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max=4096)
      * @Assert\NotCompromisedPassword()
+     * @Assert\Length(max=4096, min=8, allowEmptyString=false, minMessage="Your password must be at least {{ limit }} characters long.")
+     * @Assert\Regex(pattern="/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/", message="Your password must contain at least one lowercase character.")
+     * @Assert\Regex(pattern="/(*UTF8)[\p{Lu}\p{Lt}]/", message="Your password must contain at least one uppercase character.")
+     * @Assert\Regex(pattern="/[[:punct:]]/", message="Your password must contain at least one special character.")
+     * @Assert\Regex(pattern="/\p{Nd}/", message="Your password must contain at least one numeric character.")
      */
     private $plainPassword;
 
