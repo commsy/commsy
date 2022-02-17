@@ -5,6 +5,7 @@ use App\Form\Type\AnnotationType;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use cs_environment;
+use cs_item;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -75,7 +76,7 @@ class DownloadService
     {
         $itemIds = is_array($itemIds) ? $itemIds : [$itemIds];
 
-        $exportTempFolder = $this->serviceContainer->getParameter('kernel.root_dir') . '/../files/temp/zip_export/' . time();
+        $exportTempFolder = $this->serviceContainer->getParameter('kernel.project_dir') . '/files/temp/zip_export/' . time();
 
         $fileSystem = new Filesystem();
 
@@ -103,8 +104,8 @@ class DownloadService
             
             // create PDF-file
             $htmlView = $item->getItemType() . '/detail_print.html.twig';
-            $htmlOutput = $this->serviceContainer->get('templating')->renderResponse($htmlView, $detailArray);
-            if (str_contains($htmlOutput->getContent(),"localhost:81")) { // local fix for wkhtmltopdf
+            $htmlOutput = $this->serviceContainer->get('twig')->render($htmlView, $detailArray);
+            if (str_contains($htmlOutput,"localhost:81")) { // local fix for wkhtmltopdf
                 $htmlOutput = preg_replace("/<img[^>]+\>/i", "(image) ", $htmlOutput);
             }
             file_put_contents($tempDirectory . '/' . $item->getTitle() . '.pdf', $this->printService->getPdfContent($htmlOutput));
@@ -153,7 +154,7 @@ class DownloadService
             $fileSystem = new Filesystem();
             $fileSystem->mkdir($targetFolder, 0777);
 
-            $rootDirectory = $this->serviceContainer->get('kernel')->getRootDir();
+            $rootDirectory = $this->serviceContainer->get('kernel')->getProjectDir();
 
             $filesCounter = [];
             foreach ($files as $file) {
