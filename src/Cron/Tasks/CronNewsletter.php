@@ -80,7 +80,7 @@ class CronNewsletter implements CronTaskInterface
 
                 $privateRoomUser = $privateRoom->getOwnerUserItem();
                 $portalUser = $privateRoomUser->getRelatedPortalUserItem();
-                if (!$portalUser->isActiveDuringLast99Days()) {
+                if ($portalUser === null || !$portalUser->isActiveDuringLast99Days()) {
                     continue;
                 }
 
