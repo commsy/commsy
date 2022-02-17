@@ -1,4 +1,9 @@
 sylius_theme:
+    # Disable theme assets for now to fix the use of ckeditor instances in themes (not loading correctly)
+    # See: https://github.com/Sylius/SyliusThemeBundle/issues/91
+    assets:
+        enabled: false
+
     sources:
         filesystem:
             filename: theme.json
