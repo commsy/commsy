@@ -157,12 +157,14 @@ class SearchFilterType extends AbstractType
                     'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
+                    'html5' => false,
                 ],
                 'right_date_options' => [
                     'label' => 'until',
                     'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
+                    'html5' => false,
                 ],
             ])
             ->add('modification_date_range', Filters\DateRangeFilterType::class, [
@@ -178,12 +180,14 @@ class SearchFilterType extends AbstractType
                     'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
+                    'html5' => false,
                 ],
                 'right_date_options' => [
                     'label' => 'until',
                     'input' => 'datetime',
                     'widget' => 'single_text',
                     'format' => 'dd.MM.yyyy',
+                    'html5' => false,
                 ],
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [

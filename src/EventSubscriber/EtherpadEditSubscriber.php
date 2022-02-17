@@ -7,7 +7,7 @@ use App\Services\EtherpadService;
 use App\Utils\MaterialService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class EtherpadEditSubscriber implements EventSubscriberInterface
 {
@@ -47,7 +47,7 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function materialEdit(GetResponseForControllerResultEvent $event)
+    public function materialEdit(ViewEvent $event)
     {
         // get etherpad configuration
         $enabled = $this->params->get('commsy.etherpad.enabled');
@@ -67,7 +67,7 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function materialSave(GetResponseForControllerResultEvent $event)
+    public function materialSave(ViewEvent $event)
     {
         $enabled = $this->params->get('commsy.etherpad.enabled');
 
