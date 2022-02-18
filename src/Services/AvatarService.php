@@ -78,7 +78,7 @@ class AvatarService
             return $this->generateInitialsAvatar();
         }
 
-        return file_get_contents($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
+        return file_get_contents($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
     }
 
     /**
@@ -88,8 +88,8 @@ class AvatarService
     public function generateInitialsAvatar()
     {
         if ($this->type == 1) {
-            $image = @imagecreatefromgif($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
-            $imageSize = getimagesize($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
+            $image = @imagecreatefromgif($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
+            $imageSize = getimagesize($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
             $this->imageWidth = $imageSize[0];
             $this->imageHeight = $imageSize[1];
             $fontSize = 50;
@@ -214,6 +214,6 @@ class AvatarService
      */
     public function getUnknownUserImage()
     {
-        return file_get_contents($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
+        return file_get_contents($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
     }
 }
