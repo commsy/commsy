@@ -644,7 +644,7 @@ class MenuBuilder
             }
 
             if (!$inPrivateRoom) {
-                if ($currentUser) {
+                if ($currentUser && !$currentUser->isGuest()) {
                     $menu->addChild('', ['uri' => '#']);
                     $menu->addChild('room_profile', [
                         'label' => 'Room profile',
