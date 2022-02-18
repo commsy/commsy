@@ -1114,7 +1114,7 @@ class DateController extends BaseController
             'calendarsAttr' => $calendarsOptionsAttr,
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService),
- 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                 'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
@@ -1156,7 +1156,9 @@ class DateController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $dateItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $dateItem->setTagListByID($categoryIds);
+                    }
                 }
                 if ($hashtagsMandatory) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
@@ -1167,7 +1169,9 @@ class DateController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $dateItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $dateItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $valuesToChange = array();

@@ -804,7 +804,9 @@ class GroupController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $groupItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $groupItem->setTagListByID($categoryIds);
+                    }
                 }
                 if ($hashtagsMandatory) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
@@ -815,7 +817,9 @@ class GroupController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $groupItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $groupItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $groupItem->save();
