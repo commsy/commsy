@@ -17,12 +17,21 @@ use App\Form\Type\MaterialSectionType;
 use App\Form\Type\MaterialType;
 use App\Form\Type\SectionType;
 use App\Http\JsonRedirectResponse;
+use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\CategoryService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\AssessmentService;
+use App\Utils\RoomService;
+use cs_item;
+use cs_tag_item;
+use cs_buzzword_item;
+use cs_buzzword_manager;
+use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use App\Utils\MaterialService;
 use App\Utils\TopicService;
 use cs_material_item;
@@ -36,6 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -1025,10 +1035,17 @@ class MaterialController extends BaseController
         Request $request,
         ItemController $itemController,
         CategoryService $categoryService,
+        ItemService $itemService,
+        RoomService $roomService,
+        TranslatorInterface $translator,
+        EventDispatcherInterface $eventDispatcher,
         LabelService $labelService,
+        LegacyEnvironment $environment,
         int $roomId,
         int $itemId
     ) {
+        $legacyEnvironment = $environment->getEnvironment();
+
         // NOTE: this method currently gets used for both, material & section items
         // TODO: move handling of sections into a dedicated `editSectionAction()`
         $item = $this->itemService->getItem($itemId);
@@ -1040,8 +1057,111 @@ class MaterialController extends BaseController
         $isDraft = false;
         $isSaved = false;
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        $formData = array();
+        $optionsData = array();
+        $items = array();
+
+        $rubricInformation = $roomService->getRubricInformation($roomId);
+        if (in_array('group', $rubricInformation)) {
+            $rubricInformation[] = 'label';
+        }
+
+        $optionsData['filterRubric']['all'] = 'all';
+        foreach ($rubricInformation as $rubric) {
+            $optionsData['filterRubric'][$rubric] = $rubric;
+        }
+
+        $optionsData['filterPublic']['public'] = 'public';
+        $optionsData['filterPublic']['all'] = 'all';
+
+        $itemManager = $legacyEnvironment->getItemManager();
+        $itemManager->reset();
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setTypeArrayLimit($rubricInformation);
+
+        // get all linked items
+        $itemLinkedList = $itemManager->getItemList($item->getAllLinkedItemIDArray());
+        $tempLinkedItem = $itemLinkedList->getFirst();
+        while ($tempLinkedItem) {
+            $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
+            if ($tempTypedLinkedItem->getItemType() != 'user') {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
+                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
+            } else {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
+                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
+            }
+            $tempLinkedItem = $itemLinkedList->getNext();
+        }
+        if (empty($optionsData['itemsLinked'])) {
+            $optionsData['itemsLinked'] = [];
+        }
+        // add number of linked items to feed amount
+        $countLinked = count($optionsData['itemsLinked']);
+
+        $itemManager->setIntervalLimit(40 + $countLinked);
+        $itemManager->select();
+        $itemList = $itemManager->get();
+
+        // get all items except linked items
+        $optionsData['items'] = [];
+        $tempItem = $itemList->getFirst();
+        while ($tempItem) {
+            $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
+            // skip already linked items
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
+                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                $items[$tempTypedItem->getItemId()] = $tempTypedItem;
+            }
+            $tempItem = $itemList->getNext();
+
+        }
+
+        $linkedItemIds = $item->getAllLinkedItemIDArray();
+        foreach ($linkedItemIds as $linkedId) {
+            $formData['itemsLinked'][$linkedId] = true;
+        }
+
+        // get latest edited items from current user
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setUserUserIDLimit($legacyEnvironment->getCurrentUser()->getUserId());
+        $itemManager->select();
+        $latestItemList = $itemManager->get();
+
+        $i = 0;
+        $latestItem = $latestItemList->getFirst();
+        while ($latestItem && $i < 5) {
+            $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
+                if (
+                    $tempTypedItem->getType() != "discarticle" &&
+                    $tempTypedItem->getType() != "task" &&
+                    $tempTypedItem->getType() != 'link_item' &&
+                    $tempTypedItem->getType() != 'tag' &&
+                    $tempTypedItem->getType() != 'step'
+                ) {
+                    $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                    $i++;
+                }
+            }
+            $latestItem = $latestItemList->getNext();
+        }
+        if (empty($optionsData['itemsLatest'])) {
+            $optionsData['itemsLatest'] = [];
+        }
+
+        // get all categories -> tree
+        $optionsData['categories'] = $this->getCategories($roomId, $categoryService);
+        $formData['categories'] = $this->getLinkedCategories($item);
+        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
+
+        // get all hashtags -> list
+        $optionsData['hashtags'] = $this->getHashtags($roomId, $legacyEnvironment);
+        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
+
 
         $licenses = [];
         $licensesContent = [];
@@ -1091,6 +1211,16 @@ class MaterialController extends BaseController
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
                 'licenses' => $licenses,
+                'filterRubric' => $optionsData['filterRubric'],
+                'filterPublic' => $optionsData['filterPublic'],
+                'items' => $optionsData['items'],
+                'itemsLinked' => array_flip($optionsData['itemsLinked']),
+                'itemsLatest' => array_flip($optionsData['itemsLatest']),
+                'categories' => $optionsData['categories'],
+                'categoryConstraints' => array(),
+                'hashtags' => $optionsData['hashtags'],
+                'hashtagConstraints' => array(),
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             ));
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
@@ -1114,7 +1244,8 @@ class MaterialController extends BaseController
         }
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+//        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 $typedItem = $this->materialTransformer->applyTransformation($typedItem, $form->getData());
 
@@ -1177,7 +1308,91 @@ class MaterialController extends BaseController
             'material' => $typedItem,
             'licenses' => $licenses,
             'licensesContent' => $licensesContent,
+            'roomId' => $roomId,
+            'itemId' => $itemId,
+            'items' => $items,
         );
+    }
+
+    public function getCategories($roomId, $categoryService) {
+        $categories = $categoryService->getTags($roomId);
+        return $this->transformTagArray($categories);
+    }
+
+    private function transformTagArray($tagArray)
+    {
+        $array = [];
+
+        foreach ($tagArray as $tag) {
+            // NOTE: in order to form unique array keys, we append the category (aka tag) ID to the category title;
+            // note that, in any form that makes use of this tag array, the category ID must be stripped again
+            // from the title (e.g. via a `choice_label` field option)
+            $array[$tag['title'] . '_' . $tag['item_id']] = $tag['item_id'];
+
+            if (!empty($tag['children'])) {
+                $array[$tag['title'] . '_sub' . '_' . $tag['item_id']] = $this->transformTagArray($tag['children']);
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * @param cs_item $item
+     * @return cs_tag_item[]
+     */
+    public function getLinkedCategories($item) {
+        /** @var cs_item $item */
+
+        $linkedCategories = [];
+        $categoriesList = $item->getTagList();
+
+        /** @var cs_tag_item $categoryItem */
+        $categoryItem = $categoriesList->getFirst();
+        while ($categoryItem) {
+            $linkedCategories[] = $categoryItem->getItemId();
+            $categoryItem = $categoriesList->getNext();
+        }
+        return $linkedCategories;
+    }
+
+    public function getHashtags($roomId, $legacyEnvironment) {
+        $hashtags = [];
+
+        /** @var cs_buzzword_manager $buzzwordManager */
+        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
+        $buzzwordManager->setContextLimit($roomId);
+        $buzzwordManager->setTypeLimit('buzzword');
+        $buzzwordManager->select();
+        $buzzwordList = $buzzwordManager->get();
+        $buzzwordItem = $buzzwordList->getFirst();
+        while ($buzzwordItem) {
+            $hashtags[$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
+            $buzzwordItem = $buzzwordList->getNext();
+        }
+        return array_flip($hashtags);
+    }
+
+    public function getLinkedHashtags($itemId, $roomId, $legacyEnvironment) {
+        $linkedHashtags = [];
+
+        /** @var cs_buzzword_manager $buzzwordManager */
+        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
+        $buzzwordManager->setContextLimit($roomId);
+        $buzzwordManager->setTypeLimit('buzzword');
+        $buzzwordManager->select();
+        $buzzwordList = $buzzwordManager->get();
+
+        /** @var cs_buzzword_item $buzzwordItem */
+        $buzzwordItem = $buzzwordList->getFirst();
+        while ($buzzwordItem) {
+            $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
+            if (in_array($itemId, $selected_ids)) {
+                $linkedHashtags[] = $buzzwordItem->getItemId();
+            }
+            $buzzwordItem = $buzzwordList->getNext();
+        }
+        return $linkedHashtags;
     }
 
     /**
