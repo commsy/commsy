@@ -107,7 +107,7 @@ class LegacySubscriber implements EventSubscriberInterface
     {
         $userManager = $this->legacyEnvironment->getUserManager();
 
-        if ($this->security->isGranted(RootVoter::ROOT)) {
+        if ($account !== null && $this->security->isGranted(RootVoter::ROOT)) {
             $this->legacyEnvironment->setCurrentUser($userManager->getRootUser());
             return;
         }
