@@ -1040,8 +1040,16 @@ class MaterialController extends BaseController
         $isDraft = false;
         $isSaved = false;
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        if ($item->isDraft()) {
+            // if a material is a draft, allow for categegories and
+            // hashtags for being edited, if they are active
+            $categoriesMandatory = $current_context->withTags();
+            $hashtagsMandatory = $current_context->withBuzzwords();
+        } else {
+            $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+            $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        }
+
 
         $licenses = [];
         $licensesContent = [];
