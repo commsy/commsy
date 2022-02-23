@@ -1063,8 +1063,8 @@ class MaterialController extends BaseController
             $formData = $this->materialTransformer->transform($materialItem);
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
-            $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
@@ -1132,7 +1132,9 @@ class MaterialController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $typedItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $typedItem->setTagListByID($categoryIds);
+                    }
                 }
                 if ($hashtagsMandatory) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
@@ -1147,7 +1149,9 @@ class MaterialController extends BaseController
 
                     }
 
-                    $typedItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $typedItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $typedItem->save();
