@@ -217,7 +217,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/account/changepassword")
+     * @Route("/account/changepassword")
      * @Template
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request

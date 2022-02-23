@@ -6,41 +6,43 @@ namespace App\Utils;
 
 use App\Entity\Portal;
 use App\Entity\Room;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\PortalRepository;
+use App\Repository\RoomRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class PortalGuessService
 {
+    /**
+     * @var PortalRepository
+     */
+    private PortalRepository $portalRepository;
 
     /**
-     * @var EntityManagerInterface
+     * @var RoomRepository
      */
-    private $entityManager;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RoomRepository $roomRepository;
 
     /**
      * @var ItemService
      */
-    private $itemService;
+    private ItemService $itemService;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
+        PortalRepository $portalRepository,
+        RoomRepository $roomRepository,
         RequestStack $requestStack,
         ItemService $itemService
     ) {
-        $this->entityManager = $entityManager;
-        $this->requestStack = $requestStack;
+        $this->portalRepository = $portalRepository;
+        $this->roomRepository = $roomRepository;
         $this->itemService = $itemService;
     }
 
     /**
      * Return the portal context entity or null
      *
+     * @param Request $request
      * @return Portal|null
      */
     public function fetchPortal(Request $request): ?Portal
@@ -49,15 +51,15 @@ class PortalGuessService
             $portalId = $request->attributes->get('portalId')
                 ?? $this->fetchContextId($request);
             if ($portalId !== null) {
-                return $this->entityManager->getRepository(Portal::class)->find($portalId);
+                return $this->portalRepository->find($portalId);
             }
 
             $roomId = $request->attributes->get('roomId');
             if ($roomId !== null) {
                 /** @var Room $room */
-                $room = $this->entityManager->getRepository(Room::class)->find($roomId);
+                $room = $this->roomRepository->find($roomId);
                 if ($room !== null) {
-                    return $this->entityManager->getRepository(Portal::class)->find($room->getContextId());
+                    return $this->portalRepository->find($room->getContextId());
                 }
             }
 
@@ -65,7 +67,7 @@ class PortalGuessService
             if ($itemId !== null) {
                 $item = $this->itemService->getItem($itemId);
                 if ($item !== null) {
-                    return $this->entityManager->getRepository(Portal::class)->find($item->getContextID());
+                    return $this->portalRepository->find($item->getContextID());
                 }
             }
         }
@@ -89,7 +91,7 @@ class PortalGuessService
             $roomId = $request->attributes->get('roomId');
             if ($roomId !== null) {
                 /** @var Room $room */
-                $room = $this->entityManager->getRepository(Room::class)->find($roomId);
+                $room = $this->roomRepository->find($roomId);
                 if ($room !== null) {
                     return $room->getContextId();
                 }
