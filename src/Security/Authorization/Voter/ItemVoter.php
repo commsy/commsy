@@ -2,6 +2,7 @@
 
 namespace App\Security\Authorization\Voter;
 
+use App\Entity\Account;
 use App\Entity\Portal;
 use App\Proxy\PortalProxy;
 use App\Services\LegacyEnvironment;
@@ -67,10 +68,13 @@ class ItemVoter extends Voter
         // get current logged in user
         $user = $token->getUser();
 
-        // make sure there is a user object (i.e. that the user is logged in)
-        // if (!$user instanceof User) {
-        //     return false
-        // }
+        if (!$user instanceof Account) {
+            return false;
+        }
+
+        if ($user->getUsername() === 'root') {
+            return true;
+        }
 
         $itemId = $object;
 
