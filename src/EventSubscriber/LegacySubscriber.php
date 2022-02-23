@@ -122,7 +122,7 @@ class LegacySubscriber implements EventSubscriberInterface
         }
 
         $userManager->resetLimits();
-        $userManager->setContextLimit($account->getContextId());
+        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $userManager->setUserIDLimit($account->getUsername());
         $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
         $userManager->select();
