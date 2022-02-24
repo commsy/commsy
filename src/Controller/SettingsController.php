@@ -21,6 +21,7 @@ use App\Form\Type\ModerationSettingsType;
 use App\Form\Type\Room\DeleteType;
 use App\Form\Type\Room\LockType;
 use App\Form\Type\Room\UserRoomDeleteType;
+use App\Mail\Factories\InvitationMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
@@ -594,6 +595,7 @@ class SettingsController extends AbstractController
      * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
      * @param PortalRepository $portalRepository
+     * @param InvitationMessageFactory $invitationMessageFactory
      * @param Mailer $mailer
      * @param int $roomId
      * @return array|RedirectResponse
@@ -605,6 +607,7 @@ class SettingsController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         PortalRepository $portalRepository,
+        InvitationMessageFactory $invitationMessageFactory,
         Mailer $mailer,
         int $roomId
     ) {
@@ -625,8 +628,6 @@ class SettingsController extends AbstractController
         $localAuthSource = $authSources->filter(function (AuthSource $authSource) {
             return $authSource instanceof AuthSourceLocal;
         })->first();
-
-        $user = $legacyEnvironment->getCurrentUserItem();
 
         $invitees = array();
         foreach ($invitationsService->getInvitedEmailAdressesByContextId($localAuthSource, $roomId) as $tempInvitee) {
@@ -654,33 +655,10 @@ class SettingsController extends AbstractController
                 // send invitation email
                 if (isset($data['email'])) {
                     $invitationCode = $invitationsService->generateInvitationCode($localAuthSource, $roomId, $data['email']);
-                    $invitationLink = $this->generateUrl('app_account_signup', [
-                        'id' => $portal->getId(),
-                        'token' => $invitationCode,
-                    ], UrlGeneratorInterface::ABSOLUTE_URL);
+                    $invitationMessage = $invitationMessageFactory->createInvitationMessage($portal, $roomItem, $invitationCode);
 
-                    $fromAddress = $this->getParameter('commsy.email.from');
                     $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
-
-                    $subject = $translator->trans('invitation subject %portal%', [
-                        '%portal%' => $portal->getTitle(),
-                    ]);
-                    $body = $translator->trans('invitation body %portal% %link% %sender%', [
-                        '%room%' => $roomItem->getTitle(),
-                        '%portal%' => $portal->getTitle(),
-                        '%link%' => $invitationLink,
-                        '%roomLink%' => $this->generateUrl('app_room_home', [
-                            'roomId' => $roomItem->getItemID(),
-                        ], UrlGeneratorInterface::ABSOLUTE_URL)." ",
-                        '%sender%' => $user->getFullName(),
-                    ]);
-
-                    $mailer->sendRaw(
-                        $subject,
-                        $body,
-                        RecipientFactory::createFromRaw($data['email']),
-                        $fromSender
-                    );
+                    $mailer->send($invitationMessage, $fromSender, RecipientFactory::createFromRaw($data['email']));
                 }
             } else if ($clickedButton === 'delete') {
                 foreach ($data['remove_invitees'] as $removeInvitee) {
