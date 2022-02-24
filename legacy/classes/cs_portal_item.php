@@ -1530,31 +1530,6 @@ class cs_portal_item extends cs_guide_item {
    ######################################################
    # don't show news from server on portal
 
-   public function _setNewsFromServerShow ($value) {
-      $this->_setServerNews('show_news_form_server',$value);
-   }
-
-   public function setDontShowNewsFromServer () {
-      $this->_setNewsFromServerShow(-1);
-   }
-
-   public function setShowNewsFromServer () {
-      $this->_setNewsFromServerShow(1);
-   }
-
-   public function showNewsFromServer () {
-      $retour = false;
-      $show_news = $this->_getNewsFromServerShow();
-      if ($show_news == 1) {
-         $retour = true;
-      }
-      return $retour;
-   }
-
-   private function _getNewsFromServerShow () {
-      return $this->_getServerNews('show_news_form_server');
-   }
-
    public function isPluginActive ( $plugin ) {
       $retour = false;
       if ( $this->isPluginOn($plugin) ) {
@@ -1567,7 +1542,6 @@ class cs_portal_item extends cs_guide_item {
    }
    
    // show tempates in room list
-
    private function _setShowTemplateInRoomList ($value) {
    	$this->_setExtra('SHOW_TEMPLATE_IN_ROOM_LIST',(int)$value);
    }
