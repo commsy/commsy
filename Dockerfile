@@ -123,6 +123,7 @@ COPY migrations migrations/
 COPY public public/
 COPY src src/
 COPY templates templates/
+COPY themes themes/
 COPY translations translations/
 
 RUN set -eux; \
