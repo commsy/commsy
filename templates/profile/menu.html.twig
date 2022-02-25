@@ -2,19 +2,28 @@
     {% if not uikit3 %}
         <div class="uk-dropdown uk-dropdown-small uk-dropdown-navbar">
             <ul class="uk-nav uk-nav-navbar">
-                {% if userId != "" and userId != "0" %}
-                    {% if portalUser is defined and portalUser is not null %}
-                        <li>
-                            <a href="{{ path('app_account_personal', {'portalId': portalUser.contextId }) }}"><i
-                                        class="uk-icon-justify uk-icon-user"></i> {{ 'Account'|trans([], 'profile') }}
-                            </a>
-                        </li>
-                    {% endif %}
+                {% if portalUser is defined and portalUser is not null %}
+                    <li>
+                        <a href="{{ path('app_account_personal', {'portalId': portalUser.contextId }) }}">
+                            <i class="uk-icon-justify uk-icon-user"></i> {{ 'Account'|trans([], 'profile') }}
+                        </a>
+                    </li>
                     <li class="uk-nav-divider"></li>
                 {% endif %}
+
+                {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.username is same as 'root' %}
+                    <li>
+                        <a href="{{ path('app_account_changepassword') }}">
+                            <i class="uk-icon-justify uk-icon-lock"></i> {{ 'changePassword'|trans([], 'profile') }}
+                        </a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                {% endif %}
+
                 <li>
-                    <a href="{{ path('app_logout') }}"><i
-                                class="uk-icon-justify uk-icon-power-off"></i> {{ 'Sign out'|trans([], 'profile') }}</a>
+                    <a href="{{ path('app_logout') }}">
+                        <i class="uk-icon-justify uk-icon-power-off"></i> {{ 'Sign out'|trans([], 'profile') }}
+                    </a>
                 </li>
 
                 {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
@@ -30,15 +39,14 @@
         </div>
     {% else %}
             <ul class="uk-nav uk-navbar-dropdown-nav">
-                {% if userId != "" and userId != "0" %}
-                    {% if portalUser is defined and portalUser is not null %}
-                        <li>
-                            <a href="{{ path('app_account_personal', {'portalId': portalUser.contextId }) }}"  class="uk-link-text"> <span uk-icon="icon: user"></span> {{ 'Account'|trans([], 'profile') }}
-                            </a>
-                        </li>
-                    {% endif %}
+                {% if portalUser is defined and portalUser is not null %}
+                    <li>
+                        <a href="{{ path('app_account_personal', {'portalId': portalUser.contextId }) }}"  class="uk-link-text"> <span uk-icon="icon: user"></span> {{ 'Account'|trans([], 'profile') }}
+                        </a>
+                    </li>
                     <li class="uk-nav-divider"></li>
                 {% endif %}
+
                 <li>
                     <a href="{{ path('app_logout') }}"  class="uk-link-text"> <span uk-icon="icon: sign-out"></span> {{ 'Sign out'|trans([], 'profile') }}</a>
                 </li>
