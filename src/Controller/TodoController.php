@@ -654,7 +654,9 @@ class TodoController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $todoItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $todoItem->setTagListByID($categoryIds);
+                    }
                 }
                 if ($hashtagsMandatory) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
@@ -665,7 +667,9 @@ class TodoController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $todoItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $todoItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $todoItem->save();

@@ -1,0 +1,12 @@
+{{ 'mail.invitation_opening'|trans({ '%room%': room.title, '%portal%': portal.title }, 'mail') }}<br/>
+<br/>
+{{ 'mail.invitation_link_pre'|trans({ '%portal%': portal.title }, 'mail') }}<br/>
+<a href="{{ url('app_account_signup', { 'id': portal.id, 'token': token }) }}">{{ url('app_account_signup', { 'id': portal.id, 'token': token }) }}</a><br/>
+{{ 'mail.invitation_link_post'|trans({}, 'mail') }}<br/>
+<br/>
+{{ 'mail.invitation_room_link_pre'|trans({}, 'mail') }}<br/>
+<a href="{{ url('app_room_home', { 'roomId': room.itemId }) }}">{{ url('app_room_home', { 'roomId': room.itemId }) }}</a><br/>
+{{ 'mail.invitation_room_link_post'|trans({}, 'mail') }}<br/>
+<br/>
+{{ 'regards'|trans({}, 'email') }}<br/>
+{{ senderName }}

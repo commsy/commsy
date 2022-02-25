@@ -1,6 +1,7 @@
 {% extends 'base/room.html.twig' %}
 
 {% import 'dashboard/macros.html.twig' as macros %}
+{% import 'common/announcements.html.twig' as announcements %}
 
 {% block roomTitle %}
     {{ 'Dashboard'|trans({}, "room") }}
@@ -16,38 +17,28 @@
     </div>
 
     <div class="uk-grid uk-grid-match" data-uk-grid-margin>
-        {% set showServerNews = server.showServerNews %}
-        {% if showServerNews and not portal.showNewsFromServer %}
+        {# server announcements #}
+        {% set showServerNews = server.announcementEnabled|default(false) %}
+        {% if showServerNews and not (portal.serverAnnouncementEnabled ?? true) %}
             {% set showServerNews = false %}
         {% endif %}
 
-        {# announcements #}
-        {% if portal.showServerNews %}
-            <div class="{% if portal.showServerNews and showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
-                <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
-                    {#<a class="uk-alert-close uk-close" href=""></a>#}
-                    <h2 class="uk-article-title">{{ portal.serverNewsTitle }}</h2>
-                    <p>
-                        {{ portal.serverNewsText|raw }}
-                    </p>
-                    <p>
-                        <a href="{{ portal.serverNewsLink }}">{{ portal.serverNewsLink }}</a>
-                    </p>
+        {% if portal.announcementEnabled|default(false) %}
+            <div class="{% if showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                <div class="uk-alert{% if portal.announcementSeverity != 'normal' %} uk-alert-{{ portal.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
+                    <a class="uk-alert-close uk-close" href=""></a>
+                    <h3 class="uk-article-title">{{ portal.announcementTitle }}</h3>
+                    <p>{{ portal.announcementText|raw }}</p>
                 </div>
             </div>
         {% endif %}
 
         {% if showServerNews %}
-            <div class="{% if portal.showServerNews and showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
-                <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
-                    {#<a class="uk-alert-close uk-close" href=""></a>#}
-                    <h2 class="uk-article-title">{{ server.serverNewsTitle }}</h2>
-                    <p>
-                        {{ server.serverNewsText|raw }}
-                    </p>
-                    <p>
-                        <a href="{{ server.serverNewsLink }}">{{ server.serverNewsLink }}</a>
-                    </p>
+            <div class="{% if portal.showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                <div class="uk-alert{% if item.announcementSeverity != 'normal' %} uk-alert-{{ item.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
+                    <a class="uk-alert-close uk-close" href=""></a>
+                    <h3>{{ item.announcementTitle }}</h3>
+                    <p>{{ item.announcementText|raw }}</p>
                 </div>
             </div>
         {% endif %}

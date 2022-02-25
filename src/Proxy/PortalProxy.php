@@ -106,14 +106,6 @@ class PortalProxy
         return ($this->portal->getExtras()['TIME_TEXT_ARRAY']) ?? [];
     }
 
-    public function showServerNews(): bool
-    {
-        $serverNewsExtra = ($this->portal->getExtras()['SERVER_NEWS']) ?? [];
-        $show = $serverNewsExtra[strtoupper('show')] ?? '';
-
-        return $show == 1;
-    }
-
     public function withAGB(): bool
     {
         $agbStatus = ($this->portal->getExtras()['SERVER_NEWS']) ?? '2';
@@ -375,21 +367,6 @@ class PortalProxy
     {
         $showNewsFromServer = ($this->portal->getExtras()['SERVER_NEWS']['SHOW_NEWS_FROM_SERVER']) ?? 0;
         return $showNewsFromServer === 1;
-    }
-
-    public function getServerNewsTitle(): string
-    {
-        return ($this->portal->getExtras()['SERVER_NEWS']['TITLE']) ?? '';
-    }
-
-    public function getServerNewsText(): string
-    {
-        return ($this->portal->getExtras()['SERVER_NEWS']['TEXT']) ?? '';
-    }
-
-    public function getServerNewsLink(): string
-    {
-        return ($this->portal->getExtras()['SERVER_NEWS']['LINK']) ?? '';
     }
 
     public function getHideAccountname(): bool
