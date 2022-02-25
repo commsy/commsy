@@ -846,6 +846,12 @@ class cs_room_manager extends cs_context_manager
 
     public function getUserRoomsUserIsMemberOf(\cs_user_item $user): \cs_list
     {
+        $list = new \cs_list();
+
+        if ($user->isReallyGuest()) {
+            return $list;
+        }
+
         $query = '
             SELECT r.*
             FROM room r
@@ -860,7 +866,6 @@ class cs_room_manager extends cs_context_manager
         ';
         $results = $this->_db_connector->performQuery($query);
 
-        $list = new \cs_list();
         foreach ($results as $result) {
             $list->add($this->_buildItem($result));
         }

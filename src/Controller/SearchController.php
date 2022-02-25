@@ -32,6 +32,7 @@ use cs_room_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
+use phpDocumentor\Reflection\Types\False_;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -227,12 +228,9 @@ class SearchController extends BaseController
         int $roomId
     )
     {
+        // NOTE: for a guest user, $roomItem may be null (e.g. when initiating a search from "all rooms")
         $roomItem = $roomService->getRoomItem($roomId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-
-        if (!$roomItem) {
-            throw $this->createNotFoundException('The requested room does not exist');
-        }
 
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
@@ -332,6 +330,7 @@ class SearchController extends BaseController
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
+            'userIsReallyGuest' => $currentUser->isReallyGuest(),
         ]);
         $filterForm->handleRequest($request);
 
@@ -340,82 +339,85 @@ class SearchController extends BaseController
             $clickedButton = $filterForm->getClickedButton();
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
-            $savedSearch = $searchData->getSelectedSavedSearch();
+            // NOTE: the "Manage my views" form part isn't available for guest users
+            if (!$currentUser->isReallyGuest()) {
+                $savedSearch = $searchData->getSelectedSavedSearch();
 
-            // NOTE: if a saved search was selected from the "Manage my views" dropdown, this performs a click (via an
-            // `onchange` attribute) on the form's hidden "load" button; opposed to this, `$buttonName` will be empty
-            // if the search params get changed for an existing saved search via the "Filter results" form part
-            if ($buttonName === 'load' && $savedSearch) {
-                $savedSearchURL = $savedSearch->getSearchUrl();
+                // NOTE: if a saved search was selected from the "Manage my views" dropdown, this performs a click (via an
+                // `onchange` attribute) on the form's hidden "load" button; opposed to this, `$buttonName` will be empty
+                // if the search params get changed for an existing saved search via the "Filter results" form part
+                if ($buttonName === 'load' && $savedSearch) {
+                    $savedSearchURL = $savedSearch->getSearchUrl();
 
-                if ($savedSearchURL) {
-                    // redirect to the search_url stored for the chosen saved search
+                    if ($savedSearchURL) {
+                        // redirect to the search_url stored for the chosen saved search
+                        $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+
+                        return $redirectResponse;
+                    }
+
+                } elseif ($buttonName === 'delete' && $savedSearch) {
+                    $repository = $entityManager->getRepository(SavedSearch::class);
+                    $repository->removeSavedSearch($savedSearch);
+
+                    // remove the "delete" param as well as saved search related params from current search URL
+                    $request = $this->setSubParamForRequestQueryParam('delete', null, 'search_filter', $request);
+                    $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', null, 'search_filter', $request);
+                    $request = $this->setSubParamForRequestQueryParam('selectedSavedSearchTitle', null, 'search_filter', $request);
+                    $searchURL = $this->getUpdatedRequestUriForRequest($request);
+
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $searchURL);
+
+                    return $redirectResponse;
+
+                } elseif ($buttonName === 'save') {
+                    // this handles cases where the "Save" button (in the "Manage my views" form part) was clicked
+                    // with either "New view" or an existing saved search (aka "view") selected in the view dropdown
+
+                    if (!$savedSearch) { // create a new saved search
+                        $savedSearch = new SavedSearch();
+                        $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+                        $savedSearch->setAccountId($portalUserId);
+                    }
+
+                    $savedSearchTitle = $searchData->getSelectedSavedSearchTitle();
+                    if (empty($savedSearchTitle)) {
+                        // this shouldn't get hit due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
+                        $savedSearchTitle = $translator->trans('New view', [], 'search');
+                    }
+                    if ($savedSearchTitle !== $savedSearch->getTitle()) {
+                        $savedSearch->setTitle($savedSearchTitle);
+                    }
+
+                    // remove the "save" param from the search URL to be persisted
+                    $request = $this->setSubParamForRequestQueryParam('save', null, 'search_filter', $request);
+                    $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
+
+                    if ($savedSearchURL !== $savedSearch->getSearchUrl()) {
+                        $savedSearch->setSearchUrl($savedSearchURL);
+                    }
+
+                    // for a newly created saved search, update its search URL with the correct ID
+                    if (empty($savedSearch->getId())) {
+                        // persisting the new SavedSearch object will auto-assign an ID
+                        $entityManager->persist($savedSearch);
+                        $entityManager->flush();
+                        $savedSearchId = $savedSearch->getId();
+
+                        // update saved search ID in current search URL
+                        $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', $savedSearchId, 'search_filter', $request);
+                        $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
+
+                        $savedSearch->setSearchUrl($savedSearchURL);
+                    }
+
+                    $entityManager->persist($savedSearch);
+                    $entityManager->flush();
+
                     $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
 
                     return $redirectResponse;
                 }
-
-            } elseif ($buttonName === 'delete' && $savedSearch) {
-                $repository = $entityManager->getRepository(SavedSearch::class);
-                $repository->removeSavedSearch($savedSearch);
-
-                // remove the "delete" param as well as saved search related params from current search URL
-                $request = $this->setSubParamForRequestQueryParam('delete', null, 'search_filter', $request);
-                $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', null, 'search_filter', $request);
-                $request = $this->setSubParamForRequestQueryParam('selectedSavedSearchTitle', null, 'search_filter', $request);
-                $searchURL = $this->getUpdatedRequestUriForRequest($request);
-
-                $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $searchURL);
-
-                return $redirectResponse;
-
-            } elseif ($buttonName === 'save') {
-                // this handles cases where the "Save" button (in the "Manage my views" form part) was clicked
-                // with either "New view" or an existing saved search (aka "view") selected in the view dropdown
-
-                if (!$savedSearch) { // create a new saved search
-                    $savedSearch = new SavedSearch();
-                    $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
-                    $savedSearch->setAccountId($portalUserId);
-                }
-
-                $savedSearchTitle = $searchData->getSelectedSavedSearchTitle();
-                if (empty($savedSearchTitle)) {
-                    // this shouldn't get hit due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
-                    $savedSearchTitle = $translator->trans('New view', [], 'search');
-                }
-                if ($savedSearchTitle !== $savedSearch->getTitle()) {
-                    $savedSearch->setTitle($savedSearchTitle);
-                }
-
-                // remove the "save" param from the search URL to be persisted
-                $request = $this->setSubParamForRequestQueryParam('save', null, 'search_filter', $request);
-                $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
-
-                if ($savedSearchURL !== $savedSearch->getSearchUrl()) {
-                    $savedSearch->setSearchUrl($savedSearchURL);
-                }
-
-                // for a newly created saved search, update its search URL with the correct ID
-                if (empty($savedSearch->getId())) {
-                    // persisting the new SavedSearch object will auto-assign an ID
-                    $entityManager->persist($savedSearch);
-                    $entityManager->flush();
-                    $savedSearchId = $savedSearch->getId();
-
-                    // update saved search ID in current search URL
-                    $request = $this->setSubParamForRequestQueryParam('selectedSavedSearch', $savedSearchId, 'search_filter', $request);
-                    $savedSearchURL = $this->getUpdatedRequestUriForRequest($request);
-
-                    $savedSearch->setSearchUrl($savedSearchURL);
-                }
-
-                $entityManager->persist($savedSearch);
-                $entityManager->flush();
-
-                $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
-
-                return $redirectResponse;
             }
         }
 
@@ -428,7 +430,7 @@ class SearchController extends BaseController
             'totalHits' => $totalHits,
             'results' => $results,
             'searchData' => $searchData,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem ? $roomItem->isArchived() : false,
             'user' => $currentUser,
         ];
     }
@@ -517,6 +519,7 @@ class SearchController extends BaseController
         // if the filter form is submitted by a GET request we use the same data object here to populate the data
         $filterForm = $this->createForm(SearchFilterType::class, $searchData, [
             'contextId' => $roomId,
+            'userIsReallyGuest' => $currentUser->isReallyGuest(),
         ]);
         $filterForm->handleRequest($request);
 
@@ -557,10 +560,12 @@ class SearchController extends BaseController
         // get all of the user's saved searches
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository(SavedSearch::class);
-        $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
+        $portalUser = $currentUser->getRelatedPortalUserItem();
 
-        $savedSearches = $repository->findByAccountId($portalUserId);
-        $searchData->setSavedSearches($savedSearches);
+        if ($portalUser) {
+            $savedSearches = $repository->findByAccountId($portalUser->getItemId());
+            $searchData->setSavedSearches($savedSearches);
+        }
 
         if (empty($requestParams)) {
             return $searchData;

@@ -65,7 +65,7 @@
             <div class="uk-width-8-10">
                 <div class="uk-comment-meta">
                     {% set privateRoom = user.ownRoom %}
-                    {% if privateRoom.itemID == entity.contextId -%}
+                    {% if privateRoom.itemID is defined and privateRoom.itemID == entity.contextId -%}
                         <a href="{{ path('app_material_list', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
                     {%- else -%}
                         <a href="{{ path('app_room_home', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
