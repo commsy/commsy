@@ -68,11 +68,7 @@ class ItemVoter extends Voter
         // get current logged in user
         $user = $token->getUser();
 
-        if (!$user instanceof Account) {
-            return false;
-        }
-
-        if ($user->getUsername() === 'root') {
+        if ($user instanceof Account && $user->getUsername() === 'root') {
             return true;
         }
 
