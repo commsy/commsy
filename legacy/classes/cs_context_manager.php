@@ -252,21 +252,27 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
         $only_user = false
     ) {
         $list = new cs_list();
+        if ($user_id === 'guest' && $this->_room_type !== CS_COMMUNITY_TYPE) {
+            // only community rooms may be open for guests
+            return $list;
+        }
         if (!isset($this->listCache[$user_id . '_' . $auth_source . '_' . $context_id])) {
             $query = 'SELECT ' . $this->addDatabasePrefix($this->_db_table) . '.*';
             $query .= ' FROM ' . $this->addDatabasePrefix($this->_db_table);
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('user') . ' ON ' . $this->addDatabasePrefix('user') . '.context_id=' . $this->addDatabasePrefix($this->_db_table) . '.item_id
+            if ($user_id !== 'guest') {
+                $query .= ' INNER JOIN ' . $this->addDatabasePrefix('user') . ' ON ' . $this->addDatabasePrefix('user') . '.context_id=' . $this->addDatabasePrefix($this->_db_table) . '.item_id
                      AND ' . $this->addDatabasePrefix('user') . '.auth_source="' . $auth_source . '"
                      AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL
                      AND ' . $this->addDatabasePrefix('user') . '.user_id="' . encode(AS_DB, $user_id) . '"';
-            if (!$this->_all_status_limit) {
-                if (!$only_user) {
-                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "1"';
+                if (!$this->_all_status_limit) {
+                    if (!$only_user) {
+                        $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "1"';
+                    } else {
+                        $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"';
+                    }
                 } else {
-                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"';
+                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "0"';
                 }
-            } else {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "0"';
             }
             $query .= ' WHERE 1';
             if (isset($this->_room_type) and !empty($this->_room_type)) {
@@ -278,7 +284,10 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                     $portal_manager = $this->_environment->getPortalManager();
                     $current_portal = $portal_manager->getItem($context_id);
                 }
-                if ($this->_room_type == CS_PROJECT_TYPE
+                if ($user_id === 'guest' && $this->_room_type === CS_COMMUNITY_TYPE) {
+                    $query .= ' AND (' . $this->addDatabasePrefix($this->_db_table) . '.is_open_for_guests = "1"'
+                        . ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.type = "' . CS_COMMUNITY_TYPE . '")';
+                } else if ($this->_room_type == CS_PROJECT_TYPE
                     and (
                         (isset($current_portal) and $current_portal->withGroupRoomFunctions())
                         or $grouproom

@@ -233,14 +233,16 @@ class RoomService
 
     /**
      * @param integer $roomId
-     * @return cs_room_item
+     * @return cs_room_item|null
      */
-    public function getRoomItem($roomId)
+    public function getRoomItem($roomId): ?cs_room_item
     {
         /**
-         * NOTICE: returning archived rooms here as a fallback if no room or private room item was found
+         * NOTE: returning archived rooms here as a fallback if no room or private room item was found
          * currently impacts at least the "all rooms" feed due to the fact, that it relies on this function
-         * returning false, if the room is archived.
+         * returning null, if the room is archived.
+         *
+         * NOTE: for a guest user, $roomItem may be also null
          */
 
         // get room item
