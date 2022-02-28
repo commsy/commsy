@@ -6,7 +6,6 @@ use App\Entity\SavedSearch;
 use App\EventSubscriber\ChosenRubricSubscriber;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
-use App\Search\SearchManager;
 use App\Utils\ReaderService;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -17,21 +16,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
 {
     /**
      * @var TranslatorInterface $translator
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    private $searchManager;
-
-    public function __construct(TranslatorInterface $translator, SearchManager $searchManager)
+    public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
-        $this->searchManager = $searchManager;
     }
 
     /**

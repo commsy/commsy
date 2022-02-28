@@ -204,8 +204,8 @@
 
             let merged = $.extend($this.options.settings, elementSettings);
 
-            let select = UI.uploadSelect($this.element, merged);
-            let drop = UI.uploadDrop($($this.element).parentsUntil('.uk-placeholder').parent(), merged);
+            UIkit.uploadSelect($this.element, merged);
+            UIkit.uploadDrop($($this.element).parentsUntil('.uk-placeholder').parent(), merged);
         },
     });
 })(UIkit);

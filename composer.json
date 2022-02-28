@@ -29,7 +29,6 @@
         "lexik/form-filter-bundle": "^6.0",
         "lexik/jwt-authentication-bundle": "^2.8",
         "liip/imagine-bundle": "^2.3",
-        "liip/theme-bundle": "^1.7",
         "masterminds/html5": "^2.7",
         "mediawiki/oauthclient": "^1.1",
         "mhujer/breadcrumbs-bundle": "^1.5",
@@ -40,6 +39,7 @@
         "php-imap/php-imap": "^4.1",
         "sabre/vobject": "^4.3",
         "sensio/framework-extra-bundle": "^5.6",
+        "sylius/theme-bundle": "^2.2",
         "symfony/asset": "4.4.*",
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",
@@ -87,7 +87,11 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {

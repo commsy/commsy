@@ -34,12 +34,12 @@
 {%- endblock %}
 
 {% block select2_choice_widget %}
-    {% spaceless %}
+    {% apply spaceless %}
         {% set attr = attr|merge({class: (attr.class|default('') ~ ' js-select2-choice')|trim}) %}
         {% set attr = attr|merge({'data-placeholder': 'Select some options'|trans({}, 'messages')}) %}
 
         {{ block('choice_widget') }}
-    {% endspaceless %}
+    {% endapply %}
 {% endblock %}
 
 {# Labels #}

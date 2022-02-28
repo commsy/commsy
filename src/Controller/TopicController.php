@@ -521,7 +521,9 @@ class TopicController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $topicItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $topicItem->setTagListByID($categoryIds);
+                    }
                 }
                 if ($hashtagsMandatory) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
@@ -532,7 +534,9 @@ class TopicController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $topicItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $topicItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $topicItem->save();
