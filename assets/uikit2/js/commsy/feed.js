@@ -6,15 +6,10 @@
 
     let lastRequest = '';
 
-    // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
-    $('.feed-load-more').on('inview.uk.scrollspy', function() {
-        let el = $(this);
+    let $spinner = $('.feed-load-more, .feed-load-more-grid');
 
-        loadMore(el);
-    });
-
-    // listen to "inview.uk.scrollspy" event on "feed-load-more-grid" classes
-    $('.feed-load-more-grid').on('inview.uk.scrollspy', function() {
+    // listen to "inview.uk.scrollspy" event on corresponding classes
+    $spinner.on('inview.uk.scrollspy', function() {
         let el = $(this);
 
         loadMore(el);
@@ -23,6 +18,16 @@
     $('.cs-sort-actor').on('click', function(event) {
         onSortActorClick($(this));
     });
+
+    /**
+     * Since init.uk.scrollspy seems not to be triggered, we reuse the custom function here.
+     * This will force a load more request and remove the spinner if it was initially visible and there are no
+     * additional results.
+     * @see #4397
+     */
+    if (isElementInViewport($spinner)) {
+        loadMore($spinner);
+    }
 
     function onSortActorClick($element)
     {
