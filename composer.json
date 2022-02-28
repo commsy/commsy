@@ -17,7 +17,7 @@
         "doctrine/doctrine-bundle": "^2.1",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.7",
-        "eluceo/ical": "^0.15",
+        "eluceo/ical": "^2.5",
         "ezyang/htmlpurifier": "^4.1",
         "friendsofsymfony/ckeditor-bundle": "^2.0",
         "friendsofsymfony/elastica-bundle": "^6.1",
