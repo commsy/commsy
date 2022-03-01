@@ -214,6 +214,6 @@ class AvatarService
      */
     public function getUnknownUserImage()
     {
-        return file_get_contents($this->kernelProjectDir . '/src/Resources/uikit2/img/user_unknown.gif');
+        return file_get_contents($this->kernelProjectDir . '/src/Resources/img/user_unknown.gif');
     }
 }

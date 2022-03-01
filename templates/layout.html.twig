@@ -73,7 +73,7 @@
                         </li>
                     {% else %}
                         {# root outside of portal #}
-                        <a href="{{ path('app_logout') }}">Logout</a>
+                        <a href="{{ path('app_logout') }}">{{ 'Sign out'|trans([], 'profile') }}</a>
                     {% endif %}
                 {% endif %}
             </ul>
