@@ -394,4 +394,14 @@ class SecurityController extends AbstractController
             'form' => $form->createView(),
         ];
     }
+
+    /**
+     * @Route("/login/{portalId}/simultaneous")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template
+     */
+    public function simultaneousLogin(Portal $portal)
+    {
+        return [];
+    }
 }
