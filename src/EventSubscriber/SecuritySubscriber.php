@@ -86,7 +86,7 @@ class SecuritySubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $this->security->getUser();
 
-        if ($account === null) {
+        if ($account === null || $account->getUsername() === 'root') {
             return;
         }
 
