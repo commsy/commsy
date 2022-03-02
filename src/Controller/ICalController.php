@@ -18,6 +18,7 @@ use Eluceo\iCal\Domain\Entity\TimeZone;
 use Eluceo\iCal\Domain\ValueObject\Date as EventDate;
 use Eluceo\iCal\Domain\ValueObject\DateTime as EventDateTime;
 use Eluceo\iCal\Domain\ValueObject\EmailAddress;
+use Eluceo\iCal\Domain\ValueObject\Location;
 use Eluceo\iCal\Domain\ValueObject\MultiDay;
 use Eluceo\iCal\Domain\ValueObject\Organizer;
 use Eluceo\iCal\Domain\ValueObject\SingleDay;
@@ -251,7 +252,7 @@ class ICalController extends AbstractController
 
             // location
             if (!empty($item->getPlace())) {
-                $event->setLocation($item->getPlace());
+                $event->setLocation(new Location($item->getPlace()));
             }
 
             // url
