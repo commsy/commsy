@@ -25,7 +25,7 @@
      * additional results.
      * @see #4397
      */
-    if (isElementInViewport($spinner)) {
+    if ($spinner.length && isElementInViewport($spinner)) {
         loadMore($spinner);
     }
 
@@ -49,8 +49,8 @@
             .removeClass('cs-sort-active-asc')
             .removeClass('cs-sort-active-desc')
             .find('i')
-                .removeClass('uk-icon-sort-asc')
-                .removeClass('uk-icon-sort-desc');
+            .removeClass('uk-icon-sort-asc')
+            .removeClass('uk-icon-sort-desc');
 
         // set new active classes
         $element
@@ -132,45 +132,45 @@
         $.ajax({
             url: url
         })
-        .done(function(result) {
-            try {
-                let foundArticles = false;
-                if ($(result).filter('article').length) {
-                    foundArticles = true;
-                } else if ($(result).find('article').length) {
-                    foundArticles = true
-                }
-
-                if (foundArticles) {
-                    // append the data
-                    let target = spinner.data('feed').target;
-                    $(target).append(result);
-
-                    let event = new CustomEvent(
-                        'feedDidLoad',
-                        {
-                            detail: {
-                                feedStart: feedStart,
-                            },
-                            bubbles: true,
-                            cancelable: true
-                        }
-                    );
-                    window.dispatchEvent(event);
-
-                    // increase for next run
-                    feedStart += 10;
-
-                    if (isElementInViewport(spinner)) {
-                        loadMore(spinner);
+            .done(function(result) {
+                try {
+                    let foundArticles = false;
+                    if ($(result).filter('article').length) {
+                        foundArticles = true;
+                    } else if ($(result).find('article').length) {
+                        foundArticles = true
                     }
-                } else {
+
+                    if (foundArticles) {
+                        // append the data
+                        let target = spinner.data('feed').target;
+                        $(target).append(result);
+
+                        let event = new CustomEvent(
+                            'feedDidLoad',
+                            {
+                                detail: {
+                                    feedStart: feedStart,
+                                },
+                                bubbles: true,
+                                cancelable: true
+                            }
+                        );
+                        window.dispatchEvent(event);
+
+                        // increase for next run
+                        feedStart += 10;
+
+                        if (isElementInViewport(spinner)) {
+                            loadMore(spinner);
+                        }
+                    } else {
+                        $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
+                    }
+                } catch (error) {
                     $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
                 }
-            } catch (error) {
-                $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
-            }
-        });
+            });
     }
 
     function isElementInViewport (el) {
