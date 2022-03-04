@@ -85,7 +85,7 @@
 
                         <div class="uk-card-footer uk-position-bottom">
                             {% set showEnter = true %}
-                            {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.contextId is not same as activePortal.id %}
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.contextId is not same as activePortal.id and app.user.username is not same as 'root' %}
                                 {% set showEnter = false %}
                             {% endif %}
 
