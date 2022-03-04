@@ -6,15 +6,10 @@
 
     let lastRequest = '';
 
-    // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
-    $('.feed-load-more').on('inview.uk.scrollspy', function() {
-        let el = $(this);
+    let $spinner = $('.feed-load-more, .feed-load-more-grid');
 
-        loadMore(el);
-    });
-
-    // listen to "inview.uk.scrollspy" event on "feed-load-more-grid" classes
-    $('.feed-load-more-grid').on('inview.uk.scrollspy', function() {
+    // listen to "inview.uk.scrollspy" event on corresponding classes
+    $spinner.on('inview.uk.scrollspy', function() {
         let el = $(this);
 
         loadMore(el);
@@ -23,6 +18,16 @@
     $('.cs-sort-actor').on('click', function(event) {
         onSortActorClick($(this));
     });
+
+    /**
+     * Since init.uk.scrollspy seems not to be triggered, we reuse the custom function here.
+     * This will force a load more request and remove the spinner if it was initially visible and there are no
+     * additional results.
+     * @see #4397
+     */
+    if ($spinner.length && isElementInViewport($spinner)) {
+        loadMore($spinner);
+    }
 
     function onSortActorClick($element)
     {
@@ -44,8 +49,8 @@
             .removeClass('cs-sort-active-asc')
             .removeClass('cs-sort-active-desc')
             .find('i')
-                .removeClass('uk-icon-sort-asc')
-                .removeClass('uk-icon-sort-desc');
+            .removeClass('uk-icon-sort-asc')
+            .removeClass('uk-icon-sort-desc');
 
         // set new active classes
         $element
@@ -127,45 +132,45 @@
         $.ajax({
             url: url
         })
-        .done(function(result) {
-            try {
-                let foundArticles = false;
-                if ($(result).filter('article').length) {
-                    foundArticles = true;
-                } else if ($(result).find('article').length) {
-                    foundArticles = true
-                }
-
-                if (foundArticles) {
-                    // append the data
-                    let target = spinner.data('feed').target;
-                    $(target).append(result);
-
-                    let event = new CustomEvent(
-                        'feedDidLoad',
-                        {
-                            detail: {
-                                feedStart: feedStart,
-                            },
-                            bubbles: true,
-                            cancelable: true
-                        }
-                    );
-                    window.dispatchEvent(event);
-
-                    // increase for next run
-                    feedStart += 10;
-
-                    if (isElementInViewport(spinner)) {
-                        loadMore(spinner);
+            .done(function(result) {
+                try {
+                    let foundArticles = false;
+                    if ($(result).filter('article').length) {
+                        foundArticles = true;
+                    } else if ($(result).find('article').length) {
+                        foundArticles = true
                     }
-                } else {
+
+                    if (foundArticles) {
+                        // append the data
+                        let target = spinner.data('feed').target;
+                        $(target).append(result);
+
+                        let event = new CustomEvent(
+                            'feedDidLoad',
+                            {
+                                detail: {
+                                    feedStart: feedStart,
+                                },
+                                bubbles: true,
+                                cancelable: true
+                            }
+                        );
+                        window.dispatchEvent(event);
+
+                        // increase for next run
+                        feedStart += 10;
+
+                        if (isElementInViewport(spinner)) {
+                            loadMore(spinner);
+                        }
+                    } else {
+                        $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
+                    }
+                } catch (error) {
                     $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
                 }
-            } catch (error) {
-                $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
-            }
-        });
+            });
     }
 
     function isElementInViewport (el) {

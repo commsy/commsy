@@ -40,33 +40,34 @@ class UserProvider implements UserProviderInterface
      * this method.
      *
      * @param $username
-     * @return Account|null
+     * @return Account
      *
      * @throws UsernameNotFoundException if the user is not found
      */
-    public function loadUserByUsername($username): ?Account
+    public function loadUserByUsername($username): Account
     {
         // Load a User object from your data source or throw UsernameNotFoundException.
         // The $username argument may not actually be a username:
         // it is whatever value is being returned by the getUsername()
         // method in your User class.
-        $contextId = $this->extractContexIdFromRequest();
-        $authSourceId = $this->extractAuthSourceIdFromRequest();
-
-        try {
-            $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
-            $user = $this->entityManager->getRepository(Account::class)
-                ->findOneByCredentials($username, $contextId, $authSource);
-
-            if (!$user) {
-                throw new UsernameNotFoundException();
-            }
-
-            return $user;
-        } catch (NonUniqueResultException $e) {
+        $account = $this->loadUser(
+            $username,
+            $this->extractContexIdFromRequest(),
+            $this->extractAuthSourceIdFromRequest()
+        );
+        if ($account === null) {
+            $account = $this->loadUser(
+                $username,
+                $this->extractContexIdFromRequest('takeover_context'),
+                $this->extractAuthSourceIdFromRequest('takeover_authSourceId')
+            );
         }
 
-        return null;
+        if ($account === null) {
+            throw new UsernameNotFoundException();
+        }
+
+        return $account;
     }
 
     /**
@@ -81,11 +82,11 @@ class UserProvider implements UserProviderInterface
      * method is not called.
      *
      * @param UserInterface $user
-     * @return Account|null
+     * @return Account
      *
      * @throws UsernameNotFoundException if the user is not found
      */
-    public function refreshUser(UserInterface $user): ?Account
+    public function refreshUser(UserInterface $user): Account
     {
         if (!$user instanceof Account) {
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
@@ -93,23 +94,24 @@ class UserProvider implements UserProviderInterface
 
         // Return a User object after making sure its data is "fresh".
         // Or throw a UsernameNotFoundException if the user no longer exists.
-        $contextId = $this->extractContexIdFromRequest();
-        $authSourceId = $this->extractAuthSourceIdFromRequest();
-
-        try {
-            $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
-            $user = $this->entityManager->getRepository(Account::class)
-                ->findOneByCredentials($user->getUsername(), $contextId, $authSource);
-
-            if (!$user) {
-                throw new UsernameNotFoundException();
-            }
-
-            return $user;
-        } catch (NonUniqueResultException $e) {
+        $account = $this->loadUser(
+            $user->getUsername(),
+            $this->extractContexIdFromRequest(),
+            $this->extractAuthSourceIdFromRequest()
+        );
+        if ($account === null) {
+            $account = $this->loadUser(
+                $user->getUsername(),
+                $this->extractContexIdFromRequest('takeover_context'),
+                $this->extractAuthSourceIdFromRequest('takeover_authSourceId')
+            );
         }
 
-        return null;
+        if ($account === null) {
+            throw new UsernameNotFoundException();
+        }
+
+        return $account;
     }
 
     /**
@@ -120,51 +122,57 @@ class UserProvider implements UserProviderInterface
         return Account::class === $class;
     }
 
+    private function loadUser(string $username, int $contextId, int $authSourceId): ?Account
+    {
+        try {
+            $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
+            return $this->entityManager->getRepository(Account::class)
+                ->findOneByCredentials($username, $contextId, $authSource);
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return null;
+    }
+
     /**
      * Extracts context id from the request
      *
+     * @param string $key
      * @return int
      */
-    private function extractContexIdFromRequest(): int
+    private function extractContexIdFromRequest(string $key = 'context'): int
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if (!$currentRequest) {
-            throw new UsernameNotFoundException();
+        if ($currentRequest) {
+            $session = $currentRequest->getSession();
+            $contextId = $session->get($key);
+
+            if ($contextId !== null) {
+                return $contextId;
+            }
         }
 
-        $session = $currentRequest->getSession();
-        $contextId = $session->get('context');
-        $contextId = $session->get('takeover_context', $contextId);
-        $session->remove('takeover_context');
-
-        if (!$contextId) {
-            throw new UsernameNotFoundException();
-        }
-
-        return $contextId;
+        throw new UsernameNotFoundException();
     }
 
     /**
      * Extracts auth source id from the request
      *
+     * @param string $key
      * @return int
      */
-    private function extractAuthSourceIdFromRequest(): int
+    private function extractAuthSourceIdFromRequest(string $key = 'authSourceId'): int
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if (!$currentRequest) {
-            throw new UsernameNotFoundException();
+        if ($currentRequest) {
+            $session = $currentRequest->getSession();
+            $authSourceId = $session->get($key);
+
+            if ($authSourceId !== null) {
+                return $authSourceId;
+            }
         }
 
-        $session = $currentRequest->getSession();
-        $authSourceId = $session->get('authSourceId');
-        $authSourceId = $session->get('takeover_authSourceId', $authSourceId);
-        $session->remove('takeover_authSourceId');
-
-        if (!$authSourceId) {
-            throw new UsernameNotFoundException();
-        }
-
-        return $authSourceId;
+        throw new UsernameNotFoundException();
     }
 }

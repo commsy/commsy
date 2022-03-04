@@ -84,7 +84,16 @@
                         </div>
 
                         <div class="uk-card-footer uk-position-bottom">
-                            <a href="{{ path('app_helper_portalenter', { 'context': activePortal.id }) }}" class="uk-button uk-button-text">{{ 'portal.enter'|trans({}, 'portal') }}</a>
+                            {% set showEnter = true %}
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.contextId is not same as activePortal.id and app.user.username is not same as 'root' %}
+                                {% set showEnter = false %}
+                            {% endif %}
+
+                            {% if showEnter %}
+                                <a href="{{ path('app_helper_portalenter', { 'context': activePortal.id }) }}" class="uk-button uk-button-text">{{ 'portal.enter'|trans({}, 'portal') }}</a>
+                            {% else %}
+                                {{ 'login.logout_first'|trans({}, 'login') }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

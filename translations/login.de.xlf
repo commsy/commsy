@@ -90,6 +90,18 @@
                 <source>login.request_accounts_none</source>
                 <target>Für diese E-Mailadresse wurden keine Kennungen gefunden.</target>
             </trans-unit>
+            <trans-unit id="login_simultaneous_title">
+                <source>login.simultaneous_title</source>
+                <target>Doppelte Anmeldung</target>
+            </trans-unit>
+            <trans-unit id="login_simultaneous_desc">
+                <source>login.simultaneous_desc</source>
+                <target>Sie sind bereits auf einem anderen Portal angemeldet. Um dieses Portal zu betreten, loggen sie sich bitte vorher aus:</target>
+            </trans-unit>
+            <trans-unit id="login_logout_first">
+                <source>login.logout_first</source>
+                <target>Bitte vorher abmelden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
