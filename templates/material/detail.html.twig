@@ -72,23 +72,35 @@
 
                                         {# copy #}
                                         <li>
-                                            <a href="#" data-cs-action="{{ {
-                                                'url': path('app_material_xhrcopy', {'roomId': roomId}),
-                                                'action': 'copy',
-                                                'itemId': material.itemId,
-                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                'mode': 'click',
-                                                'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|trans({'%count%':1}, 'item')
-                                            }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
-                                            </a>
+                                            {% if user.isUser %}
+                                                <a href="#" data-cs-action="{{ {
+                                                    'url': path('app_material_xhrcopy', {'roomId': roomId}),
+                                                    'action': 'copy',
+                                                    'itemId': material.itemId,
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|trans({'%count%':1}, 'item')
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                         {# send #}
                                         <li>
-                                            <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                            </a>
+                                            {% if user.isUser %}
+                                                <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                         {# delete #}

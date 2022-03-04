@@ -72,23 +72,35 @@
 
                                         {# copy #}
                                         <li>
-                                            <a href="#" data-cs-action="{{ {
-                                                'url': path('app_todo_xhrcopy', {'roomId': roomId}),
-                                                'action': 'copy',
-                                                'itemId': todo.itemId,
-                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                'mode': 'click',
-                                                'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|trans({'%count%':1}, 'item')
-                                            }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
-                                            </a>
+                                            {% if user.isUser %}
+                                                <a href="#" data-cs-action="{{ {
+                                                    'url': path('app_todo_xhrcopy', {'roomId': roomId}),
+                                                    'action': 'copy',
+                                                    'itemId': todo.itemId,
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|trans({'%count%':1}, 'item')
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                         {# send #}
                                         <li>
-                                            <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': todo.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                            </a>
+                                            {% if user.isUser %}
+                                                <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                         {# delete #}
@@ -118,54 +130,78 @@
 
                                         {# participant #}
                                         <li>
-                                            <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
-                                                {% if not isParticipating %}
+                                            {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                                                <a href="{{ path('app_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                    {% if not isParticipating %}
+                                                        <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
+                                                    {% else %}
+                                                        <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'remove responsibility'|trans({}, 'todo')|capitalize }}
+                                                    {% endif %}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
                                                     <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
-                                                {% else %}
-                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'remove responsibility'|trans({}, 'todo')|capitalize }}
-                                                {% endif %}
-                                            </a>
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                         {# change status of whole task#}
                                         <li>
-                                            <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
-                                                'action': 'markpending',
-                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                'mode': 'click',
-                                                'status': 'pending',
-                                                'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
-                                            }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
-                                            </a>
+                                            {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                    'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                    'action': 'markpending',
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'status': 'pending',
+                                                    'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpendingsingle'|trans({},'rubric') }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
 
                                         <li>
-                                            <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
-                                                'action': 'markinprogress',
-                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                'mode': 'click',
-                                                'status': 'inprogress',
-                                                'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
-                                            }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
-                                            </a>
+                                            {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                    'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                    'action': 'markinprogress',
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'status': 'inprogress',
+                                                    'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogresssingle'|trans({},'rubric') }}
+                                                </span>
+                                            {% endif %}
                                         </li>
                                         
                                         <li>
-                                            <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                                'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
-                                                'action': 'markdone',
-                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                'mode': 'click',
-                                                'status': 'done',
-                                                'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
-                                            }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
-                                            </a>
+                                            {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                    'url': path('app_todo_xhrstatusfromdetail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                    'action': 'markdone',
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'status': 'done',
+                                                    'returnUrl': path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdonesingle'|trans({},'rubric') }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                         {# separator #}
@@ -173,9 +209,15 @@
 
                                         {# new step #}
                                         <li>
-                                            <a class="newStep" href="#" id="newStep" data-step-url="{{ path('app_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
-                                            </a>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                <a class="newStep" href="#" id="newStep" data-step-url="{{ path('app_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
+                                                </span>
+                                            {% endif %}
                                         </li>
                                     </ul>
                                 </div>
