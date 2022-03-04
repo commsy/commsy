@@ -90,6 +90,18 @@
                 <source>login.request_accounts_none</source>
                 <target>No accounts where found for the provided email address.</target>
             </trans-unit>
+            <trans-unit id="login_simultaneous_title">
+                <source>login.simultaneous_title</source>
+                <target>Duplicated login</target>
+            </trans-unit>
+            <trans-unit id="login_simultaneous_desc">
+                <source>login.simultaneous_desc</source>
+                <target>You are already signed in on another portal. To get access to this one, please log out first:</target>
+            </trans-unit>
+            <trans-unit id="login_logout_first">
+                <source>login.logout_first</source>
+                <target>Please logout first</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
