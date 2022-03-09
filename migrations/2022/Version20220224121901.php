@@ -26,7 +26,7 @@ final class Version20220224121901 extends AbstractMigration
             ->select('p.id', 'p.extras')
             ->from('portal', 'p')
             ->where('p.extras LIKE "%SERVER_NEWS%"');
-        $entries = $qb->execute();
+        $entries = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($entries as $entry) {
             $extras = DbConverter::convertToPHPValue($entry['extras']);

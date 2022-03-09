@@ -33,7 +33,7 @@ class CronCleanLinkItems implements CronTaskInterface
             WHERE i.item_id IS NULL
         ';
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->executeQuery();
         $rows = $stmt->fetchAllAssociative();
 
         // Delete all or nothing
