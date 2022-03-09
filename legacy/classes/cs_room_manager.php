@@ -844,25 +844,41 @@ class cs_room_manager extends cs_context_manager
         return $retour;
     }
 
-    public function getUserRoomsUserIsMemberOf(\cs_user_item $user): \cs_list
+    public function getUserRoomsUserIsMemberOf(\cs_user_item $user, bool $withExtras = true): \cs_list
     {
-        $query = '
-            SELECT r.*
-            FROM room r
-            INNER JOIN user u ON u.context_id = r.item_id
-            WHERE r.type = "userroom" AND
-                u.auth_source = ' . $user->getAuthSource() . ' AND
-                u.deletion_date IS NULL AND
-                u.deleter_id IS NULL AND
-                r.deletion_date IS NULL AND
-                r.deleter_id IS NULL AND
-                u.user_id = "' . $user->getUserID() . '"
-        ';
-        $results = $this->_db_connector->performQuery($query);
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('r.item_id', 'r.context_id', 'r.creator_id', 'r.modifier_id', 'r.creation_date',
+                'r.modification_date', 'r.title', 'r.status', 'r.activity', 'r.type', 'r.public',
+                'r.is_open_for_guests', 'r.continuous', 'r.template', 'r.contact_persons', 'r.room_description',
+                'r.lastlogin')
+            ->from('room', 'r')
+            ->innerJoin('r', 'user', 'u', 'u.context_id = r.item_id')
+            ->andWhere('r.deleter_id IS NULL')
+            ->andWhere('r.deletion_date IS NULL')
+            ->andWhere('r.type = :type')
+            ->andWhere('u.auth_source = :authSource')
+            ->andWhere('u.deleter_id IS NULL')
+            ->andWhere('u.deletion_date IS NULL')
+            ->andWhere('u.user_id = :userId')
+            ->setParameter('type', 'userroom')
+            ->setParameter('authSource', $user->getAuthSource())
+            ->setParameter('userId', $user->getUserID());
+
+        if ($withExtras) {
+            $queryBuilder->addSelect('r.extras');
+        }
 
         $list = new \cs_list();
-        foreach ($results as $result) {
-            $list->add($this->_buildItem($result));
+
+        try {
+            $results = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
+
+            foreach ($results as $result) {
+                $list->add($this->_buildItem($result));
+            }
+        } catch (\Doctrine\DBAL\Exception $e) {
         }
 
         return $list;

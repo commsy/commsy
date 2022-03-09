@@ -441,17 +441,17 @@ class cs_project_manager extends cs_room2_manager {
         return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
     }
 
-    public function getRelatedProjectListForUser(cs_user_item $user, $contextId = null)
+    public function getRelatedProjectListForUser(cs_user_item $user, $contextId = null, bool $withExtras = true)
     {
         if (!$contextId) {
             $contextId = $this->_environment->getCurrentPortalID();
         }
 
-        return $this->getRelatedContextListForUserInt($user->getUserID(), $user->getAuthSource(), $contextId);
+        return $this->getRelatedContextListForUserInt($user->getUserID(), $user->getAuthSource(), $contextId, false, false, $withExtras);
     }
 
-   function getUserRelatedProjectListForUser ($user_item) {
-      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
+   function getUserRelatedProjectListForUser ($user_item, bool $withExtras = true) {
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true, $withExtras);
    }
 
    function getRelatedProjectListForUserSortByTime ($user_item) {

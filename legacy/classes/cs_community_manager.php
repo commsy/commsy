@@ -131,10 +131,10 @@ class cs_community_manager extends cs_room2_manager {
         return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
     }
 
-    function getRelatedCommunityListForUser($user_item)
+    function getRelatedCommunityListForUser($user_item, bool $withExtras = true)
     {
         return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(),
-            $this->_environment->getCurrentPortalID());
+            $this->_environment->getCurrentPortalID(), false, false, $withExtras);
     }
    
    function getRelatedCommunityListForUserAllUserStatus ($user_item) {
@@ -142,8 +142,8 @@ class cs_community_manager extends cs_room2_manager {
       return $this->getRelatedCommunityListForUser($user_item);
    }
 
-   function getUserRelatedCommunityListForUser ($user_item) {
-      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
+   function getUserRelatedCommunityListForUser ($user_item, bool $withExtras = true) {
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true, $withExtras);
    }
 
   /** select communities limited by limits

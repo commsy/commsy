@@ -436,43 +436,64 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
       return $this->_getItemList("todo", $id_array);
    }
 
-  /** update a todo - internal, do not use -> use method save
-   * this method updates the database record for a given todo item
-   *
-   * @param cs_todo_item the todo item for which an update should be made
-   */
-   function _update ($item) {
-      parent::_update($item);
+    /** update a todo - internal, do not use -> use method save
+     * this method updates the database record for a given todo item
+     *
+     * @param cs_todo_item the todo item for which an update should be made
+     */
+    function _update($item)
+    {
+        /** @var cs_todo_item $item */
+        parent::_update($item);
 
-      $modificator = $item->getModificatorItem();
-      $modification_date = getCurrentDateTimeInMySQL();
+        $modificator = $item->getModificatorItem();
+        $modification_date = getCurrentDateTimeInMySQL();
 
-      if ( $item->isPublic() ) {
-         $public = '1';
-      } else {
-         $public = '0';
-      }
-      if ($item->isNotActivated()){
-         $modification_date = $item->getModificationDate();
-      }
-      $query = 'UPDATE '.$this->addDatabasePrefix('todos').' SET '.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'",'.
-               'date="'.encode(AS_DB,$item->getDate()).'",'.
-               'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
-               'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
-               'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'"'.
-               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
-      // extras (TBD)
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems updating todos from query: "'.$query.'"',E_USER_WARNING);
-      }
-   }
+        if ($item->isPublic()) {
+            $public = '1';
+        } else {
+            $public = '0';
+        }
+        if ($item->isNotActivated()) {
+            $modification_date = $item->getModificationDate();
+        }
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->update($this->addDatabasePrefix('todos'), 't')
+            ->set('modifier_id', ':modifierId')
+            ->set('modification_date', ':modificationDate')
+            ->set('title', ':title')
+            ->set('status', ':status')
+            ->set('minutes', ':minutes')
+            ->set('time_type', ':timeType')
+            ->set('public', ':public')
+            ->set('description', ':description')
+            ->where('item_id = :itemId')
+            ->setParameter('modifierId', $modificator->getItemID())
+            ->setParameter('modificationDate', $modification_date)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('status', $item->getInternalStatus())
+            ->setParameter('minutes', $item->getPlannedTime())
+            ->setParameter('timeType', $item->getTimeType())
+            ->setParameter('public', $public)
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('itemId', $item->getItemID());
+
+        if ($item->getDate()) {
+            $queryBuilder
+                ->set('date', ':date')
+                ->setParameter('date', $item->getDate());
+        }
+
+        try {
+            $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
 
   /** create a new item in the items table - internal, do not use -> use method save
    * this method creates a new item of type 'todo' in the database and sets the todo items item id.

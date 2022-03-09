@@ -84,8 +84,7 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
                 ' modifier_id="'.encode(AS_DB,$user_id).'"
             ';
 
-            $this->_db_connector->setDisplayOff();$this->_db_connector->performQuery($query);
-            $this->_db_connector->setDisplayOn();
+            $this->_db_connector->performQuery($query);
 
             $errno = $this->_db_connector->getErrno();
             if (!empty($errno)) {
