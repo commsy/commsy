@@ -783,86 +783,102 @@ class cs_dates_manager extends cs_manager {
       return new cs_dates_item($this->_environment);
    }
 
-  /** update a dates - internal, do not use -> use method save
-   * this method updates the database record for a given dates item
-   *
-   * @param cs_dates_item the dates item for which an update should be made
-   *
-   * @author CommSy Development Group
-   */
-   function _update ($item) {
-      parent::_update($item);
+    /** update a dates - internal, do not use -> use method save
+     * this method updates the database record for a given dates item
+     *
+     * @param cs_dates_item the dates item for which an update should be made
+     *
+     * @author CommSy Development Group
+     */
+    function _update($item)
+    {
+        /** @var cs_dates_item $item */
+        parent::_update($item);
 
-      $modificator = $item->getModificatorItem();
-      $current_datetime = getCurrentDateTimeInMySQL();
+        $modificator = $item->getModificatorItem();
+        $current_datetime = getCurrentDateTimeInMySQL();
 
-      if ($item->isPublic()) {
-         $public = '1';
-      } else {
-         $public = '0';
-      }
-      $modification_date = getCurrentDateTimeInMySQL();
-      if ( $item->isNotActivated() || !$item->isChangeModificationOnSave() ){
-         $modification_date = $item->getModificationDate();
-      }
+        if ($item->isPublic()) {
+            $public = '1';
+        } else {
+            $public = '0';
+        }
+        $modification_date = getCurrentDateTimeInMySQL();
+        if ($item->isNotActivated() || !$item->isChangeModificationOnSave()) {
+            $modification_date = $item->getModificationDate();
+        }
 
-      $query = 'UPDATE '.$this->addDatabasePrefix('dates').' SET '.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               'start_time="'.encode(AS_DB,$item->getStartingTime()).'",'.
-               'start_day="'.encode(AS_DB,$item->getStartingDay()).'",'.
-               'end_time="'.encode(AS_DB,$item->getEndingTime()).'",'.
-               'end_day="'.encode(AS_DB,$item->getEndingDay()).'",'.
-               'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'",'.
-               'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'",'.
-               'place="'.encode(AS_DB,$item->getPlace()).'",'.
-               'date_mode="'.encode(AS_DB,$item->getDateMode()).'",';
-      $color = $item->getColor();
-      if ( !empty($color) ) {
-         $query .= 'color="'.encode(AS_DB,$item->getColor()).'", ';
-      } else {
-         $query .= 'color=NULL , ';
-      }
-      $color = $item->getCalendarId();
-      if ( !empty($color) ) {
-         $query .= 'calendar_id="'.encode(AS_DB,$item->getCalendarId()).'", ';
-      } else {
-         $query .= 'calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'", ';
-      }
-      $rev_id = $item->getRecurrenceId();
-      if ( !empty($rev_id) ) {
-         $query .= 'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'", ';
-      } else {
-         $query .= 'recurrence_id=NULL, ';
-      }
-      $rev_pattern = $item->getRecurrencePattern();
-      if ( !empty($rev_pattern) ) {
-         $query .= 'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'", ';
-      } else {
-         $query .= 'recurrence_pattern=NULL, ';
-      }
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isExternal(), 'external');
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid');
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isWholeDay(), 'whole_day');
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-       if ($item->getDateTime_recurrence()) {
-          $query .= 'datetime_recurrence="' . encode(AS_DB, $item->getDateTime_recurrence()) . '"';
-      } else {
-          $query .= 'datetime_recurrence=NULL';
-      }
-      $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+        $color = $item->getColor();
+        $color = empty($color) ? null : $color;
 
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems updating dates.',E_USER_WARNING);
-      }
-      unset($modificator);
-      unset($item);
-   }
+        $calendarId = $item->getCalendarId();
+        $calendarId = empty($calendarId) ? $item->getContextItem()->getdefaultCalendarId() : $calendarId;
+
+        $recurrenceId = $item->getRecurrenceId();
+        $recurrenceId = empty($recurrenceId) ? null : $recurrenceId;
+
+        $recurrencePattern = $item->getRecurrencePattern();
+        $recurrencePattern = empty($recurrencePattern) ? null : serialize($recurrencePattern);
+
+        $datetimeRecurrence = $item->getDateTime_recurrence();
+        $datetimeRecurrence = $datetimeRecurrence ?: null;
+
+        $queryBuilder
+            ->update($this->addDatabasePrefix('dates'))
+            ->set('modifier_id', ':modifierId')
+            ->set('modification_date', ':modificationDate')
+            ->set('title', ':title')
+            ->set('public', ':public')
+            ->set('description', ':description')
+            ->set('start_time', ':startTime')
+            ->set('start_day', ':startDay')
+            ->set('end_time', ':endTime')
+            ->set('end_day', ':endDay')
+            ->set('datetime_start', ':datetimeStart')
+            ->set('datetime_end', ':datetimeEnd')
+            ->set('place', ':place')
+            ->set('date_mode', ':dateMode')
+            ->set('color', ':color')
+            ->set('calendar_id', ':calendarId')
+            ->set('recurrence_id', ':recurrenceId')
+            ->set('recurrence_pattern', ':recurrencePattern')
+            ->set('external', ':external')
+            ->set('uid', ':uid')
+            ->set('whole_day', ':wholeDay')
+            ->set('datetime_recurrence', ':datetimeRecurrence')
+            ->where('item_id = :itemId')
+            ->setParameter('modifierId', $modificator->getItemID())
+            ->setParameter('modificationDate', $modification_date)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('public', $public)
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('startTime', $item->getStartingTime())
+            ->setParameter('startDay', $item->getStartingDay())
+            ->setParameter('endTime', $item->getEndingTime())
+            ->setParameter('endDay', $item->getEndingDay())
+            ->setParameter('datetimeStart', $item->getDateTime_start())
+            ->setParameter('datetimeEnd', $item->getDateTime_end())
+            ->setParameter('place', $item->getPlace())
+            ->setParameter('dateMode', $item->getDateMode() ? 1 : 0)
+            ->setParameter('color', $color)
+            ->setParameter('calendarId', $calendarId)
+            ->setParameter('recurrenceId', $recurrenceId)
+            ->setParameter('recurrencePattern', $recurrencePattern)
+            ->setParameter('external', $item->isExternal() ? 1 : 0)
+            ->setParameter('uid', $item->getUid())
+            ->setParameter('wholeDay', $item->isWholeDay() ? 1 : 0)
+            ->setParameter('datetimeRecurrence', $datetimeRecurrence)
+            ->setParameter('itemId', $item->getItemID());
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems updating dates.', E_USER_WARNING);
+        }
+    }
 
   /** create a new item in the items table - internal, do not use -> use method save
    * this method creates a new item of type 'ndates' in the database and sets the dates items item id.
@@ -895,82 +911,110 @@ class cs_dates_manager extends cs_manager {
      unset($item);
   }
 
-  /** store a new dates item to the database - internal, do not use -> use method save
-    * this method stores a newly created dates item to the database
-    *
-    * @param cs_dates_item the dates item to be stored
-    *
-    * @author CommSy Development Group
-    */
-  function _newDate ($item) {
-     $user = $item->getCreatorItem();
-     $modificator = $item->getModificatorItem();
-     $current_datetime = getCurrentDateTimeInMySQL();
-     if ($item->isExternal()) {
-         $current_datetime = $item->getCreationDate();
-     }
+    /** store a new dates item to the database - internal, do not use -> use method save
+     * this method stores a newly created dates item to the database
+     *
+     * @param cs_dates_item the dates item to be stored
+     *
+     * @author CommSy Development Group
+     */
+    function _newDate($item)
+    {
+        /** @var cs_dates_item $item */
+        $user = $item->getCreatorItem();
+        $modificator = $item->getModificatorItem();
+        $current_datetime = getCurrentDateTimeInMySQL();
+        if ($item->isExternal()) {
+            $current_datetime = $item->getCreationDate();
+        }
 
-      if ($item->isPublic()) {
-         $public = '1';
-      } else {
-         $public = '0';
-      }
-      $modification_date = getCurrentDateTimeInMySQL();
-      if ($item->isNotActivated()){
-         $modification_date = $item->getModificationDate();
-      }
+        if ($item->isPublic()) {
+            $public = '1';
+        } else {
+            $public = '0';
+        }
+        $modification_date = getCurrentDateTimeInMySQL();
+        if ($item->isNotActivated()) {
+            $modification_date = $item->getModificationDate();
+        }
 
-      $query = 'INSERT INTO '.$this->addDatabasePrefix('dates').' SET '.
-               'item_id="'.encode(AS_DB,$item->getItemID()).'", '.
-               'context_id="'.encode(AS_DB,$item->getContextID()).'", '.
-               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-               'creation_date="'.$current_datetime.'",'.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'", '.
-               'public="'.encode(AS_DB,$public).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'", '.
-               'start_time="'.encode(AS_DB,$item->getStartingTime()).'", '.
-               'end_time="'.encode(AS_DB,$item->getEndingTime()).'", '.
-               'start_day="'.encode(AS_DB,$item->getStartingDay()).'", '.
-               'end_day="'.encode(AS_DB,$item->getEndingDay()).'", '.
-               'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'", '.
-               'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'", '.
-               'place="'.encode(AS_DB,$item->getPlace()).'",'.
-                $this->returnQuerySentenceIfFieldIsValid($item->getDateMode(), 'date_mode');
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
+        $color = $item->getColor();
+        $color = empty($color) ? null : $color;
 
-          $color = $item->getColor();
-      if ( !empty($color) ) {
-         $query .= 'color="'.encode(AS_DB,$item->getColor()).'", ';
-      }
-      $color = $item->getCalendarId();
-      if ( !empty($color) ) {
-          $query .= 'calendar_id="'.encode(AS_DB,$item->getCalendarId()).'", ';
-      } else {
-          $query .= 'calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'", ';
-      }
-      $rev_id = $item->getRecurrenceId();
-      if ( !empty($rev_id) ) {
-         $query .= 'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'", ';
-      }
-      $rev_pattern = $item->getRecurrencePattern();
-      if ( !empty($rev_pattern) ) {
-         $query .= 'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'", ';
-      }
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isExternal(), 'external');
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->getUid(), 'uid', true);
-      $query .=  $this->returnQuerySentenceIfFieldIsValid($item->isWholeDay(), 'whole_day');
+        $calendarId = $item->getCalendarId();
+        $calendarId = empty($calendarId) ? $item->getContextItem()->getdefaultCalendarId() : $calendarId;
 
-      $query = rtrim($query, ',');
+        $recurrenceId = $item->getRecurrenceId();
+        $recurrenceId = empty($recurrenceId) ? null : $recurrenceId;
 
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems creating dates.',E_USER_WARNING);
-      }
-      unset($item);
-   }
+        $recurrencePattern = $item->getRecurrencePattern();
+        $recurrencePattern = empty($recurrencePattern) ? null : serialize($recurrencePattern);
+
+        $datetimeRecurrence = $item->getDateTime_recurrence();
+        $datetimeRecurrence = $datetimeRecurrence ?: null;
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('dates'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modifier_id', ':modifierId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('title', ':title')
+            ->setValue('public', ':public')
+            ->setValue('description', ':description')
+            ->setValue('start_time', ':startTime')
+            ->setValue('start_day', ':startDay')
+            ->setValue('end_time', ':endTime')
+            ->setValue('end_day', ':endDay')
+            ->setValue('datetime_start', ':datetimeStart')
+            ->setValue('datetime_end', ':datetimeEnd')
+            ->setValue('place', ':place')
+            ->setValue('date_mode', ':dateMode')
+            ->setValue('color', ':color')
+            ->setValue('calendar_id', ':calendarId')
+            ->setValue('recurrence_id', ':recurrenceId')
+            ->setValue('recurrence_pattern', ':recurrencePattern')
+            ->setValue('external', ':external')
+            ->setValue('uid', ':uid')
+            ->setValue('whole_day', ':wholeDay')
+            ->setValue('datetime_recurrence', ':datetimeRecurrence')
+            ->setParameter('itemId', $item->getItemId())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', $user->getItemID())
+            ->setParameter('creationDate', $current_datetime)
+            ->setParameter('modifierId', $modificator->getItemID())
+            ->setParameter('modificationDate', $modification_date)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('public', $public)
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('startTime', $item->getStartingTime())
+            ->setParameter('startDay', $item->getStartingDay())
+            ->setParameter('endTime', $item->getEndingTime())
+            ->setParameter('endDay', $item->getEndingDay())
+            ->setParameter('datetimeStart', $item->getDateTime_start())
+            ->setParameter('datetimeEnd', $item->getDateTime_end())
+            ->setParameter('place', $item->getPlace())
+            ->setParameter('dateMode', $item->getDateMode() ? 1 : 0)
+            ->setParameter('color', $color)
+            ->setParameter('calendarId', $calendarId)
+            ->setParameter('recurrenceId', $recurrenceId)
+            ->setParameter('recurrencePattern', $recurrencePattern)
+            ->setParameter('external', $item->isExternal() ? 1 : 0)
+            ->setParameter('uid', $item->getUid())
+            ->setParameter('wholeDay', $item->isWholeDay() ? 1 : 0)
+            ->setParameter('datetimeRecurrence', $datetimeRecurrence);
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems creating dates.', E_USER_WARNING);
+        }
+    }
 
   /**  delete a dates item
    *

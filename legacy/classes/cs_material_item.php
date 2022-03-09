@@ -449,16 +449,17 @@ class cs_material_item extends cs_item {
 ################ GET-METHODS
 
 
-   /** get version id of a material
-    * this method returns the version id of the material
-    *
-    * @return int version of the material
-    *
-    * @author CommSy Development Group
-    */
-   function getVersionID () {
-      return $this->_getValue('version_id');
-   }
+    /** get version id of a material
+     * this method returns the version id of the material
+     *
+     * @return int version of the material
+     *
+     * @author CommSy Development Group
+     */
+    public function getVersionID(): int
+    {
+        return (int)$this->_getValue('version_id');
+    }
 
    public function isCurrentVersion () {
        $material_manager = $this->_environment->getMaterialManager();
@@ -1752,9 +1753,9 @@ function _copySectionList ($copy_id) {
         $this->_setValue('license_id', $licenseId);
     }
 
-    public function getLicenseId()
+    public function getLicenseId(): int
     {
-        return $this->_getValue('license_id');
+        return (int) $this->_getValue('license_id');
     }
 
     public function getLicenseTitle()

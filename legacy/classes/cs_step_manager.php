@@ -401,31 +401,52 @@ class cs_step_manager extends cs_manager {
      unset($item);
   }
 
-  /** store a new step item to the database - internal, do not use -> use method save
-    * this method stores a newly created step item to the database
-    *
-    * @param cs_step_item the step item to be stored
-    */
-  function _newStep ($item) {
-     $current_datetime = getCurrentDateTimeInMySQL();
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('step').' SET '.
-              'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'creator_id="'.encode(AS_DB,$item->getCreatorID()).'",'.
-              'creation_date="'.$current_datetime.'",'.
-              'modification_date="'.$current_datetime.'",'.
-              'title="'.encode(AS_DB,$item->getTitle()).'",'.
-              'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               $this->returnQuerySentenceIfFieldIsValid($item->getMinutes(), "minutes").
-              'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
-              'todo_item_id="'.encode(AS_DB,$item->getTodoID()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating step from query: "'.$query.'"',E_USER_WARNING);
-     }
-     unset($item);
-  }
+    /**
+     * store a new step item to the database - internal, do not use -> use method save
+     * this method stores a newly created step item to the database
+     *
+     * @param cs_step_item the step item to be stored
+     */
+    function _newStep(cs_step_item $item)
+    {
+        $currentDateTime = getCurrentDateTimeInMySQL();
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('step'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('title', ':title')
+            ->setValue('description', ':description')
+            ->setValue('time_type', ':timeType')
+            ->setValue('todo_item_id', ':todoItemId')
+            ->setParameter('itemId', $item->getItemID())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', $item->getCreatorID())
+            ->setParameter('creationDate', $currentDateTime)
+            ->setParameter('modificationDate', $currentDateTime)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('timeType', $item->getTimeType())
+            ->setParameter('todoItemId', $item->getTodoID());
+
+        if ($item->getMinutes()) {
+            $queryBuilder
+                ->setValue('minutes', ':minutes')
+                ->setParameter('minutes', $item->getMinutes());
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
 
    /**  delete a step item
    *

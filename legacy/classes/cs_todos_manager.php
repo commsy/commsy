@@ -519,53 +519,74 @@ class cs_todos_manager extends cs_manager {
      unset($item);
   }
 
-  /** store a new todo item to the database - internal, do not use -> use method save
-    * this method stores a newly created todo item to the database
-    *
-    * @param cs_todo_item the todo item to be stored
-    */
-   function _newNews ($item) {
-      $user = $item->getCreatorItem();
-      $modificator = $item->getModificatorItem();
-      $modification_date = getCurrentDateTimeInMySQL();
-      $current_datetime = getCurrentDateTimeInMySQL();
+    /** store a new todo item to the database - internal, do not use -> use method save
+     * this method stores a newly created todo item to the database
+     *
+     * @param cs_todo_item the todo item to be stored
+     */
+    function _newNews(cs_todo_item $item)
+    {
+        $user = $item->getCreatorItem();
+        $modificator = $item->getModificatorItem();
+        $modificationDate = getCurrentDateTimeInMySQL();
+        $currentDateTime = getCurrentDateTimeInMySQL();
 
-      if ( $item->isPublic() ) {
-         $public = '1';
-      } else {
-         $public = '0';
-      }
+        if ($item->isPublic()) {
+            $public = '1';
+        } else {
+            $public = '0';
+        }
 
-      $date = $item->getDate();
-      if ($item->isNotActivated()){
-         $modification_date = $item->getModificationDate();
-      }
+        $date = $item->getDate();
+        if ($item->isNotActivated()) {
+            $modificationDate = $item->getModificationDate();
+        }
 
-      $query = 'INSERT INTO '.$this->addDatabasePrefix('todos').' SET '.
-               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-               'creation_date="'.$current_datetime.'",'.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'",';
-      if ( !empty($date) ) {
-         $query .= 'date="'.encode(AS_DB,$item->getDate()).'",';
-      }
-      $query .=$this->returnQuerySentenceIfFieldIsValid($item->getInternalStatus(), 'status').
-               'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
-               'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems creating todos from query: "'.$query.'"',E_USER_WARNING);
-      }
-      unset($item);
-      unset($user);
-      unset($modificator);
-   }
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $date = empty($item->getDate()) ? null : $item->getDate();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('todos'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modifier_id', ':modifierId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('title', ':title')
+            ->setValue('date', ':date')
+            ->setValue('minutes', ':minutes')
+            ->setValue('time_type', ':timeType')
+            ->setValue('public', ':public')
+            ->setValue('description', ':description')
+            ->setParameter('itemId', $item->getItemID())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', $user->getItemID())
+            ->setParameter('creationDate', $currentDateTime)
+            ->setParameter('modifierId', $modificator->getItemID())
+            ->setParameter('modificationDate', $modificationDate)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('date', $date)
+            ->setParameter('minutes', $item->getPlannedTime())
+            ->setParameter('timeType', $item->getTimeType())
+            ->setParameter('public', $public)
+            ->setParameter('description', $item->getDescription());
+
+        $status = $item->getInternalStatus();
+        if ($status) {
+            $queryBuilder
+                ->setValue('status', ':status')
+                ->setParameter('status', $status);
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
 
   /**  delete a todo item
    *
