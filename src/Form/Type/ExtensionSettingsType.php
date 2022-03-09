@@ -1,6 +1,7 @@
 <?php
 namespace App\Form\Type;
 
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,13 +19,11 @@ use App\Services\LegacyEnvironment;
 
 class ExtensionSettingsType extends AbstractType
 {
-    private $legacyEnvironment;
-    private $mediaWikiEnabled;
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, $mediaWikiEnabled)
+    public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->mediaWikiEnabled = $mediaWikiEnabled;
     }
 
     /**
@@ -110,13 +109,6 @@ class ExtensionSettingsType extends AbstractType
             ))
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                 $form = $event->getForm();
-
-                if ($this->mediaWikiEnabled) {
-                    $form->add('wikiEnabled', CheckboxType::class, array(
-                        'required' => false,
-                        'label_attr' => array('class' => 'uk-form-label'),
-                    ));
-                }
 
                 /** @var \cs_room_item $roomItem */
                 $roomItem = $options['room'];

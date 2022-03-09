@@ -169,7 +169,7 @@ class RoomController extends AbstractController
             $serviceContact['link'] = $roomService->buildServiceLink();
         }
 
-        // RSS-Feed / iCal / Wiki
+        // RSS-Feed / iCal
         $rss = [
             'show' => false,
             'url' => $this->generateUrl('app_rss', [
@@ -177,20 +177,11 @@ class RoomController extends AbstractController
             ]),
         ];
 
-        $wiki = [
-            'show' => false,
-            'url' => str_ireplace('[COMMSY_CONTEXT_ID]', $roomItem->getItemId(), $this->getParameter('commsy.mediawiki.roomWikiUrl')),
-        ];
-
         if (!$roomItem->isLocked() && !$roomItem->isClosed()) {
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
             if ($roomItem->isRSSOn()) {
                 $rss['show'] = true;
-            }
-
-            if ($roomItem->isWikiEnabled()) {
-                $wiki['show'] = true;
             }
 
             if (!$roomItem->isOpenForGuests()) {
@@ -201,8 +192,6 @@ class RoomController extends AbstractController
                         'contextId' => $roomId,
                         'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
                     ]);
-
-                    $wiki['url'] = $wiki['url'].'?session-id='.$legacyEnvironment->getSessionID();
                 }
             }
         }
@@ -240,7 +229,6 @@ class RoomController extends AbstractController
             'logoImageFilepath' => $logoImage,
             'serviceContact' => $serviceContact,
             'rss' => $rss,
-            'wiki' => $wiki,
             'header' => $header,
             'isModerator' => $legacyEnvironment->getCurrentUserItem()->isModerator(),
             'userTasks' => $userTasks,

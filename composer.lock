@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ae0ae5e946e312e015d83f6898e91652",
+    "content-hash": "93c47e24c920495c2c5d53243972ff2b",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -4095,61 +4095,6 @@
                 "xml"
             ],
             "time": "2020-10-01T13:52:52+00:00"
-        },
-        {
-            "name": "mediawiki/oauthclient",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/wikimedia/mediawiki-oauthclient-php.git",
-                "reference": "f8ae8a243d7d2286d47a1e90ec6605bbb8ba01fa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/mediawiki-oauthclient-php/zipball/f8ae8a243d7d2286d47a1e90ec6605bbb8ba01fa",
-                "reference": "f8ae8a243d7d2286d47a1e90ec6605bbb8ba01fa",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": "^7.2.9",
-                "psr/log": "^1.0"
-            },
-            "require-dev": {
-                "jakub-onderka/php-console-highlighter": "0.4",
-                "jakub-onderka/php-parallel-lint": "1.0.0",
-                "mediawiki/mediawiki-codesniffer": "29.0.0",
-                "mediawiki/minus-x": "1.0.0",
-                "phpunit/phpunit": "^8.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MediaWiki\\OAuthClient\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Andy Smith",
-                    "homepage": "http://termie.pbworks.com/w/page/20571888/AndySmith"
-                },
-                {
-                    "name": "Chris Steipp",
-                    "email": "csteipp@wikimedia.org"
-                },
-                {
-                    "name": "Bryan Davis",
-                    "email": "bd808@wikimedia.org"
-                }
-            ],
-            "description": "PHP OAuth client for use with Wikipedia and other MediaWiki-based wikis running the OAuth extension",
-            "homepage": "https://www.mediawiki.org/wiki/oauthclient-php",
-            "time": "2020-01-30T20:45:14+00:00"
         },
         {
             "name": "mhujer/breadcrumbs-bundle",

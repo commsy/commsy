@@ -356,9 +356,6 @@
     "masterminds/html5": {
         "version": "2.7.0"
     },
-    "mediawiki/oauthclient": {
-        "version": "0.1.2"
-    },
     "mhujer/breadcrumbs-bundle": {
         "version": "1.5.2"
     },
