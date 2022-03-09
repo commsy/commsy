@@ -354,7 +354,7 @@ services:
         class: App\EventListener\CommsyActivityListener
         arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
     commsy.listener.get_room_membership_filter:
         class: App\EventListener\RoomMembershipFilterConditionListener
@@ -814,9 +814,7 @@ services:
     # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
-            - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }
-            # If you get transaction issues (e.g. after login) uncomment the line below
-            - { lock_mode: 1 }
+            - '%env(DATABASE_URL)%'
 
     App\Services\MediawikiService:
         arguments:

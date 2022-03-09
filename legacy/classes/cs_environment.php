@@ -2202,12 +2202,7 @@ class cs_environment {
    # plugin: end
    ################################################################
 
-    function getDBConnector()
-    {
-        return $this->_getMySQLConnector();
-    }
-
-    private function _getMySQLConnector()
+    public function getDBConnector(): db_mysql_connector
     {
         if (empty($this->_db_mysql_connector)) {
             include_once('classes/db_mysql_connector.php');

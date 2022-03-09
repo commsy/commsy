@@ -240,63 +240,79 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
      * @param $user_id
      * @param $auth_source
      * @param $context_id
-     * @param $grouproom
-     * @param $only_user
+     * @param bool $grouproom
+     * @param bool $only_user
+     * @param bool $withExtras
      * @return cs_list|mixed
      */
     public function getRelatedContextListForUserInt(
         $user_id,
         $auth_source,
         $context_id,
-        $grouproom = false,
-        $only_user = false
+        bool $grouproom = false,
+        bool $only_user = false,
+        bool $withExtras = true
     ) {
         $list = new cs_list();
-        if (!isset($this->listCache[$user_id . '_' . $auth_source . '_' . $context_id])) {
-            $query = 'SELECT ' . $this->addDatabasePrefix($this->_db_table) . '.*';
-            $query .= ' FROM ' . $this->addDatabasePrefix($this->_db_table);
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('user') . ' ON ' . $this->addDatabasePrefix('user') . '.context_id=' . $this->addDatabasePrefix($this->_db_table) . '.item_id
-                     AND ' . $this->addDatabasePrefix('user') . '.auth_source="' . $auth_source . '"
-                     AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL
-                     AND ' . $this->addDatabasePrefix('user') . '.user_id="' . encode(AS_DB, $user_id) . '"';
+        if (!isset($this->listCache[$user_id . '_' . $auth_source . '_' . $context_id . '_' . $withExtras])) {
+
+            $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+            $queryBuilder
+                ->select('c.item_id', 'c.context_id', 'c.creator_id', 'c.modifier_id', 'c.creation_date',
+                    'c.modification_date', 'c.title', 'c.status', 'c.activity', 'c.type', 'c.public',
+                    'c.is_open_for_guests', 'c.continuous', 'c.template', 'c.contact_persons', 'c.room_description',
+                    'c.lastlogin')
+                ->from($this->addDatabasePrefix($this->_db_table), 'c')
+                ->innerJoin('c', $this->addDatabasePrefix('user'), 'u', 'u.context_id = c.item_id')
+                ->andWhere('c.deleter_id IS NULL')
+                ->andWhere('c.deletion_date IS NULL')
+                ->andWhere('u.auth_source = :authSource')
+                ->andWhere('u.deleter_id IS NULL')
+                ->andWhere('u.deletion_date IS NULL')
+                ->andWhere('u.user_id = :userId')
+                ->andWhere('u.status >= :status')
+                ->setParameter('authSource', $auth_source)
+                ->setParameter('userId', $user_id);
+
+            if ($withExtras) {
+                $queryBuilder->addSelect('c.extras');
+            }
+
             if (!$this->_all_status_limit) {
                 if (!$only_user) {
-                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "1"';
+                    $queryBuilder->setParameter('status', 1);
                 } else {
-                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"';
+                    $queryBuilder->setParameter('status', 2);
                 }
             } else {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "0"';
+                $queryBuilder->setParameter('status', 0);
             }
-            $query .= ' WHERE 1';
-            if (isset($this->_room_type) and !empty($this->_room_type)) {
-                ############################################
-                # FLAG: group room
-                ###################BEGIN####################
+
+            if (isset($this->_room_type) && !empty($this->_room_type)) {
                 $current_portal = $this->_environment->getCurrentPortalItem();
-                if (!isset($current_portal) and !empty($context_id)) {
+                if (!isset($current_portal) && !empty($context_id)) {
                     $portal_manager = $this->_environment->getPortalManager();
                     $current_portal = $portal_manager->getItem($context_id);
                 }
-                if ($this->_room_type == CS_PROJECT_TYPE
-                    and (
-                        (isset($current_portal) and $current_portal->withGroupRoomFunctions())
-                        or $grouproom
+
+                if (
+                    $this->_room_type == CS_PROJECT_TYPE &&
+                    (
+                        (isset($current_portal) && $current_portal->withGroupRoomFunctions()) ||
+                        $grouproom
                     )
                 ) {
-                    $query .= ' AND (' . $this->addDatabasePrefix($this->_db_table) . '.type = "' . encode(AS_DB,
-                            $this->_room_type) . '" or ' . $this->addDatabasePrefix($this->_db_table) . '.type = "' . CS_GROUPROOM_TYPE . '")';
+                    $queryBuilder->andWhere('(c.type = :roomType OR c.type = :groupRoomType)');
+                    $queryBuilder->setParameter('roomType', $this->_room_type);
+                    $queryBuilder->setParameter('groupRoomType', CS_GROUPROOM_TYPE);
                 } else {
-                    ####################END#####################
-                    # FLAG: group room
-                    ############################################
-                    $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.type = "' . encode(AS_DB,
-                            $this->_room_type) . '"';
-                    ############################################
-                    # FLAG: group room
-                    ##################BEGIN####################
+                    $queryBuilder->andWhere('c.type = :roomType');
+                    $queryBuilder->setParameter('roomType', $this->_room_type);
+
                     if ($this->_room_type != CS_GROUPROOM_TYPE) {
-                        $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.type != "' . CS_GROUPROOM_TYPE . '"';
+                        $queryBuilder->andWhere('c.type != :groupRoomType');
+                        $queryBuilder->setParameter('groupRoomType', CS_GROUPROOM_TYPE);
                     }
                 }
             } else {
@@ -305,49 +321,35 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                     $portal_manager = $this->_environment->getPortalManager();
                     $current_portal = $portal_manager->getItem($context_id);
                 }
-                if ((isset($current_portal)
-                        and !$current_portal->withGroupRoomFunctions()
-                    )
-                    or !$grouproom
-                ) {
-                    $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.type != "' . CS_GROUPROOM_TYPE . '"';
+
+                if ((isset($current_portal) && !$current_portal->withGroupRoomFunctions()) || !$grouproom) {
+                    $queryBuilder->andWhere('c.type != :groupRoomType');
+                    $queryBuilder->setParameter('groupRoomType', CS_GROUPROOM_TYPE);
                 }
-                ###################END######################
-                # FLAG: group room
-                ############################################
             }
 
             if ($this->_room_type !== cs_userroom_item::ROOM_TYPE_USER) {
                 // NOTE: for user rooms, we don't include the context_id in the WHERE clause; this is since user rooms have
                 // their context_id set to the room ID of their hosting project room (and not to the portal ID)
-                $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id="' . encode(AS_DB,
-                        $context_id) . '"';
+                $queryBuilder->andWhere('c.context_id = :contextId');
+                $queryBuilder->setParameter('contextId', $context_id);
             }
 
-            if ($this->_delete_limit == true) {
-                $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.deleter_id IS NULL';
-            }
-            if (isset($this->_status_limit)) {
-                $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.status = "' . encode(AS_DB,
-                        $this->_status_limit) . '"';
-            }
-            $query .= ' ORDER BY title, creation_date DESC';
+            try {
+                $result = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
 
-            // perform query
-            $result = $this->_db_connector->performQuery($query);
-            if (!isset($result)) {
-                include_once('functions/error_functions.php');
-                trigger_error('Problems selecting ' . $this->_db_table . ' items.', E_USER_WARNING);
-            } else {
                 foreach ($result as $query_result) {
                     $list->add($this->_buildItem($query_result));
                 }
                 if ($this->_cache_on) {
                     $this->listCache[$user_id . '_' . $auth_source . '_' . $context_id] = $list;
                 }
+            } catch (\Doctrine\DBAL\Exception $e) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems selecting ' . $this->_db_table . ' items.', E_USER_WARNING);
             }
         } else {
-            $list = $this->listCache[$user_id . '_' . $auth_source . '_' . $context_id];
+            $list = $this->listCache[$user_id . '_' . $auth_source . '_' . $context_id . '_' . $withExtras];
         }
         return $list;
     }

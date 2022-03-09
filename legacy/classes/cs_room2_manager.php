@@ -49,16 +49,18 @@ class cs_room2_manager extends cs_context_manager {
    * string - containing the last login limit (a datetime) of rooms
    */
   protected $_lastlogin_newer_limit = NULL;
-	
-  /** constructor
-    * the only available constructor, initial values for internal variables
-    *
-    * @param object cs_environment the environment
-    */
-  function __construct($environment) {
-  }
 
-  /** reset limits
+    /** constructor
+     * the only available constructor, initial values for internal variables
+     *
+     * @param object cs_environment the environment
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+    }
+
+    /** reset limits
     * reset limits of this class: lastlogin and all limits from upper class
     */
    function resetLimits () {

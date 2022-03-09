@@ -5,7 +5,7 @@ namespace App\EventSubscriber;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class UserActivitySubscriber implements EventSubscriberInterface
@@ -23,13 +23,11 @@ class UserActivitySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::CONTROLLER => [
-                ['updateActivity', 0],
-            ],
+            KernelEvents::TERMINATE => 'updateActivity',
         ];
     }
 
-    public function updateActivity(ControllerEvent $event)
+    public function updateActivity(TerminateEvent $event)
     {
         /*
            restrict logging to the following requests:
@@ -49,7 +47,7 @@ class UserActivitySubscriber implements EventSubscriberInterface
         } else if (preg_match('~\/dashboard\/(\d)+$~', $request->getUri())) {
             $logRequest = true;
         }
-        
+
         if ($logRequest) {
             $user = $this->legacyEnvironment->getCurrentUser();
             if ($user->isUser() and !$user->isRoot()) {
