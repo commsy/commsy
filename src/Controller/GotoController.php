@@ -33,8 +33,8 @@ class GotoController extends AbstractController
             ->andWhere('item_id = :item_id')
             ->setParameter(':item_id', $itemId);
 
-        $stmt = $queryBuilder->execute();
-        $item = $stmt->fetch();
+        $stmt = $queryBuilder->executeQuery();
+        $item = $stmt->fetchAssociative();
 
         if (!$item) {
             throw $this->createNotFoundException('No item found for id ' . $itemId);

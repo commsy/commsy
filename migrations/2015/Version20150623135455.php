@@ -144,7 +144,7 @@ final class Version20150623135455 extends AbstractMigration
             ->select('r.item_id', 'r.extras')
             ->from($table, 'r');
 
-        $rooms = $qb->execute();
+        $rooms = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($rooms as $room) {
             $extras = DbConverter::convertToPHPValue($room['extras']);
