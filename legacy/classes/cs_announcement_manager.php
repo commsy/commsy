@@ -34,7 +34,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "announcement"
  * this class implements a database manager for the table "announcement"
  */
-class cs_announcement_manager extends cs_manager implements cs_export_import_interface {
+class cs_announcement_manager extends cs_manager {
 
   /**
    * integer - containing the age of announcement as a limit
@@ -665,62 +665,6 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
             }
         }
     }
-   
-   function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<announcement_item></announcement_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('enddate', $item->getSecondDateTime());
-      $xml->addChildWithCDATA('public', $item->isPublic());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-   
-      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setFirstDateTime((string)$xml->creation_date[0]);
-         $item->setSecondDateTime((string)$xml->enddate[0]);
-         $item->setContextId($top_item->getItemId());
-         $item->save();
-         $this->importAnnotationsFromXML($xml, $item);
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-   
-   }
 
     /**
      * @param int[] $contextIds List of context ids

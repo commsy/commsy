@@ -35,7 +35,7 @@ include_once('functions/text_functions.php');
  * this class implements a database manager for the table "todo"
  */
 
-class cs_todos_manager extends cs_manager implements cs_export_import_interface {
+class cs_todos_manager extends cs_manager {
 
    var $_age_limit = NULL;
    var $_future_limit = NULL;
@@ -683,100 +683,6 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<todos_item></todos_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $xml->addChildWithCDATA('date', $item->getDate());
-      $xml->addChildWithCDATA('status', $item->getStatus());
-      $xml->addChildWithCDATA('minutes', $item->getPlannedTime());
-      $xml->addChildWithCDATA('time_type', $item->getTimeType());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('public', $item->isPublic());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-
-      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
-
-      $xml = $this->export_sub_items($xml, $item);
-
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      $step_manager = $this->_environment->getManager('step');
-      $step_manager->setContextLimit($top_item->getContextID());
-      $step_manager->setTodoItemIDLimit($top_item->getItemID());
-      $step_manager->select();
-      $step_list = $step_manager->get();
-      
-      $step_item_xml_array = array();
-      if (!$step_list->isEmpty()) {
-         $step_item = $step_list->getFirst();
-         while ($step_item) {
-            $step_id = $step_item->getItemID();
-            $step_item_xml_array[] = $step_manager->export_item($step_id);
-            $step_item = $step_list->getNext();
-         }
-      }
-
-      $step_xml = new SimpleXMLElementExtended('<step></step>');
-      foreach ($step_item_xml_array as $step_item_xml) {
-         $this->simplexml_import_simplexml($step_xml, $step_item_xml);
-      }
-   
-      $this->simplexml_import_simplexml($xml, $step_xml);
-      
-      return $xml;
-   }
-   
-  function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setContextId($top_item->getItemId());
-         $item->setDate((string)$xml->date[0]);
-         $item->setStatus((string)$xml->status[0]);
-         $item->setPlannedTime((string)$xml->minutes[0]);
-         $item->setTimeType((string)$xml->time_type[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setPublic((string)$xml->public[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->save();
-         $this->import_sub_items($xml, $item, $options);
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
-      return $item;
-   }
-	
-	function import_sub_items($xml, $top_item, &$options) {
-      if ($xml->step != null) {
-         $step_manager = $this->_environment->getStepManager();
-         foreach ($xml->step->children() as $step_xml) {
-            $temp_step_item = $step_manager->import_item($step_xml, $top_item, $options);
-         }
-      }
-   }
 
     /**
      * @param int[] $contextIds List of context ids
