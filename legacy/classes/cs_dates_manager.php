@@ -35,7 +35,7 @@ include_once('functions/date_functions.php');
 /** class for database connection to the database table "dates"
  * this class implements a database manager for the table "dates"
  */
-class cs_dates_manager extends cs_manager implements cs_export_import_interface {
+class cs_dates_manager extends cs_manager {
 
    /**
    * integer - containing the age of dates as a limit
@@ -1095,98 +1095,6 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<dates_item></dates_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('start_time', $item->getStartingTime());
-      $xml->addChildWithCDATA('end_time', $item->getEndingTime());
-      $xml->addChildWithCDATA('start_day', $item->getStartingDay());
-      $xml->addChildWithCDATA('end_day', $item->getEndingDay());
-      $xml->addChildWithCDATA('place', $item->getPlace());
-      $xml->addChildWithCDATA('datetime_start', $item->getDateTime_start());
-      $xml->addChildWithCDATA('datetime_end', $item->getDateTime_end());
-      $xml->addChildWithCDATA('public', $item->isPublic());
-      $xml->addChildWithCDATA('date_mode', $item->getDateMode());
-      $xml->addChildWithCDATA('color', $item->getColor());
-      $xml->addChildWithCDATA('calendar_id', $item->getCalendarId());
-      $xml->addChildWithCDATA('recurrence_id', $item->getRecurrenceId());
-      $xml->addChildWithCDATA('external', $item->isExternal());
-      $xml->addChildWithCDATA('uid', $item->getUid());
-      $recurrence_array = $item->getRecurrencePattern();
-      $xmlRecurrence = $this->getArrayAsXML($xml, $recurrence_array, true, 'recurrence');
-      $this->simplexml_import_simplexml($xml, $xmlRecurrence);
-      
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-
-      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
-      
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setContextId($top_item->getItemId());
-         $item->setStartingTime((string)$xml->start_time[0]);
-         $item->setEndingTime((string)$xml->end_time[0]);
-         $item->setStartingDay((string)$xml->start_day[0]);
-         $item->setEndingDay((string)$xml->end_day[0]);
-         $item->setPlace((string)$xml->place[0]);
-         $item->setDateTime_start((string)$xml->datetime_start[0]);
-         $item->setDateTime_end((string)$xml->datetime_end[0]);
-         $item->setPublic((string)$xml->public[0]);
-         $item->setDateMode((string)$xml->date_mode[0]);
-         $item->setColor((string)$xml->color[0]);
-         $item->setCalendarId((string)$xml->calendar_id[0]);
-         $item->setRecurrenceId((string)$xml->recurrence_id[0]);
-         $item->setExternal((string)$xml->external[0]);
-         $item->setUid((string)$xml->uid[0]);
-         $recurrence_array = $this->getXMLAsArray($xml->recurrence);
-         $item->setRecurrencePattern($recurrence_array['recurrence']);
-         $item->save();
-         $this->importAnnotationsFromXML($xml, $item);
-         
-         if ((string)$xml->recurrence_id[0] != '') {
-            if (!isset($options['check'])) {
-               $options['check'] = array();
-            }
-            $options['check']['dates']['recurrence_id'][] = $item->getItemId();
-         }
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 
     /**
      * @param int[] $contextIds List of context ids

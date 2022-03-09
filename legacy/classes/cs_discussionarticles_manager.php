@@ -44,7 +44,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "discussionarticles"
  * this class implements a database manager for the table "discussionarticles"
  */
-class cs_discussionarticles_manager extends cs_manager implements cs_export_import_interface {
+class cs_discussionarticles_manager extends cs_manager {
 
   /**
    * integer - containing the age of the discussionarticle as a limit
@@ -621,58 +621,4 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<discarticle_item></discarticle_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('discussion_id', $item->getDiscussionID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('subject', $item->getSubject());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('position', $item->getPosition());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xml->addChildWithCDATA('public', $item->isPublic());
-   
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setContextId($top_item->getContextId());
-         $item->setDiscussionID($top_item->getItemId());
-         $item->setSubject((string)$xml->subject[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setPosition((string)$xml->position[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->save();
-      }
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>
