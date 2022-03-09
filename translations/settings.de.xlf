@@ -609,10 +609,6 @@
                 <source>Workflow text</source>
                 <target>Die Workflow Einstellungen sind Zusatzfunktionen für die Rubrik Materialien, um den Redaktionsprozess zu koordinieren.</target>
             </trans-unit>
-            <trans-unit id="wiki_Text">
-                <source>wiki text</source>
-                <target>Setzen Sie diese Checkbox, um das Wiki zu aktivieren.</target>
-            </trans-unit>
             <trans-unit id="default_state">
                 <source>Default status</source>
                 <target>Standard-Status</target>

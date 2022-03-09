@@ -382,9 +382,6 @@ class MaterialController extends BaseController
         // TODO: check if no version is specified
         // !isset($_GET['version_id'])
 
-
-        $canExportToWiki = false;
-
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
@@ -444,7 +441,6 @@ class MaterialController extends BaseController
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
             'canExportToWordpress' => $canExportToWordpress,
-            'canExportToWiki' => $canExportToWiki,
             'roomCategories' => $infoArray['roomCategories'],
             'versions' => $infoArray['versions'],
             'workflowTitles' => [

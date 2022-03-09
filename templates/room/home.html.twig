@@ -7,11 +7,8 @@
         {% if bgImageFilepath is not empty %}
             <img id="room_image" src="{{ bgImageFilepath }}">
         {% endif %}
-        {% if bgImageFilepath is not empty and countAnnouncements > 0 %}
-            <div class="uk-position-cover uk-grid cs-cover-grid" style="padding-bottom: 0px;">
-        {% else %}
-            <div class="uk-position-cover uk-grid cs-cover-grid">
-        {% endif %}
+
+        <div class="uk-position-cover uk-grid cs-cover-grid"{% if bgImageFilepath is not empty and countAnnouncements > 0 %} style="padding-bottom: 0px;"{% endif %}>
             {# home information text #}
             <div class="uk-width-medium-2-3 cs-cover-height uk-margin-bottom">
                 {% if roomItem.withInformationBox %}
@@ -60,7 +57,6 @@
     </div>
 {% endblock %}
 
-
 {% block sidebar %}
 
             {# usage notes #}
@@ -104,20 +100,12 @@
                 </div>
 
                 <ul id="room-info" class="uk-list uk-list-striped uk-hidden-small">
-                    {# RSS / Wiki #}
-                    {% if rss.show or wiki.show %}
+                    {# RSS #}
+                    {% if rss.show %}
                         <li>
-                            {% if rss.show %}
-                                <a href="{{ rss.url }}">
-                                    RSS <i class="uk-icon-rss uk-icon-small"></i>
-                                </a>
-                            {% endif %}
-
-                            {% if wiki.show %}
-                                <a href="{{ wiki.url }}">
-                                    Wiki <i class="uk-external-link uk-icon-small"></i>
-                                </a>
-                            {% endif %}
+                            <a href="{{ rss.url }}">
+                                RSS <i class="uk-icon-rss uk-icon-small"></i>
+                            </a>
                         </li>
                     {% endif %}
 
@@ -236,7 +224,7 @@
                         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                     </div>
                 </div>
-                
+
             </div>
 {% endblock %}
 

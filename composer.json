@@ -30,7 +30,6 @@
         "lexik/jwt-authentication-bundle": "^2.8",
         "liip/imagine-bundle": "^2.3",
         "masterminds/html5": "^2.7",
-        "mediawiki/oauthclient": "^1.1",
         "mhujer/breadcrumbs-bundle": "^1.5",
         "nategood/httpful": "^0.3",
         "nelmio/api-doc-bundle": "^3.7",

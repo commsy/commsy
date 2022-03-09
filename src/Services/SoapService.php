@@ -137,74 +137,6 @@ class SoapService
     }
 
     /**
-     * Creates a new wiki
-     * 
-     * @param  string $sessionId
-     * @param  string $contextId
-     * 
-     * @return bool success
-     */
-    public function createWiki($sessionId, $contextId)
-    {
-        if (!$this->isSessionValid($sessionId)) {
-            return new SoapFault('ERROR', 'session invalid!');
-        }
-
-//          $room_manager = $this->_environment->getRoomManager();
-//          $room_item = $room_manager->getItem($context_id);
-
-//          $item->setWikiSkin();
-//          $item->setWikiEditPW();
-//          $item->setWikiAdminPW();
-//          $item->setWikiEditPW();
-//          $item->setWikiReadPW();
-//          $item->setWikiTitle();
-//          $item->setWikiShowCommSyLogin();
-//          $item->setWikiWithSectionEdit();
-//          $item->setWikiWithHeaderForSectionEdit();
-//          $item->setWikiEnableFCKEditor();
-//          $item->setWikiEnableSearch();
-//          $item->setWikiEnableSitemap();
-//          $item->setWikiEnableStatistic();
-//          $item->setWikiEnableRss();
-//          $item->setWikiEnableCalendar();
-//          $item->setWikiEnableNotice();
-//          $item->setWikiEnableGallery();
-//          $item->setWikiEnablePdf();
-//          $item->setWikiEnableSwf();
-//          $item->setWikiEnableWmplayer();
-//          $item->setWikiEnableQuicktime();
-//          $item->setWikiEnableYoutubeGoogleVimeo();
-//          $item->setWikiEnableDiscussion();
-//          //$item->setWikiDiscussionArray();
-//          $item->setWikiEnableDiscussionNotification();
-//          $item->setWikiEnableDiscussionNotificationGroups();
-
-//          $wiki_manager = $this->_environment->getWikiManager();
-//          $wiki_manager->deleteWiki($room_item);
-    }
-
-    /**
-     * Deletes a wiki
-     * 
-     * @param  string $sessionId
-     * @param  string $contextId
-     * 
-     * @return bool success
-     */
-    public function deleteWiki($sessionId, $contextId)
-    {
-        if (!$this->isSessionValid($sessionId)) {
-            return new SoapFault('ERROR', 'session invalid!');
-        }
-
-//          $room_manager = $this->_environment->getRoomManager();
-//          $room_item = $room_manager->getItem($context_id);
-//          $wiki_manager = $this->_environment->getWikiManager();
-//          $wiki_manager->deleteWiki($room_item);
-    }
-
-    /**
      * Checks valid session
      * 
      * @param  string $sessionId
@@ -2709,70 +2641,6 @@ class SoapService
 //        return $result;
 //    }
 //
-//    public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
-//        #$this->_log_in_file(array(array('$user_id', $user_id)));
-//        $result = 'notAuthenticated';
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $user_id = $session->getValue('user_id');
-//            $auth_source = $session->getValue('auth_source');
-//            $this->_environment->setCurrentContextID($context_id);
-//            $context_item = $this->_environment->getCurrentContextItem();
-//
-//            if ( !empty($auth_source)
-//                and !empty($user_id)
-//            ) {
-//                $user_manager = $this->_environment->getUserManager();
-//                $user_manager->setContextLimit($context_id);
-//                $user_manager->setUserIDLimit($user_id);
-//                $user_manager->setAuthSourceLimit($auth_source);
-//                $user_manager->select();
-//                $user_list = $user_manager->get();
-//                if ( $user_list->getCount() >= 1 ) {
-//                    $user_item = $user_list->getFirst();
-//                    if ( $user_item->isModerator() ){
-//                        $result = 'moderator';
-//                    } elseif ( $user_item->isUser() ) {
-//                        if ( $context_item->isWikiRoomModWriteAccess() ) {
-//                            $result = 'read';
-//                        } else {
-//                            $result = 'user';
-//                        }
-//                    }
-//                } elseif ( $context_item->isWikiPortalReadAccess() ) {
-//                    $portal_id = $session->getValue('commsy_id');
-//                    if ( !empty($portal_id) ) {
-//                        $user_manager->setContextLimit($portal_id);
-//                        $user_manager->setUserIDLimit($user_id);
-//                        $user_manager->setAuthSourceLimit($auth_source);
-//                        $user_manager->select();
-//                        $user_list = $user_manager->get();
-//                        if ( $user_list->getCount() == 1 ) {
-//                            $user_item = $user_list->getFirst();
-//                            if ( $user_item->isUser() ) {
-//                                $result = 'read';
-//                            }
-//                        }
-//                    }
-//                }
-//                unset($user_manager);
-//                unset($user_list);
-//                unset($user_item);
-//            } else {
-//                $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
-//                $info_text = 'session id ('.$session_id.') is not valid: no auth source id or no user_id';
-//                $result = new SoapFault($info,$info_text);
-//            }
-//        } else {
-//            $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
-//            $info_text = 'session id ('.$session_id.') is not valid';
-//            $result = new SoapFault($info,$info_text);
-//        }
-//        return $result;
-//    }
-//
 //    public function savePosForItem ($session_id, $item_id, $x, $y) {
 //        $result = true;
 //        $session_id = $this->_encode_input($session_id);
@@ -2885,53 +2753,6 @@ class SoapService
 //        return $result;
 //    }
 //
-//    public function deleteWiki ($session_id, $context_id) {
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $room_manager = $this->_environment->getRoomManager();
-//            $room_item = $room_manager->getItem($context_id);
-//            $wiki_manager = $this->_environment->getWikiManager();
-//            $wiki_manager->deleteWiki($room_item);
-//        }
-//    }
-//
-//    public function createWiki ($session_id, $context_id, $settings) {
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $room_manager = $this->_environment->getRoomManager();
-//            $room_item = $room_manager->getItem($context_id);
-//
-//            $item->setWikiSkin();
-//            $item->setWikiEditPW();
-//            $item->setWikiAdminPW();
-//            $item->setWikiEditPW();
-//            $item->setWikiReadPW();
-//            $item->setWikiTitle();
-//            $item->setWikiShowCommSyLogin();
-//            $item->setWikiWithSectionEdit();
-//            $item->setWikiWithHeaderForSectionEdit();
-//            $item->setWikiEnableFCKEditor();
-//            $item->setWikiEnableSearch();
-//            $item->setWikiEnableSitemap();
-//            $item->setWikiEnableStatistic();
-//            $item->setWikiEnableRss();
-//            $item->setWikiEnableCalendar();
-//            $item->setWikiEnableNotice();
-//            $item->setWikiEnableGallery();
-//            $item->setWikiEnablePdf();
-//            $item->setWikiEnableSwf();
-//            $item->setWikiEnableWmplayer();
-//            $item->setWikiEnableQuicktime();
-//            $item->setWikiEnableYoutubeGoogleVimeo();
-//            $item->setWikiEnableDiscussion();
-//            //$item->setWikiDiscussionArray();
-//            $item->setWikiEnableDiscussionNotification();
-//            $item->setWikiEnableDiscussionNotificationGroups();
-//
-//            $wiki_manager = $this->_environment->getWikiManager();
-//            $wiki_manager->deleteWiki($room_item);
-//        }
-//    }
 //
 //    public function changeUserEmail($session_id, $email){
 //        $result = true;
