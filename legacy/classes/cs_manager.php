@@ -1758,31 +1758,6 @@ class cs_manager {
       return $retour;
    }
 
-   public function getAsXMLForFlash () {
-      $retour = '';
-      $list = $this->get();
-      if ( !empty($list) and $list->isNotEmpty() ) {
-         $item = $list->getFirst();
-         $type = $item->getType();
-         if ( $type == CS_LABEL_TYPE ) {
-            $type = $item->getLabelType();
-         }
-         while ($item) {
-            $retour .= $item->getDataAsXMLForFlash();
-            $item = $list->getNext();
-         }
-         $retour2 = $retour;
-         $retour  = '';
-         $retour .= '   <list>'.LF;
-         if ( !empty($type) ) {
-            $retour .= '      <type><![CDATA['.$type.']]></type>'.LF;
-         }
-         $retour .= $retour2;
-         $retour .= '   </list>'.LF;
-      }
-      return $retour;
-   }
-
    function addDatabasePrefix ($db_table) {
       $retour = $db_table;
       if ( $this->withDatabasePrefix() ) {
