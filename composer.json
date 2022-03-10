@@ -27,7 +27,6 @@
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^5.3",
         "knplabs/knp-snappy-bundle": "^1.7",
-        "laminas/laminas-soap": "^2.8",
         "lexik/form-filter-bundle": "^6.0",
         "lexik/jwt-authentication-bundle": "^2.8",
         "liip/imagine-bundle": "^2.3",
