@@ -1,6 +1,7 @@
 <?php
 namespace App\Filter;
 
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,6 +56,7 @@ class RoomFilterType extends AbstractType
                     $tokens = explode(' ', $values['value']);
 
                     $expr = $filterQuery->getExpr();
+                    /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
 
                     foreach ($tokens as $num => $token) {

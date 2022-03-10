@@ -42,7 +42,7 @@ include_once('functions/text_functions.php');
  * @version 2.1 $Revision$
  */
 
-class cs_section_manager extends cs_manager implements cs_export_import_interface {
+class cs_section_manager extends cs_manager {
 
    /**
    * integer - containing a start point for the select section
@@ -325,7 +325,7 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
       } else {
          $section = NULL;
          $query = "SELECT * FROM ".$this->addDatabasePrefix("section")." WHERE ".$this->addDatabasePrefix("section").".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
-         if (!is_null($version_id)) {
+         if ($version_id) {
             $query .= " AND ".$this->addDatabasePrefix("section").".version_id='".encode(AS_DB,$version_id)."'";
          }
          $query .= " ORDER BY ".$this->addDatabasePrefix("section").".number";
@@ -500,7 +500,7 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
-      if (!is_null($version_id)) {
+      if ($version_id) {
          $query .= ' AND version_id="'.encode(AS_DB,$version_id).'"';
       }
 
@@ -596,13 +596,6 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
         if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
-            // create backup of item
-            $this->backupItem($uid, array(
-                'title' => 'title',
-                'description' => 'description',
-                'modification_date' => 'modification_date',
-            ));
-
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query  = 'SELECT ' . $this->addDatabasePrefix('section').'.* FROM ' . $this->addDatabasePrefix('section').' WHERE ' . $this->addDatabasePrefix('section') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
             $result = $this->_db_connector->performQuery($query);
@@ -634,60 +627,4 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<section_item></section_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-   	$xml->addChildWithCDATA('version_id', $item->getVersionID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('number', $item->getNumber());
-      $xml->addChildWithCDATA('material_item_id', $item->getLinkedItemID());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xml->addChildWithCDATA('public', $item->isPublic());
-   
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setVersionId((string)$xml->version_id[0]);
-         $item->setContextId($top_item->getContextId());
-         $item->setTitle((string)$xml->title[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setNumber((string)$xml->number[0]);
-         $item->setLinkedItemID($top_item->getItemId());
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->save();
-      }
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>

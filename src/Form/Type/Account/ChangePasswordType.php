@@ -10,8 +10,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ChangePasswordType extends AbstractType
 {
@@ -52,6 +54,27 @@ class ChangePasswordType extends AbstractType
                     'constraints' => [
                         new NotBlank(),
                         new NotCompromisedPassword(),
+                        new Length([
+                            'min' => 8,
+                            'minMessage' => 'Your password must be at least {{ limit }} characters long.',
+                            'allowEmptyString' => false,
+                            ]),
+                        new Regex([
+                            'pattern' => '/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/', // any lowercase/modifier/other Unicode letters
+                            'message' => 'Your password must contain at least one lowercase character.',
+                            ]),
+                        new Regex([
+                            'pattern' => '/(*UTF8)[\p{Lu}\p{Lt}]/', // any upper/title case Unicode letters
+                            'message' => 'Your password must contain at least one uppercase character.',
+                            ]),
+                        new Regex([
+                            'pattern' => '/[[:punct:]]/', // any printing characters excluding letters, digits & space
+                            'message' => 'Your password must contain at least one special character.',
+                        ]),
+                        new Regex([
+                            'pattern' => '/\p{Nd}/', // any decimal numbers
+                            'message' => 'Your password must contain at least one numeric character.',
+                        ])
                     ],
                 ],
                 'second_options' => [

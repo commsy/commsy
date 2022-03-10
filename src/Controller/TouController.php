@@ -40,26 +40,30 @@ class TouController extends AbstractController
 
         /** @var Account $account */
         $account = $security->getUser();
-        $portalUser = $userService->getPortalUser($account);
 
         $form = $this->createForm(TouAcceptType::class, null, [
             'uikit3' => true,
         ]);
 
-        if ($portalUser->getAGBAcceptanceDate() < $portal->getAGBChangeDate()) {
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                if ($form->get('decline')->isClicked()) {
-                    return $this->redirectToRoute('app_account_deleteaccount', [
-                        'portalId' => $portal->getId(),
-                    ]);
-                }
+        $portalUser = null;
+        if ($account !== null) {
+            $portalUser = $userService->getPortalUser($account);
 
-                if ($form->get('accept')->isClicked()) {
-                    $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
-                    $portalUser->save();
+            if ($portalUser->getAGBAcceptanceDate() < $portal->getAGBChangeDate()) {
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    if ($form->get('decline')->isClicked()) {
+                        return $this->redirectToRoute('app_account_deleteaccount', [
+                            'portalId' => $portal->getId(),
+                        ]);
+                    }
 
-                    return $this->redirect($request->get('redirect'));
+                    if ($form->get('accept')->isClicked()) {
+                        $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
+                        $portalUser->save();
+
+                        return $this->redirect($request->get('redirect'));
+                    }
                 }
             }
         }

@@ -4,9 +4,9 @@
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
 ARG PHP_VERSION=7.4
-ARG NGINX_VERSION=1.19
+ARG NGINX_VERSION=1.21
 
-FROM php:${PHP_VERSION}-fpm-alpine3.13 AS commsy_php
+FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -21,6 +21,7 @@ RUN apk add --no-cache \
 		libxrender \
         mariadb-client \
 		nodejs \
+        supervisor \
 		ttf-freefont \
 		yarn \
 	;
@@ -78,7 +79,7 @@ RUN set -eux; \
 	apk del .build-deps
 
 # Composer
-COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # wkhtmltopdf
 COPY --from=surnet/alpine-wkhtmltopdf:3.13.5-0.12.6-full /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
@@ -122,6 +123,7 @@ COPY migrations migrations/
 COPY public public/
 COPY src src/
 COPY templates templates/
+COPY themes themes/
 COPY translations translations/
 
 RUN set -eux; \
@@ -141,8 +143,11 @@ HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
+COPY docker/php/supervisord.conf /etc/supervisord.conf
+COPY docker/php/supervisor.d /etc/supervisor/conf.d/
+
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["php-fpm"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
 ##############################################################################
 

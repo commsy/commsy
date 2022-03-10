@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Entity\ZzzRoom;
@@ -11,6 +10,8 @@ use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
@@ -28,15 +29,16 @@ use DateTimeImmutable;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,13 +49,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RoomController extends AbstractController
 {
-    private \Swift_Mailer $mailer;
+    /**
+     * @var Mailer
+     */
+    private Mailer $mailer;
 
     /**
      * @required
-     * @param \Swift_Mailer $mailer
+     * @param Mailer $mailer
      */
-    public function setMailer(\Swift_Mailer $mailer)
+    public function setMailer(Mailer $mailer)
     {
         $this->mailer = $mailer;
     }
@@ -69,6 +74,7 @@ class RoomController extends AbstractController
      * @param RoomFeedGenerator $roomFeedGenerator
      * @param LegacyMarkup $legacyMarkup
      * @param LegacyEnvironment $legacyEnvironment
+     * @param ThemeRepositoryInterface $themeRepository
      * @param int $roomId
      * @return array
      */
@@ -79,7 +85,7 @@ class RoomController extends AbstractController
         RoomFeedGenerator $roomFeedGenerator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $legacyEnvironment,
-        ParameterBagInterface $parameterBag,
+        ThemeRepositoryInterface $themeRepository,
         int $roomId
     ) {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -88,9 +94,12 @@ class RoomController extends AbstractController
         $roomItem = $roomService->getRoomItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
-        if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $parameterBag->get('liip_theme.themes'))) {
-            $roomItem->setColorArray(array('schema' => 'default'));
-            $roomItem->save();
+        if ($roomItem) {
+            $themeName = 'commsy/' . $roomItem->getColorArray()['schema'];
+            if ($themeName !== 'commsy/default' && !$themeRepository->findOneByName($themeName)) {
+                $roomItem->setColorArray(['schema' => 'default']);
+                $roomItem->save();
+            }
         }
 
         if (!$roomItem) {
@@ -160,7 +169,7 @@ class RoomController extends AbstractController
             $serviceContact['link'] = $roomService->buildServiceLink();
         }
 
-        // RSS-Feed / iCal / Wiki
+        // RSS-Feed / iCal
         $rss = [
             'show' => false,
             'url' => $this->generateUrl('app_rss', [
@@ -168,20 +177,11 @@ class RoomController extends AbstractController
             ]),
         ];
 
-        $wiki = [
-            'show' => false,
-            'url' => str_ireplace('[COMMSY_CONTEXT_ID]', $roomItem->getItemId(), $this->getParameter('commsy.mediawiki.roomWikiUrl')),
-        ];
-
         if (!$roomItem->isLocked() && !$roomItem->isClosed()) {
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
             if ($roomItem->isRSSOn()) {
                 $rss['show'] = true;
-            }
-
-            if ($roomItem->isWikiEnabled()) {
-                $wiki['show'] = true;
             }
 
             if (!$roomItem->isOpenForGuests()) {
@@ -192,8 +192,6 @@ class RoomController extends AbstractController
                         'contextId' => $roomId,
                         'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
                     ]);
-
-                    $wiki['url'] = $wiki['url'].'?session-id='.$legacyEnvironment->getSessionID();
                 }
             }
         }
@@ -231,7 +229,6 @@ class RoomController extends AbstractController
             'logoImageFilepath' => $logoImage,
             'serviceContact' => $serviceContact,
             'rss' => $rss,
-            'wiki' => $wiki,
             'header' => $header,
             'isModerator' => $legacyEnvironment->getCurrentUserItem()->isModerator(),
             'userTasks' => $userTasks,
@@ -337,30 +334,19 @@ class RoomController extends AbstractController
             $data = $form->getData();
 
             $legacyEnvironment = $environment->getEnvironment();
-
             $currentUser = $legacyEnvironment->getCurrentUser();
-
             $roomManager = $legacyEnvironment->getRoomManager();
             $roomItem = $roomManager->getItem($roomId);
 
-            $moderatorEmailAdresses = array();
-            $moderatorList = $roomItem->getModeratorList();
-            $moderatorUserItem = $moderatorList->getFirst();
-            while ($moderatorUserItem) {
-                $moderatorEmailAdresses[$moderatorUserItem->getEmail()] = $moderatorUserItem->getFullname();
-                $moderatorUserItem = $moderatorList->getNext();
-            }
+            $moderationRecipients = RecipientFactory::createModerationRecipients($roomItem);
 
-            $message = (new \Swift_Message())
-                ->setSubject($data['subject'])
-                ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
-                ->setTo($moderatorEmailAdresses)
-                ->setBody($data['message'])
-            ;
-
-            $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
-
-            $this->mailer->send($message);
+            $this->mailer->sendMultipleRaw(
+                $data['subject'],
+                $data['message'],
+                $moderationRecipients,
+                $currentUser->getFullName(),
+                [$currentUser->getEmail()]
+            );
 
             return new JsonResponse([
                 'message' => $translator->trans('message was send'),
@@ -674,18 +660,6 @@ class RoomController extends AbstractController
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
-        $showRoomModerationActions = false;
-        /** @var cs_user_item $roomUser */
-        $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
-        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
-            $showRoomModerationActions = true;
-        } else {
-            $portalUser = $currentUser->getRelatedPortalUserItem();
-            if ($portalUser && $portalUser->isModerator()) {
-                $showRoomModerationActions = true;
-            }
-        }
-
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
@@ -699,7 +673,6 @@ class RoomController extends AbstractController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
             'contactModeratorItems' => $contactModeratorItems,
-            'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }
@@ -865,27 +838,11 @@ class RoomController extends AbstractController
                     }
 
                     // mail to moderators
-                    $message = (new \Swift_Message())
-                        ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
-                        ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
-
-                    $userManager = $legacyEnvironment->getUserManager();
-                    $userManager->resetLimits();
-                    $userManager->setModeratorLimit();
-                    $userManager->setContextLimit($roomItem->getItemID());
-                    $userManager->select();
-
-                    $moderatorList = $userManager->get();
-                    $moderator = $moderatorList->getFirst();
-                    $moderators = '';
-                    while ($moderator) {
-                        if ($moderator->getAccountWantMail() == 'yes') {
-                            $message->addTo($moderator->getEmail(), $moderator->getFullname());
-                            $moderators .= $moderator->getFullname() . "\n";
-                        }
-
-                        $moderator = $moderatorList->getNext();
-                    }
+                    $moderatorRecipients = RecipientFactory::createModerationRecipients(
+                        $roomItem, function ($moderator) {
+                        /** @var cs_user_item $moderator */
+                        return $moderator->getAccountWantMail() == 'yes';
+                    });
 
                     // language
                     $language = $roomItem->getLanguage();
@@ -898,11 +855,9 @@ class RoomController extends AbstractController
 
                     $translator = $legacyEnvironment->getTranslationObject();
 
-                    if ($message->getTo()) {
+                    if (!empty($moderatorRecipients)) {
                         $savedLanguage = $translator->getSelectedLanguage();
                         $translator->setSelectedLanguage($language);
-
-                        $message->setSubject($translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT', $newUser->getFullname(), $roomItem->getTitle()));
 
                         $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")), $translator->getTimeInLang(date("Y-m-d H:i:s")));
                         $body .= "\n\n";
@@ -931,6 +886,11 @@ class RoomController extends AbstractController
                             $body .= "\n\n";
                         }
 
+                        $moderators = '';
+                        foreach ($moderatorRecipients as $recipient) {
+                            $moderators .= $recipient->getFirstname() . ' ' . $recipient->getLastname() .  "\n";
+                        }
+
                         $body .= $translator->getMessage('MAIL_SEND_TO', $moderators);
                         $body .= "\n";
 
@@ -948,9 +908,18 @@ class RoomController extends AbstractController
                             ], UrlGeneratorInterface::ABSOLUTE_URL);
                         }
 
-                        $message->setBody($body, 'text/plain');
-
-                        $this->mailer->send($message);
+                        $subject = $translator->getMessage(
+                            'USER_JOIN_CONTEXT_MAIL_SUBJECT',
+                            $newUser->getFullname(),
+                            $roomItem->getTitle()
+                        );
+                        $this->mailer->sendMultipleRaw(
+                            $subject,
+                            $body,
+                            $moderatorRecipients,
+                            $roomItem->getContextItem()->getTitle(),
+                            [$newUser->getEmail()]
+                        );
 
                         $translator->setSelectedLanguage($savedLanguage);
                     }
@@ -1003,14 +972,13 @@ class RoomController extends AbstractController
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $message = (new \Swift_Message())
-                        ->setSubject($subject)
-                        ->setBody($body, 'text/plain')
-                        ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
-                        ->setReplyTo([$contactModerator->getEmail() => $contactModerator->getFullName()])
-                        ->setTo([$newUser->getEmail()]);
-
-                    $this->mailer->send($message);
+                    $this->mailer->sendRaw(
+                        $subject,
+                        $body,
+                        RecipientFactory::createRecipient($newUser),
+                        $roomItem->getContextItem()->getTitle(),
+                        [$contactModerator->getEmail()]
+                    );
 
                     $translator->setSelectedLanguage($savedLanguage);
                 }

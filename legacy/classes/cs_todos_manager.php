@@ -35,7 +35,7 @@ include_once('functions/text_functions.php');
  * this class implements a database manager for the table "todo"
  */
 
-class cs_todos_manager extends cs_manager implements cs_export_import_interface {
+class cs_todos_manager extends cs_manager {
 
    var $_age_limit = NULL;
    var $_future_limit = NULL;
@@ -436,43 +436,64 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
       return $this->_getItemList("todo", $id_array);
    }
 
-  /** update a todo - internal, do not use -> use method save
-   * this method updates the database record for a given todo item
-   *
-   * @param cs_todo_item the todo item for which an update should be made
-   */
-   function _update ($item) {
-      parent::_update($item);
+    /** update a todo - internal, do not use -> use method save
+     * this method updates the database record for a given todo item
+     *
+     * @param cs_todo_item the todo item for which an update should be made
+     */
+    function _update($item)
+    {
+        /** @var cs_todo_item $item */
+        parent::_update($item);
 
-      $modificator = $item->getModificatorItem();
-      $modification_date = getCurrentDateTimeInMySQL();
+        $modificator = $item->getModificatorItem();
+        $modification_date = getCurrentDateTimeInMySQL();
 
-      if ( $item->isPublic() ) {
-         $public = '1';
-      } else {
-         $public = '0';
-      }
-      if ($item->isNotActivated()){
-         $modification_date = $item->getModificationDate();
-      }
-      $query = 'UPDATE '.$this->addDatabasePrefix('todos').' SET '.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'",'.
-               'date="'.encode(AS_DB,$item->getDate()).'",'.
-               'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
-               'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
-               'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'"'.
-               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
-      // extras (TBD)
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems updating todos from query: "'.$query.'"',E_USER_WARNING);
-      }
-   }
+        if ($item->isPublic()) {
+            $public = '1';
+        } else {
+            $public = '0';
+        }
+        if ($item->isNotActivated()) {
+            $modification_date = $item->getModificationDate();
+        }
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->update($this->addDatabasePrefix('todos'), 't')
+            ->set('modifier_id', ':modifierId')
+            ->set('modification_date', ':modificationDate')
+            ->set('title', ':title')
+            ->set('status', ':status')
+            ->set('minutes', ':minutes')
+            ->set('time_type', ':timeType')
+            ->set('public', ':public')
+            ->set('description', ':description')
+            ->where('item_id = :itemId')
+            ->setParameter('modifierId', $modificator->getItemID())
+            ->setParameter('modificationDate', $modification_date)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('status', $item->getInternalStatus())
+            ->setParameter('minutes', $item->getPlannedTime())
+            ->setParameter('timeType', $item->getTimeType())
+            ->setParameter('public', $public)
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('itemId', $item->getItemID());
+
+        if ($item->getDate()) {
+            $queryBuilder
+                ->set('date', ':date')
+                ->setParameter('date', $item->getDate());
+        }
+
+        try {
+            $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
 
   /** create a new item in the items table - internal, do not use -> use method save
    * this method creates a new item of type 'todo' in the database and sets the todo items item id.
@@ -498,53 +519,74 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
      unset($item);
   }
 
-  /** store a new todo item to the database - internal, do not use -> use method save
-    * this method stores a newly created todo item to the database
-    *
-    * @param cs_todo_item the todo item to be stored
-    */
-   function _newNews ($item) {
-      $user = $item->getCreatorItem();
-      $modificator = $item->getModificatorItem();
-      $modification_date = getCurrentDateTimeInMySQL();
-      $current_datetime = getCurrentDateTimeInMySQL();
+    /** store a new todo item to the database - internal, do not use -> use method save
+     * this method stores a newly created todo item to the database
+     *
+     * @param cs_todo_item the todo item to be stored
+     */
+    function _newNews(cs_todo_item $item)
+    {
+        $user = $item->getCreatorItem();
+        $modificator = $item->getModificatorItem();
+        $modificationDate = getCurrentDateTimeInMySQL();
+        $currentDateTime = getCurrentDateTimeInMySQL();
 
-      if ( $item->isPublic() ) {
-         $public = '1';
-      } else {
-         $public = '0';
-      }
+        if ($item->isPublic()) {
+            $public = '1';
+        } else {
+            $public = '0';
+        }
 
-      $date = $item->getDate();
-      if ($item->isNotActivated()){
-         $modification_date = $item->getModificationDate();
-      }
+        $date = $item->getDate();
+        if ($item->isNotActivated()) {
+            $modificationDate = $item->getModificationDate();
+        }
 
-      $query = 'INSERT INTO '.$this->addDatabasePrefix('todos').' SET '.
-               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-               'creation_date="'.$current_datetime.'",'.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'",';
-      if ( !empty($date) ) {
-         $query .= 'date="'.encode(AS_DB,$item->getDate()).'",';
-      }
-      $query .=$this->returnQuerySentenceIfFieldIsValid($item->getInternalStatus(), 'status').
-               'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
-               'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems creating todos from query: "'.$query.'"',E_USER_WARNING);
-      }
-      unset($item);
-      unset($user);
-      unset($modificator);
-   }
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $date = empty($item->getDate()) ? null : $item->getDate();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('todos'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modifier_id', ':modifierId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('title', ':title')
+            ->setValue('date', ':date')
+            ->setValue('minutes', ':minutes')
+            ->setValue('time_type', ':timeType')
+            ->setValue('public', ':public')
+            ->setValue('description', ':description')
+            ->setParameter('itemId', $item->getItemID())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', $user->getItemID())
+            ->setParameter('creationDate', $currentDateTime)
+            ->setParameter('modifierId', $modificator->getItemID())
+            ->setParameter('modificationDate', $modificationDate)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('date', $date)
+            ->setParameter('minutes', $item->getPlannedTime())
+            ->setParameter('timeType', $item->getTimeType())
+            ->setParameter('public', $public)
+            ->setParameter('description', $item->getDescription());
+
+        $status = $item->getInternalStatus();
+        if ($status) {
+            $queryBuilder
+                ->setValue('status', ':status')
+                ->setParameter('status', $status);
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
 
   /**  delete a todo item
    *
@@ -630,14 +672,6 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
         if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
-            // create backup of item
-            $this->backupItem($uid, array(
-                'title' => 'title',
-                'description' => 'description',
-                'modification_date' => 'modification_date',
-                'public' => 'public',
-            ));
-
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query  = 'SELECT ' . $this->addDatabasePrefix('todos').'.* FROM ' . $this->addDatabasePrefix('todos').' WHERE ' . $this->addDatabasePrefix('todos') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
             $result = $this->_db_connector->performQuery($query);
@@ -670,100 +704,6 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<todos_item></todos_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $xml->addChildWithCDATA('date', $item->getDate());
-      $xml->addChildWithCDATA('status', $item->getStatus());
-      $xml->addChildWithCDATA('minutes', $item->getPlannedTime());
-      $xml->addChildWithCDATA('time_type', $item->getTimeType());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('public', $item->isPublic());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-
-      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
-
-      $xml = $this->export_sub_items($xml, $item);
-
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      $step_manager = $this->_environment->getManager('step');
-      $step_manager->setContextLimit($top_item->getContextID());
-      $step_manager->setTodoItemIDLimit($top_item->getItemID());
-      $step_manager->select();
-      $step_list = $step_manager->get();
-      
-      $step_item_xml_array = array();
-      if (!$step_list->isEmpty()) {
-         $step_item = $step_list->getFirst();
-         while ($step_item) {
-            $step_id = $step_item->getItemID();
-            $step_item_xml_array[] = $step_manager->export_item($step_id);
-            $step_item = $step_list->getNext();
-         }
-      }
-
-      $step_xml = new SimpleXMLElementExtended('<step></step>');
-      foreach ($step_item_xml_array as $step_item_xml) {
-         $this->simplexml_import_simplexml($step_xml, $step_item_xml);
-      }
-   
-      $this->simplexml_import_simplexml($xml, $step_xml);
-      
-      return $xml;
-   }
-   
-  function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setContextId($top_item->getItemId());
-         $item->setDate((string)$xml->date[0]);
-         $item->setStatus((string)$xml->status[0]);
-         $item->setPlannedTime((string)$xml->minutes[0]);
-         $item->setTimeType((string)$xml->time_type[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setPublic((string)$xml->public[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->save();
-         $this->import_sub_items($xml, $item, $options);
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
-      return $item;
-   }
-	
-	function import_sub_items($xml, $top_item, &$options) {
-      if ($xml->step != null) {
-         $step_manager = $this->_environment->getStepManager();
-         foreach ($xml->step->children() as $step_xml) {
-            $temp_step_item = $step_manager->import_item($step_xml, $top_item, $options);
-         }
-      }
-   }
 
     /**
      * @param int[] $contextIds List of context ids

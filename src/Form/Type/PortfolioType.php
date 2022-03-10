@@ -12,20 +12,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PortfolioType extends AbstractType
 {
     /**
      * @var TranslatorInterface $translator
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * @var PortfolioService $portfolioService
      */
-    private $portfolioService;
+    private PortfolioService $portfolioService;
 
     /**
      * PortfolioType constructor.

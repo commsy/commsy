@@ -177,30 +177,6 @@ class cs_project_manager extends cs_room2_manager {
         $query .= ' count( DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id) AS count';
      } elseif ($mode == 'id_array') {
         $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.item_id';
-     } elseif ( !$this->_sql_with_extra ) {
-        $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.item_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.context_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creator_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modifier_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deleter_id';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creation_date';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deletion_date';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.title';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.status';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.activity';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.type';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.public';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.is_open_for_guests';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.continuous';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.template';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.contact_persons';
-        if ($this->_existsField($this->_db_table, 'room_description')){
-           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.room_description';
-        }else{
-           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
-        }
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.lastlogin';
      } else {
         $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
@@ -462,19 +438,20 @@ class cs_project_manager extends cs_room2_manager {
    }
 
     public function getRelatedProjectRooms($userItem, $contextId) {
-        return $this->_getRelatedContextListForUser($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
+        return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
     }
 
-   function getRelatedProjectListForUser ($user_item, $context_id) {
-   	  if($this->_environment->getCurrentPortalID() == 0){
-   	  	return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$context_id);
-   	  } else {
-   	  	return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
-   	  }
-   }
+    public function getRelatedProjectListForUser(cs_user_item $user, $contextId = null, bool $withExtras = true)
+    {
+        if (!$contextId) {
+            $contextId = $this->_environment->getCurrentPortalID();
+        }
 
-   function getUserRelatedProjectListForUser ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
+        return $this->getRelatedContextListForUserInt($user->getUserID(), $user->getAuthSource(), $contextId, false, false, $withExtras);
+    }
+
+   function getUserRelatedProjectListForUser ($user_item, bool $withExtras = true) {
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true, $withExtras);
    }
 
    function getRelatedProjectListForUserSortByTime ($user_item) {
@@ -482,7 +459,7 @@ class cs_project_manager extends cs_room2_manager {
    }
 
    function getRelatedProjectListForUserForMyArea ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),true);
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),true);
    }
 
    function getRelatedProjectListForUserSortByTimeForMyArea ($user_item) {

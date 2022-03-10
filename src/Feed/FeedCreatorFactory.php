@@ -7,21 +7,41 @@ use App\Feed\Creators\Creator;
 use App\Utils\ItemService;
 use App\Services\LegacyEnvironment;
 
+use cs_environment;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FeedCreatorFactory
 {
-    private $itemService;
-    private $legacyEnvironment;
+    /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
+
+    /**
+     * @var RouterInterface
+     */
+    private RouterInterface $router;
 
     private $creators = [];
     private $isGuestAccess = false;
-    private $translator;
-    private $router;
 
-    public function __construct(ItemService $itemService, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator, RouterInterface $router)
-    {
+    public function __construct(
+        ItemService $itemService,
+        LegacyEnvironment $legacyEnvironment,
+        TranslatorInterface $translator,
+        RouterInterface $router
+    ) {
         $this->itemService = $itemService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->translator = $translator;

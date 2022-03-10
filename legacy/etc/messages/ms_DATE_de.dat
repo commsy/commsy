@@ -25,7 +25,6 @@ $message["DATE_LEAVE"]["de"] = "Teilnahme absagen";
 $message["DATE_LOCATION"]["de"] = "Ort";
 $message["DATE_MONTH_PRESENTATION"]["de"] = "Monatsansicht";
 $message["DATE_PARTICIPANTS"]["de"] = "Teilnahme";
-$message["DATE_PRIVATE_ENTRY"]["de"] = "privater Eintrag";
 $message["DATE_PUBLIC_NO"]["de"] = "als private Termine hochladen";
 $message["DATE_STARTDAY"]["de"] = "Tag (Beginn)";
 $message["DATE_STARTTIME"]["de"] = "Uhrzeit (Beginn)";

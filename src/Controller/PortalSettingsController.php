@@ -25,7 +25,6 @@ use App\Entity\Server;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
-use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountIndexDeleteUserType;
@@ -68,11 +67,13 @@ use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TranslationType;
+use App\Mail\Mailer;
 use App\Model\TimePulseTemplate;
 use App\Repository\AuthSourceRepository;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
+use App\User\UserListBuilder;
 use App\Utils\AccountMail;
 use App\Utils\ItemService;
 use App\Utils\MailAssistant;
@@ -82,8 +83,6 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -95,7 +94,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -195,9 +193,6 @@ class PortalSettingsController extends AbstractController
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
-     * @param Portal $portal
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
      */
     public function support(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
@@ -630,6 +625,8 @@ class PortalSettingsController extends AbstractController
      * @Template()
      * @param Portal $portal
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return array|RedirectResponse
      */
     public function authShibboleth(
         Portal $portal,
@@ -672,6 +669,9 @@ class PortalSettingsController extends AbstractController
                     });
                     $shibSource->setDefault(true);
                 }
+                /** @var AuthSourceShibboleth $formData */
+                $formData = $authShibbolethForm->getData();
+                $shibSource->setIdentityProviders($formData->getIdentityProviders());
 
                 $entityManager->persist($shibSource);
                 $entityManager->flush();
@@ -680,6 +680,7 @@ class PortalSettingsController extends AbstractController
 
         return [
             'form' => $authShibbolethForm->createView(),
+            'portal' => $portal
         ];
     }
 
@@ -1222,12 +1223,8 @@ class PortalSettingsController extends AbstractController
         $userId,
         Portal $portal,
         UserService $userService,
-        Request $request,
-        LegacyEnvironment $environment,
-        \Swift_Mailer $mailer,
-        PaginatorInterface $paginator
+        Request $request
     ) {
-
         $user = $userService->getUser($userId);
 
         $formOptions = [
@@ -1282,9 +1279,6 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         Request $request,
-        LegacyEnvironment $environment,
-        \Swift_Mailer $mailer,
-        PaginatorInterface $paginator,
         AccountManager $accountManager
     ) {
         $users = [];
@@ -1458,13 +1452,9 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         Request $request,
         LegacyEnvironment $environment,
-        \Swift_Mailer $mailer,
         PaginatorInterface $paginator,
-        AuthSourceRepository $authSourceRepository,
-        AccountManager $accountManager,
-        RouterInterface $router
+        AuthSourceRepository $authSourceRepository
     ) {
-        $user = $userService->getCurrentUserItem();
         // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
         $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
         $authSources = $authSourceRepository->findByPortal($portalId);
@@ -1653,7 +1643,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 10: // send mail userID and password
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1665,7 +1654,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 11: // send mail merge userIDs
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1677,7 +1665,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                        break;
                     case 12: // hide mail
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1889,9 +1876,8 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         UserService $userService,
-        UserTransformer $userTransformer,
         ItemService $itemService,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         Portal $portal,
         RouterInterface $router
     ) {
@@ -1928,27 +1914,24 @@ class PortalSettingsController extends AbstractController
                     $mailRecipients[] = $userService->getCurrentUserItem();
                 }
 
-                $countTo = 0;
-                $countCc = 0;
-                $countBcc = 0;
+                $recipientCount = 0;
 
                 foreach ($mailRecipients as $mailRecipient) {
                     $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                    $message = $mailAssistant->getSwiftMailForAccountIndexSendMail($form, $item, false);
-                    $mailer->send($message);
+                    $email = $mailAssistant->getAccountIndexActionMessage($form, $item);
+                    $mailer->sendEmailObject($email, $portal->getTitle());
 
-                    if (!is_null($message->getTo())) {
-                        $countTo += count($message->getTo());
+                    if (!is_null($email->getTo())) {
+                        $recipientCount += count($email->getTo());
                     }
-                    if (!is_null($message->getCc())) {
-                        $countTo += count($message->getCc());
+                    if (!is_null($email->getCc())) {
+                        $recipientCount += count($email->getCc());
                     }
-                    if (!is_null($message->getBcc())) {
-                        $countTo += count($message->getBcc());
+                    if (!is_null($email->getBcc())) {
+                        $recipientCount += count($email->getBcc());
                     }
                 }
 
-                $recipientCount = $countTo + $countCc + $countBcc;
                 $this->addFlash('recipientCount', $recipientCount);
 
                 $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
@@ -1984,9 +1967,8 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         UserService $userService,
-        UserTransformer $userTransformer,
         ItemService $itemService,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         RouterInterface $router
     ) {
         $recipientArray = [];
@@ -2015,28 +1997,24 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $mailRecipients = $data->getRecipients();
 
-            $countTo = 0;
-            $countCc = 0;
-            $countBcc = 0;
-
+            $recipientCount = 0;
             foreach ($mailRecipients as $mailRecipient) {
 
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
-                $mailer->send($message);
+                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
+                $mailer->sendEmailObject($email, $portal->getTitle());
 
-                if (!is_null($message->getTo())) {
-                    $countTo += count($message->getTo());
+                if (!is_null($email->getTo())) {
+                    $recipientCount += count($email->getTo());
                 }
-                if (!is_null($message->getCc())) {
-                    $countTo += count($message->getCc());
+                if (!is_null($email->getCc())) {
+                    $recipientCount += count($email->getCc());
                 }
-                if (!is_null($message->getBcc())) {
-                    $countTo += count($message->getBcc());
+                if (!is_null($email->getBcc())) {
+                    $recipientCount += count($email->getBcc());
                 }
             }
 
-            $recipientCount = $countTo + $countCc + $countBcc;
             $this->addFlash('recipientCount', $recipientCount);
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
@@ -2067,9 +2045,8 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         MailAssistant $mailAssistant,
         UserService $userService,
-        UserTransformer $userTransformer,
         ItemService $itemService,
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         RouterInterface $router
     ) {
         $recipientArray = [];
@@ -2081,8 +2058,6 @@ class PortalSettingsController extends AbstractController
 
         $sendMail = new AccountIndexSendMergeMail();
         $sendMail->setRecipients($recipientArray);
-
-        $user = $legacyEnvironment->getEnvironment()->getCurrentUser();
 
         $action = 'user-account-merge';
         $accountMail = new AccountMail($legacyEnvironment, $router);
@@ -2099,29 +2074,24 @@ class PortalSettingsController extends AbstractController
             $data = $form->getData();
             $mailRecipients = $data->getRecipients();
 
-            $countTo = 0;
-            $countCc = 0;
-            $countBcc = 0;
-
+            $recipientCount = 0;
             foreach ($mailRecipients as $mailRecipient) {
 
                 $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $message = $mailAssistant->getSwiftMailForAccountIndexSendPasswordMail($form, $item, true);
-                $mailer->send($message);
+                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
+                $mailer->sendEmailObject($email, $portal->getTitle());
 
-                if (!is_null($message->getTo())) {
-                    $countTo += count($message->getTo());
+                if (!is_null($email->getTo())) {
+                    $recipientCount += count($email->getTo());
                 }
-                if (!is_null($message->getCc())) {
-                    $countTo += count($message->getCc());
+                if (!is_null($email->getCc())) {
+                    $recipientCount += count($email->getCc());
                 }
-                if (!is_null($message->getBcc())) {
-                    $countTo += count($message->getBcc());
+                if (!is_null($email->getBcc())) {
+                    $recipientCount += count($email->getBcc());
                 }
-
             }
 
-            $recipientCount = $countTo + $countCc + $countBcc;
             $this->addFlash('recipientCount', $recipientCount);
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
@@ -2148,6 +2118,7 @@ class PortalSettingsController extends AbstractController
      * @param AuthSourceRepository $authSourceRepository
      * @param RoomService $roomService
      * @param Security $security
+     * @param TranslatorInterface $translator
      * @return array|RedirectResponse
      */
     public function accountIndexDetail(
@@ -2156,7 +2127,10 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         AuthSourceRepository $authSourceRepository,
         RoomService $roomService,
-        Security $security
+        TranslatorInterface $translator,
+        Security $security,
+        UserListBuilder $userListBuilder,
+        AccountManager $accountManager
     ) {
         /** @var Account $account */
         $account = $security->getUser();
@@ -2176,36 +2150,40 @@ class PortalSettingsController extends AbstractController
         $privateRoomNameList = [];
         $privateRoomArchivedNameList = [];
 
-        $projects = $user->getRelatedProjectList();
-        $communities = $user->getRelatedCommunityList();
-        $relatedUsers = $user->getRelatedUserList();
+        $relatedUsers = $userListBuilder
+            ->fromAccount($accountManager->getAccount($user, $portal->getId()))
+            ->withProjectRoomUser()
+            ->withCommunityRoomUser()
+            ->withUserRoomUser()
+            ->withPrivateRoomUser()
+            ->getList();
         foreach ($relatedUsers as $relatedUser) {
-
             $contextID = $relatedUser->getContextID();
+            $locked = $relatedUser->getStatus() === "0" ? "(".$translator->trans('Locked', [], 'portal'). ") " : "";
             $relatedRoomItem = $roomService->getRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
-                if ($relatedRoomItem->getStatus() === '2') {
-                    $projectsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                if ($relatedRoomItem->getStatus() == '2') {
+                    $projectsArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $projectsListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $projectsListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'community') {
-                if ($relatedRoomItem->getStatus() === '2') {
-                    $communityArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                if ($relatedRoomItem->getStatus() == '2') {
+                    $communityArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $communityListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $communityListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'userroom') {
-                if ($relatedRoomItem->getStatus() === '2') {
-                    $userRoomsArchivedListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                if ($relatedRoomItem->getStatus() == '2') {
+                    $userRoomsArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $userRoomListNames[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $userRoomListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             } elseif ($relatedRoomItem->getType() === 'privateroom') {
-                if ($relatedRoomItem->getStatus() === '2') {
-                    $privateRoomArchivedNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
+                if ($relatedRoomItem->getStatus() == '2') {
+                    $privateRoomArchivedNameList[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
                 } else {
-                    $privateRoomNameList[] = $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
+                    $privateRoomNameList[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' )';
                 }
             }
         }
@@ -2882,75 +2860,6 @@ class PortalSettingsController extends AbstractController
             'translations' => $translations,
             'selectedTranslation' => $translation,
         ];
-    }
-
-    private function sendUserInfoMail(
-        $userIds,
-        $action,
-        \cs_user_item $user,
-        \Swift_Mailer $mailer,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
-        RouterInterface $router
-    ) {
-        $fromAddress = $user->getEmail();
-        $currentUser = $user;
-        $fromSender = $user->getFullName();
-
-        $validator = new EmailValidator();
-        $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
-            if ($currentUser->isEmailVisible()) {
-                $replyTo[$currentUserEmail] = $currentUser->getFullName();
-            }
-        }
-
-        $users = [];
-        $failedUsers = [];
-        foreach ($userIds as $userId) {
-            $user = $userService->getUser($userId);
-
-            $userEmail = $user->getEmail();
-            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
-                $to = [$userEmail => $user->getFullname()];
-                $accountMail = new AccountMail($legacyEnvironment, $router);
-                $subject = $accountMail->generateSubject($action);
-                $body = $accountMail->generateBody($userService->getCurrentUserItem(), $action);
-
-                $mailMessage = (new \Swift_Message())
-                    ->setSubject($subject)
-                    ->setBody($body, 'text/plain')
-                    ->setFrom([$fromAddress => $fromSender])
-                    ->setReplyTo($replyTo);
-
-                if ($user->isEmailVisible()) {
-                    $mailMessage->setTo($to);
-                } else {
-                    $mailMessage->setBcc($to);
-                }
-
-                // send mail
-                $failedRecipients = [];
-                $mailer->send($mailMessage, $failedRecipients);
-            } else {
-                $failedUsers[] = $user;
-            }
-        }
-
-        foreach ($failedUsers as $failedUser) {
-            $this->addFlash('failedRecipients', $failedUser->getUserId());
-        }
-
-        foreach ($failedRecipients as $failedRecipient) {
-            $failedUser = array_filter($users, function ($user) use ($failedRecipient) {
-                return $user->getEmail() == $failedRecipient;
-            });
-
-            if ($failedUser) {
-                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
-            }
-        }
     }
 
     private function generateRedirectForAuthType(string $type, Portal $portal)

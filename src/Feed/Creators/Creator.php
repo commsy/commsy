@@ -4,8 +4,8 @@ namespace App\Feed\Creators;
 
 use FeedIo\Feed\Item;
 
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class Creator
 {

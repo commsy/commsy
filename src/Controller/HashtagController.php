@@ -72,7 +72,7 @@ class HashtagController extends AbstractController
 
     /**
      * @Route("/room/{roomId}/hashtag/add")
-     * @Security("is_granted('CATEGORY_EDIT')")
+     * @Security("is_granted('HASHTAG_EDIT')")
      * @param Request $request
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
@@ -110,7 +110,7 @@ class HashtagController extends AbstractController
     /**
      * @Route("/room/{roomId}/hashtag/edit/{labelId}")
      * @Template()
-     * @Security("is_granted('CATEGORY_EDIT')")
+     * @Security("is_granted('HASHTAG_EDIT')")
      * @param Request $request
      * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId

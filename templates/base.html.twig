@@ -1,5 +1,7 @@
 {% import 'common/footer.html.twig' as footer %}
 
+{% set requestContextId = app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') ?? app.user.contextId %}
+
 <!DOCTYPE html>
 <html lang="{{ selectedLanguage() }}">
     <head>
@@ -7,7 +9,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{% block title %}{{ pageTitle() }}{% endblock %}</title>
+        <title>{% block title %}{{ pageTitle(app.request.attributes.get('roomId') ?? app.request.attributes.get('portalId')) }}{% endblock %}</title>
 
         {% include 'stylesheets.html.twig' %}
 
@@ -66,32 +68,36 @@
                     <div class="uk-navbar-content">
                         {# global search #}
                         {% if app.request.attributes.get('_route') is not same as('app_tou_accept') %}
-                            {{ render(controller(
-                                'App\\Controller\\SearchController::searchFormAction', {
-                                    'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId'),
-                                    'requestData': app.request.query.get('search') ?? app.request.query.get('search_filter')
-                                }
-                            ))}}
+                            {% if requestContextId is not same as 99 %}
+                                {{ render(controller(
+                                    'App\\Controller\\SearchController::searchFormAction', {
+                                        'roomId': requestContextId,
+                                        'requestData': app.request.query.get('search') ?? app.request.query.get('search_filter')
+                                    }
+                                )) }}
+                            {% endif %}
                         {% endif %}
                     </div>
                     
                     {# global actions #}
-                    {{ render(controller(
-                        'App\\Controller\\UserController::globalNavbarAction',
-                        { 'contextId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }
-                    )) }}
+                    {% if requestContextId is not same as 99 %}
+                        {{ render(controller(
+                            'App\\Controller\\UserController::globalNavbarAction',
+                            { 'contextId': requestContextId }
+                        )) }}
+                    {% endif %}
 
                     <div class="uk-navbar-content">
                         <ul class="uk-navbar-nav">
                             <li id="navbar_user_icon" class="uk-parent" data-uk-dropdown>
                                 {{ render(controller(
                                     'App\\Controller\\ProfileController::image',
-                                    { 'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }
+                                    { 'roomId': requestContextId }
                                 ))}}
 
                                 {{ render(controller(
                                     'App\\Controller\\ProfileController::menu',
-                                    { 'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }
+                                    { 'roomId': requestContextId }
                                 ))}}
                             </li>
                         </ul>
@@ -102,65 +108,67 @@
                 <a href="#commsy_offnavigation" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
 
                 {# left #}
-                <ul class="uk-navbar-nav">
-                    {# All Rooms #}
-                    {{ render(controller(
-                        'App\\Controller\\UserController::allRoomsNavbarAction'
-                    ))}}
+                {% if requestContextId is not same as 99 %}
+                    <ul class="uk-navbar-nav">
+                        {# All Rooms #}
+                        {{ render(controller(
+                            'App\\Controller\\UserController::allRoomsNavbarAction'
+                        ))}}
 
-                    {# room navigation #}
-                    <li id="room-navigation" data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
-                        source:'{{ path('app_search_roomnavigation', {'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') }) }}',
-                        minLength: 0,
-                        msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
-                    }">
-                        <a class="cs-link-highlight">
-                            {{ 'My rooms'|trans({}, 'room') }}
-                            <i class="uk-icon-chevron-down"></i>
-                        </a>
+                        {# room navigation #}
+                        <li id="room-navigation" data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
+                            source:'{{ path('app_search_roomnavigation', {'roomId': requestContextId }) }}',
+                            minLength: 0,
+                            msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
+                        }">
+                            <a class="cs-link-highlight">
+                                {{ 'My rooms'|trans({}, 'room') }}
+                                <i class="uk-icon-chevron-down"></i>
+                            </a>
 
-                        <!-- This is the dropdown -->
-                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
-                            <div class="uk-form">
-                                <input class="uk-margin-bottom uk-width-1-1" type="text" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
-                                <div class="uk-text-center">{{ 'Top 50 matches'|trans({}, 'search') }}</div>
+                            <!-- This is the dropdown -->
+                            <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
+                                <div class="uk-form">
+                                    <input class="uk-margin-bottom uk-width-1-1" type="text" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
+                                    <div class="uk-text-center">{{ 'Top 50 matches'|trans({}, 'search') }}</div>
 
-                                <script type="text/autocomplete">
-                                    {%- verbatim -%}
-                                    <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
-                                        {{#items && items.length}}
-                                            {{~items}}
-                                            <li data-url="{{!$item.url}}"{{#$item.disabled}} class="uk-skip uk-text-bold"{{/end}}>
-                                                <a>
-                                                    {{#$item.text == 'project'}}
-                                                        <i class="uk-margin-small-right uk-icon-angle-double-right"></i>
-                                                    {{/end}}
-                                                    {{#$item.text == 'community'}}
-                                                        <i class="uk-margin-small-right uk-icon-angle-right"></i>
-                                                    {{/end}}
-                                                    {{ $item.title }}
-                                                </a>
-                                            </li>
-                                            {{/items}}
-                                        {{/end}}
-                                        {{^items.length}}
-                                            {{#msgNoResults}}<li class="uk-skip"><a>{{msgNoResults}}</a></li>{{/msgNoResults}}
-                                        {{/end}}
-                                    </ul>
-                                    {%- endverbatim -%}
-                                </script>
+                                    <script type="text/autocomplete">
+                                        {%- verbatim -%}
+                                        <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
+                                            {{#items && items.length}}
+                                                {{~items}}
+                                                <li data-url="{{!$item.url}}"{{#$item.disabled}} class="uk-skip uk-text-bold"{{/end}}>
+                                                    <a>
+                                                        {{#$item.text == 'project'}}
+                                                            <i class="uk-margin-small-right uk-icon-angle-double-right"></i>
+                                                        {{/end}}
+                                                        {{#$item.text == 'community'}}
+                                                            <i class="uk-margin-small-right uk-icon-angle-right"></i>
+                                                        {{/end}}
+                                                        {{ $item.title }}
+                                                    </a>
+                                                </li>
+                                                {{/items}}
+                                            {{/end}}
+                                            {{^items.length}}
+                                                {{#msgNoResults}}<li class="uk-skip"><a>{{msgNoResults}}</a></li>{{/msgNoResults}}
+                                            {{/end}}
+                                        </ul>
+                                        {%- endverbatim -%}
+                                    </script>
+                                </div>
+
+                                <div class="loading uk-text-center uk-margin-small-top uk-container-center">
+                                    <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
+                                </div>
+
                             </div>
-
-                            <div class="loading uk-text-center uk-margin-small-top uk-container-center">
-                                <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
-                            </div>
-
-                        </div>
-                    </li>
-                    <li>
-                        <img id="room-logo-navbar" src="{{ path('getLogo', {'roomId': app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId')}) }}">
-                    </li>
-                </ul>
+                        </li>
+                        <li>
+                            <img id="room-logo-navbar" src="{{ path('getLogo', {'roomId': requestContextId}) }}">
+                        </li>
+                    </ul>
+                {% endif %}
                 
             </nav>
 

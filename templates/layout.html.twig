@@ -34,15 +34,6 @@
 
             <a class="uk-navbar-toggle uk-hidden@s" href="#offcanvas" uk-navbar-toggle-icon uk-toggle="target: #offcanvas-navigation"></a>
 
-            <div id="offcanvas-navigation" uk-offcanvas>
-                <div class="uk-offcanvas-bar">
-                    {{ block('sidebar_left') }}
-
-                    <button class="uk-offcanvas-close" type="button" uk-close></button>
-
-                </div>
-            </div>
-
             <ul class="uk-navbar-nav uk-visible@s">
                 {% if app.request.attributes.has('roomId') %}
                     {% set contextId = app.request.attributes.get('roomId') %}
@@ -82,7 +73,7 @@
                         </li>
                     {% else %}
                         {# root outside of portal #}
-                        <a href="{{ path('app_logout') }}">Logout</a>
+                        <a href="{{ path('app_logout') }}">{{ 'Sign out'|trans([], 'profile') }}</a>
                     {% endif %}
                 {% endif %}
             </ul>

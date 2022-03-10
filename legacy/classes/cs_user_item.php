@@ -1226,45 +1226,40 @@ class cs_user_item extends cs_item
         return $room_manager->getItem($this->getRoomID());
     }
 
-    function getUserRelatedCommunityList()
+    function getUserRelatedCommunityList(bool $withExtras = true)
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getUserRelatedCommunityListForUser($this);
-        return $list;
+        return $manager->getUserRelatedCommunityListForUser($this, $withExtras);
     }
 
     function getRelatedCommunityList()
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getRelatedCommunityListForUser($this);
-        return $list;
+        return $manager->getRelatedCommunityListForUser($this);
     }
 
     function getRelatedCommunityListAllUserStatus()
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getRelatedCommunityListForUserAllUserStatus($this);
-        return $list;
+        return $manager->getRelatedCommunityListForUserAllUserStatus($this);
     }
 
-    public function getRelatedUserroomsList(): \cs_list
+    public function getRelatedUserroomsList(bool $withExtras = true): \cs_list
     {
         $manager = $this->_environment->getRoomManager();
-        return $manager->getUserRoomsUserIsMemberOf($this)  ;
+        return $manager->getUserRoomsUserIsMemberOf($this, $withExtras);
     }
 
-    function getUserRelatedProjectList()
+    function getUserRelatedProjectList(bool $withExtras = true)
     {
         $manager = $this->_environment->getProjectManager();
-        $list = $manager->getUserRelatedProjectListForUser($this);
-        return $list;
+        return $manager->getUserRelatedProjectListForUser($this, $withExtras);
     }
 
-    function getRelatedProjectList()
+    public function getRelatedProjectList()
     {
         $manager = $this->_environment->getProjectManager();
-        $list = $manager->getRelatedProjectListForUser($this, null);
-        return $list;
+        return $manager->getRelatedProjectListForUser($this, null);
     }
 
     function getRelatedProjectListAllUserStatus()
@@ -1423,7 +1418,7 @@ class cs_user_item extends cs_item
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_user.user');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:User');
 
@@ -1511,7 +1506,7 @@ class cs_user_item extends cs_item
         }
 
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_user.user');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:User');
 
@@ -1837,7 +1832,6 @@ class cs_user_item extends cs_item
      */
     public function getRelatedUserList(bool $includeUserroomUsers = false): \cs_list
     {
-        include_once('classes/cs_list.php');
         $emptyList = new cs_list();
         $currentContextId = $this->getContextID();
         $currentPortalId = $this->_environment->getCurrentPortalID();
@@ -1849,11 +1843,11 @@ class cs_user_item extends cs_item
 
         // community rooms
         $communityManager = $this->_environment->getCommunityManager();
-        $communityRooms = $communityManager->getRelatedCommunityListForUser($this);
+        $communityRooms = $communityManager->getRelatedCommunityListForUser($this, false);
 
         // project rooms
         $projectManager = $this->_environment->getProjectManager();
-        $projectRooms = $projectManager->getRelatedProjectListForUser($this, $currentContextId);
+        $projectRooms = $projectManager->getRelatedProjectListForUser($this, null, false);
 
         // user rooms
         $userroomManager = $this->_environment->getUserRoomManager();

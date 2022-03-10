@@ -220,6 +220,7 @@ CREATE TABLE `auth_source` (
   `auth_dn` varchar(50) DEFAULT NULL,
   `auth_query` varchar(50) DEFAULT NULL,
   `mail_regex` varchar(100) DEFAULT NULL,
+  `identity_provider` LONGTEXT DEFAULT NULL comment '(DC2Type:array)',
   PRIMARY KEY (`id`),
   KEY `auth_source_portal_id_index` (`portal_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
@@ -231,7 +232,7 @@ CREATE TABLE `auth_source` (
 
 LOCK TABLES `auth_source` WRITE;
 /*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
-INSERT INTO `auth_source` VALUES (100,99,'CommSy',NULL,'local',1,1,'no',0,0,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `auth_source` VALUES (100,99,'CommSy',NULL,'local',1,1,'no',0,0,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `auth_source` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -556,34 +557,6 @@ CREATE TABLE `invitations` (
 LOCK TABLES `invitations` WRITE;
 /*!40000 ALTER TABLE `invitations` DISABLE KEYS */;
 /*!40000 ALTER TABLE `invitations` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `item_backup`
---
-
-DROP TABLE IF EXISTS `item_backup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item_backup` (
-  `item_id` int(11) NOT NULL,
-  `backup_date` datetime NOT NULL,
-  `modification_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
-  `public` tinyint(11) NOT NULL,
-  `special` text CHARACTER SET ucs2 NOT NULL,
-  PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `item_backup`
---
-
-LOCK TABLES `item_backup` WRITE;
-/*!40000 ALTER TABLE `item_backup` DISABLE KEYS */;
-/*!40000 ALTER TABLE `item_backup` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

@@ -48,7 +48,7 @@ class FixDBFiles implements DatabaseCheck
             ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')
             ->where('f.deletion_date IS NULL');
 
-        $files = $qb->execute();
+        $files = $qb->executeQuery()->fetchAllAssociative();
         $discManager = $this->legacyEnvironment->getDiscManager();
         $fileSystem = new Filesystem();
 

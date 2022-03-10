@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AuthSourceLocal;
+use App\Entity\ShibbolethIdentityProvider;
 use App\Entity\Portal;
 use App\Entity\Server;
 use App\Form\Model\LocalAccount;
@@ -11,6 +12,8 @@ use App\Form\Model\RequestAccounts;
 use App\Form\Type\PasswordChangeType;
 use App\Form\Type\RequestAccountsType;
 use App\Form\Type\RequestPasswordResetType;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Model\Password;
 use App\Model\ResetPasswordToken;
 use App\Security\AbstractCommsyGuardAuthenticator;
@@ -21,7 +24,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,6 +92,19 @@ class SecurityController extends AbstractController
 
         $server = $entityManager->getRepository(Server::class)->getServer();
 
+        $idps = [];
+//        $authSources = $portal->getAuthSources();
+//        foreach($authSources as $authSource) {
+//            if($authSource->getType() === 'shib') {
+//                $idpRepo = $entityManager->getRepository(Idp::Class);
+//                $idps = $idpRepo->findBy(array('authSourceShibboleth' => $authSource));
+//            }
+//        }
+        $choices = [];
+        foreach($idps as $currentIpd) {
+            $choices[$currentIpd->getName()] = $currentIpd->getId();
+        }
+
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
@@ -97,6 +112,7 @@ class SecurityController extends AbstractController
             'portal' => $portal ?? null,
             'server' => $server,
             'lastSource' => $lastSource,
+            'idps' => $choices,
         ]);
     }
 
@@ -117,8 +133,7 @@ class SecurityController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      * @param LegacyEnvironment $legacyEnvironment
-     * @param MailAssistant $mailAssistant
-     * @param Swift_Mailer $mailer
+     * @param Mailer $mailer
      * @param TranslatorInterface $symfonyTranslator
      * @return array|RedirectResponse
      */
@@ -126,8 +141,7 @@ class SecurityController extends AbstractController
         Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
-        Swift_Mailer $mailer,
+        Mailer $mailer,
         TranslatorInterface $symfonyTranslator
     ) {
         $requestAccounts = new RequestAccounts($portal->getId());
@@ -164,15 +178,14 @@ class SecurityController extends AbstractController
                     $subject = $translator->getMessage('USER_ACCOUNT_FORGET_HEADLINE', $portal->getTitle());
                     $body = $translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY', $portal->getTitle(),
                         implode(', ', $usernames));
-                    $body .= '. ' . $translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy', $portal->getTitle());
+                    $body .= '. <br><br>' . $translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy', $portal->getTitle());
 
-                    $message = $mailAssistant->getSwiftMessageFromPortalToAccount(
+                    $mailer->sendRaw(
                         $subject,
-                        $body,
-                        $portal,
-                        $matchingAccounts[0]
+                        nl2br($body),
+                        RecipientFactory::createFromAccount($matchingAccounts[0]),
+                        $portal->getTitle()
                     );
-                    $mailer->send($message);
 
                     $flashMessage = $translator->getMessage(
                         'USER_ACCOUNT_FORGET_SUCCESS_TEXT',
@@ -202,8 +215,7 @@ class SecurityController extends AbstractController
      * @param Portal $portal
      * @param Request $request
      * @param LegacyEnvironment $legacyEnvironment
-     * @param MailAssistant $mailAssistant
-     * @param Swift_Mailer $mailer
+     * @param Mailer $mailer
      * @param RouterInterface $router
      * @return array|RedirectResponse
      * @throws NonUniqueResultException
@@ -212,8 +224,7 @@ class SecurityController extends AbstractController
         Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
-        Swift_Mailer $mailer,
+        Mailer $mailer,
         RouterInterface $router
     ) {
         $localAccount = new LocalAccount($portal->getId());
@@ -276,8 +287,12 @@ class SecurityController extends AbstractController
                     '15'
                 );
 
-                $message = $mailAssistant->getSwiftMessageFromPortalToAccount($subject, $body, $portal, $localAccount);
-                $mailer->send($message);
+                $mailer->sendRaw(
+                    $subject,
+                    nl2br($body),
+                    RecipientFactory::createFromAccount($localAccount),
+                    $portal->getTitle()
+                );
 
                 $flashMessage = $translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT');
                 $this->addFlash('primary', str_replace('<br/>', '', $flashMessage));
@@ -378,5 +393,15 @@ class SecurityController extends AbstractController
         return [
             'form' => $form->createView(),
         ];
+    }
+
+    /**
+     * @Route("/login/{portalId}/simultaneous")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template
+     */
+    public function simultaneousLogin(Portal $portal)
+    {
+        return [];
     }
 }

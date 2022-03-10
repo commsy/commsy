@@ -49,7 +49,7 @@ include_once('functions/file_functions.php');
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material"
  */
-class cs_file_manager extends cs_manager implements cs_export_import_interface {
+class cs_file_manager extends cs_manager {
 
    //maximal length of a picture side in pixel- if a picture that is showd inline is bigger, there is a thumbnale with this size shown
    var $_MAX_PICTURE_SIDE = 200;
@@ -884,62 +884,4 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
       }
       return $file_list;
    }
-   
-   function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<file_item></file_item>');
-   	$xml->addChildWithCDATA('files_id', $item->getFileID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
-      $xml->addChildWithCDATA('filename', $item->getFileName());
-      $xml->addChildWithCDATA('filepath', $item->getFilePath());
-      $xml->addChildWithCDATA('size', $item->getFileSize());
-      $xml->addChildWithCDATA('has_html', $item->getHasHTML());
-      $xml->addChildWithCDATA('scan', $item->isScanned());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xml->addChildWithCDATA('temp_upload_session_id', $item->getTempUploadFromEditorSessionID());
-
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setContextId($top_item->getContextId());
-         $item->setFileName((string)$xml->filename[0]);
-         $item->setFilePath((string)$xml->filepath[0]);
-         $item->setHasHTML((string)$xml->has_html[0]);
-         $item->setScanned((string)$xml->scan[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->setTempUploadFromEditorSessionID((string)$xml->temp_upload_session_id[0]);
-         $item->save();
-         
-         $link_item_file_manager = $this->_environment->getLinkItemFileManager();
-         $link_item_file_manager->insertDirectly($top_item->getItemId(), $top_item->getVersionId(), $item->getFileId());
-      }
-      
-      $options[(string)$xml->files_id[0]] = $item->getFileId();
-
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>

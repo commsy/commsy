@@ -410,6 +410,10 @@
                 <source>import dates new calendar color</source>
                 <target>Farbe des neuen Kalenders</target>
             </trans-unit>
+            <trans-unit id="date_private">
+                <source>date.private</source>
+                <target>privater Eintrag</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

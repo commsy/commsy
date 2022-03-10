@@ -9,38 +9,43 @@
 namespace App\Action\Copy;
 
 
+use App\Http\JsonDataResponse;
+use App\Http\JsonErrorResponse;
 use App\Services\CopyService;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
-use App\Http\JsonDataResponse;
-use App\Http\JsonErrorResponse;
+use cs_environment;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertAction
 {
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var ItemService
      */
-    private $itemService;
+    private ItemService $itemService;
 
     /**
      * @var CopyService
      */
-    private $copyService;
+    private CopyService $copyService;
 
-    public function __construct(TranslatorInterface $translator, LegacyEnvironment $legacyEnvironment, ItemService $itemService, CopyService $copyService)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment,
+        ItemService $itemService,
+        CopyService $copyService
+    ) {
         $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;

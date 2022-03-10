@@ -10,6 +10,15 @@
 
     var draftFormCount = 0;
 
+    /**
+     * Returns true if the element's child controls satisfy their validation constraints.
+     * Returns false in case of any validation problems (which are also reported to the user).
+     * @returns {boolean}
+     */
+    $.fn.reportValid = function() {
+        return this[0].reportValidity()
+    }
+
     UI.component('edit', {
 
         defaults: {
@@ -270,9 +279,16 @@
          */
         $('#draft-save-combine-link').off('click');
 
-        $('#draft-save-combine-link').one('click', function (event) {
+        /**
+         * Use of .on() (instead of .one()) is needed to also report invalid form states
+         * if the user submits the (combined) form for a second time or more often.
+         */
+        $('#draft-save-combine-link').on('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             $(this).parents('article').find('form').each(function () {
+                if (!$(this).reportValid()) {
+                    return false; // break in case of invalid form state
+                }
                 let button = $(this).find('.uk-button-primary');
                 if (button.length) {
                     button.click();

@@ -44,6 +44,7 @@ class ZzzRoomRepository extends ServiceEntityRepository
                 $qb->expr()->isNull('r.deleter')
             ))
             ->orderBy($orderBy, $order)
+            ->addOrderBy('r.template', 'ASC')
             ->setParameters([
                 'contextId' => $portalId,
             ]);

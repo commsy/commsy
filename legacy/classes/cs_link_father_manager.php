@@ -32,33 +32,26 @@ include_once('classes/cs_manager.php');
  */
 class cs_link_father_manager extends cs_manager {
 
-   var $_db_table = NULL;
+    var $_db_table = null;
 
-  /**
-   * object cs_user_item - containing the current user
-   */
-   var $_current_user = NULL;
-   var $_current_user_id = NULL;
+    /**
+     * object cs_user_item - containing the current user
+     */
+    protected $_current_user_id;
 
-   public $_context_limit = NULL;
+    public $_context_limit = null;
 
-   /**
-    * Environment - the environment of the CommSy
-    */
-   var $_environment = null;
-   var $_db_connector = NULL;
-
-   /** constructor
+    /** constructor
      * the only available constructor, initial values for internal variables
      *
      * @param object cs_environment the environment
      */
-   function __construct($environment ) {
-      $this->_environment     = $environment;
-      $this->_current_user    = $this->_environment->getCurrentUser();
-      $this->_db_connector    = $this->_environment->getDBConnector();
-      $this->_current_user_id = $this->_current_user->getItemID();
-   }
+
+    public function __construct(cs_environment $environment)
+    {
+        parent::__construct($environment);
+        $this->_current_user_id = $this->_current_user->getItemID();
+    }
 
    /** reset limits
     * reset limits of this class
