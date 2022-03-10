@@ -334,6 +334,18 @@
                 <source>Contact persons:</source>
                 <target>AnsprechpartnerInnen:</target>
             </trans-unit>
+            <trans-unit id="delete workspace">
+                <source>Delete workspace</source>
+                <target>Raum löschen</target>
+            </trans-unit>
+            <trans-unit id="lock workspace">
+                <source>Lock workspace</source>
+                <target>Raum sperren</target>
+            </trans-unit>
+            <trans-unit id="unlock workspace">
+                <source>Unlock workspace</source>
+                <target>Raum entsperren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

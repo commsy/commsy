@@ -9,9 +9,9 @@ use Elastica\Query\Terms;
 class SingleCreatorFilterCondition implements FilterConditionInterface
 {
     /**
-     * @var string $creator
+     * @var string|null $creator
      */
-    private $creator;
+    private ?string $creator;
 
     /**
      * @param string $creator
@@ -32,8 +32,8 @@ class SingleCreatorFilterCondition implements FilterConditionInterface
             return [];
         }
 
-        $creatorTerm = new Terms();
-        $creatorTerm->setTerms('creator.fullName.raw', [$this->creator]);
+        $creatorTerm = new Terms('creator.fullName.raw');
+        $creatorTerm->setTerms([$this->creator]);
 
         return [$creatorTerm];
     }

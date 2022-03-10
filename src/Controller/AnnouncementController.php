@@ -639,7 +639,9 @@ class AnnouncementController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $announcementItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $announcementItem->setTagListByID($categoryIds);
+                    }
                 }
                 if ($hashtagsMandatory) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
@@ -650,7 +652,9 @@ class AnnouncementController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $announcementItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $announcementItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $announcementItem->save();

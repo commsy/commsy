@@ -42,7 +42,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material"
  */
-class cs_material_manager extends cs_manager implements cs_export_import_interface {
+class cs_material_manager extends cs_manager {
 
    /**
     * integer - containing the age of material as a limit
@@ -940,62 +940,93 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       return new cs_material_item($this->_environment);
    }
 
-   /** update a material - internal, do not use -> use method save
-    * this method updates a material
-    *
-    * @param object cs_item material_item the material
-    */
-   function _update ($material_item) {
-      parent::_update($material_item);
-      $modificator = $material_item->getModificatorItem();
-      if ( !isset($modificator) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems creating new material: Modificator is not set',E_USER_ERROR);
-      } else {
-         $public = $material_item->isPublic() ? '1' : '0';
-         $copy_id = NULL;
-         $copy_item = $material_item->getCopyItem();
-         if (isset($copy_item)){
-            $copy_id = $copy_item->getItemID();
-         } else {
-            $copy_id = '0';
-         }
-         if ($material_item->getWorldPublic()) {
-            $world_public = $material_item->getWorldPublic();
-         } else {
-            $world_public = '0';
-         }
-         $modification_date = getCurrentDateTimeInMySQL();
-         if ($material_item->isNotActivated()){
-            $modification_date = $material_item->getModificationDate();
-         }
-         $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET '.
-                  'modification_date="'.$modification_date.'",'.
-                  'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-                  'title="'.encode(AS_DB,$material_item->getTitle()).'",'.
-                  'description="'.encode(AS_DB,$material_item->getDescription()).'",'.
-                  'publishing_date="'.encode(AS_DB,$material_item->getPublishingDate()).'",'.
-                  'author="'.encode(AS_DB,$material_item->getAuthor()).'",'.
-                  'public="'.encode(AS_DB,$public).'",'.
-                  'world_public="'.encode(AS_DB,$world_public).'",'.
-                  'copy_of="'.encode(AS_DB,$copy_id).'",'.
-                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
-                  'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
-                   $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowResubmissionDate(), 'workflow_resubmission_date', true).
-                   $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowValidityDate(), 'workflow_validity_date', true).
-                   $this->returnQuerySentenceIfFieldIsValid($material_item->getLicenseId(), 'license_id', true);
-          // Remove unexpected commas at the end if some of the queries are left behind
-         $query = rtrim($query, ',');
-         $whereClause =
-                  ' WHERE item_id="'.encode(AS_DB,$material_item->getItemID()).'"'.
-                  ' AND version_id="'.encode(AS_DB,$material_item->getVersionID()).'"';
-         $result = $this->_db_connector->performQuery($query.$whereClause);
-         if ( !isset($result) or !$result ) {
+    /** update a material - internal, do not use -> use method save
+     * this method updates a material
+     *
+     * @param object cs_item material_item the material
+     */
+    function _update($material_item)
+    {
+        /** @var cs_material_item $material_item */
+        parent::_update($material_item);
+        $modificator = $material_item->getModificatorItem();
+
+        if (!isset($modificator)) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems updating material from query: "'.$query.'"',E_USER_WARNING);
-         }
-      }
-   }
+            trigger_error('Problems creating new material: Modificator is not set', E_USER_ERROR);
+        } else {
+            $public = $material_item->isPublic() ? '1' : '0';
+            $copy_id = null;
+            $copy_item = $material_item->getCopyItem();
+            if (isset($copy_item)) {
+                $copy_id = $copy_item->getItemID();
+            } else {
+                $copy_id = '0';
+            }
+            if ($material_item->getWorldPublic()) {
+                $world_public = $material_item->getWorldPublic();
+            } else {
+                $world_public = '0';
+            }
+            $modification_date = getCurrentDateTimeInMySQL();
+            if ($material_item->isNotActivated()) {
+                $modification_date = $material_item->getModificationDate();
+            }
+
+            $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+            $workflowResubmissionDate = $material_item->getWorkflowResubmissionDate();
+            $workflowResubmissionDate = empty($workflowResubmissionDate) ? null : $workflowResubmissionDate;
+
+            $workflowValidityDate = $material_item->getWorkflowValidityDate();
+            $workflowValidityDate = empty($workflowValidityDate) ? null : $workflowValidityDate;
+
+            $queryBuilder
+                ->update($this->addDatabasePrefix('materials'))
+                ->set('modifier_id', ':modifierId')
+                ->set('modification_date', ':modificationDate')
+                ->set('title', ':title')
+                ->set('description', ':description')
+                ->set('publishing_date', ':publishingDate')
+                ->set('author', ':author')
+                ->set('public', ':public')
+                ->set('world_public', ':worldPublic')
+                ->set('copy_of', ':copyOf')
+                ->set('extras', ':extras')
+                ->set('workflow_status', ':workflowStatus')
+                ->set('workflow_resubmission_date', ':workflowResubmissionDate')
+                ->set('workflow_validity_date', ':workflowValidityDate')
+                ->set('license_id', ':licenseId')
+                ->where('item_id = :itemId')
+                ->andWhere('version_id = :versionId')
+                ->setParameter('itemId', $material_item->getItemID())
+                ->setParameter('versionId', $material_item->getVersionID())
+                ->setParameter('modifierId', $modificator->getItemID())
+                ->setParameter('modificationDate', $modification_date)
+                ->setParameter('title', $material_item->getTitle())
+                ->setParameter('description', $material_item->getDescription())
+                ->setParameter('publishingDate', $material_item->getPublishingDate())
+                ->setParameter('author', $material_item->getAuthor())
+                ->setParameter('public', $public)
+                ->setParameter('worldPublic', $world_public)
+                ->setParameter('copyOf', $copy_id)
+                ->setParameter('extras', serialize($material_item->getExtraInformation()))
+                ->setParameter('workflowStatus', $material_item->getWorkflowTrafficLight())
+                ->setParameter('workflowResubmissionDate', $workflowResubmissionDate)
+                ->setParameter('workflowValidityDate', $workflowValidityDate)
+                ->setParameter('licenseId', $material_item->getLicenseId())
+                ->setParameter('itemId', $material_item->getItemID())
+                ->setParameter('versionId', $material_item->getVersionID())
+            ;
+
+            try {
+                $queryBuilder->executeStatement();
+            } catch (\Doctrine\DBAL\Exception $e) {
+                include_once('functions/error_functions.php');
+                trigger_error($e->getMessage(), E_USER_WARNING);
+            }
+        }
+    }
 
    /** create a material - internal, do not use -> use method save
     * this method creates a material
@@ -1024,75 +1055,105 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
      }
   }
 
-  /** creates a new material - internal, do not use -> use method save
-    * this method creates a new material
-    *
-    * @param object cs_item material_item the material
-    */
-  function _newmaterial ($material_item) {
-     $user = $material_item->getCreatorItem();
-     $modificator = $material_item->getModificatorItem();
-     $context_id = $material_item->getContextID();
-     if ( !isset($user) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating new material: Creator is not set',E_USER_ERROR);
-     } elseif ( !isset($modificator) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating new material: Modificator is not set',E_USER_ERROR);
-     } elseif ( !isset($context_id) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating new material: ContextID is not set',E_USER_ERROR);
-     } else {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $copy_id = NULL;
-        $copy_item = $material_item->getCopyItem();
-        if (isset($copy_item)){
-           $copy_id = $copy_item->getItemID();
+    /** creates a new material - internal, do not use -> use method save
+     * this method creates a new material
+     *
+     * @param object cs_item material_item the material
+     * @throws \Doctrine\DBAL\Exception
+     */
+    function _newmaterial($material_item)
+    {
+        /** @var cs_material_item $material_item */
+        $user = $material_item->getCreatorItem();
+        $modificator = $material_item->getModificatorItem();
+        $context_id = $material_item->getContextID();
+        if (!isset($user)) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems creating new material: Creator is not set', E_USER_ERROR);
+        } elseif (!isset($modificator)) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems creating new material: Modificator is not set', E_USER_ERROR);
+        } elseif (!isset($context_id)) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems creating new material: ContextID is not set', E_USER_ERROR);
         } else {
-           $copy_id = '0';
-        }
-        $public = $material_item->isPublic() ? '1' : '0';
-         if ($material_item->getWorldPublic()) {
-            $world_public = $material_item->getWorldPublic();
-         } else {
-            $world_public = '0';
-         }
-        $modification_date = getCurrentDateTimeInMySQL();
-        if ($material_item->isNotActivated()){
-           $modification_date = $material_item->getModificationDate();
-        }
+            $current_datetime = getCurrentDateTimeInMySQL();
+            $copy_id = null;
+            $copy_item = $material_item->getCopyItem();
+            if (isset($copy_item)) {
+                $copy_id = $copy_item->getItemID();
+            } else {
+                $copy_id = '0';
+            }
+            $public = $material_item->isPublic() ? '1' : '0';
+            if ($material_item->getWorldPublic()) {
+                $world_public = $material_item->getWorldPublic();
+            } else {
+                $world_public = '0';
+            }
+            $modification_date = getCurrentDateTimeInMySQL();
+            if ($material_item->isNotActivated()) {
+                $modification_date = $material_item->getModificationDate();
+            }
 
-        $query = 'INSERT INTO '.$this->addDatabasePrefix('materials').' SET '.
-                 'item_id="'.encode(AS_DB,$material_item->getItemID()).'",'.
-                 $this->returnQuerySentenceIfFieldIsValid($material_item->getVersionID(), 'version_id').
-                 'context_id="'.encode(AS_DB,$context_id).'",'.
-                 'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-                 'creation_date="'.$current_datetime.'",'.
-                 'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-                 'modification_date="'.$modification_date.'",'.
-                 'title="'.encode(AS_DB,$material_item->getTitle()).'",'.
-                 'description="'.encode(AS_DB,$material_item->getDescription()).'",'.
-                 'publishing_date="'.encode(AS_DB,$material_item->getPublishingDate()).'",'.
-                 'author="'.encode(AS_DB,$material_item->getAuthor()).'",'.
-                 'public="'.encode(AS_DB,$public).'",'.
-                 'world_public="'.encode(AS_DB,$world_public).'",'.
-                 'copy_of="'.encode(AS_DB,$copy_id).'",'.
-                 'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
-                 'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
-                 $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowResubmissionDate(), 'workflow_resubmission_date').
-                 $this->returnQuerySentenceIfFieldIsValid($material_item->getWorkflowValidityDate(), 'workflow_validity_date').
-                 $this->returnQuerySentenceIfFieldIsValid($material_item->getLicenseId(), 'license_id');
-        // Remove unexpected commas at the end if some of the queries are left behind
-        $query = rtrim($query, ',');
-        $result = $this->_db_connector->performQuery($query);
-        if ( !isset($result) ) {
-          include_once('functions/error_functions.php');
-          trigger_error('Problems creating material from query: "'.$query.'"',E_USER_WARNING);
+            $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+            $workflowResubmissionDate = $material_item->getWorkflowResubmissionDate();
+            $workflowResubmissionDate = empty($workflowResubmissionDate) ? null : $workflowResubmissionDate;
+
+            $workflowValidityDate = $material_item->getWorkflowValidityDate();
+            $workflowValidityDate = empty($workflowValidityDate) ? null : $workflowValidityDate;
+
+            $queryBuilder
+                ->insert($this->addDatabasePrefix('materials'))
+                ->setValue('item_id', ':itemId')
+                ->setValue('version_id', ':versionId')
+                ->setValue('context_id', ':contextId')
+                ->setValue('creator_id', ':creatorId')
+                ->setValue('creation_date', ':creationDate')
+                ->setValue('modifier_id', ':modifierId')
+                ->setValue('modification_date', ':modificationDate')
+                ->setValue('title', ':title')
+                ->setValue('description', ':description')
+                ->setValue('publishing_date', ':publishingDate')
+                ->setValue('author', ':author')
+                ->setValue('public', ':public')
+                ->setValue('world_public', ':worldPublic')
+                ->setValue('copy_of', ':copyOf')
+                ->setValue('extras', ':extras')
+                ->setValue('workflow_status', ':workflowStatus')
+                ->setValue('workflow_resubmission_date', ':workflowResubmissionDate')
+                ->setValue('workflow_validity_date', ':workflowValidityDate')
+                ->setValue('license_id', ':licenseId')
+                ->setParameter('itemId', $material_item->getItemID())
+                ->setParameter('versionId', $material_item->getVersionID())
+                ->setParameter('contextId', $context_id)
+                ->setParameter('creatorId', $user->getItemID())
+                ->setParameter('creationDate', $current_datetime)
+                ->setParameter('modifierId', $modificator->getItemID())
+                ->setParameter('modificationDate', $modification_date)
+                ->setParameter('title', $material_item->getTitle())
+                ->setParameter('description', $material_item->getDescription())
+                ->setParameter('publishingDate', $material_item->getPublishingDate())
+                ->setParameter('author', $material_item->getAuthor())
+                ->setParameter('public', $public)
+                ->setParameter('worldPublic', $world_public)
+                ->setParameter('copyOf', $copy_id)
+                ->setParameter('extras', serialize($material_item->getExtraInformation()))
+                ->setParameter('workflowStatus', $material_item->getWorkflowTrafficLight())
+                ->setParameter('workflowResubmissionDate', $workflowResubmissionDate)
+                ->setParameter('workflowValidityDate', $workflowValidityDate)
+                ->setParameter('licenseId', $material_item->getLicenseId())
+            ;
+
+            try {
+                $queryBuilder->executeStatement();
+            } catch (\Doctrine\DBAL\Exception $e) {
+                include_once('functions/error_functions.php');
+                trigger_error($e->getMessage(), E_USER_WARNING);
+            }
         }
-     }
-  }
-
-
+    }
 
   /** save a commsy item
     * this method saves a commsy item
@@ -1150,7 +1211,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB,$user_id).'"'.
                  ' WHERE item_id="'.encode(AS_DB,$material_id).'"';
-        if (!is_null($version_id)) {
+        if ($version_id) {
            $query .= ' AND version_id="'.encode(AS_DB,$version_id).'"';
         }
         $result = $this->_db_connector->performQuery($query);
@@ -1259,16 +1320,6 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
         if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
-            // create backup of item
-            $this->backupItem($uid, array(
-                'title' => 'title',
-                'description' => 'description',
-                'modification_date' => 'modification_date',
-                'public' => 'public',
-            ), array(
-                'author', 'publishing_date', 'extras'
-            ));
-
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query  = 'SELECT ' . $this->addDatabasePrefix('materials').'.* FROM ' . $this->addDatabasePrefix('materials').' WHERE ' . $this->addDatabasePrefix('materials') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
             $result = $this->_db_connector->performQuery($query);
@@ -1339,120 +1390,6 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 
         return $this->_db_connector->performQuery($query);
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<material_item></material_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-   	$xml->addChildWithCDATA('version_id', $item->getVersionID());
-   	$xml->addChildWithCDATA('context_id', $item->getContextID());
-   	$xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-   	$xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-   	$xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-   	$xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-   	$xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-   	$xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
-   	$xml->addChildWithCDATA('title', $item->getTitle());
-   	$xml->addChildWithCDATA('description', $item->getDescription());
-   	$xml->addChildWithCDATA('author', $item->getAuthor());
-   	$xml->addChildWithCDATA('publishing_date', $item->getPublishingDate());
-   	$xml->addChildWithCDATA('public', $item->isPublic());
-   	$xml->addChildWithCDATA('world_public', $item->isWorldPublic());
-    $xml->addChildWithCDATA('license_id', $item->getLicenseId());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   	
-   	//$xml->addChild('new_hack', $item->getItemID());
-   	$copy_item = $item->getCopyItem();
-   	if ($copy_item != null) {
-   	   $xml->addChildWithCDATA('copy_of', $copy_item->getItemID());
-   	} else {
-      	$xml->addChildWithCDATA('copy_of', '');
-   	}
-   	//$xml->addChild('workflow_status', $item->getWorkflowStatus());
-   	$xml->addChildWithCDATA('workflow_resubmission_date', $item->getWorkflowResubmissionDate());
-   	$xml->addChildWithCDATA('workflow_validity_date', $item->getWorkflowValidityDate());
-   	
-   	$xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-   	
-   	$xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
-   	
-   	$xml = $this->export_sub_items($xml, $item);
-   	
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      $section_manager = $this->_environment->getManager('section');
-      $section_manager->setContextLimit($top_item->getContextID());
-      $section_manager->setMaterialItemIDLimit($top_item->getItemID());
-      $section_manager->select();
-      $section_list = $section_manager->get();
-   	
-      $section_item_xml_array = array();
-      if (!$section_list->isEmpty()) {
-         $section_item = $section_list->getFirst();
-         while ($section_item) {
-            $section_id = $section_item->getItemID();
-            $section_item_xml_array[] = $section_manager->export_item($section_id);
-            $section_item = $section_list->getNext();
-         }
-      }
-
-      $section_xml = new SimpleXMLElementExtended('<section></section>');
-      foreach ($section_item_xml_array as $section_item_xml) {
-         $this->simplexml_import_simplexml($section_xml, $section_item_xml);
-      }
-   
-      $this->simplexml_import_simplexml($xml, $section_xml);
-      
-      return $xml;
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setContextId($top_item->getItemId());
-         $item->setVersionId((string)$xml->version_id[0]);
-         $item->setAuthor((string)$xml->author[0]);
-         $item->setPublishingDate((string)$xml->publishing_date[0]);
-         $item->setPublic((string)$xml->public[0]);
-         $item->setWorldPublic((string)$xml->world_public[0]);
-         $item->setLicenseId((string)$xml->license_id[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $temp_item = $this->getNewItem();
-         $temp_item->setItemID((string)$xml->copy_of[0]);
-         $item->setCopyItem($temp_item);
-         $item->setWorkflowResubmissionDate((string)$xml->workflow_resubmission_date[0]);
-         $item->setWorkflowValidityDate((string)$xml->workflow_validity_date[0]);
-         $item->save();
-         $this->importAnnotationsFromXML($xml, $item);
-         $this->importFilesFromXML($xml, $item, $options);
-         $this->import_sub_items($xml, $item, $options);
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-
-      return $item;
-   }
-	
-	function import_sub_items($xml, $top_item, &$options) {
-      if ($xml->section != null) {
-         $section_manager = $this->_environment->getSectionManager();
-         foreach ($xml->section->children() as $section_xml) {
-            $temp_section_item = $section_manager->import_item($section_xml, $top_item, $options);
-         }
-      }
-   }
 
     /**
      * @param int[] $contextIds List of context ids
@@ -1476,4 +1413,4 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
         $this->select();
         return $this->get();
     }
-} // end of class
+}

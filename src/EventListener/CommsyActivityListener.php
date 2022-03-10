@@ -3,14 +3,10 @@
 namespace App\EventListener;
 
 use App\Entity\Portal;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-
-use Liip\ThemeBundle\ActiveTheme;
-
-use App\Utils\RoomService;
 use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
 class CommsyActivityListener
 {
@@ -30,7 +26,7 @@ class CommsyActivityListener
         $this->entityManager = $entityManager;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelTerminate(TerminateEvent $event)
     {
         if ($event->isMasterRequest()) {
             $request = $event->getRequest();
@@ -47,8 +43,6 @@ class CommsyActivityListener
 
                 if ($countRequest) {
                     $environment = $this->legacyEnvironment->getEnvironment();
-
-                    $activity_points = 1;
                     $currentContextItem = $environment->getCurrentContextItem();
 
                     if ($currentContextItem) {

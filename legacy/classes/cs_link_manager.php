@@ -30,7 +30,7 @@ include_once('classes/cs_list.php');
 /** class for database connection to the database table "links"
  * this class implements a database manager for the table "links". Links between commsy items
  */
-class cs_link_manager extends cs_manager implements cs_export_import_interface {
+class cs_link_manager extends cs_manager {
 
   /**
    * integer - containing the error number if an error occured
@@ -756,50 +756,52 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
      }
   }
 
-  /** delete a link_item
-    *
-    * @param integer item_id the link_item
-    */
-  function delete ($item_id) {
-     $current_datetime = getCurrentDateTimeInMySQL();
-     $current_user = $this->_environment->getCurrentUserItem();
-     $user_id = $current_user->getItemID() ?: 0;
-     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'deletion_date="'.$current_datetime.'",'.
-              'deleter_id="'.encode(AS_DB,$user_id).'"'.
-              ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems deleting link_items from query: "'.$query.'"',E_USER_WARNING);
-     } else {
-        // delete item from table 'items'
-        parent::delete($item_id);
-     }
+    /** delete a link_item
+     *
+     * @param integer item_id the link_item
+     */
+    public function delete($item_id)
+    {
+        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_user = $this->_environment->getCurrentUserItem();
+        $user_id = $current_user->getItemID() ?: 0;
+        $query = 'UPDATE ' . $this->addDatabasePrefix('link_items') . ' SET ' .
+            'deletion_date="' . $current_datetime . '",' .
+            'deleter_id="' . encode(AS_DB, $user_id) . '"' .
+            ' WHERE item_id="' . encode(AS_DB, $item_id) . '"';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting link_items from query: "' . $query . '"', E_USER_WARNING);
+        } else {
+            // delete item from table 'items'
+            parent::delete($item_id);
+        }
 
-     // reset cache
-     $this->_resetCache();
-  }
+        // reset cache
+        $this->_resetCache();
+    }
 
-  function deleteAllLinkItemsInCommunityRoom($item_id,$context_id){
-      $current_user = $this->_environment->getCurrentUserItem();
-      $user_id = $current_user->getItemID() ?: 0;
-     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
-              'deleter_id="'.encode(AS_DB,$user_id).'"'.
-              ' WHERE (first_item_id="'.encode(AS_DB,$item_id).'"';
-     $query .= ' OR second_item_id="'.encode(AS_DB,$item_id).'"';
-     $query .= ')';
-     $query .= ' AND context_id ="'.encode(AS_DB,$context_id).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"',E_USER_WARNING);
-     }
+    public function deleteAllLinkItemsInCommunityRoom($item_id, $context_id)
+    {
+        $current_user = $this->_environment->getCurrentUserItem();
+        $user_id = $current_user->getItemID() ?: 0;
+        $query = 'UPDATE ' . $this->addDatabasePrefix('link_items') . ' SET ' .
+            'deletion_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'deleter_id="' . encode(AS_DB, $user_id) . '"' .
+            ' WHERE (first_item_id="' . encode(AS_DB, $item_id) . '"';
+        $query .= ' OR second_item_id="' . encode(AS_DB, $item_id) . '"';
+        $query .= ')';
+        $query .= ' AND context_id ="' . encode(AS_DB, $context_id) . '"';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '"', E_USER_WARNING);
+        }
 
-     // reset cache
-     $this->_resetCache();
-  }
+        // reset cache
+        $this->_resetCache();
+    }
 
    function getCountExistingLinkItemsOfUser($user_id){
      $query = 'SELECT count('.$this->addDatabasePrefix('link_items').'.item_id) AS count';
@@ -825,62 +827,65 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
      }
    }
 
-  /** delete link , but it is just an update
-    * this method deletes all links from an item, but only as an update to restore it later and for evaluation
-    *
-    * @param integer item_id       id of the item
-    * @param integer version_id    version id of the item
-    */
-  function deleteLinksBecauseItemIsDeleted ($item_id, $version_id=NULL) {
-     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
-              'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
-              ' WHERE (first_item_id="'.encode(AS_DB,$item_id).'"';
-     $query .= ') OR (second_item_id="'.encode(AS_DB,$item_id).'"';
-     $query .= ')';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"',E_USER_WARNING);
-     }
+    /** delete link , but it is just an update
+     * this method deletes all links from an item, but only as an update to restore it later and for evaluation
+     *
+     * @param integer item_id       id of the item
+     * @param integer version_id    version id of the item
+     */
+    public function deleteLinksBecauseItemIsDeleted($item_id)
+    {
+        $user_id = $this->_current_user->getItemID() ?: 0;
+        $query = 'UPDATE ' . $this->addDatabasePrefix('link_items') . ' SET ' .
+            'deletion_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'deleter_id="' . encode(AS_DB, $user_id) . '"' .
+            ' WHERE (first_item_id="' . encode(AS_DB, $item_id) . '"';
+        $query .= ') OR (second_item_id="' . encode(AS_DB, $item_id) . '"';
+        $query .= ')';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '"', E_USER_WARNING);
+        }
 
-     // delete in items table too
-     $query = '
-        UPDATE ' .
-           $this->addDatabasePrefix('link_items') . '
-        SET
-           deletion_date = "' . getCurrentDateTimeInMySQL() . '",
-           deleter_id = "' . encode(AS_DB, $this->_current_user->getItemID()) . '"
-        WHERE
-           item_id = "' . encode(AS_DB, $item_id) . '"
-     ';
-     $result = $this->_db_connector->performQuery($query);
-     if(!isset($result) || !$result) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems deleting(updating) an item from query: "' . $query . '"', E_USER_WARNING);
-     }
+        // delete in items table too
+        $query = '
+            UPDATE ' .
+                $this->addDatabasePrefix('link_items') . '
+            SET
+               deletion_date = "' . getCurrentDateTimeInMySQL() . '",
+               deleter_id = "' . encode(AS_DB, $user_id) . '"
+            WHERE
+               item_id = "' . encode(AS_DB, $item_id) . '"
+        ';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) || !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting(updating) an item from query: "' . $query . '"', E_USER_WARNING);
+        }
 
-     // reset cache
-     $this->_resetCache();
-  }
+        // reset cache
+        $this->_resetCache();
+    }
 
-  function undeleteLinks ($item) {
-     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'deletion_date=NULL,'.
-              'deleter_id=NULL'.
-              ' WHERE deletion_date>="'.encode(AS_DB,$item->getDeletionDate()).'"'.
-              ' AND (first_item_id="'.encode(AS_DB,$item->getItemID()).'"'.
-              ' OR second_item_id="'.encode(AS_DB,$item->getItemID()).'")';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"',E_USER_WARNING);
-     }
+    public function undeleteLinks($item)
+    {
+        $query = 'UPDATE ' . $this->addDatabasePrefix('link_items') . ' SET ' .
+            'modification_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'deletion_date=NULL,' .
+            'deleter_id=NULL' .
+            ' WHERE deletion_date>="' . encode(AS_DB, $item->getDeletionDate()) . '"' .
+            ' AND (first_item_id="' . encode(AS_DB, $item->getItemID()) . '"' .
+            ' OR second_item_id="' . encode(AS_DB, $item->getItemID()) . '")';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '"', E_USER_WARNING);
+        }
 
-     // reset cache
-     $this->_resetCache();
-  }
+        // reset cache
+        $this->_resetCache();
+    }
 
   function getModiefiedItemIDArray($type, $creator_id){
      $query ='';
@@ -1253,65 +1258,4 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
    		}
    	}
    }
-   
-   function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<link_item></link_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-   	$xml->addChildWithCDATA('context_id', $item->getContextID());
-   	$xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-   	$xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-   	$xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-   	$xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
-   	$xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-   	$xml->addChildWithCDATA('first_item_id', $item->getFirstLinkedItemID());
-   	$xml->addChildWithCDATA('first_item_type', $item->getFirstLinkedItemType());
-   	$xml->addChildWithCDATA('second_item_id', $item->getSecondLinkedItemID());
-   	$xml->addChildWithCDATA('second_item_type', $item->getSecondLinkedItemType());
-   	$xml->addChildWithCDATA('sorting_place', $item->getSortingPlace());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   	   	
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         if (isset($options[(string)$xml->first_item_id[0]]) && isset($options[(string)$xml->second_item_id[0]])) {
-            $new_first_item_id = $options[(string)$xml->first_item_id[0]];
-            $new_second_item_id = $options[(string)$xml->second_item_id[0]];
-            if (($new_first_item_id != '') && ($new_second_item_id != '')) {
-               $item_manger = $this->_environment->getItemManager();
-               $first_item = $item_manger->getItem($new_first_item_id);
-               $second_item = $item_manger->getItem($new_second_item_id);
-            
-               $item = $this->getNewItem();
-               $item->setFirstLinkedItemID($new_first_item_id);
-               $item->setFirstLinkedItemType((string)$xml->first_item_type[0]);
-               $item->setFirstLinkedItem($first_item);
-               $item->setSecondLinkedItemID($new_second_item_id);
-               $item->setSecondLinkedItemType((string)$xml->second_item_type[0]);
-               $item->setSecondLinkedItem($second_item);
-               $item->setSortingPlace((string)$xml->sorting_place[0]);
-               $extra_array = $this->getXMLAsArray($xml->extras);
-               $item->setExtraInformation($extra_array['extras']);
-               $item->save();
-            }
-         }
-      }
-      return $item;
-   }
-	
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>

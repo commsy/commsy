@@ -51,12 +51,12 @@ class DBFixRelationsCommand extends Command
         $stmt = $conn->prepare($query);
 
         $io->note('Executing: ' . trim($query));
-        $stmt->execute();
+        $stmt->executeStatement();
     }
 
     private function fixCreator($io, $conn)
     {
-        $tablesWithCreator = ['annotations', 'announcement', 'assessments', 'auth_source', 'dates', 'discussionarticles',
+        $tablesWithCreator = ['annotations', 'announcement', 'assessments', 'dates', 'discussionarticles',
         'discussions', 'files', 'labels', 'link_items', 'materials', 'portfolio', 'room', 'room_privat', 'section',
         'server', 'step', 'tag', 'tag2tag', 'tasks', 'todos', 'user'];
 
@@ -70,7 +70,7 @@ class DBFixRelationsCommand extends Command
 
     private function fixModifier($io, $conn)
     {
-        $tablesWithModifier = ['annotations', 'announcement', 'auth_source', 'dates', 'discussionarticles',
+        $tablesWithModifier = ['annotations', 'announcement', 'dates', 'discussionarticles',
             'discussions', 'labels', 'materials', 'portfolio', 'room', 'room_privat', 'section',
             'server', 'step', 'tag', 'tag2tag', 'todos', 'user'];
 
@@ -89,7 +89,7 @@ class DBFixRelationsCommand extends Command
 
     private function fixContext($io, $conn)
     {
-        $tablesWithContext = ['annotations', 'announcement', 'assessments', 'auth_source', 'calendars', 'dates',
+        $tablesWithContext = ['annotations', 'announcement', 'assessments', 'calendars', 'dates',
             'discussionarticles', 'discussions', 'files', 'invitations', 'labels', 'licenses', 'link_items',
             'links', 'materials', 'room', 'room_privat', 'section', 'step', 'tag', 'tag2tag', 'tasks',
             'terms', 'todos', 'translation',  'user'];

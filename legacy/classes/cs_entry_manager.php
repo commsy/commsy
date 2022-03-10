@@ -575,12 +575,6 @@ class cs_entry_manager extends cs_manager {
    }
 
    function deleteAnnouncementsofUser($uid) {
-   	  // create backup of item
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date',
-   	  									'public'			=>	'public'));
-
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

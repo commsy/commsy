@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Security;
 class LoginSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Security 
+     * @var Security
      */
     private Security $security;
 
@@ -41,18 +41,25 @@ class LoginSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($event->getRequest()->attributes->get('_route') === 'app_migration_password') {
+        /** @var Account $user */
+        $user = $this->security->getUser();
+        if (!$user) {
             return;
         }
 
-        /** @var Account $account */
-        $account = $this->security->getUser();
-
-        if (!$account instanceof Account) {
+        /**
+         * Make sure that there is a valid user object and as a result an authentication token in the token storage.
+         * If missing, ->isGranted() will cause development-only urls like _wdt/ to
+         * throw an AuthenticationCredentialsNotFoundException
+         */
+        if (
+            $event->getRequest()->attributes->get('_route') === 'app_migration_password' ||
+            $this->security->isGranted('ROLE_PREVIOUS_ADMIN')
+        ) {
             return;
         }
 
-        if ($account->hasLegacyPassword()) {
+        if ($user->hasLegacyPassword()) {
             $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_migration_password')));
         }
     }

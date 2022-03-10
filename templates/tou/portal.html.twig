@@ -10,14 +10,16 @@
 
         {% block body %}
             <div>
-                {% if portalUser.aGBAcceptanceDate < portal.aGBChangeDate %}
-                    <div>{{ 'tou.explanation'|trans({}, 'tou') }}</div>
-                {% else %}
-                    <div>
-                        {{ 'tou.explanation_accepted'|trans({
-                            '%datetime%': portalUser.aGBAcceptanceDate|craue_datetime
-                        }, 'tou') }}
-                    </div>
+                {% if portalUser is not null %}
+                    {% if portalUser.aGBAcceptanceDate < portal.aGBChangeDate %}
+                        <div>{{ 'tou.explanation'|trans({}, 'tou') }}</div>
+                    {% else %}
+                        <div>
+                            {{ 'tou.explanation_accepted'|trans({
+                                '%datetime%': portalUser.aGBAcceptanceDate|craue_datetime
+                            }, 'tou') }}
+                        </div>
+                    {% endif %}
                 {% endif %}
 
                 <div>{{ 'last changed'|trans()|capitalize }}: {{ portal.aGBChangeDate|craue_datetime }}</div>
@@ -31,7 +33,7 @@
                     <p>{{ portal.termsEnglish|raw }}</p>
                 </blockquote>
 
-                {% if portalUser.aGBAcceptanceDate < portal.aGBChangeDate %}
+                {% if portalUser is not null and portalUser.aGBAcceptanceDate < portal.aGBChangeDate %}
                     {{ form_start(form) }}
                         <div class="uk-flex uk-flex-between">
                             {{ form_widget(form.accept) }}

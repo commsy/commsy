@@ -64,9 +64,6 @@
     "codeception/module-phpbrowser": {
         "version": "1.0.2"
     },
-    "codeception/module-rest": {
-        "version": "1.4.2"
-    },
     "codeception/module-symfony": {
         "version": "1.1.0"
     },
@@ -78,6 +75,9 @@
     },
     "codeception/stub": {
         "version": "3.6.1"
+    },
+    "composer/package-versions-deprecated": {
+        "version": "1.11.99.1"
     },
     "container-interop/container-interop": {
         "version": "1.2.0"
@@ -222,6 +222,9 @@
     "fig/link-util": {
         "version": "1.1.2"
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
+    },
     "friendsofsymfony/ckeditor-bundle": {
         "version": "2.0",
         "recipe": {
@@ -247,12 +250,12 @@
         ]
     },
     "friendsofsymfony/rest-bundle": {
-        "version": "3.1",
+        "version": "2.2",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "2.2",
-            "ref": "fa845143b7e0a4c70aedd1a88c549e6d977e9ae5"
+            "ref": "cad41ef93d6150067ae2bb3c7fd729492dff6f0a"
         },
         "files": [
             "config/packages/fos_rest.yaml"
@@ -272,9 +275,6 @@
     },
     "jms/metadata": {
         "version": "2.3.0"
-    },
-    "justinrainbow/json-schema": {
-        "version": "5.2.11"
     },
     "knplabs/knp-components": {
         "version": "v2.3.6"
@@ -302,6 +302,30 @@
         "files": [
             "config/packages/knp_snappy.yaml"
         ]
+    },
+    "laminas/laminas-code": {
+        "version": "3.4.1"
+    },
+    "laminas/laminas-escaper": {
+        "version": "2.9.0"
+    },
+    "laminas/laminas-eventmanager": {
+        "version": "3.3.1"
+    },
+    "laminas/laminas-server": {
+        "version": "2.9.1"
+    },
+    "laminas/laminas-soap": {
+        "version": "2.9.0"
+    },
+    "laminas/laminas-stdlib": {
+        "version": "3.3.1"
+    },
+    "laminas/laminas-uri": {
+        "version": "2.8.1"
+    },
+    "laminas/laminas-validator": {
+        "version": "2.14.4"
     },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.0"
@@ -343,14 +367,8 @@
             "config/routes/liip_imagine.yaml"
         ]
     },
-    "liip/theme-bundle": {
-        "version": "1.7.0"
-    },
     "masterminds/html5": {
         "version": "2.7.0"
-    },
-    "mediawiki/oauthclient": {
-        "version": "0.1.2"
     },
     "mhujer/breadcrumbs-bundle": {
         "version": "1.5.2"
@@ -368,7 +386,7 @@
         "version": "0.2.20"
     },
     "nelmio/api-doc-bundle": {
-        "version": "4.6",
+        "version": "3.0",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
@@ -381,7 +399,7 @@
         ]
     },
     "nelmio/cors-bundle": {
-        "version": "2.1",
+        "version": "2.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -397,6 +415,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.3.0"
+    },
+    "nyholm/dsn": {
+        "version": "2.0.1"
     },
     "ocramius/package-versions": {
         "version": "1.5.1"
@@ -436,9 +457,6 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.1.0"
-    },
-    "phpoffice/phpword": {
-        "version": "0.18.2"
     },
     "phpspec/prophecy": {
         "version": "v1.10.3"
@@ -568,12 +586,6 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
-    "smalot/pdfparser": {
-        "version": "v1.1.0"
-    },
-    "softcreatr/jsonpath": {
-        "version": "0.7.5"
-    },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
         "recipe": {
@@ -586,8 +598,8 @@
             "phpcs.xml.dist"
         ]
     },
-    "swiftmailer/swiftmailer": {
-        "version": "v6.2.3"
+    "sylius/theme-bundle": {
+        "version": "v2.2.0"
     },
     "symfony/asset": {
         "version": "v4.4.5"
@@ -725,6 +737,18 @@
             "config/packages/lock.yaml"
         ]
     },
+    "symfony/mailer": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "bbfc7e27257d3a3f12a6fb0a42540a42d9623a37"
+        },
+        "files": [
+            "config/packages/mailer.yaml"
+        ]
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -733,6 +757,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/messenger": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "25e3c964d3aee480b3acc3114ffb7940c89edfed"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
     },
     "symfony/mime": {
         "version": "v4.4.5"
@@ -792,10 +828,10 @@
         "version": "v4.4.5"
     },
     "symfony/property-info": {
-        "version": "v4.4.31"
+        "version": "v4.4.9"
     },
     "symfony/proxy-manager-bridge": {
-        "version": "v4.4.34"
+        "version": "v4.4.39"
     },
     "symfony/routing": {
         "version": "4.2",
@@ -846,20 +882,6 @@
     },
     "symfony/string": {
         "version": "v5.1.2"
-    },
-    "symfony/swiftmailer-bundle": {
-        "version": "2.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "2.5",
-            "ref": "ae4d22af30bbd484506bc1817c5a3ef72c855b93"
-        },
-        "files": [
-            "config/packages/dev/swiftmailer.yaml",
-            "config/packages/swiftmailer.yaml",
-            "config/packages/test/swiftmailer.yaml"
-        ]
     },
     "symfony/templating": {
         "version": "v4.4.5"
@@ -917,7 +939,7 @@
         "version": "v4.4.5"
     },
     "symfony/web-link": {
-        "version": "v4.4.27"
+        "version": "v4.4.37"
     },
     "symfony/web-profiler-bundle": {
         "version": "3.3",
@@ -992,7 +1014,7 @@
         "version": "v1.1.0"
     },
     "willdurand/negotiation": {
-        "version": "3.0.0"
+        "version": "v2.3.1"
     },
     "zendframework/zend-code": {
         "version": "3.4.1"
@@ -1019,6 +1041,6 @@
         "version": "2.13.0"
     },
     "zircote/swagger-php": {
-        "version": "3.3.2"
+        "version": "2.0.16"
     }
 }

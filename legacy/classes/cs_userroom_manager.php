@@ -137,12 +137,12 @@ class cs_userroom_manager extends cs_room2_manager
     /**
      * Returns all user rooms containing a user who represents the given user in that room.
      *
-     * @param \cs_user_item $userItem the user item for which related user rooms shall be returned
-     * @return \cs_list list of user room items connected to the given user item
+     * @param cs_user_item $userItem the user item for which related user rooms shall be returned
+     * @return cs_list list of user room items connected to the given user item
      */
-    public function getRelatedUserroomListForUser(\cs_user_item $userItem): \cs_list
+    public function getRelatedUserroomListForUser(cs_user_item $userItem): cs_list
     {
-        return $this->_getRelatedContextListForUser($userItem->getUserID(), $userItem->getAuthSource(), $this->_environment->getCurrentPortalID());
+        return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $this->_environment->getCurrentPortalID());
     }
 
     /** select user rooms limited by limits

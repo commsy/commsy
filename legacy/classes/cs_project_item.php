@@ -335,11 +335,41 @@ class cs_project_item extends cs_room_item {
     public function updateElastic()
     {
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_room.room');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Room');
 
         $this->replaceElasticItem($objectPersister, $repository);
+    }
+
+    /**
+     * Locks the project room as well as any group rooms belonging to groups of this room
+     */
+    public function lock()
+    {
+        parent::lock();
+
+        // lock related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /** @var \cs_grouproom_item $groupRoom */
+            $groupRoom->lock();
+            $groupRoom->save();
+        }
+    }
+
+    /**
+     * Unlocks the project room as well as any group rooms belonging to groups of this room
+     */
+    public function unlock()
+    {
+        parent::unlock();
+
+        // unlock related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /** @var \cs_grouproom_item $groupRoom */
+            $groupRoom->unlock();
+            $groupRoom->save();
+        }
     }
 
     /**
@@ -403,7 +433,7 @@ class cs_project_item extends cs_room_item {
         }
 
         global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy_room.room');
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository('App:Room');
 

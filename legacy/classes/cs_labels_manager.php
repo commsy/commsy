@@ -32,8 +32,6 @@ include_once('classes/cs_list.php');
  */
 include_once('classes/cs_manager.php');
 
-include_once('classes/interfaces/cs_export_import_interface.php');
-
 /** date functions are needed for method _newVersion()
  */
 include_once('functions/date_functions.php');
@@ -46,7 +44,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "labels"
  * this class implements a database manager for the table "labels". Labels are groups, topics, labels, ...
  */
-class cs_labels_manager extends cs_manager implements cs_export_import_interface {
+class cs_labels_manager extends cs_manager {
 
   /**
    * integer - containing the age of last change as a limit in days
@@ -1152,14 +1150,6 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
         if ($disableOverwrite !== null && $disableOverwrite !== 'TRUE') {
-            // create backup of item
-            $this->backupItem($uid, array(
-                'name' => 'title',
-                'description' => 'description',
-                'modification_date' => 'modification_date',
-                'public' => 'public',
-            ));
-
             $currentDatetime = getCurrentDateTimeInMySQL();
             $query  = 'SELECT ' . $this->addDatabasePrefix('labels').'.* FROM ' . $this->addDatabasePrefix('labels').' WHERE ' . $this->addDatabasePrefix('labels') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
             $result = $this->_db_connector->performQuery($query);
@@ -1207,69 +1197,6 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
 
    public function resetCache () {
       $this->_internal_data = array();
-   }
-   
-   function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<labels_item></labels_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('name', $item->getName());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('type', $item->getLabelType());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xml->addChildWithCDATA('public', $item->isPublic());
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setContextId($top_item->getItemId());
-         $item->setName((string)$xml->name[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setLabelType((string)$xml->type[0]);
-         $item->setPublic((string)$xml->public[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->save();
-         
-         if ($item->getLabelType() == 'group') {
-            if (isset($extra_array['extras']['GROUP_ROOM_ACTIVE'])) {
-               if ($extra_array['extras']['GROUP_ROOM_ACTIVE'] == '1') {
-                  if (!isset($options['check'])) {
-                     $options['check'] = array();
-                  }
-                  $options['check']['labels']['GROUP_ROOM_ID'][] = $item->getItemId();
-               }
-            }
-         }
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
    }
 
     /**

@@ -381,23 +381,18 @@ class ProfileController extends AbstractController
      * @Route("/room/{roomId}/user/dropdownmenu")
      * @Template
      * @param UserService $userService
-     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
+     * @param bool $uikit3
      * @return array
      */
     public function menu(
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         bool $uikit3 = false
-    ) {
-        $environment = $legacyEnvironment->getEnvironment();
+    ): array {
         return [
-            'userId' => $userService->getCurrentUserItem()->getItemId(),
             'portalUser' => $userService->getCurrentUserItem()->getRelatedPortalUserItem(),
             'roomId' => $roomId,
-            'inPrivateRoom' => $environment->inPrivateRoom(),
-            'inPortal' => $environment->inPortal(),
             'uikit3' => $uikit3,
         ];
     }

@@ -30,14 +30,14 @@ class DeleteType extends AbstractType
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
                     new MandatoryProjectRoomAssignment([
-                        'room' => $builder->getData(),
+                        'room' => $options['room'],
                     ]),
                 ],
                 'required' => true,
                 'mapped' => false,
             ])
             ->add('delete', SubmitType::class, [
-                'label' => 'Delete',
+                'label' => 'Confirm delete',
                 'attr' => [
                     'class' => 'uk-button-danger',
                 ],
@@ -53,10 +53,13 @@ class DeleteType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired(['room', 'confirm_string'])
+            ->setAllowedTypes('room', 'cs_room_item')
+            ->setAllowedTypes('confirm_string', 'string')
             ->setDefaults([
+                'room' => null,
                 'translation_domain' => 'settings'
             ])
-            ->setRequired(['confirm_string'])
         ;
     }
 
@@ -69,6 +72,6 @@ class DeleteType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'delete_settings';
+        return 'delete_room';
     }
 }

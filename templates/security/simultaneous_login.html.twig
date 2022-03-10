@@ -1,0 +1,20 @@
+{% extends 'layout.html.twig' %}
+
+{% block top_navigation_left %}
+    <div class="uk-navbar-item uk-text-large">
+        <div class="uk-navbar-item">
+            <a class="uk-text-large" href="{{ path('app_server_show') }}">
+                Portalübersicht
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'login.simultaneous_title'|trans({}, 'login') }}{% endblock %}
+        {% block body %}
+            {{ 'login.simultaneous_desc'|trans({}, 'login') }} <a href="{{ path('app_logout') }}">{{ 'Sign out'|trans([], 'profile') }}</a>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

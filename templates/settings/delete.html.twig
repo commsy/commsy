@@ -1,27 +1,74 @@
 {% extends 'base/settings.html.twig' %}
 {% import "utils/macros.html.twig" as utilsMacros %}
 
-{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+{% form_theme lock_form 'form/uikit_horizontal_layout.html.twig' %}
+{% form_theme delete_form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
+
+                <div class="uk-panel-teaser cs-panel-teaser-warning">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <span class="uk-text-uppercase uk-text-bold">
+                            <div>{{ 'Lock room'|trans({}, 'settings') }}</div>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="uk-alert uk-alert-warning">
+                    <p>
+                        {{ 'Lock room intro'|trans({}, 'settings') }}
+                    </p>
+
+                    {% if relatedGroupRooms is not empty %}
+                        <div class="uk-margin">
+                            {{ 'Locking of grouprooms'|trans({}, 'settings') }}
+
+                            <ul>
+                                {% for relatedGroupRoom in relatedGroupRooms %}
+                                    <li>{{ relatedGroupRoom.title }} ({{ utilsMacros.userListToString(relatedGroupRoom.moderatorList) }})</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <div class="uk-margin">
+                        {{ 'Delete explanation start'|trans({}, 'settings') }}
+                        <span class="uk-text-uppercase uk-text-bold">{{ 'lock'|trans({}, 'profile') }}</span>
+                        {{ 'Delete explanation end'|trans({}, 'settings') }}
+                    </div>
+                    <div class="uk-margin">
+                        {{ form_start(lock_form) }}
+                        <div class="uk-form-row">
+                            {{ form_errors(lock_form.confirm) }}
+                            {{ form_label(lock_form.confirm) }}
+                            {{ form_widget(lock_form.confirm) }}
+                        </div>
+                        {{ form_end(lock_form) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
                 <div class="uk-panel-teaser cs-panel-teaser-danger">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'Delete room'|trans({}, 'settings') }}</div>
+                        <span class="uk-text-uppercase uk-text-bold">
+                            <div>{{ 'Delete room'|trans({}, 'settings') }}</div>
+                        </span>
                     </div>
                 </div>
 
                 <div class="uk-alert uk-alert-danger">
                     <p class="uk-text-uppercase uk-text-bold">
-                        {{ 'Delete intro'|trans({}, 'settings') }}
+                        {{ 'Delete room intro'|trans({}, 'settings') }}
                     </p>
 
                     {% if relatedGroupRooms is not empty %}
                         <div class="uk-margin">
-                            {{ 'Deletion of grouprooms'|trans({}, 'settings') }}:
+                            {{ 'Deletion of grouprooms'|trans({}, 'settings') }}
 
                             <ul>
                                 {% for relatedGroupRoom in relatedGroupRooms %}
@@ -37,27 +84,13 @@
                         {{ 'Delete explanation end'|trans({}, 'settings') }}
                     </div>
                     <div class="uk-margin">
-                        {{ form_start(form) }}
-
+                        {{ form_start(delete_form) }}
                         <div class="uk-form-row">
-                            {% for error in form.confirm.vars.errors  %}
-                                {% if ' ' not in error.message %}
-                                    <br /><a href="/room/{{ error.message}}">
-                                    {{ error.message | roomtitle}}
-                                </a><br />
-                                {% else %}
-                                    {{ error.message | trans({}, "validators")}}<br/>
-                                {% endif %}
-                            {% endfor %}
-                            {{ form_label(form.confirm) }}
-                            {{ form_widget(form.confirm) }}
+                            {{ form_errors(delete_form.confirm) }}
+                            {{ form_label(delete_form.confirm) }}
+                            {{ form_widget(delete_form.confirm) }}
                         </div>
-
-                        <div class="uk-form-row">
-                            {{ form_widget(form.delete) }}
-                        </div>
-
-                        {{ form_end(form) }}
+                        {{ form_end(delete_form) }}
                     </div>
                 </div>
             </div>

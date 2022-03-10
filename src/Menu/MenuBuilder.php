@@ -91,24 +91,23 @@ class MenuBuilder
 
         if ($currentUser->getItemId() != '' && $account != null) {
 
-            $menu->addChild('personal', [
-                'route' => 'app_account_personal',
-                'routeParameters' => [
-                    'portalId' => $account->getContextId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ]
-            ])
-            ->setExtra('translation_domain', 'menu');
+            if (!$currentUser->isRoot()) {
+                $menu->addChild('personal', [
+                    'route' => 'app_account_personal',
+                    'routeParameters' => [
+                        'portalId' => $account->getContextId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                ->setExtra('translation_domain', 'menu');
+            }
 
             if ($currentUser->isRoot() || ($authSource !== null && $authSource->isChangePassword())) {
                 $menu->addChild('changePassword', [
                     'route' => 'app_account_changepassword',
-                    'routeParameters' => [
-                        'portalId' => $account->getContextId(),
-                    ],
                     'extras' => [
                         'icon' => 'uk-icon-lock uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
@@ -130,61 +129,61 @@ class MenuBuilder
                     ]
                 ])
                 ->setExtra('translation_domain', 'profile');
-            }
 
-            $menu->addChild('newsletter', [
-                'route' => 'app_account_newsletter',
-                'routeParameters' => [
-                    'portalId' => $account->getContextId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-newspaper-o uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ]
-            ])
-            ->setExtra('translation_domain', 'menu');
-
-            if (!$currentUser->isRoot()) {
-                $menu->addChild('privacy', [
-                    'label' => 'Privacy',
-                    'route' => 'app_account_privacy',
+                $menu->addChild('newsletter', [
+                    'route' => 'app_account_newsletter',
                     'routeParameters' => [
                         'portalId' => $account->getContextId(),
                     ],
                     'extras' => [
-                        'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
+                        'icon' => 'uk-icon-newspaper-o uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
                     ]
                 ])
+                ->setExtra('translation_domain', 'menu');
+
+                if (!$currentUser->isRoot()) {
+                    $menu->addChild('privacy', [
+                        'label' => 'Privacy',
+                        'route' => 'app_account_privacy',
+                        'routeParameters' => [
+                            'portalId' => $account->getContextId(),
+                        ],
+                        'extras' => [
+                            'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
+                            'user' => $currentUser,
+                        ]
+                    ])
+                    ->setExtra('translation_domain', 'profile');
+                }
+
+                $menu->addChild('additional', [
+                    'route' => 'app_account_additional',
+                    'routeParameters' => [
+                        'portalId' => $account->getContextId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-plus-square uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                ->setExtra('translation_domain', 'menu');
+
+                $menu->addChild('deleteAccount', [
+                    'route' => 'app_account_deleteaccount',
+                    'routeParameters' => [
+                        'portalId' => $account->getContextId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ],
+                ])
+                ->setAttributes([
+                    'class' => 'uk-button-danger',
+                ])
                 ->setExtra('translation_domain', 'profile');
             }
-
-            $menu->addChild('additional', [
-                'route' => 'app_account_additional',
-                'routeParameters' => [
-                    'portalId' => $account->getContextId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-plus-square uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ]
-            ])
-            ->setExtra('translation_domain', 'menu');
-
-            $menu->addChild('deleteAccount', [
-                'route' => 'app_account_deleteaccount',
-                'routeParameters' => [
-                    'portalId' => $account->getContextId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ],
-            ])
-            ->setAttributes([
-                'class' => 'uk-button-danger',
-            ])
-            ->setExtra('translation_domain', 'profile');
         }
 
         return $menu;

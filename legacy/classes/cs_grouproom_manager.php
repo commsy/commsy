@@ -337,7 +337,7 @@ class cs_grouproom_manager extends cs_room2_manager {
    }
 
    public function getRelatedGroupRoomListForUser ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
    }
 
    public function getRelatedGroupRoomListForUserSortByTime ($user_item) {
@@ -423,11 +423,11 @@ class cs_grouproom_manager extends cs_room2_manager {
    }
 
    public function getRelatedGroupListForUser ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
    }
 
    public function getUserRelatedGroupListForUser ($user_item) {
-      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
+      return $this->getRelatedContextListForUserInt($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
    }
 
     public function saveActivityPoints(\cs_item $item)

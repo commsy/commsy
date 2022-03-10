@@ -54,7 +54,7 @@ final class Version20211015122115 extends AbstractMigration
             ->select('t.item_id', 't.extras')
             ->from($table, 't')
             ->where('t.extras LIKE "%EXPORT_TO_WIKI%"');
-        $entries = $qb->execute();
+        $entries = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($entries as $entry) {
             $extras = DbConverter::convertToPHPValue($entry['extras']);

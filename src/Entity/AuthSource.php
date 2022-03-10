@@ -85,7 +85,7 @@ abstract class AuthSource
      * @Groups({"api"})
      * @OA\Property(type="string", maxLength=255)
      */
-    private ?string $title;
+    private ?string $title = null;
 
     /**
      * @var ?string
@@ -95,7 +95,7 @@ abstract class AuthSource
      * @Groups({"api"})
      * @OA\Property(type="string", maxLength=255)
      */
-    private ?string $description;
+    private ?string $description = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
@@ -111,14 +111,14 @@ abstract class AuthSource
      * @Groups({"api"})
      * @OA\Property(type="boolean")
      */
-    private ?bool $enabled;
+    private ?bool $enabled = null;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="`default`", type="boolean")
      */
-    private ?bool $default;
+    private ?bool $default = null;
 
     /**
      * @var string
@@ -158,7 +158,7 @@ abstract class AuthSource
     /**
      * @ORM\Column(type="boolean")
      */
-    protected bool $createRoom;
+    protected bool $createRoom = true;
 
     /**
      * @var string

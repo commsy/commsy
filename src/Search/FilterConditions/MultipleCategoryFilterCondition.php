@@ -11,7 +11,7 @@ class MultipleCategoryFilterCondition implements FilterConditionInterface
     /**
      * @var string[] $categories
      */
-    private $categories;
+    private array $categories;
 
     /**
      * @param string[] $categories

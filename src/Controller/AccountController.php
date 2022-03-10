@@ -65,6 +65,7 @@ class AccountController extends AbstractController
      * @param LegacyEnvironment $legacyEnvironment
      * @param TranslatorInterface $translator
      * @param InvitationsService $invitationsService
+     * @param UserService $userService
      * @return array|Response
      */
     public function signUp(
@@ -216,7 +217,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/account/changepassword")
+     * @Route("/account/changepassword")
      * @Template
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
@@ -395,7 +396,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/acount/privacy")
+     * @Route("/portal/{portalId}/account/privacy")
      * @Template
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -417,7 +418,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/acount/privacy/print")
+     * @Route("/portal/{portalId}/account/privacy/print")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @param Portal $portal
@@ -450,7 +451,7 @@ class AccountController extends AbstractController
         // generate HTML data
         $html = $this->renderView('profile/privacy_print.html.twig', [
             'portalId' => $portal->getId(),
-            'printProfileImages' => true, // set to `false` to omit profile images when generating the PDF (much faster)
+            'printProfileImages' => false, // set to `false` to omit profile images when generating the PDF (much faster)
             'accountData' => $personalData->getAccountData(),
             'communityRoomProfileDataArray' => $personalData->getCommunityRoomProfileDataArray(),
             'projectRoomProfileDataArray' => $personalData->getProjectRoomProfileDataArray(),

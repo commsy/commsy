@@ -2,24 +2,27 @@
 
 namespace App\Search;
 
+use Elastica\Collapse;
 use Elastica\Exception\InvalidException;
 use Elastica\Index;
+use Elastica\Query;
+use Elastica\Query\AbstractQuery;
 use Elastica\ResultSet\BuilderInterface;
 use Elastica\Search;
+use Elastica\Suggest;
 
 class MultiIndex extends Index
 {
-
     /**
      * Array of indices.
      *
      * @var array
      */
-    protected $_indices = [];
+    protected array $indices = [];
     /**
      * @var array
      */
-    protected $_types = [];
+    protected array $types = [];
 
     /**
      * Add array of indices at once.
@@ -28,7 +31,7 @@ class MultiIndex extends Index
      *
      * @return $this
      */
-    public function addIndices(array $indices = [])
+    public function addIndices(array $indices = []): MultiIndex
     {
         foreach ($indices as $index) {
             $this->addIndex($index);
@@ -46,7 +49,7 @@ class MultiIndex extends Index
      * @throws InvalidException
      *
      */
-    public function addIndex($index)
+    public function addIndex($index): MultiIndex
     {
         if ($index instanceof Index) {
             $index = $index->getName();
@@ -56,19 +59,19 @@ class MultiIndex extends Index
             throw new InvalidException('Invalid param type');
         }
 
-        $this->_indices[] = (string)$index;
+        $this->indices[] = (string)$index;
 
         return $this;
     }
 
     /**
-     * @param string|array|\Elastica\Query $query
-     * @param int|array $options
-     * @param BuilderInterface $builder
+     * @param AbstractQuery|array|Collapse|Query|string|Suggest $query
+     * @param null $options
+     * @param BuilderInterface|null $builder
      *
      * @return Search
      */
-    public function createSearch($query = '', $options = null, BuilderInterface $builder = null)
+    public function createSearch($query = '', $options = null, ?BuilderInterface $builder = null): Search
     {
 
         $search = new Search($this->getClient(), $builder);
@@ -83,9 +86,9 @@ class MultiIndex extends Index
      *
      * @return array List of index names
      */
-    public function getIndices()
+    public function getIndices(): array
     {
-        return $this->_indices;
+        return $this->indices;
     }
 
     /**
@@ -93,7 +96,7 @@ class MultiIndex extends Index
      */
     public function getTypes(): array
     {
-        return $this->_types;
+        return $this->types;
     }
 
     /**
@@ -101,6 +104,6 @@ class MultiIndex extends Index
      */
     public function addTypes(array $types): void
     {
-        $this->_types = $types;
+        $this->types = $types;
     }
 }

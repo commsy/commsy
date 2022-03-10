@@ -919,17 +919,21 @@ class DiscussionController extends BaseController
                             $categoryIds[] = $newCategory->getItemID();
                         }
 
-                        $discussionItem->setTagListByID($categoryIds);
+                        if (!empty($categoryIds)) {
+                            $discussionItem->setTagListByID($categoryIds);
+                        }
                     }
                     if ($hashtagsMandatory) {
                         $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
-    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        if (isset($formData['hashtag_mapping']['newHashtag'])) {
                             $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
                             $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
                             $hashtagIds[] = $newHashtag->getItemID();
                         }
 
-                        $discussionItem->setBuzzwordListByID($hashtagIds);
+                        if (!empty($hashtagIds)) {
+                            $discussionItem->setBuzzwordListByID($hashtagIds);
+                        }
                     }
 
                     $discussionItem->save();
@@ -1162,9 +1166,10 @@ class DiscussionController extends BaseController
                     $article->save();
                 }
             }
-            return $this->redirectToRoute('app_discussion_detail',
-                array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
         }
+
+        return $this->redirectToRoute('app_discussion_detail',
+            array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
     }
 
     /**

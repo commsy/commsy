@@ -12,6 +12,8 @@ use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendListType;
 use App\Form\Type\SendType;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
@@ -29,12 +31,10 @@ use cs_tag_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Count;
@@ -718,7 +718,8 @@ class ItemController extends AbstractController
      * @param Request $request
      * @param ItemService $itemService
      * @param MailAssistant $mailAssistant
-     * @param Swift_Mailer $mailer
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param Mailer $mailer
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -727,7 +728,8 @@ class ItemController extends AbstractController
         Request $request,
         ItemService $itemService,
         MailAssistant $mailAssistant,
-        Swift_Mailer $mailer,
+        LegacyEnvironment $legacyEnvironment,
+        Mailer $mailer,
         int $roomId,
         int $itemId
     ) {
@@ -737,6 +739,9 @@ class ItemController extends AbstractController
         if (!$item) {
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
+
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
         // prepare form
         $groupChoices = $mailAssistant->getGroupChoices($item);
@@ -785,10 +790,10 @@ class ItemController extends AbstractController
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessage($form, $item, true);
-            $mailer->send($message);
+            $email = $mailAssistant->getItemSendMessage($form, $item);
+            $mailer->sendEmailObject($email, $portalItem->getTitle());
 
-            $recipientCount = count($message->getTo() ?? []) + count($message->getCc() ?? []) + count($message->getBcc() ?? []);
+            $recipientCount = count($email->getTo() ?? []) + count($email->getCc() ?? []) + count($email->getBcc() ?? []);
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
@@ -945,7 +950,7 @@ class ItemController extends AbstractController
      * @param RoomService $roomService
      * @param UserService $userService
      * @param LegacyEnvironment $legacyEnvironment
-     * @param Swift_Mailer $mailer
+     * @param Mailer $mailer
      * @param int $roomId
      * @return array|JsonResponse
      * @throws Exception
@@ -955,7 +960,7 @@ class ItemController extends AbstractController
         RoomService $roomService,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        Swift_Mailer $mailer,
+        Mailer $mailer,
         int $roomId
     ) {
         // extract item id from request data
@@ -985,32 +990,22 @@ class ItemController extends AbstractController
             $data = $form->getData();
 
             $userIds = explode(',', $data['entries']);
-            $toArray = array();
+            $recipients = [];
             foreach ($userIds as $userId) {
                 $user = $userService->getUser($userId);
                 if ($user) {
-                    $toArray[$user->getEmail()] = $user->getFullname();
+                    $recipients[] = RecipientFactory::createRecipient($user);
                 }
             }
 
-            $message = (new \Swift_Message())
-                ->setSubject($data['subject'])
-                ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
-                ->setTo($toArray)
-                ->setBody(
-                    $this->renderView(
-                        'email/item_list.txt.twig',
-                        array('message' => strip_tags($data['message']))
-                    ),
-                    'text/plain'
-                )
-            ;
-            
-            if ($data['copy_to_sender']) {
-                $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
-            }
-            
-            $mailer->send($message);
+            $mailer->sendMultipleRaw(
+                $data['subject'],
+                $data['message'],
+                $recipients,
+                $currentUser->getFullname(),
+                [],
+                $data['copy_to_sender'] ? [$currentUser->getEmail()] : []
+            );
 
             return new JsonResponse([
                 'message' => 'send ...',

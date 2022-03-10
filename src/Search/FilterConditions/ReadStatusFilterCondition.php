@@ -7,6 +7,7 @@ namespace App\Search\FilterConditions;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
+use cs_room_item;
 use Elastica\Query\Ids;
 
 class ReadStatusFilterCondition implements FilterConditionInterface
@@ -14,22 +15,22 @@ class ReadStatusFilterCondition implements FilterConditionInterface
     /**
      * @var UserService $userService
      */
-    private $userService;
+    private UserService $userService;
 
     /**
      * @var ItemService $itemService
      */
-    private $itemService;
+    private ItemService $itemService;
 
     /**
      * @var ReaderService $readerService
      */
-    private $readerService;
+    private ReaderService $readerService;
 
     /**
-     * @var string $readStatus
+     * @var string|null $readStatus
      */
-    private $readStatus;
+    private ?string $readStatus;
 
     public function __construct(UserService $userService, ItemService $itemService, ReaderService $readerService)
     {
@@ -65,7 +66,7 @@ class ReadStatusFilterCondition implements FilterConditionInterface
         $currentUser = $this->userService->getCurrentUserItem();
         $searchableRooms = $this->userService->getSearchableRooms($currentUser);
 
-        $contextIds = array_map(function (\cs_room_item $room) {
+        $contextIds = array_map(function (cs_room_item $room) {
             return $room->getItemID();
         }, $searchableRooms);
 

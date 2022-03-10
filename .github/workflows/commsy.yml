@@ -16,7 +16,7 @@ jobs:
                 php-versions: [ '7.4' ]
                 experimental: [false]
                 include:
-                    - php-versions: [ 8.0' ]
+                    - php-versions: [ '8.0' ]
                       experimental: true
         services:
             db:
@@ -38,7 +38,7 @@ jobs:
                 with:
                     php-version: ${{ matrix.php-versions }}
                     extensions: zip, imap, ldap, soap
-                    tools: composer:v1
+                    tools: composer:v2
 
             -   name: Install yarn deps
                 run: yarn install
@@ -67,7 +67,7 @@ jobs:
                 with:
                     php-version: '7.4'
                     extensions: zip, imap, ldap, soap
-                    tools: composer:v1
+                    tools: composer:v2
 
             -   name: Install yarn deps
                 run: yarn install

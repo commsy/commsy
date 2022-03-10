@@ -6,6 +6,8 @@
 parameters:
     locale: '%env(LOCALE)%'
 
+    commsy.force_theme: '%env(FORCE_THEME)%'
+
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
@@ -115,15 +117,6 @@ parameters:
     commsy.etherpad.api_url: '%env(ETHERPAD_API_URL)%'
     commsy.etherpad.base_url: '%env(ETHERPAD_BASE_URL)%'
 
-    # MediaWiki
-    commsy.mediawiki.enabled: '%env(bool:MEDIAWIKI_ENABLED)%'      # set the following variable to activate mediawiki extension
-    commsy.mediawiki.roomWikiUrl: '%env(MEDIAWIKI_ROOM_WIKI_URL)%'
-    commsy.mediawiki.apiUrl: '%env(MEDIAWIKI_API_URL)%'
-    commsy.mediawiki.consumerKey: '%env(MEDIAWIKI_CONSUMER_KEY)%'
-    commsy.mediawiki.consumerSecret: '%env(MEDIAWIKI_CONSUMER_SECRET)%'
-    commsy.mediawiki.accessToken: '%env(MEDIAWIKI_ACCESS_TOKEN)%'
-    commsy.mediawiki.accessSecret: '%env(MEDIAWIKI_ACCESS_SECRET)%'
-
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
     craue_twig_extensions.formatDateTime.datetype: medium
@@ -147,6 +140,7 @@ services:
             - '../src/DataFixtures/'
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/Event/'
             - '../src/Form/Model/'
             - '../src/Kernel.php'
             - '../src/Mail/Messages/'
@@ -169,8 +163,6 @@ services:
             - 'doctrine.fixture.orm'
 
     _instanceof:
-        App\Search\DocumentConverter\DocumentConverterInterface:
-            tags: ['app.document_converter']
         App\Form\DataTransformer\DataTransformerInterface:
             tags: [ 'app.data_transformer' ]
         App\Cron\Tasks\CronTaskInterface:
@@ -314,14 +306,14 @@ services:
 
     commsy.security.item_voter:
         class: App\Security\Authorization\Voter\ItemVoter
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service', '@request_stack']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service', '@commsy_legacy.room_service', '@commsy_legacy.user_service', '@request_stack']
         public: false
         tags:
             - { name: security.voter }
 
     commsy.security.user_voter:
         class: App\Security\Authorization\Voter\UserVoter
-        arguments: ['@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.user_service', '@commsy_legacy.room_service']
         public: false
         tags:
             - { name: security.voter }
@@ -349,26 +341,11 @@ services:
         alias: App\Export\WordpressExporter
 
     # EventListener
-    Liip\ThemeBundle\ActiveTheme: '@liip_theme.active_theme'
-
-    App\EventListener\CommsyRequestListener:
-        arguments:
-            $themeArray: '%liip_theme.themes%'
-            $preDefinedTheme: '%liip_theme_pre_configuration.active_theme%'
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
-    kernel.listener.commsy_login:
-        class: App\EventListener\CommsyLoginListener
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
     kernel.listener.commsy_activity:
         class: App\EventListener\CommsyActivityListener
         arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
     commsy.listener.get_room_membership_filter:
         class: App\EventListener\RoomMembershipFilterConditionListener
@@ -411,14 +388,6 @@ services:
     commsy.search.manager:
         alias: App\Search\SearchManager
 
-
-    App\Services\File2TextService: ~
-
-    App\Search\DocumentConverter\ConverterManager:
-        class: App\Search\DocumentConverter\ConverterManager
-        arguments:
-            - !tagged 'app.document_converter'
-
     App\Form\DataTransformer\TransformerManager:
         class: App\Form\DataTransformer\TransformerManager
         arguments:
@@ -439,72 +408,85 @@ services:
 
     App\Search\MultiIndex:
         arguments:
-            $name: 'commsy'
             $client: '@fos_elastica.client.default'
+            $name: 'commsy'
         calls:
-            - [ addIndices, [[
-                                 '@fos_elastica.index.commsy_announcement',
-                                 '@fos_elastica.index.commsy_date',
-                                 '@fos_elastica.index.commsy_discussion',
-                                 '@fos_elastica.index.commsy_label',
-                                 '@fos_elastica.index.commsy_user',
-                                 '@fos_elastica.index.commsy_room',
-                                 '@fos_elastica.index.commsy_todo',
-                                 '@fos_elastica.index.commsy_material',
-                             ]]]
-
-    FOS\ElasticaBundle\Finder\TransformedFinder: ~
-
-    FOS\ElasticaBundle\Finder\PaginatedFinderInterface: '@FOS\ElasticaBundle\Finder\TransformedFinder'
+            - [addIndices, [[
+                 '@fos_elastica.index.commsy_announcement',
+                 '@fos_elastica.index.commsy_date',
+                 '@fos_elastica.index.commsy_discussion',
+                 '@fos_elastica.index.commsy_label',
+                 '@fos_elastica.index.commsy_user',
+                 '@fos_elastica.index.commsy_room',
+                 '@fos_elastica.index.commsy_todo',
+                 '@fos_elastica.index.commsy_material',
+            ]]]
 
     Elastica\SearchableInterface: '@App\Search\MultiIndex'
 
-    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection'
-
-    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection:
+    App\Search\Transformer\ElasticaToModelTransformerCollection:
         arguments:
             - {
-                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement.announcement',
-                date: '@fos_elastica.elastica_to_model_transformer.commsy_date.date',
-                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion.discussion',
-                label: '@fos_elastica.elastica_to_model_transformer.commsy_label.label',
-                room: '@fos_elastica.elastica_to_model_transformer.commsy_room.room',
-                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo.todo',
-                user: '@fos_elastica.elastica_to_model_transformer.commsy_user.user',
-                material: '@fos_elastica.elastica_to_model_transformer.commsy_material.material',
+                commsy_announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement',
+                commsy_date: '@fos_elastica.elastica_to_model_transformer.commsy_date',
+                commsy_discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion',
+                commsy_label: '@fos_elastica.elastica_to_model_transformer.commsy_label',
+                commsy_room: '@fos_elastica.elastica_to_model_transformer.commsy_room',
+                commsy_todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo',
+                commsy_user: '@fos_elastica.elastica_to_model_transformer.commsy_user',
+                commsy_material: '@fos_elastica.elastica_to_model_transformer.commsy_material',
             }
+    FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@App\Search\Transformer\ElasticaToModelTransformerCollection'
 
+    FOS\ElasticaBundle\Finder\TransformedFinder: ~
+    FOS\ElasticaBundle\Finder\PaginatedFinderInterface: '@FOS\ElasticaBundle\Finder\TransformedFinder'
+
+    app.elastica.object_persister.commsy_announcement:
+        alias: 'fos_elastica.object_persister.commsy_announcement'
+        public: true
+
+    app.elastica.object_persister.commsy_date:
+        alias: 'fos_elastica.object_persister.commsy_date'
+        public: true
+
+    app.elastica.object_persister.commsy_discussion:
+        alias: 'fos_elastica.object_persister.commsy_discussion'
+        public: true
+
+    app.elastica.object_persister.commsy_label:
+        alias: 'fos_elastica.object_persister.commsy_label'
+        public: true
+
+    app.elastica.object_persister.commsy_room:
+        alias: 'fos_elastica.object_persister.commsy_room'
+        public: true
+
+    app.elastica.object_persister.commsy_todo:
+        alias: 'fos_elastica.object_persister.commsy_todo'
+        public: true
+
+    app.elastica.object_persister.commsy_user:
+        alias: 'fos_elastica.object_persister.commsy_user'
+        public: true
+
+    app.elastica.object_persister.commsy_material:
+        alias: 'fos_elastica.object_persister.commsy_material'
+        public: true
+
+    FOS\ElasticaBundle\Persister\AsyncPagerPersister:
+        arguments:
+            - '@fos_elastica.pager_persister_registry'
+            - '@fos_elastica.pager_provider_registry'
+            # In the bundle this messagebus is different, but we should pass official Symfony bus.
+            - '@Symfony\Component\Messenger\MessageBusInterface'
+        tags:
+            - { name: "fos_elastica.pager_persister", persisterName: "async" }
+
+    FOS\ElasticaBundle\Message\Handler\AsyncPersistPageHandler:
+        tags: [ messenger.message_handler ]
 
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker
-
-    commsy_announcement.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_date.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_discussion.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_label.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_room.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_todo.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_user.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    commsy_material.search.indexable_checker:
-        alias: App\Search\IndexableChecker
-
-    App\Search\IndexableChecker:
-        autowire: true
-        autoconfigure: true
 
     # Validator
     commsy.validator.unique_label_name:
@@ -531,8 +513,6 @@ services:
 
     # Form types
     App\Form\Type\ExtensionSettingsType:
-        arguments:
-            $mediaWikiEnabled: '%commsy.mediawiki.enabled%'
         tags:
             - { name: form.type }
 
@@ -560,12 +540,9 @@ services:
     App\Utils\MailAssistant:
         arguments:
             $twig: '@twig'
-            $from: '%commsy.email.from%'
 
     # Commands
     App\Command\EmailUploadCommand:
-        autowire: true
-        autoconfigure: true
         arguments:
             $projectDir: '%kernel.project_dir%'
             $uploadEnabled: '%commsy.upload.enabled%'
@@ -574,7 +551,6 @@ services:
             $uploadOptions: '%commsy.upload.options%'
             $uploadAccount: '%commsy.upload.account%'
             $uploadPassword: '%commsy.upload.password%'
-            $emailFrom: '%commsy.email.from%'
 
     commsy.command.db_check:
         class: App\Command\DBCheckCommand
@@ -630,11 +606,6 @@ services:
 
     App\Database\Resolve\DeleteDatabaseFilesResolution:
         autowire: false
-
-    # API
-    commsy.api.soap:
-        class: App\Services\SoapService
-        arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Feed
     debril.rss_atom.provider:
@@ -816,41 +787,6 @@ services:
 
     App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 
-    # DataTransformer
-    App\Form\DataTransformer\Base64ToCsvDatasetTransformer:
-        autowire: true
-
-    # Events
-    App\Event\CommsyEditEvent:
-        autowire: false
-
-    App\Event\ItemReindexEvent:
-        autowire: false
-
-    App\Event\ItemDeletedEvent:
-        autowire: false
-
-    App\Event\UserJoinedRoomEvent:
-        autowire: false
-
-    App\Event\UserLeftRoomEvent:
-        autowire: false
-
-    App\Event\RoomSettingsChangedEvent:
-        autowire: false
-
-    App\Event\UserStatusChangedEvent:
-        autowire: false
-
-    App\Event\ReadStatusPreChangeEvent:
-        autowire: false
-
-    App\Event\AccountChangedEvent:
-        autowire: false
-
-    App\Event\AccountDeletedEvent:
-        autowire: false
-
     # Response
     App\Http\JsonDataResponse:
         autowire: false
@@ -867,17 +803,7 @@ services:
     # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
-            - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }
-            # If you get transaction issues (e.g. after login) uncomment the line below
-            - { lock_mode: 1 }
-
-    App\Services\MediawikiService:
-        arguments:
-            $apiUrl: '%commsy.mediawiki.apiUrl%'
-            $consumerKey: '%commsy.mediawiki.consumerKey%'
-            $consumerSecret: '%commsy.mediawiki.consumerSecret%'
-            $accessToken: '%commsy.mediawiki.accessToken%'
-            $accessSecret: '%commsy.mediawiki.accessSecret%'
+            - '%env(DATABASE_URL)%'
 
     # FormatDateTimeExtension
     Craue\TwigExtensionsBundle\Twig\Extension\FormatDateTimeExtension:

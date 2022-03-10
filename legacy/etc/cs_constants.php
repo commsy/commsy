@@ -75,7 +75,6 @@ define('CS_TASK_TYPE','task');
 define('CS_BUZZWORD_TYPE','buzzword');
 define('CS_TAG_TYPE','tag');
 define('CS_TAG2TAG_TYPE','tag2tag');
-define('CS_ITEM_BACKUP','item_backup');
 define('CS_PORTFOLIO_TYPE','portfolio');
 
 define('CS_ROOM_TYPE','room');
@@ -107,8 +106,6 @@ define('CS_LOG_ERROR_TYPE','log_error');
 define('CS_ASSESSMENT_TYPE', 'assessments');
 
 define('CS_PLUGIN_TYPE','plugin');
-
-define('CS_ITEMBACKUP_TYPE','item_backup');
 
 define('CS_GRADIENT_24','cs_gradient_24.png');
 define('CS_GRADIENT_24_FOCUS','cs_gradient_24_focus.png');

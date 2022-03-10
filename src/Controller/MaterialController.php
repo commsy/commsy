@@ -382,9 +382,6 @@ class MaterialController extends BaseController
         // TODO: check if no version is specified
         // !isset($_GET['version_id'])
 
-
-        $canExportToWiki = false;
-
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
@@ -444,7 +441,6 @@ class MaterialController extends BaseController
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
             'canExportToWordpress' => $canExportToWordpress,
-            'canExportToWiki' => $canExportToWiki,
             'roomCategories' => $infoArray['roomCategories'],
             'versions' => $infoArray['versions'],
             'workflowTitles' => [
@@ -1040,8 +1036,16 @@ class MaterialController extends BaseController
         $isDraft = false;
         $isSaved = false;
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        if ($item->isDraft()) {
+            // if a material is a draft, allow for categegories and
+            // hashtags for being edited, if they are active
+            $categoriesMandatory = $current_context->withTags();
+            $hashtagsMandatory = $current_context->withBuzzwords();
+        } else {
+            $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+            $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        }
+
 
         $licenses = [];
         $licensesContent = [];
@@ -1063,8 +1067,8 @@ class MaterialController extends BaseController
             $formData = $this->materialTransformer->transform($materialItem);
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
-            $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
@@ -1132,7 +1136,9 @@ class MaterialController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $typedItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $typedItem->setTagListByID($categoryIds);
+                    }
                 }
                 if ($hashtagsMandatory) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
@@ -1147,7 +1153,9 @@ class MaterialController extends BaseController
 
                     }
 
-                    $typedItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $typedItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $typedItem->save();

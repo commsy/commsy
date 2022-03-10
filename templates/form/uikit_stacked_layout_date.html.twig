@@ -34,11 +34,11 @@
 {# Rows #}
 
 {%- block form_row -%}
-    {% spaceless %}
+    {% apply spaceless %}
         <div class="uk-form-row">
             {{- parent() -}}
         </div>
-    {% endspaceless %}
+    {% endapply %}
 {%- endblock form_row -%}
 
 {%- block button_row -%}

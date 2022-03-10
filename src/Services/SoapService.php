@@ -2,29 +2,46 @@
 
 namespace App\Services;
 
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
+use cs_environment;
+use SoapFault;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use App\Services\LegacyEnvironment;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class SoapService
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $serviceContainer;
+    /**
+     * @var Mailer
+     */
+    private Mailer $mailer;
 
-    private $sessionIdArray = [];
+    /**
+     * @var array
+     */
+    private array $sessionIdArray = [];
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        Mailer $mailer,
+        ParameterBagInterface $parameterBag
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->serviceContainer = $container;
+        $this->mailer = $mailer;
 
         /**
-         * The require statement is necessary to import the legacy class. Otherwise the class cannot be found
+         * The require statement is necessary to import the legacy class. Otherwise, the class cannot be found
          * in a productive server environment. The problem does not arise in the development stack, even when using
          * the production environment. There must be some side effects in relation to the server configuration, which
          * are not obvious yet.
          */
-        $projectDir = $this->serviceContainer->getParameter('kernel.project_dir');
+        $projectDir = $parameterBag->get('kernel.project_dir');
         require_once($projectDir . '/legacy/classes/cs_session_item.php');
     }
 
@@ -38,7 +55,7 @@ class SoapService
     public function getGuestSession($portalId)
     {
         if (!$portalId) {
-            return new \SoapFault('ERROR', 'portalId not set!');
+            return new SoapFault('ERROR', 'portalId not set!');
         }
 
         $this->legacyEnvironment->setCurrentContextID($portalId);
@@ -69,25 +86,25 @@ class SoapService
     public function authenticate($userId, $password, $portalId = 99, $authSourceId = 0)
     {
         if (!$userId) {
-            return new \SoapFault('ERROR', 'userId not set!');
+            return new SoapFault('ERROR', 'userId not set!');
         }
 
         if (!$password) {
-            return new \SoapFault('ERROR', 'password not set!');
+            return new SoapFault('ERROR', 'password not set!');
         }
 
         $this->legacyEnvironment->setCurrentContextID($portalId);
 
         $authentication = $this->legacyEnvironment->getAuthenticationObject();
         if (!isset($authentication)) {
-            return new \SoapFault('ERROR', 'no authentication found!');
+            return new SoapFault('ERROR', 'no authentication found!');
         }
 
         if ($authentication->isAccountGranted($userId, $password, $authSourceId)) {
             if ($this->isSessionActive($userId, $portalId)) {
                 $sessionId = $this->getActiveSessionId($userId, $portalId);
                 if (!$sessionId) {
-                    return new \SoapFault('ERROR', 'no session found!');
+                    return new SoapFault('ERROR', 'no session found!');
                 }
 
                 return $sessionId;
@@ -115,76 +132,8 @@ class SoapService
                 return $sessionItem->getSessionID();
             }
         } else {
-            return new \SoapFault('ERROR', 'permission denied!');
+            return new SoapFault('ERROR', 'permission denied!');
         }
-    }
-
-    /**
-     * Creates a new wiki
-     * 
-     * @param  string $sessionId
-     * @param  string $contextId
-     * 
-     * @return bool success
-     */
-    public function createWiki($sessionId, $contextId)
-    {
-        if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'session invalid!');
-        }
-
-//          $room_manager = $this->_environment->getRoomManager();
-//          $room_item = $room_manager->getItem($context_id);
-
-//          $item->setWikiSkin();
-//          $item->setWikiEditPW();
-//          $item->setWikiAdminPW();
-//          $item->setWikiEditPW();
-//          $item->setWikiReadPW();
-//          $item->setWikiTitle();
-//          $item->setWikiShowCommSyLogin();
-//          $item->setWikiWithSectionEdit();
-//          $item->setWikiWithHeaderForSectionEdit();
-//          $item->setWikiEnableFCKEditor();
-//          $item->setWikiEnableSearch();
-//          $item->setWikiEnableSitemap();
-//          $item->setWikiEnableStatistic();
-//          $item->setWikiEnableRss();
-//          $item->setWikiEnableCalendar();
-//          $item->setWikiEnableNotice();
-//          $item->setWikiEnableGallery();
-//          $item->setWikiEnablePdf();
-//          $item->setWikiEnableSwf();
-//          $item->setWikiEnableWmplayer();
-//          $item->setWikiEnableQuicktime();
-//          $item->setWikiEnableYoutubeGoogleVimeo();
-//          $item->setWikiEnableDiscussion();
-//          //$item->setWikiDiscussionArray();
-//          $item->setWikiEnableDiscussionNotification();
-//          $item->setWikiEnableDiscussionNotificationGroups();
-
-//          $wiki_manager = $this->_environment->getWikiManager();
-//          $wiki_manager->deleteWiki($room_item);
-    }
-
-    /**
-     * Deletes a wiki
-     * 
-     * @param  string $sessionId
-     * @param  string $contextId
-     * 
-     * @return bool success
-     */
-    public function deleteWiki($sessionId, $contextId)
-    {
-        if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'session invalid!');
-        }
-
-//          $room_manager = $this->_environment->getRoomManager();
-//          $room_item = $room_manager->getItem($context_id);
-//          $wiki_manager = $this->_environment->getWikiManager();
-//          $wiki_manager->deleteWiki($room_item);
     }
 
     /**
@@ -237,7 +186,7 @@ class SoapService
     public function getUserInfo($sessionId, $contextId)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'given session id is invalid!');
+            return new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         // grep the session
@@ -260,7 +209,7 @@ class SoapService
             return $userList->getFirst()->getDataAsXML();
         }
 
-        return new \SoapFault('ERROR', 'no user found!');
+        return new SoapFault('ERROR', 'no user found!');
     }
 
     /**
@@ -452,19 +401,13 @@ class SoapService
                                             $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$portal_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
                                             global $c_single_entry_point;
                                             $body .= str_replace('soap.php',$c_single_entry_point,$url);
-                                            //$mail->set_message($body);
-                                            //$mail->send();
 
-                                            $mailer =  $this->serviceContainer->get('mailer');
-
-                                            $mailMessage = (new \Swift_Message())
-                                                ->setSubject($translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()))
-                                                ->setBody($body, 'text/plain')
-                                                ->setFrom([$senderAddress => $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())])
-                                                ->setTo($value);
-
-                                            // send mail
-                                            $mailer->send($mailMessage);
+                                            $this->mailer->sendRaw(
+                                                $translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()),
+                                                $body,
+                                                $recipient,
+                                                $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())
+                                            );
                                         }
                                     }
                                     $translator->setSelectedLanguage($save_language);
@@ -546,45 +489,38 @@ class SoapService
                                         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->legacyEnvironment->getCurrentContextID();
                                         global $c_single_entry_point;
                                         $body .= str_replace('soap.php',$c_single_entry_point,$url);
-                                        //$mail->set_message($body);
-                                        //$mail->send();
 
-                                        $mailer =  $this->serviceContainer->get('mailer');
-
-                                        $mailMessage = (new \Swift_Message())
-                                            ->setSubject($translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()))
-                                            ->setBody($body, 'text/plain')
-                                            ->setFrom([$senderAddress => $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())])
-                                            ->setTo([$current_user->getEmail()]);
-
-                                        // send mail
-                                        $mailer->send($mailMessage);
-
+                                        $this->mailer->sendRaw(
+                                            $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()),
+                                            $body,
+                                            RecipientFactory::createRecipient($current_user),
+                                            $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())
+                                        );
                                     }
 
                                     // login in user
                                     #return $this->authenticate($this->_encode_output($user_id),$this->_encode_output($user_pwd),$this->_encode_output($portal_id),$this->_encode_output($auth_source_id));
                                     return true;
                                 } else {
-                                    return new \SoapFault('ERROR','createUser: error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
+                                    return new SoapFault('ERROR','createUser: error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
                                 }
                             } else {
-                                return new \SoapFault('ERROR','createUser: account is not free! - ('.$user_id.')'.__FILE__.' - '.__LINE__);
+                                return new SoapFault('ERROR','createUser: account is not free! - ('.$user_id.')'.__FILE__.' - '.__LINE__);
                             }
                         } else {
-                            return new \SoapFault('ERROR','createUser: Portal ID is not valid! - '.__FILE__.' - '.__LINE__);
+                            return new SoapFault('ERROR','createUser: Portal ID is not valid! - '.__FILE__.' - '.__LINE__);
                         }
                     } else {
-                        return new \SoapFault('ERROR','createUser: user_id is not valid: user_id has umlauts! - '.__FILE__.' - '.__LINE__);
+                        return new SoapFault('ERROR','createUser: user_id is not valid: user_id has umlauts! - '.__FILE__.' - '.__LINE__);
                     }
                 } else {
-                    return new \SoapFault('ERROR','createUser: Logged in user is not allowed to create accounts. - '.__FILE__.' - '.__LINE__);
+                    return new SoapFault('ERROR','createUser: Logged in user is not allowed to create accounts. - '.__FILE__.' - '.__LINE__);
                 }
             } else {
-                return new \SoapFault('ERROR','createUser: can not identify current user. - '.__FILE__.' - '.__LINE__);
+                return new SoapFault('ERROR','createUser: can not identify current user. - '.__FILE__.' - '.__LINE__);
             }
         } else {
-            return new \SoapFault('ERROR','createUser: session id ('.$session_id.') is not set. - '.__FILE__.' - '.__LINE__);
+            return new SoapFault('ERROR','createUser: session id ('.$session_id.') is not set. - '.__FILE__.' - '.__LINE__);
         }
     }
 
@@ -602,7 +538,7 @@ class SoapService
     public function getStatistics($sessionId, $dateStart, $dateEnd)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'given session id is invalid!');
+            return new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $sessionId = $this->_encode_input($sessionId);
@@ -640,22 +576,22 @@ class SoapService
                     } else {
                         $info = 'ERROR: GET STATISTICS';
                         $info_text = 'server_item is empty';
-                        return new \SoapFault($info, $info_text);
+                        return new SoapFault($info, $info_text);
                     }
                 } else {
                     $info = 'ERROR: GET STATISTICS';
                     $info_text = 'date_start (second parameter) is empty';
-                    return new \SoapFault($info, $info_text);
+                    return new SoapFault($info, $info_text);
                 }
             } else {
                 $info = 'ERROR: GET STATISTICS';
                 $info_text = 'only root is allowed to use this function';
-                return new \SoapFault($info, $info_text);
+                return new SoapFault($info, $info_text);
             }
         } else {
             $info = 'ERROR: GET STATISTICS';
             $info_text = 'multiple user (' . $user_id . ') with auth source (' . $auth_source_id . ')';
-            return new \SoapFault($info, $info_text);
+            return new SoapFault($info, $info_text);
         }
     }
 
@@ -672,7 +608,7 @@ class SoapService
     public function getDatesList($sessionId, $contextId)
     {
         if (!$this->isSessionValid($sessionId)) {
-            return new \SoapFault('ERROR', 'given session id is invalid!');
+            return new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $this->legacyEnvironment->setSessionID($sessionId);
@@ -735,14 +671,14 @@ class SoapService
      * @param integer $startTimestamp Starting timestamp
      * @param integer $endTimestamp Ending timestamp
      *
-     * @throws \SoapFault
+     * @throws SoapFault
      *
      * @return string
      */
     public function getDatesInRange($sessionId, $contextId, $startTimestamp, $endTimestamp)
     {
         if (!$this->isSessionValid($sessionId)) {
-            throw new \SoapFault('ERROR', 'given session id is invalid!');
+            throw new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $startDate = date("Y-m-d H:i:s", $startTimestamp);
@@ -796,14 +732,14 @@ class SoapService
      * @param integer $contextId The context id
      * @param integer $validTimestamp Valid timestamp
      *
-     * @throws \SoapFault
+     * @throws SoapFault
      *
      * @return string
      */
     public function getAnnouncementsInRange($sessionId, $contextId, $validTimestamp)
     {
         if (!$this->isSessionValid($sessionId)) {
-            throw new \SoapFault('ERROR', 'given session id is invalid!');
+            throw new SoapFault('ERROR', 'given session id is invalid!');
         }
 
         $validDate = date("Y-m-d H:i:s", $validTimestamp);
@@ -1699,30 +1635,6 @@ class SoapService
 //        return $result;
 //    }
 //
-//    public function getPrivateRoomMaterialList ($session_id) {
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $user_id = $session->getValue('user_id');
-//            $portal_id = $session->getValue('commsy_id');
-//            $auth_source = $session->getValue('auth_source');
-//            $room_manager = $this->_environment->getPrivateRoomManager();
-//            $room_item_id = $room_manager->getItemIDOfRelatedOwnRoomForUser($user_id,$auth_source,$portal_id);
-//            if ( isset($room_item_id) and !empty($room_item_id) ) {
-//                $result = $this->_getMaterialListAsXML($room_item_id,$session_id);
-//                $result = $this->_encode_output($result);
-//            }
-//            $this->_updateSessionCreationDate($session_id);
-//            $this->_log('material','SOAP:getPrivateMaterialList','SID='.$session_id);
-//        } else {
-//            $info = 'ERROR: GET MATERIAL LIST';
-//            $info_text = 'session id ('.$session_id.') is not valid';
-//            $result = new SoapFault($info,$info_text);
-//        }
-//        return $result;
-//    }
-//
 //    private function _getMaterialListAsXML ($room_id,$session_id) {
 //        $retour = '';
 //        $material_manager = $this->_environment->getMaterialManager();
@@ -2023,198 +1935,6 @@ class SoapService
 //            $this->_updateSessionCreationDate($session_id);
 //        } else {
 //            $info = 'ERROR: DELETE FILE ITEM';
-//            $info_text = 'session id ('.$session_id.') is not valid';
-//            $result = new SoapFault($info,$info_text);
-//        }
-//        return $result;
-//    }
-//
-//    public function addPrivateRoomMaterialList ($session_id, $material_list_xml) {
-//        $session_id = $this->_encode_input($session_id);
-//        $result_array = array();
-//        if ($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $user_id = $session->getValue('user_id');
-//            $portal_id = $session->getValue('commsy_id');
-//            $auth_source = $session->getValue('auth_source');
-//            $room_manager = $this->_environment->getPrivateRoomManager();
-//            $room_item_id = $room_manager->getItemIDOfRelatedOwnRoomForUser($user_id,$auth_source,$portal_id);
-//            if ( isset($room_item_id) and !empty($room_item_id) ) {
-//                $this->_environment->setCurrentContextID($room_item_id);
-//                $material_xml_object = simplexml_load_string($material_list_xml);
-//                $user_manager = $this->_environment->getUserManager();
-//                $user_manager->setContextLimit($room_item_id);
-//                $user_manager->setUserIDLimit($user_id);
-//                $user_manager->setAuthSourceLimit($auth_source);
-//                $user_manager->select();
-//                $user_list = $user_manager->get();
-//                if ($user_list->getCount() == 1) {
-//                    $user_item = $user_list->getFirst();
-//                    $material_manager = $this->_environment->getMaterialManager();
-//                    foreach ($material_xml_object->material_item as $material_xml_item) {
-//                        $material_item = $material_manager->getNewItem();
-//                        $material_item->setContextID($room_item_id);
-//                        $material_item->setCreatorID($user_item->getItemID());
-//                        $material_item->setModifierID($user_item->getItemID());
-//                        $title = $this->_encode_input((string)$material_xml_item->title);
-//                        if ( isset($title) and !empty($title) ) {
-//                            $material_item->setTitle($title);
-//                        }
-//                        $year = $this->_encode_input((int)$material_xml_item->date->year);
-//                        if ( isset($year) and !empty($year) ) {
-//                            $material_item->setPublishingDate($year);
-//                        }
-//                        if ( isset($material_xml_item->author_list) and !empty($material_xml_item->author_list) ) {
-//                            $author_list_string = '';
-//                            $first = true;
-//                            foreach ($material_xml_item->author_list->author_item as $author_xml_item) {
-//                                if ($first) {
-//                                    $first = false;
-//                                } else {
-//                                    $author_list_string .= '; ';
-//                                }
-//                                $author_list_string .= $this->_encode_input((string)$author_xml_item);
-//                            }
-//                            if ( !empty($author_list_string) ) {
-//                                $material_item->setAuthor($author_list_string);
-//                            }
-//                        }
-//
-//                        // study_log information
-//                        if ( isset($material_xml_item->extras) and !empty($material_xml_item->extras) ) {
-//                            $extra_xml_string = $this->_encode_input($material_xml_item->extras->asXML());
-//                            $extra_xml_object = simplexml_load_string($extra_xml_string);
-//                            $xml = '';
-//                            foreach ($extra_xml_object->children() as $key => $extra_xml) {
-//                                $extra_xml = $this->_encode_input($extra_xml);
-//                                if ( $key == 'study_log' ) {
-//                                    $xml .= '<study_log>'.htmlentities($extra_xml, ENT_NOQUOTES, 'UTF-8').'</study_log>';
-//                                }
-//                            }
-//                            if ( !empty($xml) ) {
-//                                $extra_array = XML2Array('<extras>'.$xml.'</extras>');
-//                                $material_item->setExtraInformation($extra_array);
-//                            }
-//                        }
-//
-//                        // bib stuff
-//                        $value = $this->_encode_input((string)$material_xml_item->description);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $value = $this->_htmlTextareaSecurity($value);
-//                            $material_item->setDescription($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->label);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setLabel($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->bib_kind);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setBibkind($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->common);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $value = $this->_htmlTextareaSecurity($value);
-//                            $material_item->setBibliographicValues($value);
-//                        }
-//                        if ( isset($material_xml_item->editor_list) and !empty($material_xml_item->editor_list) ) {
-//                            $editor_list_string = '';
-//                            $first = true;
-//                            foreach ($material_xml_item->editor_list->editor_item as $editor_xml_item) {
-//                                if ($first) {
-//                                    $first = false;
-//                                } else {
-//                                    $editor_list_string .= '; ';
-//                                }
-//                                $editor_list_string .= $this->_encode_input((string)$editor_xml_item);
-//                            }
-//                            if ( !empty($editor_list_string) ) {
-//                                $material_item->setEditor($editor_list_string);
-//                            }
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->booktitle);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setBooktitle($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->publisher);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setPublisher($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->edition);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setEdition($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->volume);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setVolume($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->series);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setSeries($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->isbn);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setISBN($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->issn);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setISSN($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->pages);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setPages($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->journal);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setJournal($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->issue);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setIssue($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->university);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setUniversity($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->faculty);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setFaculty($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->thesis_kind);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setThesiskind($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->url);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setURL($value);
-//                        }
-//                        $value = $this->_encode_input((string)$material_xml_item->url_date);
-//                        if ( isset($value) and !empty($value) ) {
-//                            $material_item->setURLDate($value);
-//                        }
-//
-//                        $material_item->save();
-//                        $item_id = (int)$material_xml_item->item_id;
-//                        $result_array[$item_id] = $material_item->getItemID();
-//                    }
-//                    $result  = '<link_list>'.LF;
-//                    foreach ($result_array as $key => $value) {
-//                        $result .= '<link>'.LF;
-//                        $result .= '<original_id>'.$key.'</original_id>'.LF;
-//                        $result .= '<commsy_id>'.$value.'</commsy_id>'.LF;
-//                        $result .= '</link>'.LF;
-//                    }
-//                    $result .= '</link_list>'.LF;
-//                    $result = $this->_encode_output($result);
-//                } else {
-//                    $info = 'ERROR: ADD PRIVATE ROOM MATERIAL LIST';
-//                    $info_text = 'user id ('.$user_id.') is not valid';
-//                    $result = new SoapFault($info,$info_text);
-//                }
-//            }
-//            $this->_updateSessionCreationDate($session_id);
-//        } else {
-//            $info = 'ERROR: ADD PRIVATE ROOM MATERIAL LIST';
 //            $info_text = 'session id ('.$session_id.') is not valid';
 //            $result = new SoapFault($info,$info_text);
 //        }
@@ -2921,70 +2641,6 @@ class SoapService
 //        return $result;
 //    }
 //
-//    public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
-//        #$this->_log_in_file(array(array('$user_id', $user_id)));
-//        $result = 'notAuthenticated';
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $user_id = $session->getValue('user_id');
-//            $auth_source = $session->getValue('auth_source');
-//            $this->_environment->setCurrentContextID($context_id);
-//            $context_item = $this->_environment->getCurrentContextItem();
-//
-//            if ( !empty($auth_source)
-//                and !empty($user_id)
-//            ) {
-//                $user_manager = $this->_environment->getUserManager();
-//                $user_manager->setContextLimit($context_id);
-//                $user_manager->setUserIDLimit($user_id);
-//                $user_manager->setAuthSourceLimit($auth_source);
-//                $user_manager->select();
-//                $user_list = $user_manager->get();
-//                if ( $user_list->getCount() >= 1 ) {
-//                    $user_item = $user_list->getFirst();
-//                    if ( $user_item->isModerator() ){
-//                        $result = 'moderator';
-//                    } elseif ( $user_item->isUser() ) {
-//                        if ( $context_item->isWikiRoomModWriteAccess() ) {
-//                            $result = 'read';
-//                        } else {
-//                            $result = 'user';
-//                        }
-//                    }
-//                } elseif ( $context_item->isWikiPortalReadAccess() ) {
-//                    $portal_id = $session->getValue('commsy_id');
-//                    if ( !empty($portal_id) ) {
-//                        $user_manager->setContextLimit($portal_id);
-//                        $user_manager->setUserIDLimit($user_id);
-//                        $user_manager->setAuthSourceLimit($auth_source);
-//                        $user_manager->select();
-//                        $user_list = $user_manager->get();
-//                        if ( $user_list->getCount() == 1 ) {
-//                            $user_item = $user_list->getFirst();
-//                            if ( $user_item->isUser() ) {
-//                                $result = 'read';
-//                            }
-//                        }
-//                    }
-//                }
-//                unset($user_manager);
-//                unset($user_list);
-//                unset($user_item);
-//            } else {
-//                $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
-//                $info_text = 'session id ('.$session_id.') is not valid: no auth source id or no user_id';
-//                $result = new SoapFault($info,$info_text);
-//            }
-//        } else {
-//            $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
-//            $info_text = 'session id ('.$session_id.') is not valid';
-//            $result = new SoapFault($info,$info_text);
-//        }
-//        return $result;
-//    }
-//
 //    public function savePosForItem ($session_id, $item_id, $x, $y) {
 //        $result = true;
 //        $session_id = $this->_encode_input($session_id);
@@ -3097,53 +2753,6 @@ class SoapService
 //        return $result;
 //    }
 //
-//    public function deleteWiki ($session_id, $context_id) {
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $room_manager = $this->_environment->getRoomManager();
-//            $room_item = $room_manager->getItem($context_id);
-//            $wiki_manager = $this->_environment->getWikiManager();
-//            $wiki_manager->deleteWiki($room_item);
-//        }
-//    }
-//
-//    public function createWiki ($session_id, $context_id, $settings) {
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $room_manager = $this->_environment->getRoomManager();
-//            $room_item = $room_manager->getItem($context_id);
-//
-//            $item->setWikiSkin();
-//            $item->setWikiEditPW();
-//            $item->setWikiAdminPW();
-//            $item->setWikiEditPW();
-//            $item->setWikiReadPW();
-//            $item->setWikiTitle();
-//            $item->setWikiShowCommSyLogin();
-//            $item->setWikiWithSectionEdit();
-//            $item->setWikiWithHeaderForSectionEdit();
-//            $item->setWikiEnableFCKEditor();
-//            $item->setWikiEnableSearch();
-//            $item->setWikiEnableSitemap();
-//            $item->setWikiEnableStatistic();
-//            $item->setWikiEnableRss();
-//            $item->setWikiEnableCalendar();
-//            $item->setWikiEnableNotice();
-//            $item->setWikiEnableGallery();
-//            $item->setWikiEnablePdf();
-//            $item->setWikiEnableSwf();
-//            $item->setWikiEnableWmplayer();
-//            $item->setWikiEnableQuicktime();
-//            $item->setWikiEnableYoutubeGoogleVimeo();
-//            $item->setWikiEnableDiscussion();
-//            //$item->setWikiDiscussionArray();
-//            $item->setWikiEnableDiscussionNotification();
-//            $item->setWikiEnableDiscussionNotificationGroups();
-//
-//            $wiki_manager = $this->_environment->getWikiManager();
-//            $wiki_manager->deleteWiki($room_item);
-//        }
-//    }
 //
 //    public function changeUserEmail($session_id, $email){
 //        $result = true;

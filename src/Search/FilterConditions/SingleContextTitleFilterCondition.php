@@ -9,9 +9,9 @@ use Elastica\Query\Terms;
 class SingleContextTitleFilterCondition implements FilterConditionInterface
 {
     /**
-     * @var string $contextTitle
+     * @var string|null $contextTitle
      */
-    private $contextTitle;
+    private ?string $contextTitle;
 
     /**
      * @param string $contextTitle
@@ -32,8 +32,8 @@ class SingleContextTitleFilterCondition implements FilterConditionInterface
             return [];
         }
 
-        $contextTerm = new Terms();
-        $contextTerm->setTerms('context.title', [$this->contextTitle]);
+        $contextTerm = new Terms('context.title');
+        $contextTerm->setTerms([$this->contextTitle]);
 
         return [$contextTerm];
     }

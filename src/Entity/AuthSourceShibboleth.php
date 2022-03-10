@@ -3,6 +3,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -67,6 +69,11 @@ class AuthSourceShibboleth extends AuthSource
      */
     private ?string $mappingEmail;
 
+    /**
+     * @ORM\Column(type="array", name="identity_provider")
+     */
+    private ?Collection $identityProviders;
+
     protected string $type = 'shib';
 
     public function __construct()
@@ -76,6 +83,7 @@ class AuthSourceShibboleth extends AuthSource
         $this->deleteAccount = false;
         $this->changeUserdata = false;
         $this->changePassword = false;
+        $this->identityProviders = new ArrayCollection();
     }
 
     /**
@@ -201,6 +209,24 @@ class AuthSourceShibboleth extends AuthSource
     public function setMappingEmail(string $mappingEmail): self
     {
         $this->mappingEmail = $mappingEmail;
+        return $this;
+    }
+
+    /**
+     * @return Collection|ShibbolethIdentityProvider[]|null
+     */
+    public function getIdentityProviders(): ?Collection
+    {
+        return $this->identityProviders;
+    }
+
+    public function setIdentityProviders(Collection $identityProviders): self
+    {
+        $this->identityProviders = new ArrayCollection();
+
+        foreach ($identityProviders as $provider) {
+            $this->identityProviders->add($provider);
+        }
         return $this;
     }
 }

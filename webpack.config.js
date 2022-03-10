@@ -55,8 +55,10 @@ Encore
         { from: './node_modules/mathjax/es5/output/chtml/fonts/woff-v2', to: 'mathjax/fonts/[path][name].[ext]', includeSubdirectories: false },
     ])
 
-    .addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /uikit\/dist\/js\/components$/))
-    //.addPlugin(new HardSourceWebpackPlugin())
+    .addPlugin(new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/locale$/,
+        contextRegExp: /uikit\/dist\/js\/components$/
+    }))
 
     /*
      * FEATURE CONFIG
@@ -106,6 +108,10 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     .autoProvidejQuery()
+
+    .autoProvideVariables({
+        UIkit: 'uikit',
+    })
 ;
 
 module.exports = Encore.getWebpackConfig();

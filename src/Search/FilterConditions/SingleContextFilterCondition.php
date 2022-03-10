@@ -9,14 +9,14 @@ use Elastica\Query\Terms;
 class SingleContextFilterCondition implements FilterConditionInterface
 {
     /**
-     * @var int context id
+     * @var int|null context id
      */
-    private $contextId;
+    private ?int $contextId;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getContextId(): int
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
@@ -36,11 +36,11 @@ class SingleContextFilterCondition implements FilterConditionInterface
      */
     public function getConditions(): array
     {
-        $contextTerm = new Terms();
-        $contextTerm->setTerms('contextId', [$this->contextId]);
+        $contextTerm = new Terms('contextId');
+        $contextTerm->setTerms([$this->contextId]);
 
-        $parentTerm = new Terms();
-        $parentTerm->setTerms('parentId', [$this->contextId]);
+        $parentTerm = new Terms('parentId');
+        $parentTerm->setTerms([$this->contextId]);
 
         return [$contextTerm, $parentTerm];
     }

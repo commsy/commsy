@@ -101,7 +101,7 @@
                         <a href="#">
                             <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
                         </a>
-                        <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                        <ul class="uk-nav-sub">
                             {% for calendar in calendars  %}
                                 <li>
                                     <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
@@ -115,20 +115,24 @@
                         </ul>
                     </li>
 
-                    {# date abo#}
+                    {# date abo #}
                     <li class="uk-parent">
                         <a href="#">
                             <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
                         </a>
-                        <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                        <ul class="uk-nav-sub">
                             {% for calendar in calendars  %}
-                                <li>
-                                    <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                <li class="uk-margin-right">
+                                    <label>
                                         {{ utilsMacros.calendarIcon(calendar) }}
                                         <span class="uk-vertical-align-middle">
-                                            {{ calendar.title|trans({}, 'date') }}
-                                        </span>
-                                    </a>
+                                                {{ calendar.title|trans({}, 'date') }}
+                                            </span>
+                                    </label>
+                                    <div>
+                                        <input type="text" class="uk-form-width-small" value="{{ iCal.aboUrl }}&calendar_id={{ calendar.id }}" readonly>
+                                        <a href="#" onclick="this.previousElementSibling.select();document.execCommand('copy');"><i class="uk-icon-copy"></i> kopieren</a>
+                                    </div>
                                 </li>
                             {% endfor %}
                         </ul>

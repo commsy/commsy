@@ -232,8 +232,19 @@
                                             <div class="uk-margin">
                                                 <div class="uk-form-controls">
                                                     <div class="uk-inline uk-width-1-1">
-                                                        <a class="uk-button uk-button-primary uk-width-1-1" href="{{ path('app_shibboleth_authshibbolethinit', {
-                                                            'portalId': portal.id
+                                                        {% if authSource.identityProviders is not empty %}
+                                                            <select id="shib_login_idps_select" class="uk-select uk-margin-bottom">
+                                                                {% for provider in authSource.identityProviders %}
+                                                                    <option value="{{ path('app_shibboleth_authshibbolethinit', {
+                                                                        'portalId': portal.id,
+                                                                        'entityId': provider.url|url_encode,
+                                                                    }) }}">{{ provider.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        {% endif %}
+
+                                                        <a id="shib_login_link" class="uk-button uk-button-primary uk-width-1-1" href="{{ path('app_shibboleth_authshibbolethinit', {
+                                                            'portalId': portal.id,
                                                         }) }}">
                                                             {{ 'login.sign_in'|trans({}, 'login') }}
                                                         </a>

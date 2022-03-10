@@ -9,46 +9,38 @@
 namespace App\Action\Copy;
 
 
-use App\Services\CopyService;
-use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
-use App\Utils\RoomService;
+use App\Services\CopyService;
+use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertUserroomAction
 {
     /**
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
-
-    /**
-     * @var ItemService
-     */
-    private $itemService;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var CopyService
      */
-    private $copyService;
+    private CopyService $copyService;
 
     public function __construct(
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        ItemService $itemService,
         CopyService $copyService
     ) {
         $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->itemService = $itemService;
         $this->copyService = $copyService;
     }
 

@@ -39,8 +39,8 @@ class DeleteDatabaseFilesResolution implements ResolutionInterface
             $ilfQb->setParameter(":file$fileId", $fileId);
 
             if (($num % self::$BATCH_SIZE) === 0 ) {
-                $filesQb->execute();
-                $ilfQb->execute();
+                $filesQb->executeStatement();
+                $ilfQb->executeStatement();
 
                 $filesQb = $this->em->getConnection()->createQueryBuilder()
                     ->delete('files');
@@ -49,8 +49,8 @@ class DeleteDatabaseFilesResolution implements ResolutionInterface
             }
         }
 
-        $filesQb->execute();
-        $ilfQb->execute();
+        $filesQb->executeStatement();
+        $ilfQb->executeStatement();
 
         return true;
     }

@@ -260,19 +260,19 @@ class RoomFeedGenerator
     {
         $roomIds = [];
 
-        $projectRooms = $currentUser->getUserRelatedProjectList();
+        $projectRooms = $currentUser->getUserRelatedProjectList(false);
         foreach ($projectRooms as $projectRoom) {
             /** @var \cs_project_item $projectRoom */
             $roomIds[] = $projectRoom->getItemID();
         }
 
-        $userRooms = $currentUser->getRelatedUserroomsList();
+        $userRooms = $currentUser->getRelatedUserroomsList(false);
         foreach ($userRooms as $userRoom) {
             /** @var \cs_userroom_item $userRoom */
             $roomIds[] = $userRoom->getItemID();
         }
 
-        $communityRooms = $currentUser->getUserRelatedCommunityList();
+        $communityRooms = $currentUser->getUserRelatedCommunityList(false);
         foreach ($communityRooms as $communityRoom) {
             /** @var \cs_community_item $communityRoom */
             $roomIds[] = $communityRoom->getItemID();
