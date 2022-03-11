@@ -14,7 +14,7 @@ class AuthorizationCest
     // tests
     public function testAccessDenied(ApiTester $I)
     {
-        $I->sendGet('/portal/list');
+        $I->sendGet('/portals');
 
         $I->seeResponseCodeIs(HttpCode::UNAUTHORIZED);
         $I->seeResponseMatchesJsonType([

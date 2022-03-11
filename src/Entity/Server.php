@@ -26,14 +26,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *         "get",
  *     },
  *     itemOperations={
- *         "get"={
- *             "controller"=NotFoundAction::class,
- *             "read"=false,
- *             "output"=false,
- *         },
+ *         "get",
  *         "get_announcement"={
  *             "method"="GET",
- *             "path"="server/{id}/announcement",
+ *             "path"="servers/{id}/announcement",
  *             "controller"=GetServerAnnouncement::class,
  *             "openapi_context"={
  *                 "summary"="Get server announcement",

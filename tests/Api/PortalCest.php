@@ -15,6 +15,9 @@ class PortalCest
         ]);
         $token = $I->grabDataFromResponseByJsonPath('$.token')[0];
         $I->amBearerAuthenticated($token);
+
+        $I->haveHttpHeader('accept', 'application/json');
+        $I->haveHttpHeader('content-type', 'application/json');
     }
 
     // tests
@@ -22,9 +25,7 @@ class PortalCest
     {
         $I->havePortal('Some portal');
 
-        $I->sendGet('/portal/list');
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
+        $I->sendGet('/portals');
 
         $I->seeResponseJsonMatchesJsonPath('$[0].id');
         $I->seeResponseJsonMatchesJsonPath('$[0].creationDate');
@@ -36,7 +37,7 @@ class PortalCest
     {
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portal/' . $portal->getId());
+        $I->sendGet('/portals/' . $portal->getId());
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -51,7 +52,7 @@ class PortalCest
     {
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portal/' . $portal->getId() . '/announcement');
+        $I->sendGet('/portals/' . $portal->getId() . '/announcement');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();

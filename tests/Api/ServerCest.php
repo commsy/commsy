@@ -15,14 +15,32 @@ class ServerCest
         ]);
         $token = $I->grabDataFromResponseByJsonPath('$.token')[0];
         $I->amBearerAuthenticated($token);
+
+        $I->haveHttpHeader('accept', 'application/json');
+        $I->haveHttpHeader('content-type', 'application/json');
     }
 
     // tests
-    public function getPortalAnnouncement(ApiTester $I)
+    public function listServers(ApiTester $I)
     {
-        $portal = $I->havePortal('Some portal');
+        $I->sendGet('/servers');
 
-        $I->sendGet('/server/announcement');
+        $I->seeResponseJsonMatchesJsonPath('$[0].id');
+    }
+
+    public function getServer(ApiTester $I)
+    {
+        $I->sendGet('/servers/99');
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+
+        $I->seeResponseJsonMatchesJsonPath('$.id');
+    }
+
+    public function getServerAnnouncement(ApiTester $I)
+    {
+        $I->sendGet('/servers/99/announcement');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
