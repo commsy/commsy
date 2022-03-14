@@ -2441,11 +2441,6 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function getDataAsXML()
-    {
-        return $this->_getDataAsXML();
-    }
-
     public function isOnlyReadUser()
     {
         if ($this->isReadOnlyUser()) {

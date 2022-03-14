@@ -24,7 +24,7 @@ class ServerRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.deleterId IS NULL')
             ->andWhere('s.deletionDate IS NULL')
-            ->andWhere('s.itemId = :serverId')
+            ->andWhere('s.id = :serverId')
             ->setParameter('serverId', 99)
             ->getQuery()
             ->setMaxResults(1)

@@ -1071,42 +1071,6 @@ class cs_links_manager extends cs_manager {
          $this->save($temp_array);
       }
    }
-
-   public function getAsXMLForFlash () {
-      $retour = '';
-      $array = $this->_performQuery();
-      if ( !empty($array) ) {
-         $type = $array[0]['link_type'];
-         foreach ( $array as $row ) {
-            $retour .= $this->_getDataAsXMLForFlash($row);
-         }
-         $retour2 = $retour;
-         $retour  = '';
-         $retour .= '   <list>'.LF;
-         if ( !empty($type) ) {
-            $retour .= '      <type><![CDATA['.$type.']]></type>'.LF;
-         }
-         $retour .= $retour2;
-         $retour .= '   </list>'.LF;
-      }
-      return $retour;
-   }
-
-   private function _getDataAsXMLForFlash ( $array ) {
-      $retour  = '';
-      $retour .= '      <item>'.LF;
-      $retour .= '         <type><![CDATA['.$array['link_type'].']]></type>'.LF;
-      $retour .= '         <from_id><![CDATA['.$array['from_item_id'].']]></from_id>'.LF;
-      $retour .= '         <to_id><![CDATA['.$array['to_item_id'].']]></to_id>'.LF;
-      if ( !empty($array['x']) ) {
-         $retour .= '         <x><![CDATA['.$array['x'].']]></x>'.LF;
-      }
-      if ( !empty($array['y']) ) {
-         $retour .= '         <y><![CDATA['.$array['y'].']]></y>'.LF;
-      }
-      $retour .= '      </item>'.LF;
-      return $retour;
-   }
    
    function export_items() {
 	   $links_array = $this->_performQuery();

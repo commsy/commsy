@@ -1775,14 +1775,6 @@ class cs_environment {
       $context_item = $this->getCurrentContextItem();
       return $context_item->isServer();
    }
-   
-   public function getCommSyConnectionObject () {
-   	if ( !isset($this->instance['commsy_connection_object']) ) {
-         include_once('classes/cs_connection_commsy.php');
-         $this->instance['commsy_connection_object'] = new cs_connection_commsy($this);
-     	}
-      return $this->instance['commsy_connection_object'];
-   }
 
    /** get Instance of the translation object
     * returns an object for translation of message tags
