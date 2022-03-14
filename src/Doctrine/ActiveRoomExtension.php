@@ -5,10 +5,10 @@ namespace App\Doctrine;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Entity\Portal;
+use App\Entity\Room;
 use Doctrine\ORM\QueryBuilder;
 
-final class ActivePortalExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+class ActiveRoomExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     public function applyToCollection(
         QueryBuilder $queryBuilder,
@@ -32,7 +32,7 @@ final class ActivePortalExtension implements QueryCollectionExtensionInterface, 
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        if (Portal::class !== $resourceClass) {
+        if (Room::class !== $resourceClass) {
             return;
         }
 

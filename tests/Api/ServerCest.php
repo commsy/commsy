@@ -9,27 +9,30 @@ class ServerCest
 {
     public function _before(ApiTester $I)
     {
-        $I->sendPostAsJson('/login_check', [
-            'username' => 'api',
-            'password' => 'apisecret',
-        ]);
-        $token = $I->grabDataFromResponseByJsonPath('$.token')[0];
-        $I->amBearerAuthenticated($token);
-
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
 
     // tests
-    public function listServers(ApiTester $I)
+    public function listServersFull(ApiTester $I)
     {
+        $I->amFullAuthenticated();
         $I->sendGet('/servers');
 
         $I->seeResponseJsonMatchesJsonPath('$[0].id');
     }
 
-    public function getServer(ApiTester $I)
+    public function listServersReadOnly(ApiTester $I)
     {
+        $I->amReadOnlyAuthenticated();
+        $I->sendGet('/servers');
+
+        $I->seeResponseJsonMatchesJsonPath('$[0].id');
+    }
+
+    public function getServerFull(ApiTester $I)
+    {
+        $I->amFullAuthenticated();
         $I->sendGet('/servers/99');
 
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -38,8 +41,45 @@ class ServerCest
         $I->seeResponseJsonMatchesJsonPath('$.id');
     }
 
-    public function getServerAnnouncement(ApiTester $I)
+    public function getServerFullReadOnly(ApiTester $I)
     {
+        $I->amReadOnlyAuthenticated();
+        $I->sendGet('/servers/99');
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+
+        $I->seeResponseJsonMatchesJsonPath('$.id');
+    }
+
+    public function getServerNotFound(ApiTester $I)
+    {
+        $I->amReadOnlyAuthenticated();
+        $I->sendGet('/servers/123');
+
+        $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
+        $I->seeResponseIsJson();
+    }
+
+    public function getServerAnnouncementFull(ApiTester $I)
+    {
+        $I->amFullAuthenticated();
+        $I->sendGet('/servers/99/announcement');
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+
+        $I->seeResponseMatchesJsonType([
+            'enabled' => 'boolean',
+            'title' => 'string',
+            'severity' => 'string',
+            'text' => 'string',
+        ]);
+    }
+
+    public function getServerAnnouncementReadOnly(ApiTester $I)
+    {
+        $I->amReadOnlyAuthenticated();
         $I->sendGet('/servers/99/announcement');
 
         $I->seeResponseCodeIs(HttpCode::OK);

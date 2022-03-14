@@ -46,8 +46,8 @@ class AuthorizationCest
     public function testValidCredentials(ApiTester $I)
     {
         $I->sendPostAsJson('/login_check', [
-            'username' => 'api',
-            'password' => 'apisecret',
+            'username' => 'api_write',
+            'password' => 'apiwrite',
         ]);
 
         $I->seeResponseCodeIs(HttpCode::OK);

@@ -22,6 +22,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass="App\Repository\ServerRepository")
  * @Vich\Uploadable
  * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
  *     collectionOperations={
  *         "get",
  *     },
