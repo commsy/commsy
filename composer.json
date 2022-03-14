@@ -27,7 +27,7 @@
         "knplabs/knp-paginator-bundle": "^5.3",
         "knplabs/knp-snappy-bundle": "^1.7",
         "lexik/form-filter-bundle": "^6.0",
-        "lexik/jwt-authentication-bundle": "^2.8",
+        "lexik/jwt-authentication-bundle": "^2.14",
         "liip/imagine-bundle": "^2.3",
         "masterminds/html5": "^2.7",
         "mhujer/breadcrumbs-bundle": "^1.5",
