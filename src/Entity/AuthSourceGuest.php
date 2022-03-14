@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AuthSourceGuest extends AuthSource
 {
+    protected string $type = 'guest';
+
     /**
      * AuthSourceGuest constructor.
      */
@@ -24,10 +26,5 @@ class AuthSourceGuest extends AuthSource
         $this->changeUserdata = false;
         $this->changePassword = false;
         $this->createRoom = false;
-    }
-
-    public function getType(): string
-    {
-        return 'guest';
     }
 }

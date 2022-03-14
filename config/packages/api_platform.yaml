@@ -1,0 +1,10 @@
+api_platform:
+    formats:
+        json:
+            mime_types: ['application/json']
+        html:
+            mime_types: [ 'text/html' ]
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+    patch_formats:
+        json: ['application/merge-patch+json']

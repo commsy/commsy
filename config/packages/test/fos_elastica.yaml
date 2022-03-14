@@ -1,0 +1,11 @@
+fos_elastica:
+    clients: []
+    indexes:
+        # Rooms
+        commsy_room:
+            index_name: '%env(ELASTIC_INDEX)%_room'
+
+            persistence:
+                driver: orm
+                model: App\Entity\Room
+                listener: false

@@ -68,6 +68,10 @@ class LegacySubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $this->security->getUser();
 
+        if (!$account instanceof Account) {
+            return;
+        }
+
         $request = $event->getRequest();
         $this->setupContextId($request, $account);
 

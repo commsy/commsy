@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -22,7 +22,7 @@ class User
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
      * @Groups({"api_read"})
-     * @SWG\Property(description="The unique identifier.")
+     * @OA\Property(description="The unique identifier.")
      */
     public $itemId = '0';
 
