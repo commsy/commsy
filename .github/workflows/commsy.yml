@@ -58,6 +58,8 @@ jobs:
     release:
         name: Create Release
         runs-on: ubuntu-latest
+        env:
+            APP_ENV: prod
         steps:
             -   name: actions/checkout
                 uses: actions/checkout@v2
