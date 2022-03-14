@@ -10,4 +10,5 @@ modules:
             url: /api/v2/
             depends: Symfony
             part: Json
+        - Symfony
         - \App\Tests\Helper\Api

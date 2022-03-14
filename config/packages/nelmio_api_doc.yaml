@@ -3,7 +3,7 @@ nelmio_api_doc:
         info:
             title: CommSy
             description: A web-based community system.
-            version: 0.1.0
+            version: 0.3.0
         components:
             securitySchemes:
                 bearerAuth:

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -10,8 +11,37 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * Room
  *
- * @ORM\Table(name="room", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="type", columns={"type"}), @ORM\Index(name="activity", columns={"activity"}), @ORM\Index(name="deleter_id", columns={"deleter_id"}), @ORM\Index(name="deletion_date", columns={"deletion_date"}), @ORM\Index(name="room_description", columns={"room_description"}), @ORM\Index(name="contact_persons", columns={"contact_persons"}), @ORM\Index(name="title", columns={"title"}), @ORM\Index(name="modifier_id", columns={"modifier_id"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="lastlogin", columns={"lastlogin"})})
+ * @ORM\Table(name="room", indexes={
+ *     @ORM\Index(name="context_id", columns={"context_id"}),
+ *     @ORM\Index(name="creator_id", columns={"creator_id"}),
+ *     @ORM\Index(name="type", columns={"type"}),
+ *     @ORM\Index(name="activity", columns={"activity"}),
+ *     @ORM\Index(name="deleter_id", columns={"deleter_id"}),
+ *     @ORM\Index(name="deletion_date", columns={"deletion_date"}),
+ *     @ORM\Index(name="room_description", columns={"room_description"}),
+ *     @ORM\Index(name="contact_persons", columns={"contact_persons"}),
+ *     @ORM\Index(name="title", columns={"title"}),
+ *     @ORM\Index(name="modifier_id", columns={"modifier_id"}),
+ *     @ORM\Index(name="status", columns={"status"}),
+ *     @ORM\Index(name="lastlogin", columns={"lastlogin"})
+ * })
  * @ORM\Entity(repositoryClass="App\Repository\RoomRepository")
+ * @ORM\HasLifecycleCallbacks
+ * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
+ *     collectionOperations={
+ *         "get",
+ *     },
+ *     itemOperations={
+ *         "get",
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"},
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"},
+ *     }
+ * )
  */
 class Room
 {
@@ -22,7 +52,7 @@ class Room
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
      * @OA\Property(description="The unique identifier.")
      */
     private $itemId = '0';
@@ -63,7 +93,7 @@ class Room
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
      */
     private $creationDate = '0000-00-00 00:00:00';
 
@@ -72,7 +102,7 @@ class Room
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
      */
     private $modificationDate = '0000-00-00 00:00:00';
 
@@ -88,7 +118,7 @@ class Room
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
      * @OA\Property(type="string", maxLength=255)
      */
     private $title;
@@ -119,7 +149,7 @@ class Room
      *
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
      * @OA\Property(description="Either project or community")
      */
     private $type = 'project';
@@ -164,7 +194,8 @@ class Room
      *
      * @ORM\Column(name="room_description", type="string", length=10000, nullable=true)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
+     * @OA\Property(type="string", nullable=true)
      */
     private $roomDescription;
 
@@ -329,6 +360,15 @@ class Room
     public function getContextId()
     {
         return $this->contextId;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setInitialDateValues()
+    {
+        $this->creationDate = new \DateTime("now");
+        $this->modificationDate = new \DateTime("now");
     }
 
     /**

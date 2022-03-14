@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Controller\Api\GetPortalAnnouncement;
+use App\Controller\Api\GetPortalTou;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_list;
@@ -27,6 +28,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
  *     collectionOperations={
  *         "get",
  *     },
@@ -46,18 +48,34 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *                                 "schema"={
  *                                     "type"="object",
  *                                     "properties"={
- *                                         "enabled"={
- *                                             "type"="boolean",
- *                                         },
- *                                         "title"={
- *                                             "type"="string",
- *                                         },
- *                                         "severity"={
- *                                             "type"="string",
- *                                         },
- *                                         "text"={
- *                                             "type"="string",
- *                                         },
+ *                                         "enabled"={"type"="boolean"},
+ *                                         "title"={"type"="string"},
+ *                                         "severity"={"type"="string"},
+ *                                         "text"={"type"="string"},
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *         "get_tou"={
+ *             "method"="GET",
+ *             "path"="portals/{id}/tou",
+ *             "controller"=GetPortalTou::class,
+ *             "openapi_context"={
+ *                 "summary"="Get portal terms of use",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="Portal terms of use",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "de"={"type"="string","nullable"=true},
+ *                                         "en"={"type"="string","nullable"=true},
  *                                     },
  *                                 },
  *                             },
@@ -662,6 +680,12 @@ class Portal implements \Serializable
         return $this;
     }
 
+    /**
+     * @Groups({"api"})
+     * @OA\Property(type="boolean")
+     *
+     * @return bool
+     */
     public function hasAGBEnabled(): bool
     {
         /**

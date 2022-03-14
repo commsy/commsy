@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"local" = "AuthSourceLocal", "oidc" = "AuthSourceOIDC", "ldap" = "AuthSourceLdap", "shib" = "AuthSourceShibboleth", "guest" = "AuthSourceGuest"})
  * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
  *     collectionOperations={
  *         "get"
  *     },
