@@ -44,7 +44,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "discussionarticles"
  * this class implements a database manager for the table "discussionarticles"
  */
-class cs_discussionarticles_manager extends cs_manager implements cs_export_import_interface {
+class cs_discussionarticles_manager extends cs_manager {
 
   /**
    * integer - containing the age of the discussionarticle as a limit
@@ -402,95 +402,140 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
         return $childrenList;
     }
 
-  /** update a discussion - internal, do not use -> use method save
-    * this method updates a discussion
-    *
-    * @param object cs_item discussion_item the discussion
-    */
-  function _update ($discussionarticle_item) {
-     if ( $this->_update_with_changing_modification_information ) {
-        parent::_update($discussionarticle_item);
-     }
-     $this->_current_article_modification_date = getCurrentDateTimeInMySQL();
-     $this->_current_article_id = $discussionarticle_item->getItemID();
-      $public = $this->returnQuerySentenceIfFieldIsValid(!$discussionarticle_item->isPrivateEditing(), 'public');
+    /**
+     * update a discussion - internal, do not use -> use method save
+     * this method updates a discussion
+     *
+     * @param cs_discussionarticle_item $discussionarticle_item
+     * @throws \Doctrine\DBAL\Exception
+     */
+    function _update($discussionarticle_item)
+    {
+        /** @var cs_discussionarticle_item $discussionarticle_item */
+        if ($this->_update_with_changing_modification_information) {
+            parent::_update($discussionarticle_item);
+        }
 
-      $query  = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET ';
-     if ( $this->_update_with_changing_modification_information ) {
-        $query .= 'modification_date="'.$this->_current_article_modification_date.'",';
-     }
-     $query .= 'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
-               'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
-               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
-                $public;
-      $query = rtrim($query, ',');
-      if ( $this->_update_with_changing_modification_information ) {
-        $query .= ', modifier_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"';
-     }
-     $query .= ' WHERE item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');trigger_error('Problems updating discussionarticle item: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
-     }
-     unset($discussionarticle_item);
-  }
+        $this->_current_article_modification_date = getCurrentDateTimeInMySQL();
+        $this->_current_article_id = $discussionarticle_item->getItemID();
 
-  /** create a discussionarticle - internal, do not use -> use method save
-    * this method creates a discussionarticle
-    *
-    * @param object cs_item discussion_item the discussionarticle
-    */
-  function _create ($discussionarticle_item) {
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-              'context_id="'.encode(AS_DB,$discussionarticle_item->getContextID()).'",'.
-              'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'type="'.CS_DISCARTICLE_TYPE.'",'.
-              'draft="'.encode(AS_DB,$discussionarticle_item->isDraft()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating discussionarticle item.',E_USER_WARNING);
-        $this->_create_id = NULL;
-     } else {
-        $this->_create_id = $result;
-        $this->_current_article_id = $this->_create_id;
-        $discussionarticle_item->setItemID($this->getCreateID());
-        $this->_newDiscussionArticle($discussionarticle_item);
-     }
-     unset($discussionarticle_item);
-  }
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-  /** creates a new discarticlearticle - internal, do not use -> use method save
-    * this method creates a new discarticlearticle
-    *
-    * @param object cs_item discarticlearticle_item the discarticlearticle
-    */
-  function _newDiscussionArticle ($discussionarticle_item) {
-     $current_datetime = getCurrentDateTimeInMySQL();
-     $this->_current_article_modification_date = $current_datetime;
-     $modificator = $discussionarticle_item->getModificatorItem();
+        $public = !$discussionarticle_item->isPrivateEditing();
 
-     $public = $this->returnQuerySentenceIfFieldIsValid(!$discussionarticle_item->isPrivateEditing(), 'public');
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('discussionarticles').' SET '.
-              'item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'",'.
-              'context_id="'.encode(AS_DB,$discussionarticle_item->getContextID()).'",'.
-              'discussion_id="'.encode(AS_DB,$discussionarticle_item->getDiscussionID()).'",'.
-              'creator_id="'.encode(AS_DB,$this->_current_user->getItemID()).'",'.
-              'creation_date="'.$current_datetime.'",'.
-              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
-              'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
-              'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
-              'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
-               $public;
-      $query = rtrim($query, ',');
+        $queryBuilder
+            ->update($this->addDatabasePrefix('discussionarticles'))
+            ->set('subject', ':subject')
+            ->set('position', ':position')
+            ->set('description', ':description')
+            ->set('public', ':public')
+            ->where('item_id = :itemId')
+            ->setParameter('subject', $discussionarticle_item->getSubject())
+            ->setParameter('position', $discussionarticle_item->getPosition())
+            ->setParameter('description', $discussionarticle_item->getDescription())
+            ->setParameter('public', $public ? 1 : 0)
+            ->setParameter('itemId', $discussionarticle_item->getItemID());
 
-      $discussionarticle_item->setCreationDate($current_datetime);
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating discarticle.',E_USER_WARNING);
-     }
-     unset($discussionarticle_item);
-  }
+        if ($this->_update_with_changing_modification_information) {
+            $queryBuilder
+                ->set('modifier_id', ':modifierId')
+                ->set('modification_date', ':modificationDate')
+                ->setParameter('modifierId', $this->_current_user->getItemID())
+                ->setParameter('modificationDate', $this->_current_article_modification_date);
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
+
+    /**
+     * create a discussionarticle - internal, do not use -> use method save
+     * this method creates a discussionarticle
+     *
+     * @param cs_discussionarticle_item $discussionarticle_item
+     */
+    function _create(cs_discussionarticle_item $discussionarticle_item)
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('items'))
+            ->setValue('context_id', ':contextId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('type', ':type')
+            ->setValue('draft', ':draft')
+            ->setParameter('contextId', $discussionarticle_item->getContextID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('type', CS_DISCARTICLE_TYPE)
+            ->setParameter('draft', $discussionarticle_item->isDraft());
+
+        try {
+            $queryBuilder->executeStatement();
+
+            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $this->_current_article_id = $this->_create_id;
+            $discussionarticle_item->setItemID($this->getCreateID());
+            $this->_newDiscussionArticle($discussionarticle_item);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems creating discussionarticle item.', E_USER_WARNING);
+            $this->_create_id = null;
+        }
+    }
+
+    /**
+     * creates a new discarticlearticle - internal, do not use -> use method save
+     * this method creates a new discarticlearticle
+     *
+     * @param cs_discussionarticle_item $discussionarticle_item
+     * @throws \Doctrine\DBAL\Exception
+     */
+    function _newDiscussionArticle(cs_discussionarticle_item $discussionarticle_item)
+    {
+        $currentDateTime = getCurrentDateTimeInMySQL();
+        $this->_current_article_modification_date = $currentDateTime;
+        $modificator = $discussionarticle_item->getModificatorItem();
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $public = !$discussionarticle_item->isPrivateEditing();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('discussionarticles'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('discussion_id', ':discussionId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modifier_id', ':modifierId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('subject', ':subject')
+            ->setValue('position', ':position')
+            ->setValue('description', ':description')
+            ->setValue('public', ':public')
+            ->setParameter('itemId', $discussionarticle_item->getItemID())
+            ->setParameter('contextId', $discussionarticle_item->getContextID())
+            ->setParameter('discussionId', $discussionarticle_item->getDiscussionID())
+            ->setParameter('creatorId', $this->_current_user->getItemID())
+            ->setParameter('creationDate', $currentDateTime)
+            ->setParameter('modifierId', $modificator->getItemID())
+            ->setParameter('modificationDate', $currentDateTime)
+            ->setParameter('subject', $discussionarticle_item->getSubject())
+            ->setParameter('position', $discussionarticle_item->getPosition())
+            ->setParameter('description', $discussionarticle_item->getDescription())
+            ->setParameter('public', $public ? 1 : 0);
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems creating discarticle.', E_USER_WARNING);
+        }
+    }
 
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
@@ -621,58 +666,4 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<discarticle_item></discarticle_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('discussion_id', $item->getDiscussionID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('subject', $item->getSubject());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('position', $item->getPosition());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xml->addChildWithCDATA('public', $item->isPublic());
-   
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setContextId($top_item->getContextId());
-         $item->setDiscussionID($top_item->getItemId());
-         $item->setSubject((string)$xml->subject[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setPosition((string)$xml->position[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->save();
-      }
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>

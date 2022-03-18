@@ -80,7 +80,6 @@ class LegacyCopy implements CopyStrategy
         $copy_array['title'] = true;
         $copy_array['logo'] = true;
         $copy_array['BGImage'] = true;
-        $copy_array['wiki'] = true;
         $copy_array['informationbox'] = true;
         $copy_array['myentrydisplayconf'] = false;
         $copy_array['grouproomfct'] = false;
@@ -114,7 +113,6 @@ class LegacyCopy implements CopyStrategy
             $copy_array['emailtext'] = false;
             $copy_array['title'] = false;
             $copy_array['logo'] = false;
-            $copy_array['wiki'] = false;
             $copy_array['informationbox'] = false;
             $copy_array['myentrydisplayconf'] = true;
         }

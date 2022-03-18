@@ -4,6 +4,7 @@ namespace App\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -51,6 +52,13 @@ class ItemCatsBuzzType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'constraints' => $options['categoryConstraints'],
+            ))
+            ->add('newCategory', TextType::class, array(
+                'attr' => array(
+                    'placeholder' => $options['placeholderTextCategories'],
+                ),
+                'label' => 'newCategory',
+                'required' => false
             ))
             ->add('hashtags', ChoiceType::class, array(
                 'placeholder' => false,
@@ -116,6 +124,7 @@ class ItemCatsBuzzType extends AbstractType
                 'hashtagConstraints',
                 'hashtagEditUrl',
                 'placeholderText',
+                'placeholderTextCategories',
             ])
         ;
     }

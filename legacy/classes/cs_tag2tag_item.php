@@ -240,26 +240,4 @@ class cs_tag2tag_item {
       $manager = $this->_environment->getManager($this->_type);
       $manager->saveItem($this);
    }
-
-   public function getDataAsXMLForFlash () {
-      $type = $this->getType();
-
-      $retour  = '      <item>'.LF;
-      if ( !empty($type) ) {
-         $retour .= '         <type><![CDATA['.$type.']]></type>'.LF;
-      }
-      foreach ($this->_data as $key => $value) {
-         if ( $key == 'father_id'
-              or $key == 'child_id'
-              or $key == 'sorting_place'
-            ) {
-            $retour .= '         <'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;
-         }
-      }
-
-      $retour .= '      </item>'.LF;
-      return $retour;
-   }
-
 }
-?>

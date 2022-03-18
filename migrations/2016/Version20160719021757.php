@@ -43,7 +43,7 @@ final class Version20160719021757 extends AbstractMigration
             ->select('m.item_id', 'm.version_id', 'm.extras')
             ->from($table, 'm');
 
-        $materials = $qb->execute();
+        $materials = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($materials as $material) {
             $extras = DbConverter::convertToPHPValue($material['extras']);

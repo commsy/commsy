@@ -40,7 +40,7 @@ class FixUserRelations implements DatabaseCheck
     {
         $io->text('Inspecting tables with user relations');
 
-        $schemaManager = $this->em->getConnection()->getSchemaManager();
+        $schemaManager = $this->em->getConnection()->createSchemaManager();
         $tables = $schemaManager->listTables();
 
         $problems = [];
@@ -74,10 +74,10 @@ class FixUserRelations implements DatabaseCheck
                     $qb->andWhere('t.deletion_date IS NULL');
                 }
 
-                $missingRelations = $qb->execute();
+                $missingRelations = $qb->executeQuery();
 
                 if ($missingRelations->rowCount() > 0) {
-                    foreach ($missingRelations as $missingRelation) {
+                    foreach ($missingRelations->fetchAllAssociative() as $missingRelation) {
                         $io->warning('Missing user relation found - "' . $table->getName() . '" - "' . $column->getName() . '" - user with id "' . $missingRelation['missingId'] . '" not present');
 
                         $problems[] = new DatabaseProblem([

@@ -162,7 +162,7 @@
                                             </a>
                                         </li>
 
-                                        {% if canExportToWordpress or canExportToWiki %}
+                                        {% if canExportToWordpress %}
                                             {# separator #}
                                             <li>&nbsp;</li>
                                         {% endif %}
@@ -171,14 +171,6 @@
                                             <li>
                                                 <a href="#">
                                                     <i class="uk-icon-small uk-icon-wordpress uk-icon-justify uk-visible-large"></i> {{ 'Export to Wordpress'|trans({}, 'item') }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-
-                                        {% if canExportToWiki %}
-                                            <li>
-                                                <a href="#">
-                                                    <i class="uk-icon-small uk-icon-wikipedia-w uk-icon-justify uk-visible-large"></i> {{ 'Export to Wiki'|trans({}, 'item') }}
                                                 </a>
                                             </li>
                                         {% endif %}

@@ -44,7 +44,7 @@ final class Version20210913150510 extends AbstractMigration
             ->from($table, 't')
             ->where('t.extras lIKE "%CRON_DAILY%"')
             ->orWhere('t.extras lIKE "%CRON_WEEKLY%"');
-        $entries = $qb->execute();
+        $entries = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($entries as $entry) {
             $extras = DbConverter::convertToPHPValue($entry['extras']);

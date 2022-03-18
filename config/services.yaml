@@ -117,15 +117,6 @@ parameters:
     commsy.etherpad.api_url: '%env(ETHERPAD_API_URL)%'
     commsy.etherpad.base_url: '%env(ETHERPAD_BASE_URL)%'
 
-    # MediaWiki
-    commsy.mediawiki.enabled: '%env(bool:MEDIAWIKI_ENABLED)%'      # set the following variable to activate mediawiki extension
-    commsy.mediawiki.roomWikiUrl: '%env(MEDIAWIKI_ROOM_WIKI_URL)%'
-    commsy.mediawiki.apiUrl: '%env(MEDIAWIKI_API_URL)%'
-    commsy.mediawiki.consumerKey: '%env(MEDIAWIKI_CONSUMER_KEY)%'
-    commsy.mediawiki.consumerSecret: '%env(MEDIAWIKI_CONSUMER_SECRET)%'
-    commsy.mediawiki.accessToken: '%env(MEDIAWIKI_ACCESS_TOKEN)%'
-    commsy.mediawiki.accessSecret: '%env(MEDIAWIKI_ACCESS_SECRET)%'
-
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
     craue_twig_extensions.formatDateTime.datetype: medium
@@ -354,7 +345,7 @@ services:
         class: App\EventListener\CommsyActivityListener
         arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
     commsy.listener.get_room_membership_filter:
         class: App\EventListener\RoomMembershipFilterConditionListener
@@ -522,8 +513,6 @@ services:
 
     # Form types
     App\Form\Type\ExtensionSettingsType:
-        arguments:
-            $mediaWikiEnabled: '%commsy.mediawiki.enabled%'
         tags:
             - { name: form.type }
 
@@ -814,17 +803,7 @@ services:
     # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
-            - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }
-            # If you get transaction issues (e.g. after login) uncomment the line below
-            - { lock_mode: 1 }
-
-    App\Services\MediawikiService:
-        arguments:
-            $apiUrl: '%commsy.mediawiki.apiUrl%'
-            $consumerKey: '%commsy.mediawiki.consumerKey%'
-            $consumerSecret: '%commsy.mediawiki.consumerSecret%'
-            $accessToken: '%commsy.mediawiki.accessToken%'
-            $accessSecret: '%commsy.mediawiki.accessSecret%'
+            - '%env(DATABASE_URL)%'
 
     # FormatDateTimeExtension
     Craue\TwigExtensionsBundle\Twig\Extension\FormatDateTimeExtension:

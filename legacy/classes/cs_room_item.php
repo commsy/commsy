@@ -464,19 +464,6 @@ class cs_room_item extends cs_context_item {
       $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
    }
 
-   public function getDataAsXML () {
-      $retour  = '<room_item>';
-      $retour .= '<title><![CDATA['.$this->getTitle().']]></title>';
-      $retour .= '<item_id><![CDATA['.$this->getItemID().']]></item_id>';
-      $retour .= '<context_id><![CDATA['.$this->getContextID().']]></context_id>';
-      $retour .= '</room_item>';
-      return $retour;
-   }
-
-   public function getXMLData () {
-      return $this->getDataAsXML();
-   }
-
    /** Sets the data of the item.
     *
     * @param $data_array Is the prepared array from "_buildItem($db_array)"

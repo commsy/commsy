@@ -518,39 +518,6 @@ class cs_file_item extends cs_item {
       return $saved;
    }
 
-   public function getDataAsXML ($with_file_data = false) {
-      $retour  = '<file_item>'.LF;
-      $retour .= $this->_getDataAsXML();
-      if ($with_file_data) {
-         $retour .= '<base64>'.$this->_getFileAsBase64().'</base64>'.LF;
-      } else {
-         $session_item = $this->_environment->getSessionItem();
-         $file_md5_array = $session_item->getValue('file_md5_array');
-         if ( isset($file_md5_array[$this->getFileID()]) and !empty($file_md5_array[$this->getFileID()]) ) {
-            $retour .= '<md5>'.$file_md5_array[$this->getFileID()].'</md5>'.LF;
-         } else {
-            $md5 = md5($this->_getFileAsString());
-            $retour .= '<md5>'.$md5.'</md5>'.LF;
-            $file_md5_array[$this->getFileID()] = $md5;
-            $session_item->setValue('file_md5_array',$file_md5_array);
-            $session_manager = $this->_environment->getSessionManager();
-            $session_manager->save($session_item);
-            $this->_environment->setSessionItem($session_item);
-         }
-         $params = array();
-         $params['iid'] = $this->getFileID();
-         $params['SID'] = $session_item->getSessionID();
-         global $c_commsy_domain,$c_commsy_url_path;
-         include_once('functions/curl_functions.php');
-         $url = _curl(false,$this->getContextID(),'material','getfile',$params);
-         global $c_single_entry_point;
-         $url = str_replace('soap.php',$c_single_entry_point,$url);
-         $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.$url.']]></resource_link>'.LF;
-      }
-      $retour .= '</file_item>'.LF;
-      return $retour;
-   }
-
    private function _getFileAsString () {
       $retour = '';
       $disc_manager = $this->_environment->getDiscManager();
@@ -579,18 +546,6 @@ class cs_file_item extends cs_item {
 
    public function getString () {
       return $this->_getFileAsString();
-   }
-
-   public function _getDataAsXML () {
-      $retour = '';
-      foreach ($this->_data as $key => $value) {
-         if ($key == 'filename') {
-            $retour .= '<'.$key.'>'.rawurldecode($value).'</'.$key.'>';
-         } else {
-            $retour .= '<'.$key.'>'.$value.'</'.$key.'>';
-         }
-      }
-      return $retour;
    }
 
    public function getHasHTML() {

@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Api\GetAuthSourceDirectLoginUrl;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -17,6 +19,46 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"local" = "AuthSourceLocal", "oidc" = "AuthSourceOIDC", "ldap" = "AuthSourceLdap", "shib" = "AuthSourceShibboleth", "guest" = "AuthSourceGuest"})
+ * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
+ *     collectionOperations={
+ *         "get"
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "get_direct_login_url"={
+ *             "method"="GET",
+ *             "path"="auth_sources/{id}/login_url",
+ *             "controller"=GetAuthSourceDirectLoginUrl::class,
+ *             "openapi_context"={
+ *                 "summary"="Get a single auth source login url",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="A direct login url",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "url"={
+ *                                             "type"="string",
+ *                                         },
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"}
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"}
+ *     }
+ * )
  */
 abstract class AuthSource
 {
@@ -32,7 +74,7 @@ abstract class AuthSource
      * @ORM\GeneratedValue(strategy="AUTO")
      *
      * @Groups({"api"})
-     * @SWG\Property(description="The unique identifier.")
+     * @OA\Property(description="The unique identifier.")
      */
     private int $id;
 
@@ -42,7 +84,7 @@ abstract class AuthSource
      * @ORM\Column(type="string", length=255, nullable=false)
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      */
     private ?string $title = null;
 
@@ -52,16 +94,13 @@ abstract class AuthSource
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      */
     private ?string $description = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
      * @ORM\JoinColumn(name="portal_id", referencedColumnName="id")
-     *
-     * @Groups({"api"})
-     * @SWG\Property(description="The portal.")
      */
     private ?Portal $portal;
 
@@ -69,6 +108,9 @@ abstract class AuthSource
      * @var boolean
      *
      * @ORM\Column(type="boolean")
+     *
+     * @Groups({"api"})
+     * @OA\Property(type="boolean")
      */
     private ?bool $enabled = null;
 
@@ -119,7 +161,13 @@ abstract class AuthSource
      */
     protected bool $createRoom = true;
 
-    abstract public function getType(): string;
+    /**
+     * @var string
+     *
+     * @Groups({"api"})
+     * @OA\Property(type="string")
+     */
+    protected string $type = '';
 
     /**
      * @return int
@@ -327,5 +375,13 @@ abstract class AuthSource
     {
         $this->changePassword = $changePassword;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 }
