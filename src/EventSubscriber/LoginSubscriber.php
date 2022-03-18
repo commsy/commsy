@@ -12,8 +12,15 @@ use Symfony\Component\Security\Core\Security;
 
 class LoginSubscriber implements EventSubscriberInterface
 {
-    private $security;
-    private $urlGenerator;
+    /**
+     * @var Security
+     */
+    private Security $security;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private UrlGeneratorInterface $urlGenerator;
 
     public function __construct(Security $security, UrlGeneratorInterface $urlGenerator)
     {
@@ -34,9 +41,9 @@ class LoginSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var Account $user */
-        $user = $this->security->getUser();
-        if (!$user) {
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        if (!$account instanceof Account) {
             return;
         }
 
@@ -52,7 +59,7 @@ class LoginSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($user->hasLegacyPassword()) {
+        if ($account->hasLegacyPassword()) {
             $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_migration_password')));
         }
     }

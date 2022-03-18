@@ -607,10 +607,6 @@
             <trans-unit id="workflow_text">
                 <source>Workflow text</source>
                 <target>The workflow settings are additional features to manage the editorial process for materials.</target>
-            </trans-unit> 
-            <trans-unit id="wiki_Text">
-                <source>wiki text</source>
-                <target>Check this checkbox to enable the Wiki.</target>
             </trans-unit>
             <trans-unit id="default_state">
                 <source>Default status</source>

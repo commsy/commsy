@@ -52,7 +52,7 @@ final class Version20190924140632 extends AbstractMigration
         $qb = $queryBuilder
             ->select('as.id', 'as.extras')
             ->from('auth_source', '`as`');
-        $authSources = $qb->execute();
+        $authSources = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($authSources as $authSource) {
             $extras = DbConverter::convertToPHPValue($authSource['extras']);

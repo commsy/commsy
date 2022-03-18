@@ -70,10 +70,6 @@
                 <source>Export to Wordpress</source>
                 <target>Export zu Wordpress</target>
             </trans-unit>
-            <trans-unit id="exportToWiki">
-                <source>Export to Wiki</source>
-                <target>Export zum Wiki</target>
-            </trans-unit>
             <trans-unit id="newCategory">
                 <source>newCategory</source>
                 <target>Neue Kategorie</target>

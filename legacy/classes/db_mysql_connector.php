@@ -20,45 +20,47 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
+use Doctrine\DBAL\Result;
+
 require_once('functions/security_functions.php');
 
 class db_mysql_connector
 {
-    private $_db_errno = NULL;
-    private $_db_error = NULL;
-    private $_query_array = array();
-    private $_log_query = false;
-    private $_display = true;
-    private $_query_failed = 0;
+    private int $dbErrorCode = 0;
+    private string $dbError = '';
+    private array $queryArray = [];
+    private bool $logQuery = false;
 
-    public function performQuery($query)
+    /** @var Connection */
+    private Connection $connection;
+
+    public function __construct()
     {
         global $symfonyContainer;
-        $connection = $symfonyContainer->get('database_connection');
+        $this->connection = $symfonyContainer->get('database_connection');
+    }
 
-        $statement = $connection->query($query);
-        $retour = NULL;
+    /**
+     * @param $query
+     * @param array $params
+     * @return Result|array|string
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function performQuery($query, array $params = [])
+    {
+        try {
+            $result = $this->connection->executeQuery($query, $params);
 
-        if ($this->_log_query) {
-            $this->_query_array[] = $query;
-        }
+            if ($this->logQuery) {
+                $this->queryArray[] = $query;
+            }
 
-        $this->_db_errno = $connection->errorCode();
-        $this->_db_error = $connection->errorInfo();
-
-        if (!$statement) {
-            throw new Exception($this->_db_error[2], $this->_db_errno);
-        } else {
             if (mb_substr(trim($query), 0, 6) === 'SELECT' || mb_substr(trim($query), 0, 4) === 'SHOW') {
-                $retour = array();
-
-                foreach ($statement as $row) {
-                    $retour[] = $row;
-                }
+                return $result->fetchAllAssociative();
             } elseif (mb_substr(trim($query), 0, 6) === 'INSERT') {
-                if (strstr($query, 'INSERT INTO chat')
-                    || strstr($query, 'INSERT INTO auth')
-                    || strstr($query, 'INSERT INTO item_link_file')
+                if (strstr($query, 'INSERT INTO item_link_file')
                     || strstr($query, 'INSERT INTO external2commsy_id')
                     || strstr($query, 'INSERT INTO links')
                     || strstr($query, 'INSERT INTO link_modifier_item')
@@ -67,57 +69,44 @@ class db_mysql_connector
                     || strstr($query, 'INSERT INTO reader')
                     || strstr($query, 'INSERT INTO section')) {
 
-                    $retour = $statement;
+                    return $result;
                 } else {
-                    $retour = $connection->lastInsertId();
+                    return $this->connection->lastInsertId();
                 }
             } else {
-                $retour = $statement;
+                return $result;
             }
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $this->dbErrorCode = $e->getCode();
+            $this->dbError = $e->getMessage();
 
-            $this->_query_failed = 0;
-            unset($statement);
+            throw $e;
         }
+    }
 
-        return $retour;
+    public function getConnection(): Connection
+    {
+        return $this->connection;
     }
 
     public function setLogQueries()
     {
-        $this->_log_query = true;
+        $this->logQuery = true;
     }
 
     public function getQueryArray()
     {
-        return $this->_query_array;
+        return $this->queryArray;
     }
 
     public function getErrno()
     {
-        if ($this->_db_errno === "00000") {
-            return "";
-        }
-
-        return $this->_db_errno;
+        return $this->dbErrorCode;
     }
 
     public function getError()
     {
-        if (isset($this->_db_error[2])) {
-            return $this->_db_error[2];
-        }
-
-        return "";
-    }
-
-    public function setDisplayOff()
-    {
-        $this->_display = false;
-    }
-
-    public function setDisplayOn()
-    {
-        $this->_display = true;
+        return $this->dbError;
     }
 
     public function text_php2db($text)

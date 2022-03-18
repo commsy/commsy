@@ -23,7 +23,11 @@ security:
         in_memory:
             memory:
                 users:
-                    api: { password: '%env(API_SECRET)%' }
+                    api_read: { password: '%env(API_READ_SECRET)%', roles: ['ROLE_API_READ'] }
+                    api_write: { password: '%env(API_WRITE_SECRET)%', roles: ['ROLE_API_WRITE'] }
+
+    role_hierarchy:
+        ROLE_API_WRITE: ROLE_API_READ
 
     firewalls:
         dev:

@@ -3,7 +3,7 @@
 
 namespace App\Model\API;
 
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,7 +13,7 @@ class Room
      * @var string
      *
      * @Groups({"api_write"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      *
      * @Assert\NotBlank(groups={"api_write"})
      */
@@ -23,7 +23,7 @@ class Room
      * @var string
      *
      * @Groups({"api_write"})
-     * @SWG\Property(description="Either project or community")
+     * @OA\Property(description="Either project or community")
      *
      * @Assert\NotBlank(groups={"api_write"})
      * @Assert\Regex("/^(project|community)$/", groups={"api_write"})
@@ -41,7 +41,7 @@ class Room
      * @var string
      *
      * @Groups({"api_write"})
-     * @SWG\Property(description="The username of the room creator")
+     * @OA\Property(description="The username of the room creator")
      *
      * @Assert\NotBlank(groups={"api_write"})
      */
@@ -51,7 +51,7 @@ class Room
      * @var int
      *
      * @Groups({"api_write"})
-     * @SWG\Property(description="ID of the user's authentication source")
+     * @OA\Property(description="ID of the user's authentication source")
      *
      * @Assert\NotBlank(groups={"api_write"})
      * @Assert\Positive

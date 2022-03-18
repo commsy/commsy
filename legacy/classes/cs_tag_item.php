@@ -175,14 +175,6 @@ class cs_tag_item extends cs_item {
       $this->_setValue('title', $value);
    }
 
-   public function getDataAsXML () {
-      $retour  = '<tag_item>';
-      $retour .= $this->_getDataAsXML();
-      $retour .= '</tag_item>';
-
-      return $retour;
-   }
-
    public function getChildrenList () {
       $retour = NULL;
       if ( !isset($this->_children_list) ) {

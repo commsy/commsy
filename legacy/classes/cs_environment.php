@@ -35,7 +35,6 @@ include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
 include_once('classes/cs_list.php');
 include_once('classes/cs_userroom_item.php');
-include_once('classes/interfaces/cs_export_import_interface.php');
 
    /** This class returns an instance of a cs_mananger subclass on request.
    *It also contains often needed environment variables.
@@ -1776,14 +1775,6 @@ class cs_environment {
       $context_item = $this->getCurrentContextItem();
       return $context_item->isServer();
    }
-   
-   public function getCommSyConnectionObject () {
-   	if ( !isset($this->instance['commsy_connection_object']) ) {
-         include_once('classes/cs_connection_commsy.php');
-         $this->instance['commsy_connection_object'] = new cs_connection_commsy($this);
-     	}
-      return $this->instance['commsy_connection_object'];
-   }
 
    /** get Instance of the translation object
     * returns an object for translation of message tags
@@ -2202,12 +2193,7 @@ class cs_environment {
    # plugin: end
    ################################################################
 
-    function getDBConnector()
-    {
-        return $this->_getMySQLConnector();
-    }
-
-    private function _getMySQLConnector()
+    public function getDBConnector(): db_mysql_connector
     {
         if (empty($this->_db_mysql_connector)) {
             include_once('classes/db_mysql_connector.php');

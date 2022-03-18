@@ -73,7 +73,7 @@ final class Version20170225121940 extends AbstractMigration
         $qb = $dQueryBuilder
             ->select('d.item_id', 'd.discussion_type')
             ->from($dTable, 'd');
-        $discussions = $qb->execute();
+        $discussions = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($discussions as $discussion) {
             $discussionId = $discussion['item_id'];
@@ -87,7 +87,7 @@ final class Version20170225121940 extends AbstractMigration
                 ->where('da.discussion_id = :discussionId')
                 ->orderBy('da.item_id', 'ASC')
                 ->setParameter(':discussionId', $discussionId);
-            $articles = $qb->execute();
+            $articles = $qb->executeQuery()->fetchAllAssociative();
 
             if ($discussionType == 'simple') {
                 $numericPosition = 1;

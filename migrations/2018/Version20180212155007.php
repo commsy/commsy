@@ -34,7 +34,7 @@ final class Version20180212155007 extends AbstractMigration
         $qb = $dQueryBuilder
             ->select('p.item_id')
             ->from('portal', 'p');
-        $portals = $qb->execute();
+        $portals = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($portals as $portal) {
             $this->addSql('

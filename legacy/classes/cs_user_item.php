@@ -1226,38 +1226,34 @@ class cs_user_item extends cs_item
         return $room_manager->getItem($this->getRoomID());
     }
 
-    function getUserRelatedCommunityList()
+    function getUserRelatedCommunityList(bool $withExtras = true)
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getUserRelatedCommunityListForUser($this);
-        return $list;
+        return $manager->getUserRelatedCommunityListForUser($this, $withExtras);
     }
 
     function getRelatedCommunityList()
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getRelatedCommunityListForUser($this);
-        return $list;
+        return $manager->getRelatedCommunityListForUser($this);
     }
 
     function getRelatedCommunityListAllUserStatus()
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getRelatedCommunityListForUserAllUserStatus($this);
-        return $list;
+        return $manager->getRelatedCommunityListForUserAllUserStatus($this);
     }
 
-    public function getRelatedUserroomsList(): \cs_list
+    public function getRelatedUserroomsList(bool $withExtras = true): \cs_list
     {
         $manager = $this->_environment->getRoomManager();
-        return $manager->getUserRoomsUserIsMemberOf($this)  ;
+        return $manager->getUserRoomsUserIsMemberOf($this, $withExtras);
     }
 
-    function getUserRelatedProjectList()
+    function getUserRelatedProjectList(bool $withExtras = true)
     {
         $manager = $this->_environment->getProjectManager();
-        $list = $manager->getUserRelatedProjectListForUser($this);
-        return $list;
+        return $manager->getUserRelatedProjectListForUser($this, $withExtras);
     }
 
     public function getRelatedProjectList()
@@ -1847,11 +1843,11 @@ class cs_user_item extends cs_item
 
         // community rooms
         $communityManager = $this->_environment->getCommunityManager();
-        $communityRooms = $communityManager->getRelatedCommunityListForUser($this);
+        $communityRooms = $communityManager->getRelatedCommunityListForUser($this, false);
 
         // project rooms
         $projectManager = $this->_environment->getProjectManager();
-        $projectRooms = $projectManager->getRelatedProjectListForUser($this);
+        $projectRooms = $projectManager->getRelatedProjectListForUser($this, null, false);
 
         // user rooms
         $userroomManager = $this->_environment->getUserRoomManager();
@@ -2443,11 +2439,6 @@ class cs_user_item extends cs_item
         }
 
         return $retour;
-    }
-
-    function getDataAsXML()
-    {
-        return $this->_getDataAsXML();
     }
 
     public function isOnlyReadUser()

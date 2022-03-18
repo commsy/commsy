@@ -2,7 +2,6 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
-use App\Services\MediawikiService;
 use App\Utils\RoomService;
 use cs_environment;
 use cs_room_item;
@@ -14,20 +13,9 @@ class ExtensionSettingsTransformer extends AbstractTransformer
      */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @var MediawikiService
-     */
-    private MediawikiService $mediaWiki;
-
-    /**
-     * @var bool
-     */
-    private bool $mediaWikiEnabled = false;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, MediawikiService $mediawiki)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->mediaWiki = $mediawiki;
     }
 
     /**
@@ -75,7 +63,6 @@ class ExtensionSettingsTransformer extends AbstractTransformer
             $roomData['workflow']['reader_person'] = ($roomItem->getWorkflowReaderPerson() === '1');
             $roomData['workflow']['resubmission_show_to'] = $roomItem->getWorkflowReaderShowTo();
 
-            $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
             $roomData['createUserRooms'] = ($roomItem->isProjectRoom()) ? $roomItem->getShouldCreateUserRooms() : false;
         }
 
@@ -171,26 +158,6 @@ class ExtensionSettingsTransformer extends AbstractTransformer
 
         if ( isset($workflow['resubmission_show_to']) and !empty($workflow['resubmission_show_to'])) {
            $roomObject->setWorkflowReaderShowTo($workflow['resubmission_show_to']);
-        }
-
-        if ($this->mediaWikiEnabled) {
-            if ($roomData['wikiEnabled']) {
-                if ($this->mediaWiki->enableWiki($roomObject->getItemID())) {
-                    $roomObject->setWikiEnabled(true);
-                } else if ($this->mediaWiki->isWikiEnabled($roomObject->getItemID())) {
-                    $roomObject->setWikiEnabled(true);
-                } else {
-                    $roomObject->setWikiEnabled(false);
-                }
-            } else {
-                if ($this->mediaWiki->disableWiki($roomObject->getItemID())) {
-                    $roomObject->setWikiEnabled(false);
-                } else if (!$this->mediaWiki->isWikiEnabled($roomObject->getItemID())) {
-                    $roomObject->setWikiEnabled(false);
-                } else {
-                    $roomObject->setWikiEnabled(true);
-                }
-            }
         }
 
         return $roomObject;
