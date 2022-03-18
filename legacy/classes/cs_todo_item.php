@@ -178,36 +178,34 @@ class cs_todo_item extends cs_item {
    }
 
 
-   function getFileListWithFilesFromSteps () {
-      $file_list = new cs_list;
+   function getFileListWithFilesFromSteps()
+   {
+       $file_list = new cs_list;
 
-   	  if ($this->getPublic()=='-1'){
-		 $translator = $this->_environment->getTranslationObject();
-   	  	 return $file_list;
-   	  }else{
-      	 $files = $this->getFileList();
-	      // steps
-	      $context_item = $this->_environment->getCurrentContextItem();
-	      if ($context_item->withTodoManagement()){
-	         $step_list = clone $this->getStepItemList();
-	         if ( $step_list->isNotEmpty() ) {
-	            $step_item = $step_list->getFirst();
-	            while ($step_item) {
-	               $step_file_list = $step_item->getFileList();
-	               if ( $step_file_list->isNotEmpty() ) {
-	                  $file_list->addList($step_file_list);
-	               }
-	               unset($step_item);
-	               $step_item = $step_list->getNext();
-	            }
-	         }
-	         unset($step_item);
-	         unset($step_list);
-	         $files->addList($file_list);
-	      }
-	      $files->sortby('filename');
-   	  }
-      return $files;
+       if ($this->getPublic() == '-1') {
+           $translator = $this->_environment->getTranslationObject();
+           return $file_list;
+       } else {
+           $files = $this->getFileList();
+           // steps
+           $step_list = clone $this->getStepItemList();
+           if ($step_list->isNotEmpty()) {
+               $step_item = $step_list->getFirst();
+               while ($step_item) {
+                   $step_file_list = $step_item->getFileList();
+                   if ($step_file_list->isNotEmpty()) {
+                       $file_list->addList($step_file_list);
+                   }
+                   unset($step_item);
+                   $step_item = $step_list->getNext();
+               }
+           }
+           unset($step_item);
+           unset($step_list);
+           $files->addList($file_list);
+           $files->sortby('filename');
+       }
+       return $files;
    }
 
    function getProcessorItemList(){
