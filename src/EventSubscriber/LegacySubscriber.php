@@ -68,14 +68,13 @@ class LegacySubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $this->security->getUser();
 
-        if (!$account instanceof Account) {
-            return;
+        // NOTE: for guests, $account is null but setupUser() will handle this
+        if ($account instanceof Account || $account === null) {
+            $request = $event->getRequest();
+            $this->setupContextId($request, $account);
+
+            $this->setupUser($account);
         }
-
-        $request = $event->getRequest();
-        $this->setupContextId($request, $account);
-
-        $this->setupUser($account);
     }
 
     /**
