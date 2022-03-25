@@ -68,7 +68,6 @@ class LegacyCopy implements CopyStrategy
         $copy_array['topicpath'] = true;
         $copy_array['tag'] = true;
         $copy_array['discussionstatus'] = true;
-        $copy_array['todomanagementstatus'] = true;
         $copy_array['detailboxconf'] = true;
         $copy_array['listboxconf'] = true;
         $copy_array['homerightconf'] = true;
@@ -204,9 +203,6 @@ class LegacyCopy implements CopyStrategy
 
         if ($copy_array['discussionstatus']) {
             $target->setDiscussionStatus($source->getDiscussionStatus());
-        }
-        if ($copy_array['todomanagementstatus']) {
-            $target->setTodoManagmentStatus($source->getTodoManagmentStatus());
         }
         if ($copy_array['detailboxconf']) {
             $target->setDetailBoxConf($source->getDetailBoxConf());
