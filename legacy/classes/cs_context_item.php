@@ -671,27 +671,6 @@ class cs_context_item extends cs_item {
       return $this;
     }
 
-  function setWithTodoManagment() {
-    $this->_addExtra('TODOMANAGEMENT',2);
-  }
-
-  function setWithoutTodoManagment() {
-    $this->_addExtra('TODOMANAGEMENT',1);
-  }
-
-  function setTodoManagmentStatus($value) {
-    $this->_addExtra('TODOMANAGEMENT',$value);
-  }
-
-  function getTodoManagmentStatus() {
-    $retour = 1;
-    if ($this->_issetExtra('TODOMANAGEMENT') ) {
-      $retour = $this->_getExtra('TODOMANAGEMENT');
-    }
-    return $retour;
-  }
-
-
   function setActionBarVisibilityDefault($value) {
     $this->_addExtra('ACTIONBARVISIBILITY',$value);
   }
@@ -738,19 +717,6 @@ class cs_context_item extends cs_item {
       $retour = true;
     }
     return $retour;
-  }
-
-
-  function withTodoManagement() {
-    $retour = false;
-    if ($this->_issetExtra('TODOMANAGEMENT') ) {
-      $re = $this->_getExtra('TODOMANAGEMENT');
-      if ($re == 2) {
-        $retour = true;
-      }
-    }
-//    return $retour;
-	return true;
   }
 
   function setWithAssociations() {

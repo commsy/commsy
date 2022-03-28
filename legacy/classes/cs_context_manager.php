@@ -250,6 +250,12 @@ class cs_context_manager extends cs_manager
         bool $withExtras = true
     ) {
         $list = new cs_list();
+
+        if ($user_id === 'guest' && $this->_room_type !== CS_COMMUNITY_TYPE) {
+            // only community rooms may be open for guests
+            return $list;
+        }
+
         if (!isset($this->listCache[$user_id . '_' . $auth_source . '_' . $context_id . '_' . $withExtras])) {
 
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -259,30 +265,42 @@ class cs_context_manager extends cs_manager
                     'c.modification_date', 'c.title', 'c.status', 'c.activity', 'c.type', 'c.public',
                     'c.is_open_for_guests', 'c.continuous', 'c.template', 'c.contact_persons', 'c.room_description',
                     'c.lastlogin')
-                ->from($this->addDatabasePrefix($this->_db_table), 'c')
-                ->innerJoin('c', $this->addDatabasePrefix('user'), 'u', 'u.context_id = c.item_id')
+                ->from($this->addDatabasePrefix($this->_db_table), 'c');
+
+            if ($user_id !== 'guest') {
+                $queryBuilder
+                    ->innerJoin('c', $this->addDatabasePrefix('user'), 'u', 'u.context_id = c.item_id');
+            }
+
+            $queryBuilder
                 ->andWhere('c.deleter_id IS NULL')
-                ->andWhere('c.deletion_date IS NULL')
-                ->andWhere('u.auth_source = :authSource')
-                ->andWhere('u.deleter_id IS NULL')
-                ->andWhere('u.deletion_date IS NULL')
-                ->andWhere('u.user_id = :userId')
-                ->andWhere('u.status >= :status')
-                ->setParameter('authSource', $auth_source)
-                ->setParameter('userId', $user_id);
+                ->andWhere('c.deletion_date IS NULL');
+
+            if ($user_id !== 'guest') {
+                $queryBuilder
+                    ->andWhere('u.auth_source = :authSource')
+                    ->andWhere('u.deleter_id IS NULL')
+                    ->andWhere('u.deletion_date IS NULL')
+                    ->andWhere('u.user_id = :userId')
+                    ->andWhere('u.status >= :status')
+                    ->setParameter('authSource', $auth_source)
+                    ->setParameter('userId', $user_id);
+            }
 
             if ($withExtras) {
                 $queryBuilder->addSelect('c.extras');
             }
 
-            if (!$this->_all_status_limit) {
-                if (!$only_user) {
-                    $queryBuilder->setParameter('status', 1);
+            if ($user_id !== 'guest') {
+                if (!$this->_all_status_limit) {
+                    if (!$only_user) {
+                        $queryBuilder->setParameter('status', 1);
+                    } else {
+                        $queryBuilder->setParameter('status', 2);
+                    }
                 } else {
-                    $queryBuilder->setParameter('status', 2);
+                    $queryBuilder->setParameter('status', 0);
                 }
-            } else {
-                $queryBuilder->setParameter('status', 0);
             }
 
             if (isset($this->_room_type) && !empty($this->_room_type)) {
@@ -292,7 +310,11 @@ class cs_context_manager extends cs_manager
                     $current_portal = $portal_manager->getItem($context_id);
                 }
 
-                if (
+                if ($user_id === 'guest' && $this->_room_type === CS_COMMUNITY_TYPE) {
+                    $queryBuilder->andWhere('c.is_open_for_guests = "1"');
+                    $queryBuilder->andWhere('c.type = :roomType');
+                    $queryBuilder->setParameter('roomType', $this->_room_type);
+                } else if (
                     $this->_room_type == CS_PROJECT_TYPE &&
                     (
                         (isset($current_portal) && $current_portal->withGroupRoomFunctions()) ||

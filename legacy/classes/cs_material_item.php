@@ -1457,8 +1457,8 @@ function _copySectionList ($copy_id) {
          return parent::maySee($user_item);
 
       } else {
-          $currentContextItem = $this->_environment->getCurrentContextItem();
-          if ($currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests()) {
+          $contextItem = $this->getContextItem();
+          if ($contextItem->isOpenForGuests() && $contextItem->isMaterialOpenForGuests()) {
               return parent::maySee($user_item);
           }
       }

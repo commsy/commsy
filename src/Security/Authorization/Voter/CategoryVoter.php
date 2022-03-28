@@ -59,6 +59,11 @@ class CategoryVoter extends Voter
 
     private function canEdit($currentRoom, $currentUser)
     {
+        // categories are not editable by guests
+        if ($currentUser->isReallyGuest()) {
+            return false;
+        }
+
         // categories are not editable in archived rooms
         if ($currentRoom->isArchived()) {
             return false;
