@@ -1578,11 +1578,10 @@ class cs_environment {
     /** get instance of cs_XXX_manager by item_type
      *
      * @param string type of an item
-     * @param bool $force
-     * @return cs_manager|null
+     * @return object|null
      * @access public
      */
-    public function getManager($type): ?cs_manager
+    public function getManager($type): ?object
     {
         if (!empty($type)) {
             if ($type == CS_DATE_TYPE) {

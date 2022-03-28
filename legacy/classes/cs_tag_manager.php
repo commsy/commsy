@@ -760,21 +760,20 @@ class cs_tag_manager extends cs_manager {
      }
   }
 
-   public function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='') {
-      $retour = parent::copyDataFromRoomToRoom($old_id,$new_id,$user_id,$id_array);
+    public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '')
+    {
+        $retour = parent::copyDataFromRoomToRoom($old_id, $new_id, $user_id, $id_array);
 
-      $tag_root_item_old = $this->getRootTagItemFor($old_id);
-      if ( isset($tag_root_item_old) ) {
-         $this->forceSQL();
-         $tag_root_item_new = $this->getRootTagItemFor($new_id);
-         if ( isset($tag_root_item_new) ) {
-            $retour[$tag_root_item_old->getItemID()] = $tag_root_item_new->getItemID();
-            unset($tag_root_item_new);
-         }
-      }
-      unset($tag_root_item_old);
-      return $retour;
-   }
+        $tag_root_item_old = $this->getRootTagItemFor($old_id);
+        if (isset($tag_root_item_old)) {
+            $this->forceSQL();
+            $tag_root_item_new = $this->getRootTagItemFor($new_id);
+            if (isset($tag_root_item_new)) {
+                $retour[$tag_root_item_old->getItemID()] = $tag_root_item_new->getItemID();
+            }
+        }
+        return $retour;
+    }
 
     public function deleteTagsOfUser ($uid) {
         global $symfonyContainer;
