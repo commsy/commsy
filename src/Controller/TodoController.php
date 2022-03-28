@@ -427,6 +427,7 @@ class TodoController extends BaseController
             'isParticipating' => $todo->isProcessor($this->legacyEnvironment->getCurrentUserItem()),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
+            'isArchived' => $current_context->isArchived(),
         );
     }
 

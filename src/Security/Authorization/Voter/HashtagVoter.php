@@ -36,10 +36,11 @@ class HashtagVoter extends Voter
         // }
 
         $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         
         switch ($attribute) {
             case self::EDIT:
-                return $this->canEdit($currentRoom);
+                return $this->canEdit($currentRoom, $currentUser);
 
                 // TODO:
                 // // my stack check
@@ -56,9 +57,14 @@ class HashtagVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canEdit($currentRoom)
+    private function canEdit($currentRoom, $currentUser)
     {
-        // categories are not editable in archived rooms
+        // hashtags are not editable by guests
+        if ($currentUser->isReallyGuest()) {
+            return false;
+        }
+
+        // hashtags are not editable in archived rooms
         if ($currentRoom->isArchived()) {
             return false;
         }

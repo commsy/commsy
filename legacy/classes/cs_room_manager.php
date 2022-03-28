@@ -846,6 +846,12 @@ class cs_room_manager extends cs_context_manager
 
     public function getUserRoomsUserIsMemberOf(\cs_user_item $user, bool $withExtras = true): \cs_list
     {
+        $list = new \cs_list();
+
+        if ($user->isReallyGuest()) {
+            return $list;
+        }
+
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
         $queryBuilder
@@ -869,8 +875,6 @@ class cs_room_manager extends cs_context_manager
         if ($withExtras) {
             $queryBuilder->addSelect('r.extras');
         }
-
-        $list = new \cs_list();
 
         try {
             $results = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());

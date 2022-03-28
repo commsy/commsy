@@ -268,6 +268,7 @@ class UserController extends BaseController
             'isArchived' => $roomItem->isArchived(),
             'userTasks' => $userTasks,
             'isModerator' => $currentUser->isModerator(),
+            'user' => $currentUser,
         ];
     }
 

@@ -643,7 +643,7 @@ class MenuBuilder
             }
 
             if (!$inPrivateRoom) {
-                if ($currentUser) {
+                if ($currentUser && !$currentUser->isGuest()) {
                     $menu->addChild('', ['uri' => '#']);
                     $menu->addChild('room_profile', [
                         'label' => 'Room profile',
@@ -665,23 +665,6 @@ class MenuBuilder
                     }
                 }
             }
-        } else {
-            $menu->addChild('portal_configuration_room_categories', array(
-                'label' => 'Room categories',
-                'route' => 'app_portal_roomcategories',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
-            ))
-            ->setExtra('translation_domain', 'portal');
-
-            $menu->addChild(' ', ['uri' => '#']);
-            $menu->addChild('room', array(
-                'label' => 'settings',
-                'route' => 'app_portal_legacysettings',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
-            ))
-            ->setExtra('translation_domain', 'portal');
         }
 
         return $menu;
