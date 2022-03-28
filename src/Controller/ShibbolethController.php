@@ -49,7 +49,8 @@ class ShibbolethController extends AbstractController
 
         // pass entityId if present
         if ($request->query->has('entityId')) {
-            $initiatorUrl .= '&entityID=' . urlencode($request->query->get('entityId', ''));
+            $entityId = urldecode($request->query->get('entityId', ''));
+            $initiatorUrl .= '&entityID=' . urlencode($entityId);
         }
 
         return $this->redirect($initiatorUrl);
