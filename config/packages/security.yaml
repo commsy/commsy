@@ -68,6 +68,7 @@ security:
             switch_user:
                 role: CAN_SWITCH_USER
                 provider: commsy_user_provider
+            access_denied_handler: App\Security\AccessDeniedHandler
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
