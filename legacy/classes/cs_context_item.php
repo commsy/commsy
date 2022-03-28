@@ -1279,26 +1279,6 @@ class cs_context_item extends cs_item {
     }
   }
 
-
-
-  /** get modifier
-   * this method returns the modifier of the item
-   *
-   * @return cs_user_item modifier of the item
-   */
-  function getModifier () {
-    return $this->_getUserItem('modifier');
-  }
-
-  /** set modifier
-   * this method sets the modifier of the item
-   *
-   * @param object cs_item modifier of the item
-   */
-  function setModifier ($value) {
-    $this->_setUserItem('modifier',$value);
-  }
-
   /** get flag for checking always new members
    * this method returns a boolean for checking always new members
    *

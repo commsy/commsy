@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Utils\ItemService;
+use cs_item;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -12,7 +13,7 @@ class CopyService
 
     private SessionInterface $session;
 
-    private $type;
+    private ?string $type = null;
 
     /**
      * CopyService constructor.
@@ -25,7 +26,6 @@ class CopyService
     ) {
         $this->itemService = $itemService;
         $this->session = $session;
-        $this->type = false;
     }
 
     public function getCountArray($roomId)
@@ -33,7 +33,7 @@ class CopyService
         $currentClipboardIds = $this->session->get('clipboard_ids', []);
 
         if ($this->type) {
-            $itemsCountArray['count'] = sizeof($this->getListEntries($roomId));
+            $itemsCountArray['count'] = sizeof($this->getListEntries());
         } else {
             $itemsCountArray['count'] = sizeof($currentClipboardIds);
         }
@@ -44,12 +44,12 @@ class CopyService
     }
 
     /**
-     * @param integer $roomId
-     * @param integer $max
-     * @param integer $start
-     * @return \cs_item[]
+     * @param null $max
+     * @param null $start
+     * @param null $sort
+     * @return cs_item[]
      */
-    public function getListEntries($roomId, $max = null, $start = null, $sort = null)
+    public function getListEntries($max = null, $start = null, $sort = null)
     {
         $currentClipboardIds = $this->session->get('clipboard_ids', []);
 
@@ -64,6 +64,7 @@ class CopyService
             }
             if ($counter >= $start && $counter < $start + $max) {
                 $typedItem = $this->itemService->getTypedItem($currentClipboardId);
+
                 if ($this->type) {
                     if ($typedItem->getItemType() == $this->type) {
                         $entries[] = $typedItem;
@@ -79,13 +80,12 @@ class CopyService
     }
 
     /**
-     * @param integer $roomId
      * @param integer[] $ids
-     * @return \cs_item[]
+     * @return cs_item[]
      */
-    public function getCopiesById($roomId, $ids)
+    public function getCopiesById($ids)
     {
-        $allCopies = $this->getListEntries($roomId);
+        $allCopies = $this->getListEntries();
 
         $filteredCopies = [];
         foreach ($allCopies as $copy) {

@@ -47,13 +47,23 @@ class ItemService
         if ($item && is_object($item)) {
             $type = $item->getItemType();
 
+            $archiveModeSwitched = false;
+            if ($item->isArchived() && !$this->legacyEnvironment->isArchiveMode()) {
+                $this->legacyEnvironment->toggleArchiveMode();
+                $archiveModeSwitched = true;
+            }
+
             if ($type == 'label') {
                 $labelManager = $this->legacyEnvironment->getLabelManager();
                 $labelItem = $labelManager->getItem($item->getItemID());
                 $type = $labelItem->getLabelType();
             }
-            
             $manager = $this->legacyEnvironment->getManager($type);
+
+            if ($archiveModeSwitched === true) {
+                $this->legacyEnvironment->toggleArchiveMode();
+            }
+
             if (!$manager) {
                 return null;
             }

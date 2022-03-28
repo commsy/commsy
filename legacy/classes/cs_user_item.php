@@ -738,16 +738,6 @@ class cs_user_item extends cs_item
         $this->changedValues[] = 'email';
     }
 
-
-    /** set creator of the user - overwritting parent method - do not use
-     *
-     * @param object cs_user_item value creator of the user
-     */
-    function setCreator($value)
-    {
-        echo('use setCreatorID( xxx )<br />');
-    }
-
     /** get deleter - do not use
      * this method is a warning for coders, because if you want an object cs_user_item here, you get into an endless loop
      */
