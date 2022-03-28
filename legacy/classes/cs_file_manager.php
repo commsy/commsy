@@ -534,7 +534,8 @@ class cs_file_manager extends cs_manager {
       return $thumb_name;
    }
 
-   function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='') {
+   public function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='')
+   {
       $retour = array();
       $current_date = getCurrentDateTimeInMySQL();
       $current_data_array = array();

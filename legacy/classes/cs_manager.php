@@ -1071,58 +1071,48 @@ class cs_manager {
       trigger_error("must be overwritten!", E_USER_ERROR);
    }
 
-   function mergeAccounts ($new_id, $old_id) {
-     // creator id
-     if ( $this->_db_table != 'links'
-          and $this->_db_table != 'items'
-       ) {
-         $query1 = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET creator_id = "'.encode(AS_DB,$new_id).'" WHERE creator_id = "'.encode(AS_DB,$old_id).'";';
-         $result = $this->_db_connector->performQuery($query1);
-         if ( !isset($result) or !$result ) {
+    public function mergeAccounts($new_id, $old_id)
+    {
+        // creator id
+        if (!in_array($this->_db_table, ['links', 'items', 'portal'])) {
+            $query1 = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET creator_id = "' . encode(AS_DB,
+                    $new_id) . '" WHERE creator_id = "' . encode(AS_DB, $old_id) . '";';
+            $result = $this->_db_connector->performQuery($query1);
+            if (!isset($result) or !$result) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems merging accounts "' . $this->_db_table . '".', E_USER_WARNING);
+            }
+        }
+
+        // modifier id
+        if (!in_array($this->_db_table, ['files', 'link_items', 'links', 'tasks', 'items', 'portal'])) {
+            $query2 = ' UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET modifier_id = "' . encode(AS_DB,
+                    $new_id) . '" WHERE modifier_id = "' . encode(AS_DB, $old_id) . '";';
+            $result = $this->_db_connector->performQuery($query2);
+            if (!isset($result) or !$result) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems merging accounts "' . $this->_db_table . '".', E_USER_WARNING);
+            }
+        }
+
+        // deleter id
+        $query3 = ' UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET deleter_id = "' . encode(AS_DB,
+                $new_id) . '" WHERE deleter_id = "' . encode(AS_DB, $old_id) . '";';
+        $result = $this->_db_connector->performQuery($query3);
+        if (!isset($result) or !$result) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems merging accounts "'.$this->_db_table.'".',E_USER_WARNING);
-         } else {
-            unset($result);
-            unset($query1);
-         }
-     }
+            trigger_error('Problems merging accounts "' . $this->_db_table . '": "' . $this->_dberror . '" from query: "' . $query3 . '"',
+                E_USER_WARNING);
+        }
+    }
 
-      // modifier id
-      if ( $this->_db_table != 'files'
-           and $this->_db_table != 'link_items'
-           and $this->_db_table != 'links'
-           and $this->_db_table != 'tasks'
-           and $this->_db_table != 'items'
-         ) {
-         $query2 = ' UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET modifier_id = "'.encode(AS_DB,$new_id).'" WHERE modifier_id = "'.encode(AS_DB,$old_id).'";';
-         $result = $this->_db_connector->performQuery($query2);
-         if ( !isset($result) or !$result ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems merging accounts "'.$this->_db_table.'".',E_USER_WARNING);
-         } else {
-            unset($result);
-            unset($query2);
-         }
-      }
-
-      // deleter id
-      $query3 = ' UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id = "'.encode(AS_DB,$new_id).'" WHERE deleter_id = "'.encode(AS_DB,$old_id).'";';
-      $result = $this->_db_connector->performQuery($query3);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems merging accounts "'.$this->_db_table.'": "'.$this->_dberror.'" from query: "'.$query3.'"',E_USER_WARNING);
-      } else {
-         unset($result);
-         unset($query3);
-      }
-   }
-
-   function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='') {
+   public function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='')
+   {
       $retour = array();
       $current_date = getCurrentDateTimeInMySQL();
 
-      $query  = '';
-      $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
+       $query = 'SELECT * FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' .
+           encode(AS_DB, $old_id) . '" AND deleter_id IS NULL AND deletion_date IS NULL';
 
       # special for links
       # should be deleted when data clean
@@ -1212,8 +1202,6 @@ class cs_manager {
                   include_once('functions/text_functions.php');
                   $extra_array = mb_unserialize($sql_row['extras']);
                   $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
-                  #$current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
-                  #$current_mod_date_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$modification_date];
                }
             }
          } elseif ( DBTable2Type($this->_db_table) == CS_LINK_TYPE ) {
@@ -1307,8 +1295,7 @@ class cs_manager {
                $new_item_id = $this->_createItemInItemTable($new_id,DBTable2Type($this->_db_table),$current_date);
             }
             if ($do_it) {
-               $insert_query  = '';
-               $insert_query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
+               $insert_query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                $first = true;
                $old_item_id = '';
                foreach ($query_result as $key => $value) {
@@ -1460,7 +1447,6 @@ class cs_manager {
                            $retour[$old_item_id] = $new_item_id;
                         }
                      }
-                     unset($old_item_id);
                   }
 
                   // link_item_modifier
@@ -1474,14 +1460,8 @@ class cs_manager {
                      $this->_createEntryInLinkItemModifier($new_item_id,$user_id);
                   }
                }
-               if ( !empty($new_item_id) ) {
-                  unset($new_item_id);
-               }
-               unset($result_insert);
-               unset($insert_query);
             }
          }
-         unset($result);
       }
       return $retour;
    }

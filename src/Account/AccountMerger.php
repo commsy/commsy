@@ -68,7 +68,7 @@ class AccountMerger
         $this->rewritePrivateRoom($from, $into);
 
         // merge portal
-        $this->rewriteContextUserAndContent($from, $into, $this->legacyEnvironment->getCurrentPortalItem());
+        $this->rewriteContextUserAndContent($from, $into, $this->legacyEnvironment->getCurrentPortalItem()->getId());
 
         // delete the merged account
         $this->entityManager->remove($from);
@@ -94,7 +94,7 @@ class AccountMerger
 
         // duplicates
         foreach ($duplicated as $nonUniqueRoom) {
-            $this->rewriteContextUserAndContent($from, $into, $nonUniqueRoom);
+            $this->rewriteContextUserAndContent($from, $into, $nonUniqueRoom->getItemId());
         }
     }
 
@@ -130,13 +130,13 @@ class AccountMerger
 
     /**
      * @param Account $account
-     * @param cs_context_item $context
+     * @param int $contextId
      * @return cs_user_item|null
      */
-    public function getUserInContext(Account $account, cs_context_item $context): ?cs_user_item
+    private function getUserInContext(Account $account, int $contextId): ?cs_user_item
     {
         $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($context->getItemID());
+        $userManager->setContextLimit($contextId);
         $userManager->setUserIDLimit($account->getUsername());
         $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
         $userManager->select();
@@ -158,7 +158,7 @@ class AccountMerger
      */
     private function rewriteRoomUser(Account $from, Account $into, cs_room_item $room, cs_user_item $nameSource = null)
     {
-        $roomUser = $this->getUserInContext($from, $room);
+        $roomUser = $this->getUserInContext($from, $room->getItemID());
         $roomUser->setUserID($into->getUsername());
         $roomUser->setAuthSource($into->getAuthSource()->getId());
         if (isset($nameSource)) {
@@ -171,12 +171,12 @@ class AccountMerger
     /**
      * @param Account $from
      * @param Account $into
-     * @param cs_context_item $context
+     * @param int $contextId
      */
-    private function rewriteContextUserAndContent(Account $from, Account $into, cs_context_item $context)
+    private function rewriteContextUserAndContent(Account $from, Account $into, int $contextId)
     {
-        $fromRoomUser = $this->getUserInContext($from, $context);
-        $intoRoomUser = $this->getUserInContext($into, $context);
+        $fromRoomUser = $this->getUserInContext($from, $contextId);
+        $intoRoomUser = $this->getUserInContext($into, $contextId);
 
         $intoRoomUser->setStatus($fromRoomUser->getStatus() > $intoRoomUser->getStatus() ?
             $fromRoomUser->getStatus() : $intoRoomUser->getStatus());
@@ -227,29 +227,37 @@ class AccountMerger
         $fromPrivateRoom = $privateRoomManager->getRelatedOwnRoomForUser($fromPortalUser, $from->getContextId());
         $intoPrivateRoom = $privateRoomManager->getRelatedOwnRoomForUser($intoPortalUser, $into->getContextId());
 
-        $intoPrivateRoomUser = $this->getUserInContext($into, $intoPrivateRoom);
+        $intoPrivateRoomUser = $this->getUserInContext($into, $intoPrivateRoom->getItemID());
 
         $newIds = [];
 
         $primaryList = [CS_DATE_TYPE, CS_LABEL_TYPE, CS_MATERIAL_TYPE, CS_FILE_TYPE, CS_TAG_TYPE];
         foreach ($primaryList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);
-            $newIds += $manager->copyDataFromRoomToRoom($fromPrivateRoom, $intoPrivateRoom,
+            $newIds += $manager->copyDataFromRoomToRoom(
+                $fromPrivateRoom->getItemID(),
+                $intoPrivateRoom->getItemID(),
                 $intoPrivateRoomUser->getItemID());
         }
 
         $secondaryList = [CS_ANNOTATION_TYPE, CS_SECTION_TYPE];
         foreach ($secondaryList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);
-            $newIds += $manager->copyDataFromRoomToRoom($fromPrivateRoom, $intoPrivateRoom,
-                $intoPrivateRoomUser->getItemID(), $newIds);
+            $newIds += $manager->copyDataFromRoomToRoom(
+                $fromPrivateRoom->getItemID(),
+                $intoPrivateRoom->getItemID(),
+                $intoPrivateRoomUser->getItemID(),
+                $newIds);
         }
 
         $linkList = [CS_LINK_TYPE, CS_LINKITEM_TYPE, CS_LINKITEMFILE_TYPE, CS_TAG2TAG_TYPE];
         foreach ($linkList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);
-            $newIds += $manager->copyDataFromRoomToRoom($fromPrivateRoom, $intoPrivateRoom,
-                $intoPrivateRoomUser->getItemID(), $newIds);
+            $newIds += $manager->copyDataFromRoomToRoom(
+                $fromPrivateRoom->getItemID(),
+                $intoPrivateRoom->getItemID(),
+                $intoPrivateRoomUser->getItemID(),
+                $newIds);
         }
 
         $linkModifierItemManager = $this->legacyEnvironment->getLinkModifierItemManager();
