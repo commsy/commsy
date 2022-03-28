@@ -90,7 +90,7 @@ class CopyController extends BaseController
         }
 
         // get announcement list from manager service 
-        $entries = $this->copyService->getListEntries($roomId, $max, $start, $sort);
+        $entries = $this->copyService->getListEntries($max, $start, $sort);
 
         $stackRubrics = ['date', 'material', 'discussion', 'todo'];
 
@@ -212,9 +212,9 @@ class CopyController extends BaseController
                 $this->copyService->setFilterConditions($filterForm);
             }
 
-            return $this->copyService->getListEntries($roomItem->getItemID());
+            return $this->copyService->getListEntries();
         } else {
-            return $this->copyService->getCopiesById($roomItem->getItemID(), $itemIds);
+            return $this->copyService->getCopiesById($itemIds);
         }
     }
 

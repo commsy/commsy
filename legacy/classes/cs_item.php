@@ -104,7 +104,14 @@ class cs_item {
                 $item = $item_manager->getItem($this->getContextID());
 
                 if (isset($item) && is_object($item)) {
-                    $manager = $this->_environment->getManager($item->getItemType());
+                    if ($item->isArchived() && !$this->_environment->isArchiveMode()) {
+                        $this->_environment->toggleArchiveMode();
+                        $manager = $this->_environment->getManager($item->getItemType());
+                        $this->_environment->toggleArchiveMode();
+                    } else {
+                        $manager = $this->_environment->getManager($item->getItemType());
+                    }
+
                     $this->_context_item = $manager->getItem($this->getContextId());
                     return $this->_context_item;
                 }
@@ -507,24 +514,25 @@ class cs_item {
       return $this->_setValue('context_id', $value);
    }
 
-   /** get creator
-   * this method returns the modificator of the item
-   * By default the creator is returned.
-   *
-   * @return cs_user_item creator of the item
-   */
-   function getModificatorItem () {
-      $retour = $this->_getUserItem('modifier');
-      if ( !isset($retour) ) {
-         $retour = $this->getCreatorItem();
-      } else {
-         $iid = $retour->getItemID();
-         if (empty($iid)) {
+    /** get creator
+     * this method returns the modificator of the item
+     * By default the creator is returned.
+     *
+     * @return cs_user_item creator of the item
+     */
+    public function getModificatorItem()
+    {
+        $retour = $this->_getUserItem('modifier');
+        if (!isset($retour)) {
             $retour = $this->getCreatorItem();
-         }
-      }
-      return $retour;
-   }
+        } else {
+            $iid = $retour->getItemID();
+            if (empty($iid)) {
+                $retour = $this->getCreatorItem();
+            }
+        }
+        return $retour;
+    }
 
    /** get creator-id
    * this method returns the modificator of the item
@@ -808,34 +816,32 @@ class cs_item {
       return $this->_setValue('modifier_id',$value);
    }
 
-   /** set creator of a material
-    * this method sets the creator of the material
-    *
-    * @param user_object creator of a material
-    */
-   function setCreatorItem ($user) {
-       $this->_setUserItem($user,'creator');
-   }
-
-   /**Wieder löschen!!*/
-   function setCreator($user) {
-      $this->setCreatorItem($user);
-   }
+    /** set creator of a material
+     * this method sets the creator of the material
+     *
+     * @param cs_user_item|null $user
+     */
+    public function setCreatorItem(?cs_user_item $user)
+    {
+        $this->_setUserItem($user, 'creator');
+    }
 
     /** get creator of a material
-    * this method returns the creator of the material
-    *
-    * @return user_object creator of a material
-    *
-    * @author CommSy Development Group
-    */
-   function getCreatorItem () {
-      return $this->_getUserItem('creator');
-   }
+     * this method returns the creator of the material
+     *
+     * @return cs_user_item creator of a material
+     *
+     * @author CommSy Development Group
+     */
+    function getCreatorItem(): ?cs_user_item
+    {
+        return $this->_getUserItem('creator');
+    }
 
-   function getCreator() {
-      return $this->getCreatorItem();
-   }
+    public function getCreator(): ?cs_user_item
+    {
+        return $this->getCreatorItem();
+    }
 
    /** set deleter of a material
     * this method sets the deleter of the material
@@ -999,44 +1005,52 @@ class cs_item {
       }
    }
 
-  /** get data object
-   * this method returns the object for the specified key or NULL if it is not set.
-   *
-   * @param string key
-   * @access private
-   */
-   function _getObject($key) {
-      if(!isset($this->_data[$key])) {
-         $this->_data[$key] = NULL;
-      }
-      return $this->_data[$key];
-   }
+    /** get data object
+     * this method returns the object for the specified key or NULL if it is not set.
+     *
+     * @param string key
+     * @access private
+     */
+    protected function _getObject($key)
+    {
+        if (!isset($this->_data[$key])) {
+            $this->_data[$key] = null;
+        }
+        return $this->_data[$key];
+    }
 
-   function _getUserItem($role) {
-      $user = $this->_getObject($role);
-      if (is_null($user)) {
-         $user_manager = $this->_environment->getUserManager();
-         $user_manager->setContextLimit($this->getContextID());
-         $user_id = $this->_getValue($role.'_id');
-         if ( !is_null($user_id) ) {
-            $user = $user_manager->getItem($user_id);
+    private function _getUserItem($role): ?cs_user_item
+    {
+        $user = $this->_getObject($role);
+        if ($user === null) {
+            $user_manager = $this->_environment->getUserManager();
+
+            $user_id = $this->_getValue($role . '_id');
+            if ($user_id !== null) {
+                $user = $user_manager->getItem($user_id);
+
+                if ($user === null) {
+                    $this->_environment->toggleArchiveMode();
+                    $user_manager = $this->_environment->getUserManager();
+                    $user = $user_manager->getItem($user_id);
+                    $this->_environment->toggleArchiveMode();
+                }
+
+                $this->_data[$role] = $user;
+            }
+        }
+
+        return $user;
+    }
+
+    private function _setUserItem($user, $role)
+    {
+        if (isset($user) and is_object($user)) {
             $this->_data[$role] = $user;
-         }
-      }
-      return $user;
-   }
-
-   function _setUserItem ($user, $role) {
-
-     if (isset($user) and is_object($user)) { // ??? (TBD)
-      $this->_data[$role] = $user;
-      $item_id = $user->getItemID();
-      $this->_setValue($role.'_id', $item_id);
-     } else {
-        // abbruch ??? (TBD)
-     }
-   }
-
+            $item_id = $user->getItemID();
+            $this->_setValue($role . '_id', $item_id);
+        }
+    }
 
    /** set data value
    * this method sets values for the specified key and marks it as changed
