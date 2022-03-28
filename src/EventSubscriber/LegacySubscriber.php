@@ -71,7 +71,7 @@ class LegacySubscriber implements EventSubscriberInterface
         // NOTE: for guests, $account is null but setupUser() will handle this
         if ($account instanceof Account || $account === null) {
             $request = $event->getRequest();
-            $this->setupContextId($request, $account);
+            $this->setupContext($request, $account);
 
             $this->setupUser($account);
         }
@@ -82,7 +82,7 @@ class LegacySubscriber implements EventSubscriberInterface
      * @param Account|null $account
      * @return void
      */
-    private function setupContextId(Request $request, ?Account $account)
+    private function setupContext(Request $request, ?Account $account)
     {
         $contextId = null;
         $contextId = $contextId ?? $request->attributes->get('roomId');
@@ -100,6 +100,7 @@ class LegacySubscriber implements EventSubscriberInterface
                 $this->legacyEnvironment->setCurrentContextID($account->getContextId());
             }
         }
+        $this->legacyEnvironment->configureContext();
     }
 
     /**
