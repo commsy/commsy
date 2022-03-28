@@ -6,7 +6,7 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
-use App\Utils\PortalGuessService;
+use App\Utils\RequestContext;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -49,9 +49,9 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
         UserPasswordEncoderInterface $passwordEncoder,
-        PortalGuessService $portalGuessService
+        RequestContext $requestContext
     ) {
-        parent::__construct($urlGenerator, $portalGuessService);
+        parent::__construct($urlGenerator, $requestContext);
 
         $this->entityManager = $entityManager;
         $this->csrfTokenManager = $csrfTokenManager;

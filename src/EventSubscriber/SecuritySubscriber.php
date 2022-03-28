@@ -4,7 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
-use App\Utils\PortalGuessService;
+use App\Utils\RequestContext;
 use cs_environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -32,20 +32,20 @@ class SecuritySubscriber implements EventSubscriberInterface
     private Security $security;
 
     /**
-     * @var PortalGuessService
+     * @var RequestContext
      */
-    private PortalGuessService $portalGuessService;
+    private RequestContext $requestContext;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         RouterInterface $router,
         Security $security,
-        PortalGuessService $portalGuessService
+        RequestContext $requestContext
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->router = $router;
         $this->security = $security;
-        $this->portalGuessService = $portalGuessService;
+        $this->requestContext = $requestContext;
     }
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
@@ -90,7 +90,7 @@ class SecuritySubscriber implements EventSubscriberInterface
             return;
         }
 
-        $portal = $this->portalGuessService->fetchPortal($request);
+        $portal = $this->requestContext->fetchPortal($request);
         if ($portal === null) {
             return;
         }

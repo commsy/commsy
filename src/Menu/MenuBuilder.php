@@ -10,6 +10,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -78,7 +79,10 @@ class MenuBuilder
         $this->security = $security;
     }
 
-    public function createAccountMenu()
+    /**
+     * @return ItemInterface
+     */
+    public function createAccountMenu(): ItemInterface
     {
         // create profile
         $currentUser = $this->legacyEnvironment->getCurrentUser();
@@ -190,11 +194,10 @@ class MenuBuilder
     }
 
     /**
-     * creates the profile sidebar
-     * @param RequestStack $requestStack [description]
-     * @return KnpMenu                    KnpMenu
+     * @param RequestStack $requestStack
+     * @return ItemInterface
      */
-    public function createProfileMenu(RequestStack $requestStack)
+    public function createProfileMenu(RequestStack $requestStack): ItemInterface
     {
         // create profile
         $currentStack = $requestStack->getCurrentRequest();
@@ -278,7 +281,11 @@ class MenuBuilder
         return $menu;
     }
 
-    public function createSettingsMenu(RequestStack $requestStack)
+    /**
+     * @param RequestStack $requestStack
+     * @return ItemInterface
+     */
+    public function createSettingsMenu(RequestStack $requestStack): ItemInterface
     {
         // get room Id
         $currentStack = $requestStack->getCurrentRequest();
@@ -380,7 +387,11 @@ class MenuBuilder
         return $menu;
     }
 
-    public function createPortalSettingsMenu(RequestStack $requestStack)
+    /**
+     * @param RequestStack $requestStack
+     * @return ItemInterface
+     */
+    public function createPortalSettingsMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
 
@@ -546,11 +557,10 @@ class MenuBuilder
     }
 
     /**
-     * creates rubric menu
-     * @param RequestStack $requestStack [description]
-     * @return KnpMenu                    KnpMenu
+     * @param RequestStack $requestStack
+     * @return ItemInterface
      */
-    public function createMainMenu(RequestStack $requestStack)
+    public function createMainMenu(RequestStack $requestStack): ItemInterface
     {
         // get room id
         $currentRequest = $requestStack->getCurrentRequest();
@@ -559,110 +569,106 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
 
         $roomId = $currentRequest->attributes->get('roomId');
-
-        $inPortal = false;
-        if ($roomId == $this->legacyEnvironment->getCurrentPortalId()) {
-            $inPortal = true;
+        if (!$roomId) {
+            return $menu;
         }
 
-        if ($roomId && !$inPortal) {
-            // dashboard
-            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        // dashboard
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-            $inPrivateRoom = false;
-            if (!$currentUser->isRoot() && !$currentUser->isGuest()) {
-                $privateRoom = $currentUser->getOwnRoom();
+        $inPrivateRoom = false;
+        if (!$currentUser->isRoot() && !$currentUser->isGuest()) {
+            $privateRoom = $currentUser->getOwnRoom();
 
-                if ($roomId === $privateRoom->getItemId()) {
-                    $inPrivateRoom = true;
-                }
+            if ($roomId === $privateRoom->getItemId()) {
+                $inPrivateRoom = true;
             }
+        }
 
-            $rubrics = [];
-            $label = "home";
-            $icon = "uk-icon-home";
-            $route = "app_room_home";
+        $rubrics = [];
+        $label = "home";
+        $icon = "uk-icon-home";
+        $route = "app_room_home";
 
-            if (!$inPrivateRoom) {
-                // rubric room information
-                $rubrics = $this->roomService->getRubricInformation($roomId);
+        if (!$inPrivateRoom) {
+            // rubric room information
+            $rubrics = $this->roomService->getRubricInformation($roomId);
 
-                // moderators _always_ need access to the user rubric (to manage room memberships)
-                if (!in_array("user", $rubrics) and $currentUser->isModerator()) {
-                    $rubrics[] = "user";
-                }
-            } // dashboard menu
-            else {
-                $rubrics = [
-                    "announcement" => "announcement",
-                    "material" => "material",
-                    "discussion" => "discussion",
-                    "date" => "date",
-                    "todo" => "todo",
-                ];
-                $label = "overview";
-                $icon = "uk-icon-justify uk-icon-qrcode";
-                $route = "app_dashboard_overview";
+            // moderators _always_ need access to the user rubric (to manage room memberships)
+            if (!in_array("user", $rubrics) and $currentUser->isModerator()) {
+                $rubrics[] = "user";
             }
+        } // dashboard menu
+        else {
+            $rubrics = [
+                "announcement" => "announcement",
+                "material" => "material",
+                "discussion" => "discussion",
+                "date" => "date",
+                "todo" => "todo",
+            ];
+            $label = "overview";
+            $icon = "uk-icon-justify uk-icon-qrcode";
+            $route = "app_dashboard_overview";
+        }
 
-            list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
+        list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
 
-            // NOTE: hide dashboard menu in dashboard overview and room list!
-            if ((!$inPrivateRoom or ($action != "overview" and $action != "listall")) and
-                ($controller != "copy" or $action != "list") and
-                ($controller != "room" or $action != "detail")) {
-                // home navigation
-                $menu->addChild('room_home', array(
-                    'label' => $label,
+        // NOTE: hide dashboard menu in dashboard overview and room list!
+        if ((!$inPrivateRoom or ($action != "overview" and $action != "listall")) and
+            ($controller != "copy" or $action != "list") and
+            ($controller != "room" or $action != "detail")) {
+            // home navigation
+            $menu->addChild('room_home', array(
+                'label' => $label,
+                'route' => $route,
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => $icon . ' uk-icon-small')
+            ))
+            ->setExtra('translation_domain', 'menu');
+
+            // loop through rubrics to build the menu
+            foreach ($rubrics as $value) {
+                $route = 'app_' . $value . '_list';
+                if ($value == 'date') {
+                    $room = $this->roomService->getRoomItem($roomId);
+                    if ($room->getDatesPresentationStatus() != 'normal') {
+                        $route = 'app_date_calendar';
+                    }
+                }
+
+                $menu->addChild($value, [
+                    'label' => $value,
                     'route' => $route,
                     'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => $icon . ' uk-icon-small')
-                ))
+                    'extras' => [
+                        'icon' => $this->getRubricIcon($value),
+                    ]
+                ])
+                ->setExtra('translation_domain', 'menu');
+            }
+        }
+
+        if (!$inPrivateRoom) {
+                if ($currentUser && !$currentUser->isGuest()) {
+                $menu->addChild('', ['uri' => '#']);
+                $menu->addChild('room_profile', [
+                    'label' => 'Room profile',
+                    'route' => 'app_profile_general',
+                    'routeParameters' => ['roomId' => $roomId, 'itemId' => $currentUser->getItemID()],
+                    'extras' => ['icon' => 'uk-icon-street-view uk-icon-small'],
+                ])
                 ->setExtra('translation_domain', 'menu');
 
-                // loop through rubrics to build the menu
-                foreach ($rubrics as $value) {
-                    $route = 'app_' . $value . '_list';
-                    if ($value == 'date') {
-                        $room = $this->roomService->getRoomItem($roomId);
-                        if ($room->getDatesPresentationStatus() != 'normal') {
-                            $route = 'app_date_calendar';
-                        }
-                    }
-
-                    $menu->addChild($value, [
-                        'label' => $value,
-                        'route' => $route,
+                if ($this->authorizationChecker->isGranted('MODERATOR')) {
+                    $menu->addChild(' ', ['uri' => '#']);
+                    $menu->addChild('room_configuration', array(
+                        'label' => 'settings',
+                        'route' => 'app_settings_general',
                         'routeParameters' => array('roomId' => $roomId),
-                        'extras' => [
-                            'icon' => $this->getRubricIcon($value),
-                        ]
-                    ])
+                        'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
+                    ))
                     ->setExtra('translation_domain', 'menu');
-                }
-            }
-
-            if (!$inPrivateRoom) {
-                if ($currentUser && !$currentUser->isGuest()) {
-                    $menu->addChild('', ['uri' => '#']);
-                    $menu->addChild('room_profile', [
-                        'label' => 'Room profile',
-                        'route' => 'app_profile_general',
-                        'routeParameters' => ['roomId' => $roomId, 'itemId' => $currentUser->getItemID()],
-                        'extras' => ['icon' => 'uk-icon-street-view uk-icon-small'],
-                    ])
-                    ->setExtra('translation_domain', 'menu');
-
-                    if ($this->authorizationChecker->isGranted('MODERATOR')) {
-                        $menu->addChild(' ', ['uri' => '#']);
-                        $menu->addChild('room_configuration', array(
-                            'label' => 'settings',
-                            'route' => 'app_settings_general',
-                            'routeParameters' => array('roomId' => $roomId),
-                            'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
-                        ))
-                        ->setExtra('translation_domain', 'menu');
-                    }
                 }
             }
         }
@@ -675,7 +681,7 @@ class MenuBuilder
      * @param string $rubric rubric name
      * @return string         uikit icon class
      */
-    public function getRubricIcon($rubric)
+    private function getRubricIcon(string $rubric): string
     {
         // return uikit icon class for rubric
         switch ($rubric) {
