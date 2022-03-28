@@ -1983,17 +1983,6 @@ class cs_environment {
       return $retour;
    }
 
-   function getCurrentBrowserVersion () {
-      $retour = '';
-      if ( !isset($this->_browser_version) ) {
-         $this->_parseBrowser();
-      }
-      if ( !empty($this->_browser_version) ) {
-         $retour = $this->_browser_version;
-      }
-      return $retour;
-   }
-
    function _parseBrowser() {
       global $_SERVER;
 
@@ -2024,17 +2013,7 @@ class cs_environment {
             break; // first match wins
          }
       }
-      // IPHONE Textarea without FCK-/ CK-Editor
-//      if($this->_browser == 'IPHONE' OR $this->_browser == 'IPAD'){
-//         $currentContextItem = $this->getCurrentContextItem();
-//         if($currentContextItem->isPluginOn('ckeditor')){
-//            $currentContextItem->setPluginOff('ckeditor');
-//         }
-//         if($currentContextItem->withHtmlTextArea()){
-//            $currentContextItem->setHtmlTextAreaStatus(3);
-//         }
-//         unset($currentContextItem);
-//      }
+
       $this->getCurrentOperatingSystem();
    }
 
