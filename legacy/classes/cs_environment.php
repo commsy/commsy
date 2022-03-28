@@ -215,109 +215,81 @@ class cs_environment {
       $this->current_context = $value;
    }
 
-  /** get the current room item
-   * current context id must be set
-   *
-   * @return \cs_context_item     room
-   */
-   function getCurrentContextItem() {
-      if ( !is_null($this->current_context_id)
-           and $this->current_context_id != 0
-           and $this->current_context_id != $this->getServerID()
-         ) {
-         if ( is_null($this->current_context)
-              or $this->current_context->getItemID() != $this->current_context_id
-            ) {
-             global $symfonyContainer;
-             /** @var EntityManagerInterface $entityManager */
-             $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-             $portal = $entityManager->getRepository(Portal::class)->find($this->current_context_id);
+    /** get the current room item
+     * current context id must be set
+     *
+     * @return cs_context_item
+     */
+    public function getCurrentContextItem()
+    {
+        if (
+            $this->current_context_id === null ||
+            $this->current_context_id === 0 ||
+            $this->current_context_id == $this->getServerID()
+        ) {
+            $this->current_context_id = $this->getServerID();
+            $this->current_context = $this->getServerItem();
+        }
 
-             if ($portal) {
-                 $this->current_context = new PortalProxy($portal, $this);
-                 return $this->current_context;
-             }
+        if ($this->current_context === null || $this->current_context->getItemID() != $this->current_context_id) {
+            global $symfonyContainer;
+            /** @var EntityManagerInterface $entityManager */
+            $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+            $portal = $entityManager->getRepository(Portal::class)->find($this->current_context_id);
+
+            if ($portal) {
+                $this->current_context = new PortalProxy($portal, $this);
+                return $this->current_context;
+            }
 
             $item_manager = $this->getItemManager();
             $item = $item_manager->getItem($this->current_context_id);
-            if ( isset($item) ) {
-               $type = $item->getItemType();
-               if ($type == CS_PROJECT_TYPE) {
-                  $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == CS_COMMUNITY_TYPE) {
-                  $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == CS_PRIVATEROOM_TYPE) {
-                  $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
-               } elseif ($type == CS_GROUPROOM_TYPE) {
-                  $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
-                   $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == CS_PORTAL_TYPE) {
-                  $manager = $this->getPortalManager();
-               } elseif ($type == CS_SERVER_TYPE) {
-                  $manager = $this->getServerManager();
-               } else {
-                  include_once('functions/error_functions.php');
-                  trigger_error('wrong type of room ['.$type.']',E_USER_ERROR);
-               }
+            if (isset($item)) {
+                $type = $item->getItemType();
+                $manager = $this->getManager($type);
             } else {
-               include_once('functions/error_functions.php');
-               $archive_mode = ' - archive mode = false';
-               if ($this->isArchiveMode()) {
-                  $archive_mode = ' - archive mode = true';
-               }
-               trigger_error('can not initiate room ['.$this->current_context_id.'] -> bug in item table'.$archive_mode,E_USER_ERROR);
+                include_once('functions/error_functions.php');
+                $archive_mode = ' - archive mode = false';
+                if ($this->isArchiveMode()) {
+                    $archive_mode = ' - archive mode = true';
+                }
+                trigger_error('can not initiate room [' . $this->current_context_id . '] -> bug in item table' . $archive_mode,
+                    E_USER_ERROR);
             }
-            if ( !empty($manager)
-                 and is_object($manager)
-               ) {
-               $this->current_context = $manager->getItem($this->current_context_id);
-               if ( !isset($this->current_context) ) {
-                  if ( !$this->isArchiveMode() ) {
-                     $this->activateArchiveMode();
-                  } else {
-                     $this->deactivateArchiveMode();
-                  }
-                  $type = $item->getItemType();
-                  if ($type == CS_PROJECT_TYPE) {
-                     $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == CS_COMMUNITY_TYPE) {
-                     $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == CS_PRIVATEROOM_TYPE) {
-                     $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
-                  } elseif ($type == CS_GROUPROOM_TYPE) {
-                     $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
-                      $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == CS_PORTAL_TYPE) {
-                     $manager = $this->getPortalManager();
-                  } elseif ($type == CS_SERVER_TYPE) {
-                     $manager = $this->getServerManager();
-                  } else {
-                     include_once('functions/error_functions.php');
-                     trigger_error('wrong type of room ['.$type.']',E_USER_ERROR);
-                  }
-                  if ( !empty($manager)
-                       and is_object($manager)
-                     ) {
-                     $this->current_context = $manager->getItem($this->current_context_id);
-                     if ( !isset($this->current_context) ) {
-                        include_once('functions/error_functions.php');
-                        $archive_mode = ' - archive mode = false';
-                        if ($this->isArchiveMode()) {
-                           $archive_mode = ' - archive mode = true';
+
+            if (!empty($manager) && is_object($manager)) {
+                $this->current_context = $manager->getItem($this->current_context_id);
+                if (!isset($this->current_context)) {
+                    $this->toggleArchiveMode();
+
+                    $type = $item->getItemType();
+                    $manager = $this->getManager($type);
+
+                    if (!empty($manager) && is_object($manager)) {
+                        $this->current_context = $manager->getItem($this->current_context_id);
+                        if (!isset($this->current_context)) {
+                            include_once('functions/error_functions.php');
+                            $archive_mode = ' - archive mode = false';
+                            if ($this->isArchiveMode()) {
+                                $archive_mode = ' - archive mode = true';
+                            }
+                            trigger_error('can not initiate room [' . $this->current_context_id . '] -> bug in room table' . $archive_mode,
+                                E_USER_ERROR);
                         }
-                        trigger_error('can not initiate room ['.$this->current_context_id.'] -> bug in room table'.$archive_mode,E_USER_ERROR);
-                     }
-                  }
-               }
+                    }
+                }
             }
-         }
-      } else {
-         $this->current_context_id = $this->getServerID();
-         $this->current_context = $this->getServerItem();
-      }
-      return $this->current_context;
+        }
+
+        return $this->current_context;
+    }
+
+   public function configureContext()
+   {
+        $currentContextItem = $this->getCurrentContextItem();
+        if ($currentContextItem !== null && $currentContextItem->isArchived()) {
+            $this->activateArchiveMode();
+        }
    }
 
   /** get server object
