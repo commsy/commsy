@@ -409,8 +409,8 @@ class ContextController extends AbstractController
                     ]);
                 } else {
                     // in private room context -> redirect to detail view of all rooms list.
-                    $route = $this->redirectToRoute('app_room_detail', [
-                        'roomId' => $roomId,
+                    $route = $this->redirectToRoute('app_roomall_detail', [
+                        'portalId' => $legacyEnvironment->getCurrentPortalID(),
                         'itemId' => $itemId,
                     ]);
                 }

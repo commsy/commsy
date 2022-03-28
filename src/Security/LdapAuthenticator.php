@@ -8,7 +8,7 @@ use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceLdap;
 use App\Facade\AccountCreatorFacade;
-use App\Utils\PortalGuessService;
+use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,16 +51,15 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      */
     private AccountManager $accountManager;
 
-
     public function __construct(
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
         AccountCreatorFacade $accountCreator,
-        PortalGuessService $portalGuessService,
+        RequestContext $requestContext,
         AccountManager $accountManager
     ) {
-        parent::__construct($urlGenerator, $portalGuessService);
+        parent::__construct($urlGenerator, $requestContext);
 
         $this->entityManager = $entityManager;
         $this->csrfTokenManager = $csrfTokenManager;
