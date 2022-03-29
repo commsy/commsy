@@ -1453,15 +1453,6 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_hash_manager');
    }
 
-  /** get instance of cs_wordpress_manager
-   *
-   * @return cs_wordpress_manager
-   * @access public
-   */
-   function getWordpressManager() {
-      return $this->_getInstance('cs_wordpress_manager');
-   }
-
    function getExternalIdManager() {
       return $this->_getInstance('cs_external_id_manager');
    }

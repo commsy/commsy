@@ -2301,22 +2301,7 @@ function getExternalViewerArray(){
    function setExportToWordpress($value) {
       $this->_addExtra('EXPORT_TO_WORDPRESS', (string)$value);
    }
-   function getExportToWordpress() {
-     $exportedId = $this->_getExtra('EXPORT_TO_WORDPRESS');
-      return (string) $this->_getExtra('EXPORT_TO_WORDPRESS');
-   }
-   function isExportToWordpress() {
-      if($this->_issetExtra('EXPORT_TO_WORDPRESS')){
-         $wordpress_manager = $this->_environment->getWordpressManager();
-         return $wordpress_manager->existsItemToWordpress($this->_getExtra('EXPORT_TO_WORDPRESS'));
-      } else {
-         return false;
-      }
-   }
-   function getExportToWordpressLink(){
-      $wordpress_manager = $this->_environment->getWordpressManager();
-      return $wordpress_manager->getExportToWordpressLink($this->_getExtra('EXPORT_TO_WORDPRESS'));
-   }
+
    //------------- Wordpressexport -------------
    //------------------------------------------
 

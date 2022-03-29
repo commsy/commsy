@@ -336,10 +336,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # Exporter
-    commsy.export.wordpress:
-        alias: App\Export\WordpressExporter
-
     # EventListener
     kernel.listener.commsy_activity:
         class: App\EventListener\CommsyActivityListener
