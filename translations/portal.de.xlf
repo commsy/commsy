@@ -1057,6 +1057,10 @@
                 <source>Download sample</source>
                 <target>Vorlage herunterladen</target>
             </trans-unit>
+            <trans-unit id="portal_csv_success">
+                <source>Import completed successfully.</source>
+                <target>Import erfolgreich ausgeführt.</target>
+            </trans-unit>
 
             <!-- auth -->
             <trans-unit id="authentication_source">

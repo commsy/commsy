@@ -550,6 +550,8 @@ class PortalSettingsController extends AbstractController
             foreach ($datasets as $dataset) {
                 $userCreator->createFromCsvDataset($authSource, $dataset);
             }
+
+            $this->addFlash('notice', 'Import completed successfully.');
         }
 
         return [
