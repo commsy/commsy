@@ -315,14 +315,6 @@
         {% endif %}
 {% endmacro %}
 
-{% macro userIconLink(user, size) %}
-    {% import _self as macros %}
-    
-        {{ macros.userIcon(user, size) }}
-    
-{% endmacro %}
-
-
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) %}
     {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
@@ -392,33 +384,17 @@
                                         <div class="uk-flex">
                                             {{ 'last changed'|trans({})|capitalize }}
                                             <div>
-                                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
-                                                    {{ macros.userIconLink(item.modificatorItem) }}
-                                                {% else %}
-                                                    {{ macros.userIcon(item.modificatorItem) }}
-                                                {% endif %}
-                                            </div>
-                                            <div>
-                                                &nbsp{{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
-                                                &nbsp{{ utilsMacros.userFullname(item.modificatorItem) }}<br/>
-                                                
+                                                {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                                {{ utilsMacros.userFullname(item.modificatorItem) }}<br/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="uk-width-1-3">
                                         <div class="uk-clearfix">
                                             {{ 'creator'|trans({})}}
-                                            <div class="uk-margin-remove">
-                                                {% if not item.creator.isDeleted and item.creator.isUser %}
-                                                    {{ macros.userIconLink(item.creator) }}
-                                                {% else %}
-                                                    {{ macros.userIcon(item.creator) }}
-                                                {% endif %}
+                                            <div>
+                                                  {{ utilsMacros.userFullname(item.creator) }}
                                             </div>
-                                        
-                                        <div>
-                                              &nbsp{{ utilsMacros.userFullname(item.creator) }}
-                                        </div>
                                         </div>
                                     </div>
                                     <div class="uk-width-1-3">                           
@@ -429,15 +405,8 @@
                                                         {{ 'editors'|trans({})}}
                                                         <div class="uk-flex">
                                                             {% for modifier in modifierList[item.itemId] %}
-                                                                <div>
-                                                                    {% if not modifier.isDeleted and modifier.isUser %}
-                                                                        {{ macros.userIconLink(modifier) }}
-                                                                    {% else %}
-                                                                        {{ macros.userIcon(modifier) }}
-                                                                    {% endif %}
-                                                                </div>
                                                                 <div class="uk-clearfix">
-                                                                    &nbsp{{ utilsMacros.userFullname(modifier) }}
+                                                                    {{ utilsMacros.userFullname(modifier) }}
                                                                 </div>
                                                             {% endfor %}
                                                         </div>
@@ -563,30 +532,6 @@
     </article>
 
 {% endmacro %}
-
-{% macro userIcon(user, size) %}
-    {% set styleAttribute = '' %}
-    {% set additionalClasses = '' %}
-
-    {% if size is same as('small') %}
-        {% set styleAttribute = ' style="height:30px; width:30px;"' %}
-    {% elseif size matches '/^\\d+$/' %}
-        {% set styleAttribute = ' style="height:' ~ size ~ 'px; width:' ~ size ~ 'px;"' %}
-    {% else %}
-        {% set styleAttribute = ' style="height:42px; width:42px;"' %}
-        {% set additionalClasses = ' cs-comment-thumbnail' %}
-    {% endif %}
-
-    {% if user.isDeleted %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ absolute_url(path('app_user_guestimage') )}}" data-uk-tooltip title="{{ "deleted person"|trans({}, 'user')}}">
-    {% elseif user.itemId != "" %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ absolute_url(path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) )}}" data-uk-tooltip title="{{ user.fullname }}">
-    {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ absolute_url(path('app_user_guestimage') )}}" data-uk-tooltip title="{{ "guest"|trans({}, 'messages')}}">
-    {% endif %}
-{% endmacro %}
-
-
 
 {% macro iconClassForFileType(type) %}
     {% if type is same as('xlsx') or type is same as('xls') %}
@@ -751,11 +696,6 @@
     {% if not participants is empty %}
         {% for participant in participants %}
                 <div>
-                    {% if not participant.isDeleted and participant.isUser %}
-                        {{ macros.userIconLink(participant) }}
-                    {% else %}
-                        {{ macros.userIcon(participant) }}
-                    {% endif %}
                     {{ utilsMacros.userFullname(participant) }}
                     <br><br>
                     <br>
@@ -872,15 +812,8 @@
                                     <div class="uk-width-1-1">
                                         <div class="uk-flex">
                                             <div >
-                                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
-                                                    {{ macros.userIconLink(item.modificatorItem) }}
-                                                {% else %}
-                                                    {{ macros.userIcon(item.modificatorItem) }}
-                                                {% endif %}
-                                            </div>
-                                            <div >
-                                                  &nbsp&nbsp{{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
-                                                  &nbsp&nbsp{{ 'changed by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(item.modificatorItem) }}
+                                              {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                              {{ 'changed by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
                                     </div>

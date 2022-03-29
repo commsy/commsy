@@ -13,21 +13,8 @@
 <br>
 
 {% for annotation in annotations %}
-
-                    
-
     <article class="page-break-inside">
         <header>
-
-            {# user icon #}
-            <div >
-                {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
-                    {{ utilMacros.userIconLink(annotation.creator) }}
-                {% else %}
-                    {{ utilMacros.userIcon(annotation.creator) }}
-                {% endif %}
-            </div>
-
             {# content #}
             <div >
                 <div >
@@ -38,7 +25,6 @@
         </header>
     </article>
     <hr>
-
 {% endfor %}
 
 
