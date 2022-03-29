@@ -17,6 +17,7 @@ use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserCreatorFacade
 {
@@ -35,43 +36,46 @@ class UserCreatorFacade
      */
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private UserPasswordEncoderInterface $passwordEncoder;
+
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         AccountCreatorFacade $accountFacade,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->accountFacade = $accountFacade;
         $this->entityManager = $entityManager;
-
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
-     * @param CsvUserDataset[] $csvUserDatasets
      * @param AuthSource $authSource
+     * @param CsvUserDataset $csvUserDataset
      * @throws Exception
      */
     public function createFromCsvDataset(
         AuthSource $authSource,
-        array $csvUserDatasets
+        CsvUserDataset $csvUserDataset
     ) {
-        foreach ($csvUserDatasets as $csvUserDataset) {
-            /** CsvUserDataset $csvUserDataset */
-            $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSource);
-            $userPassword = $csvUserDataset->getPassword() ?? $this->generatePassword();
+        $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSource);
+        $userPassword = $csvUserDataset->getPassword() ?? $this->generatePassword();
 
-            $newUser = $this->createAccountAndUser(
-                $userIdentifier,
-                $userPassword,
-                $csvUserDataset->getFirstname(),
-                $csvUserDataset->getLastname(),
-                $csvUserDataset->getEmail(),
-                $authSource
-            );
+        $newUser = $this->createAccountAndUser(
+            $userIdentifier,
+            $userPassword,
+            $csvUserDataset->getFirstname(),
+            $csvUserDataset->getLastname(),
+            $csvUserDataset->getEmail(),
+            $authSource
+        );
 
-            if ($csvUserDataset->getRooms()) {
-                $this->addUserToRooms($newUser, $csvUserDataset->getRooms());
-            }
+        if ($csvUserDataset->getRooms()) {
+            $this->addUserToRooms($newUser, $csvUserDataset->getRooms());
         }
     }
 
@@ -130,12 +134,14 @@ class UserCreatorFacade
     ): cs_user_item {
         $account = new Account();
         $account->setUsername($identifier);
-        $account->setPassword($password);
         $account->setFirstname($firstname);
         $account->setLastname($lastname);
         $account->setEmail($email);
         $account->setContextId($authSource->getPortal()->getId());
+        $account->setLanguage('de');
         $account->setAuthSource($authSource);
+
+        $account->setPassword($this->passwordEncoder->encodePassword($account, $password));
 
         return $this->accountFacade->persistNewAccount($account);
     }
