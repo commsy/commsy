@@ -132,7 +132,10 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $url = $this->getLoginUrl($this->requestContext->fetchContextId($request));
+        $portal = $this->requestContext->fetchPortal($request);
+        $contextId = $portal !== null ? $portal->getId() : $this->requestContext->fetchContextId($request);
+
+        $url = $this->getLoginUrl($contextId);
         return new RedirectResponse($url);
     }
 }
