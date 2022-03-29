@@ -57,6 +57,8 @@ class CommsyActivityListener
                             $currentContextItem->isGroupRoom()
                         ) {
                             $currentContextItem->saveLastLogin();
+                            $currentContextItem->saveActivityPoints(1);
+
                             $portalId = $currentContextItem->getContextID();
                             $this->updatePortalActivity($portalId);
                         }
