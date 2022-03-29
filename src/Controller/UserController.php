@@ -79,7 +79,7 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/feed/{start}/{sort}")
      * @Template()
-     * @Security("is_granted('RUBRIC_SEE', 'user')")
+     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
      * @param int $roomId
      * @param int $max
@@ -100,7 +100,7 @@ class UserController extends BaseController
     /**
      * @Route("/room/{roomId}/user/grid/{start}/{sort}")
      * @Template()
-     * @Security("is_granted('RUBRIC_SEE', 'user')")
+     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
      * @param int $roomId
      * @param int $max
@@ -201,7 +201,7 @@ class UserController extends BaseController
      *       "view": "feedView|gridView"
      * })
      * @Template()
-     * @Security("is_granted('RUBRIC_SEE', 'user')")
+     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
      * @param int $roomId
      * @param $view
@@ -329,7 +329,7 @@ class UserController extends BaseController
 
     /**
      * @Route("/room/{roomId}/user/print/{sort}", defaults={"sort" = "none"})
-     * @Security("is_granted('RUBRIC_SEE', 'user')")
+     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
      * @param Request $request
      * @param PrintService $printService
      * @param string $sort
