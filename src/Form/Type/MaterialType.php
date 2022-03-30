@@ -1,6 +1,7 @@
 <?php
 namespace App\Form\Type;
 
+use cs_context_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -13,8 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use App\Form\Type\Custom\DateTimeSelectType;
-use App\Form\Type\Custom\MandatoryCategoryMappingType;
-use App\Form\Type\Custom\MandatoryHashtagMappingType;
+use App\Form\Type\Custom\CategoryMappingType;
+use App\Form\Type\Custom\HashtagMappingType;
 
 use App\Form\Type\Event\AddBibliographicFieldListener;
 use App\Form\Type\Event\AddEtherpadFormListener;
@@ -87,11 +88,21 @@ class MaterialType extends AbstractType
                 }
 
                 if ($material['draft']) {
-                    if ($material['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
-                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
+                    /** @var cs_context_item $room */
+                    $room = $formOptions['room'];
+
+                    if ($room->withBuzzwords()) {
+                        $hashtagOptions = array_merge($formOptions['hashtagMappingOptions'], [
+                            'assignment_is_mandatory' => $room->isBuzzwordMandatory(),
+                        ]);
+                        $form->add('hashtag_mapping', HashtagMappingType::class, $hashtagOptions);
                     }
-                    if ($material['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
-                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
+
+                    if ($room->withTags()) {
+                        $categoryOptions = array_merge($formOptions['categoryMappingOptions'], [
+                            'assignment_is_mandatory' => $room->isTagMandatory(),
+                        ]);
+                        $form->add('category_mapping', CategoryMappingType::class, $categoryOptions);
                     }
                 }
             })
@@ -125,10 +136,11 @@ class MaterialType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'licenses'])
-            ->setDefaults(array('translation_domain' => 'form'))
-        ;
+        $resolver->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'licenses', 'room']);
+
+        $resolver->setDefaults(['translation_domain' => 'form']);
+
+        $resolver->setAllowedTypes('room', 'cs_context_item');
     }
 
     /**

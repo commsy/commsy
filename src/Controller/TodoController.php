@@ -19,9 +19,7 @@ use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
-use App\Utils\ItemService;
 use App\Utils\LabelService;
-use App\Utils\RoomService;
 use App\Utils\TodoService;
 use App\Utils\TopicService;
 use cs_item;
@@ -588,9 +586,6 @@ class TodoController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         $statusChoices = array(
             $this->translator->trans('pending', [], 'todo') => '1',
             $this->translator->trans('in progress', [], 'todo') => '2',
@@ -618,6 +613,7 @@ class TodoController extends BaseController
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
+            'room' => $current_context,
         );
 
         $todoItem = $this->todoService->getTodo($itemId);
@@ -627,8 +623,6 @@ class TodoController extends BaseController
 
 
         $formData = $transformer->transform($todoItem);
-        $formData['categoriesMandatory'] = $categoriesMandatory;
-        $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
             $this->legacyEnvironment);
@@ -646,7 +640,7 @@ class TodoController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -659,7 +653,7 @@ class TodoController extends BaseController
                         $todoItem->setTagListByID($categoryIds);
                     }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -690,8 +684,6 @@ class TodoController extends BaseController
             'form' => $form->createView(),
             'todo' => $todoItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }

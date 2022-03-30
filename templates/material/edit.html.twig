@@ -52,10 +52,10 @@
                         {{ form_row(form.external_viewer) }}
                         <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
                     </div>
-                {%  endif %}
+                {% endif %}
 
-                {% if isDraft and (showHashtags or showCategories) %}
-                    {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+                {% if form.category_mapping is defined or form.hashtag_mapping is defined %}
+                    {{ macros.mandatoryLinks(form) }}
                 {% endif %}
 
                 <div class="uk-form-row">

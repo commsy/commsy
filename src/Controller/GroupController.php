@@ -752,17 +752,12 @@ class GroupController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         // get date from DateService
         $groupItem = $this->groupService->getGroup($itemId);
         if (!$groupItem) {
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
         $formData = $transformer->transform($groupItem);
-        $formData['categoriesMandatory'] = $categoriesMandatory;
-        $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
             $this->legacyEnvironment);
@@ -783,6 +778,7 @@ class GroupController extends BaseController
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
+            'room' => $current_context,
         ));
 
         $form->handleRequest($request);
@@ -795,7 +791,7 @@ class GroupController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -808,7 +804,7 @@ class GroupController extends BaseController
                         $groupItem->setTagListByID($categoryIds);
                     }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -830,11 +826,6 @@ class GroupController extends BaseController
                 }
             }
             return $this->redirectToRoute('app_group_save', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
@@ -843,8 +834,6 @@ class GroupController extends BaseController
             'form' => $form->createView(),
             'group' => $groupItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }

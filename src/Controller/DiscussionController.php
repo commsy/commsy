@@ -14,10 +14,10 @@ use App\Form\Type\DiscussionArticleType;
 use App\Form\Type\DiscussionType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
-use App\Utils\CategoryService;
-use App\Utils\LabelService;
 use App\Utils\AssessmentService;
+use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
+use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_discussion_item;
 use cs_room_item;
@@ -836,9 +836,6 @@ class DiscussionController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         $transformer = null;
 
         if ($item->getItemType() == 'discussion') {
@@ -858,8 +855,6 @@ class DiscussionController extends BaseController
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
             $formData = $transformer->transform($discussionItem);
-            $formData['categoriesMandatory'] = $categoriesMandatory;
-            $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
@@ -880,7 +875,7 @@ class DiscussionController extends BaseController
                     'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
-
+                'room' => $current_context,
             ));
         } else {
             if ($item->getItemType() == 'discarticle') {
@@ -910,7 +905,7 @@ class DiscussionController extends BaseController
 
                     // set linked hashtags and categories
                     $formData = $form->getData();
-                    if ($categoriesMandatory) {
+                    if ($form->has('category_mapping')) {
                         $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                         if (isset($formData['category_mapping']['newCategory'])) {
@@ -923,7 +918,7 @@ class DiscussionController extends BaseController
                             $discussionItem->setTagListByID($categoryIds);
                         }
                     }
-                    if ($hashtagsMandatory) {
+                    if ($form->has('hashtag_mapping')) {
                         $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
                         if (isset($formData['hashtag_mapping']['newHashtag'])) {
                             $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
@@ -957,11 +952,6 @@ class DiscussionController extends BaseController
                 }
             }
             return $this->redirectToRoute('app_discussion_save', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         if ($item->getItemType() == 'discussion') {
@@ -977,8 +967,6 @@ class DiscussionController extends BaseController
             'discussion' => $discussionItem,
             'discussionArticle' => $discussionArticleItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
