@@ -48,6 +48,7 @@
                     </li>
                 {% else %}
                     {% do form.categories.setRendered %}
+                    {% do form.newCategory.setRendered %}
                 {% endif %}
 
                 {% if showHashtags %}
