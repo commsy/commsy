@@ -20,9 +20,9 @@ use App\Http\JsonRedirectResponse;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
+use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\LabelService;
-use App\Utils\AssessmentService;
 use App\Utils\MaterialService;
 use App\Utils\TopicService;
 use cs_material_item;
@@ -1036,17 +1036,6 @@ class MaterialController extends BaseController
         $isDraft = false;
         $isSaved = false;
 
-        if ($item->isDraft()) {
-            // if a material is a draft, allow for categegories and
-            // hashtags for being edited, if they are active
-            $categoriesMandatory = $current_context->withTags();
-            $hashtagsMandatory = $current_context->withBuzzwords();
-        } else {
-            $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-            $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-        }
-
-
         $licenses = [];
         $licensesContent = [];
 
@@ -1065,8 +1054,6 @@ class MaterialController extends BaseController
             }
 
             $formData = $this->materialTransformer->transform($materialItem);
-            $formData['categoriesMandatory'] = $categoriesMandatory;
-            $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
@@ -1095,6 +1082,7 @@ class MaterialController extends BaseController
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
                 'licenses' => $licenses,
+                'room' => $current_context,
             ));
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
@@ -1127,7 +1115,8 @@ class MaterialController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -1140,7 +1129,8 @@ class MaterialController extends BaseController
                         $typedItem->setTagListByID($categoryIds);
                     }
                 }
-                if ($hashtagsMandatory) {
+
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -1148,8 +1138,6 @@ class MaterialController extends BaseController
 
                         $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
                         $hashtagIds[] = $newHashtag->getItemID();
-
-                        $hashtagaIds[] = $newHashtag->getItemID();
 
                     }
 
@@ -1179,8 +1167,6 @@ class MaterialController extends BaseController
             'isDraft' => $isDraft,
             'isMaterial' => $isMaterial,
             'form' => $form->createView(),
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'material' => $typedItem,
             'licenses' => $licenses,

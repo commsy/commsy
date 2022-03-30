@@ -582,9 +582,6 @@ class AnnouncementController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         if ($item->getItemType() == 'announcement') {
             // get announcement from announcementService
             /** @var cs_announcement_item $announcementItem */
@@ -594,8 +591,6 @@ class AnnouncementController extends BaseController
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }
             $formData = $transformer->transform($announcementItem);
-            $formData['categoriesMandatory'] = $categoriesMandatory;
-            $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
@@ -615,6 +610,7 @@ class AnnouncementController extends BaseController
                     'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
                 ],
+                'room' => $current_context,
             ));
         }
 
@@ -630,7 +626,7 @@ class AnnouncementController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -643,7 +639,7 @@ class AnnouncementController extends BaseController
                         $announcementItem->setTagListByID($categoryIds);
                     }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -674,8 +670,6 @@ class AnnouncementController extends BaseController
             'form' => $form->createView(),
             'announcement' => $announcementItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }

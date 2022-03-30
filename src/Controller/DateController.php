@@ -1068,9 +1068,6 @@ class DateController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         // get date from DateService
         $dateItem = $this->dateService->getDate($itemId);
         if (!$dateItem) {
@@ -1078,8 +1075,6 @@ class DateController extends BaseController
         }
 
         $formData = $transformer->transform($dateItem);
-        $formData['categoriesMandatory'] = $categoriesMandatory;
-        $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
@@ -1122,6 +1117,7 @@ class DateController extends BaseController
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
+            'room' => $current_context,
         );
         if ($dateItem->getRecurrencePattern() != '') {
             $formOptions['attr']['unsetRecurrence'] = true;
@@ -1147,7 +1143,7 @@ class DateController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -1160,7 +1156,7 @@ class DateController extends BaseController
                         $dateItem->setTagListByID($categoryIds);
                     }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -1256,9 +1252,7 @@ class DateController extends BaseController
         return array(
             'form' => $form->createView(),
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'withRecurrence' => $dateItem->getRecurrencePattern() != '',
             'date' => $dateItem,
