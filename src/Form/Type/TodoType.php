@@ -139,7 +139,7 @@ class TodoType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['placeholderText', 'statusChooices', 'hashtagMappingOptions', 'categoryMappingOptions', 'room']);
+        $resolver->setRequired(['placeholderText', 'statusChoices', 'hashtagMappingOptions', 'categoryMappingOptions', 'room']);
 
         $resolver->setDefaults(['translation_domain' => 'form']);
 
