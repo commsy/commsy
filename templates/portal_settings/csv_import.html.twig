@@ -14,7 +14,7 @@
             {% for message in app.flashes('notice') %}
                 <div class="uk-alert uk-alert-success">
                     <i class="uk-icon-check-square-o uk-icon-medium"></i>
-                    {{ message|trans({}, 'portal') }}.
+                    {{ message|trans({}, 'portal') }}
                 </div>
             {% endfor %}
 
