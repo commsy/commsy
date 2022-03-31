@@ -1110,7 +1110,7 @@ class cs_item {
    * @param cs_manager the manager that should be used to save the item (e.g. cs_news_manager for cs_news_item)
    * @access private
    */
-   function _save($manager) {
+   public function _save($manager) {
       $saved = false;
       if(isset($this->_changed['general']) and $this->_changed['general'] == TRUE) {
          $manager->setCurrentContextID($this->getContextID());

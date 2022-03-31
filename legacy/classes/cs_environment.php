@@ -892,18 +892,21 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_link_manager');
    }
 
-  /** get instance of cs_user_manager
-   *
-   * @return cs_user_manager
-   * @access public
-   */
-   function getUserManager( $force = false ) {
-      if ( $force or !$this->isArchiveMode() ) {
-         return $this->_getInstance('cs_user_manager');
-      } else {
-         return $this->getZzzUserManager();
-      }
-   }
+    /** get instance of cs_user_manager
+     *
+     * @param bool $force
+     * @return cs_user_manager
+     * @access public
+     */
+    public function getUserManager(bool $force = false): cs_user_manager
+    {
+        if ($force || !$this->isArchiveMode()) {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
+            return $this->_getInstance('cs_user_manager');
+        } else {
+            return $this->getZzzUserManager();
+        }
+    }
 
  /** get instance of cs_zzz_user_manager
    *
