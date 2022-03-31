@@ -2087,21 +2087,6 @@ class cs_user_item extends cs_item
         $user_manager->setCreatorID2ItemID($this);
     }
 
-    function isDeletable()
-    {
-        $value = false;
-        $item_manager = $this->_environment->getItemManager();
-        $annotation_manager = $this->_environment->getAnnotationManager();
-        $link_manager = $this->_environment->getLinkItemManager();
-        $result1 = $item_manager->getCountExistingItemsOfUser($this->getItemID());
-        $result2 = $annotation_manager->getCountExistingAnnotationsOfUser($this->getItemID());
-        $result3 = $link_manager->getCountExistingLinkItemsOfUser($this->getItemID());
-        if ($result1 == 0 and $result2 == 0 and $result3 == 0) {
-            $value = true;
-        }
-        return $value;
-    }
-
     function deleteAllEntriesOfUser()
     {
 
