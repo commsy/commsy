@@ -176,7 +176,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         $this->entityManager->persist($account);
         $this->entityManager->flush();
 
-        $this->accountManager->propgateAccountDataToProfiles($account);
+        $this->accountManager->propagateAccountDataToProfiles($account);
 
         return $account;
     }
