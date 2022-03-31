@@ -244,7 +244,6 @@ class cs_annotations_manager extends cs_manager {
      if (in_array($item_id,$this->_item_id_array)){
         $annotation_list = $this->_all_annotation_list;
         $annotation_item = $annotation_list->getFirst();
-        $return_list = new cs_list();
         while($annotation_item){
            if($item_id == $annotation_item->getLinkedItemID()){
               $list->add($annotation_item);
@@ -425,28 +424,6 @@ class cs_annotations_manager extends cs_manager {
         parent::delete($item_id);
      }
   }
-
-   function getCountExistingAnnotationsOfUser($user_id) {
-     $query = 'SELECT count('.$this->addDatabasePrefix('annotations').'.item_id) as count';
-     $query .= ' FROM '.$this->addDatabasePrefix('annotations');
-     $query .= ' WHERE 1';
-
-     if (isset($this->_room_limit)) {
-        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-     } else {
-        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
-     }
-     $query .= ' AND '.$this->addDatabasePrefix('annotations').'.deleter_id IS NULL';
-     $query .= ' AND '.$this->addDatabasePrefix('annotations').'.creator_id ="'.encode(AS_DB,$user_id).'"';
-
-     // perform query
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting items.',E_USER_WARNING);
-     } else {
-         return $result[0]['count'];
-     }
-   }
 
     function deleteAnnotationsofUser($uid) {
         global $symfonyContainer;
