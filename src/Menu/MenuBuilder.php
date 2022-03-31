@@ -592,7 +592,7 @@ class MenuBuilder
 
         if (!$inPrivateRoom) {
             // rubric room information
-            $rubrics = $this->roomService->getRubricInformation($roomId);
+            $rubrics = $this->roomService->getRubricInformation($roomId) ?: [];
 
             // moderators _always_ need access to the user rubric (to manage room memberships)
             if (!in_array("user", $rubrics) and $currentUser->isModerator()) {
