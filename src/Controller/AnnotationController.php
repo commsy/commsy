@@ -3,21 +3,19 @@
 namespace App\Controller;
 
 use App\Form\DataTransformer\AnnotationTransformer;
-use App\Services\LegacyEnvironment;
-use App\Utils\PortfolioService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
 use App\Form\Type\AnnotationType;
+use App\Services\LegacyEnvironment;
 use App\Utils\AnnotationService;
 use App\Utils\ItemService;
+use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class AnnotationController
@@ -32,12 +30,13 @@ class AnnotationController extends AbstractController
      * @param AnnotationService $annotationService
      * @param ItemService $itemService
      * @param ReaderService $readerService
+     * @param PortfolioService $portfolioService
      * @param int $roomId
      * @param int $linkedItemId
      * @param int $max
      * @param int $start
-     * @param int $firstTagId
-     * @param int $secondTagId
+     * @param int|null $firstTagId
+     * @param int|null $secondTagId
      * @return array
      */
     public function feedAction(
@@ -51,7 +50,7 @@ class AnnotationController extends AbstractController
         int $start = 0,
         int $firstTagId = null,
         int $secondTagId = null
-    ) {
+    ): array {
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
@@ -100,7 +99,7 @@ class AnnotationController extends AbstractController
         int $linkedItemId,
         int $max = 10,
         int $start = 0
-    ) {
+    ): array {
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
@@ -117,8 +116,7 @@ class AnnotationController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/edit")
-     * @Method({"GET", "POST"})
+     * @Route("/room/{roomId}/annotation/{itemId}/edit", methods={"GET", "POST"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      * @param ItemService $itemService
@@ -167,8 +165,7 @@ class AnnotationController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/success")
-     * @Method({"GET"})
+     * @Route("/room/{roomId}/annotation/{itemId}/success", methods={"GET"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      * @param ItemService $itemService
@@ -186,17 +183,17 @@ class AnnotationController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}")
-     * @Method({"POST"})
+     * @Route("/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}", methods={"POST"})
      * @Template()
      * @Security("is_granted('ITEM_ANNOTATE', itemId)")
      * @param ItemService $itemService
      * @param AnnotationService $annotationService
      * @param Request $request
+     * @param PortfolioService $portfolioService
      * @param int $roomId
      * @param int $itemId
-     * @param int $firstTagId
-     * @param int $secondTagId
+     * @param int|null $firstTagId
+     * @param int|null $secondTagId
      * @return RedirectResponse
      */
     public function createAction(
@@ -251,8 +248,7 @@ class AnnotationController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/delete")
-     * @Method({"GET"})
+     * @Route("/room/{roomId}/annotation/{itemId}/delete", methods={"GET"})
      * @Security("is_granted('ITEM_EDIT', itemId)")
      * @param ItemService $itemService
      * @param int $itemId
