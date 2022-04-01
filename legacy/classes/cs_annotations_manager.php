@@ -312,7 +312,6 @@ class cs_annotations_manager extends cs_manager {
 
      $query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET '.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'title="'.encode(AS_DB,$annotation_item->getTitle()).'",'.
               'description="'.encode(AS_DB,$annotation_item->getDescription()).'",'.
               'linked_item_id="'.encode(AS_DB,$annotation_item->getLinkedItemID()).'",'.
               'linked_version_id="'.encode(AS_DB,$version_id).'",'.
@@ -371,7 +370,6 @@ class cs_annotations_manager extends cs_manager {
               'creator_id="'.encode(AS_DB,$this->_current_user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
               'modification_date="'.$current_datetime.'",'.
-              'title="'.encode(AS_DB,$annotation_item->getTitle()).'",'.
               'description="'.encode(AS_DB,$annotation_item->getDescription()).'",'.
               'linked_item_id="'.encode(AS_DB,$annotation_item->getLinkedItemID()).'",'.
               'linked_version_id="'.encode(AS_DB,$version_id).'"';
@@ -446,7 +444,6 @@ class cs_annotations_manager extends cs_manager {
 
                     /* disabled */
                     if ($disableOverwrite === 'FALSE') {
-                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
                         $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
                     }
