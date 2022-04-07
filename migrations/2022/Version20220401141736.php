@@ -29,7 +29,7 @@ final class Version20220401141736 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX unique_non_soft_deleted_idx ON user (user_id, auth_source, context_id, not_deleted)');
         $this->addSql('DROP INDEX creator_id ON user');
         $this->addSql('CREATE INDEX creator_idx ON user (creator_id)');
-        $this->addSql('CREATE INDEX context_idx ON user (context_id');
+        $this->addSql('CREATE INDEX context_idx ON user (context_id)');
 
         $this->addSql('DROP INDEX status ON zzz_user');
         $this->addSql('DROP INDEX is_contact ON zzz_user');
@@ -42,7 +42,7 @@ final class Version20220401141736 extends AbstractMigration
         $this->addSql('DROP INDEX creator_id ON zzz_user');
         $this->addSql('CREATE INDEX creator_idx ON zzz_user (creator_id)');
         $this->addSql('DROP INDEX user_id ON zzz_user');
-        $this->addSql('CREATE INDEX context_idx ON zzz_user (context_id');
+        $this->addSql('CREATE INDEX context_idx ON zzz_user (context_id)');
     }
 
     public function down(Schema $schema): void
