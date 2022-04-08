@@ -111,7 +111,9 @@ class DashboardController extends AbstractController
         $contextArray = [];
         foreach ($calendars as $calendar) {
             $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
-            $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
+            if ($roomItemCalendar) {
+                $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
+            }
         }
 
         // given the current portal configuration, is the current user allowed to create new rooms?
