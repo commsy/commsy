@@ -1604,7 +1604,8 @@ class cs_item {
     public function maySee($userItem)
     {
         // Deny access, if the item's context is deleted
-        if ($this->getContextItem()->isDeleted()) {
+        $contextItem = $this->getContextItem();
+        if ($contextItem === null || $contextItem->isDeleted()) {
             return false;
         }
 

@@ -1,7 +1,8 @@
 {% import 'utils/macros.html.twig' as macros %}
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
-        <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
+        {% if feedItem.contextItem %}
+            <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
             {% if feedItem.type is same as('todo') %}
                 <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} uk-icon-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
             {% else %}
@@ -108,5 +109,6 @@
                 </div>
             </header>
         </article>
+        {% endif %}
     {% endfor %}
 {% endif %}
