@@ -31,6 +31,9 @@
 
 /**
  */
+
+use Doctrine\DBAL\Schema\Column;
+
 include_once('custom/SimpleXMLElementExtended.php');
 include_once('functions/date_functions.php');
 
@@ -1762,28 +1765,58 @@ class cs_manager {
       return $this->_db_prefix;
    }
 
-    function moveFromDbToBackup($context_id)
+   private function getNonGeneratedColumnsNames(string $tableName): array
+   {
+       $connection = $this->_db_connector->getConnection();
+       $sm = $connection->createSchemaManager();
+
+       $table = $sm->listTableDetails($this->_db_table);
+       $notGeneratedColumns = array_filter($table->getColumns(), function (Column $column) {
+           /**
+            * The column "not_deleted" is a generated column
+            */
+           return $column->getName() !== 'not_deleted';
+       });
+
+       return array_map(function (Column $column) {
+           return $column->getName();
+       }, $notGeneratedColumns);
+   }
+
+    public function moveFromDbToBackup($context_id)
     {
         global $symfonyContainer;
         $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
         if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
+            $sourceTable = $this->_db_table;
+            $targetTable = $c_db_backup_prefix . '_' . $this->_db_table;
 
+            $implodedColumnNames = implode(', ', $this->getNonGeneratedColumnsNames($sourceTable));
+            $sql = "INSERT INTO $targetTable ($implodedColumnNames)
+                SELECT $implodedColumnNames FROM $sourceTable WHERE context_id = :contextId"
+            ;
+
+            $this->_db_connector->performQuery($sql, ['contextId' => $context_id]);
             $this->deleteFromDb($context_id);
         }
     }
 
-    function moveFromBackupToDb($context_id)
+    public function moveFromBackupToDb($context_id)
     {
         global $symfonyContainer;
         $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
         if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
+            $sourceTable = $c_db_backup_prefix . '_' . $this->_db_table;
+            $targetTable = $this->_db_table;
 
+            $implodedColumnNames = implode(', ', $this->getNonGeneratedColumnsNames($sourceTable));
+            $sql = "INSERT INTO $targetTable ($implodedColumnNames)
+                SELECT $implodedColumnNames FROM $sourceTable WHERE context_id = :contextId"
+            ;
+
+            $this->_db_connector->performQuery($sql, ['contextId' => $context_id]);
             $this->deleteFromDb($context_id, true);
         }
     }
