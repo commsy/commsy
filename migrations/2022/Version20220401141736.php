@@ -19,29 +19,29 @@ final class Version20220401141736 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('DROP INDEX is_contact ON user');
-        $this->addSql('DROP INDEX user_context_id_index ON user');
-        $this->addSql('DROP INDEX user_context_id_user_id_auth_source_index ON user');
-        $this->addSql('DROP INDEX user_deleter_id_deletion_date_index ON user');
-        $this->addSql('DROP INDEX status ON user');
+        $this->addSql('DROP INDEX IF EXISTS is_contact ON user');
+        $this->addSql('DROP INDEX IF EXISTS user_context_id_index ON user');
+        $this->addSql('DROP INDEX IF EXISTS user_context_id_user_id_auth_source_index ON user');
+        $this->addSql('DROP INDEX IF EXISTS user_deleter_id_deletion_date_index ON user');
+        $this->addSql('DROP INDEX IF EXISTS status ON user');
         $this->addSql('ALTER TABLE user ADD not_deleted TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date');
         $this->addSql('CREATE INDEX deleted_idx ON user (deletion_date, deleter_id)');
         $this->addSql('CREATE UNIQUE INDEX unique_non_soft_deleted_idx ON user (user_id, auth_source, context_id, not_deleted)');
-        $this->addSql('DROP INDEX creator_id ON user');
+        $this->addSql('DROP INDEX IF EXISTS creator_id ON user');
         $this->addSql('CREATE INDEX creator_idx ON user (creator_id)');
         $this->addSql('CREATE INDEX context_idx ON user (context_id)');
 
-        $this->addSql('DROP INDEX status ON zzz_user');
-        $this->addSql('DROP INDEX is_contact ON zzz_user');
-        $this->addSql('DROP INDEX deletion_date ON zzz_user');
-        $this->addSql('DROP INDEX context_id ON zzz_user');
-        $this->addSql('DROP INDEX deleter_id ON zzz_user');
+        $this->addSql('DROP INDEX IF EXISTS status ON zzz_user');
+        $this->addSql('DROP INDEX IF EXISTS is_contact ON zzz_user');
+        $this->addSql('DROP INDEX IF EXISTS deletion_date ON zzz_user');
+        $this->addSql('DROP INDEX IF EXISTS context_id ON zzz_user');
+        $this->addSql('DROP INDEX IF EXISTS deleter_id ON zzz_user');
         $this->addSql('ALTER TABLE zzz_user ADD not_deleted TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date');
         $this->addSql('CREATE INDEX deleted_idx ON zzz_user (deletion_date, deleter_id)');
         $this->addSql('CREATE UNIQUE INDEX unique_non_soft_deleted_idx ON zzz_user (user_id, auth_source, context_id, not_deleted)');
-        $this->addSql('DROP INDEX creator_id ON zzz_user');
+        $this->addSql('DROP INDEX IF EXISTS creator_id ON zzz_user');
         $this->addSql('CREATE INDEX creator_idx ON zzz_user (creator_id)');
-        $this->addSql('DROP INDEX user_id ON zzz_user');
+        $this->addSql('DROP INDEX IF EXISTS user_id ON zzz_user');
         $this->addSql('CREATE INDEX context_idx ON zzz_user (context_id)');
     }
 
