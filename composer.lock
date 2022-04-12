@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "65f6e9bc192c0b62766b4ab42ec5c1d1",
+    "content-hash": "e01047cd0e24375c16c386319ede9bea",
     "packages": [
         {
             "name": "api-platform/core",
@@ -3627,39 +3627,34 @@
         },
         {
             "name": "lexik/form-filter-bundle",
-            "version": "v6.0.5",
+            "version": "v7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikFormFilterBundle.git",
-                "reference": "74e7e59594602ad62cf8b9dc412a90d02f279f0d"
+                "reference": "ecea502dfd4eb47fb7df190a789572c2afa5ebfc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikFormFilterBundle/zipball/74e7e59594602ad62cf8b9dc412a90d02f279f0d",
-                "reference": "74e7e59594602ad62cf8b9dc412a90d02f279f0d",
+                "url": "https://api.github.com/repos/lexik/LexikFormFilterBundle/zipball/ecea502dfd4eb47fb7df190a789572c2afa5ebfc",
+                "reference": "ecea502dfd4eb47fb7df190a789572c2afa5ebfc",
                 "shasum": ""
             },
             "require": {
-                "doctrine/orm": "^2.7",
-                "php": ">=7.0",
-                "symfony/form": "^4.0|^5.0",
-                "symfony/framework-bundle": "^4.0|^5.0"
+                "doctrine/orm": "^2.10",
+                "php": ">=7.1",
+                "symfony/form": "^4.4|^5.1|^6.0",
+                "symfony/framework-bundle": "^4.4|^5.1|^6.0"
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "^1.8 || ^2.0",
                 "doctrine/mongodb-odm-bundle": "^4.1",
-                "symfony/phpunit-bridge": "^4.0|^5.0",
-                "symfony/var-dumper": "^4.0|^5.0"
+                "symfony/phpunit-bridge": "^4.4|^5.1|^6.0",
+                "symfony/var-dumper": "^4.4|^5.1|^6.0"
             },
             "suggest": {
                 "alcaeus/mongo-php-adapter": "Install this package if using the PHP 7 MongoDB Driver"
             },
             "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.x.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Lexik\\Bundle\\FormFilterBundle\\": ""
@@ -3688,7 +3683,11 @@
                 "form",
                 "symfony"
             ],
-            "time": "2020-12-07T07:39:25+00:00"
+            "support": {
+                "issues": "https://github.com/lexik/LexikFormFilterBundle/issues",
+                "source": "https://github.com/lexik/LexikFormFilterBundle/tree/v7.0.2"
+            },
+            "time": "2021-12-09T09:06:40+00:00"
         },
         {
             "name": "lexik/jwt-authentication-bundle",
@@ -15358,5 +15357,5 @@
         "ext-soap": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
