@@ -150,7 +150,8 @@ class ItemVoter extends Voter
      */
     private function canEdit($item, \cs_user_item $currentUser): bool
     {
-        if ($item->getContextItem()->isArchived()) {
+        $contextItem = $item->getContextItem();
+        if ($contextItem !== null && $contextItem->isArchived()) {
             // users may still edit their own account settings & room profile (which also allows them to leave the room)
             if ($item instanceof \cs_user_item && $item->getItemID() === $currentUser->getItemID()) {
                 return true;

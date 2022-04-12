@@ -982,7 +982,12 @@ class SearchController extends BaseController
                     }
                 }
 
-                $routeName = 'app_' . $type . '_detail';
+                if ($type === 'room') {
+                    $routeName = 'app_roomall_detail';
+                } else {
+                    $routeName = 'app_' . $type . '_detail';
+                }
+
                 if ($this->router->getRouteCollection()->get($routeName)) {
                     $url = $this->generateUrl($routeName, [
                         'roomId' => $roomId,
@@ -1024,10 +1029,17 @@ class SearchController extends BaseController
                     $item = $this->itemService->getItem($searchResult->getItemId());
                     $readStatus = $readerService->cachedReadStatusForItem($item);
                 }
+
+                if ($type === 'room') {
+                    $routeName = 'app_roomall_detail';
+                } else {
+                    $routeName = 'app_' . $type . '_detail';
+                }
+
                 $results[] = [
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
-                    'routeName' => 'app_' . $type . '_detail',
+                    'routeName' => $routeName,
                     'files' => $this->itemService->getItemFileList($searchResult->getItemId()),
                     'type' => $type,
                     'status' => $status,
