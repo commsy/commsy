@@ -1011,6 +1011,24 @@ class GroupController extends BaseController
     }
 
     /**
+     * @Route("/room/{roomId}/date/{itemId}/savegrouproom")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
+     */
+    public function savegrouproomAction(
+        $roomId,
+        $itemId,
+        GroupService $groupService)
+    {
+        $group = $groupService->getGroup($itemId);
+
+        return [
+            'roomId' => $roomId,
+            'item' => $group,
+        ];
+    }
+
+    /**
      * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
      * @param int $roomId
      * @param int $itemId
