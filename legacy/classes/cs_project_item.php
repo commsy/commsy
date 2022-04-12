@@ -439,11 +439,9 @@ class cs_project_item extends cs_room_item {
 
 
         // use zzz repository if room is archived
-        if ($this->isArchived()) {
-            $repository = $em->getRepository('App:ZzzRoom');
+        if (!$this->isArchived()) {
+            $this->deleteElasticItem($objectPersister, $repository);
         }
-
-        $this->deleteElasticItem($objectPersister, $repository);
     }
 
    function undelete () {
