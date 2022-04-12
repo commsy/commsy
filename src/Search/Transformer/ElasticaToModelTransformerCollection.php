@@ -4,6 +4,7 @@ namespace App\Search\Transformer;
 
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Holds a collection of transformers for an index wide transformation.
@@ -16,14 +17,19 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
     /**
      * @var ElasticaToModelTransformerInterface[]
      */
-    protected $transformers = [];
+    protected array $transformers = [];
 
     /**
      * @param ElasticaToModelTransformerInterface[] $transformers
      */
-    public function __construct(array $transformers)
-    {
-        $this->transformers = $transformers;
+    public function __construct(
+        array $transformers,
+        ParameterBagInterface $parameterBag
+    ) {
+        $indexPrefix = $parameterBag->get('commsy.elastic.prefix');
+        foreach ($transformers as $name => $transformer) {
+            $this->transformers[$indexPrefix . '_' . $name] = $transformer;
+        }
     }
 
     /**

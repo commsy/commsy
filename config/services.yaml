@@ -6,6 +6,8 @@
 parameters:
     locale: '%env(LOCALE)%'
 
+    commsy.elastic.prefix: '%env(ELASTIC_INDEX)%'
+
     commsy.force_theme: '%env(FORCE_THEME)%'
 
     files_directory: '%kernel.project_dir%/files'
@@ -423,14 +425,14 @@ services:
     App\Search\Transformer\ElasticaToModelTransformerCollection:
         arguments:
             - {
-                commsy_announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement',
-                commsy_date: '@fos_elastica.elastica_to_model_transformer.commsy_date',
-                commsy_discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion',
-                commsy_label: '@fos_elastica.elastica_to_model_transformer.commsy_label',
-                commsy_room: '@fos_elastica.elastica_to_model_transformer.commsy_room',
-                commsy_todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo',
-                commsy_user: '@fos_elastica.elastica_to_model_transformer.commsy_user',
-                commsy_material: '@fos_elastica.elastica_to_model_transformer.commsy_material',
+                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement',
+                date: '@fos_elastica.elastica_to_model_transformer.commsy_date',
+                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion',
+                label: '@fos_elastica.elastica_to_model_transformer.commsy_label',
+                room: '@fos_elastica.elastica_to_model_transformer.commsy_room',
+                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo',
+                user: '@fos_elastica.elastica_to_model_transformer.commsy_user',
+                material: '@fos_elastica.elastica_to_model_transformer.commsy_material',
             }
     FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@App\Search\Transformer\ElasticaToModelTransformerCollection'
 

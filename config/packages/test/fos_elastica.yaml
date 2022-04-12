@@ -3,7 +3,7 @@ fos_elastica:
     indexes:
         # Rooms
         commsy_room:
-            index_name: '%env(ELASTIC_INDEX)%_room'
+            index_name: '%commsy.elastic.prefix%_room'
 
             persistence:
                 driver: orm
