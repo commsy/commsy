@@ -1145,7 +1145,7 @@
             </trans-unit>
             <trans-unit id="commsy_icon_link_help_text">
                 <source>CommSy icon link help text</source>
-                <target>Link zur Startseite für dieses Portal (erreichbar via Klick auf das CommSy-Icon in der CommSy Navigationsleiste)</target>
+                <target>Link zur Startseite für dieses Portal (erreichbar via Klick auf das CommSy-Icon auf der Portalübersicht oder Login-Seite)</target>
             </trans-unit>
 
             <!-- appearance form -->
