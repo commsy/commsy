@@ -1119,6 +1119,10 @@
             </trans-unit>
 
             <!-- general form -->
+            <trans-unit id="portal_general_form_title">
+                <source>General</source>
+                <target>Allgemein</target>
+            </trans-unit>
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Titel</target>
@@ -1134,6 +1138,14 @@
             <trans-unit id="available_idps">
                 <source>Available idps</source>
                 <target>Verfügbare Idps</target>
+            </trans-unit>
+            <trans-unit id="commsy_icon_link">
+                <source>CommSy icon link</source>
+                <target>CommSy-Icon Link</target>
+            </trans-unit>
+            <trans-unit id="commsy_icon_link_help_text">
+                <source>CommSy icon link help text</source>
+                <target>Link zur Startseite für dieses Portal (erreichbar via Klick auf das CommSy-Icon in der CommSy Navigationsleiste)</target>
             </trans-unit>
 
             <!-- appearance form -->

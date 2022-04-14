@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -198,6 +199,13 @@ class Server
     private $logoImageName;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="commsy_icon_link", type="string", length=255, nullable=true)
+     */
+    private $commsyIconLink;
+
+    /**
      * Get id
      *
      * @return integer
@@ -253,6 +261,24 @@ class Server
     public function setLogoImageName(?string $logoImageName): self
     {
         $this->logoImageName = $logoImageName;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCommsyIconLink(): ?string
+    {
+        return $this->commsyIconLink;
+    }
+
+    /**
+     * @param string|null $commsyIconLink
+     * @return self
+     */
+    public function setCommsyIconLink(?string $commsyIconLink): self
+    {
+        $this->commsyIconLink = $commsyIconLink;
         return $this;
     }
 
