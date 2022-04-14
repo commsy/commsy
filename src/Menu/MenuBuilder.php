@@ -91,11 +91,13 @@ class MenuBuilder
         $account = $this->security->getUser();
         $authSource = $account !== null ? $account->getAuthSource() : null;
 
+        $userIsRoot = $this->security->isGranted('ROLE_ROOT');
+
         $menu = $this->factory->createItem('root');
 
         if ($currentUser->getItemId() != '' && $account != null) {
 
-            if (!$currentUser->isRoot()) {
+            if (!$userIsRoot) {
                 $menu->addChild('personal', [
                     'route' => 'app_account_personal',
                     'routeParameters' => [
@@ -109,7 +111,7 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'menu');
             }
 
-            if ($currentUser->isRoot() || ($authSource !== null && $authSource->isChangePassword())) {
+            if ($userIsRoot || ($authSource !== null && $authSource->isChangePassword())) {
                 $menu->addChild('changePassword', [
                     'route' => 'app_account_changepassword',
                     'extras' => [
@@ -120,7 +122,7 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'profile');
             }
 
-            if (!$currentUser->isRoot()) {
+            if (!$userIsRoot) {
                 $menu->addChild('mergeAccounts', [
                     'label' => 'combineAccount',
                     'route' => 'app_account_mergeaccounts',
@@ -146,7 +148,7 @@ class MenuBuilder
                 ])
                 ->setExtra('translation_domain', 'menu');
 
-                if (!$currentUser->isRoot()) {
+                if (!$userIsRoot) {
                     $menu->addChild('privacy', [
                         'label' => 'Privacy',
                         'route' => 'app_account_privacy',
@@ -576,8 +578,10 @@ class MenuBuilder
         // dashboard
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
+        $userIsRoot = $this->security->isGranted('ROLE_ROOT');
+
         $inPrivateRoom = false;
-        if (!$currentUser->isRoot() && !$currentUser->isGuest()) {
+        if (!$userIsRoot && !$currentUser->isGuest()) {
             $privateRoom = $currentUser->getOwnRoom();
 
             if ($roomId === $privateRoom->getItemId()) {
@@ -595,7 +599,7 @@ class MenuBuilder
             $rubrics = $this->roomService->getRubricInformation($roomId) ?: [];
 
             // moderators _always_ need access to the user rubric (to manage room memberships)
-            if (!in_array("user", $rubrics) and $currentUser->isModerator()) {
+            if (!in_array("user", $rubrics) && $currentUser->isModerator()) {
                 $rubrics[] = "user";
             }
         } // dashboard menu
@@ -615,9 +619,11 @@ class MenuBuilder
         list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
 
         // NOTE: hide dashboard menu in dashboard overview and room list!
-        if ((!$inPrivateRoom or ($action != "overview" and $action != "listall")) and
-            ($controller != "copy" or $action != "list") and
-            ($controller != "room" or $action != "detail")) {
+        if (!$userIsRoot &&
+            (!$inPrivateRoom || ($action != "overview" && $action != "listall")) &&
+            ($controller != "copy" || $action != "list") &&
+            ($controller != "room" || $action != "detail")
+        ) {
             // home navigation
             $menu->addChild('room_home', array(
                 'label' => $label,
@@ -650,7 +656,8 @@ class MenuBuilder
         }
 
         if (!$inPrivateRoom) {
-                if ($currentUser && !$currentUser->isGuest()) {
+            if (!$userIsRoot &&
+                $currentUser && !$currentUser->isGuest()) {
                 $menu->addChild('', ['uri' => '#']);
                 $menu->addChild('room_profile', [
                     'label' => 'Room profile',
