@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Api\GetAccountsCheckLocalLogin;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -17,6 +20,53 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *     fields={"contextId", "username", "authSource"},
  *     errorPath="username",
  *     repositoryMethod="findOnByCredentials"
+ * )
+ * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
+ *     collectionOperations={
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "check_local_login"={
+ *             "method"="POST",
+ *             "path"="accounts/checkLocalLogin",
+ *             "controller"=GetAccountsCheckLocalLogin::class,
+ *             "read"=false,
+ *             "validation_groups"={"checkLocalLoginValidation"},
+ *     "denormalizationContext"={
+ *         "groups"={"api"}
+ *     },
+ *             "openapi_context"={
+ *                 "summary"="Checks plain user credentials and returns account information",
+ *                 "parameters"={
+ *                 },
+ *                 "requestBody"={
+ *                     "required"=true,
+ *                     "content"={
+ *                         "application/json"={
+ *                             "schema"={
+ *                                 "type"="object",
+ *                                 "properties"={
+ *                                     "username"={
+ *                                         "type"="string",
+ *                                     },
+ *                                     "plainPassword"={
+ *                                         "type"="string",
+ *                                     }
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"}
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"}
+ *     }
  * )
  */
 class Account implements UserInterface, EncoderAwareInterface, \Serializable
@@ -37,13 +87,15 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"Default", "checkLocalLoginValidation"})
      * @Assert\Regex(pattern="/^(root|guest)$/i", match=false, message="{{ value }} is a reserved name")
+     *
+     * @Groups({"api"})
      */
     private $username;
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"Default", "checkLocalLoginValidation"})
      * @Assert\NotCompromisedPassword()
      * @Assert\Length(max=4096, min=8, allowEmptyString=false, minMessage="Your password must be at least {{ limit }} characters long.")
      * @Assert\Regex(pattern="/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/", message="Your password must contain at least one lowercase character.")
@@ -71,6 +123,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(type="string", length=50, nullable=false)
      *
      * @Assert\NotBlank()
+     *
+     * @Groups({"api"})
      */
     private $firstname;
 
@@ -80,6 +134,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(type="string", length=50, nullable=false)
      *
      * @Assert\NotBlank()
+     *
+     * @Groups({"api"})
      */
     private $lastname;
 
@@ -89,6 +145,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=100, nullable=false)
      *
      * @Assert\Email()
+     *
+     * @Groups({"api"})
      */
     private $email;
 
@@ -109,6 +167,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @var bool
      *
      * @ORM\Column(name="locked", type="boolean")
+     *
+     * @Groups({"api"})
      */
     private $locked = false;
 
@@ -169,7 +229,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     /**
      * @return int
      */
-    public function getContextId(): int
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
