@@ -284,8 +284,11 @@ class ItemVoter extends Voter
 
     private function hasUserroomItemPrivileges($item, $currentUser)
     {
-        if ($item->getContextItem()->getType() === 'userroom'
-            && $this->canParticipate($item, $currentUser)) {
+        $contextItem = $item->getContextItem();
+        if ($contextItem !== null &&
+            $contextItem->getType() === 'userroom' &&
+            $this->canParticipate($item, $currentUser)
+        ) {
             return true;
         }
         return false;
