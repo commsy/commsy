@@ -189,6 +189,12 @@
                 <target>Your selection must differ.</target>
             </trans-unit>
 
+            <!-- signup -->
+            <trans-unit id="signup-regex-mail">
+                <source>signup-regex-mail</source>
+                <target>The email address does not match the required regex.</target>
+            </trans-unit>
+
             <!-- password reset -->
             <trans-unit id="violation_local_account_not_found">
                 <source>login unknown</source>
