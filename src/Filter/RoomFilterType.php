@@ -83,6 +83,31 @@ class RoomFilterType extends AbstractType
                     'class' => 'uk-form-label',
                 ),
             ])
+            ->add('template', Filters\CheckboxFilterType::class, [
+                'label' => 'hide-templates',
+                'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
+                    if (empty($values['value'])) {
+                        return null;
+                    }
+
+                    if ($values['value'] === false) {
+                        return null;
+                    }
+
+                    /** @var QueryBuilder $qb */
+                    $qb = $filterQuery->getQueryBuilder();
+                    $qb
+                        ->andWhere('r.template = :template')
+                        ->setParameter('template', '-1');
+
+                    return $qb;
+                },
+                'mapped' => false,
+                'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ])
             ->add('archived', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-archived-rooms',
                 'apply_filter' => false, // disable filter
