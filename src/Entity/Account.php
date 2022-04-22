@@ -34,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             "controller"=GetAccountsCheckLocalLogin::class,
  *             "read"=false,
  *             "write"=false,
+ *             "input"=LocalLoginInput::class,
  *             "validation_groups"={"checkLocalLoginValidation"},
  *             "normalization_context"={
  *                 "groups"={"api"},
@@ -47,6 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                 },
  *                 "requestBody"={
  *                     "required"=true,
+ *                     "description"="Local login data",
  *                     "content"={
  *                         "application/json"={
  *                             "schema"={
