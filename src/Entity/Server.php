@@ -6,6 +6,7 @@ use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetServerAnnouncement;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
@@ -84,14 +85,14 @@ class Server
      * @Groups({"api"})
      * @OA\Property(description="The unique identifier.")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="context_id", type="integer", nullable=true)
      */
-    private $contextId;
+    private int $contextId;
 
     /**
      * @var integer
@@ -105,31 +106,31 @@ class Server
      *
      * @ORM\Column(name="modifier_id", type="integer", nullable=true)
      */
-    private $modifierId;
+    private int $modifierId;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="deleter_id", type="integer", nullable=true)
      */
-    private $deleterId;
+    private int $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      */
     private $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
@@ -140,21 +141,21 @@ class Server
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
-    private $title;
+    private string $title;
 
     /**
-     * @var array
+     * @var array|null
      *
      * @ORM\Column(name="extras", type="array", nullable=true)
      */
-    private $extras;
+    private ?array $extras;
 
     /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=20, nullable=false)
      */
-    private $status;
+    private string $status;
 
     /**
      * @var integer
@@ -168,7 +169,7 @@ class Server
      *
      * @ORM\Column(name="type", type="string", length=10, nullable=false)
      */
-    private $type = 'server';
+    private string $type = 'server';
 
     /**
      * @var boolean
@@ -178,11 +179,11 @@ class Server
     private $isOpenForGuests = '1';
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
-    private $url;
+    private ?string $url;
 
     /**
      * @var File|null
@@ -194,16 +195,16 @@ class Server
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="logo_image_name", type="string", length=255, nullable=true)
      */
-    private $logoImageName;
+    private ?string $logoImageName;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="commsy_icon_link", type="string", length=255, nullable=true)
      */
-    private $commsyIconLink;
+    private ?string $commsyIconLink;
 
     /**
      * Get id
@@ -299,7 +300,7 @@ class Server
     /**
      * Get extras
      *
-     * @return array
+     * @return array|null
      */
     public function getExtras(): ?array
     {
