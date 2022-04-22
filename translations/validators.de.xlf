@@ -189,6 +189,12 @@
                 <target>Ihre Auswahl darf nicht identisch sein.</target>
             </trans-unit>
 
+            <!-- signup -->
+            <trans-unit id="signup-regex-mail">
+                <source>signup-regex-mail</source>
+                <target>Die E-Mail Adresse entspricht nicht dem eingestellten regulären Ausdruck</target>
+            </trans-unit>
+
             <!-- password reset -->
             <trans-unit id="violation_local_account_not_found">
                 <source>login unknown</source>
