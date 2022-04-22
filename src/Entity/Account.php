@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetAccountsCheckLocalLogin;
+use App\Dto\LocalLoginInput;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -31,11 +32,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *             "method"="POST",
  *             "path"="accounts/checkLocalLogin",
  *             "controller"=GetAccountsCheckLocalLogin::class,
+ *             "input"=LocalLoginInput::class,
  *             "read"=false,
  *             "validation_groups"={"checkLocalLoginValidation"},
- *     "denormalizationContext"={
- *         "groups"={"api"}
- *     },
+ *             "normalization_context"={
+ *                 "groups"={"api"},
+ *             },
+ *             "denormalization_context"={
+ *                 "groups"={"api_check_local_login"},
+ *              },
  *             "openapi_context"={
  *                 "summary"="Checks plain user credentials and returns account information",
  *                 "parameters"={
@@ -77,6 +82,10 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
+     *
+     * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
+     *
+     * @Groups({"api_check_local_login"})
      */
     private $contextId;
 
@@ -90,7 +99,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @Assert\NotBlank(groups={"Default", "checkLocalLoginValidation"})
      * @Assert\Regex(pattern="/^(root|guest)$/i", match=false, message="{{ value }} is a reserved name")
      *
-     * @Groups({"api"})
+     * @Groups({"api", "api_check_local_login"})
      */
     private $username;
 
@@ -102,6 +111,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @Assert\Regex(pattern="/(*UTF8)[\p{Lu}\p{Lt}]/", message="Your password must contain at least one uppercase character.")
      * @Assert\Regex(pattern="/[[:punct:]]/", message="Your password must contain at least one special character.")
      * @Assert\Regex(pattern="/\p{Nd}/", message="Your password must contain at least one numeric character.")
+     *
+     * @Groups({"api_check_local_login"})
      */
     private $plainPassword;
 
