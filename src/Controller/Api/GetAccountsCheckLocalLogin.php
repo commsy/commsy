@@ -6,9 +6,9 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Repository\AccountsRepository;
-use App\Repository\AuthSourceRepository;
 use App\Repository\PortalRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class GetAccountsCheckLocalLogin
 {
@@ -22,18 +22,23 @@ class GetAccountsCheckLocalLogin
      */
     private AccountsRepository $accountsRepository;
 
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private UserPasswordEncoderInterface $passwordEncoder;
+
     public function __construct(
         PortalRepository $portalRepository,
-        AccountsRepository $accountsRepository
+        AccountsRepository $accountsRepository,
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->portalRepository = $portalRepository;
         $this->accountsRepository = $accountsRepository;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function __invoke(Account $data): Account
     {
-        var_dump($data);
-
         $portal = $this->portalRepository->findActivePortal($data->getContextId());
 
         if ($portal) {
@@ -50,7 +55,9 @@ class GetAccountsCheckLocalLogin
                 );
 
                 if ($account) {
-                    return $account;
+                    if ($this->passwordEncoder->isPasswordValid($account, $data->getPassword())) {
+                        return $account;
+                    }
                 }
             }
         }

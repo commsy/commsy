@@ -7,10 +7,10 @@ use App\Controller\Api\GetAccountsCheckLocalLogin;
 use App\Dto\LocalLoginInput;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Account
@@ -32,8 +32,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *             "method"="POST",
  *             "path"="accounts/checkLocalLogin",
  *             "controller"=GetAccountsCheckLocalLogin::class,
- *             "input"=LocalLoginInput::class,
  *             "read"=false,
+ *             "write"=false,
  *             "validation_groups"={"checkLocalLoginValidation"},
  *             "normalization_context"={
  *                 "groups"={"api"},
@@ -52,10 +52,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *                             "schema"={
  *                                 "type"="object",
  *                                 "properties"={
+ *                                     "contextId"={
+ *                                         "type"="int",
+ *                                     },
  *                                     "username"={
  *                                         "type"="string",
  *                                     },
- *                                     "plainPassword"={
+ *                                     "password"={
  *                                         "type"="string",
  *                                     }
  *                                 },
@@ -104,15 +107,13 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     private $username;
 
     /**
-     * @Assert\NotBlank(groups={"Default", "checkLocalLoginValidation"})
+     * @Assert\NotBlank()
      * @Assert\NotCompromisedPassword()
      * @Assert\Length(max=4096, min=8, allowEmptyString=false, minMessage="Your password must be at least {{ limit }} characters long.")
      * @Assert\Regex(pattern="/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/", message="Your password must contain at least one lowercase character.")
      * @Assert\Regex(pattern="/(*UTF8)[\p{Lu}\p{Lt}]/", message="Your password must contain at least one uppercase character.")
      * @Assert\Regex(pattern="/[[:punct:]]/", message="Your password must contain at least one special character.")
      * @Assert\Regex(pattern="/\p{Nd}/", message="Your password must contain at least one numeric character.")
-     *
-     * @Groups({"api_check_local_login"})
      */
     private $plainPassword;
 
@@ -125,6 +126,10 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
+     *
+     * @Groups({"api_check_local_login"})
      */
     private $password;
 
