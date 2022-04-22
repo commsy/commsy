@@ -166,6 +166,10 @@
                 <source>hide-archived-rooms</source>
                 <target>Archivierte Räume ausblenden</target>
             </trans-unit>
+            <trans-unit id="hide-template">
+                <source>hide-templates</source>
+                <target>Vorlagen ausblenden</target>
+            </trans-unit>
             <trans-unit id="hide-without-membership">
                 <source>hide-rooms-without-membership</source>
                 <target>Räume ohne Mitgliedschaft ausblenden</target>
