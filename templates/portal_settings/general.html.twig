@@ -1,6 +1,7 @@
 {% extends 'layout.html.twig' %}
 
-{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme portalForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme serverForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
@@ -8,10 +9,18 @@
 
 {% block main %}
     {% embed 'components/card.html.twig' %}
-        {% block title %}{{ 'Portal'|trans({}, "portal") }}{% endblock %}
+        {% block title %}{{ 'General'|trans({}, "portal") }}{% endblock %}
 
         {% block body %}
-            {{ form(form) }}
+            <ul uk-tab>
+                <li class="{% if tab is same as 'portal' %}uk-active{% endif %}"><a href="#">Portal</a></li>
+                {% if is_granted('ROLE_ROOT') %}<li class="{% if tab is same as 'server' %}uk-active{% endif %}"><a class="uk-text-danger" href="#">Server</a></li>{% endif %}
+            </ul>
+
+            <ul class="uk-switcher uk-margin">
+                <li>{{ form(portalForm) }}</li>
+                {% if is_granted('ROLE_ROOT') %}<li>{{ form(serverForm) }}</li>{% endif %}
+            </ul>
         {% endblock %}
     {% endembed %}
 {% endblock %}

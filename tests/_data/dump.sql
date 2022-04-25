@@ -1,8 +1,8 @@
--- MySQL dump 10.18  Distrib 10.3.27-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.6.7-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: commsy
+-- Host: db    Database: commsy_test
 -- ------------------------------------------------------
--- Server version	10.3.27-MariaDB-1:10.3.27+maria~focal
+-- Server version	10.4.24-MariaDB-1:10.4.24+maria~focal
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -91,7 +91,6 @@ CREATE TABLE `annotations` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
   `description` mediumtext DEFAULT NULL,
   `linked_item_id` int(11) NOT NULL DEFAULT 0,
   `linked_version_id` int(11) NOT NULL DEFAULT 0,
@@ -220,9 +219,10 @@ CREATE TABLE `auth_source` (
   `auth_dn` varchar(50) DEFAULT NULL,
   `auth_query` varchar(50) DEFAULT NULL,
   `mail_regex` varchar(100) DEFAULT NULL,
-  `identity_provider` LONGTEXT DEFAULT NULL comment '(DC2Type:array)',
+  `identity_provider` longtext DEFAULT NULL COMMENT '(DC2Type:array)',
   PRIMARY KEY (`id`),
-  KEY `auth_source_portal_id_index` (`portal_id`)
+  KEY `portal_id` (`portal_id`),
+  CONSTRAINT `FK_7F29D891B887E1DD` FOREIGN KEY (`portal_id`) REFERENCES `portal` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -232,7 +232,7 @@ CREATE TABLE `auth_source` (
 
 LOCK TABLES `auth_source` WRITE;
 /*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
-INSERT INTO `auth_source` VALUES (100,99,'CommSy',NULL,'local',1,1,'no',0,0,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `auth_source` VALUES (100,NULL,'CommSy',NULL,'local',1,1,'no',0,0,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `auth_source` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -936,7 +936,7 @@ CREATE TABLE `migration_versions` (
 
 LOCK TABLES `migration_versions` WRITE;
 /*!40000 ALTER TABLE `migration_versions` DISABLE KEYS */;
-INSERT INTO `migration_versions` VALUES ('DoctrineMigrations\\Version20150623133246','2021-10-22 16:01:35',151),('DoctrineMigrations\\Version20150623135455','2021-10-22 16:01:35',816),('DoctrineMigrations\\Version20150831152400','2021-10-22 16:01:36',14),('DoctrineMigrations\\Version20150914082323','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20160718213927','2021-10-22 16:01:36',13),('DoctrineMigrations\\Version20160719021757','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20160727100551','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20160727103653','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20160727111607','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20160727112623','2021-10-22 16:01:36',3),('DoctrineMigrations\\Version20160727133717','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20160728231457','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20170225094328','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20170225121940','2021-10-22 16:01:36',3),('DoctrineMigrations\\Version20170420141745','2021-10-22 16:01:36',4),('DoctrineMigrations\\Version20170521105856','2021-10-22 16:01:36',4065),('DoctrineMigrations\\Version20170616103508','2021-10-22 16:01:40',74),('DoctrineMigrations\\Version20170714122834','2021-10-22 16:01:40',7),('DoctrineMigrations\\Version20170721185631','2021-10-22 16:01:41',52),('DoctrineMigrations\\Version20170802185102','2021-10-22 16:01:41',12),('DoctrineMigrations\\Version20170810143230','2021-10-22 16:01:41',11),('DoctrineMigrations\\Version20170824064811','2021-10-22 16:01:41',6),('DoctrineMigrations\\Version20170908083138','2021-10-22 16:01:41',60),('DoctrineMigrations\\Version20180212155007','2021-10-22 16:01:41',24),('DoctrineMigrations\\Version20180227100813','2021-10-22 16:01:41',22),('DoctrineMigrations\\Version20180315103403','2021-10-22 16:01:41',35),('DoctrineMigrations\\Version20180713115204','2021-10-22 16:01:41',12),('DoctrineMigrations\\Version20190125123633','2021-10-22 16:01:41',18),('DoctrineMigrations\\Version20190523132611','2021-10-22 16:01:41',12),('DoctrineMigrations\\Version20190708172814','2021-10-22 16:01:41',148),('DoctrineMigrations\\Version20190923121921','2021-10-22 16:01:41',37),('DoctrineMigrations\\Version20190923152100','2021-10-22 16:01:41',427),('DoctrineMigrations\\Version20190924133007','2021-10-22 16:01:42',232),('DoctrineMigrations\\Version20190924140632','2021-10-22 16:01:42',276),('DoctrineMigrations\\Version20191007171054','2021-10-22 16:01:42',250),('DoctrineMigrations\\Version20200617133036','2021-10-22 16:01:42',302),('DoctrineMigrations\\Version20201106104557','2021-10-22 16:01:43',26),('DoctrineMigrations\\Version20210209170044','2021-10-22 16:01:43',79),('DoctrineMigrations\\Version20210311145311','2021-10-22 16:01:43',6),('DoctrineMigrations\\Version20210329134429','2021-10-22 16:01:43',46),('DoctrineMigrations\\Version20210329134856','2021-10-22 16:01:43',1),('DoctrineMigrations\\Version20210406110145','2021-10-22 16:01:43',47),('DoctrineMigrations\\Version20210406133819','2021-10-22 16:01:43',43),('DoctrineMigrations\\Version20210505123313','2021-10-22 16:01:43',2),('DoctrineMigrations\\Version20210506100803','2021-10-22 16:01:43',63),('DoctrineMigrations\\Version20210507071808','2021-10-22 16:01:43',104),('DoctrineMigrations\\Version20210519150306','2021-10-22 16:01:43',57),('DoctrineMigrations\\Version20210913150510','2021-10-22 16:01:43',21),('DoctrineMigrations\\Version20211014124121','2021-10-22 16:01:43',1),('DoctrineMigrations\\Version20211015075059','2021-10-22 16:01:43',1),('DoctrineMigrations\\Version20211015122115','2021-10-22 16:01:43',191);
+INSERT INTO `migration_versions` VALUES ('DoctrineMigrations\\Version20150623133246','2021-10-22 16:01:35',151),('DoctrineMigrations\\Version20150623135455','2021-10-22 16:01:35',816),('DoctrineMigrations\\Version20150831152400','2021-10-22 16:01:36',14),('DoctrineMigrations\\Version20150914082323','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20160718213927','2021-10-22 16:01:36',13),('DoctrineMigrations\\Version20160719021757','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20160727100551','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20160727103653','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20160727111607','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20160727112623','2021-10-22 16:01:36',3),('DoctrineMigrations\\Version20160727133717','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20160728231457','2021-10-22 16:01:36',1),('DoctrineMigrations\\Version20170225094328','2021-10-22 16:01:36',2),('DoctrineMigrations\\Version20170225121940','2021-10-22 16:01:36',3),('DoctrineMigrations\\Version20170420141745','2021-10-22 16:01:36',4),('DoctrineMigrations\\Version20170521105856','2021-10-22 16:01:36',4065),('DoctrineMigrations\\Version20170616103508','2021-10-22 16:01:40',74),('DoctrineMigrations\\Version20170714122834','2021-10-22 16:01:40',7),('DoctrineMigrations\\Version20170721185631','2021-10-22 16:01:41',52),('DoctrineMigrations\\Version20170802185102','2021-10-22 16:01:41',12),('DoctrineMigrations\\Version20170810143230','2021-10-22 16:01:41',11),('DoctrineMigrations\\Version20170824064811','2021-10-22 16:01:41',6),('DoctrineMigrations\\Version20170908083138','2021-10-22 16:01:41',60),('DoctrineMigrations\\Version20180212155007','2021-10-22 16:01:41',24),('DoctrineMigrations\\Version20180227100813','2021-10-22 16:01:41',22),('DoctrineMigrations\\Version20180315103403','2021-10-22 16:01:41',35),('DoctrineMigrations\\Version20180713115204','2021-10-22 16:01:41',12),('DoctrineMigrations\\Version20190125123633','2021-10-22 16:01:41',18),('DoctrineMigrations\\Version20190523132611','2021-10-22 16:01:41',12),('DoctrineMigrations\\Version20190708172814','2021-10-22 16:01:41',148),('DoctrineMigrations\\Version20190923121921','2021-10-22 16:01:41',37),('DoctrineMigrations\\Version20190923152100','2021-10-22 16:01:41',427),('DoctrineMigrations\\Version20190924133007','2021-10-22 16:01:42',232),('DoctrineMigrations\\Version20190924140632','2021-10-22 16:01:42',276),('DoctrineMigrations\\Version20191007171054','2021-10-22 16:01:42',250),('DoctrineMigrations\\Version20200617133036','2021-10-22 16:01:42',302),('DoctrineMigrations\\Version20201106104557','2021-10-22 16:01:43',26),('DoctrineMigrations\\Version20210209170044','2021-10-22 16:01:43',79),('DoctrineMigrations\\Version20210311145311','2021-10-22 16:01:43',6),('DoctrineMigrations\\Version20210329134429','2021-10-22 16:01:43',46),('DoctrineMigrations\\Version20210329134856','2021-10-22 16:01:43',1),('DoctrineMigrations\\Version20210406110145','2021-10-22 16:01:43',47),('DoctrineMigrations\\Version20210406133819','2021-10-22 16:01:43',43),('DoctrineMigrations\\Version20210505123313','2021-10-22 16:01:43',2),('DoctrineMigrations\\Version20210506100803','2021-10-22 16:01:43',63),('DoctrineMigrations\\Version20210507071808','2021-10-22 16:01:43',104),('DoctrineMigrations\\Version20210519150306','2021-10-22 16:01:43',57),('DoctrineMigrations\\Version20210913150510','2021-10-22 16:01:43',21),('DoctrineMigrations\\Version20211014124121','2021-10-22 16:01:43',1),('DoctrineMigrations\\Version20211015075059','2021-10-22 16:01:43',1),('DoctrineMigrations\\Version20211015122115','2021-10-22 16:01:43',191),('DoctrineMigrations\\Version20220107083123','2022-04-25 08:57:14',15),('DoctrineMigrations\\Version20220117151238','2022-04-25 08:57:14',12),('DoctrineMigrations\\Version20220222152603','2022-04-25 08:57:14',101),('DoctrineMigrations\\Version20220224121901','2022-04-25 08:57:14',7),('DoctrineMigrations\\Version20220309134224','2022-04-25 08:57:14',3),('DoctrineMigrations\\Version20220325180130','2022-04-25 08:57:14',3),('DoctrineMigrations\\Version20220331141954','2022-04-25 08:57:14',19),('DoctrineMigrations\\Version20220401141736','2022-04-25 08:57:14',552),('DoctrineMigrations\\Version20220414210351','2022-04-25 08:57:14',9);
 /*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1294,6 +1294,7 @@ CREATE TABLE `server` (
   `is_open_for_guests` tinyint(4) NOT NULL DEFAULT 1,
   `url` varchar(255) DEFAULT NULL,
   `logo_image_name` varchar(255) DEFAULT NULL,
+  `commsy_icon_link` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1306,7 +1307,7 @@ CREATE TABLE `server` (
 
 LOCK TABLES `server` WRITE;
 /*!40000 ALTER TABLE `server` DISABLE KEYS */;
-INSERT INTO `server` VALUES (99,0,NULL,NULL,NULL,'2006-09-13 12:16:38','2014-08-19 15:38:16',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.8\";}','1',74,'server',1,'',NULL);
+INSERT INTO `server` VALUES (99,0,NULL,NULL,NULL,'2006-09-13 12:16:38','2014-08-19 15:38:16',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.8\";}','1',74,'server',1,'',NULL,NULL);
 /*!40000 ALTER TABLE `server` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1634,6 +1635,7 @@ CREATE TABLE `user` (
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
+  `not_deleted` tinyint(1) GENERATED ALWAYS AS (if(`deleter_id` is null and `deletion_date` is null,1,NULL)) STORED,
   `user_id` varchar(32) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 0,
   `is_contact` tinyint(4) NOT NULL DEFAULT 0,
@@ -1649,12 +1651,10 @@ CREATE TABLE `user` (
   `expire_date` datetime DEFAULT NULL,
   `use_portal_email` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
-  KEY `creator_id` (`creator_id`),
-  KEY `status` (`status`),
-  KEY `is_contact` (`is_contact`),
-  KEY `user_context_id_user_id_auth_source_index` (`context_id`,`user_id`,`auth_source`),
-  KEY `user_context_id_index` (`context_id`),
-  KEY `user_deleter_id_deletion_date_index` (`deleter_id`,`deletion_date`)
+  UNIQUE KEY `unique_non_soft_deleted_idx` (`user_id`,`auth_source`,`context_id`,`not_deleted`),
+  KEY `deleted_idx` (`deletion_date`,`deleter_id`),
+  KEY `creator_idx` (`creator_id`),
+  KEY `context_idx` (`context_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1664,7 +1664,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL,NULL,0);
+INSERT INTO `user` VALUES (98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,1,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL,NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1730,7 +1730,6 @@ CREATE TABLE `zzz_annotations` (
   `deleter_id` int(11) DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
   `modification_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
   `description` mediumtext DEFAULT NULL,
   `linked_item_id` int(11) NOT NULL DEFAULT 0,
   `linked_version_id` int(11) NOT NULL DEFAULT 0,
@@ -2651,6 +2650,7 @@ CREATE TABLE `zzz_user` (
   `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modification_date` datetime DEFAULT NULL,
   `deletion_date` datetime DEFAULT NULL,
+  `not_deleted` tinyint(1) GENERATED ALWAYS AS (if(`deleter_id` is null and `deletion_date` is null,1,NULL)) STORED,
   `user_id` varchar(32) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 0,
   `is_contact` tinyint(4) NOT NULL DEFAULT 0,
@@ -2666,13 +2666,10 @@ CREATE TABLE `zzz_user` (
   `expire_date` datetime DEFAULT NULL,
   `use_portal_email` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`),
-  KEY `user_id` (`user_id`),
-  KEY `deletion_date` (`deletion_date`),
-  KEY `deleter_id` (`deleter_id`),
-  KEY `status` (`status`),
-  KEY `is_contact` (`is_contact`)
+  UNIQUE KEY `unique_non_soft_deleted_idx` (`user_id`,`auth_source`,`context_id`,`not_deleted`),
+  KEY `deleted_idx` (`deletion_date`,`deleter_id`),
+  KEY `creator_idx` (`creator_id`),
+  KEY `context_idx` (`context_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2717,4 +2714,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-22 14:05:02
+-- Dump completed on 2022-04-25  6:57:27
