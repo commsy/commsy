@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             "method"="POST",
  *             "path"="accounts/checkLocalLogin",
  *             "controller"=GetAccountsCheckLocalLogin::class,
+ *             "status"=200,
  *             "read"=false,
  *             "write"=false,
  *             "input"=LocalLoginInput::class,
