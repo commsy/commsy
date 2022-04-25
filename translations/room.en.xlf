@@ -166,6 +166,10 @@
                 <source>hide-archived-rooms</source>
                 <target>Hide archived workspaces</target>
             </trans-unit>
+            <trans-unit id="hide-template">
+                <source>hide-templates</source>
+                <target>Hide templates</target>
+            </trans-unit>
             <trans-unit id="hide-without-membership">
                 <source>hide-rooms-without-membership</source>
                 <target>Hide workspaces without membership</target>

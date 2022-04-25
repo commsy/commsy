@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Account
@@ -164,6 +165,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=100, nullable=false)
      *
      * @Assert\Email()
+     * @Assert\Callback({"App\Entity\Account", "validateMailRegex"})
      *
      * @Groups({"api"})
      */
@@ -463,6 +465,29 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
 
         foreach ($unserializedData as $key => $value) {
             $this->$key = $value;
+        }
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @param $payload
+     */
+    public function validateMailRegex($payload, ExecutionContextInterface $context): void
+    {
+
+        /** @var AuthSource $authSource */
+        $authSource = $context->getObject()->authSource;
+
+        if ($authSource instanceof AuthSourceLocal) {
+            /** @var AuthSourceLocal $authSource */
+            $regex = $authSource->getMailRegex();
+
+            // check regex
+            if ($regex && !preg_match($regex, $payload)) {
+                $context->buildViolation('signup-regex-mail')
+                    ->atPath('email')
+                    ->addViolation();
+            }
         }
     }
 }
