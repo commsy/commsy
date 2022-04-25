@@ -1,11 +1,13 @@
 <?php
 namespace App\Tests;
 
+use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\Room;
 use Codeception\Actor;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Inherited Methods
@@ -58,6 +60,26 @@ class ApiTester extends Actor
         ]);
 
         return $room;
+    }
+
+    public function haveAccount(AuthSource $authSource, string $username, string $password): Account
+    {
+        /** @var UserPasswordEncoderInterface $passwordEncoder */
+        $passwordEncoder = $this->grabService(UserPasswordEncoderInterface::class);
+
+        $account = new Account();
+        $this->haveInRepository($account, [
+            'contextId' => $authSource->getPortal()->getId(),
+            'authSource' => $authSource,
+            'username' => $username,
+            'email' => 'some@mail.example',
+            'password' => $passwordEncoder->encodePassword($account, $password),
+            'firstname' => 'firstname',
+            'lastname' => 'lastname',
+            'language' => 'de',
+        ]);
+
+        return $account;
     }
 
     public function amFullAuthenticated()
