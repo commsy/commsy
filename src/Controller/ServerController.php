@@ -7,7 +7,7 @@ use App\Entity\Room;
 use App\Entity\Server;
 use App\Entity\User;
 use App\Facade\PortalCreatorFacade;
-use App\Form\Type\Portal\GeneralType;
+use App\Form\Type\Portal\PortalGeneralType;
 use App\Form\Type\PortalType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,6 +19,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ServerController extends AbstractController
 {
+    /**
+     * Calls the external website URL defined for this installation, or,
+     * if no URL was defined, displays the list of active portals.
+     *
+     * @Route("/portal/linkout")
+     * @return RedirectResponse
+     */
+    public function linkout(EntityManagerInterface $entityManager)
+    {
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        $url = $server->getCommsyIconLink();
+
+        if ($url) {
+            return new RedirectResponse($url);
+        } else {
+            return $this->redirectToRoute('app_server_show');
+        }
+    }
+
     /**
      * Shows a list of all active portals in this installation
      *
@@ -72,7 +91,7 @@ class ServerController extends AbstractController
     ) {
         $portal = new Portal();
 
-        $form = $this->createForm(GeneralType::class, $portal);
+        $form = $this->createForm(PortalGeneralType::class, $portal);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
