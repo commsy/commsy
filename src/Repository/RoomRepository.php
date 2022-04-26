@@ -1,8 +1,11 @@
 <?php
 namespace App\Repository;
 
+use App\Entity\Account;
 use App\Entity\Room;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -62,5 +65,24 @@ class RoomRepository extends ServiceEntityRepository
             ->setParameter('portalId', $portalId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function getActiveRoomsByAccount(Account $account)
+    {
+        return $this->createQueryBuilder('r')
+            ->select()
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.contextId = r.itemId')
+            ->andWhere('r.deletionDate IS NULL')
+            ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.contextId = :contextId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.userId = :userId')
+            ->andWhere('u.authSource = :authSource')
+            ->setParameter(':contextId', $account->getContextId())
+            ->setParameter(':userId', $account->getUsername())
+            ->setParameter(':authSource', $account->getAuthSource()->getId())
+            ->getQuery()
+            ->getResult();
     }
 }
