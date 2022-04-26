@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetAccountsCheckLocalLogin;
+use App\Controller\Api\GetAccountsWorkspaces;
 use App\Dto\LocalLoginInput;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,7 +17,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * Account
  *
- * @ORM\Table(name="accounts")
+ * @ORM\Table(name="accounts", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="accounts_idx", columns={"context_id", "username", "auth_source_id"})
+ * })
  * @ORM\Entity(repositoryClass="App\Repository\AccountsRepository")
  * @UniqueEntity(
  *     fields={"contextId", "username", "authSource"},
@@ -72,6 +75,11 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *                 },
  *             },
  *         },
+ *         "get_workspaces"={
+ *             "method"="GET",
+ *             "path"="accounts/{id}/workspaces",
+ *             "controller"=GetAccountsWorkspaces::class,
+ *         }
  *     },
  *     normalizationContext={
  *         "groups"={"api"}
@@ -84,11 +92,20 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class Account implements UserInterface, EncoderAwareInterface, \Serializable
 {
     /**
-     * @var integer
+     * @var int|null
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\GeneratedValue()
+     *
+     * @Groups({"api", "api_check_local_login"})
+     */
+    private ?int $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(type="integer")
      *
      * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
      *
@@ -100,8 +117,6 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @var string
      *
      * @ORM\Column(type="string", length=100)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      *
      * @Assert\NotBlank(groups={"Default", "checkLocalLoginValidation"})
      * @Assert\Regex(pattern="/^(root|guest)$/i", match=false, message="{{ value }} is a reserved name")
@@ -124,12 +139,12 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $passwordMd5;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
      *
@@ -192,6 +207,24 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @Groups({"api"})
      */
     private $locked = false;
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return Account
+     */
+    public function setId(?int $id): Account
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     /**
      * Returns the roles granted to the user.

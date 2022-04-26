@@ -14,7 +14,7 @@ class AccountsCest
     }
 
     // tests
-    public function incorrectPayload(ApiTester $I)
+    public function checkLocalLoginincorrectPayload(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
@@ -24,7 +24,7 @@ class AccountsCest
         $I->seeResponseCodeIsClientError();
     }
 
-    public function wrongCredentials(ApiTester $I)
+    public function checkLocalLoginwrongCredentials(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
@@ -38,7 +38,7 @@ class AccountsCest
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
     }
 
-    public function validCredentials(ApiTester $I)
+    public function checkLocalLoginvalidCredentials(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
@@ -53,6 +53,7 @@ class AccountsCest
         $I->seeResponseIsJson();
 
         $I->seeResponseMatchesJsonType([
+            'id' => 'integer',
             'username' => 'string',
             'firstname' => 'string',
             'lastname' => 'string',
@@ -61,11 +62,22 @@ class AccountsCest
         ]);
 
         $I->seeResponseContainsJson([
+            'id' => $account->getId(),
             'username' => $account->getUsername(),
             'firstname' => $account->getFirstname(),
             'lastname' => $account->getLastname(),
             'email' => $account->getEmail(),
             'locked' => $account->isLocked(),
         ]);
+    }
+
+    public function getWorkspaces(ApiTester $I)
+    {
+        $I->amReadOnlyAuthenticated();
+        $portal = $I->havePortal('Some portal');
+        $account = $I->haveAccount($portal->getAuthSources()->first(), 'username', 'mypassword');
+
+        $I->sendGetAsJson('/accounts/' . $account->getId() . '/workspaces');
+        $I->seeResponseCodeIsSuccessful();
     }
 }
