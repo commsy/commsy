@@ -257,8 +257,9 @@ class DateService
     {
         $this->datesManager->reset();
         $this->datesManager->setUidArrayLimit(['"' . $uid . '"']);
+        $this->datesManager->setContextLimit($roomId);
         $this->datesManager->setWithoutDateModeLimit();
-        $this->datesManager->unsetContextLimit();
+        //$this->datesManager->unsetContextLimit();
         $this->datesManager->select();
         $dateList = $this->datesManager->get();
         if (isset($dateList->to_array()[0])) {
