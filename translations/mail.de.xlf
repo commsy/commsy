@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="mailSendToAttendees">
                 <source>Send to attendees</source>
-                <target>An TeilnehmerInnen versenden</target>
+                <target>An Teilnehmer versenden</target>
             </trans-unit>
             <trans-unit id="mailSendToAssigned">
                 <source>Send to assigned</source>
@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="mailAddRecipients">
                 <source>Add another recipient</source>
-                <target>Weitere EmpfängerInnen hinzufügen</target>
+                <target>Einen weiteren Empfänger hinzufügen</target>
             </trans-unit>
             <trans-unit id="mailAttachments">
                 <source>Attachments</source>
