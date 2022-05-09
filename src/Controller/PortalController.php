@@ -34,14 +34,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class PortalController extends AbstractController
 {
     /**
-     * @Route("/portal/goto/{portalId}", name="app_portal_goto")
-     */
-    public function gotoAction(string $portalId, Request $request)
-    {
-        return $this->redirect($request->getBaseUrl() . '?cid=' . $portalId);
-    }
-
-    /**
      * Handles portal terms templates for use inside rooms
      *
      * @Route("/portal/{roomId}/roomTermsTemplates/{termId}")
