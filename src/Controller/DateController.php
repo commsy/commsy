@@ -371,6 +371,7 @@ class DateController extends BaseController
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
+            'defaultView' => ($roomItem->getDatesPresentationStatus() === 'calendar')? 'agendaWeek': 'month'
         ];
     }
 
