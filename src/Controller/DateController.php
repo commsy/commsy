@@ -714,7 +714,7 @@ class DateController extends BaseController
                 'end' => $end,
                 'color' => $color,
                 'calendar' => $date->getCalendar()->getTitle(),
-                'editable' =>    $this->isEditable($date),//Validate is creator for edit event
+                'editable' =>    $date->isEditable(), //Validate is creator for edit event
                 'description' => $date->getDateDescription(),
                 'place' => $date->getPlace(),
                 'participants' => $participantsDisplay,
@@ -2071,21 +2071,5 @@ class DateController extends BaseController
         } else {
             return $this->dateService->getDatesById($roomItem->getItemID(), $itemIds);
         }
-    }
-
-    /**
-     * Evaluate date. If is public or belong to creator return true else false
-     * @param cs_dates_item $date
-     * @return bool
-     */
-    private function isEditable(cs_dates_item $date): bool
-    {
-        if (!$date->isPublic()) {
-            if ($date->getCreatorID() === $this->legacyEnvironment->getCurrentUserItem()->getCreatorID()) {
-                return true;
-            }
-                return false;
-        }
-        return true;
     }
 }
