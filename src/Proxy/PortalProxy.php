@@ -194,21 +194,6 @@ class PortalProxy
         $this->portal->getExtras()['SHOWROOMSONHOME'] = $text;
     }
 
-    public function setShowTemplatesInRoomListON()
-    {
-        $this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST'] = 1;
-    }
-
-    public function setShowTemplatesInRoomListOFF()
-    {
-        $this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST'] = -1;
-    }
-
-    public function getShowTemplatesInRoomList()
-    {
-        return ($this->portal->getExtras()['SHOW_TEMPLATE_IN_ROOM_LIST']) ?? 1;
-    }
-
     public function getLanguage(): string
     {
         return $this->portal->getExtras()['LANGUAGE'] ?? 'de';
