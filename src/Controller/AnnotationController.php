@@ -85,7 +85,7 @@ class AnnotationController extends AbstractController
 
         $readerList = [];
         foreach ($annotations as $item) {
-           $readerList[$item->getItemId()] =$readerService->getChangeStatus($item->getItemId());
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
         /**
          * For first show annotations no read and after mark read.
