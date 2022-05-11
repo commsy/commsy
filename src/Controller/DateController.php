@@ -430,8 +430,8 @@ class DateController extends BaseController
         }
 
         // mark annotations as read
-        $annotationList = $date->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+        //$annotationList = $date->getAnnotationList();
+        //$annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         $itemArray = array($date);
 
