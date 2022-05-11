@@ -66,7 +66,7 @@ class AnnotationController extends AbstractController
         int $firstTagId = null,
         int $secondTagId = null
     ): array {
-        // get annotation list from manager service
+        // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
         if ($firstTagId && $secondTagId) {
