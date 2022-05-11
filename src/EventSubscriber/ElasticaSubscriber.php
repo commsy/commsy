@@ -354,6 +354,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
                     $content = base64_encode($splFile->getContents());
                     if (!empty($content)) {
                         $filesBase64[] = [
+                            'filename' => $legacyFile->getFilename(),
                             'data' => $content,
                         ];
                     }
