@@ -81,7 +81,6 @@ class AnnotationController extends AbstractController
         ];
     }
 
-
     /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}")
      * @Template()
