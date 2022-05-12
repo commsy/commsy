@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AnnotationController extends AbstractController
 {
-     /**
+    /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")
      * @Template()
      * @param AnnotationService $annotationService
