@@ -6,6 +6,7 @@ use App\Form\DataTransformer\AnnotationTransformer;
 use App\Form\Type\AnnotationType;
 use App\Services\LegacyEnvironment;
 use App\Utils\AnnotationService;
+use App\Utils\DateService;
 use App\Utils\ItemService;
 use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
@@ -24,6 +25,20 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AnnotationController extends AbstractController
 {
+    /**
+     * @var DateService
+     */
+    private DateService $dateService;
+
+    /**
+     * @required
+     * @param DateService $dateService
+     */
+    public function setDateService(DateService $dateService): void
+    {
+        $this->dateService = $dateService;
+    }
+
     /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")
      * @Template()
@@ -72,7 +87,12 @@ class AnnotationController extends AbstractController
         foreach ($annotations as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
-
+        /**
+         * For first show annotations no read and after mark read.
+         */
+        $date = $this->dateService->getDate($linkedItemId);
+        $annotationList = $date->getAnnotationList();
+        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         return [
             'roomId' => $roomId,
