@@ -1005,20 +1005,5 @@ class cs_dates_item extends cs_item {
     function setDateTime_recurrence ($value) {
         $this->_setValue('datetime_recurrence', $value);
     }
-
-    /**
-     * Evaluate date. If is public or belong to creator return true else false
-     * @return bool
-     */
-    function isEditable(): bool
-    {
-        if (!$this->isPublic()) {
-            if ($this->getCreatorID() === $this->_environment->getCurrentUserID()) {
-                return true;
-            }
-            return false;
-        }
-        return true;
-    }
 }
 ?>
