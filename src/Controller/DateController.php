@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Security\Authorization\Voter\DateVoter;
 
 /**
  * Class DateController
@@ -714,7 +715,7 @@ class DateController extends BaseController
                 'end' => $end,
                 'color' => $color,
                 'calendar' => $date->getCalendar()->getTitle(),
-                'editable' =>    $date->isEditable(), //Validate is creator for edit event
+                'editable' =>  $this->isGranted(DateVoter::EDIT, $date),// $date->isEditable(), //Validate is creator for edit event
                 'description' => $date->getDateDescription(),
                 'place' => $date->getPlace(),
                 'participants' => $participantsDisplay,
