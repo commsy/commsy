@@ -139,7 +139,7 @@ class CopyController extends BaseController
         return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
-            'module' => 'copies',
+            'module' => 'marked',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => null,
             'roomname' => $roomItem->getTitle(),
