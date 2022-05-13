@@ -715,7 +715,7 @@ class DateController extends BaseController
                 'end' => $end,
                 'color' => $color,
                 'calendar' => $date->getCalendar()->getTitle(),
-                'editable' =>  $this->isGranted(DateVoter::EDIT, $date),// $date->isEditable(), //Validate is creator for edit event
+                'editable' =>  $this->isGranted(DateVoter::EDIT, $date),
                 'description' => $date->getDateDescription(),
                 'place' => $date->getPlace(),
                 'participants' => $participantsDisplay,
