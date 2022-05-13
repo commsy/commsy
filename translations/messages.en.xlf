@@ -74,6 +74,10 @@
                 <source>copy</source>
                 <target>copy</target>
             </trans-unit>
+            <trans-unit id="message_marked">
+                <source>marked</source>
+                <target>marking</target>
+            </trans-unit>
             <trans-unit id="17">
                 <source>print</source>
                 <target>print</target>
@@ -137,7 +141,11 @@
             <trans-unit id="32">
                 <source>%count% copied entries</source>
                  <target>{0} No entries copied.|{1} One entry copied.|]1,Inf[ %count% entries copied.</target>
-           </trans-unit>            
+           </trans-unit>
+            <trans-unit id="msgMarkedEntries">
+                <source>%count% marked entries</source>
+                 <target>{0} No entries marked.|{1} One entry marked.|]1,Inf[ %count% entries marked.</target>
+           </trans-unit>
             <trans-unit id="33">
                 <source>action error</source>
                  <target>An error has occured.</target>

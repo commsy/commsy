@@ -74,6 +74,10 @@
                 <source>copy</source>
                 <target>kopieren</target>
             </trans-unit>
+            <trans-unit id="message_marked">
+                <source>marked</source>
+                <target>auswählen</target>
+            </trans-unit>
             <trans-unit id="17">
                 <source>print</source>
                 <target>drucken</target>
@@ -137,7 +141,11 @@
             <trans-unit id="32">
                 <source>%count% copied entries</source>
                  <target>{0} Keine Einträge kopiert.|{1} Ein Eintrag kopiert.|]1,Inf[ %count% Einträge kopiert.</target>
-           </trans-unit>            
+           </trans-unit>
+            <trans-unit id="msgMarkedEntries">
+                <source>%count% marked entries</source>
+                 <target>{0} Keine Einträge zu meiner Auswahl hinzugefügt.|{1} Ein Eintrag zu meiner Auswahl hinzugefügt.|]1,Inf[ %count% Einträge zu meiner Auswahl hinzugefügt.</target>
+           </trans-unit>
             <trans-unit id="33">
                 <source>action error</source>
                  <target>Beim Ausführen der Aktion ist ein Fehler aufgetreten.</target>
