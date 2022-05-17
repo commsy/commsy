@@ -1097,7 +1097,12 @@ class ItemController extends AbstractController
         $rubricManager->select();
         $itemList = $rubricManager->get();
         $items = $itemList->to_array();
-        
+        foreach ($items as $key => $temp) {
+            if($temp->isNotActivated() and !$environment->getCurrentUserItem()->isModerator() ){
+               unset($items[$key]);
+            }
+        }
+        array_shift($items);
         $itemList = array();
         $counterBefore = 0;
         $counterAfter = 0;
