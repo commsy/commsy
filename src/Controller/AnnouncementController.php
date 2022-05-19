@@ -988,10 +988,6 @@ class AnnouncementController extends BaseController
                 $lastItemId = $announcements[sizeof($announcements) - 1]->getItemId();
             }
         }
-        // mark annotations as read
-        $annotationList = $announcement->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
         $categories = array();
         if ($current_context->withTags()) {
             $roomCategories = $this->categoryService->getTags($roomId);
