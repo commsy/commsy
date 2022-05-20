@@ -1540,38 +1540,6 @@ class cs_portal_item extends cs_guide_item {
       }
       return $retour;
    }
-   
-   // show tempates in room list
-   private function _setShowTemplateInRoomList ($value) {
-   	$this->_setExtra('SHOW_TEMPLATE_IN_ROOM_LIST',(int)$value);
-   }
-    
-   private function _getShowTemplateInRoomList () {
-      $retour = 1;
-      if ($this->_issetExtra('SHOW_TEMPLATE_IN_ROOM_LIST')) {
-         $retour = $this->_getExtra('SHOW_TEMPLATE_IN_ROOM_LIST');
-      }
-      return $retour;
-   }
-   
-   public function showTemplatesInRoomList () {
-   	$retour = true;
-   	$value = $this->_getShowTemplateInRoomList();
-   	if ( !empty($value)
-   		  and $value == -1
-   	   ) {
-   		$retour = false;
-   	}
-   	return $retour;
-   }
-   
-   public function setShowTemplatesInRoomListON () {
-   	$this->_setShowTemplateInRoomList(1);
-   }
-
-   public function setShowTemplatesInRoomListOFF () {
-   	$this->_setShowTemplateInRoomList(-1);
-   }
 
    ############################################
    # count rooms

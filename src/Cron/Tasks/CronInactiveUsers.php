@@ -318,8 +318,8 @@ class CronInactiveUsers implements CronTaskInterface
         $mod_contact_list = $portal->getContactModeratorList($this->legacyEnvironment);
         $mod_user_first = $mod_contact_list->getFirst();
 
-        $urlToPortal = $this->router->generate('app_portal_goto', [
-            'portalId' => $portal->getId(),
+        $urlToPortal = $this->router->generate('app_helper_portalenter', [
+            'context' => $portal->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
         //content
