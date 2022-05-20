@@ -88,7 +88,7 @@ class DateController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'time'
+        string $sort = ''
     ) {
         $roomItem = $this->getRoom($roomId);
 
@@ -120,10 +120,13 @@ class DateController extends BaseController
             }
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortDates', 'time');
+        }
+        $this->session->set('sortDates', $sort);
+
         // get material list from manager service
         $dates = $this->dateService->getListDates($roomId, $max, $start, $sort);
-
-        $this->session->set('sortDates', $sort);
 
         $readerList = array();
         $allowedActions = array();
@@ -156,6 +159,8 @@ class DateController extends BaseController
         int $roomId
     ) {
         $roomItem = $this->getRoom($roomId);
+
+        $sort = $this->session->get('sortDates', 'time');
 
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -229,6 +234,7 @@ class DateController extends BaseController
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         ];
     }
 
@@ -260,14 +266,10 @@ class DateController extends BaseController
         }
 
         // get date list from manager service
-        if ($sort != "none") {
-            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $sort);
-        } elseif ($this->session->get('sortDates')) {
-            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0,
-                $this->session->get('sortDates'));
-        } else {
-            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortDates', 'time');
         }
+        $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $sort);
 
         $readerList = array();
         foreach ($dates as $item) {
