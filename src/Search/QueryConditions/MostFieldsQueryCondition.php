@@ -51,6 +51,7 @@ class MostFieldsQueryCondition implements QueryConditionInterface
 //            'modificationDate',
 
             // files
+            'attachments.filename^1.5',
             'attachments.attachment.content^1.6',
 //            'discussionarticles.files.content',
 //            'steps.files.content',

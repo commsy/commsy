@@ -5,6 +5,7 @@
     if ($("#calendar").length) {
         $('#calendar').fullCalendar({
             // put your options and callbacks here
+            defaultView: $("#calendar").data("options").defaultView,
             firstDay: 1,
             locale: $("#calendar").data("options").locale,
             businesHours: {
