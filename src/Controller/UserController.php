@@ -92,7 +92,7 @@ class UserController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'name'
+        string $sort = ''
     ) {
         return $this->gatherUsers($roomId, 'feedView', $request, $max, $start, $sort);
     }
@@ -113,7 +113,7 @@ class UserController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'name'
+        string $sort = ''
     ) {
         return $this->gatherUsers($roomId, 'gridView', $request, $max, $start, $sort);
     }
@@ -221,6 +221,8 @@ class UserController extends BaseController
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
+        $sort = $this->session->get('sortUsers', 'name');
+
         // setup filter form
         $userStatus = $this->resolveUserStatus('user');
         $filterForm = $this->createFilterForm($roomItem, $view, $userStatus);
@@ -269,6 +271,7 @@ class UserController extends BaseController
             'userTasks' => $userTasks,
             'isModerator' => $currentUser->isModerator(),
             'user' => $currentUser,
+            'sort' => $sort,
         ];
     }
 
@@ -364,14 +367,11 @@ class UserController extends BaseController
         $users = $this->userService->getListUsers($roomId);
 
         // get user list from manager service
-        if ($sort != "none") {
-            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
-        } elseif ($this->session->get('sortUsers')) {
-            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0,
-                $this->session->get('sortUsers'));
-        } else {
-            $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortUsers', 'name');
         }
+        $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
+
         $readerList = array();
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
@@ -1384,7 +1384,7 @@ class UserController extends BaseController
         Request $request,
         $max = 10,
         $start = 0,
-        $sort = 'name'
+        $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -1421,10 +1421,13 @@ class UserController extends BaseController
             $this->userService->showUserStatus(8);
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortUsers', 'name');
+        }
+        $this->session->set('sortUsers', $sort);
+
         // get user list from manager service
         $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
-
-        $this->session->set('sortUsers', $sort);
 
         $readerList = [];
         $allowedActions = [];
