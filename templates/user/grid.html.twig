@@ -59,7 +59,7 @@
             <span>
                 {% if user.email %}
                     {% if user.isEmailVisible %}
-                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{ user.name }}</a></td>
+                        <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{ user.email }}</a></td>
                     {% endif %}
                 {% else %}
                     {{ 'no email'|trans({}) }}
