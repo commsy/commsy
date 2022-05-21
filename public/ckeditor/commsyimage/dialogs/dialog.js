@@ -68,7 +68,21 @@
                                         {
                                             type: 'file',
                                             id: 'upload',
-                                            label: editor.lang.commsyimage.uploadnew,
+                                            label: editor.lang.commsyimage.uploadnew + '<br/>' + '<span style="font-size: 9px;color: red;">' + editor.lang.commsyimage.uploadnewlegend + '</span>',
+                                            onChange: function () {
+                                                const limit = 300000000;
+                                                var upload = this.getDialog().getContentElement('imageTab', 'upload');
+                                                var inputUpload = upload.getInputElement().$;
+                                                var sizeUpload = inputUpload.files[0]? inputUpload.files[0].size: 0;
+                                                if(sizeUpload === 0){
+                                                 return;
+                                                }                                                
+                                                if(sizeUpload >= limit){
+                                                	upload.setValue("");
+                                                	alert(editor.lang.commsyimage.uploadnewfailed);                                                	
+                                                } 
+              
+                                            }
                                         },
                                         {
                                             type: 'fileButton',
