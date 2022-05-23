@@ -60,7 +60,7 @@
             </trans-unit>
             <trans-unit id="mailAdditionalRecipients">
                 <source>Additional recipients</source>
-                <target>Zusätzliche Empfänger</target>
+                <target>Zusätzliche EmpfängerInnen</target>
             </trans-unit>
             <trans-unit id="mailAddRecipients">
                 <source>Add another recipient</source>
