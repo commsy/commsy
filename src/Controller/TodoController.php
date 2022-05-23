@@ -294,10 +294,6 @@ class TodoController extends BaseController
             $noticed_manager->markNoticed($todo->getItemID(), $todo->getVersionID());
         }
 
-        // mark annotations as read
-        $annotationList = $todo->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
         $stepList = $todo->getStepItemList();
 
         $stepItem = $stepList->getFirst();

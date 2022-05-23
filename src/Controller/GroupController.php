@@ -598,10 +598,6 @@ class GroupController extends BaseController
                 $lastItemId = $groups[sizeof($groups) - 1]->getItemId();
             }
         }
-        // mark annotations as readed
-        $annotationList = $group->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
 
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
