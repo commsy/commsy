@@ -72,7 +72,12 @@ class AnnotationController extends AbstractController
         foreach ($annotations as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
-
+        /**
+         * For first show annotations no read and after mark read.
+         */
+        $itemAnnotation = $itemService->getItem($linkedItemId);
+        $annotationList = $itemAnnotation->getAnnotationList();
+        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         return [
             'roomId' => $roomId,

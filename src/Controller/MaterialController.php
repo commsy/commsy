@@ -763,10 +763,6 @@ class MaterialController extends BaseController
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        // mark annotations as read
-        $annotationList = $material->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
         $readsectionList = $material->getSectionList();
 
         $section = $readsectionList->getFirst();

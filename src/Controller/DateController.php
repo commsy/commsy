@@ -432,10 +432,6 @@ class DateController extends BaseController
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        // mark annotations as read
-        $annotationList = $date->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
         $itemArray = array($date);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
