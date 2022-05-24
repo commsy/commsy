@@ -100,7 +100,7 @@
                                             id: 'upload',
                                             label: editor.lang.commsyvideo.uploadnew + '<br/>' + '<span style="font-size: 9px;color: red;">' + editor.lang.commsyvideo.uploadnewlegend + '</span>',
                                             onChange: function () {
-                                                const limit = 300000000;
+                                                const limit = editor.config.maxUploadSize;
                                                 var upload = this.getDialog().getContentElement('videoTab', 'upload');
                                                 var inputUpload = upload.getInputElement().$;
                                                 var sizeUpload = inputUpload.files[0]? inputUpload.files[0].size: 0;
