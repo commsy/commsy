@@ -1716,13 +1716,23 @@ class cs_item {
       $type_array = array();
       foreach ( $rubrics as $rubric ) {
          $rubric_array = explode('_', $rubric);
-         if ( ($rubric_array[1] != 'none') or
+          if ( ($rubric_array[1] != 'none' and $rubric_array[0] != CS_USER_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_DATE_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TODO_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_GROUP_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TASK_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TOPIC_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_DATE_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_TODO_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_GROUP_TYPE)
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_GROUP_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_MATERIAL_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_ANNOUNCEMENT_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_TASK_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_DISCUSSION_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_TOPIC_TYPE)
          ) {
             $type_array[] = $rubric_array[0];
          }
@@ -1897,11 +1907,19 @@ class cs_item {
       foreach($rubric_array as $rubric){
          if ( $this->_environment->getCurrentModule() == CS_DATE_TYPE or
               $this->_environment->getCurrentModule() == CS_TODO_TYPE or
-              $this->_environment->getCurrentModule() == CS_GROUP_TYPE
+              $this->_environment->getCurrentModule() == CS_GROUP_TYPE or
+              $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE or
+              $this->_environment->getCurrentModule() == CS_TASK_TYPE or
+              $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE or
+              $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
               or
-               $this->getItemType() == CS_DATE_TYPE or
-               $this->getItemType() == CS_MATERIAL_TYPE or
-               $this->getItemType() == CS_GROUP_TYPE
+              $this->getItemType() == CS_DATE_TYPE or
+              $this->getItemType() == CS_MATERIAL_TYPE or
+              $this->getItemType() == CS_GROUP_TYPE or
+              $this->getItemType() == CS_ANNOUNCEMENT_TYPE or
+              $this->getItemType() == CS_TASK_TYPE or
+              $this->getItemType() == CS_DISCUSSION_TYPE or
+              $this->getItemType() == CS_TOPIC_TYPE
             ){
             if (isset($rubric_sorted_array[$rubric])){
                $this->_setValue($rubric, $rubric_sorted_array[$rubric], FALSE);
