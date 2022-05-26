@@ -145,7 +145,13 @@ abstract class BaseController extends AbstractController
                 $negativeItemIds = $request->request->get('negativeItemIds');
             }
         }
-
+        if($positiveItemIds[0]){
+            $itemTemp = $positiveItemIds[0];
+            $itemTemp = $this->itemService->getTypedItem($itemTemp);
+            if($itemTemp->getContextID() !== $room->getItemID()){
+                $room = $this->getRoom($itemTemp->getContextID());
+            }
+        }
         // determine items to proceed on
         /** @var cs_item[] $items */
         $items = $this->getItemsByFilterConditions($request, $room, $selectAll, $positiveItemIds);

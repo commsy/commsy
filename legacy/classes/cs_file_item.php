@@ -810,4 +810,23 @@ class cs_file_item extends cs_item {
             return null;
         }
     }
+
+    /**
+     * May view files for externar viewer.
+     * @param $user
+     * @return bool
+     */
+    public function mayViewFilesExternalViewer($user): bool
+    {
+        $itemCollection = $this->getLinkedItems();
+        if (!isset($itemCollection) or $itemCollection->isEmpty()) {
+            return false;
+        }
+        $itemId = $itemCollection[0]->getItemID();
+        $externalViewer = $this->mayExternalFiles( $itemId, $user->getUserName());
+        if($externalViewer){
+            return true;
+        }
+        return false;
+    }
 }

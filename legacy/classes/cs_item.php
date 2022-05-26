@@ -2652,4 +2652,16 @@ function getExternalViewerArray(){
 
         return $result;
     }
+
+    /**
+     * May External Files for external viewer
+     * @param $itemId
+     * @param $username
+     * @return bool
+     */
+    function mayExternalFiles($itemId, $username){
+        $item_manager = $this->_environment->getItemManager();
+        $retour = $item_manager->getExternalViewerForItem($itemId,$username);
+        return $retour;
+    }
 }

@@ -919,7 +919,7 @@ class cs_item_manager extends cs_manager {
          foreach ( $result_ids as $result_id ) {
             $id_array[] = $result_id['item_id'].' ';
          }
-         $query = 'SELECT item_id';
+         $query = 'SELECT distinct  item_id';
          $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
          $query .= ' WHERE item_id IN ('.implode(',', $id_array).')';
          $result = $this->_db_connector->performQuery($query);
