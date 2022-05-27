@@ -823,7 +823,7 @@ class cs_file_item extends cs_item {
             return false;
         }
         $itemId = $itemCollection[0]->getItemID();
-        $externalViewer = $this->mayExternalFiles( $itemId, $user->getUserName());
+        $externalViewer = $this->mayExternalViewer( $itemId, $user->getUserName());
         if($externalViewer){
             return true;
         }

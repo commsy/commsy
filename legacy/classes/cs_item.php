@@ -894,8 +894,8 @@ class cs_item {
    function getAnnotationList () {
       $annotation_manager = $this->_environment->getAnnotationManager();
       $annotation_manager->resetLimits();
+      $annotation_manager->setContextLimit(null);
       $annotation_manager->setLinkedItemID($this->getItemID());
-      $annotation_manager->setContextLimit($this->getContextID());
       $annotation_manager->select();
       return $annotation_manager->get();
    }
@@ -1624,6 +1624,13 @@ class cs_item {
                  return true;
               }
            } else {
+               //Validate  to view  external viewer
+               if($userItem->getContextID() !== $this->getContextID()){
+                   if($this->mayExternalViewer($this->getItemID(), $userItem->getUserID())){
+                       return true;
+                   }
+                   return false;
+               }
                return true;
            }
         }
@@ -2659,9 +2666,9 @@ function getExternalViewerArray(){
      * @param $username
      * @return bool
      */
-    function mayExternalFiles($itemId, $username){
+    public function mayExternalViewer($itemId, $username){
         $item_manager = $this->_environment->getItemManager();
-        $retour = $item_manager->getExternalViewerForItem($itemId,$username);
+        $retour = $item_manager->getExternalViewerForItem($itemId, $username);
         return $retour;
     }
 }

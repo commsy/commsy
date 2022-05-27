@@ -46,10 +46,15 @@ class RoomAllController extends AbstractController
         LegacyEnvironment $environment,
         LegacyMarkup $legacyMarkup,
         int $itemId
-    ): array {
+    ) {
         $legacyEnvironment = $environment->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
+        if($roomItem === null){
+            return $this->redirectToRoute('app_dashboard_overview', [
+                'roomId' => $itemId,
+            ]);
+        }
 
         $currentUser = $legacyEnvironment->getCurrentUser();
 
