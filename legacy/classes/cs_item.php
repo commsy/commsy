@@ -1752,7 +1752,7 @@ class cs_item {
       $context_item = $this->_environment->getCurrentContextItem();
       if (
             ( $type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inProjectRoom())
-              or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->getCurrentModule() == 'project')
+              or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and ($this->_environment->getCurrentModule() == 'project' or $this->_environment->getCurrentModule() == null))
               or ($type == CS_PROJECT_TYPE and $this->isA(CS_COMMUNITY_TYPE)
               or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inServer())
               or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inGroupRoom() and $this->_environment->getCurrentContextItem()->getLinkedProjectItem()->getItemId() == $this->getItemId())
