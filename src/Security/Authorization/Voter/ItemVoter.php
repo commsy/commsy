@@ -110,8 +110,6 @@ class ItemVoter extends Voter
 
                 case self::DELETE:
                     return $this->canDelete($item, $currentUser);
-                case self::SEESEARCH:
-                    return $this->canViewSearch($item, $currentUser);
             }
         } else {
             if ($itemId == 'NEW') {
