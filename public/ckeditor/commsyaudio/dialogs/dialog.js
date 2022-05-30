@@ -69,7 +69,7 @@
                                         {
                                             type: 'file',
                                             id: 'upload',
-                                            label: editor.lang.commsyaudio.uploadnew + '<br/>' + '<span style="font-size: 9px;color: red;">' + editor.lang.commsyaudio.uploadnewlegend + '</span>',
+                                            label: editor.lang.commsyaudio.uploadnew + '<br/>' + '<span style="font-size: 9px;color: red;">' + editor.lang.commsyaudio.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>',
                                             onChange: function () {
                                                 const limit = editor.config.maxUploadSize;
                                                 var upload = this.getDialog().getContentElement('audioTab', 'upload');

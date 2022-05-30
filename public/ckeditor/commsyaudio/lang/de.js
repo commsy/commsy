@@ -5,7 +5,7 @@ CKEDITOR.plugins.setLang('commsyaudio', 'de', {
     fileselect: 'Angehängte Datei auswählen',
     fileselectchoice: 'Auswahl',
     uploadnew: 'Neue Datei hochladen',
-    uploadnewlegend: 'Sie können Dateien bis zu 300 MB hochladen.',
+    uploadnewlegend: 'Sie können Dateien bis zu <quantity_reeplace> MB hochladen.',
     uploadnewfailed: 'Upload fehlgeschlagen, bitte verwenden Sie eine kleinere Datei.',
     upload: 'Hochladen',
     url: 'Aus URL einfügen',
