@@ -27,7 +27,6 @@ class ItemVoter extends Voter
     const ENTER = 'ITEM_ENTER';
     const USERROOM = 'ITEM_USERROOM';
     const DELETE = 'ITEM_DELETE';
-    const SEESEARCH = 'ITEM_SEARCH';
 
     private $legacyEnvironment;
     private $itemService;
@@ -61,7 +60,6 @@ class ItemVoter extends Voter
             self::ENTER,
             self::USERROOM,
             self::DELETE,
-            self::SEESEARCH,
         ));
     }
 
@@ -313,32 +311,4 @@ class ItemVoter extends Voter
 
         return $this->userService->userIsParentModeratorForRoom($room, $user);
     }
-
-    /**
-     * Check for advanced search is moderator can see else user or read only no see.
-     * @param $item
-     * @param $currentUser
-     * @return bool
-     */
-    private function canViewSearch($item, $currentUser): bool
-    {
-        if ($currentUser->isRoot()) {
-            return true;
-        }
-        if ($item->isNotActivated()){
-            $users = $this->userService->getModeratorsForContext($item->getContextID());
-            if (empty($users)){
-                return false;
-            }
-            $resp = false;
-            foreach ($users as $user) {
-               if($user->getUserID() === $currentUser->getUserID() ){
-                    $resp = true;
-              }
-            }
-            return $resp;
-        }
-        return true;
-    }
-
 }

@@ -73,7 +73,7 @@
                 </div>
 
                 <h4 class="uk-comment-title">
-                {% if is_granted('ITEM_SEARCH', entity.itemId) -%}
+                {% if is_granted('ITEM_SEE', entity.itemId) -%}
                     <a href="{{ path(result.routeName, {'roomId': entity.contextId, 'itemId': entity.itemId}) }}">
                 {%- else -%}
                       <span class="uk-text-muted">
@@ -86,7 +86,7 @@
                         {% if entity.firstname is defined and entity.lastname is defined %}
                             {{ entity.firstname }} {{ entity.lastname }}
                         {% endif %}
-                {% if is_granted('ITEM_SEARCH', entity.itemId) -%}
+                {% if is_granted('ITEM_SEE', entity.itemId) -%}
                     </a>
                 {%- else -%}
                     </span>
