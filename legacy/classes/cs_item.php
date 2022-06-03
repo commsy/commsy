@@ -1723,7 +1723,8 @@ class cs_item {
                 ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_ANNOUNCEMENT_TYPE) ||
                 ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TASK_TYPE) ||
                 ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_DISCUSSION_TYPE) ||
-                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TOPIC_TYPE)
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TOPIC_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_LABEL_TYPE)
             ) {
                 $type_array[] = $rubric_array[0];
             }
@@ -1909,7 +1910,8 @@ class cs_item {
                 $this->getItemType() == CS_ANNOUNCEMENT_TYPE ||
                 $this->getItemType() == CS_TASK_TYPE ||
                 $this->getItemType() == CS_DISCUSSION_TYPE ||
-                $this->getItemType() == CS_TOPIC_TYPE
+                $this->getItemType() == CS_TOPIC_TYPE ||
+                $this->getItemType() == CS_TODO_TYPE
             ) {
                 if (isset($itemsByRubric[$rubric])) {
                     $this->_setValue($rubric, $itemsByRubric[$rubric], false);
