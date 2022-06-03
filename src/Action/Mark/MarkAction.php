@@ -6,7 +6,7 @@
  * Time: 16:01
  */
 
-namespace App\Action\Copy;
+namespace App\Action\Mark;
 
 
 use App\Services\LegacyEnvironment;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CopyAction implements ActionInterface
+class MarkAction implements ActionInterface
 {
     /**
      * @var TranslatorInterface

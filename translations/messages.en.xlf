@@ -70,10 +70,12 @@
                 <source>send</source>
                 <target>send</target>
             </trans-unit>
+<!--
             <trans-unit id="16">
                 <source>copy</source>
                 <target>copy</target>
             </trans-unit>
+-->
             <trans-unit id="message_marked">
                 <source>marked</source>
                 <target>marking</target>

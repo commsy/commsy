@@ -146,10 +146,12 @@
                 <source>mark read</source>
                 <target>Mark as read</target>
             </trans-unit>
+<!--
             <trans-unit id="32">
                 <source>copy</source>
                 <target>Copy</target>
             </trans-unit>
+-->
             <trans-unit id="33">
                 <source>save</source>
                 <target>Download</target>
@@ -254,6 +256,7 @@
                 <source>place</source>
                 <target>Place</target>
             </trans-unit>
+<!--
             <trans-unit id="copy">
                 <source>Copy</source>
                 <target>Copy</target>
@@ -262,6 +265,7 @@
                 <source>Copies</source>
                 <target>My copies</target>
             </trans-unit>
+-->
             <trans-unit id="marked_entries">
                 <source>Marked</source>
                 <target>Marked Entries</target>

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
+use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
@@ -1017,7 +1017,7 @@ class TodoController extends BaseController
      */
     public function xhrCopyAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         $roomId
     ) {
         $room = $this->getRoom($roomId);

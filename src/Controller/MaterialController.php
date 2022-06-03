@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteMaterial;
 use App\Action\Download\DownloadAction;
+use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadMaterial;
 use App\Entity\License;
@@ -181,9 +181,9 @@ class MaterialController extends BaseController
         foreach ($materials as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save', 'delete');
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
         }
 
@@ -1609,15 +1609,15 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/material/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/material/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);

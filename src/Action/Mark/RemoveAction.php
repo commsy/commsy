@@ -6,12 +6,12 @@
  * Time: 15:28
  */
 
-namespace App\Action\Copy;
+namespace App\Action\Mark;
 
 
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
-use App\Services\CopyService;
+use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -24,14 +24,14 @@ class RemoveAction implements ActionInterface
     private TranslatorInterface $translator;
 
     /**
-     * @var CopyService
+     * @var MarkedService
      */
-    private CopyService $copyService;
+    private MarkedService $copyService;
 
     public function __construct(
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        CopyService $copyService
+        MarkedService $copyService
     ) {
         $this->translator = $translator;
         $this->copyService = $copyService;

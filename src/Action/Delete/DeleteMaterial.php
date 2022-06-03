@@ -3,14 +3,14 @@
 namespace App\Action\Delete;
 
 
-use App\Services\CopyService;
+use App\Services\MarkedService;
 
 class DeleteMaterial implements DeleteInterface
 {
-    /** @var CopyService $copyService */
-    protected CopyService $copyService;
+    /** @var MarkedService $copyService */
+    protected MarkedService $copyService;
 
-    public function __construct(CopyService $copyService)
+    public function __construct(MarkedService $copyService)
     {
         $this->copyService = $copyService;
     }

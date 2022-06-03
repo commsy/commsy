@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
+use App\Action\Mark\MarkAction;
 use App\Entity\SavedSearch;
 use App\Filter\SearchFilterType;
 use App\Form\Type\SearchItemType;
@@ -891,7 +891,7 @@ class SearchController extends BaseController
      */
     public function xhrCopyAction(
         Request $request,
-        CopyAction $copyAction,
+        MarkAction $copyAction,
         int $roomId
     )
     {
