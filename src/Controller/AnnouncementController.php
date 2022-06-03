@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
+use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\ItemMarkRead;
@@ -784,15 +784,15 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/announcement/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param $roomId
      * @return
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         $roomId
     ) {
         $room = $this->getRoom($roomId);

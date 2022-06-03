@@ -4,7 +4,7 @@
 {% block feed %}
     <ul id="copies-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App\\Controller\\CopyController::feedAction', {
+            'App\\Controller\\MarkedController::feedAction', {
                 'roomId': roomId,
                 'copyFilter': app.request.query.get('marked_filter')
             }
@@ -28,7 +28,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('app_copy_xhrinsert', {'roomId': roomId}),
+                        'url': path('app_marked_xhrinsert', {'roomId': roomId}),
                         'action': 'insert',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -40,7 +40,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('app_copy_xhrremove', {'roomId': roomId}),
+                        'url': path('app_marked_xhrremove', {'roomId': roomId}),
                         'action': 'remove',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -48,7 +48,7 @@
                         'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
                         'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
                         'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                        'returnUrl': path('app_copy_list', {'roomId': roomId})
+                        'returnUrl': path('app_marked_list', {'roomId': roomId})
                     }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'remove marked'|trans({},'rubric') }}
                     </a>

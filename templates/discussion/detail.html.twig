@@ -74,8 +74,8 @@
                                         <li>
                                             {% if user.isUser %}
                                                 <a href="#" data-cs-action="{{ {
-                                                    'url': path('app_discussion_xhrcopy', {'roomId': roomId}),
-                                                    'action': 'copy',
+                                                    'url': path('app_discussion_xhrmark', {'roomId': roomId}),
+                                                    'action': 'mark',
                                                     'itemId': discussion.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                     'mode': 'click',

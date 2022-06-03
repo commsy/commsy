@@ -146,10 +146,12 @@
                 <source>mark read</source>
                 <target>Als gelesen markieren</target>
             </trans-unit>
+<!--
             <trans-unit id="32">
                 <source>copy</source>
                 <target>Kopieren</target>
             </trans-unit>
+-->
             <trans-unit id="33">
                 <source>save</source>
                 <target>Herunterladen</target>
@@ -254,6 +256,7 @@
                 <source>place</source>
                 <target>Ort</target>
             </trans-unit>
+<!--
             <trans-unit id="copy">
                 <source>Copy</source>
                 <target>Kopie</target>
@@ -262,6 +265,7 @@
                 <source>Copies</source>
                 <target>Meine Kopien</target>
             </trans-unit>
+-->
             <trans-unit id="marked_entries">
                 <source>Marked</source>
                 <target>Meine Auswahl</target>

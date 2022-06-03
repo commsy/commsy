@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import {CopyAction} from "./CopyAction";
+import {MarkAction} from "./MarkAction";
 import {BaseAction} from "./AbstractAction";
 import {DeleteAction} from "./DeleteAction";
 import {WorkflowAction} from "./WorkflowAction";
@@ -124,7 +124,7 @@ export function createAction(actionData: ActionData): BaseAction {
         case 'delete':
             return new DeleteAction(actionData);
         case 'copy':
-            return new CopyAction(actionData);
+            return new MarkAction(actionData);
         case 'insert':
             return new InsertAction(actionData);
         case 'insertuserroom':

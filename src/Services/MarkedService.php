@@ -7,7 +7,7 @@ use cs_item;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class CopyService
+class MarkedService
 {
     private ItemService $itemService;
 
@@ -16,7 +16,7 @@ class CopyService
     private ?string $type = null;
 
     /**
-     * CopyService constructor.
+     * MarkedService constructor.
      * @param ItemService $itemService
      * @param SessionInterface $session
      */
@@ -83,18 +83,18 @@ class CopyService
      * @param integer[] $ids
      * @return cs_item[]
      */
-    public function getCopiesById($ids)
+    public function getMarkedItemsById($ids)
     {
-        $allCopies = $this->getListEntries();
+        $allMarkings = $this->getListEntries();
 
-        $filteredCopies = [];
-        foreach ($allCopies as $copy) {
-            if (in_array($copy->getItemID(), $ids)) {
-                $filteredCopies[] = $copy;
+        $filteredMarkings = [];
+        foreach ($allMarkings as $markedItem) {
+            if (in_array($markedItem->getItemID(), $ids)) {
+                $filteredMarkings[] = $markedItem;
             }
         }
 
-        return $filteredCopies;
+        return $filteredMarkings;
     }
 
     public function setFilterConditions(FormInterface $filterForm)

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
+use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
@@ -1970,15 +1970,15 @@ class DateController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/date/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/date/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return Response
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);

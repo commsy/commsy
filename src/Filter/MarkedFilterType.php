@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 
-class CopyFilterType extends AbstractType
+class MarkedFilterType extends AbstractType
 {
     /**
      * Builds the form.
@@ -51,7 +51,7 @@ class CopyFilterType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'copy_filter';
+        return 'marked_filter';
     }
 
     /**

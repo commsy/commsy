@@ -85,17 +85,17 @@
                 <li>
                     {% if user.isUser %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('app_announcement_xhrcopy', {'roomId': roomId}),
-                            'action': 'copy',
+                            'url': path('app_announcement_xhrmark', {'roomId': roomId}),
+                            'action': 'mark',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'Marked'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'marked'|trans({},'messages')|capitalize }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'Marked'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'marked'|trans({},'messages')|capitalize }}
                         </span>
                     {% endif %}
                 </li>
