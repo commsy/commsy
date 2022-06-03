@@ -1668,72 +1668,76 @@ class cs_item {
       return $link_list;
    }
 
-   function getAllLinkItemList () {
-      $link_list = new cs_list();
-      $link_item_manager = $this->_environment->getLinkItemManager();
-      $link_item_manager->setLinkedItemLimit($this);
+    public function getAllLinkItemList(): cs_list
+    {
+        $link_item_manager = $this->_environment->getLinkItemManager();
+        $link_item_manager->setLinkedItemLimit($this);
 
-      $context_item = $this->_environment->getCurrentContextItem();
-      $conf = $context_item->getHomeConf();
+        $context_item = $this->_environment->getCurrentContextItem();
+        $conf = $context_item->getHomeConf();
 
-      // translation of entry to rubrics for new private room
-      if ( $this->_environment->inPrivateRoom()
-           and mb_stristr($conf,CS_ENTRY_TYPE)
-         ) {
-         $temp_array = array();
-         $temp_array2 = array();
-         $temp_array3 = array();
-         $rubric_array2 = array();
-         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
-         $temp_array[] = CS_TODO_TYPE;
-         $temp_array[] = CS_DISCUSSION_TYPE;
-         $temp_array[] = CS_MATERIAL_TYPE;
-         $temp_array[] = CS_DATE_TYPE;
-         foreach ( $temp_array as $temp_rubric ) {
-            if ( !mb_stristr($conf,$temp_rubric) ) {
-               $temp_array2[] = $temp_rubric;
-               $temp_array3[] = $temp_rubric.'_nodisplay';
+        // translation of entry to rubrics for new private room
+        if ($this->_environment->inPrivateRoom() && mb_stristr($conf, CS_ENTRY_TYPE)) {
+            $temp_array = [];
+            $temp_array3 = [];
+            $rubric_array2 = [];
+            $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+            $temp_array[] = CS_TODO_TYPE;
+            $temp_array[] = CS_DISCUSSION_TYPE;
+            $temp_array[] = CS_MATERIAL_TYPE;
+            $temp_array[] = CS_DATE_TYPE;
+            foreach ($temp_array as $temp_rubric) {
+                if (!mb_stristr($conf, $temp_rubric)) {
+                    $temp_array3[] = $temp_rubric . '_nodisplay';
+                }
             }
-         }
-         $rubric_array = explode(',',$conf);
-         foreach ( $rubric_array as $temp_rubric ) {
-            if ( !mb_stristr($temp_rubric,CS_ENTRY_TYPE) ) {
-               $rubric_array2[] = $temp_rubric;
-            } else {
-               $rubric_array2 = array_merge($rubric_array2,$temp_array3);
+            $rubric_array = explode(',', $conf);
+            foreach ($rubric_array as $temp_rubric) {
+                if (!mb_stristr($temp_rubric, CS_ENTRY_TYPE)) {
+                    $rubric_array2[] = $temp_rubric;
+                } else {
+                    $rubric_array2 = array_merge($rubric_array2, $temp_array3);
+                }
             }
-         }
-         $conf = implode(',',$rubric_array2);
-         unset($rubric_array2);
-      }
+            $conf = implode(',', $rubric_array2);
+        }
 
-      if ( !empty($conf) ) {
-         $rubrics = explode(',', $conf);
-      } else {
-         $rubrics = array();
-      }
+        $rubrics = !empty($conf) ? explode(',', $conf) : [];
 
-      $type_array = array();
-      foreach ( $rubrics as $rubric ) {
-         $rubric_array = explode('_', $rubric);
-         if ( ($rubric_array[1] != 'none') or
-              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_DATE_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TODO_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_GROUP_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_DATE_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_TODO_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_GROUP_TYPE)
-         ) {
-            $type_array[] = $rubric_array[0];
-         }
-      }
-      $link_item_manager->setTypeArrayLimit($type_array);
-      $link_item_manager->setRoomLimit($this->getContextID());
-      $link_item_manager->select();
-      $link_list = $link_item_manager->get();
-      $link_item_manager->resetLimits();
-      return $link_list;
-   }
+        $type_array = [];
+        foreach ($rubrics as $rubric) {
+            $rubric_array = explode('_', $rubric);
+            if (($rubric_array[1] != 'none' && $rubric_array[0] != CS_USER_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_DATE_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_TODO_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_GROUP_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_TASK_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->_environment->getCurrentModule() == CS_TOPIC_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_DATE_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TODO_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_GROUP_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_MATERIAL_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_ANNOUNCEMENT_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TASK_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_DISCUSSION_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TOPIC_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_LABEL_TYPE)
+            ) {
+                $type_array[] = $rubric_array[0];
+            }
+        }
+
+        $link_item_manager->setTypeArrayLimit($type_array);
+        $link_item_manager->setRoomLimit($this->getContextID());
+        $link_item_manager->select();
+        $link_list = $link_item_manager->get();
+        $link_item_manager->resetLimits();
+
+        return $link_list;
+    }
 
     /**
      * @param string $type
@@ -1831,84 +1835,89 @@ class cs_item {
       $this->_setValue($rubric, $data, FALSE);
    }
 
-   function setLinkedItemsByIDArray ($id_array) {
-      $data = array();
-      $item_manager = $this->_environment->getItemManager();
-      $rubric_sorted_array = array();
-      foreach ( $id_array as $iid ) {
-         $item = $item_manager->getItem($iid);
-         $rubric = $item->getItemType();
-         if($rubric == CS_LABEL_TYPE){
-            $label_manager = $this->_environment->getLabelManager();
-            $label_item = $label_manager->getItem($iid);
-            $rubric = $label_item->getLabelType();
-         }
-         $tmp['iid'] = $iid;
-         $rubric_sorted_array[$rubric][] = $tmp;
-      }
-      $context_item = $this->_environment->getCurrentContextItem();
-      $current_room_modules = $context_item->getHomeConf();
-      if ( !empty($current_room_modules) ){
-         $room_modules = explode(',',$current_room_modules);
-      } else {
-         $room_modules =  array();
-      }
-      foreach ( $room_modules as $module ) {
-         $link_name = explode('_', $module);
-         if ( $link_name[1] != 'none' ) {
-            if ( !($this->_environment->inPrivateRoom() and $link_name =='user')){
-               $rubric_array[] = $link_name[0];
-            }
-         }
-      }
+    public function setLinkedItemsByIDArray(array $id_array): void
+    {
+        $item_manager = $this->_environment->getItemManager();
 
-      // translation of entry to rubrics for new private room
-      if ( $this->_environment->inPrivateRoom()
-           and in_array(CS_ENTRY_TYPE,$rubric_array)
-         ) {
-         $temp_array = array();
-         $temp_array2 = array();
-         $rubric_array2 = array();
-         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
-         $temp_array[] = CS_TODO_TYPE;
-         $temp_array[] = CS_DISCUSSION_TYPE;
-         $temp_array[] = CS_MATERIAL_TYPE;
-         $temp_array[] = CS_DATE_TYPE;
-         foreach ( $temp_array as $temp_rubric ) {
-            if ( !in_array($temp_rubric,$rubric_array) ) {
-               $temp_array2[] = $temp_rubric;
-            }
-         }
-         foreach ( $rubric_array as $temp_rubric ) {
-            if ( $temp_rubric != CS_ENTRY_TYPE ) {
-               $rubric_array2[] = $temp_rubric;
-            } else {
-               $rubric_array2 = array_merge($rubric_array2,$temp_array2);
-            }
-         }
-         $rubric_array = $rubric_array2;
-         unset($rubric_array2);
-      }
-
-      foreach($rubric_array as $rubric){
-         if ( $this->_environment->getCurrentModule() == CS_DATE_TYPE or
-              $this->_environment->getCurrentModule() == CS_TODO_TYPE or
-              $this->_environment->getCurrentModule() == CS_GROUP_TYPE
-              or
-               $this->getItemType() == CS_DATE_TYPE or
-               $this->getItemType() == CS_MATERIAL_TYPE or
-               $this->getItemType() == CS_GROUP_TYPE
-            ){
-            if (isset($rubric_sorted_array[$rubric])){
-               $this->_setValue($rubric, $rubric_sorted_array[$rubric], FALSE);
+        // Get the typed item for all id's and group them by rubric
+        $itemsByRubric = [];
+        foreach ($id_array as $iid) {
+            $item = $item_manager->getItem($iid);
+            $rubric = $item->getItemType();
+            if ($rubric == CS_LABEL_TYPE) {
+                $label_manager = $this->_environment->getLabelManager();
+                $label_item = $label_manager->getItem($iid);
+                $rubric = $label_item->getLabelType();
             }
 
-            else{
-               $this->_setValue($rubric, array(), FALSE);
+            $itemsByRubric[$rubric][] = [
+                'iid' => $iid,
+            ];
+        }
+
+        $context_item = $this->_environment->getCurrentContextItem();
+        $current_room_modules = $context_item->getHomeConf();
+        $roomModules = !empty($current_room_modules) ? explode(',', $current_room_modules) : [];
+
+        $rubric_array = [];
+        foreach ($roomModules as $module) {
+            $link_name = explode('_', $module);
+            if ($link_name[1] != 'none') {
+                if (!($this->_environment->inPrivateRoom() and $link_name == 'user')) {
+                    $rubric_array[] = $link_name[0];
+                }
             }
-         }
-      }
-   }
+        }
+
+        // translation of entry to rubrics for new private room
+        if ($this->_environment->inPrivateRoom() && in_array(CS_ENTRY_TYPE, $rubric_array)) {
+            $temp_array = [];
+            $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+            $temp_array[] = CS_TODO_TYPE;
+            $temp_array[] = CS_DISCUSSION_TYPE;
+            $temp_array[] = CS_MATERIAL_TYPE;
+            $temp_array[] = CS_DATE_TYPE;
+
+            $temp_array2 = array_filter($temp_array, function ($rubric) use ($rubric_array) {
+                return !in_array($rubric, $rubric_array);
+            });
+
+            $rubric_array2 = [];
+            foreach ($rubric_array as $temp_rubric) {
+                if ($temp_rubric != CS_ENTRY_TYPE) {
+                    $rubric_array2[] = $temp_rubric;
+                } else {
+                    $rubric_array2 = array_merge($rubric_array2, $temp_array2);
+                }
+            }
+            $rubric_array = $rubric_array2;
+        }
+
+        foreach ($rubric_array as $rubric) {
+            if (
+                $this->_environment->getCurrentModule() == CS_DATE_TYPE ||
+                $this->_environment->getCurrentModule() == CS_TODO_TYPE ||
+                $this->_environment->getCurrentModule() == CS_GROUP_TYPE ||
+                $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE ||
+                $this->_environment->getCurrentModule() == CS_TASK_TYPE ||
+                $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE ||
+                $this->_environment->getCurrentModule() == CS_TOPIC_TYPE ||              $this->getItemType() == CS_DATE_TYPE ||
+                $this->getItemType() == CS_MATERIAL_TYPE ||
+                $this->getItemType() == CS_GROUP_TYPE ||
+                $this->getItemType() == CS_ANNOUNCEMENT_TYPE ||
+                $this->getItemType() == CS_TASK_TYPE ||
+                $this->getItemType() == CS_DISCUSSION_TYPE ||
+                $this->getItemType() == CS_TOPIC_TYPE ||
+                $this->getItemType() == CS_TODO_TYPE
+            ) {
+                if (isset($itemsByRubric[$rubric])) {
+                    $this->_setValue($rubric, $itemsByRubric[$rubric], false);
+                } else {
+                    $this->_setValue($rubric, array(), false);
+                }
+            }
+        }
+    }
 
   /** change creator and modificator - INTERNAL should be called from methods in subclasses
    * change creator and modificator after item was saved for the first time
