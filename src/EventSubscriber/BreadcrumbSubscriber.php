@@ -144,8 +144,13 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
                             $this->addChildRoomListCrumb($roomItem, 'group');
                         }
                     } else {
-                        $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'),
-                            implode("_", $route), $routeParameters);
+                        $routerImplode = implode("_", $route);
+                        if($this->isDateCalendar($roomItem, $controller)){
+                            $routerImplode = 'app_date_calendar';
+                        }
+                        $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu')
+                            , $routerImplode
+                            , $routeParameters);
                     }
                 } catch (RouteNotFoundException $e) {
                     // we don't need breadcrumbs for routes like app_item_editdetails etc. to ajax controller actions
@@ -345,5 +350,20 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
                     "app_user_list", ['roomId' => $roomItem->getItemId()]);
             }
         }
+    }
+
+
+    /**
+     * Return true, if configuration is  week or month.
+     * @param $room
+     * @param $controller
+     * @return bool
+     */
+    private function isDateCalendar($room, $controller): bool
+    {
+        if($controller == 'date' and $room->getDatesPresentationStatus() !== 'normal'){
+            return true;
+        }
+        return false;
     }
 }

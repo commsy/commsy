@@ -5,6 +5,8 @@ CKEDITOR.plugins.setLang('commsyimage', 'de', {
     fileselect: 'Angehängte Datei auswählen',
     fileselectchoice: 'Auswahl',
     uploadnew: 'Neue Datei hochladen',
+    uploadnewlegend: 'Sie können Dateien bis zu 300 MB hochladen.',
+    uploadnewfailed: 'Upload fehlgeschlagen, bitte verwenden Sie eine kleinere Datei.',
     upload: 'Hochladen',
     url: 'Aus URL einfügen',
     emptyUrl: 'Bitte eine URL hinzufügen',
