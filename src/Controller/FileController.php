@@ -139,7 +139,7 @@ class FileController extends AbstractController
     public function getBackgroundImageAction(
         RoomService $roomService,
         int $roomId,
-                    $imageType,
+        $imageType,
         SettableThemeContext $themeContext
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
