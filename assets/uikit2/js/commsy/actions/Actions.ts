@@ -123,7 +123,7 @@ export function createAction(actionData: ActionData): BaseAction {
     switch (actionData.action) {
         case 'delete':
             return new DeleteAction(actionData);
-        case 'copy':
+        case 'mark':
             return new MarkAction(actionData);
         case 'insert':
             return new InsertAction(actionData);

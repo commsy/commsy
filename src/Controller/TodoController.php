@@ -209,7 +209,7 @@ class TodoController extends BaseController
                 or ($roomItem->getType() == 'project' and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
                 $allowedActions[$item->getItemID()] = array(
                     'markread',
-                    'copy',
+                    'mark',
                     'save',
                     'delete',
                     'markpending',
@@ -222,7 +222,7 @@ class TodoController extends BaseController
                     $allowedActions[$item->getItemID()][] = 'mark' . $tempStatus;
                 }
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
         }
 
@@ -1009,13 +1009,13 @@ class TodoController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/todo/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param $roomId
      * @return Response
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
         MarkAction $action,
         $roomId

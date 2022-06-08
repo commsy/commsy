@@ -70,11 +70,11 @@
                                             </a>
                                         </li>
 
-                                        {# copy #}
+                                        {# mark #}
                                         <li>
                                             {% if user.isUser %}
                                                 <a href="#" data-cs-action="{{ {
-                                                    'url': path('app_date_xhrmark', {'roomId': roomId})
+                                                    'url': path('app_date_xhrmark', {'roomId': roomId}),
                                                     'action': 'mark',
                                                     'itemId': date.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,

@@ -37,7 +37,7 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
+     * @Route("/room/{roomId}/mark/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
      * @param int $roomId
@@ -55,7 +55,7 @@ class MarkedController extends BaseController
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query parameters (AJAX)
-        $markedFilter = $request->get('copyFilter');
+        $markedFilter = $request->get('markFilter');
         if (!$markedFilter) {
             $markedFilter = $request->query->get('marked_filter');
         }
@@ -110,7 +110,7 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/copy")
+     * @Route("/room/{roomId}/mark")
      * @Template()
      * @param Request $request
      * @param int $roomId
@@ -148,7 +148,7 @@ class MarkedController extends BaseController
     ###################################################################################################
 
     /**
-     * @Route("/room/{roomId}/copy/xhr/insert", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/mark/xhr/insert", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return
@@ -166,7 +166,7 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/copy/xhr/remove", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/mark/xhr/remove", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return mixed
