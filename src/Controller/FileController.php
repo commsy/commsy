@@ -14,8 +14,6 @@ use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,6 +23,7 @@ class FileController extends AbstractController
 {
     /**
      * @Route("/file/{fileId}/{disposition}")
+     * @Security("is_granted('FILE_DOWNLOAD', fileId)")
      * @param FileService $fileService
      * @param RoomService $roomService
      * @param int $fileId
@@ -32,7 +31,6 @@ class FileController extends AbstractController
      * @return Response
      */
     public function getFileAction(
-        Request $request,
         FileService $fileService,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
@@ -65,9 +63,7 @@ class FileController extends AbstractController
                 throw $this->createNotFoundException('The requested file does not exist');
             }
         }
-        $fileDiskUrl = $file->getDiskFileName();
-
-        $response = new BinaryFileResponse($fileDiskUrl, Response::HTTP_OK, array('content-type' => $file->getMime()));
+        $response = new Response($content, Response::HTTP_OK, array('content-type' => $file->getMime()));
 
         $fileName = $file->getFileName();
 
@@ -84,8 +80,8 @@ class FileController extends AbstractController
             $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,
                 $fileName, $fallbackFileName);
         }
-       $response->headers->set('Content-Disposition', $contentDisposition);
-       $response->prepare($request);
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
         return $response;
     }
 
@@ -143,7 +139,7 @@ class FileController extends AbstractController
     public function getBackgroundImageAction(
         RoomService $roomService,
         int $roomId,
-        $imageType,
+                    $imageType,
         SettableThemeContext $themeContext
     ) {
         $roomItem = $roomService->getRoomItem($roomId);
