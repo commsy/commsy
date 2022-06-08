@@ -31,13 +31,14 @@ class FileController extends AbstractController
      * @return Response
      */
     public function getFileAction(
-        FileService $fileService,
-        RoomService $roomService,
-        LegacyEnvironment $legacyEnvironment,
+        FileService           $fileService,
+        RoomService           $roomService,
+        LegacyEnvironment     $legacyEnvironment,
         ParameterBagInterface $params,
-        int $fileId,
-        string $disposition = 'attachment'
-    ) {
+        int                   $fileId,
+        string                $disposition = 'attachment'
+    )
+    {
         $file = $fileService->getFile($fileId);
         $rootDir = $params->get('kernel.root_dir') . '/';
 
@@ -94,8 +95,9 @@ class FileController extends AbstractController
      */
     public function getLogoAction(
         RoomService $roomService,
-        int $roomId
-    ) {
+        int         $roomId
+    )
+    {
         $roomItem = $roomService->getRoomItem($roomId);
 
         $fileName = $roomItem->getLogoFilename();
@@ -137,11 +139,12 @@ class FileController extends AbstractController
      * @return Response
      */
     public function getBackgroundImageAction(
-        RoomService $roomService,
-        int $roomId,
-        $imageType,
+        RoomService          $roomService,
+        int                  $roomId,
+                             $imageType,
         SettableThemeContext $themeContext
-    ) {
+    )
+    {
         $roomItem = $roomService->getRoomItem($roomId);
         $filename = $roomItem->getBGImageFilename();
         $themesDir = $this->getParameter("themes_directory");
@@ -186,7 +189,8 @@ class FileController extends AbstractController
      */
     public function getThemeBackgroundAction(
         $theme
-    ): Response {
+    ): Response
+    {
         $themesDir = $this->getParameter("themes_directory");
         $filePath = $themesDir . "/" . $theme . "/bg.jpg";
 
