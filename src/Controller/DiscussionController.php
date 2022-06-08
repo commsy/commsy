@@ -122,9 +122,9 @@ class DiscussionController extends BaseController
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save', 'delete');
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
         }
 
