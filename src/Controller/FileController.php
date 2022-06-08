@@ -25,6 +25,7 @@ class FileController extends AbstractController
 {
     /**
      * @Route("/file/{fileId}/{disposition}")
+     * @Security("is_granted('FILE_DOWNLOAD', fileId)")
      * @param FileService $fileService
      * @param RoomService $roomService
      * @param int $fileId
