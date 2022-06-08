@@ -32,6 +32,7 @@ class DiscussionTransformer extends AbstractTransformer
             $discussionData['title'] = html_entity_decode($discussionItem->getTitle());
             $discussionData['draft'] = $discussionItem->isDraft();
             $discussionData['permission'] = $discussionItem->isPrivateEditing();
+            $discussionData['description'] = $discussionItem->getDescription();
             
             if ($discussionItem->isNotActivated()) {
                 $discussionData['hidden'] = true;
@@ -66,6 +67,7 @@ class DiscussionTransformer extends AbstractTransformer
     public function applyTransformation($discussionObject, $discussionData)
     {
         $discussionObject->setTitle($discussionData['title']);
+        $discussionObject->setDescription($discussionData['description']);
         
         if ($discussionData['permission']) {
             $discussionObject->setPrivateEditing('0');
