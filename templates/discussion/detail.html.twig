@@ -166,13 +166,6 @@
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosDiscussion.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
                     </div>
-                    {# description #}
-                    <div id="description{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe
-                         data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}',
-                         cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
-
-                        {{ macrosItem.itemDescription('description', discussion, true, discussion.description, draft) }}
-                    </div>
 
                     {% if not draft %}
                         {# links #}
