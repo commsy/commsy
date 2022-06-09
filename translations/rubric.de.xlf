@@ -158,6 +158,14 @@
                 <source>confirm delete confirm</source>
                 <target>Ja</target>
             </trans-unit>
+            <trans-unit id="categorize">
+                <source>categorize</source>
+                <target>Kategorie zuweisen</target>
+            </trans-unit>
+            <trans-unit id="hashtagging">
+                <source>hashtagging</source>
+                <target>Schlagwort zuweisen</target>
+            </trans-unit>
             <trans-unit id="37">
                 <source>confirm delete cancel</source>
                 <target>Nein</target>

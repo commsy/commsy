@@ -122,6 +122,38 @@ class MarkedService
         return $this->getCountArray($roomId);
     }
 
+    public function categorizeEntries($roomId, $entries)
+    {
+        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+
+        $clipboardIds = [];
+        foreach ($currentClipboardIds as $currentClipboardId) {
+            if (!in_array($currentClipboardId, $entries)) {
+                $clipboardIds[] = $currentClipboardId;
+            }
+        }
+
+        $this->session->set('clipboard_ids', $clipboardIds);
+
+        return $this->getCountArray($roomId);
+    }
+
+    public function hashtagEntries($roomId, $entries)
+    {
+        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+
+        $clipboardIds = [];
+        foreach ($currentClipboardIds as $currentClipboardId) {
+            if (!in_array($currentClipboardId, $entries)) {
+                $clipboardIds[] = $currentClipboardId;
+            }
+        }
+
+        $this->session->set('clipboard_ids', $clipboardIds);
+
+        return $this->getCountArray($roomId);
+    }
+
     public function removeItemFromClipboard(int $itemId)
     {
         $currentClipboardIds = $this->session->get('clipboard_ids', []);

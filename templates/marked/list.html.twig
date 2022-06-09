@@ -40,6 +40,30 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_marked_xhrcategorize', {'roomId': roomId}),
+                        'action': 'categorize',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('app_marked_xhrhashtagging', {'roomId': roomId}),
+                        'action': 'remove',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                    }|json_encode|e('html_attr') }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtagging'|trans({},'rubric') }}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
                         'url': path('app_marked_xhrremove', {'roomId': roomId}),
                         'action': 'remove',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,

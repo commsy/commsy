@@ -16,7 +16,7 @@ use App\Services\LegacyEnvironment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class RemoveAction implements ActionInterface
+class CategorizeAction implements ActionInterface
 {
     /**
      * @var TranslatorInterface
@@ -44,10 +44,10 @@ class RemoveAction implements ActionInterface
             $ids[] = $item->getItemId();
         }
 
-        $this->makedService->removeEntries($roomItem->getItemID(), $ids);
+        $this->makedService->categorizeEntries($roomItem->getItemID(), $ids);
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $this->translator->trans('removed %count% entries from list', [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-sitemap\'></i> ' . $this->translator->trans('removed %count% entries from list', [
                     '%count%' => count($items),
                 ]),
         ]);
