@@ -140,11 +140,6 @@ class Discussions
      */
     private $discussionarticles;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $description;
-
     public function isIndexable()
     {
         return ($this->deleterId == null && $this->deletionDate == null);
@@ -576,16 +571,5 @@ class Discussions
     public function getDiscussionarticles()
     {
         return $this->discussionarticles;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-        return $this;
     }
 }

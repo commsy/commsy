@@ -833,11 +833,8 @@ class DiscussionController extends BaseController
         $formData = array();
         $discussionItem = null;
         $discussionArticleItem = null;
-        $isDraft = false;
 
-        if ($item->isDraft()) {
-            $isDraft = true;
-        }
+        $isDraft = $item->isDraft();
 
         $transformer = null;
 
