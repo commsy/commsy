@@ -939,218 +939,211 @@ class cs_project_item extends cs_room_item {
       }
    }
 
-   function _sendMailToModeration2 ($room_item, $room_change) {
-      $translator = $this->_environment->getTranslationObject();
-      $default_language = 'de';
-      
-      // maybe in archive mode
-      $toggle_archive = false;
-      if ( $this->_environment->isArchiveMode() ) {
-      	$toggle_archive = true;
-      	$this->_environment->toggleArchiveMode();
-      }
+    function _sendMailToModeration2($room_item, $room_change)
+    {
+        $translator = $this->_environment->getTranslationObject();
+        $default_language = 'de';
 
-       global $symfonyContainer;
-       $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
+        // maybe in archive mode
+        $toggle_archive = false;
+        if ($this->_environment->isArchiveMode()) {
+            $toggle_archive = true;
+            $this->_environment->toggleArchiveMode();
+        }
 
-      $current_portal = $this->_environment->getCurrentPortalItem();
-      if ( empty($current_portal)
-           or !$current_portal->isPortal()
-         ) {
-         $current_portal = $this->getContextItem();
-      }
-      $current_user = $this->_environment->getCurrentUserItem();
-      $fullname = $current_user->getFullname();
-      if ( empty($fullname) ) {
-         $current_user = $this->_environment->getRootUserItem();
-         $email = $current_user->getEmail();
-         if ( empty($email)
-              and !empty($default_sender_address)
-              and $default_sender_address != '@'
+        global $symfonyContainer;
+        $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
+
+        $current_portal = $this->_environment->getCurrentPortalItem();
+        if (empty($current_portal)
+            or !$current_portal->isPortal()
+        ) {
+            $current_portal = $this->getContextItem();
+        }
+        $current_user = $this->_environment->getCurrentUserItem();
+        $fullname = $current_user->getFullname();
+        if (empty($fullname)) {
+            $current_user = $this->_environment->getRootUserItem();
+            $email = $current_user->getEmail();
+            if (empty($email)
+                and !empty($default_sender_address)
+                and $default_sender_address != '@'
             ) {
-         	$current_user->setEmail($default_sender_address);
-         }	
-      }
-      
-   	if ( $toggle_archive ) {
-   		$this->_environment->toggleArchiveMode();
-   	}
-   	unset($toggle_archive);
-      
-   	$moderator_list = $room_item->getModeratorList();
-
-      // get moderators
-      $receiver_array = array();
-      $moderator_name_array = array();
-
-      if ( $moderator_list->isNotEmpty() ) {
-         $mod_item = $moderator_list->getFirst();
-         while ($mod_item) {
-            if ($mod_item->getOpenRoomWantMail() == 'yes') {
-               $language = $room_item->getLanguage();
-               if ($language == 'user') {
-                  $language = $mod_item->getLanguage();
-                  if ($language == 'browser') {
-                     $language = $default_language;
-                  }
-               }
-               $receiver_array[$language][] = $mod_item->getEmail();
-               $moderator_name_array[] = $mod_item->getFullname();
+                $current_user->setEmail($default_sender_address);
             }
-            $mod_item = $moderator_list->getNext();
-         }
-      }
+        }
 
-      // now email information
-      foreach ($receiver_array as $key => $value) {
-         $save_language = $translator->getSelectedLanguage();
-         $translator->setSelectedLanguage($key);
-         $subject = '';
-         if ( $room_item->isCommunityRoom() or $room_item->isPortal() ){
-          $subject .= $room_item->getTitle().': ';
-         }
-         $title = html_entity_decode($this->getTitle());
-         if ( $room_change == 'open' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$title);
-         } elseif ( $room_change == 'reopen' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN',$title);
-         } elseif ( $room_change == 'delete' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE',$title);
-         } elseif ( $room_change == 'undelete' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE',$title);
-         } elseif ( $room_change == 'archive' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE',$title);
-         } elseif ( $room_change == 'link' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK',$title);
-         } elseif ( $room_change == 'lock' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK',$title);
-         } elseif ( $room_change == 'unlock' ) {
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK',$title);
-         }
-         $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-         $body .= LF.LF;
-         if ( $room_change == 'open' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_OPEN');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_OPEN');
-         } elseif ( $room_change == 'reopen' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_REOPEN');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_REOPEN');
-         } elseif ( $room_change == 'delete' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_DELETE');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE');
-         } elseif ( $room_change == 'undelete' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_UNDELETE');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNDELETE');
-         } elseif ( $room_change == 'archive' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_ARCHIVE');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE');
-         } elseif ( $room_change == 'link' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_LINK');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_LINK');
-         } elseif ( $room_change == 'lock' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_LOCK');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_LOCK');
-         } elseif ( $room_change == 'unlock' ) {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_UNLOCK');
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
-         }
-         $body .= LF.LF;
-         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$title,$current_user->getFullname(),$room_change_action);
-         if ( $room_change != 'delete' ) {
+        if ($toggle_archive) {
+            $this->_environment->toggleArchiveMode();
+        }
+        unset($toggle_archive);
 
-             global $symfonyContainer;
+        $moderator_list = $room_item->getModeratorList();
 
-             $url = $symfonyContainer->get('router')->generate('app_room_home', [
-                 'roomId' => $this->getItemID()
-             ],  UrlGeneratorInterface::ABSOLUTE_URL);
+        // get moderators
+        $receiver_array = array();
+        $moderator_name_array = array();
 
-             $body .= LF.$url;
-         	
-  			   #$body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->getContextID().'&room_id='.$this->getItemID();
-         }
-
-         $body .= LF.LF;
-         $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS').LF;
-
-         $community_name_array = array();
-         if ( $room_change != 'link' ) {
-             $community_list = $this->getCommunityList();
-            if ( $community_list->isNotEmpty() ) {
-               $community_item = $community_list->getFirst();
-               while ($community_item) {
-                  $community_name_array[] = $community_item->getTitle();
-                  $community_item = $community_list->getNext();
-               }
+        if ($moderator_list->isNotEmpty()) {
+            $mod_item = $moderator_list->getFirst();
+            while ($mod_item) {
+                if ($mod_item->getOpenRoomWantMail() == 'yes') {
+                    $language = $room_item->getLanguage();
+                    if ($language == 'user') {
+                        $language = $mod_item->getLanguage();
+                        if ($language == 'browser') {
+                            $language = $default_language;
+                        }
+                    }
+                    $receiver_array[$language][] = $mod_item->getEmail();
+                    $moderator_name_array[] = $mod_item->getFullname();
+                }
+                $mod_item = $moderator_list->getNext();
             }
-         } else {
-            $room_manager = $this->_environment->getCommunityManager();
-            foreach ($this->_new_community_id_array as $room_id) {
-               $community_room_item = $room_manager->getItem($room_id);
-               if ( !empty($community_room_item) ) {
-                  $temp_title = $community_room_item->getTitle();
-                  if ( !in_array($community_room_item->getItemID(),$this->_old_community_id_array) ) {
-                     $temp_title .= ' ['.$translator->getMessage('COMMON_NEW').']';
-                  }
-                  $community_name_array[] = $temp_title;
-                  unset($temp_title);
-               }
-            }
-         }
-         if ( !empty($community_name_array) ) {
-            $body .= implode(LF,$community_name_array);
-         } else {
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_EMPTY');
-         }
+        }
 
-         if ( $room_change == 'link' ) {
-            $community_old_name_array = array();
-            foreach ($this->_old_community_id_array as $room_id) {
-               if ( !in_array($room_id,$this->_new_community_id_array) ) {
-                  $community_room_item = $room_manager->getItem($room_id);
-                  if ( !empty($community_room_item) ) {
-                     $temp_title = $community_room_item->getTitle();
-                     $community_old_name_array[] = $temp_title;
-                     unset($temp_title);
-                  }
-               }
+        // now email information
+        foreach ($receiver_array as $key => $value) {
+            $save_language = $translator->getSelectedLanguage();
+            $translator->setSelectedLanguage($key);
+            $subject = '';
+            if ($room_item->isCommunityRoom() or $room_item->isPortal()) {
+                $subject .= $room_item->getTitle() . ': ';
             }
-            if ( !empty($community_old_name_array) ) {
-               $body .= LF.LF;
-               $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_UNLINKED').LF;
-               $body .= implode(LF,$community_old_name_array);
+            $title = html_entity_decode($this->getTitle());
+            if ($room_change == 'open') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN', $title);
+            } elseif ($room_change == 'reopen') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN', $title);
+            } elseif ($room_change == 'delete') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE', $title);
+            } elseif ($room_change == 'undelete') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE', $title);
+            } elseif ($room_change == 'archive') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE', $title);
+            } elseif ($room_change == 'link') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK', $title);
+            } elseif ($room_change == 'lock') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK', $title);
+            } elseif ($room_change == 'unlock') {
+                $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK', $title);
             }
-         }
+            $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()),
+                $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+            $body .= LF . LF;
+            if ($room_change == 'open') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_OPEN');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_OPEN');
+            } elseif ($room_change == 'reopen') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_REOPEN');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_REOPEN');
+            } elseif ($room_change == 'delete') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_DELETE');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE');
+            } elseif ($room_change == 'undelete') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_UNDELETE');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNDELETE');
+            } elseif ($room_change == 'archive') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_ARCHIVE');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE');
+            } elseif ($room_change == 'link') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_LINK');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_LINK');
+            } elseif ($room_change == 'lock') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_LOCK');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_LOCK');
+            } elseif ($room_change == 'unlock') {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_UNLOCK');
+                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
+            }
+            $body .= LF . LF;
+            $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION', $title, $current_user->getFullname(),
+                $room_change_action);
+            if ($room_change != 'delete') {
 
-         $body .= LF.LF;
-         $body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
-         $body .= LF.LF;
-         if ( $room_item->isPortal() ) {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL',html_entity_decode($room_item->getTitle()));
-         } elseif ( $room_item->isCommunityRoom() ) {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY',html_entity_decode($room_item->getTitle()));
-         } else {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT',html_entity_decode($room_item->getTitle()));
-         }
+                global $symfonyContainer;
 
-         // send email
-         include_once('classes/cs_mail.php');
-         $mail = new cs_mail();
-         $mail->set_to(implode(',',$value));
-         $mail->set_from_email($default_sender_address);
-         if (isset($current_portal)){
-            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
-         }else{
-            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-         }
-         $mail->set_reply_to_name($current_user->getFullname());
-         $mail->set_reply_to_email($current_user->getEmail());
-         $mail->set_subject($subject);
-         $mail->set_message($body);
-         $mail->send();
-         $translator->setSelectedLanguage($save_language);
-         unset($save_language);
-      }
-   }
+                $url = $symfonyContainer->get('router')->generate('app_room_home', [
+                    'roomId' => $this->getItemID()
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $body .= LF . $url;
+            }
+
+            $body .= LF . LF;
+            $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS') . LF;
+
+            $community_name_array = array();
+            if ($room_change != 'link') {
+                $communityList = $this->getCommunityList();
+                foreach ($communityList as $communityWorkspace) {
+                    $community_name_array[] = $communityWorkspace->getTitle();
+                }
+            } else {
+                $room_manager = $this->_environment->getCommunityManager();
+                foreach ($this->_new_community_id_array as $room_id) {
+                    $community_room_item = $room_manager->getItem($room_id);
+                    if (!empty($community_room_item)) {
+                        $temp_title = $community_room_item->getTitle();
+                        if (!in_array($community_room_item->getItemID(), $this->_old_community_id_array)) {
+                            $temp_title .= ' [' . $translator->getMessage('COMMON_NEW') . ']';
+                        }
+                        $community_name_array[] = $temp_title;
+                    }
+                }
+            }
+            if (!empty($community_name_array)) {
+                $body .= implode(LF, $community_name_array);
+            } else {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_EMPTY');
+            }
+
+            if ($room_change == 'link') {
+                $community_old_name_array = array();
+                foreach ($this->_old_community_id_array as $room_id) {
+                    if (!in_array($room_id, $this->_new_community_id_array)) {
+                        $community_room_item = $room_manager->getItem($room_id);
+                        if (!empty($community_room_item)) {
+                            $community_old_name_array[] = $community_room_item->getTitle();
+                        }
+                    }
+                }
+                if (!empty($community_old_name_array)) {
+                    $body .= LF . LF;
+                    $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_UNLINKED') . LF;
+                    $body .= implode(LF, $community_old_name_array);
+                }
+            }
+
+            $body .= LF . LF;
+            $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
+            $body .= LF . LF;
+            if ($room_item->isPortal()) {
+                $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL', html_entity_decode($room_item->getTitle()));
+            } elseif ($room_item->isCommunityRoom()) {
+                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', html_entity_decode($room_item->getTitle()));
+            } else {
+                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', html_entity_decode($room_item->getTitle()));
+            }
+
+            // send email
+            include_once('classes/cs_mail.php');
+            $mail = new cs_mail();
+            $mail->set_to(implode(',', $value));
+            $mail->set_from_email($default_sender_address);
+            if (isset($current_portal)) {
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
+            } else {
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $room_item->getTitle()));
+            }
+            $mail->set_reply_to_name($current_user->getFullname());
+            $mail->set_reply_to_email($current_user->getEmail());
+            $mail->set_subject($subject);
+            $mail->set_message($body);
+            $mail->send();
+            $translator->setSelectedLanguage($save_language);
+        }
+    }
 
    ######################################################
    # FLAG: group room

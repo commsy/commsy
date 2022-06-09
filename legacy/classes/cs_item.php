@@ -1723,7 +1723,8 @@ class cs_item {
                 ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_ANNOUNCEMENT_TYPE) ||
                 ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TASK_TYPE) ||
                 ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_DISCUSSION_TYPE) ||
-                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TOPIC_TYPE)
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_TOPIC_TYPE) ||
+                ($rubric_array[0] == CS_USER_TYPE && $this->getItemType() == CS_LABEL_TYPE)
             ) {
                 $type_array[] = $rubric_array[0];
             }
@@ -1738,46 +1739,43 @@ class cs_item {
         return $link_list;
     }
 
-   function getLinkItemList ($type) {
-      $context_limit =
-      $link_list = new cs_list();
-      $link_item_manager = $this->_environment->getLinkItemManager();
-      $link_item_manager->setLinkedItemLimit($this);
-      if ($type == CS_MYROOM_TYPE){
-         $type_array[0]='project';
-         $type_array[1]='community';
-         $link_item_manager->setTypeArrayLimit($type_array);
-      } else {
-         $link_item_manager->setTypeLimit($type);
-      }
+    /**
+     * @param string $type
+     * @return cs_list|null
+     */
+    public function getLinkItemList(string $type):? cs_list
+    {
+        $link_item_manager = $this->_environment->getLinkItemManager();
+        $link_item_manager->setLinkedItemLimit($this);
+        if ($type == CS_MYROOM_TYPE) {
+            $type_array[0] = 'project';
+            $type_array[1] = 'community';
+            $link_item_manager->setTypeArrayLimit($type_array);
+        } else {
+            $link_item_manager->setTypeLimit($type);
+        }
 
-      $context_item = $this->_environment->getCurrentContextItem();
-      if (
-            ( $type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inProjectRoom())
-              or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->getCurrentModule() == 'project')
-              or ($type == CS_PROJECT_TYPE and $this->isA(CS_COMMUNITY_TYPE)
-              or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inServer())
-              or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inGroupRoom() and $this->_environment->getCurrentContextItem()->getLinkedProjectItem()->getItemId() == $this->getItemId())
+        if (
+            ($type == CS_COMMUNITY_TYPE && $this->isA(CS_PROJECT_TYPE)) ||
+            ($type == CS_PROJECT_TYPE && $this->isA(CS_COMMUNITY_TYPE) ||
+                ($type == CS_COMMUNITY_TYPE && $this->isA(CS_PROJECT_TYPE) && $this->_environment->inServer()) ||
+                ($type == CS_COMMUNITY_TYPE && $this->isA(CS_PROJECT_TYPE) && $this->_environment->inGroupRoom() &&
+                    $this->_environment->getCurrentContextItem()->getLinkedProjectItem()->getItemId() == $this->getItemId())
             )
-         ) {
-         $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_LABEL_TYPE)
-                 and $this->getLabelType() == CS_GROUP_TYPE
-               ) {
-         // müsste dies nicht für alle Fälle gelten ???
-         $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_USER_TYPE)
-                 or $this->isA(CS_DATE_TYPE)
-                 or $this->isA(CS_TODO_TYPE)
-               ) {
-         $link_item_manager->setRoomLimit($this->getContextID());
-      } else {
-         $link_item_manager->setRoomLimit($this->_environment->getCurrentContextID() );
-      }
-      $link_item_manager->select();
-      $link_list = $link_item_manager->get();
-      return $link_list;
-   }
+        ) {
+            $link_item_manager->setRoomLimit($this->getContextID());
+        } elseif ($this->isA(CS_LABEL_TYPE) && $this->getLabelType() == CS_GROUP_TYPE) {
+            // müsste dies nicht für alle Fälle gelten ???
+            $link_item_manager->setRoomLimit($this->getContextID());
+        } elseif ($this->isA(CS_USER_TYPE) || $this->isA(CS_DATE_TYPE) || $this->isA(CS_TODO_TYPE)) {
+            $link_item_manager->setRoomLimit($this->getContextID());
+        } else {
+            $link_item_manager->setRoomLimit($this->_environment->getCurrentContextID());
+        }
+
+        $link_item_manager->select();
+        return $link_item_manager->get();
+    }
 
    function getLinkedItemList ($type) {
       $link_list = $this->getLinkItemList($type);
@@ -1909,7 +1907,8 @@ class cs_item {
                 $this->getItemType() == CS_ANNOUNCEMENT_TYPE ||
                 $this->getItemType() == CS_TASK_TYPE ||
                 $this->getItemType() == CS_DISCUSSION_TYPE ||
-                $this->getItemType() == CS_TOPIC_TYPE
+                $this->getItemType() == CS_TOPIC_TYPE ||
+                $this->getItemType() == CS_TODO_TYPE
             ) {
                 if (isset($itemsByRubric[$rubric])) {
                     $this->_setValue($rubric, $itemsByRubric[$rubric], false);
