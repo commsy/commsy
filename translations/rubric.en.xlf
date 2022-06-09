@@ -162,6 +162,14 @@
                 <source>confirm delete cancel</source>
                 <target>No</target>
             </trans-unit>
+            <trans-unit id="categorize">
+                <source>categorize</source>
+                <target>Assign category</target>
+            </trans-unit>
+            <trans-unit id="hashtagging">
+                <source>hashtagging</source>
+                <target>Assign hashtag</target>
+            </trans-unit>
              <trans-unit id="38">
                 <source>cancel</source>
                 <target>Cancel</target>

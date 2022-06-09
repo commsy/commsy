@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Action\Mark\CategorizeAction;
+use App\Action\Mark\HashtaggingAction;
 use App\Action\Mark\InsertAction;
 use App\Action\Mark\RemoveAction;
 use App\Filter\MarkedFilterType;
@@ -175,6 +177,42 @@ class MarkedController extends BaseController
     public function xhrRemoveAction(
         Request $request,
         RemoveAction $action,
+        int $roomId)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/mark/xhr/categroize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/mark/xhr/hashtagging", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtaggingAction(
+        Request $request,
+        HashtaggingAction $action,
         int $roomId)
     {
         $room = $this->getRoom($roomId);
