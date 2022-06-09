@@ -70,12 +70,6 @@
                 <source>send</source>
                 <target>send</target>
             </trans-unit>
-<!--
-            <trans-unit id="16">
-                <source>copy</source>
-                <target>copy</target>
-            </trans-unit>
--->
             <trans-unit id="message_marked">
                 <source>marked</source>
                 <target>marking</target>
@@ -139,10 +133,6 @@
             <trans-unit id="31">
                 <source>%count% deleted entries</source>
                  <target>{0} No entries deleted.|{1} One entry deleted.|]1,Inf[ %count% entries deleted.</target>
-           </trans-unit>            
-            <trans-unit id="32">
-                <source>%count% copied entries</source>
-                 <target>{0} No entries copied.|{1} One entry copied.|]1,Inf[ %count% entries copied.</target>
            </trans-unit>
             <trans-unit id="msgMarkedEntries">
                 <source>%count% marked entries</source>

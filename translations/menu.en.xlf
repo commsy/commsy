@@ -110,12 +110,6 @@
                 <source>dashboard</source>
                 <target>Dashboard</target>
             </trans-unit>
-<!--
-            <trans-unit id="breadcrumb_copy">
-                <source>copy</source>
-                <target>My copies</target>
-            </trans-unit>
--->
             <trans-unit id="breacrumb_marked">
                 <source>marked</source>
                 <target>Marked Entries</target>
