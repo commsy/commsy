@@ -2,16 +2,16 @@
 {% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block feed %}
-    <ul id="copies-feed" class="uk-comment-list" data-uk-observe>
+    <ul id="mark-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
             'App\\Controller\\MarkedController::feedAction', {
                 'roomId': roomId,
-                'copyFilter': app.request.query.get('marked_filter')
+                'markFilter': app.request.query.get('marked_filter')
             }
         ))}}
     </ul>
 
-    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/copy/feed/", "target": "#copies-feed"}'>
+    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/mark/feed/", "target": "#mark-feed"}'>
         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
     </div>
     <div class="cs-toggle-class"></div>
@@ -56,7 +56,7 @@
 
                 {#
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('app_copy_feedaction', {'roomId': roomId}) }}", "action": "insert"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
+                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('app_mark_feedaction', {'roomId': roomId}) }}", "action": "insert"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-paste uk-visible-large"></i> {{ 'insert stack'|trans({},'rubric') }}
                     </a>
                 </li>

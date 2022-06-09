@@ -134,10 +134,6 @@
                 <source>insert stack</source>
                 <target>Insert into "My stack"</target>
             </trans-unit>
-            <trans-unit id="action_remove">
-                <source>remove</source>
-                <target>Remove from "My copies"</target>
-            </trans-unit>
             <trans-unit id="action_remove_marked">
                 <source>remove marked</source>
                 <target>Remove from 'Marked Entries'</target>
@@ -146,12 +142,6 @@
                 <source>mark read</source>
                 <target>Mark as read</target>
             </trans-unit>
-<!--
-            <trans-unit id="32">
-                <source>copy</source>
-                <target>Copy</target>
-            </trans-unit>
--->
             <trans-unit id="33">
                 <source>save</source>
                 <target>Download</target>
@@ -256,16 +246,6 @@
                 <source>place</source>
                 <target>Place</target>
             </trans-unit>
-<!--
-            <trans-unit id="copy">
-                <source>Copy</source>
-                <target>Copy</target>
-            </trans-unit>
-            <trans-unit id="mycopies">
-                <source>Copies</source>
-                <target>My copies</target>
-            </trans-unit>
--->
             <trans-unit id="marked_entries">
                 <source>Marked</source>
                 <target>Marked Entries</target>
