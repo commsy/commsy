@@ -133,6 +133,10 @@ export function createAction(actionData: ActionData): BaseAction {
             return new InsertUserroomAction(actionData);
         case 'remove':
             return new RemoveAction(actionData);
+        case 'categorize':
+            return new CategorizeAction(actionData);
+        case 'hashtagging':
+            return new HashtaggingAction(actionData);
         case 'workflow':
             return new WorkflowAction(actionData);
         case 'join':
@@ -141,10 +145,6 @@ export function createAction(actionData: ActionData): BaseAction {
             return new LeaveAction(actionData);
         case 'markread':
             return new MarkReadAction(actionData);
-        case 'categorize':
-            return new CategorizeAction(actionData);
-        case 'hashtagging':
-            return new HashtaggingAction(actionData);
         case 'markpending':
         case 'markinprogress':
         case 'markdone':

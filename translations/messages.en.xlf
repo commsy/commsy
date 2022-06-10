@@ -396,15 +396,15 @@
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>
-                <target>{0} No entrey removed.|{1} Removed one entry from list.|]1,Inf[ Removed %count% entries from list.</target>
+                <target>{0} No entry removed.|{1} Removed one entry from list.|]1,Inf[ Removed %count% entries from list.</target>
            </trans-unit>
            <trans-unit id="entriesHashtagged">
                 <source>hashtagged %count% entries in list</source>
-                <target>{0} No entrey hashtagged.|{1} Hashtagged one entry from list.|]1,Inf[ Hashtagged %count% entries from list.</target>
+                <target>{0} No entry tagged.|{1} Tagged one entry.|]1,Inf[ Tagged %count% entries.</target>
            </trans-unit>
            <trans-unit id="entriesCategorized">
                 <source>categorized %count% entries in list</source>
-                <target>{0} No entrey categorized.|{1} Categorized one entry from list.|]1,Inf[ Categorized %count% entries from list.</target>
+                <target>{0} No entry categorized.|{1} Categorized one entry.|]1,Inf[ Categorized %count% entries.</target>
            </trans-unit>
            <trans-unit id="dashboardChanged">
                 <source>dashboard changed</source>
