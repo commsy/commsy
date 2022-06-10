@@ -13,6 +13,8 @@ import {SendMailAction} from "./SendMailAction";
 import {UserStatusAction} from "./UserStatusAction";
 import {InsertAction} from "./InsertAction";
 import {RemoveAction} from "./RemoveAction";
+import {CategorizeAction} from "./CategorizeAction";
+import {HashtaggingAction} from "./HashtaggingAction";
 import {InsertUserroomAction} from "./InsertUserroomAction";
 
 'use strict';
@@ -139,6 +141,10 @@ export function createAction(actionData: ActionData): BaseAction {
             return new LeaveAction(actionData);
         case 'markread':
             return new MarkReadAction(actionData);
+        case 'categorize':
+            return new CategorizeAction(actionData);
+        case 'hashtagging':
+            return new HashtaggingAction(actionData);
         case 'markpending':
         case 'markinprogress':
         case 'markdone':

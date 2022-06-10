@@ -102,6 +102,8 @@ class MarkedController extends BaseController
                 $allowedActions[$item->getItemID()][] = 'insertStack';
             }
             $allowedActions[$item->getItemID()][] = 'remove';
+            $allowedActions[$item->getItemID()][] = 'categorize';
+            $allowedActions[$item->getItemID()][] = 'hashtagging';
         }
 
         return [
@@ -186,7 +188,7 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/mark/xhr/categroize", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/mark/xhr/categorize", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return mixed

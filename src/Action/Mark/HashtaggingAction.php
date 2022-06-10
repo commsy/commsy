@@ -26,15 +26,15 @@ class HashtaggingAction implements ActionInterface
     /**
      * @var MarkedService
      */
-    private MarkedService $makedService;
+    private MarkedService $markedService;
 
     public function __construct(
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        MarkedService $makedService
+        MarkedService $markedService
     ) {
         $this->translator = $translator;
-        $this->makedService = $makedService;
+        $this->markedService = $markedService;
     }
 
     public function execute(\cs_room_item $roomItem, array $items): Response
@@ -44,10 +44,10 @@ class HashtaggingAction implements ActionInterface
             $ids[] = $item->getItemId();
         }
 
-        $this->makedService->hashtagEntries($roomItem->getItemID(), $ids);
+        $this->markedService->hashtagEntries($roomItem->getItemID(), $ids);
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-hashtag\'></i> ' . $this->translator->trans('removed %count% entries from list', [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-hashtag\'></i> ' . $this->translator->trans('hashtagged %count% entries in list', [
                     '%count%' => count($items),
                 ]),
         ]);

@@ -398,6 +398,14 @@
                 <source>removed %count% entries from list</source>
                 <target>{0} No entrey removed.|{1} Removed one entry from list.|]1,Inf[ Removed %count% entries from list.</target>
            </trans-unit>
+           <trans-unit id="entriesHashtagged">
+                <source>hashtagged %count% entries in list</source>
+                <target>{0} No entrey hashtagged.|{1} Hashtagged one entry from list.|]1,Inf[ Hashtagged %count% entries from list.</target>
+           </trans-unit>
+           <trans-unit id="entriesCategorized">
+                <source>categorized %count% entries in list</source>
+                <target>{0} No entrey categorized.|{1} Categorized one entry from list.|]1,Inf[ Categorized %count% entries from list.</target>
+           </trans-unit>
            <trans-unit id="dashboardChanged">
                 <source>dashboard changed</source>
                 <target>Dashboard layout updated.</target>
