@@ -12,7 +12,6 @@ namespace App\Action\Mark;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Services\MarkedService;
-use App\Services\LegacyEnvironment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -30,7 +29,6 @@ class RemoveAction implements ActionInterface
 
     public function __construct(
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
         MarkedService $markedService
     ) {
         $this->translator = $translator;

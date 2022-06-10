@@ -690,9 +690,9 @@ services:
             $proxyPort: '%commsy.settings.proxy_port%'
 
     commsy.copy_service:
-        alias: App\Services\CopyService
+        alias: App\Services\MarkedService
 
-    App\Services\CopyService:
+    App\Services\MarkedService:
         autowire: true
 
     commsy.calendars_service:
@@ -728,13 +728,19 @@ services:
 
     App\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
 
-    App\Action\Copy\CopyAction:
+    App\Action\Mark\MarkAction:
         autowire: true
 
-    App\Action\Copy\InsertAction:
+    App\Action\Mark\InsertAction:
         autowire: true
 
-    App\Action\Copy\RemoveAction:
+    App\Action\Mark\RemoveAction:
+        autowire: true
+
+    App\Action\Mark\CategorizeAction:
+        autowire: true
+
+    App\Action\Mark\HashtaggingAction:
         autowire: true
 
     App\Action\Download\DownloadAction:

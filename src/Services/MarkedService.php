@@ -85,16 +85,16 @@ class MarkedService
      */
     public function getMarkedItemsById($ids)
     {
-        $allMarkings = $this->getListEntries();
+        $allMarkedItems = $this->getListEntries();
 
-        $filteredMarkings = [];
-        foreach ($allMarkings as $markedItem) {
+        $filteredMarkedItems = [];
+        foreach ($allMarkedItems as $markedItem) {
             if (in_array($markedItem->getItemID(), $ids)) {
-                $filteredMarkings[] = $markedItem;
+                $filteredMarkedItems[] = $markedItem;
             }
         }
 
-        return $filteredMarkings;
+        return $filteredMarkedItems;
     }
 
     public function setFilterConditions(FormInterface $filterForm)
@@ -122,44 +122,23 @@ class MarkedService
         return $this->getCountArray($roomId);
     }
 
-    public function categorizeEntries($roomId, $entries)
-    {
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
-
-        $clipboardIds = [];
-        foreach ($currentClipboardIds as $currentClipboardId) {
-            if (!in_array($currentClipboardId, $entries)) {
-                $clipboardIds[] = $currentClipboardId;
-            }
-        }
-
-        $this->session->set('clipboard_ids', $clipboardIds);
-
-        return $this->getCountArray($roomId);
-    }
-
-    public function hashtagEntries($roomId, $entries)
-    {
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
-
-        $clipboardIds = [];
-        foreach ($currentClipboardIds as $currentClipboardId) {
-            if (!in_array($currentClipboardId, $entries)) {
-                $clipboardIds[] = $currentClipboardId;
-            }
-        }
-
-        $this->session->set('clipboard_ids', $clipboardIds);
-
-        return $this->getCountArray($roomId);
-    }
-
     public function removeItemFromClipboard(int $itemId)
     {
         $currentClipboardIds = $this->session->get('clipboard_ids', []);
+
         if (in_array($itemId, $currentClipboardIds)) {
             unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
             $this->session->set('clipboard_ids', $currentClipboardIds);
         }
+    }
+
+    public function categorizeEntries($roomId, $entries)
+    {
+        // TODO: implement
+    }
+
+    public function hashtagEntries($roomId, $entries)
+    {
+        // TODO: implement
     }
 }

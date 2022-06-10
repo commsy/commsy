@@ -12,7 +12,6 @@ namespace App\Action\Mark;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Services\MarkedService;
-use App\Services\LegacyEnvironment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -30,7 +29,6 @@ class CategorizeAction implements ActionInterface
 
     public function __construct(
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
         MarkedService $markedService
     ) {
         $this->translator = $translator;
@@ -47,7 +45,7 @@ class CategorizeAction implements ActionInterface
         $this->markedService->categorizeEntries($roomItem->getItemID(), $ids);
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-sitemap\'></i> ' . $this->translator->trans('removed %count% entries from list', [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-sitemap\'></i> ' . $this->translator->trans('categorized %count% entries in list', [
                     '%count%' => count($items),
                 ]),
         ]);

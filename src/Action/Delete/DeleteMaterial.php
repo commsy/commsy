@@ -7,12 +7,12 @@ use App\Services\MarkedService;
 
 class DeleteMaterial implements DeleteInterface
 {
-    /** @var MarkedService $copyService */
-    protected MarkedService $copyService;
+    /** @var MarkedService $markedService */
+    protected MarkedService $markedService;
 
-    public function __construct(MarkedService $copyService)
+    public function __construct(MarkedService $markedService)
     {
-        $this->copyService = $copyService;
+        $this->markedService = $markedService;
     }
 
     /**
@@ -25,7 +25,7 @@ class DeleteMaterial implements DeleteInterface
 
         $material->deleteAllVersions();
 
-        $this->copyService->removeItemFromClipboard($material->getItemId());
+        $this->markedService->removeItemFromClipboard($material->getItemId());
     }
 
     /**
