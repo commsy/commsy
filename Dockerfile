@@ -59,13 +59,11 @@ RUN set -eux; \
 	; \
 	pecl install \
 		apcu-${APCU_VERSION} \
-		xdebug \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
-		xdebug \
 	; \
 	\
 	runDeps="$( \
@@ -87,7 +85,7 @@ COPY --from=surnet/alpine-wkhtmltopdf:3.13.5-0.12.6-full /bin/wkhtmltopdf /usr/l
 # Set up php configuration
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY docker/php/conf.d/commsy.prod.ini $PHP_INI_DIR/conf.d/commsy.ini
-COPY docker/php/conf.d/commsy.pool.conf /usr/local/etc/php-fpm.d/
+COPY docker/php/conf.d/commsy.pool.conf /usr/local/etc/php-fpm.d/commsy.pool.conf
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -148,6 +146,20 @@ COPY docker/php/supervisor.d /etc/supervisor/conf.d/
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+
+##############################################################################
+
+# Dockerfile
+FROM commsy_php AS commsy_php_debug
+
+ARG XDEBUG_VERSION=3.1.2
+RUN set -eux; \
+	apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
+	pecl install xdebug-$XDEBUG_VERSION; \
+	docker-php-ext-enable xdebug; \
+	apk del .build-deps
+
+CMD ["php-fpm"]
 
 ##############################################################################
 
