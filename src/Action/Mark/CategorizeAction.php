@@ -26,15 +26,15 @@ class CategorizeAction implements ActionInterface
     /**
      * @var MarkedService
      */
-    private MarkedService $makedService;
+    private MarkedService $markedService;
 
     public function __construct(
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        MarkedService $makedService
+        MarkedService $markedService
     ) {
         $this->translator = $translator;
-        $this->makedService = $makedService;
+        $this->markedService = $markedService;
     }
 
     public function execute(\cs_room_item $roomItem, array $items): Response
@@ -44,7 +44,7 @@ class CategorizeAction implements ActionInterface
             $ids[] = $item->getItemId();
         }
 
-        $this->makedService->categorizeEntries($roomItem->getItemID(), $ids);
+        $this->markedService->categorizeEntries($roomItem->getItemID(), $ids);
 
         return new JsonDataResponse([
             'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-sitemap\'></i> ' . $this->translator->trans('removed %count% entries from list', [

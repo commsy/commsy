@@ -398,6 +398,14 @@
                 <source>removed %count% entries from list</source>
                 <target>{0} Keinen Eintrag entfert.|{1} Einen Eintrag aus der Liste entfernt.|]1,Inf[ %count% Einträge aus der Liste entfernt.</target>
            </trans-unit>
+           <trans-unit id="entriesHashtagged">
+                <source>hashtagged %count% entries in list</source>
+                <target>{0} Keinen Eintrag mit einem Schlagwort versehen.|{1} Einen Eintrag aus der Liste mit einem Schlagwort versehen.|]1,Inf[ %count% Einträge aus der Liste mit einem Schlagwort versehen.</target>
+           </trans-unit>
+           <trans-unit id="entriesCategorized">
+                <source>categorized %count% entries in list</source>
+                <target>{0} Keinen Eintrag kategorisiert.|{1} Einen Eintrag aus der Liste kategorisiert.|]1,Inf[ %count% Einträge aus der Liste mit kategorisiert.</target>
+           </trans-unit>
            <trans-unit id="dashboardChanged">
                 <source>dashboard changed</source>
                 <target>Dashboard-Layout aktualisiert.</target>
