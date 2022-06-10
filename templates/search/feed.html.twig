@@ -76,7 +76,8 @@
                 {% if is_granted('ITEM_SEE', entity.itemId) -%}
                     <a href="{{ path(result.routeName, {'roomId': entity.contextId, 'itemId': entity.itemId}) }}">
                 {%- else -%}
-                    <span class="uk-text-muted">
+                      <span class="uk-text-muted">
+                      {{ 'Deactivated entry'|trans({}) }}
                 {%- endif %}
                         {% if entity.title is defined %}
                             {{ entity.title|decodeHtmlEntity }}

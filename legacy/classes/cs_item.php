@@ -1613,7 +1613,7 @@ class cs_item {
            return true;
         }
 
-        if ($userItem->isUser() && $userItem->getContextID() == $this->_environment->getCurrentContextID()) {
+        if ($userItem->isUser() && $userItem->getContextID() === $this->getContextID()) {
            // deactivated entries can be only viewed by a moderator or by their creator
            if ($this->isNotActivated()) {
               if ($userItem->isModerator()) {
