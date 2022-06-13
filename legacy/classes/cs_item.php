@@ -70,8 +70,6 @@ class cs_item {
    var $_filelist_changed_empty = false;
    var $_cache_on = true;
 
-   var $_external_viewer_user_array = NULL;
-
   /**
    * boolean - if true the modification_date will be updated - else not
    */
@@ -79,6 +77,8 @@ class cs_item {
 
    public $_link_modifier = true;
    var $_db_load_extras = true;
+
+   private $_external_viewer_user_array = null;
 
    /**
     * used to flag, if item is in an archived room or not
@@ -1091,87 +1091,94 @@ class cs_item {
       }
    }
 
-   /** save item
-   * this method saves the item to the database; if links to other items (e.g. relevant groups) are changed, they will be updated too.
-   *
-   * @param cs_manager the manager that should be used to save the item (e.g. cs_news_manager for cs_news_item)
-   * @access private
-   */
-   public function _save($manager) {
-      $saved = false;
-      if(isset($this->_changed['general']) and $this->_changed['general'] == TRUE) {
-         $manager->setCurrentContextID($this->getContextID());
-         if ( !$this->_link_modifier ) {
-            $manager->setSaveWithoutLinkModifier();
-         }
-         $saved = $manager->saveItem($this);
-      }
-      if (isset($this->_external_viewer_user_array) and !empty($this->_external_viewer_user_array)){
-         $item_manager = $this->_environment->getItemManager();
-         $user_id_string = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
-         $user_id_array = array();
-         if (!empty($user_id_string)){
-            $user_id_array = explode(" ",$user_id_string);
-         }
-         foreach ($this->_external_viewer_user_array as $user_id){
-            if (!in_array($user_id,$user_id_array)){
-               $item_manager->setExternalViewerEntry($this->getItemID(),$user_id);
+    /** save item
+     * this method saves the item to the database; if links to other items (e.g. relevant groups) are changed, they will be updated too.
+     *
+     * @param cs_manager the manager that should be used to save the item (e.g. cs_news_manager for cs_news_item)
+     * @access private
+     */
+    public function _save($manager)
+    {
+        $saved = false;
+        if (isset($this->_changed['general']) and $this->_changed['general'] == true) {
+            $manager->setCurrentContextID($this->getContextID());
+            if (!$this->_link_modifier) {
+                $manager->setSaveWithoutLinkModifier();
             }
-         }
-         foreach($user_id_array as $user_id){
-            if (!in_array($user_id,$this->_external_viewer_user_array)){
-               $item_manager->deleteExternalViewerEntry($this->getItemID(),$user_id);
-            }
-         }
-      }else{
-         $item_manager = $this->_environment->getItemManager();
-         $retour = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
-      	if (!empty($retour)){
-      	   $user_id_array = explode(" ",$retour);
-            foreach ($user_id_array as $user_id){
-               $item_manager->deleteExternalViewerEntry($this->getItemID(),$user_id);
-            }
-      	}
-      }
-      foreach ($this->_changed as $changed_key => $is_changed) {
-         if ($is_changed) {
-            if ($changed_key != 'general' and $changed_key !='section_for' and $changed_key !='task_item' and $changed_key !='copy_of') {
-               // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
-               if ( in_array($changed_key, array(  CS_TOPIC_TYPE,
-                                                   CS_GROUP_TYPE,
-                                                   CS_PROJECT_TYPE,
-                                                   CS_PRIVATEROOM_TYPE,
-                                                   CS_MYROOM_TYPE,
-                                                   CS_COMMUNITY_TYPE,
-                                                   CS_ANNOUNCEMENT_TYPE,
-                                                   CS_MATERIAL_TYPE,
-                                                   CS_TAG_TYPE,
-                                                   CS_TODO_TYPE,
-                                                   CS_DATE_TYPE,
-                                                   CS_DISCUSSION_TYPE,
-                                                   CS_USER_TYPE)) ) {
-                  $link_manager = $this->_environment->getLinkItemManager();
-                  if (is_object($this->_data[$changed_key])) { // a list of objects or one object
-                     $this->_setObjectLinkItems($changed_key);
-                  } elseif (is_array($this->_data[$changed_key])) { // an array
-                     $this->_setIDLinkItems($changed_key);
-                  }
-               } else {   // sollte irgendwann überflüssig werden!!!!
-                  $link_manager = $this->_environment->getLinkManager();
-                  $version_id = $this->getVersionID();
-                  $link_manager->deleteLinks($this->getItemID(),$version_id,$changed_key);
-                  if (is_object($this->_data[$changed_key])) { // a list of objects or one object
-                     $this->_setObjectLinks($changed_key);
-                  } elseif (is_array($this->_data[$changed_key])) { // an array
-                     $this->_setIDLinks($changed_key);
-                  }
-               }
-            }
-         }
-      }
+            $saved = $manager->saveItem($this);
+        }
 
-      return $saved;
-   }
+        $this->persistExternalViewer();
+
+        foreach ($this->_changed as $changed_key => $is_changed) {
+            if ($is_changed) {
+                if ($changed_key != 'general' and $changed_key != 'section_for' and $changed_key != 'task_item' and $changed_key != 'copy_of') {
+                    // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
+                    if (in_array($changed_key, array(
+                        CS_TOPIC_TYPE,
+                        CS_GROUP_TYPE,
+                        CS_PROJECT_TYPE,
+                        CS_PRIVATEROOM_TYPE,
+                        CS_MYROOM_TYPE,
+                        CS_COMMUNITY_TYPE,
+                        CS_ANNOUNCEMENT_TYPE,
+                        CS_MATERIAL_TYPE,
+                        CS_TAG_TYPE,
+                        CS_TODO_TYPE,
+                        CS_DATE_TYPE,
+                        CS_DISCUSSION_TYPE,
+                        CS_USER_TYPE
+                    ))) {
+                        $link_manager = $this->_environment->getLinkItemManager();
+                        if (is_object($this->_data[$changed_key])) { // a list of objects or one object
+                            $this->_setObjectLinkItems($changed_key);
+                        } elseif (is_array($this->_data[$changed_key])) { // an array
+                            $this->_setIDLinkItems($changed_key);
+                        }
+                    } else {   // sollte irgendwann überflüssig werden!!!!
+                        $link_manager = $this->_environment->getLinkManager();
+                        $version_id = $this->getVersionID();
+                        $link_manager->deleteLinks($this->getItemID(), $version_id, $changed_key);
+                        if (is_object($this->_data[$changed_key])) { // a list of objects or one object
+                            $this->_setObjectLinks($changed_key);
+                        } elseif (is_array($this->_data[$changed_key])) { // an array
+                            $this->_setIDLinks($changed_key);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $saved;
+    }
+
+    private function persistExternalViewer()
+    {
+        if (isset($this->_external_viewer_user_array) and !empty($this->_external_viewer_user_array)) {
+            $item_manager = $this->_environment->getItemManager();
+
+            $user_id_array = $item_manager->getExternalViewerUserArrayForItem($this->getItemID());
+
+            // persist new external viewers
+            $newExternalViewers = array_diff($this->_external_viewer_user_array, $user_id_array);
+            foreach ($newExternalViewers as $newExternalViewer) {
+                $item_manager->setExternalViewerEntry($this->getItemID(), $newExternalViewer);
+            }
+
+            // delete removed external viewers
+            $removedExternalViewers = array_diff($user_id_array, $this->_external_viewer_user_array);
+            foreach ($removedExternalViewers as $removedExternalViewer) {
+                $item_manager->deleteExternalViewerEntry($this->getItemID(), $removedExternalViewer);
+            }
+        } else {
+            $item_manager = $this->_environment->getItemManager();
+
+            $user_id_array = $item_manager->getExternalViewerUserArrayForItem($this->getItemID());
+            foreach ($user_id_array as $user_id) {
+                $item_manager->deleteExternalViewerEntry($this->getItemID(), $user_id);
+            }
+        }
+    }
 
    function _setObjectLinkItems($changed_key) {
       // $changed_key_item_list enthält die link_items EINES TYPS, die das Item aktuell bei sich trägt
@@ -2246,30 +2253,22 @@ class cs_item {
       $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
    }
 
-   function setExternalViewerAccounts($user_id_array) {
-       $this->_external_viewer_user_array = $user_id_array;
-   }
-   function unsetExternalViewerAccounts() {
-       $this->_external_viewer_user_array = NULL;
-   }
-   function issetExternalViewerStatus(){
-      $retour = false;
-      $user_string = $this->getExternalViewerString();
-      if (!empty($user_string)){
-      	$retour = true;
-      }
-      return $retour;
-   }
-   function getExternalViewerString(){
-      $item_manager = $this->_environment->getItemManager();
-      $retour = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
-      return $retour;
-   }
-function getExternalViewerArray(){
-      $item_manager = $this->_environment->getItemManager();
-      $retour = $item_manager->getExternalViewerUserArrayForItem($this->getItemID());
-      return $retour;
-   }
+    public function setExternalViewerAccounts(array $user_id_array)
+    {
+        $this->_external_viewer_user_array = $user_id_array;
+    }
+
+    public function unsetExternalViewerAccounts()
+    {
+        $this->_external_viewer_user_array = null;
+    }
+
+    public function getExternalViewerString()
+    {
+        $item_manager = $this->_environment->getItemManager();
+        return $item_manager->getExternalViewerUserStringForItem($this->getItemID());
+    }
+
    function getGroupList () {
       $group_list = $this->getLinkedItemList(CS_GROUP_TYPE);
       $group_list->sortBy('name');
