@@ -67,21 +67,12 @@ class ItemService
             if (!$manager) {
                 return null;
             }
-            $item_manager = $this->legacyEnvironment->getItemManager();
-            $user_id_string = $item_manager->getExternalViewerUserStringForItem($itemId);
-            $user_id_array = array();
-            if (!empty($user_id_string)){
-                $user_id_array = explode(" ",$user_id_string);
-            }
+
             if ($versionId === null) {
-                $resp =  $manager->getItem($item->getItemID());
-                $resp->setExternalViewerAccounts($user_id_array);
-                return $resp;
+                return $manager->getItem($item->getItemID());
             } else {
                 if (method_exists($manager, 'getItemByVersion')) {
-                    $respVersion =  $manager->getItemByVersion($itemId, $versionId);
-                    $respVersion->setExternalViewerAccounts($user_id_array);
-                    return $respVersion;
+                    return $manager->getItemByVersion($itemId, $versionId);
                 }
             }
         }

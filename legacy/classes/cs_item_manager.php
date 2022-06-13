@@ -873,36 +873,26 @@ class cs_item_manager extends cs_manager {
         return false;
     }
 
-   function getExternalViewerUserStringForItem($iid) {
-      $retour = NULL;
-      $query = 'SELECT user_id';
-      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
-      $query .= ' WHERE item_id="'.$iid.'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( isset($result) and !empty($result) ) {
-         foreach ( $result as $query_result ) {
-            $retour .= $query_result['user_id'].' ';
-         }
-         return $retour;
-      } else {
-         return '';
-      }
-   }
-   function getExternalViewerUserArrayForItem($iid) {
-      $retour = array();
-      $query = 'SELECT user_id';
-      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
-      $query .= ' WHERE item_id="'.$iid.'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( isset($result) and !empty($result) ) {
-         foreach ( $result as $query_result ) {
-            $retour[] = $query_result['user_id'];
-         }
-         return $retour;
-      } else {
-         return '';
-      }
-   }
+    public function getExternalViewerUserStringForItem(int $iid): string
+    {
+        $externalViewer = $this->getExternalViewerUserArrayForItem($iid);
+
+        return empty($externalViewer) ? '' : implode(' ', $externalViewer);
+    }
+
+    public function getExternalViewerUserArrayForItem(int $iid): array
+    {
+        $query = 'SELECT user_id';
+        $query .= ' FROM ' . $this->addDatabasePrefix('external_viewer');
+        $query .= ' WHERE item_id="' . $iid . '"';
+
+        $result = $this->_db_connector->performQuery($query);
+        if (isset($result) and !empty($result)) {
+            return array_column($result, 'user_id');
+        }
+
+        return [];
+    }
 
    function deleteExternalViewerEntry($iid,$user_id){
       $query = 'DELETE';
