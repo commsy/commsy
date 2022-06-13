@@ -846,19 +846,32 @@ class cs_item_manager extends cs_manager {
         return $retour;
     }
 
+    /**
+     * @param int $itemId
+     * @param string $username
+     * @return bool
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getExternalViewerForItem(int $itemId, string $username): bool
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-   function getExternalViewerForItem($iid, $uid) {
-      $retour = NULL;
-      $query = 'SELECT user_id';
-      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
-      $query .= ' WHERE item_id="'.$iid.'" AND user_id = "'.$uid.'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( isset($result) and !empty($result) ) {
-         return true;
-      } else {
-   	 	return false;
-      }
-   }
+        $queryBuilder
+            ->select('e.user_id')
+            ->from($this->addDatabasePrefix('external_viewer'), 'e')
+            ->where('e.item_id = :itemId')
+            ->andWhere('e.user_id = :username')
+            ->setParameter('itemId', $itemId)
+            ->setParameter('username', $username);
+
+        $result = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
+
+        if (isset($result) and !empty($result)) {
+            return true;
+        }
+
+        return false;
+    }
 
    function getExternalViewerUserStringForItem($iid) {
       $retour = NULL;

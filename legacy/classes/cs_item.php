@@ -1585,17 +1585,20 @@ class cs_item {
    	return false;
    }
 
-   function mayExternalSee($user){
-
-   	 $item_manager = $this->_environment->getItemManager();
-   	 $retour = $item_manager->getExternalViewerForItem($this->getItemID(),$user->getUserID());
-   	 if ($retour){
-   	 	return true;
-   	 } else {
-   	 	return $this->mayPortfolioSee($user);
-   	 }
-   }
-
+    /**
+     * @param cs_user_item $user
+     * @return bool
+     */
+    public function mayExternalSee(cs_user_item $user): bool
+    {
+        $item_manager = $this->_environment->getItemManager();
+        $retour = $item_manager->getExternalViewerForItem($this->getItemID(), $user->getUserID());
+        if ($retour) {
+            return true;
+        } else {
+            return $this->mayPortfolioSee($user);
+        }
+    }
 
     /** is the given user allowed to see this item?
      *
@@ -1625,11 +1628,8 @@ class cs_item {
               }
            } else {
                //Validate  to view  external viewer
-               if($userItem->getContextID() !== $this->getContextID()){
-                   if($this->mayExternalViewer($this->getItemID(), $userItem->getUserID())){
-                       return true;
-                   }
-                   return false;
+               if ($userItem->getContextID() !== $this->getContextID()) {
+                   return $this->mayExternalSee($userItem);
                }
                return true;
            }
@@ -2654,21 +2654,6 @@ function getExternalViewerArray(){
 
     public function getPath()
     {
-        $result = null;
-
-
-        return $result;
-    }
-
-    /**
-     * May External Files for external viewer
-     * @param $itemId
-     * @param $username
-     * @return bool
-     */
-    public function mayExternalViewer($itemId, $username){
-        $item_manager = $this->_environment->getItemManager();
-        $retour = $item_manager->getExternalViewerForItem($itemId, $username);
-        return $retour;
+        return null;
     }
 }
