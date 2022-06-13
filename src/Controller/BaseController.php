@@ -145,13 +145,18 @@ abstract class BaseController extends AbstractController
                 $negativeItemIds = $request->request->get('negativeItemIds');
             }
         }
-        if($positiveItemIds[0]){
+
+        // TODO: This is a workaround for copying a single entry from detail view when accessing as external viewer
+        // The implementation of getItemsByFilterConditions() should not rely on the context if we already know
+        // the exact item ids we are working with
+        if ($positiveItemIds[0]) {
             $itemTemp = $positiveItemIds[0];
             $itemTemp = $this->itemService->getTypedItem($itemTemp);
-            if($itemTemp->getContextID() !== $room->getItemID()){
+            if ($itemTemp->getContextID() !== $room->getItemID()) {
                 $room = $this->getRoom($itemTemp->getContextID());
             }
         }
+
         // determine items to proceed on
         /** @var cs_item[] $items */
         $items = $this->getItemsByFilterConditions($request, $room, $selectAll, $positiveItemIds);
