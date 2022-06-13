@@ -884,34 +884,21 @@ class cs_item {
       return $this->getDeleterItem();
    }
 
-   /** get annotations of the item
-   * this method returns a list of materials which are linked to the news
-   *
-   * @return object cs_list a list of cs_material_item
-   *
-   * @author CommSy Development Group
-   */
-   function getAnnotationList () {
-      $annotation_manager = $this->_environment->getAnnotationManager();
-      $annotation_manager->resetLimits();
-      $annotation_manager->setContextLimit(null);
-      $annotation_manager->setLinkedItemID($this->getItemID());
-      $annotation_manager->select();
-      return $annotation_manager->get();
-   }
+    /**
+     * returns a list of annotations linked to this item
+     *
+     * @return cs_list|null
+     */
+    public function getAnnotationList():? cs_list
+    {
+        $annotation_manager = $this->_environment->getAnnotationManager();
+        $annotation_manager->resetLimits();
+        $annotation_manager->setContextLimit(null);
+        $annotation_manager->setLinkedItemID($this->getItemID());
+        $annotation_manager->select();
 
-   function getItemAnnotationList () {
-      $annotation_manager = $this->_environment->getAnnotationManager();
-      $annotation_list = $annotation_manager->getAnnotatedItemList($this->getItemID());
-      return $annotation_list;
-   }
-
-
-   ######################
-   # private methods
-   ##################
-
-
+        return $annotation_manager->get();
+    }
 
 //********************************************************
 //TBD: Nach der vollständigen Migration der Links kann diese Methode entfernt werden
@@ -1538,11 +1525,12 @@ class cs_item {
     *
     * This Method checks for item <=> activated portfolio - relationships
     */
-   public function mayPortfolioSee($userItem) {
+   public function mayPortfolioSee(string $username)
+   {
    	$portfolioManager = $this->_environment->getPortfolioManager();
 
    	// get all ids from portfolios we are allow to see
-   	$portfolioIds = $portfolioManager->getPortfolioForExternalViewer($userItem->getUserId());
+   	$portfolioIds = $portfolioManager->getPortfolioForExternalViewer($username);
 
    	// now we get all item tags and their ids
    	$tagList = $this->getTagList();
@@ -1586,17 +1574,19 @@ class cs_item {
    }
 
     /**
-     * @param cs_user_item $user
+     * @param int $itemId
+     * @param string $username
      * @return bool
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function mayExternalSee(cs_user_item $user): bool
+    public function mayExternalSee(int $itemId, string $username): bool
     {
         $item_manager = $this->_environment->getItemManager();
-        $retour = $item_manager->getExternalViewerForItem($this->getItemID(), $user->getUserID());
+        $retour = $item_manager->getExternalViewerForItem($itemId, $username);
         if ($retour) {
             return true;
         } else {
-            return $this->mayPortfolioSee($user);
+            return $this->mayPortfolioSee($username);
         }
     }
 
@@ -1612,11 +1602,13 @@ class cs_item {
             return false;
         }
 
+        // Root
         if ($userItem->isRoot()) {
            return true;
         }
 
-        if ($userItem->isUser() && $userItem->getContextID() == $this->_environment->getCurrentContextID()) {
+        // Room user
+        if ($userItem->isUser() && $userItem->getContextID() === $this->getContextID()) {
            // deactivated entries can be only viewed by a moderator or by their creator
            if ($this->isNotActivated()) {
               if ($userItem->isModerator()) {
@@ -1626,15 +1618,15 @@ class cs_item {
               if ($this->getCreatorID() == $userItem->getItemId()) {
                  return true;
               }
-           } else {
-               //Validate  to view  external viewer
-               if ($userItem->getContextID() !== $this->getContextID()) {
-                   return $this->mayExternalSee($userItem);
-               }
-               return true;
            }
         }
 
+        // External viewer
+        if ($this->mayExternalSee($this->getItemID(), $userItem->getUserID())) {
+            return true;
+        }
+
+        // Guest
         $currentContextItem = $this->_environment->getCurrentContextItem();
         if ($currentContextItem->isOpenForGuests()) {
             if ($userItem->isGuest() || $userItem->isRequested()) {
