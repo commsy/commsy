@@ -1508,13 +1508,13 @@ class cs_user_item extends cs_item
      *
      * @see cs_item::mayPortfolioSee()
      */
-    public function mayPortfolioSee($userItem)
+    public function mayPortfolioSee(string $username)
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 
         $userArray = $portfolioManager->getPortfolioUserForExternalViewer($this->getItemId());
 
-        return in_array($userItem->getUserId(), $userArray);
+        return in_array($username, $userArray);
     }
 
     function maySee($user_item)
