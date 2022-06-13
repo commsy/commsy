@@ -68,7 +68,21 @@
                                         {
                                             type: 'file',
                                             id: 'upload',
-                                            label: editor.lang.commsyimage.uploadnew,
+                                            label: editor.lang.commsyimage.uploadnew + '<br/>' + '<span style="color: #636363;">' + editor.lang.commsyimage.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>',
+                                            onChange: function () {
+                                                const limit = editor.config.maxUploadSize;
+                                                var upload = this.getDialog().getContentElement('imageTab', 'upload');
+                                                var inputUpload = upload.getInputElement().$;
+                                                var sizeUpload = inputUpload.files[0]? inputUpload.files[0].size: 0;
+                                                if(sizeUpload === 0){
+                                                 return;
+                                                }                                                
+                                                if(sizeUpload >= limit){
+                                                	upload.setValue("");
+                                                	alert(editor.lang.commsyimage.uploadnewfailed);                                                	
+                                                } 
+              
+                                            }
                                         },
                                         {
                                             type: 'fileButton',
