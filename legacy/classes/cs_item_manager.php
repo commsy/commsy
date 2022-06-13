@@ -908,29 +908,27 @@ class cs_item_manager extends cs_manager {
       }
    }
 
-   function getExternalViewerEntriesForRoom($room_id) {
-   	$result_array = array();
-   	$query_ids = 'SELECT item_id';
-      $query_ids .= ' FROM '.$this->addDatabasePrefix('items');
-      $query_ids .= ' WHERE context_id="'.$room_id.'"';
-      $result_ids = $this->_db_connector->performQuery($query_ids);
-      if ( isset($result_ids) and !empty($result_ids) ) {
-      	$id_array = array();
-         foreach ( $result_ids as $result_id ) {
-            $id_array[] = $result_id['item_id'].' ';
-         }
-         $query = 'SELECT distinct  item_id';
-         $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
-         $query .= ' WHERE item_id IN ('.implode(',', $id_array).')';
-         $result = $this->_db_connector->performQuery($query);
-         if ( isset($result) and !empty($result) ) {
-	         foreach ( $result as $query_result ) {
-	            $result_array[] .= $query_result['item_id'];
-	         }
-         }
-      }
-      return $result_array;
-   }
+    /**
+     * @param int $room_id
+     * @return array
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getExternalViewerEntriesForRoom(int $room_id): array
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('e.item_id')
+            ->distinct()
+            ->from($this->addDatabasePrefix($this->_db_table), 'i')
+            ->innerJoin('i', $this->addDatabasePrefix('external_viewer'), 'e', 'i.item_id = e.item_id')
+            ->where('i.context_id = :contextId')
+            ->setParameter('contextId', $room_id);
+
+        $result = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
+
+        return array_column($result, 'item_id');
+    }
 
    function getExternalViewerEntriesForUser($user_id) {
       $result_array = array();
