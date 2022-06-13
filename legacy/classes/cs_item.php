@@ -1618,6 +1618,8 @@ class cs_item {
               if ($this->getCreatorID() == $userItem->getItemId()) {
                  return true;
               }
+           } else {
+               return true;
            }
         }
 
