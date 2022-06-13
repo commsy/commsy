@@ -249,10 +249,10 @@ class cs_discussion_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('discussions') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.link_modifier_item_date  IS NULL OR ' . $this->addDatabasePrefix('discussions') . '.link_modifier_item_date  <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('discussions') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.link_modifier_item_date  IS NOT NULL AND ' . $this->addDatabasePrefix('discussions') . '.link_modifier_item_date  > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -477,13 +477,15 @@ class cs_discussion_manager extends cs_manager {
         $type = 'simple';
      }
      $modification_date = getCurrentDateTimeInMySQL();
+     $link_modifier_item_date = getCurrentDateTimeInMySQL();
      if ($item->isNotActivated()){
-        $modification_date = $item->getModificationDate();
+         $link_modifier_item_date = $item->getLinkModifierItemDate();
      }
 
       $query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                'modification_date="'.$modification_date.'",'.
+               'link_modifier_item_date="'.$link_modifier_item_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
                'public="'.encode(AS_DB,$public).'"';
@@ -516,6 +518,7 @@ class cs_discussion_manager extends cs_manager {
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+              'link_modifier_item_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="discussion",'.
               'draft="'.encode(AS_DB,$item->isDraft()).'"';
 
@@ -552,8 +555,9 @@ class cs_discussion_manager extends cs_manager {
         $type = 'simple';
      }
      $modification_date = getCurrentDateTimeInMySQL();
+      $link_modifier_item_date = getCurrentDateTimeInMySQL();
      if ($item->isNotActivated()){
-        $modification_date = $item->getModificationDate();
+         $link_modifier_item_date = $item->getLinkModifierItemDate();
      }
 
      $query = 'INSERT INTO '.$this->addDatabasePrefix('discussions').' SET '.
@@ -563,6 +567,7 @@ class cs_discussion_manager extends cs_manager {
               'creation_date="'.$current_datetime.'",'.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$modification_date.'",'.
+              'link_modifier_item_date="'.$link_modifier_item_date.'",'.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'discussion_type="'.encode(AS_DB,$type).'",'.
               'public="'.encode(AS_DB,$public).'"';

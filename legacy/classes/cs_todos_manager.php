@@ -216,10 +216,10 @@ class cs_todos_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('todos') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('todos') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('todos') . '.link_modifier_item_date  IS NULL OR ' . $this->addDatabasePrefix('todos') . '.link_modifier_item_date  <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('todos') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('todos') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('todos') . '.link_modifier_item_date  IS NOT NULL AND ' . $this->addDatabasePrefix('todos') . '.link_modifier_item_date  > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -448,6 +448,7 @@ class cs_todos_manager extends cs_manager {
 
         $modificator = $item->getModificatorItem();
         $modification_date = getCurrentDateTimeInMySQL();
+        $link_modifier_item_date = getCurrentDateTimeInMySQL();
 
         if ($item->isPublic()) {
             $public = '1';
@@ -455,7 +456,7 @@ class cs_todos_manager extends cs_manager {
             $public = '0';
         }
         if ($item->isNotActivated()) {
-            $modification_date = $item->getModificationDate();
+            $link_modifier_item_date = $item->getLinkModifierItemDate();
         }
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -464,6 +465,7 @@ class cs_todos_manager extends cs_manager {
             ->update($this->addDatabasePrefix('todos'), 't')
             ->set('modifier_id', ':modifierId')
             ->set('modification_date', ':modificationDate')
+            ->set('link_modifier_item_date', ':linkModifierItemDate')
             ->set('title', ':title')
             ->set('status', ':status')
             ->set('minutes', ':minutes')
@@ -473,6 +475,7 @@ class cs_todos_manager extends cs_manager {
             ->where('item_id = :itemId')
             ->setParameter('modifierId', $modificator->getItemID())
             ->setParameter('modificationDate', $modification_date)
+            ->setParameter('linkModifierItemDate', $link_modifier_item_date)
             ->setParameter('title', $item->getTitle())
             ->setParameter('status', $item->getInternalStatus())
             ->setParameter('minutes', $item->getPlannedTime())
@@ -504,6 +507,7 @@ class cs_todos_manager extends cs_manager {
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+              'link_modifier_item_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="todo",'.
               'draft="'.encode(AS_DB,$item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
@@ -529,6 +533,7 @@ class cs_todos_manager extends cs_manager {
         $user = $item->getCreatorItem();
         $modificator = $item->getModificatorItem();
         $modificationDate = getCurrentDateTimeInMySQL();
+        $link_modifier_item_date = getCurrentDateTimeInMySQL();
         $currentDateTime = getCurrentDateTimeInMySQL();
 
         if ($item->isPublic()) {
@@ -539,7 +544,7 @@ class cs_todos_manager extends cs_manager {
 
         $date = $item->getDate();
         if ($item->isNotActivated()) {
-            $modificationDate = $item->getModificationDate();
+            $link_modifier_item_date = $item->getLinkModifierItemDate();
         }
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -554,6 +559,7 @@ class cs_todos_manager extends cs_manager {
             ->setValue('creation_date', ':creationDate')
             ->setValue('modifier_id', ':modifierId')
             ->setValue('modification_date', ':modificationDate')
+            ->setValue('link_modifier_item_date', ':linkModifierItemDate')
             ->setValue('title', ':title')
             ->setValue('date', ':date')
             ->setValue('minutes', ':minutes')
@@ -566,6 +572,7 @@ class cs_todos_manager extends cs_manager {
             ->setParameter('creationDate', $currentDateTime)
             ->setParameter('modifierId', $modificator->getItemID())
             ->setParameter('modificationDate', $modificationDate)
+            ->setParameter('linkModifierItemDate', $link_modifier_item_date)
             ->setParameter('title', $item->getTitle())
             ->setParameter('date', $date)
             ->setParameter('minutes', $item->getPlannedTime())

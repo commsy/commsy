@@ -58,7 +58,7 @@ class TopicTransformer extends AbstractTransformer
 
         if (isset($topicData['hidden'])) {
             if ($topicData['hidden']) {
-                if ($topicData['hiddendate']['date']) {
+                if (isset($topicData['hiddendate']['date'])) {
                     // add validdate to validdate
                     // TODO: the date-object ought to resepct the chosen system language
                     $datetime = $topicData['hiddendate']['date'];
@@ -66,18 +66,18 @@ class TopicTransformer extends AbstractTransformer
                         $time = explode(":", $topicData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $topicObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                    $topicObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $topicObject->setModificationDate('9999-00-00 00:00:00');
+                    $topicObject->setLinkModifierItemDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($topicObject->isNotActivated()){
-    	            $topicObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	            $topicObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($topicObject->isNotActivated()){
-	            $topicObject->setModificationDate(getCurrentDateTimeInMySQL());
+	            $topicObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
 	        }
         }
 

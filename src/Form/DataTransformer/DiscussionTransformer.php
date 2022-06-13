@@ -75,25 +75,25 @@ class DiscussionTransformer extends AbstractTransformer
 
         if (isset($discussionData['hidden'])) {
             if ($discussionData['hidden']) {
-                if ($discussionData['hiddendate']['date']) {
+                if (isset($discussionData['hiddendate']['date'])) {
                     // add validdate to validdate
                     $datetime = $discussionData['hiddendate']['date'];
                     if ($discussionData['hiddendate']['time']) {
                         $time = explode(":", $discussionData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $discussionObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                    $discussionObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $discussionObject->setModificationDate('9999-00-00 00:00:00');
+                    $discussionObject->setLinkModifierItemDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($discussionObject->isNotActivated()){
-    	            $discussionObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	            $discussionObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($discussionObject->isNotActivated()){
-	            $discussionObject->setModificationDate(getCurrentDateTimeInMySQL());
+	            $discussionObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
 	        }
         }
 

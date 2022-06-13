@@ -233,10 +233,10 @@ class cs_announcement_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('announcement') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.link_modifier_item_date  IS NULL OR ' . $this->addDatabasePrefix('announcement') . '.link_modifier_item_date  <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('announcement') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.link_modifier_item_date  IS NOT NULL AND ' . $this->addDatabasePrefix('announcement') . '.link_modifier_item_date  > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -458,13 +458,15 @@ class cs_announcement_manager extends cs_manager {
         $public = '0';
      }
      $modification_date = getCurrentDateTimeInMySQL();
+     $link_modifier_item_date = getCurrentDateTimeInMySQL();
      if ($announcement_item->isNotActivated()){
-        $modification_date = $announcement_item->getModificationDate();
+         $link_modifier_item_date = $announcement_item->getLinkModifierItemDate();
      }
 
      $query = 'UPDATE '.$this->addDatabasePrefix('announcement').' SET '.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$modification_date.'",'.
+              'link_modifier_item_date="'.$link_modifier_item_date.'",'.
               'title="'.encode(AS_DB,$announcement_item->getTitle()).'",'.
               'description="'.encode(AS_DB,$announcement_item->getDescription()).'",'.
               'public="'.encode(AS_DB,$public).'",'.
@@ -492,6 +494,7 @@ class cs_announcement_manager extends cs_manager {
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$announcement_item->getContextID()).'",'.
               'modification_date="'.$modification_date.'",'.
+               'link_modifier_item_date="'.$modification_date.'",'.
               'type="announcement",'.
               'draft="'.encode(AS_DB,$announcement_item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
@@ -524,8 +527,9 @@ class cs_announcement_manager extends cs_manager {
         $public = '0';
      }
      $modification_date = getCurrentDateTimeInMySQL();
+      $link_modifier_item_date = getCurrentDateTimeInMySQL();
      if ($announcement_item->isNotActivated()){
-        $modification_date = $announcement_item->getModificationDate();
+         $link_modifier_item_date = $announcement_item->getLinkModifierItemDate();
      }
 
      $query = 'INSERT INTO '.$this->addDatabasePrefix('announcement').' SET '.
@@ -535,6 +539,7 @@ class cs_announcement_manager extends cs_manager {
               'creation_date="'.$current_datetime.'",'.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$modification_date.'",'.
+              'link_modifier_item_date="'.$link_modifier_item_date.'",'.
               'title="'.encode(AS_DB,$announcement_item->getTitle()).'",'.
               'enddate ="'.encode(AS_DB,$announcement_item->getSecondDateTime()).'",'.
               'public="'.encode(AS_DB,$public).'",'.
