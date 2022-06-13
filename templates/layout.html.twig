@@ -3,7 +3,7 @@
 {% block top_navigation %}
     <nav class="uk-navbar-container" uk-navbar>
         <div class="uk-navbar-left">
-            <a id="commsy_logo" class="uk-navbar-item uk-logo uk-visible@s" href="{{ path('app_server_linkout') }}">
+            <a id="commsy_logo" class="uk-navbar-item uk-logo" href="{{ path('app_server_linkout') }}">
                 <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_120.png') }}"/>
             </a>
 
@@ -32,7 +32,7 @@
         <div class="uk-navbar-right">
             {% block top_navigation_right %}{% endblock %}
 
-            <a class="uk-navbar-toggle uk-hidden@s" href="#offcanvas" uk-navbar-toggle-icon uk-toggle="target: #offcanvas-navigation"></a>
+{#            <a class="uk-navbar-toggle uk-hidden@s" href="#offcanvas" uk-navbar-toggle-icon uk-toggle="target: #offcanvas-navigation"></a>#}
 
             <ul class="uk-navbar-nav uk-visible@s">
                 {% if app.request.attributes.has('roomId') %}

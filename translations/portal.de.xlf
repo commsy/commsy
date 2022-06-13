@@ -269,7 +269,7 @@
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby">
                 <source>Sort list of all rooms by</source>
-                <target>Sortiere "All Räume" nach</target>
+                <target>Sortiere "Alle Räume" nach</target>
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby_activity">
                 <source>Activity</source>

@@ -85,6 +85,10 @@ class LegacyCopy implements CopyStrategy
         $copy_array['rss'] = true;
         $copy_array['language'] = true;
         $copy_array['visibilitydefaults'] = true;
+        $copy_array['checknewmembers'] = true;
+        $copy_array['checknewmembers_code'] = true;
+        $copy_array['roomassociation'] = true;
+
 
         // now adaption for special rooms
         if ($source->isProjectRoom()) {
@@ -219,6 +223,16 @@ class LegacyCopy implements CopyStrategy
         if ($copy_array['htmltextareastatus']) {
             $target->setHtmlTextAreaStatus($source->getHtmlTextAreaStatus());
         }
+        if ($copy_array['checknewmembers']) {
+            $target->_setCheckNewMember($source->_getCheckNewMembers());
+        }
+        if ($copy_array['checknewmembers_code']) {
+            $target->setCheckNewMemberCode($source->getCheckNewMemberCode());
+        }
+        if ($copy_array['roomassociation']) {
+            $target->_setRoomAssociation($source->_getRoomAssociation());
+        }
+
         // config of buzzwords
         if ($copy_array['buzzword']) {
             if ($source->isBuzzwordMandatory()) {
