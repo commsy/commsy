@@ -83,6 +83,13 @@ class Materials
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="link_modifier_item_date", type="datetime", nullable=false)
+     */
+    private $linkModifierItemDate = '0000-00-00 00:00:00';
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
     private $deletionDate;
@@ -351,7 +358,29 @@ class Materials
     {
         return $this->modificationDate;
     }
+    /**
+     * Set linkModifierItemDate
+     *
+     * @param \DateTime $linkModifierItemDate
+     *
+     * @return Dates
+     */
+    public function setLinkModifierItemDate($linkModifierItemDate)
+    {
+        $this->linkModifierItemDate = $linkModifierItemDate;
 
+        return $this;
+    }
+
+    /**
+     * Get linkModifierItemDate
+     *
+     * @return \DateTime
+     */
+    public function getLinkModifierItemDate()
+    {
+        return $this->linkModifierItemDate;
+    }
     /**
      * Set deletionDate
      *
